@@ -1,0 +1,74 @@
+{
+  "name": "bachelorarbeit-projekt",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@codemirror/autocomplete": "^6.16.3",
+    "@codemirror/closebrackets": "^0.19.2",
+    "@codemirror/state": "^6.4.1",
+    "@codemirror/view": "^6.28.2",
+    "@fortawesome/fontawesome-free": "^6.5.2",
+    "@fortawesome/fontawesome-svg-core": "^6.5.2",
+    "@fortawesome/free-solid-svg-icons": "^6.5.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
+    "@testing-library/jest-dom": "^6.4.6",
+    "@testing-library/react": "^16.0.0",
+    "@testing-library/user-event": "^14.5.2",
+    "@types/d3": "^7.4.3",
+    "3dmol": "^2.1.0",
+    "antd": "^5.18.3",
+    "axios": "^1.7.2",
+    "bootstrap": "^5.3.3",
+    "canvas-to-svg": "^1.0.3",
+    "codemirror": "^5.65.0",
+    "cors": "^2.8.5",
+    "csv-parse": "^5.5.6",
+    "d3": "^7.9.0",
+    "dexie": "^4.0.7",
+    "express": "^4.19.2",
+    "file-url": "^4.0.0",
+    "fontawesome": "^5.6.3",
+    "lodash": "^4.17.21",
+    "lucide-react": "^0.397.0",
+    "papaparse": "^5.4.1",
+    "path-browserify": "^1.0.1",
+    "pixi-viewport": "^5.0.3",
+    "pixi.js": "^8.2.1",
+    "polyfills": "^2.1.1",
+    "react": "^18.3.1",
+    "react-bootstrap": "^2.10.3",
+    "react-codemirror2": "^8.0.0",
+    "react-dom": "^18.3.1",
+    "react-fontawesome": "^1.7.1",
+    "react-scripts": "5.0.1",
+    "react-tooltip": "^5.27.0",
+    "react-transition-group": "^4.4.5",
+    "sass": "^1.77.7",
+    "union-find": "^1.0.2",
+    "web-vitals": "^4.2.0"
+  },
+  "scripts": {
+    "start": "concurrently \"react-scripts start\" \"node src/components/APIRequests/server.js\"",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

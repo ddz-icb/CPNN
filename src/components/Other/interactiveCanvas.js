@@ -1,0 +1,102 @@
+import { throttle } from "lodash";
+import * as d3 from "d3";
+
+/* RESIZE CANVAS ON RESIZE */
+
+// throttle the resize interval for better performance
+export const handleResize = throttle((window, app) => {
+  if (app && app.renderer) {
+    app.renderer.resize(window.innerWidth, window.innerHeight);
+  }
+}, 250);
+
+/* ZOOM AND DRAG STUFF */
+
+let app;
+let radius;
+let simulation;
+
+let transform = d3.zoomIdentity.scale(0.8); // view transformation-values
+const zoom = d3.zoom();
+let distanceDragged = 0;
+let startPosition = { x: 0, y: 0 };
+
+export function initDragAndZoom(
+  initialApp,
+  initialSimulation,
+  initialRadius,
+  setIsClickTooltipActive,
+  setIsHoverTooltipActive,
+  width,
+  height
+) {
+  app = initialApp;
+  simulation = initialSimulation;
+  radius = initialRadius;
+  transform = d3.zoomIdentity.translate(width / 2, height / 2).scale(0.8);
+
+  d3.select(app.renderer.canvas)
+    .call(
+      d3
+        .drag()
+        .subject(dragsubject)
+        .on("start", (event) => dragstarted(event, setIsHoverTooltipActive))
+        .on("drag", dragged)
+        .on("end", (event) =>
+          dragended(event, setIsClickTooltipActive, setIsHoverTooltipActive)
+        )
+    )
+    .call(zoom.on("zoom", zoomed));
+}
+
+const zoomed = (event) => {
+  transform = event.transform;
+
+  app.stage.x = transform.x;
+  app.stage.y = transform.y;
+  app.stage.scale.x = transform.k;
+  app.stage.scale.y = transform.k;
+
+  app.renderer.render(app.stage);
+};
+
+const dragsubject = (event) => {
+  return simulation.find(
+    transform.invertX(event.x),
+    transform.invertY(event.y),
+    radius
+  );
+};
+
+const dragstarted = (event, setIsHoverTooltipActive) => {
+  if (!event.active) simulation.alphaTarget(0.3).restart();
+
+  event.subject.fx = event.subject.x;
+  event.subject.fy = event.subject.y;
+
+  startPosition = { x: event.subject.x, y: event.subject.y };
+  distanceDragged = 0;
+
+  setIsHoverTooltipActive(false);
+};
+
+const dragged = (event) => {
+  event.subject.fx += event.dx / transform.k;
+  event.subject.fy += event.dy / transform.k;
+
+  const dx = event.subject.fx - startPosition.x;
+  const dy = event.subject.fy - startPosition.y;
+  distanceDragged = Math.sqrt(dx * dx + dy * dy);
+};
+
+const dragended = (event, setIsClickTooltipActive, setIsHoverTooltipActive) => {
+  if (!event.active) simulation.alphaTarget(0);
+
+  event.subject.fx = null;
+  event.subject.fy = null;
+
+  if (distanceDragged > 10) {
+    setIsClickTooltipActive(false);
+  }
+  setIsHoverTooltipActive(false);
+};

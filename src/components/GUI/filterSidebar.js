@@ -1,0 +1,229 @@
+import { useEffect, useState, useRef } from "react";
+import { parseAttributesFilter } from "../Other/parser";
+import "codemirror/lib/codemirror.css";
+import "codemirror/addon/mode/simple";
+import "codemirror/theme/material.css";
+import "../../index.css";
+import "../Other/syntaxHighlighting";
+import CodeMirror from "codemirror";
+import {
+  SidebarButtonRect,
+  SidebarCodeEditorBlock,
+  SidebarFieldBlock,
+  SidebarSliderBlock,
+} from "./sidebar";
+import { parseGroupsFilter } from "../Other/parserFilterNodeGroups";
+import {
+  linkThresholdInit,
+  minComponentSizeInit,
+} from "../GraphStuff/graphInitValues";
+
+export function FilterSidebar({
+  linkThreshold,
+  minComponentSize,
+  linkAttribs,
+  setLinkThreshold,
+  setMinComponentSize,
+  setLinkAttribs,
+  linkAttribsText,
+  setLinkAttribsText,
+  theme: activeTheme,
+  nodeGroupsText,
+  setNodeGroupsText,
+  setNodeGroups,
+  resetFilter,
+}) {
+  const attribsEditorRef = useRef(null);
+  const groupsEditorRef = useRef(null);
+
+  const attribsRef = useRef(null);
+  const groupsRef = useRef(null);
+
+  const [linkThresholdText, setLinkThresholdText] = useState(linkThreshold);
+  const [minComponentSizeText, setMinComponentSizeText] =
+    useState(minComponentSize);
+  const [compilerErrorAttribs, setCompilerErrorAttribs] = useState(null);
+  const [compilerErrorGroups, setCompilerErrorGroups] = useState(null);
+
+  const handleResetFilter = () => {
+    resetFilter();
+
+    setLinkThresholdText(linkThresholdInit);
+    setMinComponentSizeText(minComponentSizeInit);
+    setCompilerErrorAttribs(null);
+    setCompilerErrorGroups(null);
+  };
+
+  const handleLinkThresholdSliderChange = (event) => {
+    const value = event.target.value;
+
+    if (value >= 0 && value <= 1) {
+      setLinkThresholdText(value);
+      setLinkThreshold(value);
+    }
+  };
+
+  const handleLinkThresholdFieldChange = (event) => {
+    const value = event.target.value;
+
+    if (value >= 0 && value <= 1) {
+      setLinkThresholdText(value);
+    }
+  };
+
+  const handleLinkThresholdFieldBlur = (event) => {
+    let value = event.target.value;
+
+    if (value === "") {
+      event.target.innerText = 0;
+      setLinkThresholdText(0);
+      setLinkThreshold(0);
+    } else if (value >= 0 && value <= 1) {
+      event.target.innerText = value;
+      setLinkThresholdText(value);
+      setLinkThreshold(value);
+    }
+  };
+
+  const handleMinComponentFieldChange = (event) => {
+    const value = event.target.value;
+    const intValue = parseInt(value, 10);
+
+    if (value === "") {
+      setMinComponentSizeText("");
+    } else if (!isNaN(intValue)) {
+      setMinComponentSizeText(intValue);
+    }
+  };
+
+  const handleMinComponentFieldBlur = (event) => {
+    const value = event.target.value;
+    const intValue = parseInt(value, 10);
+
+    if (value === "") {
+      event.target.innerText = 1;
+      setMinComponentSizeText(1);
+      setMinComponentSize(1);
+    } else if (!isNaN(intValue) && intValue >= 0) {
+      event.target.innerText = intValue;
+      setMinComponentSizeText(intValue);
+      setMinComponentSize(intValue);
+    }
+  };
+
+  const handleLinkAttribsChange = (editor) => {
+    const value = editor.getValue();
+
+    setLinkAttribsText(value);
+  };
+
+  const handleNodeGroupsChange = (editor) => {
+    const value = editor.getValue();
+
+    setNodeGroupsText(value);
+  };
+
+  const runCodeButtonFilterAttribs = (event) => {
+    const value = linkAttribsText;
+
+    const parsedValue = parseAttributesFilter(value);
+    if (String(parsedValue).split(" ")[0] === "Error:") {
+      setCompilerErrorAttribs(parsedValue);
+      console.error("invalid input on attribs filter");
+    } else {
+      setCompilerErrorAttribs(null);
+      setLinkAttribsText(value);
+      setLinkAttribs(parsedValue);
+    }
+  };
+
+  const runCodeButtonFilterGroups = (event) => {
+    const value = nodeGroupsText;
+
+    const parsedValue = parseGroupsFilter(value);
+    if (String(parsedValue).split(" ")[0] === "Error:") {
+      setCompilerErrorGroups(parsedValue);
+      console.error("invalid input on attribs filter");
+    } else {
+      setCompilerErrorGroups(null);
+      setNodeGroupsText(value);
+      setNodeGroups(parsedValue);
+    }
+  };
+
+  // initialize link attribs filter editor //
+  useEffect(() => {
+    if (attribsRef.current) {
+      attribsEditorRef.current = CodeMirror.fromTextArea(attribsRef.current, {
+        mode: "customMode",
+        theme: activeTheme === "light" ? "default" : "material",
+        linewrapping: false,
+        bracketMatching: true,
+        scrollbarStyle: "null",
+      });
+      attribsEditorRef.current.setSize("100%", "100%");
+      attribsEditorRef.current.on("change", (editor) =>
+        handleLinkAttribsChange(editor)
+      );
+    }
+  }, []);
+
+  // initialize node group filter editor //
+  useEffect(() => {
+    if (groupsRef.current) {
+      groupsEditorRef.current = CodeMirror.fromTextArea(groupsRef.current, {
+        mode: "customMode",
+        theme: activeTheme === "light" ? "default" : "material",
+        linewrapping: false,
+        bracketMatching: true,
+        scrollbarStyle: "null",
+      });
+      groupsEditorRef.current.setSize("100%", "100%");
+      groupsEditorRef.current.on("change", (editor) =>
+        handleNodeGroupsChange(editor)
+      );
+    }
+  }, []);
+
+  return (
+    <>
+      <div className="inline pad-top-05 pad-bottom-05">
+        <SidebarButtonRect text={"Reset Filters"} onClick={handleResetFilter} />
+      </div>
+      <SidebarSliderBlock
+        text={"Filter Links by Threshold"}
+        min={0}
+        max={1}
+        stepSlider={0.05}
+        stepField={0.01}
+        value={linkThreshold}
+        valueText={linkThresholdText}
+        onChangeSlider={handleLinkThresholdSliderChange}
+        onChangeField={handleLinkThresholdFieldChange}
+        onChangeBlur={handleLinkThresholdFieldBlur}
+      />
+      <SidebarCodeEditorBlock
+        text={"Filter Links by Attributes"}
+        textareaRef={attribsRef}
+        compilerError={compilerErrorAttribs}
+        onClick={runCodeButtonFilterAttribs}
+        defaultValue={linkAttribsText}
+      />
+      <SidebarCodeEditorBlock
+        text={"Filter Nodes by Attributes"}
+        textareaRef={groupsRef}
+        compilerError={compilerErrorGroups}
+        onClick={runCodeButtonFilterGroups}
+        defaultValue={nodeGroupsText}
+      />
+      <SidebarFieldBlock
+        text={"Set Minimum Component Size"}
+        min={1}
+        step={1}
+        value={minComponentSizeText}
+        onChange={handleMinComponentFieldChange}
+        onBlur={handleMinComponentFieldBlur}
+      />
+    </>
+  );
+}
