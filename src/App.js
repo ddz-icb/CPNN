@@ -1,23 +1,17 @@
+import "./index.css";
 import log from "./logger";
 import React, { useState, useRef, useEffect } from "react";
-import { ForceGraph } from "./components/GraphStuff/forceGraph";
 import exampleGraphJSON from "./demographs/exampleGraphJSON";
+
+import { ForceGraph } from "./components/GraphStuff/forceGraph";
 import { Sidebar } from "./components/GUI/sidebar";
 import { HeaderBar } from "./components/GUI/headerBar";
 import { applyTheme } from "./components/Other/theme";
-import {
-  applyNodeMapping,
-  getAttribToColorIndex,
-  getGroupToColorIndex,
-  joinGraphs,
-} from "./components/GraphStuff/graphCalculations";
-import "./index.css";
+import { applyNodeMapping, getAttribToColorIndex, getGroupToColorIndex, joinGraphs } from "./components/GraphStuff/graphCalculations";
 import { parseColorSchemeCSV, parseFile } from "./components/Other/parseFile";
-import {
-  IBMAntiBlindness,
-  Okabe_ItoAntiBlindness,
-  manyColors,
-} from "./components/Other/colors";
+import { IBMAntiBlindness, Okabe_ItoAntiBlindness, manyColors } from "./components/Other/colors";
+import { parseMapping } from "./components/Other/parseMapping";
+import { addUploadedFileDB, fromAllGetNameDB, getByNameDB, removeUploadedFileByNameDB } from "./components/Other/db";
 import {
   borderHeightInit,
   borderWidthInit,
@@ -37,18 +31,10 @@ import {
   xStrengthInit,
   yStrengthInit,
 } from "./components/GraphStuff/graphInitValues";
-import { parseMapping } from "./components/Other/parseMapping";
-import {
-  addUploadedFileDB,
-  fromAllGetNameDB,
-  getByNameDB,
-  removeUploadedFileByNameDB,
-} from "./components/Other/db";
 
 function App() {
   const [linkThreshold, setLinkThreshold] = useState(linkThresholdInit);
-  const [minComponentSize, setMinComponentSize] =
-    useState(minComponentSizeInit);
+  const [minComponentSize, setMinComponentSize] = useState(minComponentSizeInit);
   const [linkAttribs, setLinkAttribs] = useState(linkAttribsInit);
   const [nodeGroups, setNodeGroups] = useState(nodeGroupsInit);
   const [linkAttribsText, setLinkAttribsText] = useState(linkAttribsTextInit);
@@ -58,12 +44,8 @@ function App() {
   const [linkLength, setLinkLength] = useState(linkLengthInit);
   const [xStrength, setXStrength] = useState(xStrengthInit);
   const [yStrength, setYStrength] = useState(yStrengthInit);
-  const [componentStrength, setComponentStrength] = useState(
-    componentStrengthInit
-  );
-  const [centroidThreshold, setCentroidThreshold] = useState(
-    centroidThresholdInit
-  );
+  const [componentStrength, setComponentStrength] = useState(componentStrengthInit);
+  const [centroidThreshold, setCentroidThreshold] = useState(centroidThresholdInit);
   const [chargeStrength, setChargeStrength] = useState(chargeStrengthInit);
   const [circleLayout, setCircleLayout] = useState(circleLayoutInit);
 
@@ -96,14 +78,8 @@ function App() {
   const [theme, setTheme] = useState("light");
   const [circleBorderColor, setCircleBorderColor] = useState("#0d3b66");
 
-  const [nodeColorScheme, setNodeColorScheme] = useState([
-    "Many Colors (18 colors)",
-    manyColors,
-  ]);
-  const [linkColorScheme, setLinkColorScheme] = useState([
-    "IBM (5 colors)",
-    IBMAntiBlindness,
-  ]);
+  const [nodeColorScheme, setNodeColorScheme] = useState(["Many Colors (18 colors)", manyColors]);
+  const [linkColorScheme, setLinkColorScheme] = useState(["IBM (5 colors)", IBMAntiBlindness]);
 
   const [activeMapping, setActiveMapping] = useState(null);
   const [uploadedMappings, setUploadedMappings] = useState(null);
@@ -111,7 +87,7 @@ function App() {
   // sets new graph on select (and also reformats it)
   const handleFileSelect = (filename) => {
     async function fetchGraph() {
-      console.log("Fetching graph data");
+      log.info("Fetching graph data");
       try {
         const file = await getByNameDB(filename);
         if (!file) throw new Error(`No file found with the name ${filename}.`);
@@ -120,7 +96,7 @@ function App() {
         setGraph(newGraph);
         setActiveFiles([file]);
         handleReset(); //the simulation has to be reloaded after
-        console.log("Graph loaded successfully:", newGraph);
+        log.info("Graph loaded successfully:", newGraph);
       } catch (error) {
         setError("Error loading graph");
         console.error("Error loading graph:", error);
@@ -128,7 +104,7 @@ function App() {
       }
     }
 
-    console.log("Replacing graph");
+    log.info("Replacing graph");
     fetchGraph();
   };
 
@@ -144,7 +120,7 @@ function App() {
   // initates graph reset //
   const handleReset = () => {
     if (!activeFiles) return;
-    console.log("Handle Reset");
+    log.info("Handle Reset");
 
     resetFilter();
     resetPhysics();
@@ -199,7 +175,7 @@ function App() {
         const newFile = { name: file.name, content: JSON.stringify(graph) };
         addUploadedFileDB(newFile);
         setUploadedFileNames([...uploadedFileNames, newFile.name]);
-        console.log("Added new file: ", newFile.name);
+        log.info("Added new file: ", newFile.name);
       };
       reader.readAsText(file);
     }
@@ -226,11 +202,9 @@ function App() {
 
   const handleDeleteColorScheme = (colorSchemeName) => {
     if (!colorSchemeName) return;
-    console.log("Deleting color schemes with name", colorSchemeName);
+    log.info("Deleting color schemes with name", colorSchemeName);
 
-    let updatedColorSchemes = colorSchemes.filter(
-      (colorScheme) => colorScheme[0] !== colorSchemeName
-    );
+    let updatedColorSchemes = colorSchemes.filter((colorScheme) => colorScheme[0] !== colorSchemeName);
 
     if (updatedColorSchemes.length === 0) {
       updatedColorSchemes = [
@@ -252,7 +226,7 @@ function App() {
   };
 
   const handleNewMapping = (event) => {
-    console.log("Processing new Mapping");
+    log.info("Processing new Mapping");
     try {
       const file = event.target.files[0];
       if (file) {
@@ -288,18 +262,16 @@ function App() {
 
   const handleDeleteMapping = (mappingName) => {
     if (!mappingName) return;
-    console.log("Deleting mapping with name", mappingName);
+    log.info("Deleting mapping with name", mappingName);
 
-    const updatedMappings = uploadedMappings.filter(
-      (mapping) => mapping.name !== mappingName
-    );
+    const updatedMappings = uploadedMappings.filter((mapping) => mapping.name !== mappingName);
     setUploadedMappings(updatedMappings);
   };
 
   // deletes uploaded files with filename //
   const handleDeleteFile = (filename) => {
     if (!filename) return;
-    console.log("Deleting files with name", filename);
+    log.info("Deleting files with name", filename);
 
     const updatedFileNames = uploadedFileNames.filter((name) => {
       return name !== filename;
@@ -312,8 +284,7 @@ function App() {
   // removes file from currently active files //
   const handleRemoveActiveFile = (file) => {
     let stillActive = activeFiles.filter((f) => f !== file);
-    if (stillActive.length === 0)
-      stillActive = [{ name: "ExampleGraph.json", content: exampleGraphJSON }];
+    if (stillActive.length === 0) stillActive = [{ name: "ExampleGraph.json", content: exampleGraphJSON }];
 
     // no error handling since these graphs were previously active already
     let graph = JSON.parse(stillActive[0].content);
@@ -325,7 +296,7 @@ function App() {
     setGraph(graph);
     setActiveFiles(stillActive);
     handleReset(); //the simulation has to be reloaded after
-    console.log("Graph loaded successfully:", graph);
+    log.info("Graph loaded successfully:", graph);
   };
 
   const handleDownloadJSONClick = () => {
@@ -358,7 +329,7 @@ function App() {
 
   const handleAddFileClick = (filename) => {
     async function fetchAndJoinGraph() {
-      console.log("Fetching graph data");
+      log.info("Fetching graph data");
       try {
         const file = await getByNameDB(filename);
         if (!file) throw new Error(`No file found with the name ${filename}.`);
@@ -369,7 +340,7 @@ function App() {
         setGraph(combinedGraph);
         setActiveFiles([...activeFiles, file]);
         handleReset(); //the simulation has to be reloaded after
-        console.log("Graph loaded successfully:", combinedGraph);
+        log.info("Graph loaded successfully:", combinedGraph);
       } catch (error) {
         setError("Error loading graph");
         console.error("Error loading graph:", error);
@@ -377,7 +348,7 @@ function App() {
       }
     }
 
-    console.log("Adding data to current graph");
+    log.info("Adding data to current graph");
     if (activeFiles.includes(filename)) {
       console.error("graph already active");
       return;
@@ -394,7 +365,7 @@ function App() {
   // select example graph on startup
   useEffect(() => {
     async function setInitGraph() {
-      console.log("Setting init graph data");
+      log.info("Setting init graph data");
       try {
         let file = {
           name: "ExampleGraph.json",
@@ -405,7 +376,7 @@ function App() {
         setGraph(newGraph);
         setActiveFiles([file]);
         handleReset(); //the simulation has to be reloaded after
-        console.log("Graph loaded successfully:", newGraph);
+        log.info("Graph loaded successfully:", newGraph);
       } catch (error) {
         setError("Error loading graph");
         console.error("Error loading graph:", error);
@@ -428,7 +399,7 @@ function App() {
 
   // load current theme
   useEffect(() => {
-    console.log("Loading Theme");
+    log.info("Loading Theme");
     const storedTheme = localStorage.getItem("theme") || "light";
     setTheme(storedTheme);
     document.body.className = storedTheme; // apply theme class
@@ -436,30 +407,30 @@ function App() {
 
   // load mapping files
   useEffect(() => {
-    console.log("Loading mapping files");
+    log.info("Loading mapping files");
     let mappings = JSON.parse(localStorage.getItem("mappings")) || [];
     if (mappings.length === 0) mappings = null;
-    console.log("mappings: ", mappings);
+    log.info("mappings: ", mappings);
     setUploadedMappings(mappings);
   }, []);
 
   // storing uploaded mapping files //
   useEffect(() => {
-    console.log("Storing mapping files", uploadedMappings);
+    log.info("Storing mapping files", uploadedMappings);
 
     localStorage.setItem("mappings", JSON.stringify(uploadedMappings));
   }, [uploadedMappings]);
 
   // storing active mapping file //
   useEffect(() => {
-    console.log("Storing active mapping", activeMapping);
+    log.info("Storing active mapping", activeMapping);
 
     localStorage.setItem("activeMapping", JSON.stringify(activeMapping));
   }, [activeMapping]);
 
   // load locally stored color schemes //
   useEffect(() => {
-    console.log("Loading color schemes");
+    log.info("Loading color schemes");
     let storedSchemes = JSON.parse(localStorage.getItem("colorSchemes")) || [];
     if (storedSchemes.length === 0) {
       storedSchemes = [
@@ -474,7 +445,7 @@ function App() {
   // storing uploaded color schemes
   useEffect(() => {
     if (!colorSchemes) return;
-    console.log("Storing uploaded color schemes");
+    log.info("Storing uploaded color schemes");
 
     localStorage.setItem("colorSchemes", JSON.stringify(colorSchemes));
   }, [colorSchemes]);
@@ -500,7 +471,7 @@ function App() {
     const attribToColorIndex = getAttribToColorIndex(newGraphCurrent);
     setAttribToColorIndex(attribToColorIndex);
 
-    console.log("Forwarding graph to forceGraph component");
+    log.info("Forwarding graph to forceGraph component");
     setGraphCurrent(newGraphCurrent);
   }, [graph, activeFiles, activeMapping]);
 
