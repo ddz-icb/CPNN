@@ -1,3 +1,4 @@
+import log from "../../logger";
 import Papa from "papaparse";
 
 export function parseFile(name, content, takeAbs) {
@@ -12,9 +13,7 @@ export function parseFile(name, content, takeAbs) {
     if (!fileData) return null;
 
     const linkAttribMatch = name.match(/dataset(\w+)/);
-    const linkAttrib = linkAttribMatch
-      ? linkAttribMatch[1]
-      : name.substring(0, 5);
+    const linkAttrib = linkAttribMatch ? linkAttribMatch[1] : name.substring(0, 5);
 
     graph = { nodes: [], links: [] };
 
@@ -36,7 +35,7 @@ export function parseFile(name, content, takeAbs) {
       }
     }
   } else {
-    console.error("File format not recognized");
+    log.error("File format not recognized");
     return null;
   }
 
@@ -82,9 +81,7 @@ export function parseColorSchemeCSV(content) {
 
   let colorData = fileData.data;
   colorData = colorData.reduce((acc, row) => {
-    const validColors = row
-      .map((element) => element.toLowerCase())
-      .filter((element) => hexColorRegex.test(element) && element.length !== 0);
+    const validColors = row.map((element) => element.toLowerCase()).filter((element) => hexColorRegex.test(element) && element.length !== 0);
     return acc.concat(validColors);
   }, []);
 

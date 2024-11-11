@@ -1,3 +1,4 @@
+import log from "../../logger";
 import * as d3 from "d3";
 
 export const radius = 8;
@@ -6,24 +7,13 @@ export const color = d3.scaleOrdinal(d3.schemeCategory10);
 export const fallbackColor = "#777777";
 
 export function getColor(index, colorScheme) {
-  if (
-    index == null ||
-    isNaN(index) ||
-    index >= colorScheme.length ||
-    index < 0
-  ) {
+  if (index == null || isNaN(index) || index >= colorScheme.length || index < 0) {
     return fallbackColor;
   }
   return colorScheme[index];
 }
 
-export function drawCircle(
-  circle,
-  node,
-  circleBorderColor,
-  colorScheme,
-  groupToColorIndex
-) {
+export function drawCircle(circle, node, circleBorderColor, colorScheme, groupToColorIndex) {
   circle
     .circle(0, 0, radius)
     .fill({ color: getColor(groupToColorIndex[node.groups[0]], colorScheme) })
@@ -43,14 +33,7 @@ export function drawCircle(
   return circle;
 }
 
-export function drawCircleCanvas(
-  ctx,
-  node,
-  circle,
-  circleBorderColor,
-  colorScheme,
-  groupToColorIndex
-) {
+export function drawCircleCanvas(ctx, node, circle, circleBorderColor, colorScheme, groupToColorIndex) {
   ctx.beginPath();
   ctx.arc(circle.x, circle.y, radius, 0, 2 * Math.PI);
   ctx.fillStyle = getColor(groupToColorIndex[node.groups[0]], colorScheme);
@@ -78,13 +61,7 @@ export function changeCircleBorderColor(circles, newColor) {
   }
 }
 
-export function changeNodeColors(
-  circles,
-  circleNodeMap,
-  circleBorderColor,
-  colorScheme,
-  groupToColorIndex
-) {
+export function changeNodeColors(circles, circleNodeMap, circleBorderColor, colorScheme, groupToColorIndex) {
   for (const circle of circles.children) {
     const { node, sameCircle } = circleNodeMap[circle.id];
     drawCircle(circle, node, circleBorderColor, colorScheme, groupToColorIndex);
@@ -126,20 +103,13 @@ export function drawLineCanvas(ctx, link, colorScheme, attribToColorIndex) {
   ctx.lineWidth = linkWidth;
 
   if (link.attribs.length === 1) {
-    console.log("link.attribs", link.attribs);
-    console.log("colorscheme", colorScheme);
-    console.log(
-      "COLOR",
-      getColor(attribToColorIndex[link.attribs[0]], colorScheme),
-      ctx.lineWidth
-    );
+    log.info("link.attribs", link.attribs);
+    log.info("colorscheme", colorScheme);
+    log.info("COLOR", getColor(attribToColorIndex[link.attribs[0]], colorScheme), ctx.lineWidth);
     ctx.beginPath();
     ctx.moveTo(link.source.x, link.source.y);
     ctx.lineTo(link.target.x, link.target.y);
-    ctx.strokeStyle = getColor(
-      attribToColorIndex[link.attribs[0]],
-      colorScheme
-    );
+    ctx.strokeStyle = getColor(attribToColorIndex[link.attribs[0]], colorScheme);
     ctx.stroke();
     ctx.closePath();
   } else {
@@ -156,10 +126,7 @@ export function drawLineCanvas(ctx, link, colorScheme, attribToColorIndex) {
       ctx.beginPath();
       ctx.moveTo(link.source.x + offsetX, link.source.y + offsetY);
       ctx.lineTo(link.target.x + offsetX, link.target.y + offsetY);
-      ctx.strokeStyle = getColor(
-        attribToColorIndex[link.attribs[i]],
-        colorScheme
-      );
+      ctx.strokeStyle = getColor(attribToColorIndex[link.attribs[i]], colorScheme);
       ctx.stroke();
       ctx.closePath();
     }

@@ -1,4 +1,6 @@
+import log from "../../logger";
 import canvasToSvg from "canvas-to-svg";
+
 import { drawCircleCanvas, drawLineCanvas } from "../Other/draw";
 
 export function downloadAsPNG(app, document) {
@@ -29,7 +31,7 @@ export function downloadAsPNG(app, document) {
       document.body.removeChild(link);
     })
     .catch((error) => {
-      console.error("Error downloading the graph picture:", error);
+      log.error("Error downloading the graph picture:", error);
     });
 }
 
@@ -93,14 +95,7 @@ export function downloadAsSVG(
   for (const node of graph.nodes) {
     const { sameNode, circle } = circleNodeMap[node.id];
 
-    drawCircleCanvas(
-      ctx,
-      node,
-      circle,
-      circleBorderColor,
-      nodeColorScheme[1],
-      groupToColorIndex
-    );
+    drawCircleCanvas(ctx, node, circle, circleBorderColor, nodeColorScheme[1], groupToColorIndex);
   }
 
   const mySerializedSVG = ctx.getSerializedSvg();
@@ -127,20 +122,11 @@ export function downloadGraphJson(graph, filename) {
       target: link.target.id,
     }));
   }
-  const blob = new Blob(
-    [
-      JSON.stringify(
-        { nodes: graph.nodes, links: convertLinks(graph.links) },
-        null,
-        4
-      ),
-    ],
-    {
-      type: "application/json",
-    }
-  );
+  const blob = new Blob([JSON.stringify({ nodes: graph.nodes, links: convertLinks(graph.links) }, null, 4)], {
+    type: "application/json",
+  });
 
-  console.log("Downloading graph as JSON");
+  log.info("Downloading graph as JSON");
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;

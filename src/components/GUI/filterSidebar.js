@@ -1,22 +1,18 @@
+import "../../index.css";
+import log from "../../logger";
 import { useEffect, useState, useRef } from "react";
-import { parseAttributesFilter } from "../Other/parser";
+import CodeMirror from "codemirror";
 import "codemirror/lib/codemirror.css";
 import "codemirror/addon/mode/simple";
 import "codemirror/theme/material.css";
-import "../../index.css";
 import "../Other/syntaxHighlighting";
-import CodeMirror from "codemirror";
-import {
-  SidebarButtonRect,
-  SidebarCodeEditorBlock,
-  SidebarFieldBlock,
-  SidebarSliderBlock,
-} from "./sidebar";
+
+import { parseAttributesFilter } from "../Other/parser";
 import { parseGroupsFilter } from "../Other/parserFilterNodeGroups";
-import {
-  linkThresholdInit,
-  minComponentSizeInit,
-} from "../GraphStuff/graphInitValues";
+
+import { linkThresholdInit, minComponentSizeInit } from "../GraphStuff/graphInitValues";
+
+import { SidebarButtonRect, SidebarCodeEditorBlock, SidebarFieldBlock, SidebarSliderBlock } from "./sidebar";
 
 export function FilterSidebar({
   linkThreshold,
@@ -40,8 +36,7 @@ export function FilterSidebar({
   const groupsRef = useRef(null);
 
   const [linkThresholdText, setLinkThresholdText] = useState(linkThreshold);
-  const [minComponentSizeText, setMinComponentSizeText] =
-    useState(minComponentSize);
+  const [minComponentSizeText, setMinComponentSizeText] = useState(minComponentSize);
   const [compilerErrorAttribs, setCompilerErrorAttribs] = useState(null);
   const [compilerErrorGroups, setCompilerErrorGroups] = useState(null);
 
@@ -129,7 +124,7 @@ export function FilterSidebar({
     const parsedValue = parseAttributesFilter(value);
     if (String(parsedValue).split(" ")[0] === "Error:") {
       setCompilerErrorAttribs(parsedValue);
-      console.error("invalid input on attribs filter");
+      log.error("invalid input on attribs filter");
     } else {
       setCompilerErrorAttribs(null);
       setLinkAttribsText(value);
@@ -143,7 +138,7 @@ export function FilterSidebar({
     const parsedValue = parseGroupsFilter(value);
     if (String(parsedValue).split(" ")[0] === "Error:") {
       setCompilerErrorGroups(parsedValue);
-      console.error("invalid input on attribs filter");
+      log.error("invalid input on attribs filter");
     } else {
       setCompilerErrorGroups(null);
       setNodeGroupsText(value);
@@ -162,9 +157,7 @@ export function FilterSidebar({
         scrollbarStyle: "null",
       });
       attribsEditorRef.current.setSize("100%", "100%");
-      attribsEditorRef.current.on("change", (editor) =>
-        handleLinkAttribsChange(editor)
-      );
+      attribsEditorRef.current.on("change", (editor) => handleLinkAttribsChange(editor));
     }
   }, []);
 
@@ -179,9 +172,7 @@ export function FilterSidebar({
         scrollbarStyle: "null",
       });
       groupsEditorRef.current.setSize("100%", "100%");
-      groupsEditorRef.current.on("change", (editor) =>
-        handleNodeGroupsChange(editor)
-      );
+      groupsEditorRef.current.on("change", (editor) => handleNodeGroupsChange(editor));
     }
   }, []);
 

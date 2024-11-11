@@ -2,8 +2,9 @@ import { ReactComponent as DeleteIcon } from "../../icons/delete.svg";
 import { ReactComponent as TrashIcon } from "../../icons/trash.svg";
 import { ReactComponent as PlusIcon } from "../../icons/plus.svg";
 import { Tooltip } from "react-tooltip";
-import { SidebarButtonRect, SidebarDropdownItem } from "./sidebar";
 import { useState } from "react";
+
+import { SidebarButtonRect, SidebarDropdownItem } from "./sidebar";
 
 export function DataSidebar({
   activeFiles,
@@ -38,88 +39,40 @@ export function DataSidebar({
         mappingInputRef={mappingInputRef}
         handleUploadMappingClick={handleUploadMappingClick}
       />
-      <ActiveFiles
-        activeFiles={activeFiles}
-        handleRemoveActiveFile={handleRemoveActiveFile}
-      />
+      <ActiveFiles activeFiles={activeFiles} handleRemoveActiveFile={handleRemoveActiveFile} />
       <UploadedFiles
         uploadedFiles={uploadedFiles}
         handleFileSelect={handleFileSelect}
         handleDeleteFile={handleDeleteFile}
         handleAddFile={handleAddFile}
       />
-      <ActiveMapping
-        activeMapping={activeMapping}
-        handleRemoveActiveMapping={handleRemoveActiveMapping}
-      />
-      <UploadedMappings
-        uploadedMappings={uploadedMappings}
-        handleMappingSelect={handleMappingSelect}
-        handleDeleteMapping={handleDeleteMapping}
-      />
+      <ActiveMapping activeMapping={activeMapping} handleRemoveActiveMapping={handleRemoveActiveMapping} />
+      <UploadedMappings uploadedMappings={uploadedMappings} handleMappingSelect={handleMappingSelect} handleDeleteMapping={handleDeleteMapping} />
     </>
   );
 }
 
-function UploadedFiles({
-  uploadedFiles,
-  handleFileSelect,
-  handleDeleteFile,
-  handleAddFile,
-}) {
+function UploadedFiles({ uploadedFiles, handleFileSelect, handleDeleteFile, handleAddFile }) {
   return (
     <>
       <b className="heading-label">Uploaded Files</b>
       <table className="recent-item-table">
         <tbody>
           {uploadedFiles?.map((name, index) => (
-            <tr
-              key={index}
-              className="recent-item-entry recent-item-entry-highlight"
-            >
-              <td
-                className="recent-item-text sidebar-tooltip-wrapper"
-                onClick={() => handleFileSelect(name)}
-              >
-                <div
-                  data-tooltip-id={`replace-tooltip-${index}`}
-                  data-tooltip-content="Replace Active Graphs"
-                  className="pad-left-025"
-                >
+            <tr key={index} className="recent-item-entry recent-item-entry-highlight">
+              <td className="recent-item-text sidebar-tooltip-wrapper" onClick={() => handleFileSelect(name)}>
+                <div data-tooltip-id={`replace-tooltip-${index}`} data-tooltip-content="Replace Active Graphs" className="pad-left-025">
                   {name}
                 </div>
-                <Tooltip
-                  id={`replace-tooltip-${index}`}
-                  place="top"
-                  effect="solid"
-                  className="sidebar-tooltip"
-                />
+                <Tooltip id={`replace-tooltip-${index}`} place="top" effect="solid" className="sidebar-tooltip" />
               </td>
               <td className="recent-item-logo sidebar-tooltip-wrapper">
-                <PlusIcon
-                  data-tooltip-id={`add-tooltip-${index}`}
-                  data-tooltip-content="Set Graph Active"
-                  onClick={() => handleAddFile(name)}
-                />
-                <Tooltip
-                  id={`add-tooltip-${index}`}
-                  place="top"
-                  effect="solid"
-                  className="sidebar-tooltip"
-                />
+                <PlusIcon data-tooltip-id={`add-tooltip-${index}`} data-tooltip-content="Set Graph Active" onClick={() => handleAddFile(name)} />
+                <Tooltip id={`add-tooltip-${index}`} place="top" effect="solid" className="sidebar-tooltip" />
               </td>
               <td className="recent-item-logo sidebar-tooltip-wrapper">
-                <TrashIcon
-                  data-tooltip-id={`delete-tooltip-${index}`}
-                  data-tooltip-content="Delete Graph"
-                  onClick={() => handleDeleteFile(name)}
-                />
-                <Tooltip
-                  id={`delete-tooltip-${index}`}
-                  place="top"
-                  effect="solid"
-                  className="sidebar-tooltip"
-                />
+                <TrashIcon data-tooltip-id={`delete-tooltip-${index}`} data-tooltip-content="Delete Graph" onClick={() => handleDeleteFile(name)} />
+                <Tooltip id={`delete-tooltip-${index}`} place="top" effect="solid" className="sidebar-tooltip" />
               </td>
             </tr>
           ))}
@@ -151,12 +104,7 @@ function ActiveFiles({ activeFiles, handleRemoveActiveFile }) {
                   data-tooltip-content="Remove Graph"
                   onClick={() => handleRemoveActiveFile(file)}
                 />
-                <Tooltip
-                  id={`remove-tooltip-${index}`}
-                  place="top"
-                  effect="solid"
-                  className="sidebar-tooltip"
-                />
+                <Tooltip id={`remove-tooltip-${index}`} place="top" effect="solid" className="sidebar-tooltip" />
               </td>
             </tr>
           ))}
@@ -166,11 +114,7 @@ function ActiveFiles({ activeFiles, handleRemoveActiveFile }) {
   );
 }
 
-function UploadedMappings({
-  uploadedMappings,
-  handleMappingSelect,
-  handleDeleteMapping,
-}) {
+function UploadedMappings({ uploadedMappings, handleMappingSelect, handleDeleteMapping }) {
   return (
     <>
       <>
@@ -180,26 +124,12 @@ function UploadedMappings({
             {uploadedMappings && (
               <>
                 {uploadedMappings?.map((mapping, index) => (
-                  <tr
-                    key={index}
-                    className="recent-item-entry recent-item-entry-highlight"
-                  >
-                    <td
-                      className="recent-item-text sidebar-tooltip-wrapper"
-                      onClick={() => handleMappingSelect(mapping)}
-                    >
-                      <div
-                        data-tooltip-id={`replace-mapping-tooltip-${index}`}
-                        data-tooltip-content="Replace Active Annotation Mapping"
-                      >
+                  <tr key={index} className="recent-item-entry recent-item-entry-highlight">
+                    <td className="recent-item-text sidebar-tooltip-wrapper" onClick={() => handleMappingSelect(mapping)}>
+                      <div data-tooltip-id={`replace-mapping-tooltip-${index}`} data-tooltip-content="Replace Active Annotation Mapping">
                         <span className="pad-left-025">{mapping.name}</span>
                       </div>
-                      <Tooltip
-                        id={`replace-mapping-tooltip-${index}`}
-                        place="top"
-                        effect="solid"
-                        className="sidebar-tooltip"
-                      />
+                      <Tooltip id={`replace-mapping-tooltip-${index}`} place="top" effect="solid" className="sidebar-tooltip" />
                     </td>
                     <td className="recent-item-logo sidebar-tooltip-wrapper">
                       <TrashIcon
@@ -207,12 +137,7 @@ function UploadedMappings({
                         data-tooltip-content="Delete Annotation Mapping"
                         onClick={() => handleDeleteMapping(mapping.name)}
                       />
-                      <Tooltip
-                        id={`delete-mapping-tooltip-${index}`}
-                        place="top"
-                        effect="solid"
-                        className="sidebar-tooltip"
-                      />
+                      <Tooltip id={`delete-mapping-tooltip-${index}`} place="top" effect="solid" className="sidebar-tooltip" />
                     </td>
                   </tr>
                 ))}
@@ -248,12 +173,7 @@ function ActiveMapping({ activeMapping, handleRemoveActiveMapping }) {
                     data-tooltip-content="Remove mapping"
                     onClick={() => handleRemoveActiveMapping()}
                   />
-                  <Tooltip
-                    id={`delete-active-mapping-tooltip`}
-                    place="top"
-                    effect="solid"
-                    className="sidebar-tooltip"
-                  />
+                  <Tooltip id={`delete-active-mapping-tooltip`} place="top" effect="solid" className="sidebar-tooltip" />
                 </td>
               </tr>
             )}
@@ -310,11 +230,7 @@ export function TopDataButtons({
             }}
           />
         </div>
-        <SidebarButtonRect
-          onClick={handleMainButtonClick}
-          text={"close"}
-          tooltipId={"close-dropdown-tooltip"}
-        />
+        <SidebarButtonRect onClick={handleMainButtonClick} text={"close"} tooltipId={"close-dropdown-tooltip"} />
       </div>
     );
   } else {

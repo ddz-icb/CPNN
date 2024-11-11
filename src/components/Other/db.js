@@ -1,3 +1,4 @@
+import log from "../../logger";
 import Dexie from "dexie";
 
 export const db = new Dexie("myDatabase");
@@ -13,18 +14,18 @@ export async function addUploadedFileDB(file) {
       content: file.content,
     });
 
-    console.log(`File ${file.name} successfully added. Got id ${id}`);
+    log.info(`File ${file.name} successfully added. Got id ${id}`);
   } catch (error) {
-    console.error(`Failed to add ${file.name}: ${error}`);
+    log.error(`Failed to add ${file.name}: ${error}`);
   }
 }
 
 export async function removeUploadedFileDB(id) {
   try {
     await db.uploadedFiles.delete(id);
-    console.log(`File with id ${id} successfully removed.`);
+    log.info(`File with id ${id} successfully removed.`);
   } catch (error) {
-    console.error(`Failed to remove file with id ${id}: ${error}`);
+    log.error(`Failed to remove file with id ${id}: ${error}`);
   }
 }
 
@@ -33,14 +34,12 @@ export async function removeUploadedFileByNameDB(name) {
     const file = await db.uploadedFiles.where("name").equals(name).first();
     if (file) {
       await db.uploadedFiles.delete(file.id);
-      console.log(
-        `File with name ${name} and id ${file.id} successfully removed.`
-      );
+      log.info(`File with name ${name} and id ${file.id} successfully removed.`);
     } else {
-      console.log(`No file found with the name ${name}.`);
+      log.info(`No file found with the name ${name}.`);
     }
   } catch (error) {
-    console.error(`Failed to remove file with name ${name}: ${error}`);
+    log.error(`Failed to remove file with name ${name}: ${error}`);
   }
 }
 
@@ -54,7 +53,7 @@ export async function fromAllGetNameDB() {
     });
     return names;
   } catch (error) {
-    console.error(`Failed to retrieve file names: ${error}`);
+    log.error(`Failed to retrieve file names: ${error}`);
     return [];
   }
 }
@@ -65,11 +64,11 @@ export async function getByNameDB(name) {
     if (file) {
       return file;
     } else {
-      console.log(`No file found with the name ${name}.`);
+      log.info(`No file found with the name ${name}.`);
       return null;
     }
   } catch (error) {
-    console.error(`Failed to retrieve file with name ${name}: ${error}`);
+    log.error(`Failed to retrieve file with name ${name}: ${error}`);
     return null;
   }
 }

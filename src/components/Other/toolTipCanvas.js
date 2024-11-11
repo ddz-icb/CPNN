@@ -1,12 +1,9 @@
+import log from "../../logger";
 import axios from "axios";
 import { useState, useEffect, useRef } from "react";
 import { ReactComponent as TrashIcon } from "../../icons/trash.svg";
 import { ReactComponent as XIcon } from "../../icons/x.svg";
-import {
-  extractDescription,
-  extractFullName,
-  extractPdbId,
-} from "../APIRequests/extract";
+import { extractDescription, extractFullName, extractPdbId } from "../RegexExtract/extract";
 import * as $3Dmol from "3dmol/build/3Dmol.js";
 
 export function Tooltips({
@@ -33,24 +30,13 @@ export function Tooltips({
         />
       )}
       {!isClickTooltipActive && isHoverTooltipActive && (
-        <HoverTooltip
-          isActive={isHoverTooltipActive}
-          setIsActive={setIsHoverTooltipActive}
-          data={hoverTooltipData}
-        />
+        <HoverTooltip isActive={isHoverTooltipActive} setIsActive={setIsHoverTooltipActive} data={hoverTooltipData} />
       )}
     </>
   );
 }
 
-export function ClickTooltip({
-  isActive,
-  setIsActive,
-  data,
-  setNodeToDelete,
-  theme,
-  mapping,
-}) {
+export function ClickTooltip({ isActive, setIsActive, data, setNodeToDelete, theme, mapping }) {
   const [fullName, setFullName] = useState("");
   const [description, setDescription] = useState("");
   const [pdbId, setPdbId] = useState("");
@@ -76,15 +62,12 @@ export function ClickTooltip({
         entries.forEach((entry) => {
           const pepId = entry.split("_")[0];
           const phosphosites = entry.split("_")[2];
-          if (pepId && phosphosites)
-            isoforms.push({ pepId: pepId, phosphosites: phosphosites });
+          if (pepId && phosphosites) isoforms.push({ pepId: pepId, phosphosites: phosphosites });
         });
         if (isoforms) setIsoforms(isoforms);
 
         // send request to localhost:3001 to append CORS-Header
-        const responseUniprot = await axios.get(
-          `http://localhost:3001/uniprot/${protIdNoIsoform}`
-        );
+        const responseUniprot = await axios.get(`http://localhost:3001/uniprot/${protIdNoIsoform}`);
         const fullName = extractFullName(responseUniprot.data);
         if (fullName) setFullName(fullName);
 
@@ -94,7 +77,7 @@ export function ClickTooltip({
         const pdbId = extractPdbId(responseUniprot.data);
         if (pdbId) setPdbId(pdbId);
       } catch (error) {
-        console.error(error);
+        log.error(error);
       }
     };
 
@@ -106,9 +89,7 @@ export function ClickTooltip({
   useEffect(() => {
     const initViewer = async () => {
       try {
-        const responsePdb = await axios.get(
-          `https://files.rcsb.org/download/${pdbId}.pdb`
-        );
+        const responsePdb = await axios.get(`https://files.rcsb.org/download/${pdbId}.pdb`);
         if (!responsePdb) return;
 
         const config = {
@@ -122,7 +103,7 @@ export function ClickTooltip({
         viewer.render();
         setViewer(viewer);
       } catch (error) {
-        console.error(error);
+        log.error(error);
       }
     };
 
@@ -174,12 +155,7 @@ export function ClickTooltip({
 
       if (groupName && reactomeId) {
         groupContent.push(
-          <a
-            key={group}
-            href={`https://reactome.org/PathwayBrowser/#/${reactomeId}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <a key={group} href={`https://reactome.org/PathwayBrowser/#/${reactomeId}`} target="_blank" rel="noopener noreferrer">
             {groupName}
           </a>
         );
@@ -233,26 +209,18 @@ export function ClickTooltip({
           )}
           {isoforms && isoforms.length > 0 && (
             <>
-              <b className="no-margin-bottom text-secondary">
-                Protein-IDs and Phosphosites
-              </b>
-              <div className="no-margin-top pad-bottom-05">
-                {isoformContent}
-              </div>
+              <b className="no-margin-bottom text-secondary">Protein-IDs and Phosphosites</b>
+              <div className="no-margin-top pad-bottom-05">{isoformContent}</div>
             </>
           )}
           {groupContent && groupContent.length > 0 && (
             <>
-              <b className="no-margin-bottom text-secondary">
-                Gene/Protein Annotations
-              </b>
+              <b className="no-margin-bottom text-secondary">Gene/Protein Annotations</b>
               <div className="no-margin-top pad-bottom-05">{groupContent}</div>
               {description && (
                 <>
                   <b className="no-margin-bottom text-secondary">Decription</b>
-                  <div className="no-margin-top pad-bottom-05">
-                    {description}
-                  </div>
+                  <div className="no-margin-top pad-bottom-05">{description}</div>
                 </>
               )}
             </>
@@ -261,30 +229,17 @@ export function ClickTooltip({
         {pdbId && <div className="pdb-viewer" ref={viewerRef}></div>}
         <div className="tooltip-footer">
           {fullName && (
-            <a
-              className="tooltip-footer-item"
-              href={`https://www.uniprot.org/uniprotkb/${protIdNoIsoform}/`}
-              target="_blank"
-              rel="noreferrer"
-            >
+            <a className="tooltip-footer-item" href={`https://www.uniprot.org/uniprotkb/${protIdNoIsoform}/`} target="_blank" rel="noreferrer">
               To UniProt
             </a>
           )}
           {pdbId && (
-            <a
-              className="tooltip-footer-item"
-              href={`https://www.rcsb.org/structure/${pdbId}/`}
-              target="_blank"
-              rel="noreferrer"
-            >
+            <a className="tooltip-footer-item" href={`https://www.rcsb.org/structure/${pdbId}/`} target="_blank" rel="noreferrer">
               To RCSB PDB
             </a>
           )}
 
-          <span
-            className="tooltip-footer-item tooltip-button"
-            onClick={handleDeleteNode}
-          >
+          <span className="tooltip-footer-item tooltip-button" onClick={handleDeleteNode}>
             <TrashIcon />
           </span>
         </div>
@@ -325,14 +280,7 @@ export function HoverTooltip({ isActive, data }) {
   );
 }
 
-export function initTooltips(
-  circle,
-  node,
-  setIsHoverTooltipActive,
-  setHoverTooltipData,
-  setIsClickTooltipActive,
-  setClickTooltipData
-) {
+export function initTooltips(circle, node, setIsHoverTooltipActive, setHoverTooltipData, setIsClickTooltipActive, setClickTooltipData) {
   circle.on("mouseover", (mouseData) => {
     setIsHoverTooltipActive(true);
     setHoverTooltipData({

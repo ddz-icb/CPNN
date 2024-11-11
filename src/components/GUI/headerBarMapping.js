@@ -1,8 +1,9 @@
 import { ReactComponent as EyeIcon } from "../../icons/eye.svg";
 import { ReactComponent as XIcon } from "../../icons/x.svg";
-import React, { useState } from "react";
-import { Button } from "./headerBar";
+
 import { fallbackColor, getColor } from "../Other/draw";
+
+import { Button } from "./headerBar";
 
 export function Mapping({
   nodeColorScheme,
@@ -30,27 +31,17 @@ export function Mapping({
   } else if (activeMenu === "Mapping") {
     let nodeContent = [];
     for (const key in groupToColorIndex) {
-      if (
-        groupToColorIndex.hasOwnProperty(key) &&
-        getColor(groupToColorIndex[key], nodeColorScheme[1]) !== fallbackColor
-      ) {
+      if (groupToColorIndex.hasOwnProperty(key) && getColor(groupToColorIndex[key], nodeColorScheme[1]) !== fallbackColor) {
         nodeContent.push(
           <div key={key} className="colorscheme-container">
             <div
               className="color-square colorscheme-item"
               style={{
-                backgroundColor: getColor(
-                  groupToColorIndex[key],
-                  nodeColorScheme[1]
-                ),
+                backgroundColor: getColor(groupToColorIndex[key], nodeColorScheme[1]),
               }}
             ></div>
-            {mapping &&
-            mapping.groupMapping &&
-            mapping.groupMapping.hasOwnProperty(key) ? (
-              <span className="colorscheme-item">
-                {mapping.groupMapping[key].name}
-              </span>
+            {mapping && mapping.groupMapping && mapping.groupMapping.hasOwnProperty(key) ? (
+              <span className="colorscheme-item">{mapping.groupMapping[key].name}</span>
             ) : (
               <span className="colorscheme-item">{key}</span>
             )}
@@ -72,19 +63,13 @@ export function Mapping({
 
     let linkContent = [];
     for (const key in attribToColorIndex) {
-      if (
-        attribToColorIndex.hasOwnProperty(key) &&
-        getColor(attribToColorIndex[key], linkColorScheme[1]) !== fallbackColor
-      ) {
+      if (attribToColorIndex.hasOwnProperty(key) && getColor(attribToColorIndex[key], linkColorScheme[1]) !== fallbackColor) {
         linkContent.push(
           <div key={key} className="colorscheme-container">
             <div
               className="color-square colorscheme-item"
               style={{
-                backgroundColor: getColor(
-                  attribToColorIndex[key],
-                  linkColorScheme[1]
-                ),
+                backgroundColor: getColor(attribToColorIndex[key], linkColorScheme[1]),
               }}
             ></div>
             <span className="colorscheme-item">{key}</span>

@@ -1,13 +1,13 @@
+import log from "../../logger";
+
 export function parseAttributesFilter(input) {
   // return errormessage beginning with "Error:" if not valid.
   // retrun true if empty
   // otherwise return parsed value
   if (input === "") return true;
-  console.log("Parsing attributes filter", input);
+  log.info("Parsing attributes filter", input);
 
-  const tokens = input
-    .match(/"[^"]*"|\(|\)|\S+/g)
-    .map((token) => token.replace(/"/g, ""));
+  const tokens = input.match(/"[^"]*"|\(|\)|\S+/g).map((token) => token.replace(/"/g, ""));
 
   for (let i = 0; i < tokens.length; i++) {
     if (tokens[i] === "(" && tokens[i + 1]) {
@@ -51,7 +51,7 @@ export function parseAttributesFilter(input) {
 }
 
 function firstTerm(processedFilterRequest, token) {
-  console.log("firstTermState with token: ", token);
+  log.info("firstTermState with token: ", token);
 
   if (/^\(.+$/.test(token)) {
     const string = token.slice(1);
@@ -68,7 +68,7 @@ function firstTerm(processedFilterRequest, token) {
 }
 
 function conjunction(processedFilterRequest, token) {
-  console.log("conjunctionState with token: ", token);
+  log.info("conjunctionState with token: ", token);
 
   if (/^or$/.test(token)) {
     return "state3";
@@ -78,7 +78,7 @@ function conjunction(processedFilterRequest, token) {
 }
 
 function finishedTerm(processedFilterRequest, token) {
-  console.log("finishedTermState with token: ", token);
+  log.info("finishedTermState with token: ", token);
 
   if (/^and$/.test(token)) {
     return "state4";
@@ -88,7 +88,7 @@ function finishedTerm(processedFilterRequest, token) {
 }
 
 function inTerm(processedFilterRequest, token) {
-  console.log("inTermState with token: ", token);
+  log.info("inTermState with token: ", token);
 
   if (/^[^\)]+$/.test(token)) {
     let lastElement = processedFilterRequest[processedFilterRequest.length - 1];
@@ -108,7 +108,7 @@ function inTerm(processedFilterRequest, token) {
 }
 
 function newTerm(processedFilterRequest, token) {
-  console.log("newTermState with token: ", token);
+  log.info("newTermState with token: ", token);
 
   if (/^\(.+$/.test(token)) {
     const string = token.slice(1);

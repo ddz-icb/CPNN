@@ -1,15 +1,14 @@
+import "../../index.css";
+import log from "../../logger";
+import * as PIXI from "pixi.js";
+import * as d3 from "d3";
 import { useRef, useEffect, useState } from "react";
 import { cloneDeep } from "lodash";
+
 import { handleResize, initDragAndZoom } from "../Other/interactiveCanvas";
 import { initTooltips, Tooltips } from "../Other/toolTipCanvas";
-import {
-  radius,
-  changeCircleBorderColor,
-  drawCircle,
-  drawLine,
-  changeNodeColors,
-  getColor,
-} from "../Other/draw";
+import { radius, changeCircleBorderColor, drawCircle, drawLine, changeNodeColors, getColor } from "../Other/draw";
+
 import {
   filterByThreshold,
   filterNodesExist,
@@ -23,16 +22,7 @@ import {
   applyNodeMapping,
 } from "./graphCalculations";
 import { downloadAsPNG, downloadAsSVG, downloadGraphJson } from "./download";
-import {
-  getSimulation,
-  borderCheck,
-  componentForce,
-  circularLayout,
-  chargeStrengthMultiplier,
-} from "./graphPhysics";
-import * as PIXI from "pixi.js";
-import "../../index.css";
-import * as d3 from "d3";
+import { getSimulation, borderCheck, componentForce, circularLayout, chargeStrengthMultiplier } from "./graphPhysics";
 
 export function ForceGraph({
   graphCurrent,
@@ -101,7 +91,7 @@ export function ForceGraph({
   // reset simulation //
   useEffect(() => {
     if (!reset) return;
-    console.log("Resetting simulation");
+    log.info("Resetting simulation");
 
     setReset(null);
 
@@ -135,7 +125,7 @@ export function ForceGraph({
   // init Pixi //
   useEffect(() => {
     if (!containerRef.current || app || !graphCurrent) return;
-    console.log("Init PIXI app");
+    log.info("Init PIXI app");
 
     const containerRect = containerRef.current.getBoundingClientRect();
     const height = containerRect.height;
@@ -161,7 +151,7 @@ export function ForceGraph({
       containerRef.current.appendChild(app.canvas);
 
       setApp(app);
-      console.log("PIXI Initialized successfully");
+      log.info("PIXI Initialized successfully");
     };
 
     initPIXI();
@@ -170,7 +160,7 @@ export function ForceGraph({
   // set stage //
   useEffect(() => {
     if (!app || !graphCurrent || circles || !width || !height) return;
-    console.log("Setting stage");
+    log.info("Setting stage");
 
     const newLines = new PIXI.Graphics();
     const newCircles = new PIXI.Container();
@@ -181,28 +171,13 @@ export function ForceGraph({
     const circleNodeMap = {};
     for (const node of graphCurrent.nodes) {
       let circle = new PIXI.Graphics();
-      circle = drawCircle(
-        circle,
-        node,
-        circleBorderColor,
-        nodeColorScheme[1],
-        groupToColorIndex
-      );
+      circle = drawCircle(circle, node, circleBorderColor, nodeColorScheme[1], groupToColorIndex);
       circle.id = node.id;
       circle.interactive = true;
       circle.buttonMode = true;
-      circle.x =
-        width / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
-      circle.y =
-        height / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
-      initTooltips(
-        circle,
-        node,
-        setIsHoverTooltipActive,
-        setHoverTooltipData,
-        setIsClickTooltipActive,
-        setClickTooltipData
-      );
+      circle.x = width / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
+      circle.y = height / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
+      initTooltips(circle, node, setIsHoverTooltipActive, setHoverTooltipData, setIsClickTooltipActive, setClickTooltipData);
       newCircles.addChild(circle);
       circleNodeMap[node.id] = { node, circle };
     }
@@ -217,25 +192,10 @@ export function ForceGraph({
     if (!app || !graphCurrent || simulation) {
       return;
     }
-    console.log("Init simulation");
+    log.info("Init simulation");
 
-    const newSimulation = getSimulation(
-      width,
-      height,
-      linkLength,
-      xStrength,
-      yStrength,
-      chargeStrength
-    );
-    initDragAndZoom(
-      app,
-      newSimulation,
-      radius,
-      setIsClickTooltipActive,
-      setIsHoverTooltipActive,
-      width,
-      height
-    );
+    const newSimulation = getSimulation(width, height, linkLength, xStrength, yStrength, chargeStrength);
+    initDragAndZoom(app, newSimulation, radius, setIsClickTooltipActive, setIsHoverTooltipActive, width, height);
 
     setSimulation(newSimulation);
   }, [app, graphCurrent, linkLength]);
@@ -243,7 +203,7 @@ export function ForceGraph({
   // running simulation //
   useEffect(() => {
     if (!circles || !graphCurrent || !simulation || !filteredAfterStart) return;
-    console.log("Running simulation with the following graph:", graphCurrent);
+    log.info("Running simulation with the following graph:", graphCurrent);
 
     try {
       let activeCircles = circles.children.filter((circle) => circle.visible);
@@ -263,11 +223,8 @@ export function ForceGraph({
 
       setSimulation(simulation);
     } catch (error) {
-      setError(
-        "Error loading graph. The graph data is most likely incorrect",
-        error.message
-      );
-      console.error("error: ", error);
+      setError("Error loading graph. The graph data is most likely incorrect", error.message);
+      log.error("error: ", error);
 
       if (simulation) {
         simulation.stop();
@@ -285,10 +242,10 @@ export function ForceGraph({
   useEffect(() => {
     if (downloadJSON != null && graphCurrent) {
       try {
-        console.log("Downloading graph as JSON");
+        log.info("Downloading graph as JSON");
         downloadGraphJson(graphCurrent, "Graph.json");
       } catch (error) {
-        console.error("Error downloading the graph as JSON:", error);
+        log.error("Error downloading the graph as JSON:", error);
       }
     }
   }, [downloadJSON]);
@@ -296,7 +253,7 @@ export function ForceGraph({
   // download graph as png //
   useEffect(() => {
     if (downloadPNG != null && graphCurrent) {
-      console.log("Downloading graph as PNG");
+      log.info("Downloading graph as PNG");
 
       changeCircleBorderColor(circles, "#0d3b66");
 
@@ -309,7 +266,7 @@ export function ForceGraph({
   // download graph as png //
   useEffect(() => {
     if (downloadSVG != null && graphCurrent) {
-      console.log("Downloading graph as SVG");
+      log.info("Downloading graph as SVG");
 
       downloadAsSVG(
         document,
@@ -327,7 +284,7 @@ export function ForceGraph({
   // switch circle border color //
   useEffect(() => {
     if (!circles) return;
-    console.log("Switching circle border color");
+    log.info("Switching circle border color");
 
     changeCircleBorderColor(circles, circleBorderColor);
   }, [circleBorderColor]);
@@ -335,21 +292,15 @@ export function ForceGraph({
   // switch node color scheme
   useEffect(() => {
     if (!circles) return;
-    console.log("Changing node color scheme");
+    log.info("Changing node color scheme");
 
-    changeNodeColors(
-      circles,
-      circleNodeMap,
-      circleBorderColor,
-      nodeColorScheme[1],
-      groupToColorIndex
-    );
+    changeNodeColors(circles, circleNodeMap, circleBorderColor, nodeColorScheme[1], groupToColorIndex);
   }, [nodeColorScheme]);
 
   // switch link color scheme
   useEffect(() => {
     if (!circles) return;
-    console.log("Changing link color scheme");
+    log.info("Changing link color scheme");
 
     simulation.on("tick.redraw", () => redraw(graphCurrent, linkColorScheme));
     redraw(graphCurrent, linkColorScheme);
@@ -369,7 +320,7 @@ export function ForceGraph({
   // store all links in variable at start to enable filtering etc. //
   useEffect(() => {
     if (!graphCurrent || linksStored) return;
-    console.log("saving link data", graphCurrent.links);
+    log.info("saving link data", graphCurrent.links);
 
     // deep clone so allLinks doesn't change
     setAllLinks(cloneDeep(graphCurrent.links));
@@ -379,7 +330,7 @@ export function ForceGraph({
   // store all nodes in variable at start to enable filtering //
   useEffect(() => {
     if (!graphCurrent || nodesStored) return;
-    console.log("saving node data", graphCurrent.nodes);
+    log.info("saving node data", graphCurrent.nodes);
 
     // deep clone so allNodes doesn't change
     setAllNodes(cloneDeep(graphCurrent.nodes));
@@ -389,7 +340,7 @@ export function ForceGraph({
   // filter nodes and links //
   useEffect(() => {
     if (!graphCurrent || !allLinks || !circles || !allNodes) return;
-    console.log(
+    log.info(
       "Filtering nodes and links.\n    Threshold:  ",
       linkThreshold,
       "\n    Attributes: ",
@@ -418,26 +369,18 @@ export function ForceGraph({
     filterActiveCircles(circles, filteredGraph, circleNodeMap);
     setFilteredAfterStart(true);
     setGraphCurrent(filteredGraph);
-  }, [
-    linkThreshold,
-    linkAttribs,
-    nodeGroups,
-    minComponentSize,
-    allLinks,
-    allNodes,
-    circles,
-  ]);
+  }, [linkThreshold, linkAttribs, nodeGroups, minComponentSize, allLinks, allNodes, circles]);
 
   // enable or disable link force //
   useEffect(() => {
     if (!simulation) return;
     if (linkForce === false) {
-      console.log("Disabling link force");
+      log.info("Disabling link force");
 
       simulation.force("link").strength(0);
       return;
     }
-    console.log("Enabling link force", linkLength);
+    log.info("Enabling link force", linkLength);
 
     simulation.force(
       "link",
@@ -453,7 +396,7 @@ export function ForceGraph({
   // change link length //
   useEffect(() => {
     if (!simulation || linkForce === false) return;
-    console.log("changing link length", linkLength);
+    log.info("changing link length", linkLength);
 
     simulation.force("link").distance(linkLength);
     simulation.alpha(1).restart();
@@ -466,7 +409,7 @@ export function ForceGraph({
       simulation.force("x", null);
       return;
     }
-    console.log("Changing horizontal gravity", xStrength);
+    log.info("Changing horizontal gravity", xStrength);
 
     simulation.force("x", d3.forceX(width / 2).strength(xStrength));
     simulation.alpha(1).restart();
@@ -479,7 +422,7 @@ export function ForceGraph({
       simulation.force("y", null);
       return;
     }
-    console.log("Changing vertical gravity", yStrength);
+    log.info("Changing vertical gravity", yStrength);
 
     simulation.force("y", d3.forceY(height / 2).strength(yStrength));
     simulation.alpha(1).restart();
@@ -492,22 +435,13 @@ export function ForceGraph({
       simulation.force("component", null);
       return;
     }
-    console.log("Determining component strength", componentStrength);
+    log.info("Determining component strength", componentStrength);
 
-    const [componentArray, componentSizeArray] =
-      returnComponentData(graphCurrent);
+    const [componentArray, componentSizeArray] = returnComponentData(graphCurrent);
 
-    const threshold =
-      minComponentSize > centroidThreshold
-        ? minComponentSize
-        : centroidThreshold;
+    const threshold = minComponentSize > centroidThreshold ? minComponentSize : centroidThreshold;
 
-    simulation.force(
-      "component",
-      componentForce(componentArray, componentSizeArray, threshold).strength(
-        componentStrength
-      )
-    );
+    simulation.force("component", componentForce(componentArray, componentSizeArray, threshold).strength(componentStrength));
     simulation.alpha(1).restart();
   }, [componentStrength, centroidThreshold, graphCurrent]);
 
@@ -518,11 +452,9 @@ export function ForceGraph({
       simulation.force("charge", null);
       return;
     }
-    console.log("Changing node repulsion strength", chargeStrength);
+    log.info("Changing node repulsion strength", chargeStrength);
 
-    simulation
-      .force("charge")
-      .strength(chargeStrength * chargeStrengthMultiplier);
+    simulation.force("charge").strength(chargeStrength * chargeStrengthMultiplier);
     simulation.alpha(1).restart();
   }, [chargeStrength]);
 
@@ -531,10 +463,10 @@ export function ForceGraph({
     if (!simulation || !width || !height) return;
 
     if (!checkBorder) {
-      console.log("Disabling graph border");
+      log.info("Disabling graph border");
       simulation.on("tick.border", null);
     } else {
-      console.log("Setting graph border");
+      log.info("Setting graph border");
       simulation.on("tick.border", () => {
         borderCheck(circles, radius, borderHeight, borderWidth, width, height);
       });
@@ -546,32 +478,28 @@ export function ForceGraph({
   useEffect(() => {
     if (!simulation) return;
     if (circleLayout === false) {
-      console.log("Disabling circular layout");
+      log.info("Disabling circular layout");
 
       simulation.force("circleLayout", null);
       return;
     }
 
-    console.log("Enabling circular layout");
+    log.info("Enabling circular layout");
 
     // have to disable link force for this
     setLinkForce(false);
 
-    const [componentArray, componentSizeArray] =
-      returnComponentData(graphCurrent);
+    const [componentArray, componentSizeArray] = returnComponentData(graphCurrent);
     const adjacentCountMap = returnAdjacentData(graphCurrent);
 
-    simulation.force(
-      "circleLayout",
-      circularLayout(componentArray, adjacentCountMap, 6)
-    );
+    simulation.force("circleLayout", circularLayout(componentArray, adjacentCountMap, 6));
     simulation.alpha(1).restart();
   }, [circleLayout]);
 
   // remove node
   useEffect(() => {
     if (!nodeToDelete || !graphCurrent) return;
-    console.log("Deleting node", nodeToDelete);
+    log.info("Deleting node", nodeToDelete);
 
     let filteredGraph = {
       ...graphCurrent,
