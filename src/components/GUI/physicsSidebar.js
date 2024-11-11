@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
-import {
-  SidebarButtonRect,
-  SidebarFieldBlock,
-  SidebarSliderBlock,
-  SidebarSwitchBlock,
-} from "./sidebar";
+
+import { SidebarButtonRect, SidebarFieldBlock, SidebarSliderBlock, SidebarSwitchBlock } from "./sidebar";
+
 import {
   borderHeightInit,
   borderWidthInit,
@@ -46,10 +43,8 @@ export function PhysicsSidebar({
   const [borderWidthText, setBorderWidthText] = useState(borderWidth);
   const [xStrengthText, setXStrengthText] = useState(xStrength);
   const [yStrengthText, setYStrengthText] = useState(yStrength);
-  const [componentStrengthText, setComponentStrengthText] =
-    useState(componentStrength);
-  const [centroidThresholdText, setCentroidThresholdText] =
-    useState(centroidThreshold);
+  const [componentStrengthText, setComponentStrengthText] = useState(componentStrength);
+  const [centroidThresholdText, setCentroidThresholdText] = useState(centroidThreshold);
   const [chargeStrengthText, setChargeStrengthText] = useState(chargeStrength);
 
   const [gravityAdvanced, setGravityAdvanced] = useState(false);
@@ -331,16 +326,9 @@ export function PhysicsSidebar({
   return (
     <>
       <div className="inline pad-top-05 pad-bottom-05">
-        <SidebarButtonRect
-          text={"Set Phyiscs to Default"}
-          onClick={handleResetPhysics}
-        />
+        <SidebarButtonRect text={"Set Phyiscs to Default"} onClick={handleResetPhysics} />
       </div>
-      <SidebarSwitchBlock
-        text={"Enable Circular Layout"}
-        value={circleLayout}
-        onChange={handleCircleLayout}
-      />
+      <SidebarSwitchBlock text={"Enable Circular Layout"} value={circleLayout} onChange={handleCircleLayout} />
       {!gravityAdvanced && (
         <>
           <SidebarSliderBlock
@@ -385,11 +373,7 @@ export function PhysicsSidebar({
           />
         </>
       )}
-      <SidebarSwitchBlock
-        text={"Advanced Gravity Settings"}
-        value={gravityAdvanced}
-        onChange={handleGravityAdvanced}
-      />
+      <SidebarSwitchBlock text={"Advanced Gravity Settings"} value={gravityAdvanced} onChange={handleGravityAdvanced} />
       <SidebarSliderBlock
         text={"Set Component Strength"}
         min={0}
@@ -424,11 +408,7 @@ export function PhysicsSidebar({
         onChangeField={handleChargeStrengthField}
         onChangeBlur={handleChargeStrengthFieldBlur}
       />
-      <SidebarSwitchBlock
-        text={"Enable Link Force"}
-        value={linkForce}
-        onChange={handleLinkForce}
-      />
+      <SidebarSwitchBlock text={"Enable Link Force"} value={linkForce} onChange={handleLinkForce} />
       {linkForce && (
         <SidebarSliderBlock
           text={"Set Link Length"}
@@ -443,11 +423,7 @@ export function PhysicsSidebar({
           onChangeBlur={handleLinkLengthFieldBlur}
         />
       )}
-      <SidebarSwitchBlock
-        text={"Enable Border"}
-        value={checkBorder}
-        onChange={handleCheckBorder}
-      />
+      <SidebarSwitchBlock text={"Enable Border"} value={checkBorder} onChange={handleCheckBorder} />
       {checkBorder && (
         <>
           <SidebarSliderBlock

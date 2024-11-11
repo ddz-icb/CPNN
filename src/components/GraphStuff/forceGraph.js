@@ -1,9 +1,14 @@
+import "../../index.css";
 import log from "../../logger";
+import * as PIXI from "pixi.js";
+import * as d3 from "d3";
 import { useRef, useEffect, useState } from "react";
 import { cloneDeep } from "lodash";
+
 import { handleResize, initDragAndZoom } from "../Other/interactiveCanvas";
 import { initTooltips, Tooltips } from "../Other/toolTipCanvas";
 import { radius, changeCircleBorderColor, drawCircle, drawLine, changeNodeColors, getColor } from "../Other/draw";
+
 import {
   filterByThreshold,
   filterNodesExist,
@@ -18,9 +23,6 @@ import {
 } from "./graphCalculations";
 import { downloadAsPNG, downloadAsSVG, downloadGraphJson } from "./download";
 import { getSimulation, borderCheck, componentForce, circularLayout, chargeStrengthMultiplier } from "./graphPhysics";
-import * as PIXI from "pixi.js";
-import "../../index.css";
-import * as d3 from "d3";
 
 export function ForceGraph({
   graphCurrent,

@@ -1,8 +1,8 @@
-// this server is used for API calls to UniProt
-
 import express from "express";
 import axios from "axios";
 import cors from "cors";
+
+// this server is used for API calls to UniProt
 
 const app = express();
 app.use(cors());

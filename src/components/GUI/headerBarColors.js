@@ -4,8 +4,9 @@ import { ReactComponent as PaintRollerIcon } from "../../icons/paintRoller.svg";
 import { ReactComponent as SwatchBookIcon } from "../../icons/swatchbook.svg";
 import { ReactComponent as TrashIcon } from "../../icons/trash.svg";
 import React, { useState } from "react";
-import { Button, Item, UploadItem } from "./headerBar";
 import isEqual from "lodash/isEqual";
+
+import { Button, Item, UploadItem } from "./headerBar";
 
 export function Colors({
   handleUploadSchemeClick,
@@ -23,10 +24,7 @@ export function Colors({
 }) {
   let content = null;
 
-  if (
-    activeMenu !== "ManageColorScheme" &&
-    activeMenu !== "ChooseColorScheme"
-  ) {
+  if (activeMenu !== "ManageColorScheme" && activeMenu !== "ChooseColorScheme") {
     content = (
       <Button
         className="button"
@@ -81,9 +79,7 @@ export function Colors({
           <table className="dropdown no-wrap pad-05 spaced-table-05">
             <thead>
               <tr>
-                <th className="left-align heading pad-bottom-05">
-                  Color scheme
-                </th>
+                <th className="left-align heading pad-bottom-05">Color scheme</th>
                 <th className="left-align heading pad-bottom-05">Node</th>
                 <th className="left-align heading pad-bottom-05">Link</th>
                 <th className="left-align heading pad-bottom-05">Delete</th>
@@ -112,38 +108,18 @@ export function Colors({
   return <>{content}</>;
 }
 
-export function ColorSchemeTableItem({
-  name,
-  isSelected,
-  isSelected2,
-  onClick,
-  onClick2,
-  handleDeleteColorScheme,
-}) {
+export function ColorSchemeTableItem({ name, isSelected, isSelected2, onClick, onClick2, handleDeleteColorScheme }) {
   return (
     <>
       <td className="text-primary">{name}</td>
       <td>
-        <input
-          type="radio"
-          checked={isSelected}
-          onChange={onClick}
-          className="radio-button"
-        />
+        <input type="radio" checked={isSelected} onChange={onClick} className="radio-button" />
       </td>
       <td>
-        <input
-          type="radio"
-          checked={isSelected2}
-          onChange={onClick2}
-          className="radio-button"
-        />
+        <input type="radio" checked={isSelected2} onChange={onClick2} className="radio-button" />
       </td>
       <td>
-        <div
-          className={"recent-item-logo"}
-          onClick={() => handleDeleteColorScheme(name)}
-        >
+        <div className={"recent-item-logo"} onClick={() => handleDeleteColorScheme(name)}>
           <TrashIcon />
         </div>
       </td>

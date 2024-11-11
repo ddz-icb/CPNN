@@ -1,12 +1,12 @@
+import "../../index.css";
 import React, { useState } from "react";
-import { FilterSidebar } from "./filterSidebar";
 import { ReactComponent as BackIcon } from "../../icons/leftArrow.svg";
+import { Tooltip } from "react-tooltip";
+
+import { FilterSidebar } from "./filterSidebar";
 import { PhysicsSidebar } from "./physicsSidebar";
 import { DataSidebar } from "./dataSidebar";
 import { MainSidebar } from "./mainSidebar";
-import "../../index.css";
-import { Tooltip } from "react-tooltip";
-import { Item } from "./headerBar";
 
 export function Sidebar({
   changeTheme,
@@ -81,21 +81,13 @@ export function Sidebar({
   if (activeNavItem === "Main") {
     content = (
       <Navbar short={true}>
-        <MainSidebar
-          theme={theme}
-          changeTheme={changeTheme}
-          handleNavItemClick={handleNavItemClick}
-        />
+        <MainSidebar theme={theme} changeTheme={changeTheme} handleNavItemClick={handleNavItemClick} />
       </Navbar>
     );
   } else if (activeNavItem === "Data") {
     content = (
       <Navbar>
-        <Back
-          activeNavItem={activeNavItem}
-          icon={<BackIcon />}
-          onClick={() => handleNavItemClick("Main")}
-        />
+        <Back activeNavItem={activeNavItem} icon={<BackIcon />} onClick={() => handleNavItemClick("Main")} />
         <DataSidebar
           activeFiles={activeFiles}
           handleRemoveActiveFile={handleRemoveActiveFile}
@@ -122,11 +114,7 @@ export function Sidebar({
   } else if (activeNavItem === "Filter") {
     content = (
       <Navbar>
-        <Back
-          activeNavItem={activeNavItem}
-          icon={<BackIcon />}
-          onClick={() => handleNavItemClick("Main")}
-        />
+        <Back activeNavItem={activeNavItem} icon={<BackIcon />} onClick={() => handleNavItemClick("Main")} />
         <FilterSidebar
           linkThreshold={linkThreshold}
           minComponentSize={minComponentSize}
@@ -147,11 +135,7 @@ export function Sidebar({
   } else if (activeNavItem === "Physics") {
     content = (
       <Navbar>
-        <Back
-          activeNavItem={activeNavItem}
-          icon={<BackIcon />}
-          onClick={() => handleNavItemClick("Main")}
-        />
+        <Back activeNavItem={activeNavItem} icon={<BackIcon />} onClick={() => handleNavItemClick("Main")} />
         <PhysicsSidebar
           linkLength={linkLength}
           checkBorder={checkBorder}
@@ -196,19 +180,9 @@ function Back({ activeNavItem, icon, onClick }) {
   return (
     <>
       <li className="back sidebar-tooltip-wrapper">
-        <span
-          data-tooltip-id={`back-tooltip`}
-          data-tooltip-content="Go Back"
-          className="back-icon"
-          onClick={onClick}
-        >
+        <span data-tooltip-id={`back-tooltip`} data-tooltip-content="Go Back" className="back-icon" onClick={onClick}>
           {icon}
-          <Tooltip
-            id={`back-tooltip`}
-            place="bottom"
-            effect="solid"
-            className="sidebar-tooltip"
-          />
+          <Tooltip id={`back-tooltip`} place="bottom" effect="solid" className="sidebar-tooltip" />
         </span>
         <div className="link-text-container">
           <b className="link-text back-text">{activeNavItem}</b>
@@ -218,18 +192,7 @@ function Back({ activeNavItem, icon, onClick }) {
   );
 }
 
-export function SidebarSliderBlock({
-  text,
-  value,
-  valueText,
-  onChangeSlider,
-  onChangeField,
-  onChangeBlur,
-  min,
-  max,
-  stepSlider,
-  stepField,
-}) {
+export function SidebarSliderBlock({ text, value, valueText, onChangeSlider, onChangeField, onChangeBlur, min, max, stepSlider, stepField }) {
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       event.target.blur();
@@ -240,15 +203,7 @@ export function SidebarSliderBlock({
     <>
       <label className="label pad-left-1">{text}</label>
       <div className="sidebar-block">
-        <input
-          className="sidebar-slider"
-          type="range"
-          min={min}
-          max={max}
-          step={stepSlider}
-          value={value}
-          onChange={onChangeSlider}
-        ></input>
+        <input className="sidebar-slider" type="range" min={min} max={max} step={stepSlider} value={value} onChange={onChangeSlider}></input>
         <input
           className="input-field"
           type="number"
@@ -271,12 +226,7 @@ export function SidebarSwitchBlock({ text, value, onChange }) {
       <div className="sidebar-block">
         <label className="label">{text}</label>
         <label className="switch">
-          <input
-            type="checkbox"
-            checked={value}
-            onChange={onChange}
-            className="checkbox-input"
-          />
+          <input type="checkbox" checked={value} onChange={onChange} className="checkbox-input" />
           <span className="slider round"></span>
         </label>
       </div>
@@ -284,15 +234,7 @@ export function SidebarSwitchBlock({ text, value, onChange }) {
   );
 }
 
-export function SidebarFieldBlock({
-  text,
-  min,
-  max,
-  step,
-  value,
-  onChange,
-  onBlur,
-}) {
+export function SidebarFieldBlock({ text, min, max, step, value, onChange, onBlur }) {
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       event.target.blur();
@@ -317,47 +259,19 @@ export function SidebarFieldBlock({
   );
 }
 
-export function SidebarButtonRect({
-  onClick,
-  onChange,
-  linkRef,
-  tooltip,
-  tooltipId,
-  text,
-}) {
+export function SidebarButtonRect({ onClick, onChange, linkRef, tooltip, tooltipId, text }) {
   return (
     <div className="sidebar-tooltip-wrapper">
-      <button
-        className="sidebar-button-rect"
-        data-tooltip-id={tooltipId}
-        data-tooltip-content={tooltip}
-        onClick={onClick}
-      >
+      <button className="sidebar-button-rect" data-tooltip-id={tooltipId} data-tooltip-content={tooltip} onClick={onClick}>
         <span className="sidebar-button-rect-text">{text}</span>
-        <input
-          type="file"
-          style={{ display: "none" }}
-          onChange={onChange}
-          ref={linkRef}
-        />
+        <input type="file" style={{ display: "none" }} onChange={onChange} ref={linkRef} />
       </button>
-      <Tooltip
-        id={tooltipId}
-        place="top"
-        effect="solid"
-        className="sidebar-tooltip"
-      />
+      <Tooltip id={tooltipId} place="top" effect="solid" className="sidebar-tooltip" />
     </div>
   );
 }
 
-export function SidebarCodeEditorBlock({
-  text,
-  onClick,
-  compilerError,
-  defaultValue,
-  textareaRef,
-}) {
+export function SidebarCodeEditorBlock({ text, onClick, compilerError, defaultValue, textareaRef }) {
   return (
     <>
       <label className="label pad-left-1">{text}</label>
@@ -367,29 +281,15 @@ export function SidebarCodeEditorBlock({
         </div>
         <SidebarButtonRect onClick={onClick} text={"Run"} />
       </div>
-      <span className={`warning ${compilerError ? "pad-bottom-1" : ""}`}>
-        {compilerError}
-      </span>
+      <span className={`warning ${compilerError ? "pad-bottom-1" : ""}`}>{compilerError}</span>
     </>
   );
 }
 
-export function SidebarDropdownItem({
-  onClick,
-  onChange,
-  linkRef,
-  tooltip,
-  tooltipId,
-  text,
-  children,
-}) {
+export function SidebarDropdownItem({ onClick, onChange, linkRef, tooltip, tooltipId, text, children }) {
   return (
     <div className="sidebar-tooltip-wrapper">
-      <li
-        className="sidebar-dropdown-item pad-top-05 pad-bottom-05 pad-left-05"
-        data-tooltip-id={tooltipId}
-        data-tooltip-content={tooltip}
-      >
+      <li className="sidebar-dropdown-item pad-top-05 pad-bottom-05 pad-left-05" data-tooltip-id={tooltipId} data-tooltip-content={tooltip}>
         <a
           className="dropdown-link"
           onClick={() => {
@@ -398,18 +298,8 @@ export function SidebarDropdownItem({
         >
           <span className="dropdown-text pad-right-05">{text}</span>
         </a>
-        <input
-          type="file"
-          style={{ display: "none" }}
-          onChange={onChange}
-          ref={linkRef}
-        />
-        <Tooltip
-          id={tooltipId}
-          place="top"
-          effect="solid"
-          className="sidebar-tooltip"
-        />
+        <input type="file" style={{ display: "none" }} onChange={onChange} ref={linkRef} />
+        <Tooltip id={tooltipId} place="top" effect="solid" className="sidebar-tooltip" />
         {children}
       </li>
     </div>

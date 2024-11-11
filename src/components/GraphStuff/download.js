@@ -1,5 +1,6 @@
 import log from "../../logger";
 import canvasToSvg from "canvas-to-svg";
+
 import { drawCircleCanvas, drawLineCanvas } from "../Other/draw";
 
 export function downloadAsPNG(app, document) {

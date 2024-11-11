@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Tooltip } from "react-tooltip";
+
 import { Colors } from "./headerBarColors";
 import { Mapping } from "./headerBarMapping";
 import { DropDownExport } from "./headerBarExport";
@@ -69,31 +70,14 @@ export function HeaderBar({
   );
 }
 
-export function Button({
-  icon,
-  onClick,
-  innerClass,
-  children,
-  tooltip,
-  tooltipId,
-}) {
+export function Button({ icon, onClick, innerClass, children, tooltip, tooltipId }) {
   return (
     <>
       <div className="sidebar-tooltip-wrapper">
-        <a
-          className={innerClass}
-          onClick={onClick}
-          data-tooltip-id={tooltipId}
-          data-tooltip-content={tooltip}
-        >
+        <a className={innerClass} onClick={onClick} data-tooltip-id={tooltipId} data-tooltip-content={tooltip}>
           {icon}
         </a>
-        <Tooltip
-          id={tooltipId}
-          place="bottom"
-          effect="solid"
-          className="sidebar-tooltip"
-        />
+        <Tooltip id={tooltipId} place="bottom" effect="solid" className="sidebar-tooltip" />
       </div>
       {children}
     </>
@@ -103,46 +87,25 @@ export function Button({
 export function Item({ icon, onClick, tooltip, tooltipId, text, children }) {
   return (
     <div className="sidebar-tooltip-wrapper">
-      <li
-        className="dropdown-item"
-        data-tooltip-id={tooltipId}
-        data-tooltip-content={tooltip}
-      >
+      <li className="dropdown-item" data-tooltip-id={tooltipId} data-tooltip-content={tooltip}>
         <a className="dropdown-link" onClick={onClick}>
           <span className="fa-primary">{icon}</span>
           <b className="dropdown-text pad-right-05">{text}</b>
         </a>
-        <Tooltip
-          id={tooltipId}
-          place="top"
-          effect="solid"
-          className="sidebar-tooltip"
-        />
+        <Tooltip id={tooltipId} place="top" effect="solid" className="sidebar-tooltip" />
         {children}
       </li>
     </div>
   );
 }
 
-export function UploadItem({
-  icon,
-  onClick,
-  onChange,
-  linkRef,
-  text,
-  children,
-}) {
+export function UploadItem({ icon, onClick, onChange, linkRef, text, children }) {
   return (
     <li className="dropdown-item">
       <a className="dropdown-link" onClick={onClick}>
         <span className="fa-primary">{icon}</span>
         <b className="dropdown-text pad-right-05">{text}</b>
-        <input
-          type="file"
-          style={{ display: "none" }}
-          onChange={onChange}
-          ref={linkRef}
-        />
+        <input type="file" style={{ display: "none" }} onChange={onChange} ref={linkRef} />
       </a>
       {children}
     </li>
