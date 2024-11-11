@@ -1,3 +1,4 @@
+import log from "./logger";
 import React, { useState, useRef, useEffect } from "react";
 import { ForceGraph } from "./components/GraphStuff/forceGraph";
 import exampleGraphJSON from "./demographs/exampleGraphJSON";
@@ -500,7 +501,7 @@ function App() {
     setAttribToColorIndex(attribToColorIndex);
 
     console.log("Forwarding graph to forceGraph component");
-    setGraphCurrent(structuredClone(newGraphCurrent));
+    setGraphCurrent(newGraphCurrent);
   }, [graph, activeFiles, activeMapping]);
 
   return (
