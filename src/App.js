@@ -99,7 +99,7 @@ function App() {
         log.info("Graph loaded successfully:", newGraph);
       } catch (error) {
         setError("Error loading graph");
-        console.error("Error loading graph:", error);
+        log.error("Error loading graph:", error);
         return;
       }
     }
@@ -113,7 +113,7 @@ function App() {
       setActiveMapping(mapping);
       handleReset();
     } else {
-      console.error("Mapping is already the current mapping");
+      log.error("Mapping is already the current mapping");
     }
   };
 
@@ -169,7 +169,7 @@ function App() {
         const graph = parseFile(file.name, fileContent, takeAbs);
         if (!graph) {
           setError("Error parsing file");
-          console.error("Error parsing file");
+          log.error("Error parsing file");
           return;
         }
         const newFile = { name: file.name, content: JSON.stringify(graph) };
@@ -191,7 +191,7 @@ function App() {
 
         const newColorScheme = parseColorSchemeCSV(fileContent);
         if (!newColorScheme) {
-          console.error("Error parsing color scheme");
+          log.error("Error parsing color scheme");
           return;
         }
         setColorSchemes([...colorSchemes, [file.name, newColorScheme]]);
@@ -251,7 +251,7 @@ function App() {
         reader.readAsText(file);
       }
     } catch (error) {
-      console.error("Error parsing node mapping");
+      log.error("Error parsing node mapping");
     }
   };
 
@@ -343,14 +343,14 @@ function App() {
         log.info("Graph loaded successfully:", combinedGraph);
       } catch (error) {
         setError("Error loading graph");
-        console.error("Error loading graph:", error);
+        log.error("Error loading graph:", error);
         return;
       }
     }
 
     log.info("Adding data to current graph");
     if (activeFiles.includes(filename)) {
-      console.error("graph already active");
+      log.error("graph already active");
       return;
     }
     fetchAndJoinGraph();
@@ -379,7 +379,7 @@ function App() {
         log.info("Graph loaded successfully:", newGraph);
       } catch (error) {
         setError("Error loading graph");
-        console.error("Error loading graph:", error);
+        log.error("Error loading graph:", error);
         return;
       }
     }

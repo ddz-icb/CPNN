@@ -222,7 +222,7 @@ export function ForceGraph({
       setSimulation(simulation);
     } catch (error) {
       setError("Error loading graph. The graph data is most likely incorrect", error.message);
-      console.error("error: ", error);
+      log.error("error: ", error);
 
       if (simulation) {
         simulation.stop();
@@ -243,7 +243,7 @@ export function ForceGraph({
         log.info("Downloading graph as JSON");
         downloadGraphJson(graphCurrent, "Graph.json");
       } catch (error) {
-        console.error("Error downloading the graph as JSON:", error);
+        log.error("Error downloading the graph as JSON:", error);
       }
     }
   }, [downloadJSON]);

@@ -14,7 +14,7 @@ app.get("/uniprot/:id", async (req, res) => {
     res.send(response.data);
   } catch (error) {
     res.status(500).send("Error: fetching data from UniProt");
-    console.error(error.message);
+    log.error(error.message);
   }
 });
 

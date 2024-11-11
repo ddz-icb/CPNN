@@ -30,7 +30,7 @@ export function downloadAsPNG(app, document) {
       document.body.removeChild(link);
     })
     .catch((error) => {
-      console.error("Error downloading the graph picture:", error);
+      log.error("Error downloading the graph picture:", error);
     });
 }
 

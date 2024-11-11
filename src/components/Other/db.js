@@ -16,7 +16,7 @@ export async function addUploadedFileDB(file) {
 
     log.info(`File ${file.name} successfully added. Got id ${id}`);
   } catch (error) {
-    console.error(`Failed to add ${file.name}: ${error}`);
+    log.error(`Failed to add ${file.name}: ${error}`);
   }
 }
 
@@ -25,7 +25,7 @@ export async function removeUploadedFileDB(id) {
     await db.uploadedFiles.delete(id);
     log.info(`File with id ${id} successfully removed.`);
   } catch (error) {
-    console.error(`Failed to remove file with id ${id}: ${error}`);
+    log.error(`Failed to remove file with id ${id}: ${error}`);
   }
 }
 
@@ -39,7 +39,7 @@ export async function removeUploadedFileByNameDB(name) {
       log.info(`No file found with the name ${name}.`);
     }
   } catch (error) {
-    console.error(`Failed to remove file with name ${name}: ${error}`);
+    log.error(`Failed to remove file with name ${name}: ${error}`);
   }
 }
 
@@ -53,7 +53,7 @@ export async function fromAllGetNameDB() {
     });
     return names;
   } catch (error) {
-    console.error(`Failed to retrieve file names: ${error}`);
+    log.error(`Failed to retrieve file names: ${error}`);
     return [];
   }
 }
@@ -68,7 +68,7 @@ export async function getByNameDB(name) {
       return null;
     }
   } catch (error) {
-    console.error(`Failed to retrieve file with name ${name}: ${error}`);
+    log.error(`Failed to retrieve file with name ${name}: ${error}`);
     return null;
   }
 }
