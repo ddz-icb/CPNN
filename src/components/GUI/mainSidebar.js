@@ -3,7 +3,6 @@ import { ReactComponent as DataIcon } from "../../icons/data.svg";
 import { ReactComponent as MoonIcon } from "../../icons/moon.svg";
 import { ReactComponent as MagnetIcon } from "../../icons/magnet.svg";
 import { ReactComponent as FilterIcon } from "../../icons/filter.svg";
-import { ReactComponent as LogoIcon } from "../../icons/Logo.svg";
 
 export function MainSidebar({ theme, changeTheme, handleNavItemClick }) {
   return (
