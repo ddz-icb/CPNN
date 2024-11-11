@@ -36,7 +36,7 @@ function Logo({ onClick }) {
   return (
     <li className="logo-container" onClick={onClick}>
       <div className="nav-link">
-        <img src="ddz_logo_en.png" className="link-text logo" />
+        <img src="./logos/ddz_logo_en.png" className="link-text logo" />
       </div>
     </li>
   );

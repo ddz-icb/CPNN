@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ForceGraph } from "./components/GraphStuff/forceGraph";
-import exampleGraphJSON from "./exampleGraphJSON";
+import exampleGraphJSON from "./demographs/exampleGraphJSON";
 import { Sidebar } from "./components/GUI/sidebar";
 import { HeaderBar } from "./components/GUI/headerBar";
 import { applyTheme } from "./components/Other/theme";
