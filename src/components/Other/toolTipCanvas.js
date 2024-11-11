@@ -6,7 +6,7 @@ import {
   extractDescription,
   extractFullName,
   extractPdbId,
-} from "../APIRequests/extract";
+} from "../RegexExtract/extract";
 import * as $3Dmol from "3dmol/build/3Dmol.js";
 
 export function Tooltips({
