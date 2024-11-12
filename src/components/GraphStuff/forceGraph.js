@@ -22,6 +22,7 @@ import {
 import { downloadAsPNG, downloadAsSVG, downloadGraphJson } from "./download.js";
 import { getSimulation, borderCheck, componentForce, nodeRepulsionMultiplier } from "./graphPhysics.js";
 import { simCircularLayout } from "./simulationHandling.js";
+import { circleBorderColorInit } from "../Other/appearanceInitvalues.js";
 
 export function ForceGraph({
   graphCurrent,
@@ -52,8 +53,8 @@ export function ForceGraph({
   theme,
   mapping,
   nodeFilter,
-  groupToColorIndex,
-  attribToColorIndex,
+  nodeAttribsToColorIndices,
+  linkAttribsToColorIndices,
 }) {
   const containerRef = useRef(null);
 
@@ -169,7 +170,7 @@ export function ForceGraph({
     const circleNodeMap = {};
     for (const node of graphCurrent.nodes) {
       let circle = new PIXI.Graphics();
-      circle = drawCircle(circle, node, circleBorderColor, nodeColorScheme[1], groupToColorIndex);
+      circle = drawCircle(circle, node, circleBorderColor, nodeColorScheme[1], nodeAttribsToColorIndices);
       circle.id = node.id;
       circle.interactive = true;
       circle.buttonMode = true;
@@ -270,10 +271,10 @@ export function ForceGraph({
         document,
         graphCurrent,
         linkColorScheme,
-        attribToColorIndex,
-        "#0d3b66", // the standard light theme circle border color
+        linkAttribsToColorIndices,
+        circleBorderColorInit,
         nodeColorScheme,
-        groupToColorIndex,
+        nodeAttribsToColorIndices,
         circleNodeMap
       );
     }
@@ -292,7 +293,7 @@ export function ForceGraph({
     if (!circles) return;
     log.info("Changing node color scheme");
 
-    changeNodeColors(circles, circleNodeMap, circleBorderColor, nodeColorScheme[1], groupToColorIndex);
+    changeNodeColors(circles, circleNodeMap, circleBorderColor, nodeColorScheme[1], nodeAttribsToColorIndices);
   }, [nodeColorScheme]);
 
   // switch link color scheme
@@ -517,7 +518,7 @@ export function ForceGraph({
     lines.clear();
 
     for (const link of graph.links) {
-      drawLine(lines, link, linkColorScheme[1], attribToColorIndex);
+      drawLine(lines, link, linkColorScheme[1], linkAttribsToColorIndices);
     }
 
     app.renderer.render(app.stage);

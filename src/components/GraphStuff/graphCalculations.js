@@ -285,34 +285,34 @@ export function applyNodeMapping(graph, mapping) {
   return graph;
 }
 
-export function getGroupToColorIndex(graph) {
-  const groupToColorIndex = [];
+export function getNodeAttribsToColorIndices(graph) {
+  const nodeAttribsToColorIndices = [];
   let i = 0;
 
   graph.nodes.forEach((node) => {
     node.groups.forEach((group) => {
-      if (!groupToColorIndex.hasOwnProperty(group)) {
-        groupToColorIndex[group] = i;
+      if (!nodeAttribsToColorIndices.hasOwnProperty(group)) {
+        nodeAttribsToColorIndices[group] = i;
         i += 1;
       }
     });
   });
 
-  return groupToColorIndex;
+  return nodeAttribsToColorIndices;
 }
 
-export function getAttribToColorIndex(graph) {
-  const attribToColorIndex = [];
+export function getLinkAttribsToColorIndices(graph) {
+  const linkAttribsToColorIndices = [];
   let i = 0;
 
   graph.links.forEach((link) => {
     link.attribs.forEach((attrib) => {
-      if (!attribToColorIndex.hasOwnProperty(attrib)) {
-        attribToColorIndex[attrib] = i;
+      if (!linkAttribsToColorIndices.hasOwnProperty(attrib)) {
+        linkAttribsToColorIndices[attrib] = i;
         i += 1;
       }
     });
   });
 
-  return attribToColorIndex;
+  return linkAttribsToColorIndices;
 }

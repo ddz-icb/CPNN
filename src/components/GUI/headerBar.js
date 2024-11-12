@@ -19,8 +19,8 @@ export function HeaderBar({
   colorSchemes,
   mapping,
   handleDeleteColorScheme,
-  groupToColorIndex,
-  attribToColorIndex,
+  nodeAttribsToColorIndices,
+  linkAttribsToColorIndices,
 }) {
   const [activeMenu, setActiveMenu] = useState("None");
 
@@ -41,8 +41,8 @@ export function HeaderBar({
         activeMenu={activeMenu}
         setActiveMenu={setActiveMenu}
         handleActiveMenuClick={handleActiveMenuClick}
-        groupToColorIndex={groupToColorIndex}
-        attribToColorIndex={attribToColorIndex}
+        nodeAttribsToColorIndices={nodeAttribsToColorIndices}
+        linkAttribsToColorIndices={linkAttribsToColorIndices}
       />
       <Colors
         handleUploadSchemeClick={handleUploadSchemeClick}

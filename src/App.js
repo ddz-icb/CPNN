@@ -7,7 +7,12 @@ import { ForceGraph } from "./components/GraphStuff/forceGraph.js";
 import { Sidebar } from "./components/GUI/sidebar.js";
 import { HeaderBar } from "./components/GUI/headerBar.js";
 import { applyTheme } from "./components/Other/theme.js";
-import { applyNodeMapping, getAttribToColorIndex, getGroupToColorIndex, joinGraphs } from "./components/GraphStuff/graphCalculations.js";
+import {
+  applyNodeMapping,
+  getLinkAttribsToColorIndices,
+  getNodeAttribsToColorIndices,
+  joinGraphs,
+} from "./components/GraphStuff/graphCalculations.js";
 import { parseColorSchemeCSV, parseFile } from "./components/Other/parseFile.js";
 import { IBMAntiBlindness, Okabe_ItoAntiBlindness, manyColors } from "./components/Other/colors.js";
 import { parseMapping } from "./components/Other/parseMapping.js";
@@ -56,7 +61,7 @@ function App() {
   const [error, setError] = useState(null);
 
   const [graph, setGraph] = useState(null); // graph without modifications
-  const [graphCurrent, setGraphCurrent] = useState(null); // graph with modifications (e.g. links filtered by threshold). it also contains the pixi node elements
+  const [graphCurrent, setGraphCurrent] = useState(null); // graph with modifications e.g. links filtered by threshold, it also contains the pixi node elements
 
   const graphAbsInputRef = useRef(null); // reference to newly selected graph (link weights should be interpreted as absolute values)
   const graphZeroInputRef = useRef(null); // reference to newly selected graph (negative link weights should be interpreted as 0)
@@ -64,10 +69,10 @@ function App() {
   const mappingInputRef = useRef(null); // reference to newly selected mapping
 
   const [activeFiles, setActiveFiles] = useState(null); // currently active files
-  const [uploadedFileNames, setUploadedFileNames] = useState([]); // all files in local storage
+  const [uploadedFileNames, setUploadedFileNames] = useState([]); // names of all files in local storage
   const [colorSchemes, setColorSchemes] = useState(null); // all color schemes in local storage
-  const [groupToColorIndex, setGroupToColorIndex] = useState(null);
-  const [attribToColorIndex, setAttribToColorIndex] = useState(null);
+  const [nodeAttribsToColorIndices, setNodeAttribsToColorIndices] = useState(null); // mapping of the node attributes to color indices
+  const [linkAttribsToColorIndices, setLinkAttribsToColorIndices] = useState(null); // mapping of the link attributes to color indices
 
   const [downloadJSON, setDownloadJSON] = useState(null); // on state change: indicates graph should be downloaded
   const [downloadPNG, setDownloadPNG] = useState(null); // on state change: indicates graph should be downloaded
@@ -463,11 +468,11 @@ function App() {
     let newGraphCurrent = structuredClone(graph);
     newGraphCurrent = applyNodeMapping(newGraphCurrent, activeMapping);
 
-    const groupToColorIndex = getGroupToColorIndex(newGraphCurrent);
-    setGroupToColorIndex(groupToColorIndex);
+    const nodeAttribsToColorIndices = getNodeAttribsToColorIndices(newGraphCurrent);
+    setNodeAttribsToColorIndices(nodeAttribsToColorIndices);
 
-    const attribToColorIndex = getAttribToColorIndex(newGraphCurrent);
-    setAttribToColorIndex(attribToColorIndex);
+    const linkAttribsToColorIndices = getLinkAttribsToColorIndices(newGraphCurrent);
+    setLinkAttribsToColorIndices(linkAttribsToColorIndices);
 
     setGraphCurrent(newGraphCurrent);
   }, [graph, activeFiles, activeMapping]);
@@ -488,8 +493,8 @@ function App() {
         colorSchemes={colorSchemes}
         mapping={activeMapping}
         handleDeleteColorScheme={handleDeleteColorScheme}
-        groupToColorIndex={groupToColorIndex}
-        attribToColorIndex={attribToColorIndex}
+        nodeAttribsToColorIndices={nodeAttribsToColorIndices}
+        linkAttribsToColorIndices={linkAttribsToColorIndices}
       />
       <Sidebar
         changeTheme={changeTheme}
@@ -578,8 +583,8 @@ function App() {
           theme={theme}
           mapping={activeMapping}
           nodeFilter={nodeFilter}
-          groupToColorIndex={groupToColorIndex}
-          attribToColorIndex={attribToColorIndex}
+          nodeAttribsToColorIndices={nodeAttribsToColorIndices}
+          linkAttribsToColorIndices={linkAttribsToColorIndices}
         />
       </main>
     </div>

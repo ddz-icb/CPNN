@@ -39,10 +39,10 @@ export function downloadAsSVG(
   document,
   graph,
   linkColorScheme,
-  attribToColorIndex,
+  linksAttribsToColorIndices,
   circleBorderColor,
   nodeColorScheme,
-  groupToColorIndex,
+  nodeAttribsToColorIndices,
   circleNodeMap
 ) {
   const firstNode = graph.nodes[0];
@@ -89,13 +89,13 @@ export function downloadAsSVG(
   svgElement.setAttribute("height", height);
 
   for (const link of graph.links) {
-    drawLineCanvas(ctx, link, linkColorScheme[1], attribToColorIndex);
+    drawLineCanvas(ctx, link, linkColorScheme[1], linksAttribsToColorIndices);
   }
 
   for (const node of graph.nodes) {
     const { sameNode, circle } = circleNodeMap[node.id];
 
-    drawCircleCanvas(ctx, node, circle, circleBorderColor, nodeColorScheme[1], groupToColorIndex);
+    drawCircleCanvas(ctx, node, circle, circleBorderColor, nodeColorScheme[1], nodeAttribsToColorIndices);
   }
 
   const mySerializedSVG = ctx.getSerializedSvg();
