@@ -16,13 +16,12 @@ import {
   filterByAttribs,
   returnComponentData,
   deleteNode,
-  returnAdjacentData,
   filterNodeGroups,
   filterActiveCircles,
-  applyNodeMapping,
 } from "./graphCalculations";
 import { downloadAsPNG, downloadAsSVG, downloadGraphJson } from "./download";
-import { getSimulation, borderCheck, componentForce, circularLayout, chargeStrengthMultiplier } from "./graphPhysics";
+import { getSimulation, borderCheck, componentForce, chargeStrengthMultiplier } from "./graphPhysics";
+import { simCircularLayout } from "./simulationHandling";
 
 export function ForceGraph({
   graphCurrent,
@@ -489,12 +488,8 @@ export function ForceGraph({
     // have to disable link force for this
     setLinkForce(false);
 
-    const [componentArray, componentSizeArray] = returnComponentData(graphCurrent);
-    const adjacentCountMap = returnAdjacentData(graphCurrent);
-
-    simulation.force("circleLayout", circularLayout(componentArray, adjacentCountMap, 6));
-    simulation.alpha(1).restart();
-  }, [circleLayout]);
+    simCircularLayout(graphCurrent, simulation);
+  }, [circleLayout, graphCurrent]);
 
   // remove node
   useEffect(() => {
