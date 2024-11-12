@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { SidebarButtonRect, SidebarFieldBlock, SidebarSliderBlock, SidebarSwitchBlock } from "./sidebar";
+import { SidebarButtonRect, SidebarFieldBlock, SidebarSliderBlock, SidebarSwitchBlock } from "./sidebar.js";
 
 import {
   borderHeightInit,
@@ -11,7 +11,7 @@ import {
   linkLengthInit,
   xStrengthInit,
   yStrengthInit,
-} from "../GraphStuff/graphInitValues";
+} from "../GraphStuff/graphInitValues.js";
 
 export function PhysicsSidebar({
   linkLength,

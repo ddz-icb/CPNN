@@ -1,5 +1,5 @@
-import { returnComponentData, returnAdjacentData } from "./graphCalculations";
-import { circularLayout } from "./graphPhysics";
+import { returnComponentData, returnAdjacentData } from "./graphCalculations.js";
+import { circularLayout } from "./graphPhysics.js";
 
 export function simCircularLayout(graphCurrent, simulation) {
   const [componentArray, componentSizeArray] = returnComponentData(graphCurrent);

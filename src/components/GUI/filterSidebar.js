@@ -1,18 +1,18 @@
 import "../../index.css";
-import log from "../../logger";
+import log from "../../logger.js";
 import { useEffect, useState, useRef } from "react";
 import CodeMirror from "codemirror";
 import "codemirror/lib/codemirror.css";
-import "codemirror/addon/mode/simple";
+import "codemirror/addon/mode/simple.js";
 import "codemirror/theme/material.css";
-import "../Other/syntaxHighlighting";
+import "../Other/syntaxHighlighting.js";
 
-import { parseAttributesFilter } from "../Other/parser";
-import { parseGroupsFilter } from "../Other/parserNodeFilter";
+import { parseAttributesFilter } from "../Other/parser.js";
+import { parseGroupsFilter } from "../Other/parserNodeFilter.js";
 
-import { linkThresholdInit, minCompSizeInit } from "../GraphStuff/graphInitValues";
+import { linkThresholdInit, minCompSizeInit } from "../GraphStuff/graphInitValues.js";
 
-import { SidebarButtonRect, SidebarCodeEditorBlock, SidebarFieldBlock, SidebarSliderBlock } from "./sidebar";
+import { SidebarButtonRect, SidebarCodeEditorBlock, SidebarFieldBlock, SidebarSliderBlock } from "./sidebar.js";
 
 export function FilterSidebar({
   linkThreshold,

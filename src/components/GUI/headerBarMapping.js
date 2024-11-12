@@ -1,9 +1,9 @@
 import { ReactComponent as EyeIcon } from "../../icons/eye.svg";
 import { ReactComponent as XIcon } from "../../icons/x.svg";
 
-import { fallbackColor, getColor } from "../Other/draw";
+import { fallbackColor, getColor } from "../Other/draw.js";
 
-import { Button } from "./headerBar";
+import { Button } from "./headerBar.js";
 
 export function Mapping({
   nodeColorScheme,

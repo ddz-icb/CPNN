@@ -1,4 +1,4 @@
-import log from "../../logger";
+import log from "../../logger.js";
 import Dexie from "dexie";
 
 export const db = new Dexie("myDatabase");

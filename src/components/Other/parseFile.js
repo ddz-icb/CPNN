@@ -1,4 +1,4 @@
-import log from "../../logger";
+import log from "../../logger.js";
 import Papa from "papaparse";
 
 export function parseFile(name, content, takeAbs) {

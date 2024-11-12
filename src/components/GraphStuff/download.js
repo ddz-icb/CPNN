@@ -1,7 +1,7 @@
-import log from "../../logger";
+import log from "../../logger.js";
 import canvasToSvg from "canvas-to-svg";
 
-import { drawCircleCanvas, drawLineCanvas } from "../Other/draw";
+import { drawCircleCanvas, drawLineCanvas } from "../Other/draw.js";
 
 export function downloadAsPNG(app, document) {
   function getHtmlImageElement() {

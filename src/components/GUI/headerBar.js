@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Tooltip } from "react-tooltip";
 
-import { Colors } from "./headerBarColors";
-import { Mapping } from "./headerBarMapping";
-import { DropDownExport } from "./headerBarExport";
+import { Colors } from "./headerBarColors.js";
+import { Mapping } from "./headerBarMapping.js";
+import { DropDownExport } from "./headerBarExport.js";
 
 export function HeaderBar({
   handleDownloadJSONClick,

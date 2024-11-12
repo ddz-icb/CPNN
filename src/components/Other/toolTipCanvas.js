@@ -1,9 +1,9 @@
-import log from "../../logger";
+import log from "../../logger.js";
 import axios from "axios";
 import { useState, useEffect, useRef } from "react";
 import { ReactComponent as TrashIcon } from "../../icons/trash.svg";
 import { ReactComponent as XIcon } from "../../icons/x.svg";
-import { extractDescription, extractFullName, extractPdbId } from "../RegexExtract/extract";
+import { extractDescription, extractFullName, extractPdbId } from "../RegexExtract/extract.js";
 import * as $3Dmol from "3dmol/build/3Dmol.js";
 
 export function Tooltips({

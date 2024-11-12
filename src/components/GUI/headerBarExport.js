@@ -4,7 +4,7 @@ import { ReactComponent as DownloadIcon } from "../../icons/download.svg";
 import { ReactComponent as XIcon } from "../../icons/x.svg";
 import React, { useState } from "react";
 
-import { Button, Item } from "./headerBar";
+import { Button, Item } from "./headerBar.js";
 
 export function DropDownExport({
   handleDownloadJSONClick,

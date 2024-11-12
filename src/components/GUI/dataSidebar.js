@@ -4,7 +4,7 @@ import { ReactComponent as PlusIcon } from "../../icons/plus.svg";
 import { Tooltip } from "react-tooltip";
 import { useState } from "react";
 
-import { SidebarButtonRect, SidebarDropdownItem } from "./sidebar";
+import { SidebarButtonRect, SidebarDropdownItem } from "./sidebar.js";
 
 export function DataSidebar({
   activeFiles,

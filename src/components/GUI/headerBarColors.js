@@ -4,9 +4,9 @@ import { ReactComponent as PaintRollerIcon } from "../../icons/paintRoller.svg";
 import { ReactComponent as SwatchBookIcon } from "../../icons/swatchbook.svg";
 import { ReactComponent as TrashIcon } from "../../icons/trash.svg";
 import React, { useState } from "react";
-import isEqual from "lodash/isEqual";
+import isEqual from "lodash/isEqual.js";
 
-import { Button, Item, UploadItem } from "./headerBar";
+import { Button, Item, UploadItem } from "./headerBar.js";
 
 export function Colors({
   handleUploadSchemeClick,

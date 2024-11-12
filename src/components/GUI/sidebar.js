@@ -3,10 +3,10 @@ import React, { useState } from "react";
 import { ReactComponent as BackIcon } from "../../icons/leftArrow.svg";
 import { Tooltip } from "react-tooltip";
 
-import { FilterSidebar } from "./filterSidebar";
-import { PhysicsSidebar } from "./physicsSidebar";
-import { DataSidebar } from "./dataSidebar";
-import { MainSidebar } from "./mainSidebar";
+import { FilterSidebar } from "./filterSidebar.js";
+import { PhysicsSidebar } from "./physicsSidebar.js";
+import { DataSidebar } from "./dataSidebar.js";
+import { MainSidebar } from "./mainSidebar.js";
 
 export function Sidebar({
   changeTheme,

@@ -1,17 +1,17 @@
 import "./index.css";
-import log from "./logger";
+import log from "./logger.js";
 import React, { useState, useRef, useEffect } from "react";
-import exampleGraphJSON from "./demographs/exampleGraphJSON";
+import exampleGraphJSON from "./demographs/exampleGraphJSON.js";
 
-import { ForceGraph } from "./components/GraphStuff/forceGraph";
-import { Sidebar } from "./components/GUI/sidebar";
-import { HeaderBar } from "./components/GUI/headerBar";
-import { applyTheme } from "./components/Other/theme";
-import { applyNodeMapping, getAttribToColorIndex, getGroupToColorIndex, joinGraphs } from "./components/GraphStuff/graphCalculations";
-import { parseColorSchemeCSV, parseFile } from "./components/Other/parseFile";
-import { IBMAntiBlindness, Okabe_ItoAntiBlindness, manyColors } from "./components/Other/colors";
-import { parseMapping } from "./components/Other/parseMapping";
-import { addUploadedFileDB, fromAllGetNameDB, getByNameDB, removeUploadedFileByNameDB } from "./components/Other/db";
+import { ForceGraph } from "./components/GraphStuff/forceGraph.js";
+import { Sidebar } from "./components/GUI/sidebar.js";
+import { HeaderBar } from "./components/GUI/headerBar.js";
+import { applyTheme } from "./components/Other/theme.js";
+import { applyNodeMapping, getAttribToColorIndex, getGroupToColorIndex, joinGraphs } from "./components/GraphStuff/graphCalculations.js";
+import { parseColorSchemeCSV, parseFile } from "./components/Other/parseFile.js";
+import { IBMAntiBlindness, Okabe_ItoAntiBlindness, manyColors } from "./components/Other/colors.js";
+import { parseMapping } from "./components/Other/parseMapping.js";
+import { addUploadedFileDB, fromAllGetNameDB, getByNameDB, removeUploadedFileByNameDB } from "./components/Other/db.js";
 import {
   borderHeightInit,
   borderWidthInit,
@@ -30,7 +30,7 @@ import {
   nodeFilterTextInit,
   xStrengthInit,
   yStrengthInit,
-} from "./components/GraphStuff/graphInitValues";
+} from "./components/GraphStuff/graphInitValues.js";
 
 function App() {
   const [linkThreshold, setLinkThreshold] = useState(linkThresholdInit);

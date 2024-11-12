@@ -1,4 +1,4 @@
-import log from "../../logger";
+import log from "../../logger.js";
 import * as d3 from "d3";
 
 export const radius = 8;

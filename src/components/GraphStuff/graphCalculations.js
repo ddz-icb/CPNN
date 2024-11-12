@@ -1,3 +1,5 @@
+import UnionFind from "union-find";
+
 export function joinGraphs(graph, newGraph) {
   const nodeMap = new Map(graph.nodes.map((node) => [node.id, { ...node }]));
 
@@ -60,7 +62,6 @@ export function returnComponentData(graph) {
     idToIndexMap[node.id] = index;
   });
 
-  const UnionFind = require("union-find");
   const uf = new UnionFind(graph.nodes.length);
   graph.links.forEach((link) => {
     // checking link.source.id and link.source for safety as d3 replaces the id in source with a graphics objects

@@ -1,4 +1,4 @@
-import log from "../../logger";
+import log from "../../logger.js";
 
 export function parseAttributesFilter(input) {
   // return errormessage beginning with "Error:" if not valid.

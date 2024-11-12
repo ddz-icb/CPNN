@@ -1,13 +1,13 @@
 import "../../index.css";
-import log from "../../logger";
+import log from "../../logger.js";
 import * as PIXI from "pixi.js";
 import * as d3 from "d3";
 import { useRef, useEffect, useState } from "react";
 import { cloneDeep } from "lodash";
 
-import { handleResize, initDragAndZoom } from "../Other/interactiveCanvas";
-import { initTooltips, Tooltips } from "../Other/toolTipCanvas";
-import { radius, changeCircleBorderColor, drawCircle, drawLine, changeNodeColors, getColor } from "../Other/draw";
+import { handleResize, initDragAndZoom } from "../Other/interactiveCanvas.js";
+import { initTooltips, Tooltips } from "../Other/toolTipCanvas.js";
+import { radius, changeCircleBorderColor, drawCircle, drawLine, changeNodeColors, getColor } from "../Other/draw.js";
 
 import {
   filterByThreshold,
@@ -18,10 +18,10 @@ import {
   deleteNode,
   filterNodes,
   filterActiveCircles,
-} from "./graphCalculations";
-import { downloadAsPNG, downloadAsSVG, downloadGraphJson } from "./download";
-import { getSimulation, borderCheck, componentForce, chargeStrengthMultiplier } from "./graphPhysics";
-import { simCircularLayout } from "./simulationHandling";
+} from "./graphCalculations.js";
+import { downloadAsPNG, downloadAsSVG, downloadGraphJson } from "./download.js";
+import { getSimulation, borderCheck, componentForce, chargeStrengthMultiplier } from "./graphPhysics.js";
+import { simCircularLayout } from "./simulationHandling.js";
 
 export function ForceGraph({
   graphCurrent,
