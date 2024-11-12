@@ -5,14 +5,7 @@ const maxDistanceChargeForce = 300;
 export const chargeStrengthMultiplier = -100;
 export const borderMultiplier = 10;
 
-export function getSimulation(
-  width,
-  height,
-  linkLength,
-  xStrength,
-  yStrength,
-  chargeStrength
-) {
+export function getSimulation(width, height, linkLength, xStrength, yStrength, chargeStrength) {
   const simulation = d3
     .forceSimulation()
     .force(
@@ -38,14 +31,7 @@ export function getSimulation(
   return simulation;
 }
 
-export function borderCheck(
-  circles,
-  radius,
-  borderHeight,
-  borderWidth,
-  width,
-  height
-) {
+export function borderCheck(circles, radius, borderHeight, borderWidth, width, height) {
   const strength = 1;
 
   const centerX = width / 2;
@@ -77,11 +63,7 @@ export function borderCheck(
   });
 }
 
-export function componentForce(
-  componentArray,
-  componentSizeArray,
-  centroidThreshold
-) {
+export function componentForce(componentArray, componentSizeArray, centroidThreshold) {
   let nodes;
   let strength = 0.1; // this variable can be changed via user input
 
@@ -150,11 +132,7 @@ export function componentForce(
   return force;
 }
 
-export function circularLayout(
-  componentArray,
-  adjacentCountMap,
-  centroidThreshold
-) {
+export function circularLayout(componentArray, adjacentCountMap, minCircleSize) {
   let nodes;
   let strength = 5; // this variable can be changed via user input
 
@@ -185,21 +163,19 @@ export function circularLayout(
     const centroids = {};
     for (const component in componentNodes) {
       const componentSize = componentNodes[component].length;
-      if (componentSize >= centroidThreshold) {
+      if (componentSize >= minCircleSize) {
         centroids[component] = calculateCentroid(componentNodes[component]);
       }
     }
 
     for (const component in componentNodes) {
       const componentSize = componentNodes[component].length;
-      if (componentSize >= centroidThreshold) {
+      if (componentSize >= minCircleSize) {
         const centroid = centroids[component];
         const radius = 50 * Math.sqrt(componentSize);
 
         // sort by adjacent count descending
-        componentNodes[component].sort(
-          (x, y) => adjacentCountMap.get(y.id) - adjacentCountMap.get(x.id)
-        );
+        componentNodes[component].sort((x, y) => adjacentCountMap.get(y.id) - adjacentCountMap.get(x.id));
 
         componentNodes[component].forEach((node, i) => {
           const angle = (2 * Math.PI * i) / componentSize;
