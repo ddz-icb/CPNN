@@ -27,7 +27,7 @@ export function FilterSidebar({
   nodeFilterText,
   setNodeFilterText,
   setNodeFilter,
-  resetFilter,
+  resetFilters,
 }) {
   const attribsEditorRef = useRef(null);
   const groupsEditorRef = useRef(null);
@@ -40,8 +40,8 @@ export function FilterSidebar({
   const [compilerErrorAttribs, setCompilerErrorAttribs] = useState(null);
   const [compilerErrorGroups, setCompilerErrorGroups] = useState(null);
 
-  const handleResetFilter = () => {
-    resetFilter();
+  const handleResetFilters = () => {
+    resetFilters();
 
     setLinkThresholdText(linkThresholdInit);
     setMinCompSizeText(minCompSizeInit);
@@ -179,7 +179,7 @@ export function FilterSidebar({
   return (
     <>
       <div className="inline pad-top-05 pad-bottom-05">
-        <SidebarButtonRect text={"Reset Filters"} onClick={handleResetFilter} />
+        <SidebarButtonRect text={"Reset Filters"} onClick={handleResetFilters} />
       </div>
       <SidebarSliderBlock
         text={"Filter Links by Threshold"}

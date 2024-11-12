@@ -61,7 +61,7 @@ export function Sidebar({
   setNodeFilterText,
   setNodeFilter,
   resetPhysics,
-  resetFilter,
+  resetFilters,
   graphAbsInputRef,
   graphZeroInputRef,
 }) {
@@ -126,7 +126,7 @@ export function Sidebar({
           nodeFilterText={nodeFilterText}
           setNodeFilterText={setNodeFilterText}
           setNodeFilter={setNodeFilter}
-          resetFilter={resetFilter}
+          resetFilters={resetFilters}
         />
       </Navbar>
     );

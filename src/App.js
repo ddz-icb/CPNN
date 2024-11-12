@@ -44,10 +44,9 @@ function App() {
   const [xStrength, setXStrength] = useState(xStrengthInit);
   const [yStrength, setYStrength] = useState(yStrengthInit);
   const [componentStrength, setComponentStrength] = useState(componentStrengthInit);
+  const [nodeRepulsionStrength, setNodeRepulsionStrength] = useState(nodeRepulsionStrengthInit);
   const [linkForce, setLinkForce] = useState(linkForceInit);
   const [linkLength, setLinkLength] = useState(linkLengthInit);
-  const [nodeRepulsionStrength, setNodeRepulsionStrength] = useState(nodeRepulsionStrengthInit);
-
   const [checkBorder, setCheckBorder] = useState(checkBorderInit);
   const [borderWidth, setBorderWidth] = useState(borderWidthInit);
   const [borderHeight, setBorderHeight] = useState(borderHeightInit);
@@ -59,8 +58,8 @@ function App() {
   const [graph, setGraph] = useState(null); // graph without modifications
   const [graphCurrent, setGraphCurrent] = useState(null); // graph with modifications (e.g. links filtered by threshold). it also contains the pixi node elements
 
-  const graphAbsInputRef = useRef(null); // reference to newly selected file
-  const graphZeroInputRef = useRef(null); // reference to newly selected file
+  const graphAbsInputRef = useRef(null); // reference to newly selected graph (link weights should be interpreted as absolute values)
+  const graphZeroInputRef = useRef(null); // reference to newly selected graph (negative link weights should be interpreted as 0)
   const colorSchemeInputRef = useRef(null); // reference to newly selected color scheme
   const mappingInputRef = useRef(null); // reference to newly selected mapping
 
@@ -94,8 +93,8 @@ function App() {
         if (!newGraph) throw new Error("File format not recognized");
         setGraph(newGraph);
         setActiveFiles([file]);
-        handleReset(); //the simulation has to be reloaded after
-        log.info("Graph loaded successfully:", newGraph);
+        simulationReset(); //the simulation has to be reloaded after
+        log.info("Graph Loaded Successfully:", newGraph);
       } catch (error) {
         setError("Error loading graph");
         log.error("Error loading graph:", error);
@@ -110,18 +109,18 @@ function App() {
   const handleMappingSelect = (mapping) => {
     if (mapping !== activeMapping) {
       setActiveMapping(mapping);
-      handleReset();
+      simulationReset();
     } else {
       log.error("Mapping is already the current mapping");
     }
   };
 
   // initates graph reset //
-  const handleReset = () => {
+  const simulationReset = () => {
     if (!activeFiles) return;
-    log.info("Handle Reset");
+    log.info("Handle Simulation Reset");
 
-    resetFilter();
+    resetFilters();
     resetPhysics();
 
     setDownloadJSON(null);
@@ -146,7 +145,7 @@ function App() {
     setBorderHeight(borderHeightInit);
   };
 
-  const resetFilter = () => {
+  const resetFilters = () => {
     setLinkThreshold(linkThresholdInit);
     setMinCompSize(minCompSizeInit);
 
@@ -255,7 +254,7 @@ function App() {
 
   const handleRemoveActiveMapping = () => {
     setActiveMapping(null);
-    handleReset();
+    simulationReset();
   };
 
   const handleDeleteMapping = (mappingName) => {
@@ -293,7 +292,7 @@ function App() {
 
     setGraph(graph);
     setActiveFiles(stillActive);
-    handleReset(); //the simulation has to be reloaded after
+    simulationReset(); //the simulation has to be reloaded after
     log.info("Graph loaded successfully:", graph);
   };
 
@@ -337,7 +336,7 @@ function App() {
         const combinedGraph = joinGraphs(graph, newGraph);
         setGraph(combinedGraph);
         setActiveFiles([...activeFiles, file]);
-        handleReset(); //the simulation has to be reloaded after
+        simulationReset(); //the simulation has to be reloaded after
         log.info("Graph loaded successfully:", combinedGraph);
       } catch (error) {
         setError("Error loading graph");
@@ -373,7 +372,7 @@ function App() {
         if (!newGraph) throw new Error("File format not recognized");
         setGraph(newGraph);
         setActiveFiles([file]);
-        handleReset(); //the simulation has to be reloaded after
+        simulationReset(); //the simulation has to be reloaded after
         log.info("Graph loaded successfully:", newGraph);
       } catch (error) {
         setError("Error loading graph");
@@ -459,6 +458,7 @@ function App() {
     if (!graph || !activeFiles) {
       return;
     }
+    log.info("Modifying graph and forwarding it to the simulation component");
 
     let newGraphCurrent = structuredClone(graph);
     newGraphCurrent = applyNodeMapping(newGraphCurrent, activeMapping);
@@ -469,7 +469,6 @@ function App() {
     const attribToColorIndex = getAttribToColorIndex(newGraphCurrent);
     setAttribToColorIndex(attribToColorIndex);
 
-    log.info("Forwarding graph to forceGraph component");
     setGraphCurrent(newGraphCurrent);
   }, [graph, activeFiles, activeMapping]);
 
@@ -544,7 +543,7 @@ function App() {
         setNodeFilterText={setNodeFilterText}
         setNodeFilter={setNodeFilter}
         resetPhysics={resetPhysics}
-        resetFilter={resetFilter}
+        resetFilters={resetFilters}
         graphAbsInputRef={graphAbsInputRef}
         graphZeroInputRef={graphZeroInputRef}
       />
