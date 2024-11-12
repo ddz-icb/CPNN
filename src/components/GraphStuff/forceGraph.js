@@ -43,7 +43,6 @@ export function ForceGraph({
   xStrength,
   yStrength,
   componentStrength,
-  centroidThreshold,
   linkForce,
   setLinkForce,
   chargeStrength,
@@ -438,11 +437,12 @@ export function ForceGraph({
 
     const [componentArray, componentSizeArray] = returnComponentData(graphCurrent);
 
-    const threshold = minCompSize > centroidThreshold ? minCompSize : centroidThreshold;
+    // this value can be increased to slightly increase performance
+    const threshold = minCompSize > 3 ? minCompSize : 3;
 
     simulation.force("component", componentForce(componentArray, componentSizeArray, threshold).strength(componentStrength));
     simulation.alpha(1).restart();
-  }, [componentStrength, centroidThreshold, graphCurrent]);
+  }, [componentStrength, graphCurrent]);
 
   // change charge strength //
   useEffect(() => {

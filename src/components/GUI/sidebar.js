@@ -39,8 +39,6 @@ export function Sidebar({
   setYStrength,
   componentStrength,
   setComponentStrength,
-  centroidThreshold,
-  setCentroidThreshold,
   linkForce,
   setLinkForce,
   chargeStrength,
@@ -151,8 +149,6 @@ export function Sidebar({
           setYStrength={setYStrength}
           componentStrength={componentStrength}
           setComponentStrength={setComponentStrength}
-          centroidThreshold={centroidThreshold}
-          setCentroidThreshold={setCentroidThreshold}
           linkForce={linkForce}
           setLinkForce={setLinkForce}
           chargeStrength={chargeStrength}

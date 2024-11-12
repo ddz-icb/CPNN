@@ -15,7 +15,6 @@ import { addUploadedFileDB, fromAllGetNameDB, getByNameDB, removeUploadedFileByN
 import {
   borderHeightInit,
   borderWidthInit,
-  centroidThresholdInit,
   chargeStrengthInit,
   checkBorderInit,
   circleLayoutInit,
@@ -41,12 +40,11 @@ function App() {
   const [nodeFilterText, setNodeFilterText] = useState(nodeFilterTextInit);
   const [minCompSize, setMinCompSize] = useState(minCompSizeInit);
 
-  const [linkForce, setLinkForce] = useState(linkForceInit);
-  const [linkLength, setLinkLength] = useState(linkLengthInit);
   const [xStrength, setXStrength] = useState(xStrengthInit);
   const [yStrength, setYStrength] = useState(yStrengthInit);
+  const [linkForce, setLinkForce] = useState(linkForceInit);
   const [componentStrength, setComponentStrength] = useState(componentStrengthInit);
-  const [centroidThreshold, setCentroidThreshold] = useState(centroidThresholdInit);
+  const [linkLength, setLinkLength] = useState(linkLengthInit);
   const [chargeStrength, setChargeStrength] = useState(chargeStrengthInit);
   const [circleLayout, setCircleLayout] = useState(circleLayoutInit);
 
@@ -140,7 +138,6 @@ function App() {
     setXStrength(xStrengthInit);
     setYStrength(yStrengthInit);
     setComponentStrength(componentStrengthInit);
-    setCentroidThreshold(centroidThresholdInit);
     setChargeStrength(chargeStrengthInit);
     setCircleLayout(circleLayoutInit);
 
@@ -526,8 +523,6 @@ function App() {
         setYStrength={setYStrength}
         componentStrength={componentStrength}
         setComponentStrength={setComponentStrength}
-        centroidThreshold={centroidThreshold}
-        setCentroidThreshold={setCentroidThreshold}
         linkForce={linkForce}
         setLinkForce={setLinkForce}
         chargeStrength={chargeStrength}
@@ -575,7 +570,6 @@ function App() {
           xStrength={xStrength}
           yStrength={yStrength}
           componentStrength={componentStrength}
-          centroidThreshold={centroidThreshold}
           linkForce={linkForce}
           setLinkForce={setLinkForce}
           chargeStrength={chargeStrength}

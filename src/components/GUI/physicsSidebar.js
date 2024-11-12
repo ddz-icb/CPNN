@@ -5,7 +5,6 @@ import { SidebarButtonRect, SidebarFieldBlock, SidebarSliderBlock, SidebarSwitch
 import {
   borderHeightInit,
   borderWidthInit,
-  centroidThresholdInit,
   chargeStrengthInit,
   componentStrengthInit,
   linkLengthInit,
@@ -28,8 +27,6 @@ export function PhysicsSidebar({
   setYStrength,
   componentStrength,
   setComponentStrength,
-  centroidThreshold,
-  setCentroidThreshold,
   linkForce,
   setLinkForce,
   chargeStrength,
@@ -44,7 +41,6 @@ export function PhysicsSidebar({
   const [xStrengthText, setXStrengthText] = useState(xStrength);
   const [yStrengthText, setYStrengthText] = useState(yStrength);
   const [componentStrengthText, setComponentStrengthText] = useState(componentStrength);
-  const [centroidThresholdText, setCentroidThresholdText] = useState(centroidThreshold);
   const [chargeStrengthText, setChargeStrengthText] = useState(chargeStrength);
 
   const [gravityAdvanced, setGravityAdvanced] = useState(false);
@@ -58,7 +54,6 @@ export function PhysicsSidebar({
     setXStrengthText(xStrengthInit);
     setYStrengthText(yStrengthInit);
     setComponentStrengthText(componentStrengthInit);
-    setCentroidThresholdText(centroidThresholdInit);
     setChargeStrengthText(chargeStrengthInit);
     setGravityAdvanced(false);
   };
@@ -261,32 +256,6 @@ export function PhysicsSidebar({
     }
   };
 
-  const handleCentroidThresholdChange = (event) => {
-    const value = event.target.value;
-    const intValue = parseInt(value, 10);
-
-    if (value === "") {
-      setCentroidThresholdText("");
-    } else if (!isNaN(intValue)) {
-      setCentroidThresholdText(intValue);
-    }
-  };
-
-  const handleCentroidThresholdBlur = (event) => {
-    const value = event.target.value;
-    const intValue = parseInt(value, 10);
-
-    if (value === "") {
-      event.target.innerText = 1;
-      setCentroidThreshold(1);
-      setCentroidThresholdText(1);
-    } else if (!isNaN(intValue) && intValue >= 0) {
-      event.target.innerText = intValue;
-      setCentroidThreshold(intValue);
-      setCentroidThresholdText(intValue);
-    }
-  };
-
   const handleLinkForce = () => {
     setLinkForce(!linkForce);
   };
@@ -386,16 +355,6 @@ export function PhysicsSidebar({
         onChangeField={handleComponentStrengthField}
         onChangeBlur={handleComponentStrengthFieldBlur}
       />
-      <>
-        <SidebarFieldBlock
-          text={"Minimum Component Size for Component Strength"}
-          min={1}
-          step={1}
-          value={centroidThresholdText}
-          onChange={handleCentroidThresholdChange}
-          onBlur={handleCentroidThresholdBlur}
-        />
-      </>
       <SidebarSliderBlock
         text={"Set Node Repulsion Strength"}
         min={0}

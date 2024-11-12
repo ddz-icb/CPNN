@@ -10,7 +10,6 @@ export const linkLengthInit = 70;
 export const xStrengthInit = 0.05;
 export const yStrengthInit = 0.05;
 export const componentStrengthInit = 0;
-export const centroidThresholdInit = 1;
 export const chargeStrengthInit = 5;
 export const circleLayoutInit = false;
 
