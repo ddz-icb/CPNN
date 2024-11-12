@@ -25,7 +25,7 @@ import {
   linkForceInit,
   linkLengthInit,
   linkThresholdInit,
-  minComponentSizeInit,
+  minCompSizeInit,
   nodeFilterInit,
   nodeFilterTextInit,
   xStrengthInit,
@@ -38,7 +38,7 @@ function App() {
   const [linkFilterText, setLinkFilterText] = useState(linkFilterTextInit);
   const [nodeFilter, setNodeFilter] = useState(nodeFilterInit);
   const [nodeFilterText, setNodeFilterText] = useState(nodeFilterTextInit);
-  const [minComponentSize, setMinComponentSize] = useState(minComponentSizeInit);
+  const [minCompSize, setMinCompSize] = useState(minCompSizeInit);
 
   const [linkForce, setLinkForce] = useState(linkForceInit);
   const [linkLength, setLinkLength] = useState(linkLengthInit);
@@ -150,7 +150,7 @@ function App() {
 
   const resetFilter = () => {
     setLinkThreshold(linkThresholdInit);
-    setMinComponentSize(minComponentSizeInit);
+    setMinCompSize(minCompSizeInit);
 
     setLinkFilter(linkFilterInit);
     setLinkFilterText(linkFilterTextInit);
@@ -504,10 +504,10 @@ function App() {
         handleRemoveActiveFile={handleRemoveActiveFile}
         handleAddFile={handleAddFileClick}
         linkThreshold={linkThreshold}
-        minComponentSize={minComponentSize}
+        minCompSize={minCompSize}
         linkAttribs={linkFilter}
         setLinkThreshold={setLinkThreshold}
-        setMinComponentSize={setMinComponentSize}
+        setMinCompSize={setMinCompSize}
         setLinkAttribs={setLinkFilter}
         linkLength={linkLength}
         checkBorder={checkBorder}
@@ -565,7 +565,7 @@ function App() {
           setError={setError}
           linkThreshold={linkThreshold}
           setGraphCurrent={setGraphCurrent}
-          minComponentSize={minComponentSize}
+          minCompSize={minCompSize}
           linkAttribs={linkFilter}
           checkBorder={checkBorder}
           borderWidth={borderWidth}

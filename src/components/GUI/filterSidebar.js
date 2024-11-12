@@ -10,16 +10,16 @@ import "../Other/syntaxHighlighting";
 import { parseAttributesFilter } from "../Other/parser";
 import { parseGroupsFilter } from "../Other/parserNodeFilter";
 
-import { linkThresholdInit, minComponentSizeInit } from "../GraphStuff/graphInitValues";
+import { linkThresholdInit, minCompSizeInit } from "../GraphStuff/graphInitValues";
 
 import { SidebarButtonRect, SidebarCodeEditorBlock, SidebarFieldBlock, SidebarSliderBlock } from "./sidebar";
 
 export function FilterSidebar({
   linkThreshold,
-  minComponentSize,
+  minCompSize,
   linkAttribs,
   setLinkThreshold,
-  setMinComponentSize,
+  setMinCompSize,
   setLinkAttribs,
   linkAttribsText,
   setLinkAttribsText,
@@ -36,7 +36,7 @@ export function FilterSidebar({
   const groupsRef = useRef(null);
 
   const [linkThresholdText, setLinkThresholdText] = useState(linkThreshold);
-  const [minComponentSizeText, setMinComponentSizeText] = useState(minComponentSize);
+  const [minCompSizeText, setMinCompSizeText] = useState(minCompSize);
   const [compilerErrorAttribs, setCompilerErrorAttribs] = useState(null);
   const [compilerErrorGroups, setCompilerErrorGroups] = useState(null);
 
@@ -44,7 +44,7 @@ export function FilterSidebar({
     resetFilter();
 
     setLinkThresholdText(linkThresholdInit);
-    setMinComponentSizeText(minComponentSizeInit);
+    setMinCompSizeText(minCompSizeInit);
     setCompilerErrorAttribs(null);
     setCompilerErrorGroups(null);
   };
@@ -85,9 +85,9 @@ export function FilterSidebar({
     const intValue = parseInt(value, 10);
 
     if (value === "") {
-      setMinComponentSizeText("");
+      setMinCompSizeText("");
     } else if (!isNaN(intValue)) {
-      setMinComponentSizeText(intValue);
+      setMinCompSizeText(intValue);
     }
   };
 
@@ -97,12 +97,12 @@ export function FilterSidebar({
 
     if (value === "") {
       event.target.innerText = 1;
-      setMinComponentSizeText(1);
-      setMinComponentSize(1);
+      setMinCompSizeText(1);
+      setMinCompSize(1);
     } else if (!isNaN(intValue) && intValue >= 0) {
       event.target.innerText = intValue;
-      setMinComponentSizeText(intValue);
-      setMinComponentSize(intValue);
+      setMinCompSizeText(intValue);
+      setMinCompSize(intValue);
     }
   };
 
@@ -211,7 +211,7 @@ export function FilterSidebar({
         text={"Set Minimum Component Size"}
         min={1}
         step={1}
-        value={minComponentSizeText}
+        value={minCompSizeText}
         onChange={handleMinComponentFieldChange}
         onBlur={handleMinComponentFieldBlur}
       />

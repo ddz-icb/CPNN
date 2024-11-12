@@ -18,10 +18,10 @@ export function Sidebar({
   handleRemoveActiveFile,
   handleAddFile,
   linkThreshold,
-  minComponentSize,
+  minCompSize,
   linkAttribs,
   setLinkThreshold,
-  setMinComponentSize,
+  setMinCompSize,
   setLinkAttribs,
   linkAttribsText,
   setLinkAttribsText,
@@ -117,10 +117,10 @@ export function Sidebar({
         <Back activeNavItem={activeNavItem} icon={<BackIcon />} onClick={() => handleNavItemClick("Main")} />
         <FilterSidebar
           linkThreshold={linkThreshold}
-          minComponentSize={minComponentSize}
+          minCompSize={minCompSize}
           linkAttribs={linkAttribs}
           setLinkThreshold={setLinkThreshold}
-          setMinComponentSize={setMinComponentSize}
+          setMinCompSize={setMinCompSize}
           setLinkAttribs={setLinkAttribs}
           linkAttribsText={linkAttribsText}
           setLinkAttribsText={setLinkAttribsText}

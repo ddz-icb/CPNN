@@ -12,7 +12,7 @@ import { radius, changeCircleBorderColor, drawCircle, drawLine, changeNodeColors
 import {
   filterByThreshold,
   filterNodesExist,
-  filterMinComponentSize,
+  filterMinCompSize,
   filterByAttribs,
   returnComponentData,
   deleteNode,
@@ -34,7 +34,7 @@ export function ForceGraph({
   setError,
   linkThreshold,
   setGraphCurrent,
-  minComponentSize,
+  minCompSize,
   linkAttribs,
   checkBorder,
   borderWidth,
@@ -345,7 +345,7 @@ export function ForceGraph({
       "\n    Attributes: ",
       linkAttribs,
       "\n    Mininum component size: ",
-      minComponentSize,
+      minCompSize,
       "\n    Groups: ",
       nodeFilter
     );
@@ -362,13 +362,13 @@ export function ForceGraph({
     filteredGraph = filterByThreshold(filteredGraph, linkThreshold);
     filteredGraph = filterByAttribs(filteredGraph, linkAttribs);
 
-    filteredGraph = filterMinComponentSize(filteredGraph, minComponentSize);
+    filteredGraph = filterMinCompSize(filteredGraph, minCompSize);
     filteredGraph = filterNodesExist(filteredGraph);
 
     filterActiveCircles(circles, filteredGraph, circleNodeMap);
     setFilteredAfterStart(true);
     setGraphCurrent(filteredGraph);
-  }, [linkThreshold, linkAttribs, nodeFilter, minComponentSize, allLinks, allNodes, circles]);
+  }, [linkThreshold, linkAttribs, nodeFilter, minCompSize, allLinks, allNodes, circles]);
 
   // enable or disable link force //
   useEffect(() => {
@@ -438,7 +438,7 @@ export function ForceGraph({
 
     const [componentArray, componentSizeArray] = returnComponentData(graphCurrent);
 
-    const threshold = minComponentSize > centroidThreshold ? minComponentSize : centroidThreshold;
+    const threshold = minCompSize > centroidThreshold ? minCompSize : centroidThreshold;
 
     simulation.force("component", componentForce(componentArray, componentSizeArray, threshold).strength(componentStrength));
     simulation.alpha(1).restart();

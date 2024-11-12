@@ -1,5 +1,5 @@
 export const linkThresholdInit = 0.7;
-export const minComponentSizeInit = 2;
+export const minCompSizeInit = 2;
 export const linkFilterInit = true;
 export const nodeFilterInit = true;
 export const linkFilterTextInit = "";

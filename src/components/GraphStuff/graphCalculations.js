@@ -126,17 +126,17 @@ export function filterNodesExist(graph) {
   };
 }
 
-export function filterMinComponentSize(graph, minComponentSize) {
-  if (minComponentSize === 1) return graph;
+export function filterMinCompSize(graph, minCompSize) {
+  if (minCompSize === 1) return graph;
 
   const [componentArray, componentSizeArray] = returnComponentData(graph, graph.nodes);
 
   graph = {
     ...graph,
-    nodes: graph.nodes.filter((node) => componentSizeArray[componentArray[node.id]] >= minComponentSize),
+    nodes: graph.nodes.filter((node) => componentSizeArray[componentArray[node.id]] >= minCompSize),
     links: graph.links.filter((link) => {
-      const sourceExists = componentSizeArray[componentArray[link.source.id || link.source]] >= minComponentSize;
-      const targetExists = componentSizeArray[componentArray[link.target.id || link.target]] >= minComponentSize;
+      const sourceExists = componentSizeArray[componentArray[link.source.id || link.source]] >= minCompSize;
+      const targetExists = componentSizeArray[componentArray[link.target.id || link.target]] >= minCompSize;
 
       return sourceExists && targetExists;
     }),
