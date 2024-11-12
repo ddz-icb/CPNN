@@ -23,7 +23,7 @@ export function FilterSidebar({
   setLinkAttribs,
   linkAttribsText,
   setLinkAttribsText,
-  theme: activeTheme,
+  theme,
   nodeFilterText,
   setNodeFilterText,
   setNodeFilter,
@@ -151,7 +151,7 @@ export function FilterSidebar({
     if (attribsRef.current) {
       attribsEditorRef.current = CodeMirror.fromTextArea(attribsRef.current, {
         mode: "customMode",
-        theme: activeTheme === "light" ? "default" : "material",
+        theme: theme === "light" ? "default" : "material",
         linewrapping: false,
         bracketMatching: true,
         scrollbarStyle: "null",
@@ -166,7 +166,7 @@ export function FilterSidebar({
     if (groupsRef.current) {
       groupsEditorRef.current = CodeMirror.fromTextArea(groupsRef.current, {
         mode: "customMode",
-        theme: activeTheme === "light" ? "default" : "material",
+        theme: theme === "light" ? "default" : "material",
         linewrapping: false,
         bracketMatching: true,
         scrollbarStyle: "null",
