@@ -34,18 +34,9 @@ export function ForceGraph({
   setReset,
   setError,
   filterSettings,
+  physicsSettings,
+  setPhysicsSettings,
   setGraphCurrent,
-  checkBorder,
-  borderWidth,
-  borderHeight,
-  linkLength,
-  xStrength,
-  yStrength,
-  componentStrength,
-  linkForce,
-  setLinkForce,
-  nodeRepulsionStrength,
-  circleLayout,
   nodeColorScheme,
   linkColorScheme,
   theme,
@@ -190,11 +181,18 @@ export function ForceGraph({
     }
     log.info("Init simulation");
 
-    const newSimulation = getSimulation(width, height, linkLength, xStrength, yStrength, nodeRepulsionStrength);
+    const newSimulation = getSimulation(
+      width,
+      height,
+      physicsSettings.linkLength,
+      physicsSettings.xStrength,
+      physicsSettings.yStrength,
+      physicsSettings.nodeRepulsionStrength
+    );
     initDragAndZoom(app, newSimulation, radius, setIsClickTooltipActive, setIsHoverTooltipActive, width, height);
 
     setSimulation(newSimulation);
-  }, [app, graphCurrent, linkLength]);
+  }, [app, graphCurrent, physicsSettings.linkLength]);
 
   // running simulation //
   useEffect(() => {
@@ -371,111 +369,111 @@ export function ForceGraph({
   // enable or disable link force //
   useEffect(() => {
     if (!simulation) return;
-    if (linkForce === false) {
+    if (physicsSettings.linkForce === false) {
       log.info("Disabling link force");
 
       simulation.force("link").strength(0);
       return;
     }
-    log.info("Enabling link force", linkLength);
+    log.info("Enabling link force", physicsSettings.linkLength);
 
     simulation.force(
       "link",
       d3
         .forceLink(graphCurrent.links)
         .id((d) => d.id)
-        .distance(linkLength)
+        .distance(physicsSettings.linkLength)
     );
 
     simulation.alpha(1).restart();
-  }, [linkForce]);
+  }, [physicsSettings.linkForce]);
 
   // change link length //
   useEffect(() => {
-    if (!simulation || linkForce === false) return;
-    log.info("changing link length", linkLength);
+    if (!simulation || physicsSettings.linkForce === false) return;
+    log.info("changing link length", physicsSettings.linkLength);
 
-    simulation.force("link").distance(linkLength);
+    simulation.force("link").distance(physicsSettings.linkLength);
     simulation.alpha(1).restart();
-  }, [linkLength]);
+  }, [physicsSettings.linkLength]);
 
   // change X Strength //
   useEffect(() => {
     if (!simulation) return;
-    if (xStrength === 0) {
+    if (physicsSettings.xStrength === 0) {
       simulation.force("x", null);
       return;
     }
-    log.info("Changing horizontal gravity", xStrength);
+    log.info("Changing horizontal gravity", physicsSettings.xStrength);
 
-    simulation.force("x", d3.forceX(width / 2).strength(xStrength));
+    simulation.force("x", d3.forceX(width / 2).strength(physicsSettings.xStrength));
     simulation.alpha(1).restart();
-  }, [xStrength, width, height]);
+  }, [physicsSettings.xStrength, width, height]);
 
   // change Y Strength //
   useEffect(() => {
     if (!simulation) return;
-    if (yStrength === 0) {
+    if (physicsSettings.yStrength === 0) {
       simulation.force("y", null);
       return;
     }
-    log.info("Changing vertical gravity", yStrength);
+    log.info("Changing vertical gravity", physicsSettings.yStrength);
 
-    simulation.force("y", d3.forceY(height / 2).strength(yStrength));
+    simulation.force("y", d3.forceY(height / 2).strength(physicsSettings.yStrength));
     simulation.alpha(1).restart();
-  }, [yStrength, width, height]);
+  }, [physicsSettings.yStrength, width, height]);
 
   // change component Strength //
   useEffect(() => {
     if (!simulation) return;
-    if (componentStrength === 0) {
+    if (physicsSettings.componentStrength === 0) {
       simulation.force("component", null);
       return;
     }
-    log.info("Determining component strength", componentStrength);
+    log.info("Determining component strength", physicsSettings.componentStrength);
 
     const [componentArray, componentSizeArray] = returnComponentData(graphCurrent);
 
     // this value can be increased to slightly increase performance
     const threshold = filterSettings.minCompSize > 3 ? filterSettings.minCompSize : 3;
 
-    simulation.force("component", componentForce(componentArray, componentSizeArray, threshold).strength(componentStrength));
+    simulation.force("component", componentForce(componentArray, componentSizeArray, threshold).strength(physicsSettings.componentStrength));
     simulation.alpha(1).restart();
-  }, [componentStrength, graphCurrent]);
+  }, [physicsSettings.componentStrength, graphCurrent]);
 
   // change node repulsion strength //
   useEffect(() => {
     if (!simulation) return;
-    if (nodeRepulsionStrength === 0) {
+    if (physicsSettings.nodeRepulsionStrength === 0) {
       simulation.force("charge", null);
       return;
     }
-    log.info("Changing node repulsion strength", nodeRepulsionStrength);
+    log.info("Changing node repulsion strength", physicsSettings.nodeRepulsionStrength);
 
-    simulation.force("charge").strength(nodeRepulsionStrength * nodeRepulsionMultiplier);
+    simulation.force("charge").strength(physicsSettings.nodeRepulsionStrength * nodeRepulsionMultiplier);
     simulation.alpha(1).restart();
-  }, [nodeRepulsionStrength]);
+  }, [physicsSettings.nodeRepulsionStrength]);
 
   // change graph border //
   useEffect(() => {
     if (!simulation || !width || !height) return;
 
-    if (!checkBorder) {
+    if (!physicsSettings.checkBorder) {
       log.info("Disabling graph border");
       simulation.on("tick.border", null);
     } else {
       log.info("Setting graph border");
       simulation.on("tick.border", () => {
-        borderCheck(circles, radius, borderHeight, borderWidth, width, height);
+        borderCheck(circles, radius, physicsSettings.borderHeight, physicsSettings.borderWidth, width, height);
       });
     }
     simulation.alpha(1).restart();
-  }, [checkBorder, borderHeight, borderWidth, width, height]);
+  }, [physicsSettings.checkBorder, physicsSettings.borderHeight, physicsSettings.borderWidth, width, height]);
 
   // enable circular layout
   useEffect(() => {
     if (!simulation) return;
-    if (circleLayout === false) {
+    if (physicsSettings.circleLayout === false) {
       log.info("Disabling circular layout");
 
       simulation.force("circleLayout", null);
@@ -485,10 +483,10 @@ export function ForceGraph({
     log.info("Enabling circular layout");
 
     // have to disable link force for this
-    setLinkForce(false);
+    setPhysicsSettings((prev) => ({ ...prev, linkForce: false }));
 
     simCircularLayout(graphCurrent, simulation);
-  }, [circleLayout, graphCurrent]);
+  }, [physicsSettings.circleLayout, graphCurrent]);
 
   // remove node
   useEffect(() => {

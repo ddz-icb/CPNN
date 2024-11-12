@@ -19,26 +19,8 @@ export function Sidebar({
   handleAddFile,
   filterSettings,
   setFilterSettings,
-  linkLength,
-  checkBorder,
-  borderHeight,
-  borderWidth,
-  setLinkLength,
-  setCheckBorder,
-  setBorderHeight,
-  setBorderWidth,
-  xStrength,
-  setXStrength,
-  yStrength,
-  setYStrength,
-  componentStrength,
-  setComponentStrength,
-  linkForce,
-  setLinkForce,
-  nodeRepulsionStrength,
-  setNodeRepulsionStrength,
-  circleLayout,
-  setCircleLayout,
+  physicsSettings,
+  setPhysicsSettings,
   handleNewMapping,
   mappingInputRef,
   handleUploadMappingClick,
@@ -49,11 +31,7 @@ export function Sidebar({
   handleDeleteMapping,
   handleGraphAbsUploadClick,
   handleGraphZeroUploadClick,
-  graphInputRef,
   handleNewFile,
-  nodeFilterText,
-  setNodeFilterText,
-  setNodeFilter,
   resetPhysics,
   resetFilters,
   graphAbsInputRef,
@@ -121,29 +99,7 @@ export function Sidebar({
     content = (
       <Navbar>
         <Back activeNavItem={activeNavItem} icon={<BackIcon />} onClick={() => handleNavItemClick("Main")} />
-        <PhysicsSidebar
-          linkLength={linkLength}
-          checkBorder={checkBorder}
-          borderHeight={borderHeight}
-          borderWidth={borderWidth}
-          setLinkLength={setLinkLength}
-          setCheckBorder={setCheckBorder}
-          setBorderHeight={setBorderHeight}
-          setBorderWidth={setBorderWidth}
-          xStrength={xStrength}
-          setXStrength={setXStrength}
-          yStrength={yStrength}
-          setYStrength={setYStrength}
-          componentStrength={componentStrength}
-          setComponentStrength={setComponentStrength}
-          linkForce={linkForce}
-          setLinkForce={setLinkForce}
-          nodeRepulsionStrength={nodeRepulsionStrength}
-          setNodeRepulsionStrength={setNodeRepulsionStrength}
-          circleLayout={circleLayout}
-          setCircleLayout={setCircleLayout}
-          resetPhysics={resetPhysics}
-        />
+        <PhysicsSidebar physicsSettings={physicsSettings} setPhysicsSettings={setPhysicsSettings} resetPhysics={resetPhysics} />
       </Navbar>
     );
   }

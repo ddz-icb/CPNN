@@ -47,16 +47,18 @@ function App() {
     minCompSize: minCompSizeInit,
   });
 
-  const [circleLayout, setCircleLayout] = useState(circleLayoutInit);
-  const [xStrength, setXStrength] = useState(xStrengthInit);
-  const [yStrength, setYStrength] = useState(yStrengthInit);
-  const [componentStrength, setComponentStrength] = useState(componentStrengthInit);
-  const [nodeRepulsionStrength, setNodeRepulsionStrength] = useState(nodeRepulsionStrengthInit);
-  const [linkForce, setLinkForce] = useState(linkForceInit);
-  const [linkLength, setLinkLength] = useState(linkLengthInit);
-  const [checkBorder, setCheckBorder] = useState(checkBorderInit);
-  const [borderWidth, setBorderWidth] = useState(borderWidthInit);
-  const [borderHeight, setBorderHeight] = useState(borderHeightInit);
+  const [physicsSettings, setPhysicsSettings] = useState({
+    circleLayout: circleLayoutInit,
+    xStrength: xStrengthInit,
+    yStrength: yStrengthInit,
+    componentStrength: componentStrengthInit,
+    nodeRepulsionStrength: nodeRepulsionStrengthInit,
+    linkForce: linkForceInit,
+    linkLength: linkLengthInit,
+    checkBorder: checkBorderInit,
+    borderWidth: borderWidthInit,
+    borderHeight: borderHeightInit,
+  });
 
   const [reset, setReset] = useState(false); // true indicates that the simulation has to be reloaded
 
@@ -139,17 +141,19 @@ function App() {
   };
 
   const resetPhysics = () => {
-    setLinkForce(linkForceInit);
-    setLinkLength(linkLengthInit);
-    setXStrength(xStrengthInit);
-    setYStrength(yStrengthInit);
-    setComponentStrength(componentStrengthInit);
-    setNodeRepulsionStrength(nodeRepulsionStrengthInit);
-    setCircleLayout(circleLayoutInit);
-
-    setCheckBorder(checkBorderInit);
-    setBorderWidth(borderWidthInit);
-    setBorderHeight(borderHeightInit);
+    setPhysicsSettings((prev) => ({
+      ...prev,
+      linkForce: linkForceInit,
+      linkLength: linkLengthInit,
+      xStrength: xStrengthInit,
+      yStrength: yStrengthInit,
+      componentStrength: componentStrengthInit,
+      nodeRepulsionStrength: nodeRepulsionStrengthInit,
+      circleLayout: circleLayoutInit,
+      checkBorder: checkBorderInit,
+      borderWidth: borderWidthInit,
+      borderHeight: borderHeightInit,
+    }));
   };
 
   const resetFilters = () => {
@@ -508,28 +512,10 @@ function App() {
         handleDeleteFile={handleDeleteFile}
         handleRemoveActiveFile={handleRemoveActiveFile}
         handleAddFile={handleAddFileClick}
-        linkLength={linkLength}
-        checkBorder={checkBorder}
-        borderHeight={borderHeight}
-        borderWidth={borderWidth}
-        setLinkLength={setLinkLength}
-        setCheckBorder={setCheckBorder}
-        setBorderHeight={setBorderHeight}
-        setBorderWidth={setBorderWidth}
+        physicsSettings={physicsSettings}
+        setPhysicsSettings={setPhysicsSettings}
         filterSettings={filterSettings}
         setFilterSettings={setFilterSettings}
-        xStrength={xStrength}
-        setXStrength={setXStrength}
-        yStrength={yStrength}
-        setYStrength={setYStrength}
-        componentStrength={componentStrength}
-        setComponentStrength={setComponentStrength}
-        linkForce={linkForce}
-        setLinkForce={setLinkForce}
-        nodeRepulsionStrength={nodeRepulsionStrength}
-        setNodeRepulsionStrength={setNodeRepulsionStrength}
-        circleLayout={circleLayout}
-        setCircleLayout={setCircleLayout}
         handleNewMapping={handleNewMapping}
         mappingInputRef={mappingInputRef}
         handleUploadMappingClick={handleUploadMappingClick}
@@ -559,17 +545,8 @@ function App() {
           setError={setError}
           filterSettings={filterSettings}
           setGraphCurrent={setGraphCurrent}
-          checkBorder={checkBorder}
-          borderWidth={borderWidth}
-          borderHeight={borderHeight}
-          linkLength={linkLength}
-          xStrength={xStrength}
-          yStrength={yStrength}
-          componentStrength={componentStrength}
-          linkForce={linkForce}
-          setLinkForce={setLinkForce}
-          nodeRepulsionStrength={nodeRepulsionStrength}
-          circleLayout={circleLayout}
+          physicsSettings={physicsSettings}
+          setPhysicsSettings={setPhysicsSettings}
           nodeColorScheme={nodeColorScheme}
           linkColorScheme={linkColorScheme}
           theme={theme}
