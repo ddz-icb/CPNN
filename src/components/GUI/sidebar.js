@@ -59,9 +59,9 @@ export function Sidebar({
   handleGraphZeroUploadClick,
   graphInputRef,
   handleNewFile,
-  nodeGroupsText,
-  setNodeGroupsText,
-  setNodeGroups,
+  nodeFilterText,
+  setNodeFilterText,
+  setNodeFilter,
   resetPhysics,
   resetFilter,
   graphAbsInputRef,
@@ -125,9 +125,9 @@ export function Sidebar({
           linkAttribsText={linkAttribsText}
           setLinkAttribsText={setLinkAttribsText}
           theme={theme}
-          nodeGroupsText={nodeGroupsText}
-          setNodeGroupsText={setNodeGroupsText}
-          setNodeGroups={setNodeGroups}
+          nodeFilterText={nodeFilterText}
+          setNodeFilterText={setNodeFilterText}
+          setNodeFilter={setNodeFilter}
           resetFilter={resetFilter}
         />
       </Navbar>

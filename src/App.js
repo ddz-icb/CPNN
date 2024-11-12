@@ -20,25 +20,25 @@ import {
   checkBorderInit,
   circleLayoutInit,
   componentStrengthInit,
-  linkAttribsInit,
-  linkAttribsTextInit,
+  linkFilterInit,
+  linkFilterTextInit,
   linkForceInit,
   linkLengthInit,
   linkThresholdInit,
   minComponentSizeInit,
-  nodeGroupsInit,
-  nodeGroupsTextInit,
+  nodeFilterInit,
+  nodeFilterTextInit,
   xStrengthInit,
   yStrengthInit,
 } from "./components/GraphStuff/graphInitValues";
 
 function App() {
   const [linkThreshold, setLinkThreshold] = useState(linkThresholdInit);
+  const [linkFilter, setLinkFilter] = useState(linkFilterInit);
+  const [linkFilterText, setLinkFilterText] = useState(linkFilterTextInit);
+  const [nodeFilter, setNodeFilter] = useState(nodeFilterInit);
+  const [nodeFilterText, setNodeFilterText] = useState(nodeFilterTextInit);
   const [minComponentSize, setMinComponentSize] = useState(minComponentSizeInit);
-  const [linkAttribs, setLinkAttribs] = useState(linkAttribsInit);
-  const [nodeGroups, setNodeGroups] = useState(nodeGroupsInit);
-  const [linkAttribsText, setLinkAttribsText] = useState(linkAttribsTextInit);
-  const [nodeGroupsText, setNodeGroupsText] = useState(nodeGroupsTextInit);
 
   const [linkForce, setLinkForce] = useState(linkForceInit);
   const [linkLength, setLinkLength] = useState(linkLengthInit);
@@ -152,11 +152,11 @@ function App() {
     setLinkThreshold(linkThresholdInit);
     setMinComponentSize(minComponentSizeInit);
 
-    setLinkAttribs(linkAttribsInit);
-    setLinkAttribsText(linkAttribsTextInit);
+    setLinkFilter(linkFilterInit);
+    setLinkFilterText(linkFilterTextInit);
 
-    setNodeGroups(nodeGroupsInit);
-    setNodeGroupsText(nodeGroupsTextInit);
+    setNodeFilter(nodeFilterInit);
+    setNodeFilterText(nodeFilterTextInit);
   };
 
   // adds new file //
@@ -505,10 +505,10 @@ function App() {
         handleAddFile={handleAddFileClick}
         linkThreshold={linkThreshold}
         minComponentSize={minComponentSize}
-        linkAttribs={linkAttribs}
+        linkAttribs={linkFilter}
         setLinkThreshold={setLinkThreshold}
         setMinComponentSize={setMinComponentSize}
-        setLinkAttribs={setLinkAttribs}
+        setLinkAttribs={setLinkFilter}
         linkLength={linkLength}
         checkBorder={checkBorder}
         borderHeight={borderHeight}
@@ -517,8 +517,8 @@ function App() {
         setCheckBorder={setCheckBorder}
         setBorderHeight={setBorderHeight}
         setBorderWidth={setBorderWidth}
-        linkAttribsText={linkAttribsText}
-        setLinkAttribsText={setLinkAttribsText}
+        linkAttribsText={linkFilterText}
+        setLinkAttribsText={setLinkFilterText}
         xStrength={xStrength}
         setXStrength={setXStrength}
         yStrength={yStrength}
@@ -544,9 +544,9 @@ function App() {
         handleGraphAbsUploadClick={handleGraphAbsUploadClick}
         handleGraphZeroUploadClick={handleGraphZeroUploadClick}
         handleNewFile={handleNewFile}
-        nodeGroupsText={nodeGroupsText}
-        setNodeGroupsText={setNodeGroupsText}
-        setNodeGroups={setNodeGroups}
+        nodeFilterText={nodeFilterText}
+        setNodeFilterText={setNodeFilterText}
+        setNodeFilter={setNodeFilter}
         resetPhysics={resetPhysics}
         resetFilter={resetFilter}
         graphAbsInputRef={graphAbsInputRef}
@@ -566,7 +566,7 @@ function App() {
           linkThreshold={linkThreshold}
           setGraphCurrent={setGraphCurrent}
           minComponentSize={minComponentSize}
-          linkAttribs={linkAttribs}
+          linkAttribs={linkFilter}
           checkBorder={checkBorder}
           borderWidth={borderWidth}
           borderHeight={borderHeight}
@@ -583,7 +583,7 @@ function App() {
           linkColorScheme={linkColorScheme}
           theme={theme}
           mapping={activeMapping}
-          nodeGroups={nodeGroups}
+          nodeFilter={nodeFilter}
           groupToColorIndex={groupToColorIndex}
           attribToColorIndex={attribToColorIndex}
         />

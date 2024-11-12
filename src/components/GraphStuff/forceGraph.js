@@ -16,7 +16,7 @@ import {
   filterByAttribs,
   returnComponentData,
   deleteNode,
-  filterNodeGroups,
+  filterNodes,
   filterActiveCircles,
 } from "./graphCalculations";
 import { downloadAsPNG, downloadAsSVG, downloadGraphJson } from "./download";
@@ -52,7 +52,7 @@ export function ForceGraph({
   linkColorScheme,
   theme,
   mapping,
-  nodeGroups,
+  nodeFilter,
   groupToColorIndex,
   attribToColorIndex,
 }) {
@@ -347,7 +347,7 @@ export function ForceGraph({
       "\n    Mininum component size: ",
       minComponentSize,
       "\n    Groups: ",
-      nodeGroups
+      nodeFilter
     );
 
     let filteredGraph = {
@@ -356,7 +356,7 @@ export function ForceGraph({
       links: allLinks,
     };
 
-    filteredGraph = filterNodeGroups(filteredGraph, nodeGroups);
+    filteredGraph = filterNodes(filteredGraph, nodeFilter);
     filteredGraph = filterNodesExist(filteredGraph);
 
     filteredGraph = filterByThreshold(filteredGraph, linkThreshold);
@@ -368,7 +368,7 @@ export function ForceGraph({
     filterActiveCircles(circles, filteredGraph, circleNodeMap);
     setFilteredAfterStart(true);
     setGraphCurrent(filteredGraph);
-  }, [linkThreshold, linkAttribs, nodeGroups, minComponentSize, allLinks, allNodes, circles]);
+  }, [linkThreshold, linkAttribs, nodeFilter, minComponentSize, allLinks, allNodes, circles]);
 
   // enable or disable link force //
   useEffect(() => {

@@ -1,9 +1,9 @@
 export const linkThresholdInit = 0.7;
 export const minComponentSizeInit = 2;
-export const linkAttribsInit = true;
-export const nodeGroupsInit = true;
-export const linkAttribsTextInit = "";
-export const nodeGroupsTextInit = "";
+export const linkFilterInit = true;
+export const nodeFilterInit = true;
+export const linkFilterTextInit = "";
+export const nodeFilterTextInit = "";
 
 export const linkForceInit = true;
 export const linkLengthInit = 70;

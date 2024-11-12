@@ -8,7 +8,7 @@ import "codemirror/theme/material.css";
 import "../Other/syntaxHighlighting";
 
 import { parseAttributesFilter } from "../Other/parser";
-import { parseGroupsFilter } from "../Other/parserFilterNodeGroups";
+import { parseGroupsFilter } from "../Other/parserNodeFilter";
 
 import { linkThresholdInit, minComponentSizeInit } from "../GraphStuff/graphInitValues";
 
@@ -24,9 +24,9 @@ export function FilterSidebar({
   linkAttribsText,
   setLinkAttribsText,
   theme: activeTheme,
-  nodeGroupsText,
-  setNodeGroupsText,
-  setNodeGroups,
+  nodeFilterText,
+  setNodeFilterText,
+  setNodeFilter,
   resetFilter,
 }) {
   const attribsEditorRef = useRef(null);
@@ -112,10 +112,10 @@ export function FilterSidebar({
     setLinkAttribsText(value);
   };
 
-  const handleNodeGroupsChange = (editor) => {
+  const handleNodeFilterChange = (editor) => {
     const value = editor.getValue();
 
-    setNodeGroupsText(value);
+    setNodeFilterText(value);
   };
 
   const runCodeButtonFilterAttribs = (event) => {
@@ -133,7 +133,7 @@ export function FilterSidebar({
   };
 
   const runCodeButtonFilterGroups = (event) => {
-    const value = nodeGroupsText;
+    const value = nodeFilterText;
 
     const parsedValue = parseGroupsFilter(value);
     if (String(parsedValue).split(" ")[0] === "Error:") {
@@ -141,8 +141,8 @@ export function FilterSidebar({
       log.error("invalid input on attribs filter");
     } else {
       setCompilerErrorGroups(null);
-      setNodeGroupsText(value);
-      setNodeGroups(parsedValue);
+      setNodeFilterText(value);
+      setNodeFilter(parsedValue);
     }
   };
 
@@ -172,7 +172,7 @@ export function FilterSidebar({
         scrollbarStyle: "null",
       });
       groupsEditorRef.current.setSize("100%", "100%");
-      groupsEditorRef.current.on("change", (editor) => handleNodeGroupsChange(editor));
+      groupsEditorRef.current.on("change", (editor) => handleNodeFilterChange(editor));
     }
   }, []);
 
@@ -205,7 +205,7 @@ export function FilterSidebar({
         textareaRef={groupsRef}
         compilerError={compilerErrorGroups}
         onClick={runCodeButtonFilterGroups}
-        defaultValue={nodeGroupsText}
+        defaultValue={nodeFilterText}
       />
       <SidebarFieldBlock
         text={"Set Minimum Component Size"}
