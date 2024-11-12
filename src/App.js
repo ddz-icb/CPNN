@@ -15,7 +15,7 @@ import { addUploadedFileDB, fromAllGetNameDB, getByNameDB, removeUploadedFileByN
 import {
   borderHeightInit,
   borderWidthInit,
-  chargeStrengthInit,
+  nodeRepulsionStrengthInit,
   checkBorderInit,
   circleLayoutInit,
   componentStrengthInit,
@@ -40,13 +40,13 @@ function App() {
   const [nodeFilterText, setNodeFilterText] = useState(nodeFilterTextInit);
   const [minCompSize, setMinCompSize] = useState(minCompSizeInit);
 
+  const [circleLayout, setCircleLayout] = useState(circleLayoutInit);
   const [xStrength, setXStrength] = useState(xStrengthInit);
   const [yStrength, setYStrength] = useState(yStrengthInit);
-  const [linkForce, setLinkForce] = useState(linkForceInit);
   const [componentStrength, setComponentStrength] = useState(componentStrengthInit);
+  const [linkForce, setLinkForce] = useState(linkForceInit);
   const [linkLength, setLinkLength] = useState(linkLengthInit);
-  const [chargeStrength, setChargeStrength] = useState(chargeStrengthInit);
-  const [circleLayout, setCircleLayout] = useState(circleLayoutInit);
+  const [nodeRepulsionStrength, setNodeRepulsionStrength] = useState(nodeRepulsionStrengthInit);
 
   const [checkBorder, setCheckBorder] = useState(checkBorderInit);
   const [borderWidth, setBorderWidth] = useState(borderWidthInit);
@@ -138,7 +138,7 @@ function App() {
     setXStrength(xStrengthInit);
     setYStrength(yStrengthInit);
     setComponentStrength(componentStrengthInit);
-    setChargeStrength(chargeStrengthInit);
+    setNodeRepulsionStrength(nodeRepulsionStrengthInit);
     setCircleLayout(circleLayoutInit);
 
     setCheckBorder(checkBorderInit);
@@ -525,8 +525,8 @@ function App() {
         setComponentStrength={setComponentStrength}
         linkForce={linkForce}
         setLinkForce={setLinkForce}
-        chargeStrength={chargeStrength}
-        setChargeStrength={setChargeStrength}
+        nodeRepulsionStrength={nodeRepulsionStrength}
+        setNodeRepulsionStrength={setNodeRepulsionStrength}
         circleLayout={circleLayout}
         setCircleLayout={setCircleLayout}
         handleNewMapping={handleNewMapping}
@@ -572,7 +572,7 @@ function App() {
           componentStrength={componentStrength}
           linkForce={linkForce}
           setLinkForce={setLinkForce}
-          chargeStrength={chargeStrength}
+          nodeRepulsionStrength={nodeRepulsionStrength}
           circleLayout={circleLayout}
           nodeColorScheme={nodeColorScheme}
           linkColorScheme={linkColorScheme}

@@ -5,7 +5,7 @@ import { SidebarButtonRect, SidebarFieldBlock, SidebarSliderBlock, SidebarSwitch
 import {
   borderHeightInit,
   borderWidthInit,
-  chargeStrengthInit,
+  nodeRepulsionStrengthInit,
   componentStrengthInit,
   linkLengthInit,
   xStrengthInit,
@@ -29,8 +29,8 @@ export function PhysicsSidebar({
   setComponentStrength,
   linkForce,
   setLinkForce,
-  chargeStrength,
-  setChargeStrength,
+  nodeRepulsionStrength,
+  setNodeRepulsionStrength,
   circleLayout,
   setCircleLayout,
   resetPhysics,
@@ -41,7 +41,7 @@ export function PhysicsSidebar({
   const [xStrengthText, setXStrengthText] = useState(xStrength);
   const [yStrengthText, setYStrengthText] = useState(yStrength);
   const [componentStrengthText, setComponentStrengthText] = useState(componentStrength);
-  const [chargeStrengthText, setChargeStrengthText] = useState(chargeStrength);
+  const [nodeRepulsionStrengthText, setNodeRepulsionStrengthText] = useState(nodeRepulsionStrength);
 
   const [gravityAdvanced, setGravityAdvanced] = useState(false);
 
@@ -54,7 +54,7 @@ export function PhysicsSidebar({
     setXStrengthText(xStrengthInit);
     setYStrengthText(yStrengthInit);
     setComponentStrengthText(componentStrengthInit);
-    setChargeStrengthText(chargeStrengthInit);
+    setNodeRepulsionStrengthText(nodeRepulsionStrengthInit);
     setGravityAdvanced(false);
   };
 
@@ -260,31 +260,31 @@ export function PhysicsSidebar({
     setLinkForce(!linkForce);
   };
 
-  const handleChargeStrengthSlider = (event) => {
+  const handleNodeRepulsionStrengthSlider = (event) => {
     const value = event.target.value;
-    setChargeStrength(value);
-    setChargeStrengthText(value);
+    setNodeRepulsionStrength(value);
+    setNodeRepulsionStrengthText(value);
   };
 
-  const handleChargeStrengthField = (event) => {
+  const handleNodeRepulsionStrengthField = (event) => {
     const value = event.target.value;
     const intValue = parseInt(value);
 
     if (value === "" || !isNaN(intValue)) {
-      setChargeStrengthText(value);
+      setNodeRepulsionStrengthText(value);
     }
   };
 
-  const handleChargeStrengthFieldBlur = (event) => {
+  const handleNodeRepulsionStrengthFieldBlur = (event) => {
     let value = event.target.value;
     const intValue = parseInt(value);
 
     if (value === "") {
-      setChargeStrength(0);
-      setChargeStrengthText(0);
+      setNodeRepulsionStrength(0);
+      setNodeRepulsionStrengthText(0);
     } else if (!isNaN(intValue)) {
-      setChargeStrength(value);
-      setChargeStrengthText(value);
+      setNodeRepulsionStrength(value);
+      setNodeRepulsionStrengthText(value);
     }
   };
 
@@ -361,11 +361,11 @@ export function PhysicsSidebar({
         max={10}
         stepSlider={1}
         stepField={0.5}
-        value={chargeStrength}
-        valueText={chargeStrengthText}
-        onChangeSlider={handleChargeStrengthSlider}
-        onChangeField={handleChargeStrengthField}
-        onChangeBlur={handleChargeStrengthFieldBlur}
+        value={nodeRepulsionStrength}
+        valueText={nodeRepulsionStrengthText}
+        onChangeSlider={handleNodeRepulsionStrengthSlider}
+        onChangeField={handleNodeRepulsionStrengthField}
+        onChangeBlur={handleNodeRepulsionStrengthFieldBlur}
       />
       <SidebarSwitchBlock text={"Enable Link Force"} value={linkForce} onChange={handleLinkForce} />
       {linkForce && (

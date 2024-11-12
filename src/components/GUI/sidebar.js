@@ -41,8 +41,8 @@ export function Sidebar({
   setComponentStrength,
   linkForce,
   setLinkForce,
-  chargeStrength,
-  setChargeStrength,
+  nodeRepulsionStrength,
+  setNodeRepulsionStrength,
   circleLayout,
   setCircleLayout,
   handleNewMapping,
@@ -151,8 +151,8 @@ export function Sidebar({
           setComponentStrength={setComponentStrength}
           linkForce={linkForce}
           setLinkForce={setLinkForce}
-          chargeStrength={chargeStrength}
-          setChargeStrength={setChargeStrength}
+          nodeRepulsionStrength={nodeRepulsionStrength}
+          setNodeRepulsionStrength={setNodeRepulsionStrength}
           circleLayout={circleLayout}
           setCircleLayout={setCircleLayout}
           resetPhysics={resetPhysics}

@@ -2,10 +2,10 @@ import * as d3 from "d3";
 
 const accuracyBarnesHut = 0.1;
 const maxDistanceChargeForce = 300;
-export const chargeStrengthMultiplier = -100;
+export const nodeRepulsionMultiplier = -100;
 export const borderMultiplier = 10;
 
-export function getSimulation(width, height, linkLength, xStrength, yStrength, chargeStrength) {
+export function getSimulation(width, height, linkLength, xStrength, yStrength, nodeRepulsionStrength) {
   const simulation = d3
     .forceSimulation()
     .force(
@@ -14,7 +14,7 @@ export function getSimulation(width, height, linkLength, xStrength, yStrength, c
         .forceManyBody()
         .theta(accuracyBarnesHut)
         .distanceMax(maxDistanceChargeForce)
-        .strength(chargeStrength * chargeStrengthMultiplier)
+        .strength(nodeRepulsionStrength * nodeRepulsionMultiplier)
     )
     .force(
       "link",

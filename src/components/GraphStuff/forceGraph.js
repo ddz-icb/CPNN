@@ -20,7 +20,7 @@ import {
   filterActiveCircles,
 } from "./graphCalculations.js";
 import { downloadAsPNG, downloadAsSVG, downloadGraphJson } from "./download.js";
-import { getSimulation, borderCheck, componentForce, chargeStrengthMultiplier } from "./graphPhysics.js";
+import { getSimulation, borderCheck, componentForce, nodeRepulsionMultiplier } from "./graphPhysics.js";
 import { simCircularLayout } from "./simulationHandling.js";
 
 export function ForceGraph({
@@ -45,7 +45,7 @@ export function ForceGraph({
   componentStrength,
   linkForce,
   setLinkForce,
-  chargeStrength,
+  nodeRepulsionStrength,
   circleLayout,
   nodeColorScheme,
   linkColorScheme,
@@ -192,7 +192,7 @@ export function ForceGraph({
     }
     log.info("Init simulation");
 
-    const newSimulation = getSimulation(width, height, linkLength, xStrength, yStrength, chargeStrength);
+    const newSimulation = getSimulation(width, height, linkLength, xStrength, yStrength, nodeRepulsionStrength);
     initDragAndZoom(app, newSimulation, radius, setIsClickTooltipActive, setIsHoverTooltipActive, width, height);
 
     setSimulation(newSimulation);
@@ -444,18 +444,18 @@ export function ForceGraph({
     simulation.alpha(1).restart();
   }, [componentStrength, graphCurrent]);
 
-  // change charge strength //
+  // change node repulsion strength //
   useEffect(() => {
     if (!simulation) return;
-    if (chargeStrength === 0) {
+    if (nodeRepulsionStrength === 0) {
       simulation.force("charge", null);
       return;
     }
-    log.info("Changing node repulsion strength", chargeStrength);
+    log.info("Changing node repulsion strength", nodeRepulsionStrength);
 
-    simulation.force("charge").strength(chargeStrength * chargeStrengthMultiplier);
+    simulation.force("charge").strength(nodeRepulsionStrength * nodeRepulsionMultiplier);
     simulation.alpha(1).restart();
-  }, [chargeStrength]);
+  }, [nodeRepulsionStrength]);
 
   // change graph border //
   useEffect(() => {
