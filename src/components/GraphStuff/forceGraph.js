@@ -34,10 +34,7 @@ export function ForceGraph({
   setReset,
   setError,
   filterSettings,
-  setFilterSettings,
   setGraphCurrent,
-  minCompSize,
-  linkFilter,
   checkBorder,
   borderWidth,
   borderHeight,
@@ -53,7 +50,6 @@ export function ForceGraph({
   linkColorScheme,
   theme,
   mapping,
-  nodeFilter,
   nodeAttribsToColorIndices,
   linkAttribsToColorIndices,
 }) {
@@ -347,9 +343,9 @@ export function ForceGraph({
       "\n    Attributes: ",
       filterSettings.linkFilter,
       "\n    Mininum component size: ",
-      minCompSize,
+      filterSettings.minCompSize,
       "\n    Groups: ",
-      nodeFilter
+      filterSettings.nodeFilter
     );
 
     let filteredGraph = {
@@ -358,19 +354,19 @@ export function ForceGraph({
       links: allLinks,
     };
 
-    filteredGraph = filterNodes(filteredGraph, nodeFilter);
+    filteredGraph = filterNodes(filteredGraph, filterSettings.nodeFilter);
     filteredGraph = filterNodesExist(filteredGraph);
 
     filteredGraph = filterByThreshold(filteredGraph, filterSettings.linkThreshold);
     filteredGraph = filterByAttribs(filteredGraph, filterSettings.linkFilter);
 
-    filteredGraph = filterMinCompSize(filteredGraph, minCompSize);
+    filteredGraph = filterMinCompSize(filteredGraph, filterSettings.minCompSize);
     filteredGraph = filterNodesExist(filteredGraph);
 
     filterActiveCircles(circles, filteredGraph, circleNodeMap);
     setFilteredAfterStart(true);
     setGraphCurrent(filteredGraph);
-  }, [filterSettings.linkThreshold, filterSettings.linkFilter, nodeFilter, minCompSize, allLinks, allNodes, circles]);
+  }, [filterSettings.linkThreshold, filterSettings.linkFilter, filterSettings.nodeFilter, filterSettings.minCompSize, allLinks, allNodes, circles]);
 
   // enable or disable link force //
   useEffect(() => {
@@ -441,7 +437,7 @@ export function ForceGraph({
     const [componentArray, componentSizeArray] = returnComponentData(graphCurrent);
 
     // this value can be increased to slightly increase performance
-    const threshold = minCompSize > 3 ? minCompSize : 3;
+    const threshold = filterSettings.minCompSize > 3 ? filterSettings.minCompSize : 3;
 
     simulation.force("component", componentForce(componentArray, componentSizeArray, threshold).strength(componentStrength));
     simulation.alpha(1).restart();

@@ -46,12 +46,6 @@ function App() {
     nodeFilterText: nodeFilterTextInit,
     minCompSize: minCompSizeInit,
   });
-  const [linkThreshold, setLinkThreshold] = useState(linkThresholdInit);
-  const [linkFilter, setLinkFilter] = useState(linkFilterInit);
-  const [linkFilterText, setLinkFilterText] = useState(linkFilterTextInit);
-  const [nodeFilter, setNodeFilter] = useState(nodeFilterInit);
-  const [nodeFilterText, setNodeFilterText] = useState(nodeFilterTextInit);
-  const [minCompSize, setMinCompSize] = useState(minCompSizeInit);
 
   const [circleLayout, setCircleLayout] = useState(circleLayoutInit);
   const [xStrength, setXStrength] = useState(xStrengthInit);
@@ -159,14 +153,15 @@ function App() {
   };
 
   const resetFilters = () => {
-    setLinkThreshold(linkThresholdInit);
-    setMinCompSize(minCompSizeInit);
-
-    setLinkFilter(linkFilterInit);
-    setLinkFilterText(linkFilterTextInit);
-
-    setNodeFilter(nodeFilterInit);
-    setNodeFilterText(nodeFilterTextInit);
+    setFilterSettings((prev) => ({
+      ...prev,
+      linkThreshold: linkThresholdInit,
+      minCompSize: minCompSizeInit,
+      linkFilter: linkFilterInit,
+      linkFilterText: linkFilterTextInit,
+      nodeFilter: nodeFilterInit,
+      nodeFilterText: nodeFilterTextInit,
+    }));
   };
 
   // adds new file //
@@ -513,12 +508,6 @@ function App() {
         handleDeleteFile={handleDeleteFile}
         handleRemoveActiveFile={handleRemoveActiveFile}
         handleAddFile={handleAddFileClick}
-        linkThreshold={linkThreshold}
-        minCompSize={minCompSize}
-        linkAttribs={linkFilter}
-        setLinkThreshold={setLinkThreshold}
-        setMinCompSize={setMinCompSize}
-        setLinkAttribs={setLinkFilter}
         linkLength={linkLength}
         checkBorder={checkBorder}
         borderHeight={borderHeight}
@@ -527,8 +516,8 @@ function App() {
         setCheckBorder={setCheckBorder}
         setBorderHeight={setBorderHeight}
         setBorderWidth={setBorderWidth}
-        linkAttribsText={linkFilterText}
-        setLinkAttribsText={setLinkFilterText}
+        filterSettings={filterSettings}
+        setFilterSettings={setFilterSettings}
         xStrength={xStrength}
         setXStrength={setXStrength}
         yStrength={yStrength}
@@ -552,9 +541,6 @@ function App() {
         handleGraphAbsUploadClick={handleGraphAbsUploadClick}
         handleGraphZeroUploadClick={handleGraphZeroUploadClick}
         handleNewFile={handleNewFile}
-        nodeFilterText={nodeFilterText}
-        setNodeFilterText={setNodeFilterText}
-        setNodeFilter={setNodeFilter}
         resetPhysics={resetPhysics}
         resetFilters={resetFilters}
         graphAbsInputRef={graphAbsInputRef}
@@ -572,11 +558,7 @@ function App() {
           setReset={setReset}
           setError={setError}
           filterSettings={filterSettings}
-          setFilterSettings={setFilterSettings}
-          linkThreshold={linkThreshold}
           setGraphCurrent={setGraphCurrent}
-          minCompSize={minCompSize}
-          linkFilter={linkFilter}
           checkBorder={checkBorder}
           borderWidth={borderWidth}
           borderHeight={borderHeight}
@@ -592,7 +574,6 @@ function App() {
           linkColorScheme={linkColorScheme}
           theme={theme}
           mapping={activeMapping}
-          nodeFilter={nodeFilter}
           nodeAttribsToColorIndices={nodeAttribsToColorIndices}
           linkAttribsToColorIndices={linkAttribsToColorIndices}
         />

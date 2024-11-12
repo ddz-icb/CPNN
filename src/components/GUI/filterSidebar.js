@@ -14,39 +14,25 @@ import { linkThresholdInit, minCompSizeInit } from "../GraphStuff/graphInitValue
 
 import { SidebarButtonRect, SidebarCodeEditorBlock, SidebarFieldBlock, SidebarSliderBlock } from "./sidebar.js";
 
-export function FilterSidebar({
-  linkThreshold,
-  minCompSize,
-  linkAttribs,
-  setLinkThreshold,
-  setMinCompSize,
-  setLinkAttribs,
-  linkAttribsText,
-  setLinkAttribsText,
-  theme,
-  nodeFilterText,
-  setNodeFilterText,
-  setNodeFilter,
-  resetFilters,
-}) {
-  const attribsEditorRef = useRef(null);
-  const groupsEditorRef = useRef(null);
+export function FilterSidebar({ linkThreshold, minCompSize, filterSettings, setFilterSettings, theme, resetFilters }) {
+  const linkFilterEditorRef = useRef(null);
+  const nodeFilterEditorRef = useRef(null);
 
-  const attribsRef = useRef(null);
-  const groupsRef = useRef(null);
+  const linkFilterTextAreaRef = useRef(null);
+  const nodeFilterTextAreaRef = useRef(null);
 
   const [linkThresholdText, setLinkThresholdText] = useState(linkThreshold);
   const [minCompSizeText, setMinCompSizeText] = useState(minCompSize);
-  const [compilerErrorAttribs, setCompilerErrorAttribs] = useState(null);
-  const [compilerErrorGroups, setCompilerErrorGroups] = useState(null);
+  const [compilerErrorLinkFilter, setCompilerErrorLinkFilter] = useState(null);
+  const [compilerErrorNodeFilter, setCompilerErrorNodeFilter] = useState(null);
 
   const handleResetFilters = () => {
     resetFilters();
 
     setLinkThresholdText(linkThresholdInit);
     setMinCompSizeText(minCompSizeInit);
-    setCompilerErrorAttribs(null);
-    setCompilerErrorGroups(null);
+    setCompilerErrorLinkFilter(null);
+    setCompilerErrorNodeFilter(null);
   };
 
   const handleLinkThresholdSliderChange = (event) => {
@@ -54,7 +40,7 @@ export function FilterSidebar({
 
     if (value >= 0 && value <= 1) {
       setLinkThresholdText(value);
-      setLinkThreshold(value);
+      setFilterSettings((prev) => ({ ...prev, linkThreshold: value }));
     }
   };
 
@@ -72,11 +58,11 @@ export function FilterSidebar({
     if (value === "") {
       event.target.innerText = 0;
       setLinkThresholdText(0);
-      setLinkThreshold(0);
+      setFilterSettings((prev) => ({ ...prev, linkThreshold: 0 }));
     } else if (value >= 0 && value <= 1) {
       event.target.innerText = value;
       setLinkThresholdText(value);
-      setLinkThreshold(value);
+      setFilterSettings((prev) => ({ ...prev, linkThreshold: value }));
     }
   };
 
@@ -98,81 +84,81 @@ export function FilterSidebar({
     if (value === "") {
       event.target.innerText = 1;
       setMinCompSizeText(1);
-      setMinCompSize(1);
+      setFilterSettings((prev) => ({ ...prev, minCompSize: 1 }));
     } else if (!isNaN(intValue) && intValue >= 0) {
       event.target.innerText = intValue;
       setMinCompSizeText(intValue);
-      setMinCompSize(intValue);
+      setFilterSettings((prev) => ({ ...prev, minCompSize: intValue }));
     }
   };
 
   const handleLinkAttribsChange = (editor) => {
     const value = editor.getValue();
 
-    setLinkAttribsText(value);
+    setFilterSettings((prev) => ({ ...prev, linkFilterText: value }));
   };
 
   const handleNodeFilterChange = (editor) => {
     const value = editor.getValue();
 
-    setNodeFilterText(value);
+    setFilterSettings((prev) => ({ ...prev, nodeFilterText: value }));
   };
 
   const runCodeButtonFilterAttribs = (event) => {
-    const value = linkAttribsText;
+    const value = filterSettings.linkFilterText;
 
     const parsedValue = parseAttributesFilter(value);
     if (String(parsedValue).split(" ")[0] === "Error:") {
-      setCompilerErrorAttribs(parsedValue);
+      setCompilerErrorLinkFilter(parsedValue);
       log.error("invalid input on attribs filter");
     } else {
-      setCompilerErrorAttribs(null);
-      setLinkAttribsText(value);
-      setLinkAttribs(parsedValue);
+      setCompilerErrorLinkFilter(null);
+      setFilterSettings((prev) => ({ ...prev, linkFilterText: value }));
+      setFilterSettings((prev) => ({ ...prev, linkFilter: parsedValue }));
     }
   };
 
   const runCodeButtonFilterGroups = (event) => {
-    const value = nodeFilterText;
+    const value = filterSettings.nodeFilterText;
 
     const parsedValue = parseGroupsFilter(value);
     if (String(parsedValue).split(" ")[0] === "Error:") {
-      setCompilerErrorGroups(parsedValue);
+      setCompilerErrorNodeFilter(parsedValue);
       log.error("invalid input on attribs filter");
     } else {
-      setCompilerErrorGroups(null);
-      setNodeFilterText(value);
-      setNodeFilter(parsedValue);
+      setCompilerErrorNodeFilter(null);
+      setFilterSettings((prev) => ({ ...prev, nodeFilterText: value }));
+      setFilterSettings((prev) => ({ ...prev, nodeFilter: parsedValue }));
     }
   };
 
   // initialize link attribs filter editor //
   useEffect(() => {
-    if (attribsRef.current) {
-      attribsEditorRef.current = CodeMirror.fromTextArea(attribsRef.current, {
+    if (linkFilterTextAreaRef.current) {
+      linkFilterEditorRef.current = CodeMirror.fromTextArea(linkFilterTextAreaRef.current, {
         mode: "customMode",
         theme: theme === "light" ? "default" : "material",
         linewrapping: false,
         bracketMatching: true,
         scrollbarStyle: "null",
       });
-      attribsEditorRef.current.setSize("100%", "100%");
-      attribsEditorRef.current.on("change", (editor) => handleLinkAttribsChange(editor));
+      linkFilterEditorRef.current.setSize("100%", "100%");
+      linkFilterEditorRef.current.on("change", (editor) => handleLinkAttribsChange(editor));
     }
   }, []);
 
   // initialize node group filter editor //
   useEffect(() => {
-    if (groupsRef.current) {
-      groupsEditorRef.current = CodeMirror.fromTextArea(groupsRef.current, {
+    if (nodeFilterTextAreaRef.current) {
+      nodeFilterEditorRef.current = CodeMirror.fromTextArea(nodeFilterTextAreaRef.current, {
         mode: "customMode",
         theme: theme === "light" ? "default" : "material",
         linewrapping: false,
         bracketMatching: true,
         scrollbarStyle: "null",
       });
-      groupsEditorRef.current.setSize("100%", "100%");
-      groupsEditorRef.current.on("change", (editor) => handleNodeFilterChange(editor));
+      nodeFilterEditorRef.current.setSize("100%", "100%");
+      nodeFilterEditorRef.current.on("change", (editor) => handleNodeFilterChange(editor));
     }
   }, []);
 
@@ -195,17 +181,17 @@ export function FilterSidebar({
       />
       <SidebarCodeEditorBlock
         text={"Filter Links by Attributes"}
-        textareaRef={attribsRef}
-        compilerError={compilerErrorAttribs}
+        textareaRef={linkFilterTextAreaRef}
+        compilerError={compilerErrorLinkFilter}
         onClick={runCodeButtonFilterAttribs}
-        defaultValue={linkAttribsText}
+        defaultValue={filterSettings.linkFilterText}
       />
       <SidebarCodeEditorBlock
         text={"Filter Nodes by Attributes"}
-        textareaRef={groupsRef}
-        compilerError={compilerErrorGroups}
+        textareaRef={nodeFilterTextAreaRef}
+        compilerError={compilerErrorNodeFilter}
         onClick={runCodeButtonFilterGroups}
-        defaultValue={nodeFilterText}
+        defaultValue={filterSettings.nodeFilterText}
       />
       <SidebarFieldBlock
         text={"Set Minimum Component Size"}

@@ -17,14 +17,8 @@ export function Sidebar({
   handleDeleteFile,
   handleRemoveActiveFile,
   handleAddFile,
-  linkThreshold,
-  minCompSize,
-  linkAttribs,
-  setLinkThreshold,
-  setMinCompSize,
-  setLinkAttribs,
-  linkAttribsText,
-  setLinkAttribsText,
+  filterSettings,
+  setFilterSettings,
   linkLength,
   checkBorder,
   borderHeight,
@@ -114,18 +108,11 @@ export function Sidebar({
       <Navbar>
         <Back activeNavItem={activeNavItem} icon={<BackIcon />} onClick={() => handleNavItemClick("Main")} />
         <FilterSidebar
-          linkThreshold={linkThreshold}
-          minCompSize={minCompSize}
-          linkAttribs={linkAttribs}
-          setLinkThreshold={setLinkThreshold}
-          setMinCompSize={setMinCompSize}
-          setLinkAttribs={setLinkAttribs}
-          linkAttribsText={linkAttribsText}
-          setLinkAttribsText={setLinkAttribsText}
+          linkThreshold={filterSettings.linkThreshold}
+          minCompSize={filterSettings.minCompSize}
+          filterSettings={filterSettings}
+          setFilterSettings={setFilterSettings}
           theme={theme}
-          nodeFilterText={nodeFilterText}
-          setNodeFilterText={setNodeFilterText}
-          setNodeFilter={setNodeFilter}
           resetFilters={resetFilters}
         />
       </Navbar>
