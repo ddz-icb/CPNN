@@ -73,5 +73,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "jsx-ast-utils": "^3.3.5"
   }
 }

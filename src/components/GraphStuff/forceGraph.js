@@ -33,10 +33,11 @@ export function ForceGraph({
   circleBorderColor,
   setReset,
   setError,
-  linkThreshold,
+  filterSettings,
+  setFilterSettings,
   setGraphCurrent,
   minCompSize,
-  linkAttribs,
+  linkFilter,
   checkBorder,
   borderWidth,
   borderHeight,
@@ -342,9 +343,9 @@ export function ForceGraph({
     if (!graphCurrent || !allLinks || !circles || !allNodes) return;
     log.info(
       "Filtering nodes and links.\n    Threshold:  ",
-      linkThreshold,
+      filterSettings.linkThreshold,
       "\n    Attributes: ",
-      linkAttribs,
+      filterSettings.linkFilter,
       "\n    Mininum component size: ",
       minCompSize,
       "\n    Groups: ",
@@ -360,8 +361,8 @@ export function ForceGraph({
     filteredGraph = filterNodes(filteredGraph, nodeFilter);
     filteredGraph = filterNodesExist(filteredGraph);
 
-    filteredGraph = filterByThreshold(filteredGraph, linkThreshold);
-    filteredGraph = filterByAttribs(filteredGraph, linkAttribs);
+    filteredGraph = filterByThreshold(filteredGraph, filterSettings.linkThreshold);
+    filteredGraph = filterByAttribs(filteredGraph, filterSettings.linkFilter);
 
     filteredGraph = filterMinCompSize(filteredGraph, minCompSize);
     filteredGraph = filterNodesExist(filteredGraph);
@@ -369,7 +370,7 @@ export function ForceGraph({
     filterActiveCircles(circles, filteredGraph, circleNodeMap);
     setFilteredAfterStart(true);
     setGraphCurrent(filteredGraph);
-  }, [linkThreshold, linkAttribs, nodeFilter, minCompSize, allLinks, allNodes, circles]);
+  }, [filterSettings.linkThreshold, filterSettings.linkFilter, nodeFilter, minCompSize, allLinks, allNodes, circles]);
 
   // enable or disable link force //
   useEffect(() => {

@@ -38,6 +38,14 @@ import {
 import { circleBorderColorInit, linkColorSchemeInit, nodeColorSchemeInit, themeInit } from "./components/Other/appearanceInitvalues.js";
 
 function App() {
+  const [filterSettings, setFilterSettings] = useState({
+    linkThreshold: linkThresholdInit,
+    linkFilter: linkFilterInit,
+    linkFilterText: linkFilterTextInit,
+    nodeFilter: nodeFilterInit,
+    nodeFilterText: nodeFilterTextInit,
+    minCompSize: minCompSizeInit,
+  });
   const [linkThreshold, setLinkThreshold] = useState(linkThresholdInit);
   const [linkFilter, setLinkFilter] = useState(linkFilterInit);
   const [linkFilterText, setLinkFilterText] = useState(linkFilterTextInit);
@@ -563,10 +571,12 @@ function App() {
           circleBorderColor={circleBorderColor}
           setReset={setReset}
           setError={setError}
+          filterSettings={filterSettings}
+          setFilterSettings={setFilterSettings}
           linkThreshold={linkThreshold}
           setGraphCurrent={setGraphCurrent}
           minCompSize={minCompSize}
-          linkAttribs={linkFilter}
+          linkFilter={linkFilter}
           checkBorder={checkBorder}
           borderWidth={borderWidth}
           borderHeight={borderHeight}
