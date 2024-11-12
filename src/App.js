@@ -31,6 +31,7 @@ import {
   xStrengthInit,
   yStrengthInit,
 } from "./components/GraphStuff/graphInitValues.js";
+import { circleBorderColorInit, linkColorSchemeInit, nodeColorSchemeInit, themeInit } from "./components/Other/appearanceInitvalues.js";
 
 function App() {
   const [linkThreshold, setLinkThreshold] = useState(linkThresholdInit);
@@ -75,11 +76,11 @@ function App() {
   const [downloadPNG, setDownloadPNG] = useState(null); // on state change: indicates graph should be downloaded
   const [downloadSVG, setDownloadSVG] = useState(null); // on state change: indicates graph should be downloaded
 
-  const [theme, setTheme] = useState("light");
-  const [circleBorderColor, setCircleBorderColor] = useState("#0d3b66");
+  const [theme, setTheme] = useState(themeInit);
+  const [circleBorderColor, setCircleBorderColor] = useState(circleBorderColorInit);
 
-  const [nodeColorScheme, setNodeColorScheme] = useState(["Many Colors (18 colors)", manyColors]);
-  const [linkColorScheme, setLinkColorScheme] = useState(["IBM (5 colors)", IBMAntiBlindness]);
+  const [nodeColorScheme, setNodeColorScheme] = useState(nodeColorSchemeInit);
+  const [linkColorScheme, setLinkColorScheme] = useState(linkColorSchemeInit);
 
   const [activeMapping, setActiveMapping] = useState(null);
   const [uploadedMappings, setUploadedMappings] = useState(null);
