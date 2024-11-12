@@ -250,11 +250,12 @@ export function ForceGraph({
   }, [downloadJSON]);
 
   // download graph as png //
+  // <-- put this in app.js? or separate file? -->
   useEffect(() => {
     if (downloadPNG != null && graphCurrent) {
       log.info("Downloading graph as PNG");
 
-      changeCircleBorderColor(circles, "#0d3b66");
+      changeCircleBorderColor(circles, circleBorderColorInit);
 
       downloadAsPNG(app, document);
 
