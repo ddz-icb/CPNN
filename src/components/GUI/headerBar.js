@@ -3,12 +3,11 @@ import { Tooltip } from "react-tooltip";
 
 import { Colors } from "./headerBarColors.js";
 import { Mapping } from "./headerBarMapping.js";
-import { DropDownExport } from "./headerBarExport.js";
+import { HeaderBarExport } from "./headerBarExport.js";
 
 export function HeaderBar({
-  handleDownloadJSONClick,
-  handleDownloadPNGClick,
-  handleDownloadSVGClick,
+  download,
+  setDownload,
   handleUploadSchemeClick,
   colorSchemeInputRef,
   handleNewScheme,
@@ -58,10 +57,9 @@ export function HeaderBar({
         setActiveMenu={setActiveMenu}
         handleActiveMenuClick={handleActiveMenuClick}
       />
-      <DropDownExport
-        handleDownloadJSONClick={handleDownloadJSONClick}
-        handleDownloadPNGClick={handleDownloadPNGClick}
-        handleDownloadSVGClick={handleDownloadSVGClick}
+      <HeaderBarExport
+        download={download}
+        setDownload={setDownload}
         activeMenu={activeMenu}
         setActiveMenu={setActiveMenu}
         handleActiveMenuClick={handleActiveMenuClick}

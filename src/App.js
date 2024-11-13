@@ -289,18 +289,6 @@ function App() {
     log.info("Graph loaded successfully:", graph);
   };
 
-  const handleDownloadJSONClick = () => {
-    setDownload((prev) => ({ ...prev, downloadJson: !download.downloadJson }));
-  };
-
-  const handleDownloadPNGClick = () => {
-    setDownload((prev) => ({ ...prev, downloadPng: !download.downloadPng }));
-  };
-
-  const handleDownloadSVGClick = () => {
-    setDownload((prev) => ({ ...prev, downloadSvg: !download.downloadSvg }));
-  };
-
   const handleGraphAbsUploadClick = () => {
     graphAbsInputRef.current.click();
   };
@@ -468,9 +456,8 @@ function App() {
   return (
     <div className={theme}>
       <HeaderBar
-        handleDownloadJSONClick={handleDownloadJSONClick}
-        handleDownloadPNGClick={handleDownloadPNGClick}
-        handleDownloadSVGClick={handleDownloadSVGClick}
+        download={download}
+        setDownload={setDownload}
         handleUploadSchemeClick={handleUploadSchemeClick}
         colorSchemeInputRef={colorSchemeInputRef}
         handleNewScheme={handleNewScheme}
