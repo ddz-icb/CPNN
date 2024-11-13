@@ -79,9 +79,11 @@ function App() {
   const [nodeAttribsToColorIndices, setNodeAttribsToColorIndices] = useState(null); // mapping of the node attributes to color indices
   const [linkAttribsToColorIndices, setLinkAttribsToColorIndices] = useState(null); // mapping of the link attributes to color indices
 
-  const [downloadJSON, setDownloadJSON] = useState(null); // on state change: indicates graph should be downloaded
-  const [downloadPNG, setDownloadPNG] = useState(null); // on state change: indicates graph should be downloaded
-  const [downloadSVG, setDownloadSVG] = useState(null); // on state change: indicates graph should be downloaded
+  const [download, setDownload] = useState({
+    downloadJson: null, // on state change: indicates graph should be downloaded
+    downloadPng: null, // on state change: indicates graph should be downloaded
+    downloadSvg: null, // on state change: indicates graph should be downloaded
+  });
 
   const [theme, setTheme] = useState(themeInit);
   const [circleBorderColor, setCircleBorderColor] = useState(circleBorderColorInit);
@@ -133,9 +135,7 @@ function App() {
     resetFilters();
     resetPhysics();
 
-    setDownloadJSON(null);
-    setDownloadPNG(null);
-    setDownloadSVG(null);
+    setDownload((prev) => ({ ...prev, downloadJson: null, downloadPng: null, downloadSvg: null }));
 
     setError(null);
     setReset(true);
@@ -290,15 +290,15 @@ function App() {
   };
 
   const handleDownloadJSONClick = () => {
-    setDownloadJSON(!downloadJSON);
+    setDownload((prev) => ({ ...prev, downloadJson: !download.downloadJson }));
   };
 
   const handleDownloadPNGClick = () => {
-    setDownloadPNG(!downloadPNG);
+    setDownload((prev) => ({ ...prev, downloadPng: !download.downloadPng }));
   };
 
   const handleDownloadSVGClick = () => {
-    setDownloadSVG(!downloadSVG);
+    setDownload((prev) => ({ ...prev, downloadSvg: !download.downloadSvg }));
   };
 
   const handleGraphAbsUploadClick = () => {
@@ -518,9 +518,7 @@ function App() {
         <ForceGraph
           reset={reset}
           graphCurrent={graphCurrent}
-          downloadJSON={downloadJSON}
-          downloadPNG={downloadPNG}
-          downloadSVG={downloadSVG}
+          download={download}
           circleBorderColor={circleBorderColor}
           setReset={setReset}
           setError={setError}

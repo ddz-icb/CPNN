@@ -27,9 +27,7 @@ import { circleBorderColorInit } from "../Other/appearanceInitvalues.js";
 export function ForceGraph({
   graphCurrent,
   reset,
-  downloadJSON,
-  downloadPNG,
-  downloadSVG,
+  download,
   circleBorderColor,
   setReset,
   setError,
@@ -234,7 +232,7 @@ export function ForceGraph({
 
   // download graph data as json //
   useEffect(() => {
-    if (downloadJSON != null && graphCurrent) {
+    if (download.downloadJson != null && graphCurrent) {
       try {
         log.info("Downloading graph as JSON");
         downloadGraphJson(graphCurrent, "Graph.json");
@@ -242,12 +240,12 @@ export function ForceGraph({
         log.error("Error downloading the graph as JSON:", error);
       }
     }
-  }, [downloadJSON]);
+  }, [download.downloadJson]);
 
   // download graph as png //
   // <-- put this in app.js? or separate file? -->
   useEffect(() => {
-    if (downloadPNG != null && graphCurrent) {
+    if (download.downloadPng != null && graphCurrent) {
       log.info("Downloading graph as PNG");
 
       changeCircleBorderColor(circles, circleBorderColorInit);
@@ -256,11 +254,11 @@ export function ForceGraph({
 
       changeCircleBorderColor(circles, circleBorderColor);
     }
-  }, [downloadPNG]);
+  }, [download.downloadPng]);
 
   // download graph as png //
   useEffect(() => {
-    if (downloadSVG != null && graphCurrent) {
+    if (download.downloadSvg != null && graphCurrent) {
       log.info("Downloading graph as SVG");
 
       downloadAsSVG(
@@ -274,7 +272,7 @@ export function ForceGraph({
         circleNodeMap
       );
     }
-  }, [downloadSVG]);
+  }, [download.downloadSvg]);
 
   // switch circle border color //
   useEffect(() => {
