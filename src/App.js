@@ -36,6 +36,7 @@ import {
   yStrengthInit,
 } from "./components/GraphStuff/graphInitValues.js";
 import { circleBorderColorInit, linkColorSchemeInit, nodeColorSchemeInit, themeInit } from "./components/Other/appearanceInitvalues.js";
+import { resetFilterSettings, resetPhysicsSettings } from "./components/Other/reset.js";
 
 function App() {
   const [filterSettings, setFilterSettings] = useState({
@@ -124,7 +125,7 @@ function App() {
     }
   };
 
-  // initates graph reset //
+  // initates reset //
   const simulationReset = () => {
     if (!activeFiles) return;
     log.info("Handle Simulation Reset");
@@ -141,31 +142,11 @@ function App() {
   };
 
   const resetPhysics = () => {
-    setPhysicsSettings((prev) => ({
-      ...prev,
-      linkForce: linkForceInit,
-      linkLength: linkLengthInit,
-      xStrength: xStrengthInit,
-      yStrength: yStrengthInit,
-      componentStrength: componentStrengthInit,
-      nodeRepulsionStrength: nodeRepulsionStrengthInit,
-      circleLayout: circleLayoutInit,
-      checkBorder: checkBorderInit,
-      borderWidth: borderWidthInit,
-      borderHeight: borderHeightInit,
-    }));
+    resetPhysicsSettings(setPhysicsSettings);
   };
 
   const resetFilters = () => {
-    setFilterSettings((prev) => ({
-      ...prev,
-      linkThreshold: linkThresholdInit,
-      minCompSize: minCompSizeInit,
-      linkFilter: linkFilterInit,
-      linkFilterText: linkFilterTextInit,
-      nodeFilter: nodeFilterInit,
-      nodeFilterText: nodeFilterTextInit,
-    }));
+    resetFilterSettings(setFilterSettings);
   };
 
   // adds new file //
