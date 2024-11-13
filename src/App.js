@@ -1,85 +1,95 @@
 import "./index.css";
-import log from "./logger";
+import log from "./logger.js";
 import React, { useState, useRef, useEffect } from "react";
-import exampleGraphJSON from "./demographs/exampleGraphJSON";
+import exampleGraphJSON from "./demographs/exampleGraphJSON.js";
 
-import { ForceGraph } from "./components/GraphStuff/forceGraph";
-import { Sidebar } from "./components/GUI/sidebar";
-import { HeaderBar } from "./components/GUI/headerBar";
-import { applyTheme } from "./components/Other/theme";
-import { applyNodeMapping, getAttribToColorIndex, getGroupToColorIndex, joinGraphs } from "./components/GraphStuff/graphCalculations";
-import { parseColorSchemeCSV, parseFile } from "./components/Other/parseFile";
-import { IBMAntiBlindness, Okabe_ItoAntiBlindness, manyColors } from "./components/Other/colors";
-import { parseMapping } from "./components/Other/parseMapping";
-import { addUploadedFileDB, fromAllGetNameDB, getByNameDB, removeUploadedFileByNameDB } from "./components/Other/db";
+import { ForceGraph } from "./components/GraphStuff/forceGraph.js";
+import { Sidebar } from "./components/GUI/sidebar.js";
+import { HeaderBar } from "./components/GUI/headerBar.js";
+import { applyTheme } from "./components/Other/theme.js";
+import {
+  applyNodeMapping,
+  getLinkAttribsToColorIndices,
+  getNodeAttribsToColorIndices,
+  joinGraphs,
+} from "./components/GraphStuff/graphCalculations.js";
+import { parseColorSchemeCSV, parseFile } from "./components/Other/parseFile.js";
+import { IBMAntiBlindness, Okabe_ItoAntiBlindness, manyColors } from "./components/Other/colors.js";
+import { parseMapping } from "./components/Other/parseMapping.js";
+import { addUploadedFileDB, fromAllGetNameDB, getByNameDB, removeUploadedFileByNameDB } from "./components/Other/db.js";
 import {
   borderHeightInit,
   borderWidthInit,
-  centroidThresholdInit,
-  chargeStrengthInit,
+  nodeRepulsionStrengthInit,
   checkBorderInit,
   circleLayoutInit,
   componentStrengthInit,
-  linkAttribsInit,
-  linkAttribsTextInit,
+  linkFilterInit,
+  linkFilterTextInit,
   linkForceInit,
   linkLengthInit,
   linkThresholdInit,
-  minComponentSizeInit,
-  nodeGroupsInit,
-  nodeGroupsTextInit,
+  minCompSizeInit,
+  nodeFilterInit,
+  nodeFilterTextInit,
   xStrengthInit,
   yStrengthInit,
-} from "./components/GraphStuff/graphInitValues";
+} from "./components/GraphStuff/graphInitValues.js";
+import { circleBorderColorInit, linkColorSchemeInit, nodeColorSchemeInit, themeInit } from "./components/Other/appearanceInitvalues.js";
+import { resetFilterSettings, resetPhysicsSettings } from "./components/Other/reset.js";
 
 function App() {
-  const [linkThreshold, setLinkThreshold] = useState(linkThresholdInit);
-  const [minComponentSize, setMinComponentSize] = useState(minComponentSizeInit);
-  const [linkAttribs, setLinkAttribs] = useState(linkAttribsInit);
-  const [nodeGroups, setNodeGroups] = useState(nodeGroupsInit);
-  const [linkAttribsText, setLinkAttribsText] = useState(linkAttribsTextInit);
-  const [nodeGroupsText, setNodeGroupsText] = useState(nodeGroupsTextInit);
+  const [filterSettings, setFilterSettings] = useState({
+    linkThreshold: linkThresholdInit,
+    linkFilter: linkFilterInit,
+    linkFilterText: linkFilterTextInit,
+    nodeFilter: nodeFilterInit,
+    nodeFilterText: nodeFilterTextInit,
+    minCompSize: minCompSizeInit,
+  });
 
-  const [linkForce, setLinkForce] = useState(linkForceInit);
-  const [linkLength, setLinkLength] = useState(linkLengthInit);
-  const [xStrength, setXStrength] = useState(xStrengthInit);
-  const [yStrength, setYStrength] = useState(yStrengthInit);
-  const [componentStrength, setComponentStrength] = useState(componentStrengthInit);
-  const [centroidThreshold, setCentroidThreshold] = useState(centroidThresholdInit);
-  const [chargeStrength, setChargeStrength] = useState(chargeStrengthInit);
-  const [circleLayout, setCircleLayout] = useState(circleLayoutInit);
-
-  const [checkBorder, setCheckBorder] = useState(checkBorderInit);
-  const [borderWidth, setBorderWidth] = useState(borderWidthInit);
-  const [borderHeight, setBorderHeight] = useState(borderHeightInit);
+  const [physicsSettings, setPhysicsSettings] = useState({
+    circleLayout: circleLayoutInit,
+    xStrength: xStrengthInit,
+    yStrength: yStrengthInit,
+    componentStrength: componentStrengthInit,
+    nodeRepulsionStrength: nodeRepulsionStrengthInit,
+    linkForce: linkForceInit,
+    linkLength: linkLengthInit,
+    checkBorder: checkBorderInit,
+    borderWidth: borderWidthInit,
+    borderHeight: borderHeightInit,
+  });
 
   const [reset, setReset] = useState(false); // true indicates that the simulation has to be reloaded
 
   const [error, setError] = useState(null);
 
   const [graph, setGraph] = useState(null); // graph without modifications
-  const [graphCurrent, setGraphCurrent] = useState(null); // graph with modifications (e.g. links filtered by threshold). it also contains the pixi node elements
+  const [graphCurrent, setGraphCurrent] = useState(null); // graph with modifications e.g. links filtered by threshold, it also contains the pixi node elements
 
-  const graphAbsInputRef = useRef(null); // reference to newly selected file
-  const graphZeroInputRef = useRef(null); // reference to newly selected file
+  const graphAbsInputRef = useRef(null); // reference to newly selected graph (link weights should be interpreted as absolute values)
+  const graphZeroInputRef = useRef(null); // reference to newly selected graph (negative link weights should be interpreted as 0)
   const colorSchemeInputRef = useRef(null); // reference to newly selected color scheme
   const mappingInputRef = useRef(null); // reference to newly selected mapping
 
   const [activeFiles, setActiveFiles] = useState(null); // currently active files
-  const [uploadedFileNames, setUploadedFileNames] = useState([]); // all files in local storage
+  const [uploadedFileNames, setUploadedFileNames] = useState([]); // names of all files in local storage
   const [colorSchemes, setColorSchemes] = useState(null); // all color schemes in local storage
-  const [groupToColorIndex, setGroupToColorIndex] = useState(null);
-  const [attribToColorIndex, setAttribToColorIndex] = useState(null);
+  const [nodeAttribsToColorIndices, setNodeAttribsToColorIndices] = useState(null); // mapping of the node attributes to color indices
+  const [linkAttribsToColorIndices, setLinkAttribsToColorIndices] = useState(null); // mapping of the link attributes to color indices
 
-  const [downloadJSON, setDownloadJSON] = useState(null); // on state change: indicates graph should be downloaded
-  const [downloadPNG, setDownloadPNG] = useState(null); // on state change: indicates graph should be downloaded
-  const [downloadSVG, setDownloadSVG] = useState(null); // on state change: indicates graph should be downloaded
+  const [download, setDownload] = useState({
+    downloadJson: null, // on state change: indicates graph should be downloaded
+    downloadPng: null, // on state change: indicates graph should be downloaded
+    downloadSvg: null, // on state change: indicates graph should be downloaded
+  });
 
-  const [theme, setTheme] = useState("light");
-  const [circleBorderColor, setCircleBorderColor] = useState("#0d3b66");
+  const [theme, setTheme] = useState(themeInit);
+  const [circleBorderColor, setCircleBorderColor] = useState(circleBorderColorInit);
 
-  const [nodeColorScheme, setNodeColorScheme] = useState(["Many Colors (18 colors)", manyColors]);
-  const [linkColorScheme, setLinkColorScheme] = useState(["IBM (5 colors)", IBMAntiBlindness]);
+  const [nodeColorScheme, setNodeColorScheme] = useState(nodeColorSchemeInit);
+  const [linkColorScheme, setLinkColorScheme] = useState(linkColorSchemeInit);
 
   const [activeMapping, setActiveMapping] = useState(null);
   const [uploadedMappings, setUploadedMappings] = useState(null);
@@ -95,8 +105,8 @@ function App() {
         if (!newGraph) throw new Error("File format not recognized");
         setGraph(newGraph);
         setActiveFiles([file]);
-        handleReset(); //the simulation has to be reloaded after
-        log.info("Graph loaded successfully:", newGraph);
+        simulationReset(); //the simulation has to be reloaded after
+        log.info("Graph Loaded Successfully:", newGraph);
       } catch (error) {
         setError("Error loading graph");
         log.error("Error loading graph:", error);
@@ -111,52 +121,32 @@ function App() {
   const handleMappingSelect = (mapping) => {
     if (mapping !== activeMapping) {
       setActiveMapping(mapping);
-      handleReset();
+      simulationReset();
     } else {
       log.error("Mapping is already the current mapping");
     }
   };
 
-  // initates graph reset //
-  const handleReset = () => {
+  // initates reset //
+  const simulationReset = () => {
     if (!activeFiles) return;
-    log.info("Handle Reset");
+    log.info("Handle Simulation Reset");
 
-    resetFilter();
+    resetFilters();
     resetPhysics();
 
-    setDownloadJSON(null);
-    setDownloadPNG(null);
-    setDownloadSVG(null);
+    setDownload((prev) => ({ ...prev, downloadJson: null, downloadPng: null, downloadSvg: null }));
 
     setError(null);
     setReset(true);
   };
 
   const resetPhysics = () => {
-    setLinkForce(linkForceInit);
-    setLinkLength(linkLengthInit);
-    setXStrength(xStrengthInit);
-    setYStrength(yStrengthInit);
-    setComponentStrength(componentStrengthInit);
-    setCentroidThreshold(centroidThresholdInit);
-    setChargeStrength(chargeStrengthInit);
-    setCircleLayout(circleLayoutInit);
-
-    setCheckBorder(checkBorderInit);
-    setBorderWidth(borderWidthInit);
-    setBorderHeight(borderHeightInit);
+    resetPhysicsSettings(setPhysicsSettings);
   };
 
-  const resetFilter = () => {
-    setLinkThreshold(linkThresholdInit);
-    setMinComponentSize(minComponentSizeInit);
-
-    setLinkAttribs(linkAttribsInit);
-    setLinkAttribsText(linkAttribsTextInit);
-
-    setNodeGroups(nodeGroupsInit);
-    setNodeGroupsText(nodeGroupsTextInit);
+  const resetFilters = () => {
+    resetFilterSettings(setFilterSettings);
   };
 
   // adds new file //
@@ -257,7 +247,7 @@ function App() {
 
   const handleRemoveActiveMapping = () => {
     setActiveMapping(null);
-    handleReset();
+    simulationReset();
   };
 
   const handleDeleteMapping = (mappingName) => {
@@ -295,20 +285,8 @@ function App() {
 
     setGraph(graph);
     setActiveFiles(stillActive);
-    handleReset(); //the simulation has to be reloaded after
+    simulationReset(); //the simulation has to be reloaded after
     log.info("Graph loaded successfully:", graph);
-  };
-
-  const handleDownloadJSONClick = () => {
-    setDownloadJSON(!downloadJSON);
-  };
-
-  const handleDownloadPNGClick = () => {
-    setDownloadPNG(!downloadPNG);
-  };
-
-  const handleDownloadSVGClick = () => {
-    setDownloadSVG(!downloadSVG);
   };
 
   const handleGraphAbsUploadClick = () => {
@@ -339,7 +317,7 @@ function App() {
         const combinedGraph = joinGraphs(graph, newGraph);
         setGraph(combinedGraph);
         setActiveFiles([...activeFiles, file]);
-        handleReset(); //the simulation has to be reloaded after
+        simulationReset(); //the simulation has to be reloaded after
         log.info("Graph loaded successfully:", combinedGraph);
       } catch (error) {
         setError("Error loading graph");
@@ -375,7 +353,7 @@ function App() {
         if (!newGraph) throw new Error("File format not recognized");
         setGraph(newGraph);
         setActiveFiles([file]);
-        handleReset(); //the simulation has to be reloaded after
+        simulationReset(); //the simulation has to be reloaded after
         log.info("Graph loaded successfully:", newGraph);
       } catch (error) {
         setError("Error loading graph");
@@ -461,26 +439,25 @@ function App() {
     if (!graph || !activeFiles) {
       return;
     }
+    log.info("Modifying graph and forwarding it to the simulation component");
 
     let newGraphCurrent = structuredClone(graph);
     newGraphCurrent = applyNodeMapping(newGraphCurrent, activeMapping);
 
-    const groupToColorIndex = getGroupToColorIndex(newGraphCurrent);
-    setGroupToColorIndex(groupToColorIndex);
+    const nodeAttribsToColorIndices = getNodeAttribsToColorIndices(newGraphCurrent);
+    setNodeAttribsToColorIndices(nodeAttribsToColorIndices);
 
-    const attribToColorIndex = getAttribToColorIndex(newGraphCurrent);
-    setAttribToColorIndex(attribToColorIndex);
+    const linkAttribsToColorIndices = getLinkAttribsToColorIndices(newGraphCurrent);
+    setLinkAttribsToColorIndices(linkAttribsToColorIndices);
 
-    log.info("Forwarding graph to forceGraph component");
     setGraphCurrent(newGraphCurrent);
   }, [graph, activeFiles, activeMapping]);
 
   return (
     <div className={theme}>
       <HeaderBar
-        handleDownloadJSONClick={handleDownloadJSONClick}
-        handleDownloadPNGClick={handleDownloadPNGClick}
-        handleDownloadSVGClick={handleDownloadSVGClick}
+        download={download}
+        setDownload={setDownload}
         handleUploadSchemeClick={handleUploadSchemeClick}
         colorSchemeInputRef={colorSchemeInputRef}
         handleNewScheme={handleNewScheme}
@@ -491,8 +468,8 @@ function App() {
         colorSchemes={colorSchemes}
         mapping={activeMapping}
         handleDeleteColorScheme={handleDeleteColorScheme}
-        groupToColorIndex={groupToColorIndex}
-        attribToColorIndex={attribToColorIndex}
+        nodeAttribsToColorIndices={nodeAttribsToColorIndices}
+        linkAttribsToColorIndices={linkAttribsToColorIndices}
       />
       <Sidebar
         changeTheme={changeTheme}
@@ -503,36 +480,10 @@ function App() {
         handleDeleteFile={handleDeleteFile}
         handleRemoveActiveFile={handleRemoveActiveFile}
         handleAddFile={handleAddFileClick}
-        linkThreshold={linkThreshold}
-        minComponentSize={minComponentSize}
-        linkAttribs={linkAttribs}
-        setLinkThreshold={setLinkThreshold}
-        setMinComponentSize={setMinComponentSize}
-        setLinkAttribs={setLinkAttribs}
-        linkLength={linkLength}
-        checkBorder={checkBorder}
-        borderHeight={borderHeight}
-        borderWidth={borderWidth}
-        setLinkLength={setLinkLength}
-        setCheckBorder={setCheckBorder}
-        setBorderHeight={setBorderHeight}
-        setBorderWidth={setBorderWidth}
-        linkAttribsText={linkAttribsText}
-        setLinkAttribsText={setLinkAttribsText}
-        xStrength={xStrength}
-        setXStrength={setXStrength}
-        yStrength={yStrength}
-        setYStrength={setYStrength}
-        componentStrength={componentStrength}
-        setComponentStrength={setComponentStrength}
-        centroidThreshold={centroidThreshold}
-        setCentroidThreshold={setCentroidThreshold}
-        linkForce={linkForce}
-        setLinkForce={setLinkForce}
-        chargeStrength={chargeStrength}
-        setChargeStrength={setChargeStrength}
-        circleLayout={circleLayout}
-        setCircleLayout={setCircleLayout}
+        physicsSettings={physicsSettings}
+        setPhysicsSettings={setPhysicsSettings}
+        filterSettings={filterSettings}
+        setFilterSettings={setFilterSettings}
         handleNewMapping={handleNewMapping}
         mappingInputRef={mappingInputRef}
         handleUploadMappingClick={handleUploadMappingClick}
@@ -544,11 +495,8 @@ function App() {
         handleGraphAbsUploadClick={handleGraphAbsUploadClick}
         handleGraphZeroUploadClick={handleGraphZeroUploadClick}
         handleNewFile={handleNewFile}
-        nodeGroupsText={nodeGroupsText}
-        setNodeGroupsText={setNodeGroupsText}
-        setNodeGroups={setNodeGroups}
         resetPhysics={resetPhysics}
-        resetFilter={resetFilter}
+        resetFilters={resetFilters}
         graphAbsInputRef={graphAbsInputRef}
         graphZeroInputRef={graphZeroInputRef}
       />
@@ -557,35 +505,20 @@ function App() {
         <ForceGraph
           reset={reset}
           graphCurrent={graphCurrent}
-          downloadJSON={downloadJSON}
-          downloadPNG={downloadPNG}
-          downloadSVG={downloadSVG}
+          download={download}
           circleBorderColor={circleBorderColor}
           setReset={setReset}
           setError={setError}
-          linkThreshold={linkThreshold}
+          filterSettings={filterSettings}
           setGraphCurrent={setGraphCurrent}
-          minComponentSize={minComponentSize}
-          linkAttribs={linkAttribs}
-          checkBorder={checkBorder}
-          borderWidth={borderWidth}
-          borderHeight={borderHeight}
-          linkLength={linkLength}
-          xStrength={xStrength}
-          yStrength={yStrength}
-          componentStrength={componentStrength}
-          centroidThreshold={centroidThreshold}
-          linkForce={linkForce}
-          setLinkForce={setLinkForce}
-          chargeStrength={chargeStrength}
-          circleLayout={circleLayout}
+          physicsSettings={physicsSettings}
+          setPhysicsSettings={setPhysicsSettings}
           nodeColorScheme={nodeColorScheme}
           linkColorScheme={linkColorScheme}
           theme={theme}
           mapping={activeMapping}
-          nodeGroups={nodeGroups}
-          groupToColorIndex={groupToColorIndex}
-          attribToColorIndex={attribToColorIndex}
+          nodeAttribsToColorIndices={nodeAttribsToColorIndices}
+          linkAttribsToColorIndices={linkAttribsToColorIndices}
         />
       </main>
     </div>

@@ -1,51 +1,25 @@
 import { useEffect, useState } from "react";
 
-import { SidebarButtonRect, SidebarFieldBlock, SidebarSliderBlock, SidebarSwitchBlock } from "./sidebar";
+import { SidebarButtonRect, SidebarFieldBlock, SidebarSliderBlock, SidebarSwitchBlock } from "./sidebar.js";
 
 import {
   borderHeightInit,
   borderWidthInit,
-  centroidThresholdInit,
-  chargeStrengthInit,
+  nodeRepulsionStrengthInit,
   componentStrengthInit,
   linkLengthInit,
   xStrengthInit,
   yStrengthInit,
-} from "../GraphStuff/graphInitValues";
+} from "../GraphStuff/graphInitValues.js";
 
-export function PhysicsSidebar({
-  linkLength,
-  checkBorder,
-  borderHeight,
-  borderWidth,
-  setLinkLength,
-  setCheckBorder,
-  setBorderHeight,
-  setBorderWidth,
-  xStrength,
-  setXStrength,
-  yStrength,
-  setYStrength,
-  componentStrength,
-  setComponentStrength,
-  centroidThreshold,
-  setCentroidThreshold,
-  linkForce,
-  setLinkForce,
-  chargeStrength,
-  setChargeStrength,
-  circleLayout,
-  setCircleLayout,
-  resetPhysics,
-}) {
-  const [linkLengthText, setLinkLengthText] = useState(linkLength);
-  const [borderHeightText, setBorderHeightText] = useState(borderHeight);
-  const [borderWidthText, setBorderWidthText] = useState(borderWidth);
-  const [xStrengthText, setXStrengthText] = useState(xStrength);
-  const [yStrengthText, setYStrengthText] = useState(yStrength);
-  const [componentStrengthText, setComponentStrengthText] = useState(componentStrength);
-  const [centroidThresholdText, setCentroidThresholdText] = useState(centroidThreshold);
-  const [chargeStrengthText, setChargeStrengthText] = useState(chargeStrength);
+export function PhysicsSidebar({ physicsSettings, setPhysicsSettings, resetPhysics }) {
+  const [linkLengthText, setLinkLengthText] = useState(physicsSettings.linkLength);
+  const [borderHeightText, setBorderHeightText] = useState(physicsSettings.borderHeight);
+  const [borderWidthText, setBorderWidthText] = useState(physicsSettings.borderWidth);
+  const [xStrengthText, setXStrengthText] = useState(physicsSettings.xStrength);
+  const [yStrengthText, setYStrengthText] = useState(physicsSettings.yStrength);
+  const [componentStrengthText, setComponentStrengthText] = useState(physicsSettings.componentStrength);
+  const [nodeRepulsionStrengthText, setNodeRepulsionStrengthText] = useState(physicsSettings.nodeRepulsionStrength);
 
   const [gravityAdvanced, setGravityAdvanced] = useState(false);
 
@@ -58,14 +32,14 @@ export function PhysicsSidebar({
     setXStrengthText(xStrengthInit);
     setYStrengthText(yStrengthInit);
     setComponentStrengthText(componentStrengthInit);
-    setCentroidThresholdText(centroidThresholdInit);
-    setChargeStrengthText(chargeStrengthInit);
+    setNodeRepulsionStrengthText(nodeRepulsionStrengthInit);
     setGravityAdvanced(false);
   };
 
   const handleLinkLengthSlider = (event) => {
     const value = event.target.value;
-    setLinkLength(value);
+
+    setPhysicsSettings((prev) => ({ ...prev, linkLength: value }));
     setLinkLengthText(value);
   };
 
@@ -83,17 +57,17 @@ export function PhysicsSidebar({
     const intValue = parseInt(value);
 
     if (value === "") {
-      setLinkLength(0);
+      setPhysicsSettings((prev) => ({ ...prev, linkLength: 0 }));
       setLinkLengthText(0);
     } else if (!isNaN(intValue) && intValue <= 1000) {
-      setLinkLength(value);
+      setPhysicsSettings((prev) => ({ ...prev, linkLength: value }));
       setLinkLengthText(value);
     }
   };
 
   const handleBorderHeightSlider = (event) => {
     const value = event.target.value;
-    setBorderHeight(value);
+    setPhysicsSettings((prev) => ({ ...prev, borderHeight: value }));
     setBorderHeightText(value);
   };
 
@@ -110,14 +84,14 @@ export function PhysicsSidebar({
       if (value < 250) {
         value = 250;
       }
-      setBorderHeight(value);
+      setPhysicsSettings((prev) => ({ ...prev, borderHeight: value }));
       setBorderHeightText(value);
     }
   };
 
   const handleBorderWidthFieldSlider = (event) => {
     const value = event.target.value;
-    setBorderWidth(value);
+    setPhysicsSettings((prev) => ({ ...prev, borderWidth: value }));
     setBorderWidthText(value);
   };
 
@@ -134,18 +108,18 @@ export function PhysicsSidebar({
       if (value < 250) {
         value = 250;
       }
-      setBorderWidth(value);
+      setPhysicsSettings((prev) => ({ ...prev, borderWidth: value }));
       setBorderWidthText(value);
     }
   };
 
   const handleCheckBorder = () => {
-    setCheckBorder(!checkBorder);
+    setPhysicsSettings((prev) => ({ ...prev, checkBorder: !physicsSettings.checkBorder }));
   };
 
   const handleXStrengthSlider = (event) => {
     const value = event.target.value;
-    setXStrength(value);
+    setPhysicsSettings((prev) => ({ ...prev, xStrength: value }));
     setXStrengthText(value);
   };
 
@@ -161,17 +135,17 @@ export function PhysicsSidebar({
     let value = event.target.value;
 
     if (value === "") {
-      setXStrength(0);
+      setPhysicsSettings((prev) => ({ ...prev, xStrength: 0 }));
       setXStrengthText(0);
     } else if (value >= -1 && value <= 1) {
-      setXStrength(value);
+      setPhysicsSettings((prev) => ({ ...prev, xStrength: value }));
       setXStrengthText(value);
     }
   };
 
   const handleYStrengthSlider = (event) => {
     const value = event.target.value;
-    setYStrength(value);
+    setPhysicsSettings((prev) => ({ ...prev, yStrength: value }));
     setYStrengthText(value);
   };
 
@@ -187,17 +161,17 @@ export function PhysicsSidebar({
     let value = event.target.value;
 
     if (value === "") {
-      setYStrength(0);
+      setPhysicsSettings((prev) => ({ ...prev, yStrength: 0 }));
       setYStrengthText(0);
     } else if (value >= -1 && value <= 1) {
-      setYStrength(value);
+      setPhysicsSettings((prev) => ({ ...prev, yStrength: value }));
       setYStrengthText(value);
     }
   };
 
   const handleComponentStrengthSlider = (event) => {
     const value = event.target.value;
-    setComponentStrength(value);
+    setPhysicsSettings((prev) => ({ ...prev, componentStrength: value }));
     setComponentStrengthText(value);
   };
 
@@ -213,10 +187,10 @@ export function PhysicsSidebar({
     let value = event.target.value;
 
     if (value === "") {
-      setComponentStrength(0);
+      setPhysicsSettings((prev) => ({ ...prev, componentStrength: 0 }));
       setComponentStrengthText(0);
     } else if (value >= -1 && value <= 1) {
-      setComponentStrength(value);
+      setPhysicsSettings((prev) => ({ ...prev, componentStrength: value }));
       setComponentStrengthText(value);
     }
   };
@@ -227,8 +201,8 @@ export function PhysicsSidebar({
 
   const handleGravitySlider = (event) => {
     const value = event.target.value;
-    setXStrength(value);
-    setYStrength(value);
+    setPhysicsSettings((prev) => ({ ...prev, xStrength: value }));
+    setPhysicsSettings((prev) => ({ ...prev, yStrength: value }));
 
     setXStrengthText(value);
     setYStrengthText(value);
@@ -247,80 +221,54 @@ export function PhysicsSidebar({
     let value = event.target.value;
 
     if (value === "") {
-      setXStrength(0);
-      setYStrength(0);
+      setPhysicsSettings((prev) => ({ ...prev, xStrength: 0 }));
+      setPhysicsSettings((prev) => ({ ...prev, yStrength: 0 }));
 
       setXStrengthText(0);
       setYStrengthText(0);
     } else if (value >= -1 && value <= 1) {
-      setXStrength(value);
-      setYStrength(value);
+      setPhysicsSettings((prev) => ({ ...prev, xStrength: value }));
+      setPhysicsSettings((prev) => ({ ...prev, yStrength: value }));
 
       setXStrengthText(value);
       setYStrengthText(value);
     }
   };
 
-  const handleCentroidThresholdChange = (event) => {
-    const value = event.target.value;
-    const intValue = parseInt(value, 10);
-
-    if (value === "") {
-      setCentroidThresholdText("");
-    } else if (!isNaN(intValue)) {
-      setCentroidThresholdText(intValue);
-    }
-  };
-
-  const handleCentroidThresholdBlur = (event) => {
-    const value = event.target.value;
-    const intValue = parseInt(value, 10);
-
-    if (value === "") {
-      event.target.innerText = 1;
-      setCentroidThreshold(1);
-      setCentroidThresholdText(1);
-    } else if (!isNaN(intValue) && intValue >= 0) {
-      event.target.innerText = intValue;
-      setCentroidThreshold(intValue);
-      setCentroidThresholdText(intValue);
-    }
-  };
-
   const handleLinkForce = () => {
-    setLinkForce(!linkForce);
+    setPhysicsSettings((prev) => ({ ...prev, linkForce: !physicsSettings.linkForce }));
   };
 
-  const handleChargeStrengthSlider = (event) => {
+  const handleNodeRepulsionStrengthSlider = (event) => {
     const value = event.target.value;
-    setChargeStrength(value);
-    setChargeStrengthText(value);
+    setPhysicsSettings((prev) => ({ ...prev, nodeRepulsionStrength: value }));
+    setNodeRepulsionStrengthText(value);
   };
 
-  const handleChargeStrengthField = (event) => {
+  const handleNodeRepulsionStrengthField = (event) => {
     const value = event.target.value;
     const intValue = parseInt(value);
 
     if (value === "" || !isNaN(intValue)) {
-      setChargeStrengthText(value);
+      setNodeRepulsionStrengthText(value);
     }
   };
 
-  const handleChargeStrengthFieldBlur = (event) => {
+  const handleNodeRepulsionStrengthFieldBlur = (event) => {
     let value = event.target.value;
     const intValue = parseInt(value);
 
     if (value === "") {
-      setChargeStrength(0);
-      setChargeStrengthText(0);
+      setPhysicsSettings((prev) => ({ ...prev, nodeRepulsionStrength: 0 }));
+      setNodeRepulsionStrengthText(0);
     } else if (!isNaN(intValue)) {
-      setChargeStrength(value);
-      setChargeStrengthText(value);
+      setPhysicsSettings((prev) => ({ ...prev, nodeRepulsionStrength: value }));
+      setNodeRepulsionStrengthText(value);
     }
   };
 
   const handleCircleLayout = () => {
-    setCircleLayout(!circleLayout);
+    setPhysicsSettings((prev) => ({ ...prev, circleLayout: !physicsSettings.circleLayout }));
   };
 
   return (
@@ -328,7 +276,7 @@ export function PhysicsSidebar({
       <div className="inline pad-top-05 pad-bottom-05">
         <SidebarButtonRect text={"Set Phyiscs to Default"} onClick={handleResetPhysics} />
       </div>
-      <SidebarSwitchBlock text={"Enable Circular Layout"} value={circleLayout} onChange={handleCircleLayout} />
+      <SidebarSwitchBlock text={"Enable Circular Layout"} value={physicsSettings.circleLayout} onChange={handleCircleLayout} />
       {!gravityAdvanced && (
         <>
           <SidebarSliderBlock
@@ -337,7 +285,7 @@ export function PhysicsSidebar({
             max={1}
             stepSlider={0.05}
             stepField={0.01}
-            value={xStrength}
+            value={physicsSettings.xStrength}
             valueText={xStrengthText}
             onChangeSlider={handleGravitySlider}
             onChangeField={handleGravityField}
@@ -353,7 +301,7 @@ export function PhysicsSidebar({
             max={1}
             stepSlider={0.05}
             stepField={0.01}
-            value={xStrength}
+            value={physicsSettings.xStrength}
             valueText={xStrengthText}
             onChangeSlider={handleXStrengthSlider}
             onChangeField={handleXStrengthField}
@@ -365,7 +313,7 @@ export function PhysicsSidebar({
             max={1}
             stepSlider={0.05}
             stepField={0.01}
-            value={yStrength}
+            value={physicsSettings.yStrength}
             valueText={yStrengthText}
             onChangeSlider={handleYStrengthSlider}
             onChangeField={handleYStrengthField}
@@ -380,51 +328,41 @@ export function PhysicsSidebar({
         max={10}
         stepSlider={0.1}
         stepField={0.05}
-        value={componentStrength}
+        value={physicsSettings.componentStrength}
         valueText={componentStrengthText}
         onChangeSlider={handleComponentStrengthSlider}
         onChangeField={handleComponentStrengthField}
         onChangeBlur={handleComponentStrengthFieldBlur}
       />
-      <>
-        <SidebarFieldBlock
-          text={"Minimum Component Size for Component Strength"}
-          min={1}
-          step={1}
-          value={centroidThresholdText}
-          onChange={handleCentroidThresholdChange}
-          onBlur={handleCentroidThresholdBlur}
-        />
-      </>
       <SidebarSliderBlock
         text={"Set Node Repulsion Strength"}
         min={0}
         max={10}
         stepSlider={1}
         stepField={0.5}
-        value={chargeStrength}
-        valueText={chargeStrengthText}
-        onChangeSlider={handleChargeStrengthSlider}
-        onChangeField={handleChargeStrengthField}
-        onChangeBlur={handleChargeStrengthFieldBlur}
+        value={physicsSettings.nodeRepulsionStrength}
+        valueText={nodeRepulsionStrengthText}
+        onChangeSlider={handleNodeRepulsionStrengthSlider}
+        onChangeField={handleNodeRepulsionStrengthField}
+        onChangeBlur={handleNodeRepulsionStrengthFieldBlur}
       />
-      <SidebarSwitchBlock text={"Enable Link Force"} value={linkForce} onChange={handleLinkForce} />
-      {linkForce && (
+      <SidebarSwitchBlock text={"Enable Link Force"} value={physicsSettings.linkForce} onChange={handleLinkForce} />
+      {physicsSettings.linkForce && (
         <SidebarSliderBlock
           text={"Set Link Length"}
           min={0}
           max={300}
           stepSlider={10}
           stepField={5}
-          value={linkLength}
+          value={physicsSettings.linkLength}
           valueText={linkLengthText}
           onChangeSlider={handleLinkLengthSlider}
           onChangeField={handleLinkLengthField}
           onChangeBlur={handleLinkLengthFieldBlur}
         />
       )}
-      <SidebarSwitchBlock text={"Enable Border"} value={checkBorder} onChange={handleCheckBorder} />
-      {checkBorder && (
+      <SidebarSwitchBlock text={"Enable Border"} value={physicsSettings.checkBorder} onChange={handleCheckBorder} />
+      {physicsSettings.checkBorder && (
         <>
           <SidebarSliderBlock
             text={"Set Border Height"}
@@ -432,7 +370,7 @@ export function PhysicsSidebar({
             max={999}
             stepSlider={10}
             stepField={5}
-            value={borderHeight}
+            value={physicsSettings.borderHeight}
             valueText={borderHeightText}
             onChangeSlider={handleBorderHeightSlider}
             onChangeField={handleBorderHeightField}
@@ -444,7 +382,7 @@ export function PhysicsSidebar({
             max={999}
             stepSlider={5}
             stepField={5}
-            value={borderWidth}
+            value={physicsSettings.borderWidth}
             valueText={borderWidthText}
             onChangeSlider={handleBorderWidthFieldSlider}
             onChangeField={handleBorderWidthField}

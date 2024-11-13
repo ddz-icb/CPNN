@@ -4,17 +4,22 @@ import { ReactComponent as DownloadIcon } from "../../icons/download.svg";
 import { ReactComponent as XIcon } from "../../icons/x.svg";
 import React, { useState } from "react";
 
-import { Button, Item } from "./headerBar";
+import { Button, Item } from "./headerBar.js";
 
-export function DropDownExport({
-  handleDownloadJSONClick,
-  handleDownloadPNGClick,
-  handleDownloadSVGClick,
-  activeMenu,
-  setActiveMenu,
-  handleActiveMenuClick,
-}) {
+export function HeaderBarExport({ download, setDownload, activeMenu, setActiveMenu, handleActiveMenuClick }) {
   let content = null;
+
+  const handleDownloadJsonClick = () => {
+    setDownload((prev) => ({ ...prev, downloadJson: !download.downloadJson }));
+  };
+
+  const handleDownloadPngClick = () => {
+    setDownload((prev) => ({ ...prev, downloadPng: !download.downloadPng }));
+  };
+
+  const handleDownloadSvgClick = () => {
+    setDownload((prev) => ({ ...prev, downloadSvg: !download.downloadSvg }));
+  };
 
   if (activeMenu !== "Export") {
     content = (
@@ -42,7 +47,7 @@ export function DropDownExport({
           <Item
             text={"Export as JSON"}
             onClick={() => {
-              handleDownloadJSONClick();
+              handleDownloadJsonClick();
               handleActiveMenuClick("Export");
             }}
             icon={<FileIcon />}
@@ -50,7 +55,7 @@ export function DropDownExport({
           <Item
             text={"Export as PNG"}
             onClick={() => {
-              handleDownloadPNGClick();
+              handleDownloadPngClick();
               handleActiveMenuClick("Export");
             }}
             icon={<PictureIcon />}
@@ -58,7 +63,7 @@ export function DropDownExport({
           <Item
             text={"Export as SVG"}
             onClick={() => {
-              handleDownloadSVGClick();
+              handleDownloadSvgClick();
               handleActiveMenuClick("Export");
             }}
             icon={<PictureIcon />}

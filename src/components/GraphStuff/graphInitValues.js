@@ -1,17 +1,16 @@
 export const linkThresholdInit = 0.7;
-export const minComponentSizeInit = 2;
-export const linkAttribsInit = true;
-export const nodeGroupsInit = true;
-export const linkAttribsTextInit = "";
-export const nodeGroupsTextInit = "";
+export const minCompSizeInit = 2;
+export const linkFilterInit = true;
+export const nodeFilterInit = true;
+export const linkFilterTextInit = "";
+export const nodeFilterTextInit = "";
 
 export const linkForceInit = true;
 export const linkLengthInit = 70;
 export const xStrengthInit = 0.05;
 export const yStrengthInit = 0.05;
 export const componentStrengthInit = 0;
-export const centroidThresholdInit = 1;
-export const chargeStrengthInit = 5;
+export const nodeRepulsionStrengthInit = 5;
 export const circleLayoutInit = false;
 
 export const checkBorderInit = false;

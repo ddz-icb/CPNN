@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import { Tooltip } from "react-tooltip";
 
-import { Colors } from "./headerBarColors";
-import { Mapping } from "./headerBarMapping";
-import { DropDownExport } from "./headerBarExport";
+import { Colors } from "./headerBarColors.js";
+import { Mapping } from "./headerBarMapping.js";
+import { HeaderBarExport } from "./headerBarExport.js";
 
 export function HeaderBar({
-  handleDownloadJSONClick,
-  handleDownloadPNGClick,
-  handleDownloadSVGClick,
+  download,
+  setDownload,
   handleUploadSchemeClick,
   colorSchemeInputRef,
   handleNewScheme,
@@ -19,8 +18,8 @@ export function HeaderBar({
   colorSchemes,
   mapping,
   handleDeleteColorScheme,
-  groupToColorIndex,
-  attribToColorIndex,
+  nodeAttribsToColorIndices,
+  linkAttribsToColorIndices,
 }) {
   const [activeMenu, setActiveMenu] = useState("None");
 
@@ -41,8 +40,8 @@ export function HeaderBar({
         activeMenu={activeMenu}
         setActiveMenu={setActiveMenu}
         handleActiveMenuClick={handleActiveMenuClick}
-        groupToColorIndex={groupToColorIndex}
-        attribToColorIndex={attribToColorIndex}
+        nodeAttribsToColorIndices={nodeAttribsToColorIndices}
+        linkAttribsToColorIndices={linkAttribsToColorIndices}
       />
       <Colors
         handleUploadSchemeClick={handleUploadSchemeClick}
@@ -58,10 +57,9 @@ export function HeaderBar({
         setActiveMenu={setActiveMenu}
         handleActiveMenuClick={handleActiveMenuClick}
       />
-      <DropDownExport
-        handleDownloadJSONClick={handleDownloadJSONClick}
-        handleDownloadPNGClick={handleDownloadPNGClick}
-        handleDownloadSVGClick={handleDownloadSVGClick}
+      <HeaderBarExport
+        download={download}
+        setDownload={setDownload}
         activeMenu={activeMenu}
         setActiveMenu={setActiveMenu}
         handleActiveMenuClick={handleActiveMenuClick}

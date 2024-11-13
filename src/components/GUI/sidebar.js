@@ -3,10 +3,10 @@ import React, { useState } from "react";
 import { ReactComponent as BackIcon } from "../../icons/leftArrow.svg";
 import { Tooltip } from "react-tooltip";
 
-import { FilterSidebar } from "./filterSidebar";
-import { PhysicsSidebar } from "./physicsSidebar";
-import { DataSidebar } from "./dataSidebar";
-import { MainSidebar } from "./mainSidebar";
+import { FilterSidebar } from "./filterSidebar.js";
+import { PhysicsSidebar } from "./physicsSidebar.js";
+import { DataSidebar } from "./dataSidebar.js";
+import { MainSidebar } from "./mainSidebar.js";
 
 export function Sidebar({
   changeTheme,
@@ -17,36 +17,10 @@ export function Sidebar({
   handleDeleteFile,
   handleRemoveActiveFile,
   handleAddFile,
-  linkThreshold,
-  minComponentSize,
-  linkAttribs,
-  setLinkThreshold,
-  setMinComponentSize,
-  setLinkAttribs,
-  linkAttribsText,
-  setLinkAttribsText,
-  linkLength,
-  checkBorder,
-  borderHeight,
-  borderWidth,
-  setLinkLength,
-  setCheckBorder,
-  setBorderHeight,
-  setBorderWidth,
-  xStrength,
-  setXStrength,
-  yStrength,
-  setYStrength,
-  componentStrength,
-  setComponentStrength,
-  centroidThreshold,
-  setCentroidThreshold,
-  linkForce,
-  setLinkForce,
-  chargeStrength,
-  setChargeStrength,
-  circleLayout,
-  setCircleLayout,
+  filterSettings,
+  setFilterSettings,
+  physicsSettings,
+  setPhysicsSettings,
   handleNewMapping,
   mappingInputRef,
   handleUploadMappingClick,
@@ -57,13 +31,9 @@ export function Sidebar({
   handleDeleteMapping,
   handleGraphAbsUploadClick,
   handleGraphZeroUploadClick,
-  graphInputRef,
   handleNewFile,
-  nodeGroupsText,
-  setNodeGroupsText,
-  setNodeGroups,
   resetPhysics,
-  resetFilter,
+  resetFilters,
   graphAbsInputRef,
   graphZeroInputRef,
 }) {
@@ -116,19 +86,12 @@ export function Sidebar({
       <Navbar>
         <Back activeNavItem={activeNavItem} icon={<BackIcon />} onClick={() => handleNavItemClick("Main")} />
         <FilterSidebar
-          linkThreshold={linkThreshold}
-          minComponentSize={minComponentSize}
-          linkAttribs={linkAttribs}
-          setLinkThreshold={setLinkThreshold}
-          setMinComponentSize={setMinComponentSize}
-          setLinkAttribs={setLinkAttribs}
-          linkAttribsText={linkAttribsText}
-          setLinkAttribsText={setLinkAttribsText}
+          linkThreshold={filterSettings.linkThreshold}
+          minCompSize={filterSettings.minCompSize}
+          filterSettings={filterSettings}
+          setFilterSettings={setFilterSettings}
           theme={theme}
-          nodeGroupsText={nodeGroupsText}
-          setNodeGroupsText={setNodeGroupsText}
-          setNodeGroups={setNodeGroups}
-          resetFilter={resetFilter}
+          resetFilters={resetFilters}
         />
       </Navbar>
     );
@@ -136,31 +99,7 @@ export function Sidebar({
     content = (
       <Navbar>
         <Back activeNavItem={activeNavItem} icon={<BackIcon />} onClick={() => handleNavItemClick("Main")} />
-        <PhysicsSidebar
-          linkLength={linkLength}
-          checkBorder={checkBorder}
-          borderHeight={borderHeight}
-          borderWidth={borderWidth}
-          setLinkLength={setLinkLength}
-          setCheckBorder={setCheckBorder}
-          setBorderHeight={setBorderHeight}
-          setBorderWidth={setBorderWidth}
-          xStrength={xStrength}
-          setXStrength={setXStrength}
-          yStrength={yStrength}
-          setYStrength={setYStrength}
-          componentStrength={componentStrength}
-          setComponentStrength={setComponentStrength}
-          centroidThreshold={centroidThreshold}
-          setCentroidThreshold={setCentroidThreshold}
-          linkForce={linkForce}
-          setLinkForce={setLinkForce}
-          chargeStrength={chargeStrength}
-          setChargeStrength={setChargeStrength}
-          circleLayout={circleLayout}
-          setCircleLayout={setCircleLayout}
-          resetPhysics={resetPhysics}
-        />
+        <PhysicsSidebar physicsSettings={physicsSettings} setPhysicsSettings={setPhysicsSettings} resetPhysics={resetPhysics} />
       </Navbar>
     );
   }

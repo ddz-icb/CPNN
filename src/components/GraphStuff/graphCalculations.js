@@ -1,3 +1,5 @@
+import UnionFind from "union-find";
+
 export function joinGraphs(graph, newGraph) {
   const nodeMap = new Map(graph.nodes.map((node) => [node.id, { ...node }]));
 
@@ -15,9 +17,7 @@ export function joinGraphs(graph, newGraph) {
 
   const combinedNodes = Array.from(nodeMap.values());
 
-  const linkMap = new Map(
-    graph.links.map((link) => [`${link.source}-${link.target}`, { ...link }])
-  );
+  const linkMap = new Map(graph.links.map((link) => [`${link.source}-${link.target}`, { ...link }]));
 
   newGraph.links.forEach((link) => {
     const key1 = `${link.source}-${link.target}`;
@@ -62,7 +62,6 @@ export function returnComponentData(graph) {
     idToIndexMap[node.id] = index;
   });
 
-  const UnionFind = require("union-find");
   const uf = new UnionFind(graph.nodes.length);
   graph.links.forEach((link) => {
     // checking link.source.id and link.source for safety as d3 replaces the id in source with a graphics objects
@@ -75,9 +74,7 @@ export function returnComponentData(graph) {
   const componentSizeArray = [];
   graph.nodes.forEach((node) => {
     const component = uf.find(idToIndexMap[node.id]);
-    componentSizeArray[component] = componentSizeArray[component]
-      ? componentSizeArray[component] + 1
-      : 1;
+    componentSizeArray[component] = componentSizeArray[component] ? componentSizeArray[component] + 1 : 1;
 
     componentArray[node.id] = component;
   });
@@ -107,12 +104,8 @@ export function filterByThreshold(graph, linkThreshold) {
     ...graph,
     links: graph.links
       .map((link) => {
-        const filteredAttribs = link.attribs.filter(
-          (_, i) => link.weights[i] >= linkThreshold
-        );
-        const filteredWeights = link.weights.filter(
-          (weight) => weight >= linkThreshold
-        );
+        const filteredAttribs = link.attribs.filter((_, i) => link.weights[i] >= linkThreshold);
+        const filteredWeights = link.weights.filter((weight) => weight >= linkThreshold);
 
         return {
           ...link,
@@ -130,34 +123,21 @@ export function filterNodesExist(graph) {
 
   return {
     ...graph,
-    links: graph.links.filter(
-      (link) =>
-        nodeSet.has(link.source.id || link.source) &&
-        nodeSet.has(link.target.id || link.target)
-    ),
+    links: graph.links.filter((link) => nodeSet.has(link.source.id || link.source) && nodeSet.has(link.target.id || link.target)),
   };
 }
 
-export function filterMinComponentSize(graph, minComponentSize) {
-  if (minComponentSize === 1) return graph;
+export function filterMinCompSize(graph, minCompSize) {
+  if (minCompSize === 1) return graph;
 
-  const [componentArray, componentSizeArray] = returnComponentData(
-    graph,
-    graph.nodes
-  );
+  const [componentArray, componentSizeArray] = returnComponentData(graph, graph.nodes);
 
   graph = {
     ...graph,
-    nodes: graph.nodes.filter(
-      (node) => componentSizeArray[componentArray[node.id]] >= minComponentSize
-    ),
+    nodes: graph.nodes.filter((node) => componentSizeArray[componentArray[node.id]] >= minCompSize),
     links: graph.links.filter((link) => {
-      const sourceExists =
-        componentSizeArray[componentArray[link.source.id || link.source]] >=
-        minComponentSize;
-      const targetExists =
-        componentSizeArray[componentArray[link.target.id || link.target]] >=
-        minComponentSize;
+      const sourceExists = componentSizeArray[componentArray[link.source.id || link.source]] >= minCompSize;
+      const targetExists = componentSizeArray[componentArray[link.target.id || link.target]] >= minCompSize;
 
       return sourceExists && targetExists;
     }),
@@ -182,12 +162,7 @@ export function filterByAttribs(graph, filterRequest) {
 
           for (const element of andTerm) {
             link.attribs.forEach((attrib, i) => {
-              if (
-                attrib
-                  .toString()
-                  .toLowerCase()
-                  .includes(element.toString().toLowerCase())
-              ) {
+              if (attrib.toString().toLowerCase().includes(element.toString().toLowerCase())) {
                 newLinks[i] = 1;
                 meetsTerm = true;
               }
@@ -223,8 +198,8 @@ export function filterByAttribs(graph, filterRequest) {
   return graph;
 }
 
-export function filterNodeGroups(graph, filterRequest) {
-  // nodeGroups is true if the filterRequest was empty
+export function filterNodes(graph, filterRequest) {
+  // filterRequest is true if the filter is empty
   if (filterRequest === true) return graph;
 
   graph = {
@@ -236,12 +211,7 @@ export function filterNodeGroups(graph, filterRequest) {
 
           for (const element of andTerm) {
             node.groups.forEach((group, i) => {
-              if (
-                group
-                  .toString()
-                  .toLowerCase()
-                  .includes(element.toString().toLowerCase())
-              ) {
+              if (group.toString().toLowerCase().includes(element.toString().toLowerCase())) {
                 meetsTerm = true;
               }
             });
@@ -293,9 +263,7 @@ export function applyNodeMapping(graph, mapping) {
 
   graph.nodes.forEach((node) => {
     const entries = node.id.split(";");
-    const protIdsForLookup = new Set(
-      entries.map((entry) => entry.split("_")[0])
-    );
+    const protIdsForLookup = new Set(entries.map((entry) => entry.split("_")[0]));
 
     protIdsForLookup.forEach((protId) => {
       const isIsoform = protId.includes("-");
@@ -308,10 +276,7 @@ export function applyNodeMapping(graph, mapping) {
     let groupsSet = new Set();
     protIdsForLookup.forEach((protId) => {
       if (nodeMapping[protId]) {
-        groupsSet = new Set([
-          ...groupsSet,
-          ...nodeMapping[protId].pathwayNames,
-        ]);
+        groupsSet = new Set([...groupsSet, ...nodeMapping[protId].pathwayNames]);
       }
     });
     node.groups = Array.from(groupsSet);
@@ -320,34 +285,34 @@ export function applyNodeMapping(graph, mapping) {
   return graph;
 }
 
-export function getGroupToColorIndex(graph) {
-  const groupToColorIndex = [];
+export function getNodeAttribsToColorIndices(graph) {
+  const nodeAttribsToColorIndices = [];
   let i = 0;
 
   graph.nodes.forEach((node) => {
     node.groups.forEach((group) => {
-      if (!groupToColorIndex.hasOwnProperty(group)) {
-        groupToColorIndex[group] = i;
+      if (!nodeAttribsToColorIndices.hasOwnProperty(group)) {
+        nodeAttribsToColorIndices[group] = i;
         i += 1;
       }
     });
   });
 
-  return groupToColorIndex;
+  return nodeAttribsToColorIndices;
 }
 
-export function getAttribToColorIndex(graph) {
-  const attribToColorIndex = [];
+export function getLinkAttribsToColorIndices(graph) {
+  const linkAttribsToColorIndices = [];
   let i = 0;
 
   graph.links.forEach((link) => {
     link.attribs.forEach((attrib) => {
-      if (!attribToColorIndex.hasOwnProperty(attrib)) {
-        attribToColorIndex[attrib] = i;
+      if (!linkAttribsToColorIndices.hasOwnProperty(attrib)) {
+        linkAttribsToColorIndices[attrib] = i;
         i += 1;
       }
     });
   });
 
-  return attribToColorIndex;
+  return linkAttribsToColorIndices;
 }

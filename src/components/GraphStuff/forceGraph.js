@@ -1,61 +1,46 @@
 import "../../index.css";
-import log from "../../logger";
+import log from "../../logger.js";
 import * as PIXI from "pixi.js";
 import * as d3 from "d3";
 import { useRef, useEffect, useState } from "react";
 import { cloneDeep } from "lodash";
 
-import { handleResize, initDragAndZoom } from "../Other/interactiveCanvas";
-import { initTooltips, Tooltips } from "../Other/toolTipCanvas";
-import { radius, changeCircleBorderColor, drawCircle, drawLine, changeNodeColors, getColor } from "../Other/draw";
+import { handleResize, initDragAndZoom } from "../Other/interactiveCanvas.js";
+import { initTooltips, Tooltips } from "../Other/toolTipCanvas.js";
+import { radius, changeCircleBorderColor, drawCircle, drawLine, changeNodeColors, getColor } from "../Other/draw.js";
 
 import {
   filterByThreshold,
   filterNodesExist,
-  filterMinComponentSize,
+  filterMinCompSize,
   filterByAttribs,
   returnComponentData,
   deleteNode,
-  returnAdjacentData,
-  filterNodeGroups,
+  filterNodes,
   filterActiveCircles,
-  applyNodeMapping,
-} from "./graphCalculations";
-import { downloadAsPNG, downloadAsSVG, downloadGraphJson } from "./download";
-import { getSimulation, borderCheck, componentForce, circularLayout, chargeStrengthMultiplier } from "./graphPhysics";
+} from "./graphCalculations.js";
+import { downloadAsPNG, downloadAsSVG, downloadGraphJson } from "./download.js";
+import { getSimulation, borderCheck, componentForce, nodeRepulsionMultiplier } from "./graphPhysics.js";
+import { simCircularLayout } from "./simulationHandling.js";
+import { circleBorderColorInit } from "../Other/appearanceInitvalues.js";
 
 export function ForceGraph({
   graphCurrent,
   reset,
-  downloadJSON,
-  downloadPNG,
-  downloadSVG,
+  download,
   circleBorderColor,
   setReset,
   setError,
-  linkThreshold,
+  filterSettings,
+  physicsSettings,
+  setPhysicsSettings,
   setGraphCurrent,
-  minComponentSize,
-  linkAttribs,
-  checkBorder,
-  borderWidth,
-  borderHeight,
-  linkLength,
-  xStrength,
-  yStrength,
-  componentStrength,
-  centroidThreshold,
-  linkForce,
-  setLinkForce,
-  chargeStrength,
-  circleLayout,
   nodeColorScheme,
   linkColorScheme,
   theme,
   mapping,
-  nodeGroups,
-  groupToColorIndex,
-  attribToColorIndex,
+  nodeAttribsToColorIndices,
+  linkAttribsToColorIndices,
 }) {
   const containerRef = useRef(null);
 
@@ -171,7 +156,7 @@ export function ForceGraph({
     const circleNodeMap = {};
     for (const node of graphCurrent.nodes) {
       let circle = new PIXI.Graphics();
-      circle = drawCircle(circle, node, circleBorderColor, nodeColorScheme[1], groupToColorIndex);
+      circle = drawCircle(circle, node, circleBorderColor, nodeColorScheme[1], nodeAttribsToColorIndices);
       circle.id = node.id;
       circle.interactive = true;
       circle.buttonMode = true;
@@ -194,11 +179,18 @@ export function ForceGraph({
     }
     log.info("Init simulation");
 
-    const newSimulation = getSimulation(width, height, linkLength, xStrength, yStrength, chargeStrength);
+    const newSimulation = getSimulation(
+      width,
+      height,
+      physicsSettings.linkLength,
+      physicsSettings.xStrength,
+      physicsSettings.yStrength,
+      physicsSettings.nodeRepulsionStrength
+    );
     initDragAndZoom(app, newSimulation, radius, setIsClickTooltipActive, setIsHoverTooltipActive, width, height);
 
     setSimulation(newSimulation);
-  }, [app, graphCurrent, linkLength]);
+  }, [app, graphCurrent, physicsSettings.linkLength]);
 
   // running simulation //
   useEffect(() => {
@@ -240,7 +232,7 @@ export function ForceGraph({
 
   // download graph data as json //
   useEffect(() => {
-    if (downloadJSON != null && graphCurrent) {
+    if (download.downloadJson != null && graphCurrent) {
       try {
         log.info("Downloading graph as JSON");
         downloadGraphJson(graphCurrent, "Graph.json");
@@ -248,38 +240,39 @@ export function ForceGraph({
         log.error("Error downloading the graph as JSON:", error);
       }
     }
-  }, [downloadJSON]);
+  }, [download.downloadJson]);
 
   // download graph as png //
+  // <-- put this in app.js? or separate file? -->
   useEffect(() => {
-    if (downloadPNG != null && graphCurrent) {
+    if (download.downloadPng != null && graphCurrent) {
       log.info("Downloading graph as PNG");
 
-      changeCircleBorderColor(circles, "#0d3b66");
+      changeCircleBorderColor(circles, circleBorderColorInit);
 
       downloadAsPNG(app, document);
 
       changeCircleBorderColor(circles, circleBorderColor);
     }
-  }, [downloadPNG]);
+  }, [download.downloadPng]);
 
   // download graph as png //
   useEffect(() => {
-    if (downloadSVG != null && graphCurrent) {
+    if (download.downloadSvg != null && graphCurrent) {
       log.info("Downloading graph as SVG");
 
       downloadAsSVG(
         document,
         graphCurrent,
         linkColorScheme,
-        attribToColorIndex,
-        "#0d3b66", // the standard light theme circle border color
+        linkAttribsToColorIndices,
+        circleBorderColorInit,
         nodeColorScheme,
-        groupToColorIndex,
+        nodeAttribsToColorIndices,
         circleNodeMap
       );
     }
-  }, [downloadSVG]);
+  }, [download.downloadSvg]);
 
   // switch circle border color //
   useEffect(() => {
@@ -294,7 +287,7 @@ export function ForceGraph({
     if (!circles) return;
     log.info("Changing node color scheme");
 
-    changeNodeColors(circles, circleNodeMap, circleBorderColor, nodeColorScheme[1], groupToColorIndex);
+    changeNodeColors(circles, circleNodeMap, circleBorderColor, nodeColorScheme[1], nodeAttribsToColorIndices);
   }, [nodeColorScheme]);
 
   // switch link color scheme
@@ -342,13 +335,13 @@ export function ForceGraph({
     if (!graphCurrent || !allLinks || !circles || !allNodes) return;
     log.info(
       "Filtering nodes and links.\n    Threshold:  ",
-      linkThreshold,
+      filterSettings.linkThreshold,
       "\n    Attributes: ",
-      linkAttribs,
+      filterSettings.linkFilter,
       "\n    Mininum component size: ",
-      minComponentSize,
+      filterSettings.minCompSize,
       "\n    Groups: ",
-      nodeGroups
+      filterSettings.nodeFilter
     );
 
     let filteredGraph = {
@@ -357,127 +350,128 @@ export function ForceGraph({
       links: allLinks,
     };
 
-    filteredGraph = filterNodeGroups(filteredGraph, nodeGroups);
+    filteredGraph = filterNodes(filteredGraph, filterSettings.nodeFilter);
     filteredGraph = filterNodesExist(filteredGraph);
 
-    filteredGraph = filterByThreshold(filteredGraph, linkThreshold);
-    filteredGraph = filterByAttribs(filteredGraph, linkAttribs);
+    filteredGraph = filterByThreshold(filteredGraph, filterSettings.linkThreshold);
+    filteredGraph = filterByAttribs(filteredGraph, filterSettings.linkFilter);
 
-    filteredGraph = filterMinComponentSize(filteredGraph, minComponentSize);
+    filteredGraph = filterMinCompSize(filteredGraph, filterSettings.minCompSize);
     filteredGraph = filterNodesExist(filteredGraph);
 
     filterActiveCircles(circles, filteredGraph, circleNodeMap);
     setFilteredAfterStart(true);
     setGraphCurrent(filteredGraph);
-  }, [linkThreshold, linkAttribs, nodeGroups, minComponentSize, allLinks, allNodes, circles]);
+  }, [filterSettings.linkThreshold, filterSettings.linkFilter, filterSettings.nodeFilter, filterSettings.minCompSize, allLinks, allNodes, circles]);
 
   // enable or disable link force //
   useEffect(() => {
     if (!simulation) return;
-    if (linkForce === false) {
+    if (physicsSettings.linkForce === false) {
       log.info("Disabling link force");
 
       simulation.force("link").strength(0);
       return;
     }
-    log.info("Enabling link force", linkLength);
+    log.info("Enabling link force", physicsSettings.linkLength);
 
     simulation.force(
       "link",
       d3
         .forceLink(graphCurrent.links)
         .id((d) => d.id)
-        .distance(linkLength)
+        .distance(physicsSettings.linkLength)
     );
 
     simulation.alpha(1).restart();
-  }, [linkForce]);
+  }, [physicsSettings.linkForce]);
 
   // change link length //
   useEffect(() => {
-    if (!simulation || linkForce === false) return;
-    log.info("changing link length", linkLength);
+    if (!simulation || physicsSettings.linkForce === false) return;
+    log.info("changing link length", physicsSettings.linkLength);
 
-    simulation.force("link").distance(linkLength);
+    simulation.force("link").distance(physicsSettings.linkLength);
     simulation.alpha(1).restart();
-  }, [linkLength]);
+  }, [physicsSettings.linkLength]);
 
   // change X Strength //
   useEffect(() => {
     if (!simulation) return;
-    if (xStrength === 0) {
+    if (physicsSettings.xStrength === 0) {
       simulation.force("x", null);
       return;
     }
-    log.info("Changing horizontal gravity", xStrength);
+    log.info("Changing horizontal gravity", physicsSettings.xStrength);
 
-    simulation.force("x", d3.forceX(width / 2).strength(xStrength));
+    simulation.force("x", d3.forceX(width / 2).strength(physicsSettings.xStrength));
     simulation.alpha(1).restart();
-  }, [xStrength, width, height]);
+  }, [physicsSettings.xStrength, width, height]);
 
   // change Y Strength //
   useEffect(() => {
     if (!simulation) return;
-    if (yStrength === 0) {
+    if (physicsSettings.yStrength === 0) {
       simulation.force("y", null);
       return;
     }
-    log.info("Changing vertical gravity", yStrength);
+    log.info("Changing vertical gravity", physicsSettings.yStrength);
 
-    simulation.force("y", d3.forceY(height / 2).strength(yStrength));
+    simulation.force("y", d3.forceY(height / 2).strength(physicsSettings.yStrength));
     simulation.alpha(1).restart();
-  }, [yStrength, width, height]);
+  }, [physicsSettings.yStrength, width, height]);
 
   // change component Strength //
   useEffect(() => {
     if (!simulation) return;
-    if (componentStrength === 0) {
+    if (physicsSettings.componentStrength === 0) {
       simulation.force("component", null);
       return;
     }
-    log.info("Determining component strength", componentStrength);
+    log.info("Determining component strength", physicsSettings.componentStrength);
 
     const [componentArray, componentSizeArray] = returnComponentData(graphCurrent);
 
-    const threshold = minComponentSize > centroidThreshold ? minComponentSize : centroidThreshold;
+    // this value can be increased to slightly increase performance
+    const threshold = filterSettings.minCompSize > 3 ? filterSettings.minCompSize : 3;
 
-    simulation.force("component", componentForce(componentArray, componentSizeArray, threshold).strength(componentStrength));
+    simulation.force("component", componentForce(componentArray, componentSizeArray, threshold).strength(physicsSettings.componentStrength));
     simulation.alpha(1).restart();
-  }, [componentStrength, centroidThreshold, graphCurrent]);
+  }, [physicsSettings.componentStrength, graphCurrent]);
 
-  // change charge strength //
+  // change node repulsion strength //
   useEffect(() => {
     if (!simulation) return;
-    if (chargeStrength === 0) {
+    if (physicsSettings.nodeRepulsionStrength === 0) {
       simulation.force("charge", null);
       return;
     }
-    log.info("Changing node repulsion strength", chargeStrength);
+    log.info("Changing node repulsion strength", physicsSettings.nodeRepulsionStrength);
 
-    simulation.force("charge").strength(chargeStrength * chargeStrengthMultiplier);
+    simulation.force("charge").strength(physicsSettings.nodeRepulsionStrength * nodeRepulsionMultiplier);
     simulation.alpha(1).restart();
-  }, [chargeStrength]);
+  }, [physicsSettings.nodeRepulsionStrength]);
 
   // change graph border //
   useEffect(() => {
     if (!simulation || !width || !height) return;
 
-    if (!checkBorder) {
+    if (!physicsSettings.checkBorder) {
       log.info("Disabling graph border");
       simulation.on("tick.border", null);
     } else {
       log.info("Setting graph border");
       simulation.on("tick.border", () => {
-        borderCheck(circles, radius, borderHeight, borderWidth, width, height);
+        borderCheck(circles, radius, physicsSettings.borderHeight, physicsSettings.borderWidth, width, height);
       });
     }
     simulation.alpha(1).restart();
-  }, [checkBorder, borderHeight, borderWidth, width, height]);
+  }, [physicsSettings.checkBorder, physicsSettings.borderHeight, physicsSettings.borderWidth, width, height]);
 
   // enable circular layout
   useEffect(() => {
     if (!simulation) return;
-    if (circleLayout === false) {
+    if (physicsSettings.circleLayout === false) {
       log.info("Disabling circular layout");
 
       simulation.force("circleLayout", null);
@@ -487,14 +481,10 @@ export function ForceGraph({
     log.info("Enabling circular layout");
 
     // have to disable link force for this
-    setLinkForce(false);
+    setPhysicsSettings((prev) => ({ ...prev, linkForce: false }));
 
-    const [componentArray, componentSizeArray] = returnComponentData(graphCurrent);
-    const adjacentCountMap = returnAdjacentData(graphCurrent);
-
-    simulation.force("circleLayout", circularLayout(componentArray, adjacentCountMap, 6));
-    simulation.alpha(1).restart();
-  }, [circleLayout]);
+    simCircularLayout(graphCurrent, simulation);
+  }, [physicsSettings.circleLayout, graphCurrent]);
 
   // remove node
   useEffect(() => {
@@ -522,7 +512,7 @@ export function ForceGraph({
     lines.clear();
 
     for (const link of graph.links) {
-      drawLine(lines, link, linkColorScheme[1], attribToColorIndex);
+      drawLine(lines, link, linkColorScheme[1], linkAttribsToColorIndices);
     }
 
     app.renderer.render(app.stage);
