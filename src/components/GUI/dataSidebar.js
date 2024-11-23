@@ -10,7 +10,7 @@ export function DataSidebar({
   activeFiles,
   handleRemoveActiveFile,
   uploadedFiles,
-  handleFileSelect,
+  handleSelectGraph,
   handleDeleteFile,
   handleAddFile,
   handleNewMapping,
@@ -19,7 +19,7 @@ export function DataSidebar({
   activeAnnotationMapping,
   handleRemoveActiveAnnotationMapping,
   uploadedMappings,
-  handleMappingSelect,
+  handleAnnotationMappingSelect,
   handleDeleteMapping,
   handleGraphAbsUploadClick,
   handleGraphZeroUploadClick,
@@ -42,7 +42,7 @@ export function DataSidebar({
       <ActiveFiles activeFiles={activeFiles} handleRemoveActiveFile={handleRemoveActiveFile} />
       <UploadedFiles
         uploadedFiles={uploadedFiles}
-        handleFileSelect={handleFileSelect}
+        handleSelectGraph={handleSelectGraph}
         handleDeleteFile={handleDeleteFile}
         handleAddFile={handleAddFile}
       />
@@ -50,12 +50,16 @@ export function DataSidebar({
         activeAnnotationMapping={activeAnnotationMapping}
         handleRemoveActiveAnnotationMapping={handleRemoveActiveAnnotationMapping}
       />
-      <UploadedMappings uploadedMappings={uploadedMappings} handleMappingSelect={handleMappingSelect} handleDeleteMapping={handleDeleteMapping} />
+      <UploadedMappings
+        uploadedMappings={uploadedMappings}
+        handleAnnotationMappingSelect={handleAnnotationMappingSelect}
+        handleDeleteMapping={handleDeleteMapping}
+      />
     </>
   );
 }
 
-function UploadedFiles({ uploadedFiles, handleFileSelect, handleDeleteFile, handleAddFile }) {
+function UploadedFiles({ uploadedFiles, handleSelectGraph, handleDeleteFile, handleAddFile }) {
   return (
     <>
       <b className="heading-label">Uploaded Files</b>
@@ -63,7 +67,7 @@ function UploadedFiles({ uploadedFiles, handleFileSelect, handleDeleteFile, hand
         <tbody>
           {uploadedFiles?.map((name, index) => (
             <tr key={index} className="recent-item-entry recent-item-entry-highlight">
-              <td className="recent-item-text sidebar-tooltip-wrapper" onClick={() => handleFileSelect(name)}>
+              <td className="recent-item-text sidebar-tooltip-wrapper" onClick={() => handleSelectGraph(name)}>
                 <div data-tooltip-id={`replace-tooltip-${index}`} data-tooltip-content="Replace Active Graphs" className="pad-left-025">
                   {name}
                 </div>
@@ -117,7 +121,7 @@ function ActiveFiles({ activeFiles, handleRemoveActiveFile }) {
   );
 }
 
-function UploadedMappings({ uploadedMappings, handleMappingSelect, handleDeleteMapping }) {
+function UploadedMappings({ uploadedMappings, handleAnnotationMappingSelect, handleDeleteMapping }) {
   return (
     <>
       <>
@@ -128,7 +132,7 @@ function UploadedMappings({ uploadedMappings, handleMappingSelect, handleDeleteM
               <>
                 {uploadedMappings?.map((mapping, index) => (
                   <tr key={index} className="recent-item-entry recent-item-entry-highlight">
-                    <td className="recent-item-text sidebar-tooltip-wrapper" onClick={() => handleMappingSelect(mapping)}>
+                    <td className="recent-item-text sidebar-tooltip-wrapper" onClick={() => handleAnnotationMappingSelect(mapping)}>
                       <div data-tooltip-id={`replace-mapping-tooltip-${index}`} data-tooltip-content="Replace Active Annotation Mapping">
                         <span className="pad-left-025">{mapping.name}</span>
                       </div>

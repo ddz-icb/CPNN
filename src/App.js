@@ -37,6 +37,7 @@ import {
 } from "./components/GraphStuff/graphInitValues.js";
 import { lightTheme, linkColorSchemeInit, nodeColorSchemeInit, themeInit } from "./components/Other/appearance.js";
 import { resetFilterSettings, resetPhysicsSettings } from "./components/Other/reset.js";
+import { selectGraph } from "./components/Other/handleFunctions.js";
 
 function App() {
   const [filterSettings, setFilterSettings] = useState({
@@ -95,32 +96,22 @@ function App() {
   const [nodeColorScheme, setNodeColorScheme] = useState(nodeColorSchemeInit);
   const [linkColorScheme, setLinkColorScheme] = useState(linkColorSchemeInit);
 
-  // sets new graph on select (and also reformats it)
-  const handleFileSelect = (filename) => {
-    async function fetchGraph() {
-      log.info("Fetching graph data");
-      try {
-        const file = await getByNameDB(filename);
-        if (!file) throw new Error(`No file found with the name ${filename}.`);
-        const newGraph = JSON.parse(file.content);
-        if (!newGraph) throw new Error("File format not recognized");
-        setGraph(newGraph);
-        setActiveFiles([file]);
-        simulationReset(); //the simulation has to be reloaded after
-        log.info("Graph Loaded Successfully:", newGraph);
-      } catch (error) {
-        setError("Error loading graph");
-        log.error("Error loading graph:", error);
-        return;
-      }
-    }
-
+  // sets corresponding graph after file selection
+  const handleSelectGraph = (filename) => {
     log.info("Replacing graph");
-    fetchGraph();
+    try {
+      selectGraph(filename, setGraph, setActiveFiles);
+      simulationReset(); //the simulation has to be reloaded after
+    } catch (error) {
+      setError("Error loading graph");
+      log.error("Error loading graph:", error);
+      return;
+    }
   };
 
-  const handleMappingSelect = (mapping) => {
+  const handleAnnotationMappingSelect = (mapping) => {
     if (mapping !== activeAnnotationMapping) {
+      log.info("Replacing annotation mapping");
       setActiveAnnotationMapping(mapping);
       simulationReset();
     } else {
@@ -473,7 +464,7 @@ function App() {
         setTheme={setTheme}
         uploadedFiles={uploadedFileNames}
         activeFiles={activeFiles}
-        handleFileSelect={handleFileSelect}
+        handleSelectGraph={handleSelectGraph}
         handleDeleteFile={handleDeleteFile}
         handleRemoveActiveFile={handleRemoveActiveFile}
         handleAddFile={handleAddFileClick}
@@ -487,7 +478,7 @@ function App() {
         activeAnnotationMapping={activeAnnotationMapping}
         handleRemoveActiveAnnotationMapping={handleRemoveActiveAnnotationMapping}
         uploadedMappings={uploadedAnnotationMappings}
-        handleMappingSelect={handleMappingSelect}
+        handleAnnotationMappingSelect={handleAnnotationMappingSelect}
         handleDeleteMapping={handleDeleteMapping}
         handleGraphAbsUploadClick={handleGraphAbsUploadClick}
         handleGraphZeroUploadClick={handleGraphZeroUploadClick}
