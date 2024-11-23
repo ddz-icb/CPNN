@@ -10,29 +10,29 @@ export function DataSidebar({
   activeFiles,
   handleRemoveActiveFile,
   uploadedFiles,
-  handleFileSelect,
+  handleSelectGraph,
   handleDeleteFile,
   handleAddFile,
   handleNewMapping,
   mappingInputRef,
   handleUploadMappingClick,
-  activeMapping,
-  handleRemoveActiveMapping,
+  activeAnnotationMapping,
+  handleRemoveActiveAnnotationMapping,
   uploadedMappings,
-  handleMappingSelect,
+  handleAnnotationMappingSelect,
   handleDeleteMapping,
   handleGraphAbsUploadClick,
   handleGraphZeroUploadClick,
   graphAbsInputRef,
   graphZeroInputRef,
-  handleNewFile,
+  handleNewGraphFile,
 }) {
   return (
     <>
       <TopDataButtons
         handleGraphAbsUploadClick={handleGraphAbsUploadClick}
         handleGraphZeroUploadClick={handleGraphZeroUploadClick}
-        handleNewFile={handleNewFile}
+        handleNewGraphFile={handleNewGraphFile}
         graphAbsInputRef={graphAbsInputRef}
         graphZeroInputRef={graphZeroInputRef}
         handleNewMapping={handleNewMapping}
@@ -42,17 +42,24 @@ export function DataSidebar({
       <ActiveFiles activeFiles={activeFiles} handleRemoveActiveFile={handleRemoveActiveFile} />
       <UploadedFiles
         uploadedFiles={uploadedFiles}
-        handleFileSelect={handleFileSelect}
+        handleSelectGraph={handleSelectGraph}
         handleDeleteFile={handleDeleteFile}
         handleAddFile={handleAddFile}
       />
-      <ActiveMapping activeMapping={activeMapping} handleRemoveActiveMapping={handleRemoveActiveMapping} />
-      <UploadedMappings uploadedMappings={uploadedMappings} handleMappingSelect={handleMappingSelect} handleDeleteMapping={handleDeleteMapping} />
+      <ActiveAnnotationMapping
+        activeAnnotationMapping={activeAnnotationMapping}
+        handleRemoveActiveAnnotationMapping={handleRemoveActiveAnnotationMapping}
+      />
+      <UploadedMappings
+        uploadedMappings={uploadedMappings}
+        handleAnnotationMappingSelect={handleAnnotationMappingSelect}
+        handleDeleteMapping={handleDeleteMapping}
+      />
     </>
   );
 }
 
-function UploadedFiles({ uploadedFiles, handleFileSelect, handleDeleteFile, handleAddFile }) {
+function UploadedFiles({ uploadedFiles, handleSelectGraph, handleDeleteFile, handleAddFile }) {
   return (
     <>
       <b className="heading-label">Uploaded Files</b>
@@ -60,7 +67,7 @@ function UploadedFiles({ uploadedFiles, handleFileSelect, handleDeleteFile, hand
         <tbody>
           {uploadedFiles?.map((name, index) => (
             <tr key={index} className="recent-item-entry recent-item-entry-highlight">
-              <td className="recent-item-text sidebar-tooltip-wrapper" onClick={() => handleFileSelect(name)}>
+              <td className="recent-item-text sidebar-tooltip-wrapper" onClick={() => handleSelectGraph(name)}>
                 <div data-tooltip-id={`replace-tooltip-${index}`} data-tooltip-content="Replace Active Graphs" className="pad-left-025">
                   {name}
                 </div>
@@ -114,7 +121,7 @@ function ActiveFiles({ activeFiles, handleRemoveActiveFile }) {
   );
 }
 
-function UploadedMappings({ uploadedMappings, handleMappingSelect, handleDeleteMapping }) {
+function UploadedMappings({ uploadedMappings, handleAnnotationMappingSelect, handleDeleteMapping }) {
   return (
     <>
       <>
@@ -125,7 +132,7 @@ function UploadedMappings({ uploadedMappings, handleMappingSelect, handleDeleteM
               <>
                 {uploadedMappings?.map((mapping, index) => (
                   <tr key={index} className="recent-item-entry recent-item-entry-highlight">
-                    <td className="recent-item-text sidebar-tooltip-wrapper" onClick={() => handleMappingSelect(mapping)}>
+                    <td className="recent-item-text sidebar-tooltip-wrapper" onClick={() => handleAnnotationMappingSelect(mapping)}>
                       <div data-tooltip-id={`replace-mapping-tooltip-${index}`} data-tooltip-content="Replace Active Annotation Mapping">
                         <span className="pad-left-025">{mapping.name}</span>
                       </div>
@@ -155,29 +162,29 @@ function UploadedMappings({ uploadedMappings, handleMappingSelect, handleDeleteM
   );
 }
 
-function ActiveMapping({ activeMapping, handleRemoveActiveMapping }) {
+function ActiveAnnotationMapping({ activeAnnotationMapping, handleRemoveActiveAnnotationMapping }) {
   return (
     <>
       <>
         <b className="heading-label">Currently Active Annotation Mapping</b>
         <table className="active-item-table">
           <tbody>
-            {activeMapping && (
+            {activeAnnotationMapping && (
               <tr className="recent-item-entry">
                 <td>
-                  <span className="pad-left-025">{activeMapping.name}</span>
+                  <span className="pad-left-025">{activeAnnotationMapping.name}</span>
                 </td>
                 <td className="recent-item-logo sidebar-tooltip-wrapper">
                   <DeleteIcon
                     data-tooltip-id={`delete-active-mapping-tooltip`}
                     data-tooltip-content="Remove mapping"
-                    onClick={() => handleRemoveActiveMapping()}
+                    onClick={() => handleRemoveActiveAnnotationMapping()}
                   />
                   <Tooltip id={`delete-active-mapping-tooltip`} place="top" effect="solid" className="sidebar-tooltip" />
                 </td>
               </tr>
             )}
-            {!activeMapping && (
+            {!activeAnnotationMapping && (
               <tr className="recent-item-entry">
                 <td>None</td>
               </tr>
@@ -192,7 +199,7 @@ function ActiveMapping({ activeMapping, handleRemoveActiveMapping }) {
 export function TopDataButtons({
   handleGraphAbsUploadClick,
   handleGraphZeroUploadClick,
-  handleNewFile,
+  handleNewGraphFile,
   graphAbsInputRef,
   graphZeroInputRef,
   handleUploadMappingClick,
@@ -217,7 +224,7 @@ export function TopDataButtons({
             linkRef={graphAbsInputRef}
             onChange={(event) => {
               const takeAbs = true;
-              handleNewFile(event, takeAbs);
+              handleNewGraphFile(event, takeAbs);
             }}
           />
           <SidebarDropdownItem
@@ -226,7 +233,7 @@ export function TopDataButtons({
             linkRef={graphZeroInputRef}
             onChange={(event) => {
               const takeAbs = false;
-              handleNewFile(event, takeAbs);
+              handleNewGraphFile(event, takeAbs);
             }}
           />
         </div>
@@ -241,7 +248,7 @@ export function TopDataButtons({
           text={"Upload Graph"}
           tooltip={"Upload Graph as CSV/TSV Matrix or JSON File"}
           tooltipId={"upload-graph-tooltip"}
-          onChange={handleNewFile}
+          onChange={handleNewGraphFile}
           linkRef={graphAbsInputRef}
         />
         <SidebarButtonRect

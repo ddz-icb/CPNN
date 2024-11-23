@@ -31,13 +31,13 @@ export function Mapping({
   } else if (activeMenu === "Mapping") {
     let nodeContent = [];
     for (const key in nodeAttribsToColorIndices) {
-      if (nodeAttribsToColorIndices.hasOwnProperty(key) && getColor(nodeAttribsToColorIndices[key], nodeColorScheme[1]) !== fallbackColor) {
+      if (nodeAttribsToColorIndices.hasOwnProperty(key) && getColor(nodeAttribsToColorIndices[key], nodeColorScheme.colorScheme) !== fallbackColor) {
         nodeContent.push(
           <div key={key} className="colorscheme-container">
             <div
               className="color-square colorscheme-item"
               style={{
-                backgroundColor: getColor(nodeAttribsToColorIndices[key], nodeColorScheme[1]),
+                backgroundColor: getColor(nodeAttribsToColorIndices[key], nodeColorScheme.colorScheme),
               }}
             ></div>
             {mapping && mapping.groupMapping && mapping.groupMapping.hasOwnProperty(key) ? (
@@ -63,13 +63,13 @@ export function Mapping({
 
     let linkContent = [];
     for (const key in linkAttribsToColorIndices) {
-      if (linkAttribsToColorIndices.hasOwnProperty(key) && getColor(linkAttribsToColorIndices[key], linkColorScheme[1]) !== fallbackColor) {
+      if (linkAttribsToColorIndices.hasOwnProperty(key) && getColor(linkAttribsToColorIndices[key], linkColorScheme.colorScheme) !== fallbackColor) {
         linkContent.push(
           <div key={key} className="colorscheme-container">
             <div
               className="color-square colorscheme-item"
               style={{
-                backgroundColor: getColor(linkAttribsToColorIndices[key], linkColorScheme[1]),
+                backgroundColor: getColor(linkAttribsToColorIndices[key], linkColorScheme.colorScheme),
               }}
             ></div>
             <span className="colorscheme-item">{key}</span>

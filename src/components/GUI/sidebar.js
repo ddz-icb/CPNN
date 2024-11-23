@@ -9,11 +9,11 @@ import { DataSidebar } from "./dataSidebar.js";
 import { MainSidebar } from "./mainSidebar.js";
 
 export function Sidebar({
-  changeTheme,
   theme,
+  setTheme,
   uploadedFiles,
   activeFiles,
-  handleFileSelect,
+  handleSelectGraph,
   handleDeleteFile,
   handleRemoveActiveFile,
   handleAddFile,
@@ -24,14 +24,14 @@ export function Sidebar({
   handleNewMapping,
   mappingInputRef,
   handleUploadMappingClick,
-  activeMapping,
-  handleRemoveActiveMapping,
+  activeAnnotationMapping,
+  handleRemoveActiveAnnotationMapping,
   uploadedMappings,
-  handleMappingSelect,
+  handleAnnotationMappingSelect,
   handleDeleteMapping,
   handleGraphAbsUploadClick,
   handleGraphZeroUploadClick,
-  handleNewFile,
+  handleNewGraphFile,
   resetPhysics,
   resetFilters,
   graphAbsInputRef,
@@ -51,7 +51,7 @@ export function Sidebar({
   if (activeNavItem === "Main") {
     content = (
       <Navbar short={true}>
-        <MainSidebar theme={theme} changeTheme={changeTheme} handleNavItemClick={handleNavItemClick} />
+        <MainSidebar theme={theme} setTheme={setTheme} handleNavItemClick={handleNavItemClick} />
       </Navbar>
     );
   } else if (activeNavItem === "Data") {
@@ -62,20 +62,20 @@ export function Sidebar({
           activeFiles={activeFiles}
           handleRemoveActiveFile={handleRemoveActiveFile}
           uploadedFiles={uploadedFiles}
-          handleFileSelect={handleFileSelect}
+          handleSelectGraph={handleSelectGraph}
           handleDeleteFile={handleDeleteFile}
           handleAddFile={handleAddFile}
           handleNewMapping={handleNewMapping}
           mappingInputRef={mappingInputRef}
           handleUploadMappingClick={handleUploadMappingClick}
-          activeMapping={activeMapping}
-          handleRemoveActiveMapping={handleRemoveActiveMapping}
+          activeAnnotationMapping={activeAnnotationMapping}
+          handleRemoveActiveAnnotationMapping={handleRemoveActiveAnnotationMapping}
           uploadedMappings={uploadedMappings}
-          handleMappingSelect={handleMappingSelect}
+          handleAnnotationMappingSelect={handleAnnotationMappingSelect}
           handleDeleteMapping={handleDeleteMapping}
           handleGraphAbsUploadClick={handleGraphAbsUploadClick}
           handleGraphZeroUploadClick={handleGraphZeroUploadClick}
-          handleNewFile={handleNewFile}
+          handleNewGraphFile={handleNewGraphFile}
           graphAbsInputRef={graphAbsInputRef}
           graphZeroInputRef={graphZeroInputRef}
         />

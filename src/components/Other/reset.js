@@ -35,7 +35,6 @@ export const resetPhysicsSettings = (setPhysicsSettings) => {
 };
 
 export const resetFilterSettings = (setFilterSettings) => {
-  log.warn("YOYOO");
   setFilterSettings((prev) => ({
     ...prev,
     linkThreshold: linkThresholdInit,
