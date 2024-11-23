@@ -108,6 +108,26 @@ export async function readGraphFile(file, takeAbs) {
   }
 }
 
+export async function readColorScheme(file) {
+  if (!file) {
+    throw new Error(`No file found with the name ${file}.`);
+  }
+
+  try {
+    const fileContent = await readFileAsText(file);
+    const colorScheme = parseColorSchemeCSV(fileContent);
+
+    if (!colorScheme) {
+      throw new Error("Error parsing file");
+    }
+
+    return colorScheme;
+  } catch (error) {
+    log.error(error.message);
+    throw new Error(`Unable to process file: ${error.message}`);
+  }
+}
+
 function readFileAsText(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();

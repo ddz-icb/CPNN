@@ -6,17 +6,16 @@ import exampleGraphJSON from "./demographs/exampleGraphJSON.js";
 import { ForceGraph } from "./components/GraphStuff/forceGraph.js";
 import { Sidebar } from "./components/GUI/sidebar.js";
 import { HeaderBar } from "./components/GUI/headerBar.js";
-import { applyTheme } from "./components/Other/appearance.js";
+import { applyTheme, defaultColorSchemes } from "./components/Other/appearance.js";
 import {
   applyNodeMapping,
   getLinkAttribsToColorIndices,
   getNodeAttribsToColorIndices,
   joinGraphs,
 } from "./components/GraphStuff/graphCalculations.js";
-import { parseColorSchemeCSV, parseFile, readGraphFile } from "./components/Other/parseFiles.js";
-import { IBMAntiBlindness, Okabe_ItoAntiBlindness, manyColors } from "./components/Other/colors.js";
+import { readColorScheme, readGraphFile } from "./components/Other/parseFiles.js";
 import { parseMapping } from "./components/Other/parseMapping.js";
-import { addUploadedFileDB, fromAllGetNameDB, getByNameDB, removeUploadedFileByNameDB } from "./components/Other/db.js";
+import { addFileDB, fromAllGetNameDB, getByNameDB, removeFileByNameDB } from "./components/Other/db.js";
 import {
   borderHeightInit,
   borderWidthInit,
@@ -78,7 +77,7 @@ function App() {
   const mappingInputRef = useRef(null); // reference to newly selected mapping
 
   const [activeFiles, setActiveFiles] = useState(null); // currently active files
-  const [uploadedFileNames, setUploadedFileNames] = useState([]); // names of all files in local storage
+  const [uploadedGraphNames, setUploadedGraphNames] = useState([]); // names of all files in local storage
   const [colorSchemes, setColorSchemes] = useState(null); // all color schemes in local storage
 
   const [nodeAttribsToColorIndices, setNodeAttribsToColorIndices] = useState(null); // mapping of the node attributes to color indices
@@ -123,33 +122,27 @@ function App() {
   // adds new graph file //
   const handleNewGraphFile = async (event, takeAbs) => {
     log.info("Adding new file");
-    let file = event.target.files[0];
+    const file = event.target.files[0];
     try {
-      file = await readGraphFile(file, takeAbs);
-      addUploadedFileDB(file);
-      setUploadedFileNames([...uploadedFileNames, file.name]);
+      const graphFile = await readGraphFile(file, takeAbs);
+      addFileDB(graphFile);
+      setUploadedGraphNames([...uploadedGraphNames, file.name]);
     } catch (error) {
-      setError("Error reading graph file");
-      log.error("Error reading graph file:", error);
+      setError("Error adding graph file");
+      log.error("Error adding graph file:", error);
     }
   };
 
   // user selected new color scheme from files
-  const handleNewScheme = (event) => {
+  const handleNewScheme = async (event) => {
+    console.log("Adding new color scheme");
     const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const fileContent = e.target.result;
-
-        const newColorScheme = parseColorSchemeCSV(fileContent);
-        if (!newColorScheme) {
-          log.error("Error parsing color scheme");
-          return;
-        }
-        setColorSchemes([...colorSchemes, [file.name, newColorScheme]]);
-      };
-      reader.readAsText(file);
+    try {
+      const colorScheme = await readColorScheme(file);
+      setColorSchemes([...colorSchemes, { name: file.name, colorScheme: colorScheme }]);
+    } catch (error) {
+      setError("Error adding color scheme");
+      log.error("Error adding color scheme:", error);
     }
   };
 
@@ -157,21 +150,17 @@ function App() {
     if (!colorSchemeName) return;
     log.info("Deleting color schemes with name", colorSchemeName);
 
-    let updatedColorSchemes = colorSchemes.filter((colorScheme) => colorScheme[0] !== colorSchemeName);
+    let updatedColorSchemes = colorSchemes.filter((colorScheme) => colorScheme.name !== colorSchemeName);
 
     if (updatedColorSchemes.length === 0) {
-      updatedColorSchemes = [
-        ["IBM (5 colors, barrier-free)", IBMAntiBlindness],
-        ["Okabe (7 colors, barrier-free)", Okabe_ItoAntiBlindness],
-        ["Many Colors (18 colors)", manyColors],
-      ];
+      updatedColorSchemes = defaultColorSchemes;
     }
 
-    if (nodeColorScheme[0] === colorSchemeName) {
+    if (nodeColorScheme.name === colorSchemeName) {
       setNodeColorScheme(updatedColorSchemes[0]);
     }
 
-    if (linkColorScheme[0] === colorSchemeName) {
+    if (linkColorScheme.name === colorSchemeName) {
       setLinkColorScheme(updatedColorSchemes[0]);
     }
 
@@ -226,12 +215,12 @@ function App() {
     if (!filename) return;
     log.info("Deleting files with name", filename);
 
-    const updatedFileNames = uploadedFileNames.filter((name) => {
+    const updatedFileNames = uploadedGraphNames.filter((name) => {
       return name !== filename;
     });
 
-    setUploadedFileNames(updatedFileNames);
-    removeUploadedFileByNameDB(filename);
+    setUploadedGraphNames(updatedFileNames);
+    removeFileByNameDB(filename);
   };
 
   // removes file from currently active files //
@@ -346,7 +335,7 @@ function App() {
   useEffect(() => {
     async function load() {
       const filenames = await fromAllGetNameDB();
-      setUploadedFileNames(filenames);
+      setUploadedGraphNames(filenames);
     }
 
     load();
@@ -388,11 +377,7 @@ function App() {
     log.info("Loading color schemes");
     let storedSchemes = JSON.parse(localStorage.getItem("colorSchemes")) || [];
     if (storedSchemes.length === 0) {
-      storedSchemes = [
-        ["IBM (5 colors, barrier-free)", IBMAntiBlindness],
-        ["Okabe (7 colors, barrier-free)", Okabe_ItoAntiBlindness],
-        ["Many Colors (18 colors)", manyColors],
-      ];
+      storedSchemes = defaultColorSchemes;
     }
     setColorSchemes(storedSchemes);
   }, []);
@@ -453,7 +438,7 @@ function App() {
       <Sidebar
         theme={theme}
         setTheme={setTheme}
-        uploadedFiles={uploadedFileNames}
+        uploadedFiles={uploadedGraphNames}
         activeFiles={activeFiles}
         handleSelectGraph={handleSelectGraph}
         handleDeleteFile={handleDeleteFile}

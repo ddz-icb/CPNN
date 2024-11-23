@@ -7,7 +7,7 @@ db.version(1).stores({
   uploadedFiles: "++id, name",
 });
 
-export async function addUploadedFileDB(file) {
+export async function addFileDB(file) {
   try {
     const id = await db.uploadedFiles.add({
       name: file.name,
@@ -20,7 +20,7 @@ export async function addUploadedFileDB(file) {
   }
 }
 
-export async function removeUploadedFileDB(id) {
+export async function removeFileDB(id) {
   try {
     await db.uploadedFiles.delete(id);
     log.info(`File with id ${id} successfully removed.`);
@@ -29,7 +29,7 @@ export async function removeUploadedFileDB(id) {
   }
 }
 
-export async function removeUploadedFileByNameDB(name) {
+export async function removeFileByNameDB(name) {
   try {
     const file = await db.uploadedFiles.where("name").equals(name).first();
     if (file) {

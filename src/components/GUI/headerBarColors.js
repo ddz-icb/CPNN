@@ -89,9 +89,9 @@ export function Colors({
               {colorSchemes.map((colorScheme, index) => (
                 <tr key={index} className="recent-item-entry">
                   <ColorSchemeTableItem
-                    name={colorScheme[0]}
-                    isSelected={isEqual(colorScheme[1], nodeColorScheme[1])}
-                    isSelected2={isEqual(colorScheme[1], linkColorScheme[1])}
+                    name={colorScheme.name}
+                    isSelected={isEqual(colorScheme.colorScheme, nodeColorScheme.colorScheme)}
+                    isSelected2={isEqual(colorScheme.colorScheme, linkColorScheme.colorScheme)}
                     onClick={() => setNodeColorScheme(colorScheme)}
                     onClick2={() => setLinkColorScheme(colorScheme)}
                     handleDeleteColorScheme={handleDeleteColorScheme}

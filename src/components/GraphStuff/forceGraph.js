@@ -143,7 +143,7 @@ export function ForceGraph({
 
   // set stage //
   useEffect(() => {
-    if (!app || !graphCurrent || circles || !width || !height || !theme) return;
+    if (!app || !graphCurrent || circles || !width || !height || !theme || !nodeColorScheme) return;
     log.info("Setting stage");
 
     const newLines = new PIXI.Graphics();
@@ -155,7 +155,7 @@ export function ForceGraph({
     const circleNodeMap = {};
     for (const node of graphCurrent.nodes) {
       let circle = new PIXI.Graphics();
-      circle = drawCircle(circle, node, theme.circleBorderColor, nodeColorScheme[1], nodeAttribsToColorIndices);
+      circle = drawCircle(circle, node, theme.circleBorderColor, nodeColorScheme.colorScheme, nodeAttribsToColorIndices);
       circle.id = node.id;
       circle.interactive = true;
       circle.buttonMode = true;
@@ -286,7 +286,7 @@ export function ForceGraph({
     if (!circles) return;
     log.info("Changing node color scheme");
 
-    changeNodeColors(circles, circleNodeMap, theme.circleBorderColor, nodeColorScheme[1], nodeAttribsToColorIndices);
+    changeNodeColors(circles, circleNodeMap, theme.circleBorderColor, nodeColorScheme.colorScheme, nodeAttribsToColorIndices);
   }, [nodeColorScheme]);
 
   // switch link color scheme
@@ -511,7 +511,7 @@ export function ForceGraph({
     lines.clear();
 
     for (const link of graph.links) {
-      drawLine(lines, link, linkColorScheme[1], linkAttribsToColorIndices);
+      drawLine(lines, link, linkColorScheme.colorScheme, linkAttribsToColorIndices);
     }
 
     app.renderer.render(app.stage);
