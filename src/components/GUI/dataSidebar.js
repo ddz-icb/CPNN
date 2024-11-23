@@ -25,14 +25,14 @@ export function DataSidebar({
   handleGraphZeroUploadClick,
   graphAbsInputRef,
   graphZeroInputRef,
-  handleNewFile,
+  handleNewGraphFile,
 }) {
   return (
     <>
       <TopDataButtons
         handleGraphAbsUploadClick={handleGraphAbsUploadClick}
         handleGraphZeroUploadClick={handleGraphZeroUploadClick}
-        handleNewFile={handleNewFile}
+        handleNewGraphFile={handleNewGraphFile}
         graphAbsInputRef={graphAbsInputRef}
         graphZeroInputRef={graphZeroInputRef}
         handleNewMapping={handleNewMapping}
@@ -199,7 +199,7 @@ function ActiveAnnotationMapping({ activeAnnotationMapping, handleRemoveActiveAn
 export function TopDataButtons({
   handleGraphAbsUploadClick,
   handleGraphZeroUploadClick,
-  handleNewFile,
+  handleNewGraphFile,
   graphAbsInputRef,
   graphZeroInputRef,
   handleUploadMappingClick,
@@ -224,7 +224,7 @@ export function TopDataButtons({
             linkRef={graphAbsInputRef}
             onChange={(event) => {
               const takeAbs = true;
-              handleNewFile(event, takeAbs);
+              handleNewGraphFile(event, takeAbs);
             }}
           />
           <SidebarDropdownItem
@@ -233,7 +233,7 @@ export function TopDataButtons({
             linkRef={graphZeroInputRef}
             onChange={(event) => {
               const takeAbs = false;
-              handleNewFile(event, takeAbs);
+              handleNewGraphFile(event, takeAbs);
             }}
           />
         </div>
@@ -248,7 +248,7 @@ export function TopDataButtons({
           text={"Upload Graph"}
           tooltip={"Upload Graph as CSV/TSV Matrix or JSON File"}
           tooltipId={"upload-graph-tooltip"}
-          onChange={handleNewFile}
+          onChange={handleNewGraphFile}
           linkRef={graphAbsInputRef}
         />
         <SidebarButtonRect

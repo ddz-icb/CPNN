@@ -31,7 +31,7 @@ export function Sidebar({
   handleDeleteMapping,
   handleGraphAbsUploadClick,
   handleGraphZeroUploadClick,
-  handleNewFile,
+  handleNewGraphFile,
   resetPhysics,
   resetFilters,
   graphAbsInputRef,
@@ -75,7 +75,7 @@ export function Sidebar({
           handleDeleteMapping={handleDeleteMapping}
           handleGraphAbsUploadClick={handleGraphAbsUploadClick}
           handleGraphZeroUploadClick={handleGraphZeroUploadClick}
-          handleNewFile={handleNewFile}
+          handleNewGraphFile={handleNewGraphFile}
           graphAbsInputRef={graphAbsInputRef}
           graphZeroInputRef={graphZeroInputRef}
         />

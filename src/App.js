@@ -13,7 +13,7 @@ import {
   getNodeAttribsToColorIndices,
   joinGraphs,
 } from "./components/GraphStuff/graphCalculations.js";
-import { parseColorSchemeCSV, parseFile } from "./components/Other/parseFile.js";
+import { parseColorSchemeCSV, parseFile, readGraphFile } from "./components/Other/parseFiles.js";
 import { IBMAntiBlindness, Okabe_ItoAntiBlindness, manyColors } from "./components/Other/colors.js";
 import { parseMapping } from "./components/Other/parseMapping.js";
 import { addUploadedFileDB, fromAllGetNameDB, getByNameDB, removeUploadedFileByNameDB } from "./components/Other/db.js";
@@ -105,61 +105,32 @@ function App() {
     } catch (error) {
       setError("Error loading graph");
       log.error("Error loading graph:", error);
-      return;
     }
   };
 
+  // sets corresponding mapping after selection
   const handleAnnotationMappingSelect = (mapping) => {
+    log.info("Replacing annotation mapping");
     if (mapping !== activeAnnotationMapping) {
-      log.info("Replacing annotation mapping");
       setActiveAnnotationMapping(mapping);
       simulationReset();
     } else {
+      setError("Mapping is already the current mapping");
       log.error("Mapping is already the current mapping");
     }
   };
 
-  // initates reset //
-  const simulationReset = () => {
-    if (!activeFiles) return;
-    log.info("Handle Simulation Reset");
-
-    resetFilters();
-    resetPhysics();
-
-    setDownload((prev) => ({ ...prev, downloadJson: null, downloadPng: null, downloadSvg: null }));
-
-    setError(null);
-    setReset(true);
-  };
-
-  const resetPhysics = () => {
-    resetPhysicsSettings(setPhysicsSettings);
-  };
-
-  const resetFilters = () => {
-    resetFilterSettings(setFilterSettings);
-  };
-
-  // adds new file //
-  const handleNewFile = async (event, takeAbs) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const fileContent = e.target.result;
-        const graph = parseFile(file.name, fileContent, takeAbs);
-        if (!graph) {
-          setError("Error parsing file");
-          log.error("Error parsing file");
-          return;
-        }
-        const newFile = { name: file.name, content: JSON.stringify(graph) };
-        addUploadedFileDB(newFile);
-        setUploadedFileNames([...uploadedFileNames, newFile.name]);
-        log.info("Added new file: ", newFile.name);
-      };
-      reader.readAsText(file);
+  // adds new graph file //
+  const handleNewGraphFile = async (event, takeAbs) => {
+    log.info("Adding new file");
+    let file = event.target.files[0];
+    try {
+      file = await readGraphFile(file, takeAbs);
+      addUploadedFileDB(file);
+      setUploadedFileNames([...uploadedFileNames, file.name]);
+    } catch (error) {
+      setError("Error reading graph file");
+      log.error("Error reading graph file:", error);
     }
   };
 
@@ -326,6 +297,26 @@ function App() {
     fetchAndJoinGraph();
   };
 
+  // initates reset //
+  const simulationReset = () => {
+    if (!activeFiles) return;
+    log.info("Handle Simulation Reset");
+
+    resetFilters();
+    resetPhysics();
+    setDownload((prev) => ({ ...prev, downloadJson: null, downloadPng: null, downloadSvg: null }));
+    setError(null);
+    setReset(true);
+  };
+
+  const resetPhysics = () => {
+    resetPhysicsSettings(setPhysicsSettings);
+  };
+
+  const resetFilters = () => {
+    resetFilterSettings(setFilterSettings);
+  };
+
   // select example graph on startup
   useEffect(() => {
     async function setInitGraph() {
@@ -482,7 +473,7 @@ function App() {
         handleDeleteMapping={handleDeleteMapping}
         handleGraphAbsUploadClick={handleGraphAbsUploadClick}
         handleGraphZeroUploadClick={handleGraphZeroUploadClick}
-        handleNewFile={handleNewFile}
+        handleNewGraphFile={handleNewGraphFile}
         resetPhysics={resetPhysics}
         resetFilters={resetFilters}
         graphAbsInputRef={graphAbsInputRef}

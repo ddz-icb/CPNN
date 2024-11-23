@@ -87,3 +87,32 @@ export function parseColorSchemeCSV(content) {
 
   return colorData;
 }
+
+export async function readGraphFile(file, takeAbs) {
+  if (!file) {
+    throw new Error(`No file found with the name ${file}.`);
+  }
+
+  try {
+    const fileContent = await readFileAsText(file);
+    const graph = parseFile(file.name, fileContent, takeAbs);
+
+    if (!graph) {
+      throw new Error("Error parsing file");
+    }
+
+    return { name: file.name, content: JSON.stringify(graph) };
+  } catch (error) {
+    log.error(error.message);
+    throw new Error(`Unable to process file: ${error.message}`);
+  }
+}
+
+function readFileAsText(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => resolve(e.target.result);
+    reader.onerror = () => reject(new Error("Error reading file"));
+    reader.readAsText(file);
+  });
+}
