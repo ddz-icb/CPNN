@@ -6,7 +6,7 @@ import exampleGraphJSON from "./demographs/exampleGraphJSON.js";
 import { ForceGraph } from "./components/GraphStuff/forceGraph.js";
 import { Sidebar } from "./components/GUI/sidebar.js";
 import { HeaderBar } from "./components/GUI/headerBar.js";
-import { applyTheme } from "./components/Other/theme.js";
+import { applyTheme } from "./components/Other/appearance.js";
 import {
   applyNodeMapping,
   getLinkAttribsToColorIndices,
@@ -35,7 +35,7 @@ import {
   xStrengthInit,
   yStrengthInit,
 } from "./components/GraphStuff/graphInitValues.js";
-import { circleBorderColorInit, linkColorSchemeInit, nodeColorSchemeInit, themeInit } from "./components/Other/appearanceInitvalues.js";
+import { lightTheme, linkColorSchemeInit, nodeColorSchemeInit, themeInit } from "./components/Other/appearance.js";
 import { resetFilterSettings, resetPhysicsSettings } from "./components/Other/reset.js";
 
 function App() {
@@ -76,17 +76,18 @@ function App() {
   const [activeFiles, setActiveFiles] = useState(null); // currently active files
   const [uploadedFileNames, setUploadedFileNames] = useState([]); // names of all files in local storage
   const [colorSchemes, setColorSchemes] = useState(null); // all color schemes in local storage
+
   const [nodeAttribsToColorIndices, setNodeAttribsToColorIndices] = useState(null); // mapping of the node attributes to color indices
   const [linkAttribsToColorIndices, setLinkAttribsToColorIndices] = useState(null); // mapping of the link attributes to color indices
 
   const [download, setDownload] = useState({
-    downloadJson: null, // on state change: indicates graph should be downloaded
-    downloadPng: null, // on state change: indicates graph should be downloaded
-    downloadSvg: null, // on state change: indicates graph should be downloaded
+    // on state change: indicates graph should be downloaded
+    downloadJson: null,
+    downloadPng: null,
+    downloadSvg: null,
   });
 
   const [theme, setTheme] = useState(themeInit);
-  const [circleBorderColor, setCircleBorderColor] = useState(circleBorderColorInit);
 
   const [nodeColorScheme, setNodeColorScheme] = useState(nodeColorSchemeInit);
   const [linkColorScheme, setLinkColorScheme] = useState(linkColorSchemeInit);
@@ -334,12 +335,6 @@ function App() {
     fetchAndJoinGraph();
   };
 
-  const changeTheme = () => {
-    const newTheme = theme === "light" ? "dark" : "light";
-    setTheme(newTheme);
-    localStorage.setItem("theme", newTheme);
-  };
-
   // select example graph on startup
   useEffect(() => {
     async function setInitGraph() {
@@ -378,9 +373,9 @@ function App() {
   // load current theme
   useEffect(() => {
     log.info("Loading Theme");
-    const storedTheme = localStorage.getItem("theme") || "light";
+    const storedTheme = JSON.parse(localStorage.getItem("theme")) || lightTheme;
+    applyTheme(document, storedTheme.theme);
     setTheme(storedTheme);
-    document.body.className = storedTheme; // apply theme class
   }, []);
 
   // load mapping files
@@ -428,10 +423,12 @@ function App() {
     localStorage.setItem("colorSchemes", JSON.stringify(colorSchemes));
   }, [colorSchemes]);
 
-  // apply theme //
+  // store theme //
   useEffect(() => {
-    const circleBorderColor = applyTheme(document, theme);
-    setCircleBorderColor(circleBorderColor);
+    if (!theme) return;
+    log.info("Storing theme");
+
+    localStorage.setItem("theme", JSON.stringify(theme));
   }, [theme]);
 
   // forwards graph to forceGraph component //
@@ -454,7 +451,7 @@ function App() {
   }, [graph, activeFiles, activeMapping]);
 
   return (
-    <div className={theme}>
+    <div className={theme.theme}>
       <HeaderBar
         download={download}
         setDownload={setDownload}
@@ -472,8 +469,8 @@ function App() {
         linkAttribsToColorIndices={linkAttribsToColorIndices}
       />
       <Sidebar
-        changeTheme={changeTheme}
         theme={theme}
+        setTheme={setTheme}
         uploadedFiles={uploadedFileNames}
         activeFiles={activeFiles}
         handleFileSelect={handleFileSelect}
@@ -506,7 +503,6 @@ function App() {
           reset={reset}
           graphCurrent={graphCurrent}
           download={download}
-          circleBorderColor={circleBorderColor}
           setReset={setReset}
           setError={setError}
           filterSettings={filterSettings}

@@ -9,8 +9,8 @@ import { DataSidebar } from "./dataSidebar.js";
 import { MainSidebar } from "./mainSidebar.js";
 
 export function Sidebar({
-  changeTheme,
   theme,
+  setTheme,
   uploadedFiles,
   activeFiles,
   handleFileSelect,
@@ -51,7 +51,7 @@ export function Sidebar({
   if (activeNavItem === "Main") {
     content = (
       <Navbar short={true}>
-        <MainSidebar theme={theme} changeTheme={changeTheme} handleNavItemClick={handleNavItemClick} />
+        <MainSidebar theme={theme} setTheme={setTheme} handleNavItemClick={handleNavItemClick} />
       </Navbar>
     );
   } else if (activeNavItem === "Data") {

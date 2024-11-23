@@ -22,13 +22,12 @@ import {
 import { downloadAsPNG, downloadAsSVG, downloadGraphJson } from "./download.js";
 import { getSimulation, borderCheck, componentForce, nodeRepulsionMultiplier } from "./graphPhysics.js";
 import { simCircularLayout } from "./simulationHandling.js";
-import { circleBorderColorInit } from "../Other/appearanceInitvalues.js";
+import { lightTheme } from "../Other/appearance.js";
 
 export function ForceGraph({
   graphCurrent,
   reset,
   download,
-  circleBorderColor,
   setReset,
   setError,
   filterSettings,
@@ -144,7 +143,7 @@ export function ForceGraph({
 
   // set stage //
   useEffect(() => {
-    if (!app || !graphCurrent || circles || !width || !height) return;
+    if (!app || !graphCurrent || circles || !width || !height || !theme) return;
     log.info("Setting stage");
 
     const newLines = new PIXI.Graphics();
@@ -156,7 +155,7 @@ export function ForceGraph({
     const circleNodeMap = {};
     for (const node of graphCurrent.nodes) {
       let circle = new PIXI.Graphics();
-      circle = drawCircle(circle, node, circleBorderColor, nodeColorScheme[1], nodeAttribsToColorIndices);
+      circle = drawCircle(circle, node, theme.circleBorderColor, nodeColorScheme[1], nodeAttribsToColorIndices);
       circle.id = node.id;
       circle.interactive = true;
       circle.buttonMode = true;
@@ -248,11 +247,11 @@ export function ForceGraph({
     if (download.downloadPng != null && graphCurrent) {
       log.info("Downloading graph as PNG");
 
-      changeCircleBorderColor(circles, circleBorderColorInit);
+      changeCircleBorderColor(circles, lightTheme.circleBorderColor);
 
       downloadAsPNG(app, document);
 
-      changeCircleBorderColor(circles, circleBorderColor);
+      changeCircleBorderColor(circles, theme.circleBorderColor);
     }
   }, [download.downloadPng]);
 
@@ -266,7 +265,7 @@ export function ForceGraph({
         graphCurrent,
         linkColorScheme,
         linkAttribsToColorIndices,
-        circleBorderColorInit,
+        theme.circleBorderColorInit,
         nodeColorScheme,
         nodeAttribsToColorIndices,
         circleNodeMap
@@ -279,15 +278,15 @@ export function ForceGraph({
     if (!circles) return;
     log.info("Switching circle border color");
 
-    changeCircleBorderColor(circles, circleBorderColor);
-  }, [circleBorderColor]);
+    changeCircleBorderColor(circles, theme.circleBorderColor);
+  }, [theme]);
 
   // switch node color scheme
   useEffect(() => {
     if (!circles) return;
     log.info("Changing node color scheme");
 
-    changeNodeColors(circles, circleNodeMap, circleBorderColor, nodeColorScheme[1], nodeAttribsToColorIndices);
+    changeNodeColors(circles, circleNodeMap, theme.circleBorderColor, nodeColorScheme[1], nodeAttribsToColorIndices);
   }, [nodeColorScheme]);
 
   // switch link color scheme
@@ -533,7 +532,7 @@ export function ForceGraph({
         setIsHoverTooltipActive={setIsHoverTooltipActive}
         hoverTooltipData={hoverTooltipData}
         setNodeToDelete={setNodeToDelete}
-        theme={theme}
+        theme={theme.theme}
         mapping={mapping}
       />
       <div ref={containerRef} className="container" />
