@@ -68,6 +68,9 @@ function App() {
   const [graph, setGraph] = useState(null); // graph without modifications
   const [graphCurrent, setGraphCurrent] = useState(null); // graph with modifications e.g. links filtered by threshold, it also contains the pixi node elements
 
+  const [activeAnnotationMapping, setActiveAnnotationMapping] = useState(null); // active node annotation mapping
+  const [uploadedAnnotationMappings, setUploadedAnnotationMappings] = useState(null); // uploaded node attribute mappings
+
   const graphAbsInputRef = useRef(null); // reference to newly selected graph (link weights should be interpreted as absolute values)
   const graphZeroInputRef = useRef(null); // reference to newly selected graph (negative link weights should be interpreted as 0)
   const colorSchemeInputRef = useRef(null); // reference to newly selected color scheme
@@ -91,9 +94,6 @@ function App() {
 
   const [nodeColorScheme, setNodeColorScheme] = useState(nodeColorSchemeInit);
   const [linkColorScheme, setLinkColorScheme] = useState(linkColorSchemeInit);
-
-  const [activeMapping, setActiveMapping] = useState(null);
-  const [uploadedMappings, setUploadedMappings] = useState(null);
 
   // sets new graph on select (and also reformats it)
   const handleFileSelect = (filename) => {
@@ -120,8 +120,8 @@ function App() {
   };
 
   const handleMappingSelect = (mapping) => {
-    if (mapping !== activeMapping) {
-      setActiveMapping(mapping);
+    if (mapping !== activeAnnotationMapping) {
+      setActiveAnnotationMapping(mapping);
       simulationReset();
     } else {
       log.error("Mapping is already the current mapping");
@@ -233,10 +233,10 @@ function App() {
             groupMapping: groupMapping,
           };
 
-          if (uploadedMappings === null) {
-            setUploadedMappings([newMapping]);
+          if (uploadedAnnotationMappings === null) {
+            setUploadedAnnotationMappings([newMapping]);
           } else {
-            setUploadedMappings([...uploadedMappings, newMapping]);
+            setUploadedAnnotationMappings([...uploadedAnnotationMappings, newMapping]);
           }
         };
         reader.readAsText(file);
@@ -246,8 +246,8 @@ function App() {
     }
   };
 
-  const handleRemoveActiveMapping = () => {
-    setActiveMapping(null);
+  const handleRemoveActiveAnnotationMapping = () => {
+    setActiveAnnotationMapping(null);
     simulationReset();
   };
 
@@ -255,8 +255,8 @@ function App() {
     if (!mappingName) return;
     log.info("Deleting mapping with name", mappingName);
 
-    const updatedMappings = uploadedMappings.filter((mapping) => mapping.name !== mappingName);
-    setUploadedMappings(updatedMappings);
+    const updatedMappings = uploadedAnnotationMappings.filter((mapping) => mapping.name !== mappingName);
+    setUploadedAnnotationMappings(updatedMappings);
   };
 
   // deletes uploaded files with filename //
@@ -384,22 +384,22 @@ function App() {
     let mappings = JSON.parse(localStorage.getItem("mappings")) || [];
     if (mappings.length === 0) mappings = null;
     log.info("mappings: ", mappings);
-    setUploadedMappings(mappings);
+    setUploadedAnnotationMappings(mappings);
   }, []);
 
   // storing uploaded mapping files //
   useEffect(() => {
-    log.info("Storing mapping files", uploadedMappings);
+    log.info("Storing mapping files", uploadedAnnotationMappings);
 
-    localStorage.setItem("mappings", JSON.stringify(uploadedMappings));
-  }, [uploadedMappings]);
+    localStorage.setItem("mappings", JSON.stringify(uploadedAnnotationMappings));
+  }, [uploadedAnnotationMappings]);
 
   // storing active mapping file //
   useEffect(() => {
-    log.info("Storing active mapping", activeMapping);
+    log.info("Storing active annotation mapping", activeAnnotationMapping);
 
-    localStorage.setItem("activeMapping", JSON.stringify(activeMapping));
-  }, [activeMapping]);
+    localStorage.setItem("activeMapping", JSON.stringify(activeAnnotationMapping));
+  }, [activeAnnotationMapping]);
 
   // load locally stored color schemes //
   useEffect(() => {
@@ -439,7 +439,7 @@ function App() {
     log.info("Modifying graph and forwarding it to the simulation component");
 
     let newGraphCurrent = structuredClone(graph);
-    newGraphCurrent = applyNodeMapping(newGraphCurrent, activeMapping);
+    newGraphCurrent = applyNodeMapping(newGraphCurrent, activeAnnotationMapping);
 
     const nodeAttribsToColorIndices = getNodeAttribsToColorIndices(newGraphCurrent);
     setNodeAttribsToColorIndices(nodeAttribsToColorIndices);
@@ -448,7 +448,7 @@ function App() {
     setLinkAttribsToColorIndices(linkAttribsToColorIndices);
 
     setGraphCurrent(newGraphCurrent);
-  }, [graph, activeFiles, activeMapping]);
+  }, [graph, activeFiles, activeAnnotationMapping]);
 
   return (
     <div className={theme.theme}>
@@ -463,7 +463,7 @@ function App() {
         setLinkColorScheme={setLinkColorScheme}
         linkColorScheme={linkColorScheme}
         colorSchemes={colorSchemes}
-        mapping={activeMapping}
+        activeAnnotationMapping={activeAnnotationMapping}
         handleDeleteColorScheme={handleDeleteColorScheme}
         nodeAttribsToColorIndices={nodeAttribsToColorIndices}
         linkAttribsToColorIndices={linkAttribsToColorIndices}
@@ -484,9 +484,9 @@ function App() {
         handleNewMapping={handleNewMapping}
         mappingInputRef={mappingInputRef}
         handleUploadMappingClick={handleUploadMappingClick}
-        activeMapping={activeMapping}
-        handleRemoveActiveMapping={handleRemoveActiveMapping}
-        uploadedMappings={uploadedMappings}
+        activeAnnotationMapping={activeAnnotationMapping}
+        handleRemoveActiveAnnotationMapping={handleRemoveActiveAnnotationMapping}
+        uploadedMappings={uploadedAnnotationMappings}
         handleMappingSelect={handleMappingSelect}
         handleDeleteMapping={handleDeleteMapping}
         handleGraphAbsUploadClick={handleGraphAbsUploadClick}
@@ -512,7 +512,7 @@ function App() {
           nodeColorScheme={nodeColorScheme}
           linkColorScheme={linkColorScheme}
           theme={theme}
-          mapping={activeMapping}
+          activeAnnotationMapping={activeAnnotationMapping}
           nodeAttribsToColorIndices={nodeAttribsToColorIndices}
           linkAttribsToColorIndices={linkAttribsToColorIndices}
         />

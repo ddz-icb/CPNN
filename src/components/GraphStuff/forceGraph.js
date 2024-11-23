@@ -37,7 +37,7 @@ export function ForceGraph({
   nodeColorScheme,
   linkColorScheme,
   theme,
-  mapping,
+  activeAnnotationMapping,
   nodeAttribsToColorIndices,
   linkAttribsToColorIndices,
 }) {
@@ -533,7 +533,7 @@ export function ForceGraph({
         hoverTooltipData={hoverTooltipData}
         setNodeToDelete={setNodeToDelete}
         theme={theme.theme}
-        mapping={mapping}
+        mapping={activeAnnotationMapping}
       />
       <div ref={containerRef} className="container" />
     </>

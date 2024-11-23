@@ -16,7 +16,7 @@ export function HeaderBar({
   linkColorScheme,
   setLinkColorScheme,
   colorSchemes,
-  mapping,
+  activeAnnotationMapping,
   handleDeleteColorScheme,
   nodeAttribsToColorIndices,
   linkAttribsToColorIndices,
@@ -34,7 +34,7 @@ export function HeaderBar({
   return (
     <div className="top-right-buttons">
       <Mapping
-        mapping={mapping}
+        mapping={activeAnnotationMapping}
         nodeColorScheme={nodeColorScheme}
         linkColorScheme={linkColorScheme}
         activeMenu={activeMenu}

@@ -24,8 +24,8 @@ export function Sidebar({
   handleNewMapping,
   mappingInputRef,
   handleUploadMappingClick,
-  activeMapping,
-  handleRemoveActiveMapping,
+  activeAnnotationMapping,
+  handleRemoveActiveAnnotationMapping,
   uploadedMappings,
   handleMappingSelect,
   handleDeleteMapping,
@@ -68,8 +68,8 @@ export function Sidebar({
           handleNewMapping={handleNewMapping}
           mappingInputRef={mappingInputRef}
           handleUploadMappingClick={handleUploadMappingClick}
-          activeMapping={activeMapping}
-          handleRemoveActiveMapping={handleRemoveActiveMapping}
+          activeAnnotationMapping={activeAnnotationMapping}
+          handleRemoveActiveAnnotationMapping={handleRemoveActiveAnnotationMapping}
           uploadedMappings={uploadedMappings}
           handleMappingSelect={handleMappingSelect}
           handleDeleteMapping={handleDeleteMapping}

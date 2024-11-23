@@ -16,8 +16,8 @@ export function DataSidebar({
   handleNewMapping,
   mappingInputRef,
   handleUploadMappingClick,
-  activeMapping,
-  handleRemoveActiveMapping,
+  activeAnnotationMapping,
+  handleRemoveActiveAnnotationMapping,
   uploadedMappings,
   handleMappingSelect,
   handleDeleteMapping,
@@ -46,7 +46,10 @@ export function DataSidebar({
         handleDeleteFile={handleDeleteFile}
         handleAddFile={handleAddFile}
       />
-      <ActiveMapping activeMapping={activeMapping} handleRemoveActiveMapping={handleRemoveActiveMapping} />
+      <ActiveAnnotationMapping
+        activeAnnotationMapping={activeAnnotationMapping}
+        handleRemoveActiveAnnotationMapping={handleRemoveActiveAnnotationMapping}
+      />
       <UploadedMappings uploadedMappings={uploadedMappings} handleMappingSelect={handleMappingSelect} handleDeleteMapping={handleDeleteMapping} />
     </>
   );
@@ -155,29 +158,29 @@ function UploadedMappings({ uploadedMappings, handleMappingSelect, handleDeleteM
   );
 }
 
-function ActiveMapping({ activeMapping, handleRemoveActiveMapping }) {
+function ActiveAnnotationMapping({ activeAnnotationMapping, handleRemoveActiveAnnotationMapping }) {
   return (
     <>
       <>
         <b className="heading-label">Currently Active Annotation Mapping</b>
         <table className="active-item-table">
           <tbody>
-            {activeMapping && (
+            {activeAnnotationMapping && (
               <tr className="recent-item-entry">
                 <td>
-                  <span className="pad-left-025">{activeMapping.name}</span>
+                  <span className="pad-left-025">{activeAnnotationMapping.name}</span>
                 </td>
                 <td className="recent-item-logo sidebar-tooltip-wrapper">
                   <DeleteIcon
                     data-tooltip-id={`delete-active-mapping-tooltip`}
                     data-tooltip-content="Remove mapping"
-                    onClick={() => handleRemoveActiveMapping()}
+                    onClick={() => handleRemoveActiveAnnotationMapping()}
                   />
                   <Tooltip id={`delete-active-mapping-tooltip`} place="top" effect="solid" className="sidebar-tooltip" />
                 </td>
               </tr>
             )}
-            {!activeMapping && (
+            {!activeAnnotationMapping && (
               <tr className="recent-item-entry">
                 <td>None</td>
               </tr>
