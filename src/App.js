@@ -36,7 +36,7 @@ import {
 } from "./components/GraphStuff/graphInitValues.js";
 import { lightTheme, linkColorSchemeInit, nodeColorSchemeInit, themeInit } from "./components/Other/appearance.js";
 import { resetFilterSettings, resetPhysicsSettings } from "./components/Other/reset.js";
-import { selectGraph } from "./components/Other/handleFunctions.js";
+import { addNewGraphFile, removeColorScheme, selectGraph, selectMapping } from "./components/Other/handleFunctions.js";
 
 function App() {
   const [filterSettings, setFilterSettings] = useState({
@@ -97,10 +97,12 @@ function App() {
 
   // sets corresponding graph after file selection
   const handleSelectGraph = (filename) => {
+    if (!filename) return;
     log.info("Replacing graph");
+
     try {
       selectGraph(filename, setGraph, setActiveFiles);
-      simulationReset(); //the simulation has to be reloaded after
+      simulationReset();
     } catch (error) {
       setError("Error loading graph");
       log.error("Error loading graph:", error);
@@ -109,11 +111,13 @@ function App() {
 
   // sets corresponding mapping after selection
   const handleAnnotationMappingSelect = (mapping) => {
+    if (!mapping) return;
     log.info("Replacing annotation mapping");
-    if (mapping !== activeAnnotationMapping) {
-      setActiveAnnotationMapping(mapping);
+
+    try {
+      selectMapping(mapping, activeAnnotationMapping, setActiveAnnotationMapping);
       simulationReset();
-    } else {
+    } catch (error) {
       setError("Mapping is already the current mapping");
       log.error("Mapping is already the current mapping");
     }
@@ -121,12 +125,12 @@ function App() {
 
   // adds new graph file //
   const handleNewGraphFile = async (event, takeAbs) => {
+    if (!event || !event.target || !event.target.files[0]) return;
     log.info("Adding new file");
+
     const file = event.target.files[0];
     try {
-      const graphFile = await readGraphFile(file, takeAbs);
-      addFileDB(graphFile);
-      setUploadedGraphNames([...uploadedGraphNames, file.name]);
+      addNewGraphFile(file, setUploadedGraphNames, takeAbs);
     } catch (error) {
       setError("Error adding graph file");
       log.error("Error adding graph file:", error);
@@ -150,21 +154,7 @@ function App() {
     if (!colorSchemeName) return;
     log.info("Deleting color schemes with name", colorSchemeName);
 
-    let updatedColorSchemes = colorSchemes.filter((colorScheme) => colorScheme.name !== colorSchemeName);
-
-    if (updatedColorSchemes.length === 0) {
-      updatedColorSchemes = defaultColorSchemes;
-    }
-
-    if (nodeColorScheme.name === colorSchemeName) {
-      setNodeColorScheme(updatedColorSchemes[0]);
-    }
-
-    if (linkColorScheme.name === colorSchemeName) {
-      setLinkColorScheme(updatedColorSchemes[0]);
-    }
-
-    setColorSchemes(updatedColorSchemes);
+    removeColorScheme(colorSchemes, colorSchemeName, setNodeColorScheme, setLinkColorScheme, setColorSchemes, nodeColorScheme, linkColorScheme);
   };
 
   const handleNewMapping = (event) => {
