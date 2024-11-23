@@ -1,7 +1,7 @@
 import log from "../../logger.js";
 import Papa from "papaparse";
 
-export function parseFile(name, content, takeAbs) {
+export function parseGraph(name, content, takeAbs) {
   const fileExtension = name.split(".").pop();
 
   let graph = null;
@@ -35,8 +35,7 @@ export function parseFile(name, content, takeAbs) {
       }
     }
   } else {
-    log.error("File format not recognized");
-    return null;
+    throw new Error(`File format not recognized`);
   }
 
   if (takeAbs) {
@@ -88,33 +87,28 @@ export function parseColorSchemeCSV(content) {
   return colorData;
 }
 
-export async function readGraphFile(file, takeAbs) {
+export async function parseGraphFile(file, takeAbs) {
   if (!file) {
     throw new Error(`No file found with the name ${file}.`);
   }
 
   try {
-    const fileContent = await readFileAsText(file);
-    const graph = parseFile(file.name, fileContent, takeAbs);
-
-    if (!graph) {
-      throw new Error("Error parsing file");
-    }
+    const fileContent = await parseFileAsText(file);
+    const graph = parseGraph(file.name, fileContent, takeAbs);
 
     return { name: file.name, content: JSON.stringify(graph) };
   } catch (error) {
-    log.error(error.message);
     throw new Error(`Unable to process file: ${error.message}`);
   }
 }
 
-export async function readColorScheme(file) {
+export async function parseColorScheme(file) {
   if (!file) {
     throw new Error(`No file found with the name ${file}.`);
   }
 
   try {
-    const fileContent = await readFileAsText(file);
+    const fileContent = await parseFileAsText(file);
     const colorScheme = parseColorSchemeCSV(fileContent);
 
     if (!colorScheme) {
@@ -128,11 +122,59 @@ export async function readColorScheme(file) {
   }
 }
 
-function readFileAsText(file) {
+function parseFileAsText(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = (e) => resolve(e.target.result);
     reader.onerror = () => reject(new Error("Error reading file"));
     reader.readAsText(file);
   });
+}
+
+export async function parseAnnotationMapping(file) {
+  try {
+    const fileContent = await parseFileAsText(file);
+    let fileData = Papa.parse(fileContent, {
+      header: true,
+      dynamicTyping: true,
+      skipEmptyLines: true,
+      transform: function (value, field) {
+        if (field !== "UniProt ID") {
+          return value.split(";").map((item) => item.trim());
+        }
+        return value;
+      },
+    });
+
+    const nodeMapping = {};
+    const groupMapping = {};
+
+    for (let row of fileData.data) {
+      const uniProtId = row["UniProt ID"];
+      const pathwayNames = row["Pathway Name"];
+      const reactomeIds = row["Reactome-ID"];
+
+      nodeMapping[uniProtId] = {
+        pathwayNames: pathwayNames,
+        reactomeIds: reactomeIds,
+      };
+
+      for (let i = 0; i < pathwayNames.length; i++) {
+        if (!groupMapping[pathwayNames[i]]) {
+          groupMapping[pathwayNames[i]] = {
+            name: pathwayNames[i],
+            reactomeId: reactomeIds[i],
+          };
+        }
+      }
+    }
+
+    return {
+      name: file.name,
+      nodeMapping: nodeMapping,
+      groupMapping: groupMapping,
+    };
+  } catch (error) {
+    throw new Error(`Erorr parsing annotation mapping ${file}.`);
+  }
 }

@@ -13,9 +13,7 @@ import {
   getNodeAttribsToColorIndices,
   joinGraphs,
 } from "./components/GraphStuff/graphCalculations.js";
-import { readColorScheme, readGraphFile } from "./components/Other/parseFiles.js";
-import { parseMapping } from "./components/Other/parseMapping.js";
-import { addFileDB, fromAllGetNameDB, getByNameDB, removeFileByNameDB } from "./components/Other/db.js";
+import { fromAllGetNameDB, getByNameDB, removeFileByNameDB } from "./components/Other/db.js";
 import {
   borderHeightInit,
   borderWidthInit,
@@ -36,7 +34,14 @@ import {
 } from "./components/GraphStuff/graphInitValues.js";
 import { lightTheme, linkColorSchemeInit, nodeColorSchemeInit, themeInit } from "./components/Other/appearance.js";
 import { resetFilterSettings, resetPhysicsSettings } from "./components/Other/reset.js";
-import { addNewColorScheme, addNewGraphFile, removeColorScheme, selectGraph, selectMapping } from "./components/Other/handleFunctions.js";
+import {
+  addNewAnnotationMapping,
+  addNewColorScheme,
+  addNewGraphFile,
+  removeColorScheme,
+  selectGraph,
+  selectMapping,
+} from "./components/Other/handleFunctions.js";
 
 function App() {
   const [filterSettings, setFilterSettings] = useState({
@@ -129,12 +134,12 @@ function App() {
     log.info("Adding new file");
 
     const file = event.target.files[0];
-    try {
-      addNewGraphFile(file, setUploadedGraphNames, takeAbs);
-    } catch (error) {
-      setError("Error adding graph file");
-      log.error("Error adding graph file:", error);
-    }
+    addNewGraphFile(file, setUploadedGraphNames, takeAbs)
+      .then(() => {})
+      .catch((error) => {
+        setError("Error adding graph file");
+        log.error("Error adding graph file:", error);
+      });
   };
 
   // adds new color scheme
@@ -164,29 +169,10 @@ function App() {
 
     const file = event.target.files[0];
     try {
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const fileContent = e.target.result;
-
-          const [nodeMapping, groupMapping] = parseMapping(fileContent);
-
-          const newMapping = {
-            name: file.name,
-            nodeMapping: nodeMapping,
-            groupMapping: groupMapping,
-          };
-
-          if (uploadedAnnotationMappings === null) {
-            setUploadedAnnotationMappings([newMapping]);
-          } else {
-            setUploadedAnnotationMappings([...uploadedAnnotationMappings, newMapping]);
-          }
-        };
-        reader.readAsText(file);
-      }
+      addNewAnnotationMapping(file, setUploadedAnnotationMappings);
     } catch (error) {
-      log.error("Error parsing node mapping");
+      setError("Error adding annotation mapping");
+      log.error("Error adding annotation mapping:", error);
     }
   };
 

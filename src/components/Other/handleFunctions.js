@@ -1,7 +1,7 @@
 import log from "../../logger.js";
 import { defaultColorSchemes } from "./appearance.js";
 import { addFileDB, getByNameDB } from "./db.js";
-import { readColorScheme, readGraphFile } from "./parseFiles.js";
+import { parseAnnotationMapping, parseColorScheme, parseGraphFile } from "./parseFiles.js";
 
 export async function selectGraph(filename, setGraph, setActiveFiles) {
   const file = await getByNameDB(filename);
@@ -50,12 +50,17 @@ export function removeColorScheme(
 }
 
 export async function addNewGraphFile(file, setUploadedGraphNames, takeAbs) {
-  const graphFile = await readGraphFile(file, takeAbs);
+  const graphFile = await parseGraphFile(file, takeAbs);
   addFileDB(graphFile);
   setUploadedGraphNames((uploadedGraphNames) => [...uploadedGraphNames, file.name]);
 }
 
 export async function addNewColorScheme(file, setColorSchemes) {
-  const colorScheme = await readColorScheme(file);
+  const colorScheme = await parseColorScheme(file);
   setColorSchemes((colorSchemes) => [...colorSchemes, { name: file.name, colorScheme: colorScheme }]);
+}
+
+export async function addNewAnnotationMapping(file, setUploadedAnnotationMappings) {
+  const mapping = await parseAnnotationMapping(file);
+  setUploadedAnnotationMappings((uploadedAnnotationMappings) => (uploadedAnnotationMappings ? [...uploadedAnnotationMappings, mapping] : [mapping]));
 }
