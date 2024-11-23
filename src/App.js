@@ -36,7 +36,7 @@ import {
 } from "./components/GraphStuff/graphInitValues.js";
 import { lightTheme, linkColorSchemeInit, nodeColorSchemeInit, themeInit } from "./components/Other/appearance.js";
 import { resetFilterSettings, resetPhysicsSettings } from "./components/Other/reset.js";
-import { addNewGraphFile, removeColorScheme, selectGraph, selectMapping } from "./components/Other/handleFunctions.js";
+import { addNewColorScheme, addNewGraphFile, removeColorScheme, selectGraph, selectMapping } from "./components/Other/handleFunctions.js";
 
 function App() {
   const [filterSettings, setFilterSettings] = useState({
@@ -137,13 +137,14 @@ function App() {
     }
   };
 
-  // user selected new color scheme from files
+  // adds new color scheme
   const handleNewScheme = async (event) => {
-    console.log("Adding new color scheme");
+    if (!event || !event.target || !event.target.files[0]) return;
+    log.info("Adding new color scheme");
+
     const file = event.target.files[0];
     try {
-      const colorScheme = await readColorScheme(file);
-      setColorSchemes([...colorSchemes, { name: file.name, colorScheme: colorScheme }]);
+      addNewColorScheme(file, setColorSchemes);
     } catch (error) {
       setError("Error adding color scheme");
       log.error("Error adding color scheme:", error);
@@ -158,9 +159,11 @@ function App() {
   };
 
   const handleNewMapping = (event) => {
+    if (!event || !event.target || !event.target.files[0]) return;
     log.info("Processing new Mapping");
+
+    const file = event.target.files[0];
     try {
-      const file = event.target.files[0];
       if (file) {
         const reader = new FileReader();
         reader.onload = (e) => {

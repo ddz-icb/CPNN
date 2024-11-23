@@ -1,7 +1,7 @@
 import log from "../../logger.js";
 import { defaultColorSchemes } from "./appearance.js";
 import { addFileDB, getByNameDB } from "./db.js";
-import { readGraphFile } from "./parseFiles.js";
+import { readColorScheme, readGraphFile } from "./parseFiles.js";
 
 export async function selectGraph(filename, setGraph, setActiveFiles) {
   const file = await getByNameDB(filename);
@@ -53,4 +53,9 @@ export async function addNewGraphFile(file, setUploadedGraphNames, takeAbs) {
   const graphFile = await readGraphFile(file, takeAbs);
   addFileDB(graphFile);
   setUploadedGraphNames((uploadedGraphNames) => [...uploadedGraphNames, file.name]);
+}
+
+export async function addNewColorScheme(file, setColorSchemes) {
+  const colorScheme = await readColorScheme(file);
+  setColorSchemes((colorSchemes) => [...colorSchemes, { name: file.name, colorScheme: colorScheme }]);
 }
