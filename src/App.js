@@ -1,7 +1,6 @@
 import "./index.css";
 import log from "./logger.js";
 import React, { useState, useRef, useEffect } from "react";
-import exampleGraphJSON from "./demographs/exampleGraphJSON.js";
 
 import { ForceGraph } from "./components/GraphStuff/forceGraph.js";
 import { Sidebar } from "./components/GUI/sidebar.js";
@@ -40,10 +39,12 @@ import {
   addNewGraphFile,
   deleteAnnotationMapping,
   deleteGraphFile,
+  removeActiveGraphFile,
   removeColorScheme,
   selectGraph,
   selectMapping,
 } from "./components/Other/handleFunctions.js";
+import { exampleGraphJson } from "./demographs/exampleGraphJSON.js";
 
 function App() {
   const [filterSettings, setFilterSettings] = useState({
@@ -205,20 +206,11 @@ function App() {
 
   // removes graph file from currently active files //
   const handleRemoveActiveGraphFile = (file) => {
-    let stillActive = activeFiles.filter((f) => f !== file);
-    if (stillActive.length === 0) stillActive = [{ name: "ExampleGraph.json", content: exampleGraphJSON }];
+    if (!file || !file.name) return;
+    log.info("removing graph file with name:", file.name);
 
-    // no error handling since these graphs were previously active already
-    let graph = JSON.parse(stillActive[0].content);
-    for (let i = 1; i < stillActive.length; i++) {
-      const newGraph = JSON.parse(stillActive[i].content);
-      graph = joinGraphs(graph, newGraph);
-    }
-
-    setGraph(graph);
-    setActiveFiles(stillActive);
-    simulationReset(); //the simulation has to be reloaded after
-    log.info("Graph loaded successfully:", graph);
+    removeActiveGraphFile(file, activeFiles, setGraph, setActiveFiles);
+    simulationReset();
   };
 
   const handleGraphAbsUploadClick = () => {
@@ -291,10 +283,7 @@ function App() {
     async function setInitGraph() {
       log.info("Setting init graph data");
       try {
-        let file = {
-          name: "ExampleGraph.json",
-          content: exampleGraphJSON,
-        };
+        let file = exampleGraphJson;
         const newGraph = JSON.parse(file.content);
         if (!newGraph) throw new Error("File format not recognized");
         setGraph(newGraph);

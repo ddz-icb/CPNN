@@ -6,10 +6,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       id: "Q9UIQ6_LNPEP_S91",
-      groups: [
-        "Translocation of SLC2A4 (GLUT4) to the plasma membrane",
-        "Membrane Trafficking",
-      ],
+      groups: ["Translocation of SLC2A4 (GLUT4) to the plasma membrane", "Membrane Trafficking"],
     },
     {
       id: "Q92530_PSMF1_S153",
@@ -73,10 +70,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       id: "P49792_RANBP2_S2280",
-      groups: [
-        "Transport of Mature Transcript to Cytoplasm",
-        "Glucose metabolism",
-      ],
+      groups: ["Transport of Mature Transcript to Cytoplasm", "Glucose metabolism"],
     },
     {
       id: "P07910-2_HNRNPC_S286",
@@ -256,11 +250,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       id: "P60709_ACTB_S52; P62736_ACTA2_S54; P68133_ACTA1_S54; P68032_ACTC1_S54",
-      groups: [
-        "Translocation of SLC2A4 (GLUT4) to the plasma membrane",
-        "Signaling by VEGF",
-        "Membrane Trafficking",
-      ],
+      groups: ["Translocation of SLC2A4 (GLUT4) to the plasma membrane", "Signaling by VEGF", "Membrane Trafficking"],
     },
     {
       id: "Q9UKV3_ACIN1_S710; Q9UKV3-5_ACIN1_S710",
@@ -288,18 +278,11 @@ const exampleGraph = JSON.stringify({
     },
     {
       id: "P61981_YWHAG_T139",
-      groups: [
-        "Translocation of SLC2A4 (GLUT4) to the plasma membrane",
-        "Membrane Trafficking",
-      ],
+      groups: ["Translocation of SLC2A4 (GLUT4) to the plasma membrane", "Membrane Trafficking"],
     },
     {
       id: "P60709_ACTB_S60; P62736_ACTA2_S62; P68133_ACTA1_S62; P68032_ACTC1_S62",
-      groups: [
-        "Translocation of SLC2A4 (GLUT4) to the plasma membrane",
-        "Signaling by VEGF",
-        "Membrane Trafficking",
-      ],
+      groups: ["Translocation of SLC2A4 (GLUT4) to the plasma membrane", "Signaling by VEGF", "Membrane Trafficking"],
     },
     {
       id: "Q8WZ42-2_TTN_S29462; Q8WZ42-10_TTN_S22255; Q8WZ42-12_TTN_S31195",
@@ -463,10 +446,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       id: "P61981_YWHAG_S119",
-      groups: [
-        "Translocation of SLC2A4 (GLUT4) to the plasma membrane",
-        "Membrane Trafficking",
-      ],
+      groups: ["Translocation of SLC2A4 (GLUT4) to the plasma membrane", "Membrane Trafficking"],
     },
     {
       id: "Q8WZ42-2_TTN_S18003; Q8WZ42-10_TTN_S10796; Q8WZ42-12_TTN_S19736",
@@ -510,18 +490,11 @@ const exampleGraph = JSON.stringify({
     },
     {
       id: "P35579_MYH9_S1943; P35579-2_MYH9_S1365",
-      groups: [
-        "Translocation of SLC2A4 (GLUT4) to the plasma membrane",
-        "Membrane Trafficking",
-      ],
+      groups: ["Translocation of SLC2A4 (GLUT4) to the plasma membrane", "Membrane Trafficking"],
     },
     {
       id: "P54646_PRKAA2_S491",
-      groups: [
-        "MTOR signalling",
-        "Translocation of SLC2A4 (GLUT4) to the plasma membrane",
-        "Membrane Trafficking",
-      ],
+      groups: ["MTOR signalling", "Translocation of SLC2A4 (GLUT4) to the plasma membrane", "Membrane Trafficking"],
     },
     {
       id: "Q8WZ42-2_TTN_S2001; Q8WZ42-10_TTN_S2047; Q8WZ42-12_TTN_S2093; Q8WZ42-6_TTN_S2093",
@@ -606,24 +579,21 @@ const exampleGraph = JSON.stringify({
   ],
   links: [
     {
-      source:
-        "P13535_MYH8_T381; Q9UKX3_MYH13_T380; P11055_MYH3_T379; P12882_MYH1_T381; Q9UKX2_MYH2_T381; Q9UKX2-2_MYH4_T381; Q9Y623_MYH8_T381",
+      source: "P13535_MYH8_T381; Q9UKX3_MYH13_T380; P11055_MYH3_T379; P12882_MYH1_T381; Q9UKX2_MYH2_T381; Q9UKX2-2_MYH4_T381; Q9Y623_MYH8_T381",
       target: "Q08043_ACTN3_S321",
       weights: [0.55, 0.55],
       attribs: ["samples1", "samples3"],
       index: 0,
     },
     {
-      source:
-        "Q9BX66-11_SORBS1_S350; Q9BX66-9_SORBS1_S227; Q9BX66-3_SORBS1_S281; Q9BX66-6_SORBS1_S218; Q9BX66-5_SORBS1_S341",
+      source: "Q9BX66-11_SORBS1_S350; Q9BX66-9_SORBS1_S227; Q9BX66-3_SORBS1_S281; Q9BX66-6_SORBS1_S218; Q9BX66-5_SORBS1_S341",
       target: "Q9UIQ6_LNPEP_S91",
       weights: [0.53, 0.53],
       attribs: ["samples1", "samples3"],
       index: 1,
     },
     {
-      source:
-        "Q9BX66-11_SORBS1_S350; Q9BX66-9_SORBS1_S227; Q9BX66-3_SORBS1_S281; Q9BX66-6_SORBS1_S218; Q9BX66-5_SORBS1_S341",
+      source: "Q9BX66-11_SORBS1_S350; Q9BX66-9_SORBS1_S227; Q9BX66-3_SORBS1_S281; Q9BX66-6_SORBS1_S218; Q9BX66-5_SORBS1_S341",
       target: "Q9UQ35_SRRM2_S1083",
       weights: [0.54, 0.54],
       attribs: ["samples1", "samples3"],
@@ -638,8 +608,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "Q14677_CLINT1_S299",
-      target:
-        "Q9BX66-11_SORBS1_S350; Q9BX66-9_SORBS1_S227; Q9BX66-3_SORBS1_S281; Q9BX66-6_SORBS1_S218; Q9BX66-5_SORBS1_S341",
+      target: "Q9BX66-11_SORBS1_S350; Q9BX66-9_SORBS1_S227; Q9BX66-3_SORBS1_S281; Q9BX66-6_SORBS1_S218; Q9BX66-5_SORBS1_S341",
       weights: [0.5],
       attribs: ["samples1"],
       index: 4,
@@ -674,8 +643,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "Q8WZ42-2_TTN_S7238; Q8WZ42-12_TTN_S7647",
-      target:
-        "P13535_MYH8_T381; Q9UKX3_MYH13_T380; P11055_MYH3_T379; P12882_MYH1_T381; Q9UKX2_MYH2_T381; Q9UKX2-2_MYH4_T381; Q9Y623_MYH8_T381",
+      target: "P13535_MYH8_T381; Q9UKX3_MYH13_T380; P11055_MYH3_T379; P12882_MYH1_T381; Q9UKX2_MYH2_T381; Q9UKX2-2_MYH4_T381; Q9Y623_MYH8_T381",
       weights: [0.5, 0.5],
       attribs: ["samples1", "samples4"],
       index: 9,
@@ -689,8 +657,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "Q8WZ42-2_TTN_S28345; Q8WZ42-10_TTN_S21138; Q8WZ42-12_TTN_S30078",
-      target:
-        "P13535_MYH8_T381; Q9UKX3_MYH13_T380; P11055_MYH3_T379; P12882_MYH1_T381; Q9UKX2_MYH2_T381; Q9UKX2-2_MYH4_T381; Q9Y623_MYH8_T381",
+      target: "P13535_MYH8_T381; Q9UKX3_MYH13_T380; P11055_MYH3_T379; P12882_MYH1_T381; Q9UKX2_MYH2_T381; Q9UKX2-2_MYH4_T381; Q9Y623_MYH8_T381",
       weights: [0.5, 0.5, 0.5],
       attribs: ["samples1", "samples3", "samples4"],
       index: 11,
@@ -710,33 +677,28 @@ const exampleGraph = JSON.stringify({
       index: 13,
     },
     {
-      source:
-        "Q8WZ42-2_TTN_S759; Q8WZ42-10_TTN_S805; Q8WZ42-12_TTN_S851; Q8WZ42-6_TTN_S851",
+      source: "Q8WZ42-2_TTN_S759; Q8WZ42-10_TTN_S805; Q8WZ42-12_TTN_S851; Q8WZ42-6_TTN_S851",
       target: "Q9UIQ6_LNPEP_S91",
       weights: [0.5, 0.5, 0.5],
       attribs: ["samples1", "samples2", "samples4"],
       index: 14,
     },
     {
-      source:
-        "Q8WZ42-2_TTN_S759; Q8WZ42-10_TTN_S805; Q8WZ42-12_TTN_S851; Q8WZ42-6_TTN_S851",
+      source: "Q8WZ42-2_TTN_S759; Q8WZ42-10_TTN_S805; Q8WZ42-12_TTN_S851; Q8WZ42-6_TTN_S851",
       target: "Q9UQ35_SRRM2_S1083",
       weights: [0.58, 0.58, 0.58],
       attribs: ["samples1", "samples2", "samples4"],
       index: 15,
     },
     {
-      source:
-        "Q8WZ42-2_TTN_S759; Q8WZ42-10_TTN_S805; Q8WZ42-12_TTN_S851; Q8WZ42-6_TTN_S851",
-      target:
-        "Q9BX66-11_SORBS1_S350; Q9BX66-9_SORBS1_S227; Q9BX66-3_SORBS1_S281; Q9BX66-6_SORBS1_S218; Q9BX66-5_SORBS1_S341",
+      source: "Q8WZ42-2_TTN_S759; Q8WZ42-10_TTN_S805; Q8WZ42-12_TTN_S851; Q8WZ42-6_TTN_S851",
+      target: "Q9BX66-11_SORBS1_S350; Q9BX66-9_SORBS1_S227; Q9BX66-3_SORBS1_S281; Q9BX66-6_SORBS1_S218; Q9BX66-5_SORBS1_S341",
       weights: [0.77],
       attribs: ["samples1"],
       index: 16,
     },
     {
-      source:
-        "Q8WZ42-2_TTN_S759; Q8WZ42-10_TTN_S805; Q8WZ42-12_TTN_S851; Q8WZ42-6_TTN_S851",
+      source: "Q8WZ42-2_TTN_S759; Q8WZ42-10_TTN_S805; Q8WZ42-12_TTN_S851; Q8WZ42-6_TTN_S851",
       target: "Q14677_CLINT1_S299",
       weights: [0.53, 0.53, 0.53],
       attribs: ["samples1", "samples4", "samples5"],
@@ -792,18 +754,15 @@ const exampleGraph = JSON.stringify({
       index: 24,
     },
     {
-      source:
-        "Q8WZ42-2_TTN_S721; Q8WZ42-10_TTN_S767; Q8WZ42-12_TTN_S813; Q8WZ42-6_TTN_S813",
-      target:
-        "Q8WZ42-2_TTN_T719, S721; Q8WZ42-10_TTN_T765, S767; Q8WZ42-12_TTN_T811, S813; Q8WZ42-6_TTN_T811, S813",
+      source: "Q8WZ42-2_TTN_S721; Q8WZ42-10_TTN_S767; Q8WZ42-12_TTN_S813; Q8WZ42-6_TTN_S813",
+      target: "Q8WZ42-2_TTN_T719, S721; Q8WZ42-10_TTN_T765, S767; Q8WZ42-12_TTN_T811, S813; Q8WZ42-6_TTN_T811, S813",
       weights: [0.67, 0.67, 0.67, 0.67],
       attribs: ["samples1", "samples2", "samples3", "samples5"],
       index: 25,
     },
     {
       source: "P67809_YBX1_S165",
-      target:
-        "P13535_MYH8_T381; Q9UKX3_MYH13_T380; P11055_MYH3_T379; P12882_MYH1_T381; Q9UKX2_MYH2_T381; Q9UKX2-2_MYH4_T381; Q9Y623_MYH8_T381",
+      target: "P13535_MYH8_T381; Q9UKX3_MYH13_T380; P11055_MYH3_T379; P12882_MYH1_T381; Q9UKX2_MYH2_T381; Q9UKX2-2_MYH4_T381; Q9Y623_MYH8_T381",
       weights: [0.56, 0.56, 0.56],
       attribs: ["samples1", "samples3", "samples4"],
       index: 26,
@@ -824,15 +783,13 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "P67809_YBX1_S165",
-      target:
-        "Q8WZ42-2_TTN_S759; Q8WZ42-10_TTN_S805; Q8WZ42-12_TTN_S851; Q8WZ42-6_TTN_S851",
+      target: "Q8WZ42-2_TTN_S759; Q8WZ42-10_TTN_S805; Q8WZ42-12_TTN_S851; Q8WZ42-6_TTN_S851",
       weights: [0.59, 0.59, 0.59],
       attribs: ["samples1", "samples4", "samples5"],
       index: 29,
     },
     {
-      source:
-        "P20929-3_NEB_S4173; P20929-2_NEB_S4659; P20929-3_NEB_S5145; P20929-2_NEB_S4173; P20929-3_NEB_S5145",
+      source: "P20929-3_NEB_S4173; P20929-2_NEB_S4659; P20929-3_NEB_S5145; P20929-2_NEB_S4173; P20929-3_NEB_S5145",
       target: "P26678_PLN_S16",
       weights: [0.55, 0.55, 0.55],
       attribs: ["samples1", "samples2", "samples3"],
@@ -853,33 +810,28 @@ const exampleGraph = JSON.stringify({
       index: 32,
     },
     {
-      source:
-        "P13535_MYH8_T1857; P12882_MYH1_T1858; P12883_MYH7_T1854; Q9UKX2_MYH2_T1860; Q9Y623_MYH4_T1858",
-      target:
-        "P13535_MYH8_T381; Q9UKX3_MYH13_T380; P11055_MYH3_T379; P12882_MYH1_T381; Q9UKX2_MYH2_T381; Q9UKX2-2_MYH4_T381; Q9Y623_MYH8_T381",
+      source: "P13535_MYH8_T1857; P12882_MYH1_T1858; P12883_MYH7_T1854; Q9UKX2_MYH2_T1860; Q9Y623_MYH4_T1858",
+      target: "P13535_MYH8_T381; Q9UKX3_MYH13_T380; P11055_MYH3_T379; P12882_MYH1_T381; Q9UKX2_MYH2_T381; Q9UKX2-2_MYH4_T381; Q9Y623_MYH8_T381",
       weights: [0.51, 0.51],
       attribs: ["samples1", "samples3"],
       index: 33,
     },
     {
-      source:
-        "P13535_MYH8_T1857; P12882_MYH1_T1858; P12883_MYH7_T1854; Q9UKX2_MYH2_T1860; Q9Y623_MYH4_T1858",
+      source: "P13535_MYH8_T1857; P12882_MYH1_T1858; P12883_MYH7_T1854; Q9UKX2_MYH2_T1860; Q9Y623_MYH4_T1858",
       target: "Q8WZ42-2_TTN_S28345; Q8WZ42-10_TTN_S21138; Q8WZ42-12_TTN_S30078",
       weights: [0.69, 0.69],
       attribs: ["samples1", "samples3"],
       index: 34,
     },
     {
-      source:
-        "P13535_MYH8_T1857; P12882_MYH1_T1858; P12883_MYH7_T1854; Q9UKX2_MYH2_T1860; Q9Y623_MYH4_T1858",
+      source: "P13535_MYH8_T1857; P12882_MYH1_T1858; P12883_MYH7_T1854; Q9UKX2_MYH2_T1860; Q9Y623_MYH4_T1858",
       target: "Q8WZ42-2_TTN_T29871; Q8WZ42-10_TTN_T22664; Q8WZ42-12_TTN_T31604",
       weights: [0.57],
       attribs: ["samples1"],
       index: 35,
     },
     {
-      source:
-        "P13535_MYH8_T1857; P12882_MYH1_T1858; P12883_MYH7_T1854; Q9UKX2_MYH2_T1860; Q9Y623_MYH4_T1858",
+      source: "P13535_MYH8_T1857; P12882_MYH1_T1858; P12883_MYH7_T1854; Q9UKX2_MYH2_T1860; Q9Y623_MYH4_T1858",
       target: "Q8WZ42-2_TTN_S29816; Q8WZ42-10_TTN_S22609; Q8WZ42-12_TTN_S31549",
       weights: [0.63],
       attribs: ["samples1"],
@@ -957,8 +909,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "P04075_ALDOA_S46; P04075-2_ALDOA_S100",
-      target:
-        "P13535_MYH8_T381; Q9UKX3_MYH13_T380; P11055_MYH3_T379; P12882_MYH1_T381; Q9UKX2_MYH2_T381; Q9UKX2-2_MYH4_T381; Q9Y623_MYH8_T381",
+      target: "P13535_MYH8_T381; Q9UKX3_MYH13_T380; P11055_MYH3_T379; P12882_MYH1_T381; Q9UKX2_MYH2_T381; Q9UKX2-2_MYH4_T381; Q9Y623_MYH8_T381",
       weights: [0.63, 0.63],
       attribs: ["samples1", "samples4"],
       index: 47,
@@ -1006,65 +957,56 @@ const exampleGraph = JSON.stringify({
       index: 53,
     },
     {
-      source:
-        "Q00872_MYBPC1_S611; Q00872-7_MYBPC1_S598; Q00872-2_MYBPC1_S636; Q00872-5_MYBPC1_S585",
+      source: "Q00872_MYBPC1_S611; Q00872-7_MYBPC1_S598; Q00872-2_MYBPC1_S636; Q00872-5_MYBPC1_S585",
       target: "Q8WZ42-2_TTN_S29816; Q8WZ42-10_TTN_S22609; Q8WZ42-12_TTN_S31549",
       weights: [0.58],
       attribs: ["samples1"],
       index: 54,
     },
     {
-      source:
-        "Q00872_MYBPC1_S611; Q00872-7_MYBPC1_S598; Q00872-2_MYBPC1_S636; Q00872-5_MYBPC1_S585",
-      target:
-        "P13535_MYH8_T1857; P12882_MYH1_T1858; P12883_MYH7_T1854; Q9UKX2_MYH2_T1860; Q9Y623_MYH4_T1858",
+      source: "Q00872_MYBPC1_S611; Q00872-7_MYBPC1_S598; Q00872-2_MYBPC1_S636; Q00872-5_MYBPC1_S585",
+      target: "P13535_MYH8_T1857; P12882_MYH1_T1858; P12883_MYH7_T1854; Q9UKX2_MYH2_T1860; Q9Y623_MYH4_T1858",
       weights: [0.54],
       attribs: ["samples1"],
       index: 55,
     },
     {
-      source:
-        "Q8WZ42-2_TTN_S33510, S33516; Q8WZ42-10_TTN_S26303, S26309; Q8WZ42-12_TTN_S35243, S35249",
+      source: "Q8WZ42-2_TTN_S33510, S33516; Q8WZ42-10_TTN_S26303, S26309; Q8WZ42-12_TTN_S35243, S35249",
       target: "Q92530_PSMF1_S153",
       weights: [0.55, 0.55],
       attribs: ["samples1", "samples3"],
       index: 56,
     },
     {
-      source:
-        "Q8WZ42-2_TTN_S33510, S33516; Q8WZ42-10_TTN_S26303, S26309; Q8WZ42-12_TTN_S35243, S35249",
+      source: "Q8WZ42-2_TTN_S33510, S33516; Q8WZ42-10_TTN_S26303, S26309; Q8WZ42-12_TTN_S35243, S35249",
       target: "P16157-3_ANK1_S834",
       weights: [0.57],
       attribs: ["samples1"],
       index: 57,
     },
     {
-      source:
-        "Q8WZ42-2_TTN_S33510, S33516; Q8WZ42-10_TTN_S26303, S26309; Q8WZ42-12_TTN_S35243, S35249",
+      source: "Q8WZ42-2_TTN_S33510, S33516; Q8WZ42-10_TTN_S26303, S26309; Q8WZ42-12_TTN_S35243, S35249",
       target: "P04114_APOB_S4048",
       weights: [0.53],
       attribs: ["samples1"],
       index: 58,
     },
     {
-      source:
-        "Q8WZ42-2_TTN_S33510, S33516; Q8WZ42-10_TTN_S26303, S26309; Q8WZ42-12_TTN_S35243, S35249",
+      source: "Q8WZ42-2_TTN_S33510, S33516; Q8WZ42-10_TTN_S26303, S26309; Q8WZ42-12_TTN_S35243, S35249",
       target: "Q8WZ42-2_TTN_S33522; Q8WZ42-10_TTN_S26315; Q8WZ42-12_TTN_S35255",
       weights: [0.67],
       attribs: ["samples1"],
       index: 59,
     },
     {
-      source:
-        "Q8WZ42-2_TTN_S33510, S33516; Q8WZ42-10_TTN_S26303, S26309; Q8WZ42-12_TTN_S35243, S35249",
+      source: "Q8WZ42-2_TTN_S33510, S33516; Q8WZ42-10_TTN_S26303, S26309; Q8WZ42-12_TTN_S35243, S35249",
       target: "Q8WZ42-2_TTN_S28345; Q8WZ42-10_TTN_S21138; Q8WZ42-12_TTN_S30078",
       weights: [0.53, 0.53, 0.53],
       attribs: ["samples1", "samples3", "samples4"],
       index: 60,
     },
     {
-      source:
-        "Q8WZ42-2_TTN_S33510, S33516; Q8WZ42-10_TTN_S26303, S26309; Q8WZ42-12_TTN_S35243, S35249",
+      source: "Q8WZ42-2_TTN_S33510, S33516; Q8WZ42-10_TTN_S26303, S26309; Q8WZ42-12_TTN_S35243, S35249",
       target: "P35499_SCN4A_S1761",
       weights: [0.51, 0.51],
       attribs: ["samples1", "samples4"],
@@ -1114,8 +1056,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "Q8WZ42-2_TTN_S33497; Q8WZ42-10_TTN_S26290; Q8WZ42-12_TTN_S35230",
-      target:
-        "Q8WZ42-2_TTN_S33510, S33516; Q8WZ42-10_TTN_S26303, S26309; Q8WZ42-12_TTN_S35243, S35249",
+      target: "Q8WZ42-2_TTN_S33510, S33516; Q8WZ42-10_TTN_S26303, S26309; Q8WZ42-12_TTN_S35243, S35249",
       weights: [0.56, 0.56],
       attribs: ["samples1", "samples3"],
       index: 68,
@@ -1157,8 +1098,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "P07900_HSP90AA1_S231",
-      target:
-        "Q13555-9_CAMK2G_S359; Q13555-4_CAMK2G_S384; Q13555-5_CAMK2G_S382; Q13555-10_CAMK2G_S350",
+      target: "Q13555-9_CAMK2G_S359; Q13555-4_CAMK2G_S384; Q13555-5_CAMK2G_S382; Q13555-10_CAMK2G_S350",
       weights: [0.51, 0.51],
       attribs: ["samples1", "samples3"],
       index: 74,
@@ -1172,16 +1112,14 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "Q9UNE7_STUB1_S19",
-      target:
-        "Q9BX66-11_SORBS1_S350; Q9BX66-9_SORBS1_S227; Q9BX66-3_SORBS1_S281; Q9BX66-6_SORBS1_S218; Q9BX66-5_SORBS1_S341",
+      target: "Q9BX66-11_SORBS1_S350; Q9BX66-9_SORBS1_S227; Q9BX66-3_SORBS1_S281; Q9BX66-6_SORBS1_S218; Q9BX66-5_SORBS1_S341",
       weights: [0.85],
       attribs: ["samples1"],
       index: 76,
     },
     {
       source: "Q9UNE7_STUB1_S19",
-      target:
-        "Q8WZ42-2_TTN_S759; Q8WZ42-10_TTN_S805; Q8WZ42-12_TTN_S851; Q8WZ42-6_TTN_S851",
+      target: "Q8WZ42-2_TTN_S759; Q8WZ42-10_TTN_S805; Q8WZ42-12_TTN_S851; Q8WZ42-6_TTN_S851",
       weights: [0.68],
       attribs: ["samples1"],
       index: 77,
@@ -1222,18 +1160,15 @@ const exampleGraph = JSON.stringify({
       index: 82,
     },
     {
-      source:
-        "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
+      source: "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
       target: "Q8WZ42-2_TTN_S27211; Q8WZ42-10_TTN_S20004; Q8WZ42-12_TTN_S28944",
       weights: [0.55, 0.55],
       attribs: ["samples2", "samples5"],
       index: 83,
     },
     {
-      source:
-        "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
-      target:
-        "P60709_ACTB_S52; P62736_ACTA2_S54; P68133_ACTA1_S54; P68032_ACTC1_S54",
+      source: "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
+      target: "P60709_ACTB_S52; P62736_ACTA2_S54; P68133_ACTA1_S54; P68032_ACTC1_S54",
       weights: [0.53, 0.53],
       attribs: ["samples2", "samples5"],
       index: 84,
@@ -1260,26 +1195,21 @@ const exampleGraph = JSON.stringify({
       index: 87,
     },
     {
-      source:
-        "P60709_ACTB_S60; P62736_ACTA2_S62; P68133_ACTA1_S62; P68032_ACTC1_S62",
-      target:
-        "P60709_ACTB_S52; P62736_ACTA2_S54; P68133_ACTA1_S54; P68032_ACTC1_S54",
+      source: "P60709_ACTB_S60; P62736_ACTA2_S62; P68133_ACTA1_S62; P68032_ACTC1_S62",
+      target: "P60709_ACTB_S52; P62736_ACTA2_S54; P68133_ACTA1_S54; P68032_ACTC1_S54",
       weights: [0.62, 0.62],
       attribs: ["samples2", "samples5"],
       index: 88,
     },
     {
-      source:
-        "P60709_ACTB_S60; P62736_ACTA2_S62; P68133_ACTA1_S62; P68032_ACTC1_S62",
-      target:
-        "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
+      source: "P60709_ACTB_S60; P62736_ACTA2_S62; P68133_ACTA1_S62; P68032_ACTC1_S62",
+      target: "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
       weights: [0.56, 0.56],
       attribs: ["samples2", "samples5"],
       index: 89,
     },
     {
-      source:
-        "P60709_ACTB_S60; P62736_ACTA2_S62; P68133_ACTA1_S62; P68032_ACTC1_S62",
+      source: "P60709_ACTB_S60; P62736_ACTA2_S62; P68133_ACTA1_S62; P68032_ACTC1_S62",
       target: "Q8WZ42-2_TTN_S26707; Q8WZ42-10_TTN_S19500; Q8WZ42-12_TTN_S28440",
       weights: [0.5, 0.5],
       attribs: ["samples2", "samples5"],
@@ -1301,8 +1231,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "Q8WZ42-2_TTN_S29462; Q8WZ42-10_TTN_S22255; Q8WZ42-12_TTN_S31195",
-      target:
-        "P60709_ACTB_S60; P62736_ACTA2_S62; P68133_ACTA1_S62; P68032_ACTC1_S62",
+      target: "P60709_ACTB_S60; P62736_ACTA2_S62; P68133_ACTA1_S62; P68032_ACTC1_S62",
       weights: [0.54, 0.54],
       attribs: ["samples2", "samples5"],
       index: 93,
@@ -1330,23 +1259,20 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "P20929-2_NEB_Y7097",
-      target:
-        "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
+      target: "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
       weights: [0.5, 0.5],
       attribs: ["samples2", "samples3"],
       index: 97,
     },
     {
       source: "P20929-2_NEB_Y7097",
-      target:
-        "P60709_ACTB_S60; P62736_ACTA2_S62; P68133_ACTA1_S62; P68032_ACTC1_S62",
+      target: "P60709_ACTB_S60; P62736_ACTA2_S62; P68133_ACTA1_S62; P68032_ACTC1_S62",
       weights: [0.7],
       attribs: ["samples2"],
       index: 98,
     },
     {
-      source:
-        "Q8WZ42-2_TTN_S759; Q8WZ42-10_TTN_S805; Q8WZ42-12_TTN_S851; Q8WZ42-6_TTN_S851",
+      source: "Q8WZ42-2_TTN_S759; Q8WZ42-10_TTN_S805; Q8WZ42-12_TTN_S851; Q8WZ42-6_TTN_S851",
       target: "Q9UKV3_ACIN1_S710; Q9UKV3-5_ACIN1_S710",
       weights: [0.65, 0.65],
       attribs: ["samples2", "samples4"],
@@ -1396,8 +1322,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "Q13554-3_CAMK2B_S334; Q13554_CAMK2B_S358",
-      target:
-        "Q8WZ42-2_TTN_S759; Q8WZ42-10_TTN_S805; Q8WZ42-12_TTN_S851; Q8WZ42-6_TTN_S851",
+      target: "Q8WZ42-2_TTN_S759; Q8WZ42-10_TTN_S805; Q8WZ42-12_TTN_S851; Q8WZ42-6_TTN_S851",
       weights: [0.66, 0.66],
       attribs: ["samples2", "samples5"],
       index: 106,
@@ -1411,8 +1336,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "Q8WZ42-2_TTN_S7224; Q8WZ42-12_TTN_S7633",
-      target:
-        "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
+      target: "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
       weights: [0.55, 0.55, 0.55],
       attribs: ["samples2", "samples4", "samples5"],
       index: 108,
@@ -1433,8 +1357,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "Q8WZ42-2_TTN_T30654; Q8WZ42-10_TTN_T23447; Q8WZ42-12_TTN_T32387",
-      target:
-        "Q13555-9_CAMK2G_S359; Q13555-4_CAMK2G_S384; Q13555-5_CAMK2G_S382; Q13555-10_CAMK2G_S350",
+      target: "Q13555-9_CAMK2G_S359; Q13555-4_CAMK2G_S384; Q13555-5_CAMK2G_S382; Q13555-10_CAMK2G_S350",
       weights: [0.5, 0.5],
       attribs: ["samples2", "samples3"],
       index: 111,
@@ -1504,8 +1427,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "P09651_HNRNPA1_S6",
-      target:
-        "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
+      target: "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
       weights: [0.54, 0.54],
       attribs: ["samples2", "samples5"],
       index: 121,
@@ -1581,27 +1503,22 @@ const exampleGraph = JSON.stringify({
       index: 131,
     },
     {
-      source:
-        "Q8WZ42-2_TTN_T33145, TSY; Q8WZ42-10_TTN_T25938, TSY; Q8WZ42-12_TTN_T34878, TSY",
+      source: "Q8WZ42-2_TTN_T33145, TSY; Q8WZ42-10_TTN_T25938, TSY; Q8WZ42-12_TTN_T34878, TSY",
       target: "Q9UIQ6_LNPEP_S91",
       weights: [0.5],
       attribs: ["samples2"],
       index: 132,
     },
     {
-      source:
-        "Q8WZ42-2_TTN_T33145, TSY; Q8WZ42-10_TTN_T25938, TSY; Q8WZ42-12_TTN_T34878, TSY",
-      target:
-        "Q8WZ42-2_TTN_S721; Q8WZ42-10_TTN_S767; Q8WZ42-12_TTN_S813; Q8WZ42-6_TTN_S813",
+      source: "Q8WZ42-2_TTN_T33145, TSY; Q8WZ42-10_TTN_T25938, TSY; Q8WZ42-12_TTN_T34878, TSY",
+      target: "Q8WZ42-2_TTN_S721; Q8WZ42-10_TTN_S767; Q8WZ42-12_TTN_S813; Q8WZ42-6_TTN_S813",
       weights: [0.56],
       attribs: ["samples2"],
       index: 133,
     },
     {
-      source:
-        "Q8WZ42-2_TTN_T33145, TSY; Q8WZ42-10_TTN_T25938, TSY; Q8WZ42-12_TTN_T34878, TSY",
-      target:
-        "Q8WZ42-2_TTN_T719, S721; Q8WZ42-10_TTN_T765, S767; Q8WZ42-12_TTN_T811, S813; Q8WZ42-6_TTN_T811, S813",
+      source: "Q8WZ42-2_TTN_T33145, TSY; Q8WZ42-10_TTN_T25938, TSY; Q8WZ42-12_TTN_T34878, TSY",
+      target: "Q8WZ42-2_TTN_T719, S721; Q8WZ42-10_TTN_T765, S767; Q8WZ42-12_TTN_T811, S813; Q8WZ42-6_TTN_T811, S813",
       weights: [0.54],
       attribs: ["samples2"],
       index: 134,
@@ -1687,8 +1604,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "O94979_SEC31A_S799",
-      target:
-        "P60709_ACTB_S60; P62736_ACTA2_S62; P68133_ACTA1_S62; P68032_ACTC1_S62",
+      target: "P60709_ACTB_S60; P62736_ACTA2_S62; P68133_ACTA1_S62; P68032_ACTC1_S62",
       weights: [0.53, 0.53],
       attribs: ["samples2", "samples5"],
       index: 146,
@@ -1709,8 +1625,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "O94979_SEC31A_S799",
-      target:
-        "Q8WZ42-2_TTN_S759; Q8WZ42-10_TTN_S805; Q8WZ42-12_TTN_S851; Q8WZ42-6_TTN_S851",
+      target: "Q8WZ42-2_TTN_S759; Q8WZ42-10_TTN_S805; Q8WZ42-12_TTN_S851; Q8WZ42-6_TTN_S851",
       weights: [0.59, 0.59, 0.59],
       attribs: ["samples2", "samples4", "samples5"],
       index: 149,
@@ -1723,8 +1638,7 @@ const exampleGraph = JSON.stringify({
       index: 150,
     },
     {
-      source:
-        "P13535_MYH8_S951; P11055_MYH3_S949; P12882_MYH1_S952; Q9UKX2_MYH2_S954; Q9Y623_MYH4_S952; P13533_MYH6_S950",
+      source: "P13535_MYH8_S951; P11055_MYH3_S949; P12882_MYH1_S952; Q9UKX2_MYH2_S954; Q9Y623_MYH4_S952; P13533_MYH6_S950",
       target: "Q08043_ACTN3_S321",
       weights: [0.55, 0.55],
       attribs: ["samples2", "samples3"],
@@ -1753,16 +1667,14 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "Q8WZ42-2_TTN_S12361; Q8WZ42-10_TTN_S5154; Q8WZ42-12_TTN_S14094",
-      target:
-        "P60709_ACTB_S52; P62736_ACTA2_S54; P68133_ACTA1_S54; P68032_ACTC1_S54",
+      target: "P60709_ACTB_S52; P62736_ACTA2_S54; P68133_ACTA1_S54; P68032_ACTC1_S54",
       weights: [0.65],
       attribs: ["samples2"],
       index: 155,
     },
     {
       source: "Q8WZ42-2_TTN_S12361; Q8WZ42-10_TTN_S5154; Q8WZ42-12_TTN_S14094",
-      target:
-        "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
+      target: "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
       weights: [0.55, 0.55, 0.55],
       attribs: ["samples2", "samples3", "samples4"],
       index: 156,
@@ -1839,8 +1751,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "Q8WZ42-2_TTN_T18007; Q8WZ42-10_TTN_T10800; Q8WZ42-12_TTN_T19740",
-      target:
-        "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
+      target: "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
       weights: [0.54, 0.54],
       attribs: ["samples2", "samples4"],
       index: 167,
@@ -1903,8 +1814,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "Q8WZ42-2_TTN_S7570; Q8WZ42-12_TTN_S7979",
-      target:
-        "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
+      target: "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
       weights: [0.61],
       attribs: ["samples2"],
       index: 176,
@@ -1966,8 +1876,7 @@ const exampleGraph = JSON.stringify({
       index: 184,
     },
     {
-      source:
-        "P13535_MYH8_T1857; P12882_MYH1_T1858; P12883_MYH7_T1854; Q9UKX2_MYH2_T1860; Q9Y623_MYH4_T1858",
+      source: "P13535_MYH8_T1857; P12882_MYH1_T1858; P12883_MYH7_T1854; Q9UKX2_MYH2_T1860; Q9Y623_MYH4_T1858",
       target: "Q8WZ42-2_TTN_T22838; Q8WZ42-10_TTN_T15631; Q8WZ42-12_TTN_T24571",
       weights: [0.65],
       attribs: ["samples3"],
@@ -1982,8 +1891,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "Q01484-7_ANK2_S507; Q01484-5_ANK2_S1815",
-      target:
-        "P20929-3_NEB_S4173; P20929-2_NEB_S4659; P20929-3_NEB_S5145; P20929-2_NEB_S4173; P20929-3_NEB_S5145",
+      target: "P20929-3_NEB_S4173; P20929-2_NEB_S4659; P20929-3_NEB_S5145; P20929-2_NEB_S4173; P20929-3_NEB_S5145",
       weights: [0.55],
       attribs: ["samples3"],
       index: 187,
@@ -2017,24 +1925,21 @@ const exampleGraph = JSON.stringify({
       index: 191,
     },
     {
-      source:
-        "Q9BX66-11_SORBS1_S350; Q9BX66-9_SORBS1_S227; Q9BX66-3_SORBS1_S281; Q9BX66-6_SORBS1_S218; Q9BX66-5_SORBS1_S341",
+      source: "Q9BX66-11_SORBS1_S350; Q9BX66-9_SORBS1_S227; Q9BX66-3_SORBS1_S281; Q9BX66-6_SORBS1_S218; Q9BX66-5_SORBS1_S341",
       target: "O94979_SEC31A_S799",
       weights: [0.77],
       attribs: ["samples3"],
       index: 192,
     },
     {
-      source:
-        "Q9BX66-11_SORBS1_S350; Q9BX66-9_SORBS1_S227; Q9BX66-3_SORBS1_S281; Q9BX66-6_SORBS1_S218; Q9BX66-5_SORBS1_S341",
+      source: "Q9BX66-11_SORBS1_S350; Q9BX66-9_SORBS1_S227; Q9BX66-3_SORBS1_S281; Q9BX66-6_SORBS1_S218; Q9BX66-5_SORBS1_S341",
       target: "P49756_RBM25_S677",
       weights: [0.57],
       attribs: ["samples3"],
       index: 193,
     },
     {
-      source:
-        "Q9BX66-11_SORBS1_S350; Q9BX66-9_SORBS1_S227; Q9BX66-3_SORBS1_S281; Q9BX66-6_SORBS1_S218; Q9BX66-5_SORBS1_S341",
+      source: "Q9BX66-11_SORBS1_S350; Q9BX66-9_SORBS1_S227; Q9BX66-3_SORBS1_S281; Q9BX66-6_SORBS1_S218; Q9BX66-5_SORBS1_S341",
       target: "Q01484-7_ANK2_S507; Q01484-5_ANK2_S1815",
       weights: [0.57],
       attribs: ["samples3"],
@@ -2056,8 +1961,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "Q8WZ42-2_TTN_T23920; Q8WZ42-10_TTN_T16713; Q8WZ42-12_TTN_T25653",
-      target:
-        "P13535_MYH8_T1857; P12882_MYH1_T1858; P12883_MYH7_T1854; Q9UKX2_MYH2_T1860; Q9Y623_MYH4_T1858",
+      target: "P13535_MYH8_T1857; P12882_MYH1_T1858; P12883_MYH7_T1854; Q9UKX2_MYH2_T1860; Q9Y623_MYH4_T1858",
       weights: [0.64],
       attribs: ["samples3"],
       index: 197,
@@ -2078,8 +1982,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "P18669_PGAM1_Y92; P15259_PGAM2_Y92",
-      target:
-        "Q9BX66-11_SORBS1_S350; Q9BX66-9_SORBS1_S227; Q9BX66-3_SORBS1_S281; Q9BX66-6_SORBS1_S218; Q9BX66-5_SORBS1_S341",
+      target: "Q9BX66-11_SORBS1_S350; Q9BX66-9_SORBS1_S227; Q9BX66-3_SORBS1_S281; Q9BX66-6_SORBS1_S218; Q9BX66-5_SORBS1_S341",
       weights: [0.51],
       attribs: ["samples3"],
       index: 200,
@@ -2162,32 +2065,28 @@ const exampleGraph = JSON.stringify({
       index: 211,
     },
     {
-      source:
-        "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
+      source: "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
       target: "Q8WZ42-2_TTN_T22838; Q8WZ42-10_TTN_T15631; Q8WZ42-12_TTN_T24571",
       weights: [0.68],
       attribs: ["samples3"],
       index: 212,
     },
     {
-      source:
-        "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
+      source: "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
       target: "Q8WZ42-2_TTN_Y21387; Q8WZ42-10_TTN_Y14180; Q8WZ42-12_TTN_Y23120",
       weights: [0.73, 0.73],
       attribs: ["samples3", "samples4"],
       index: 213,
     },
     {
-      source:
-        "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
+      source: "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
       target: "Q8WZ42-2_TTN_T23920; Q8WZ42-10_TTN_T16713; Q8WZ42-12_TTN_T25653",
       weights: [0.59],
       attribs: ["samples3"],
       index: 214,
     },
     {
-      source:
-        "Q13555-9_CAMK2G_S359; Q13555-4_CAMK2G_S384; Q13555-5_CAMK2G_S382; Q13555-10_CAMK2G_S350",
+      source: "Q13555-9_CAMK2G_S359; Q13555-4_CAMK2G_S384; Q13555-5_CAMK2G_S382; Q13555-10_CAMK2G_S350",
       target: "P23588_EIF4B_S497",
       weights: [0.55],
       attribs: ["samples3"],
@@ -2209,8 +2108,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "Q8WZ42-2_TTN_S18003; Q8WZ42-10_TTN_S10796; Q8WZ42-12_TTN_S19736",
-      target:
-        "P13535_MYH8_T1857; P12882_MYH1_T1858; P12883_MYH7_T1854; Q9UKX2_MYH2_T1860; Q9Y623_MYH4_T1858",
+      target: "P13535_MYH8_T1857; P12882_MYH1_T1858; P12883_MYH7_T1854; Q9UKX2_MYH2_T1860; Q9Y623_MYH4_T1858",
       weights: [0.56, 0.56],
       attribs: ["samples3", "samples5"],
       index: 218,
@@ -2245,34 +2143,28 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "Q8WZ42-2_TTN_S18003; Q8WZ42-10_TTN_S10796; Q8WZ42-12_TTN_S19736",
-      target:
-        "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
+      target: "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
       weights: [0.72, 0.72],
       attribs: ["samples3", "samples5"],
       index: 223,
     },
     {
-      source:
-        "P13535_MYH8_S951; P11055_MYH3_S949; P12882_MYH1_S952; Q9UKX2_MYH2_S954; Q9Y623_MYH4_S952; P13533_MYH6_S950",
-      target:
-        "P13535_MYH8_T1857; P12882_MYH1_T1858; P12883_MYH7_T1854; Q9UKX2_MYH2_T1860; Q9Y623_MYH4_T1858",
+      source: "P13535_MYH8_S951; P11055_MYH3_S949; P12882_MYH1_S952; Q9UKX2_MYH2_S954; Q9Y623_MYH4_S952; P13533_MYH6_S950",
+      target: "P13535_MYH8_T1857; P12882_MYH1_T1858; P12883_MYH7_T1854; Q9UKX2_MYH2_T1860; Q9Y623_MYH4_T1858",
       weights: [0.58],
       attribs: ["samples3"],
       index: 224,
     },
     {
-      source:
-        "P13535_MYH8_S951; P11055_MYH3_S949; P12882_MYH1_S952; Q9UKX2_MYH2_S954; Q9Y623_MYH4_S952; P13533_MYH6_S950",
+      source: "P13535_MYH8_S951; P11055_MYH3_S949; P12882_MYH1_S952; Q9UKX2_MYH2_S954; Q9Y623_MYH4_S952; P13533_MYH6_S950",
       target: "O14983_ATP2A1_S473",
       weights: [0.54],
       attribs: ["samples3"],
       index: 225,
     },
     {
-      source:
-        "P13535_MYH8_S951; P11055_MYH3_S949; P12882_MYH1_S952; Q9UKX2_MYH2_S954; Q9Y623_MYH4_S952; P13533_MYH6_S950",
-      target:
-        "Q8WZ42-2_TTN_S33510, S33516; Q8WZ42-10_TTN_S26303, S26309; Q8WZ42-12_TTN_S35243, S35249",
+      source: "P13535_MYH8_S951; P11055_MYH3_S949; P12882_MYH1_S952; Q9UKX2_MYH2_S954; Q9Y623_MYH4_S952; P13533_MYH6_S950",
+      target: "Q8WZ42-2_TTN_S33510, S33516; Q8WZ42-10_TTN_S26303, S26309; Q8WZ42-12_TTN_S35243, S35249",
       weights: [0.5],
       attribs: ["samples3"],
       index: 226,
@@ -2292,25 +2184,21 @@ const exampleGraph = JSON.stringify({
       index: 228,
     },
     {
-      source:
-        "Q8WZ42-2_TTN_S316; Q8WZ42-10_TTN_S316; Q8WZ42-12_TTN_S316; Q8WZ42-6_TTN_S316",
+      source: "Q8WZ42-2_TTN_S316; Q8WZ42-10_TTN_S316; Q8WZ42-12_TTN_S316; Q8WZ42-6_TTN_S316",
       target: "O94979_SEC31A_S799",
       weights: [0.79, 0.79],
       attribs: ["samples3", "samples4"],
       index: 229,
     },
     {
-      source:
-        "Q8WZ42-2_TTN_S316; Q8WZ42-10_TTN_S316; Q8WZ42-12_TTN_S316; Q8WZ42-6_TTN_S316",
-      target:
-        "Q9BX66-11_SORBS1_S350; Q9BX66-9_SORBS1_S227; Q9BX66-3_SORBS1_S281; Q9BX66-6_SORBS1_S218; Q9BX66-5_SORBS1_S341",
+      source: "Q8WZ42-2_TTN_S316; Q8WZ42-10_TTN_S316; Q8WZ42-12_TTN_S316; Q8WZ42-6_TTN_S316",
+      target: "Q9BX66-11_SORBS1_S350; Q9BX66-9_SORBS1_S227; Q9BX66-3_SORBS1_S281; Q9BX66-6_SORBS1_S218; Q9BX66-5_SORBS1_S341",
       weights: [0.59],
       attribs: ["samples3"],
       index: 230,
     },
     {
-      source:
-        "Q8WZ42-2_TTN_S316; Q8WZ42-10_TTN_S316; Q8WZ42-12_TTN_S316; Q8WZ42-6_TTN_S316",
+      source: "Q8WZ42-2_TTN_S316; Q8WZ42-10_TTN_S316; Q8WZ42-12_TTN_S316; Q8WZ42-6_TTN_S316",
       target: "P15259_PGAM2_S14",
       weights: [0.51, 0.51],
       attribs: ["samples3", "samples4"],
@@ -2430,8 +2318,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "Q8WZ42-2_TTN_S7379; Q8WZ42-12_TTN_S7788",
-      target:
-        "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
+      target: "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
       weights: [0.63],
       attribs: ["samples3"],
       index: 248,
@@ -2445,25 +2332,21 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "Q8WZ42-2_TTN_S7379; Q8WZ42-12_TTN_S7788",
-      target:
-        "Q8WZ42-2_TTN_S316; Q8WZ42-10_TTN_S316; Q8WZ42-12_TTN_S316; Q8WZ42-6_TTN_S316",
+      target: "Q8WZ42-2_TTN_S316; Q8WZ42-10_TTN_S316; Q8WZ42-12_TTN_S316; Q8WZ42-6_TTN_S316",
       weights: [0.54],
       attribs: ["samples3"],
       index: 250,
     },
     {
-      source:
-        "P13535_MYH8_T381; Q9UKX3_MYH13_T380; P11055_MYH3_T379; P12882_MYH1_T381; Q9UKX2_MYH2_T381; Q9UKX2-2_MYH4_T381; Q9Y623_MYH8_T381",
+      source: "P13535_MYH8_T381; Q9UKX3_MYH13_T380; P11055_MYH3_T379; P12882_MYH1_T381; Q9UKX2_MYH2_T381; Q9UKX2-2_MYH4_T381; Q9Y623_MYH8_T381",
       target: "O14983_ATP2A1_S473",
       weights: [0.67],
       attribs: ["samples3"],
       index: 251,
     },
     {
-      source:
-        "P13535_MYH8_T381; Q9UKX3_MYH13_T380; P11055_MYH3_T379; P12882_MYH1_T381; Q9UKX2_MYH2_T381; Q9UKX2-2_MYH4_T381; Q9Y623_MYH8_T381",
-      target:
-        "P13535_MYH8_S951; P11055_MYH3_S949; P12882_MYH1_S952; Q9UKX2_MYH2_S954; Q9Y623_MYH4_S952; P13533_MYH6_S950",
+      source: "P13535_MYH8_T381; Q9UKX3_MYH13_T380; P11055_MYH3_T379; P12882_MYH1_T381; Q9UKX2_MYH2_T381; Q9UKX2-2_MYH4_T381; Q9Y623_MYH8_T381",
+      target: "P13535_MYH8_S951; P11055_MYH3_S949; P12882_MYH1_S952; Q9UKX2_MYH2_S954; Q9Y623_MYH4_S952; P13533_MYH6_S950",
       weights: [0.7],
       attribs: ["samples3"],
       index: 252,
@@ -2547,24 +2430,21 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "P67809_YBX1_S176",
-      target:
-        "Q13555-9_CAMK2G_S359; Q13555-4_CAMK2G_S384; Q13555-5_CAMK2G_S382; Q13555-10_CAMK2G_S350",
+      target: "Q13555-9_CAMK2G_S359; Q13555-4_CAMK2G_S384; Q13555-5_CAMK2G_S382; Q13555-10_CAMK2G_S350",
       weights: [0.55, 0.55],
       attribs: ["samples3", "samples5"],
       index: 264,
     },
     {
       source: "P67809_YBX1_S176",
-      target:
-        "P13535_MYH8_S951; P11055_MYH3_S949; P12882_MYH1_S952; Q9UKX2_MYH2_S954; Q9Y623_MYH4_S952; P13533_MYH6_S950",
+      target: "P13535_MYH8_S951; P11055_MYH3_S949; P12882_MYH1_S952; Q9UKX2_MYH2_S954; Q9Y623_MYH4_S952; P13533_MYH6_S950",
       weights: [0.61],
       attribs: ["samples3"],
       index: 265,
     },
     {
       source: "P67809_YBX1_S176",
-      target:
-        "P13535_MYH8_T381; Q9UKX3_MYH13_T380; P11055_MYH3_T379; P12882_MYH1_T381; Q9UKX2_MYH2_T381; Q9UKX2-2_MYH4_T381; Q9Y623_MYH8_T381",
+      target: "P13535_MYH8_T381; Q9UKX3_MYH13_T380; P11055_MYH3_T379; P12882_MYH1_T381; Q9UKX2_MYH2_T381; Q9UKX2-2_MYH4_T381; Q9Y623_MYH8_T381",
       weights: [0.63],
       attribs: ["samples3"],
       index: 266,
@@ -2578,8 +2458,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "Q8WZ42-2_TTN_S33497; Q8WZ42-10_TTN_S26290; Q8WZ42-12_TTN_S35230",
-      target:
-        "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
+      target: "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
       weights: [0.51, 0.51],
       attribs: ["samples3", "samples5"],
       index: 268,
@@ -2621,8 +2500,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "Q8WZ42-2_TTN_S12361; Q8WZ42-10_TTN_S5154; Q8WZ42-12_TTN_S14094",
-      target:
-        "P13535_MYH8_T1857; P12882_MYH1_T1858; P12883_MYH7_T1854; Q9UKX2_MYH2_T1860; Q9Y623_MYH4_T1858",
+      target: "P13535_MYH8_T1857; P12882_MYH1_T1858; P12883_MYH7_T1854; Q9UKX2_MYH2_T1860; Q9Y623_MYH4_T1858",
       weights: [0.59],
       attribs: ["samples3"],
       index: 274,
@@ -2643,8 +2521,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "Q8TAD8_SNIP1_S99",
-      target:
-        "Q9BX66-11_SORBS1_S350; Q9BX66-9_SORBS1_S227; Q9BX66-3_SORBS1_S281; Q9BX66-6_SORBS1_S218; Q9BX66-5_SORBS1_S341",
+      target: "Q9BX66-11_SORBS1_S350; Q9BX66-9_SORBS1_S227; Q9BX66-3_SORBS1_S281; Q9BX66-6_SORBS1_S218; Q9BX66-5_SORBS1_S341",
       weights: [0.59],
       attribs: ["samples3"],
       index: 277,
@@ -2672,8 +2549,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "P67809_YBX1_S165",
-      target:
-        "P13535_MYH8_S951; P11055_MYH3_S949; P12882_MYH1_S952; Q9UKX2_MYH2_S954; Q9Y623_MYH4_S952; P13533_MYH6_S950",
+      target: "P13535_MYH8_S951; P11055_MYH3_S949; P12882_MYH1_S952; Q9UKX2_MYH2_S954; Q9Y623_MYH4_S952; P13533_MYH6_S950",
       weights: [0.5],
       attribs: ["samples3"],
       index: 281,
@@ -2764,16 +2640,14 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "Q13554-3_CAMK2B_S334; Q13554_CAMK2B_S358",
-      target:
-        "Q9BX66-11_SORBS1_S350; Q9BX66-9_SORBS1_S227; Q9BX66-3_SORBS1_S281; Q9BX66-6_SORBS1_S218; Q9BX66-5_SORBS1_S341",
+      target: "Q9BX66-11_SORBS1_S350; Q9BX66-9_SORBS1_S227; Q9BX66-3_SORBS1_S281; Q9BX66-6_SORBS1_S218; Q9BX66-5_SORBS1_S341",
       weights: [0.55],
       attribs: ["samples3"],
       index: 294,
     },
     {
       source: "Q13554-3_CAMK2B_S334; Q13554_CAMK2B_S358",
-      target:
-        "P13535_MYH8_T381; Q9UKX3_MYH13_T380; P11055_MYH3_T379; P12882_MYH1_T381; Q9UKX2_MYH2_T381; Q9UKX2-2_MYH4_T381; Q9Y623_MYH8_T381",
+      target: "P13535_MYH8_T381; Q9UKX3_MYH13_T380; P11055_MYH3_T379; P12882_MYH1_T381; Q9UKX2_MYH2_T381; Q9UKX2-2_MYH4_T381; Q9Y623_MYH8_T381",
       weights: [0.5],
       attribs: ["samples3"],
       index: 295,
@@ -2815,8 +2689,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "Q8WZ42-2_TTN_S10541; Q8WZ42-12_TTN_S10950",
-      target:
-        "P20929-3_NEB_S4173; P20929-2_NEB_S4659; P20929-3_NEB_S5145; P20929-2_NEB_S4173; P20929-3_NEB_S5145",
+      target: "P20929-3_NEB_S4173; P20929-2_NEB_S4659; P20929-3_NEB_S5145; P20929-2_NEB_S4173; P20929-3_NEB_S5145",
       weights: [0.7],
       attribs: ["samples3"],
       index: 301,
@@ -2830,8 +2703,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "Q8WZ42-2_TTN_S28345; Q8WZ42-10_TTN_S21138; Q8WZ42-12_TTN_S30078",
-      target:
-        "P13535_MYH8_S951; P11055_MYH3_S949; P12882_MYH1_S952; Q9UKX2_MYH2_S954; Q9Y623_MYH4_S952; P13533_MYH6_S950",
+      target: "P13535_MYH8_S951; P11055_MYH3_S949; P12882_MYH1_S952; Q9UKX2_MYH2_S954; Q9Y623_MYH4_S952; P13533_MYH6_S950",
       weights: [0.59],
       attribs: ["samples3"],
       index: 303,
@@ -2866,8 +2738,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "Q9UKV3_ACIN1_S710; Q9UKV3-5_ACIN1_S710",
-      target:
-        "Q9BX66-11_SORBS1_S350; Q9BX66-9_SORBS1_S227; Q9BX66-3_SORBS1_S281; Q9BX66-6_SORBS1_S218; Q9BX66-5_SORBS1_S341",
+      target: "Q9BX66-11_SORBS1_S350; Q9BX66-9_SORBS1_S227; Q9BX66-3_SORBS1_S281; Q9BX66-6_SORBS1_S218; Q9BX66-5_SORBS1_S341",
       weights: [0.67],
       attribs: ["samples3"],
       index: 308,
@@ -2950,10 +2821,8 @@ const exampleGraph = JSON.stringify({
       index: 319,
     },
     {
-      source:
-        "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
-      target:
-        "Q8WZ42-2_TTN_S2001; Q8WZ42-10_TTN_S2047; Q8WZ42-12_TTN_S2093; Q8WZ42-6_TTN_S2093",
+      source: "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
+      target: "Q8WZ42-2_TTN_S2001; Q8WZ42-10_TTN_S2047; Q8WZ42-12_TTN_S2093; Q8WZ42-6_TTN_S2093",
       weights: [0.5],
       attribs: ["samples4"],
       index: 320,
@@ -2974,16 +2843,14 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "Q8WZ42-2_TTN_T29180; Q8WZ42-10_TTN_T21973; Q8WZ42-12_TTN_T30913",
-      target:
-        "Q8WZ42-2_TTN_S2001; Q8WZ42-10_TTN_S2047; Q8WZ42-12_TTN_S2093; Q8WZ42-6_TTN_S2093",
+      target: "Q8WZ42-2_TTN_S2001; Q8WZ42-10_TTN_S2047; Q8WZ42-12_TTN_S2093; Q8WZ42-6_TTN_S2093",
       weights: [0.52],
       attribs: ["samples4"],
       index: 323,
     },
     {
       source: "Q8WZ42-2_TTN_T29180; Q8WZ42-10_TTN_T21973; Q8WZ42-12_TTN_T30913",
-      target:
-        "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
+      target: "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
       weights: [0.65],
       attribs: ["samples4"],
       index: 324,
@@ -2997,8 +2864,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "Q9UQM7_CAMK2A_T337",
-      target:
-        "Q8WZ42-2_TTN_S759; Q8WZ42-10_TTN_S805; Q8WZ42-12_TTN_S851; Q8WZ42-6_TTN_S851",
+      target: "Q8WZ42-2_TTN_S759; Q8WZ42-10_TTN_S805; Q8WZ42-12_TTN_S851; Q8WZ42-6_TTN_S851",
       weights: [0.81, 0.81],
       attribs: ["samples4", "samples5"],
       index: 326,
@@ -3040,8 +2906,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "Q8WZ42-2_TTN_S7224; Q8WZ42-12_TTN_S7633",
-      target:
-        "Q8WZ42-2_TTN_S2001; Q8WZ42-10_TTN_S2047; Q8WZ42-12_TTN_S2093; Q8WZ42-6_TTN_S2093",
+      target: "Q8WZ42-2_TTN_S2001; Q8WZ42-10_TTN_S2047; Q8WZ42-12_TTN_S2093; Q8WZ42-6_TTN_S2093",
       weights: [0.67],
       attribs: ["samples4"],
       index: 332,
@@ -3104,8 +2969,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "Q8WZ42-2_TTN_S10541; Q8WZ42-12_TTN_S10950",
-      target:
-        "Q8WZ42-2_TTN_S759; Q8WZ42-10_TTN_S805; Q8WZ42-12_TTN_S851; Q8WZ42-6_TTN_S851",
+      target: "Q8WZ42-2_TTN_S759; Q8WZ42-10_TTN_S805; Q8WZ42-12_TTN_S851; Q8WZ42-6_TTN_S851",
       weights: [0.63],
       attribs: ["samples4"],
       index: 341,
@@ -3126,8 +2990,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "P52594_AGFG1_S181",
-      target:
-        "Q8WZ42-2_TTN_S759; Q8WZ42-10_TTN_S805; Q8WZ42-12_TTN_S851; Q8WZ42-6_TTN_S851",
+      target: "Q8WZ42-2_TTN_S759; Q8WZ42-10_TTN_S805; Q8WZ42-12_TTN_S851; Q8WZ42-6_TTN_S851",
       weights: [0.54, 0.54],
       attribs: ["samples4", "samples5"],
       index: 344,
@@ -3217,16 +3080,14 @@ const exampleGraph = JSON.stringify({
       index: 356,
     },
     {
-      source:
-        "P20929-3_NEB_S1836; P20929-2_NEB_S2080; P20929-3_NEB_S4025; P20929-2_NEB_S1836; P20929-3_NEB_S4025",
+      source: "P20929-3_NEB_S1836; P20929-2_NEB_S2080; P20929-3_NEB_S4025; P20929-2_NEB_S1836; P20929-3_NEB_S4025",
       target: "Q8WZ42-2_TTN_S33345; Q8WZ42-10_TTN_S26138; Q8WZ42-12_TTN_S35078",
       weights: [0.73],
       attribs: ["samples4"],
       index: 357,
     },
     {
-      source:
-        "P20929-3_NEB_S1836; P20929-2_NEB_S2080; P20929-3_NEB_S4025; P20929-2_NEB_S1836; P20929-3_NEB_S4025",
+      source: "P20929-3_NEB_S1836; P20929-2_NEB_S2080; P20929-3_NEB_S4025; P20929-2_NEB_S1836; P20929-3_NEB_S4025",
       target: "Q8WZ42-2_TTN_S10541; Q8WZ42-12_TTN_S10950",
       weights: [0.69],
       attribs: ["samples4"],
@@ -3234,16 +3095,14 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "Q8WZ42-2_TTN_S7238; Q8WZ42-12_TTN_S7647",
-      target:
-        "Q8WZ42-2_TTN_S2001; Q8WZ42-10_TTN_S2047; Q8WZ42-12_TTN_S2093; Q8WZ42-6_TTN_S2093",
+      target: "Q8WZ42-2_TTN_S2001; Q8WZ42-10_TTN_S2047; Q8WZ42-12_TTN_S2093; Q8WZ42-6_TTN_S2093",
       weights: [0.62],
       attribs: ["samples4"],
       index: 359,
     },
     {
       source: "Q8WZ42-2_TTN_S7238; Q8WZ42-12_TTN_S7647",
-      target:
-        "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
+      target: "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
       weights: [0.5],
       attribs: ["samples4"],
       index: 360,
@@ -3284,33 +3143,28 @@ const exampleGraph = JSON.stringify({
       index: 365,
     },
     {
-      source:
-        "Q8WZ42-2_TTN_S316; Q8WZ42-10_TTN_S316; Q8WZ42-12_TTN_S316; Q8WZ42-6_TTN_S316",
-      target:
-        "Q8WZ42-2_TTN_S759; Q8WZ42-10_TTN_S805; Q8WZ42-12_TTN_S851; Q8WZ42-6_TTN_S851",
+      source: "Q8WZ42-2_TTN_S316; Q8WZ42-10_TTN_S316; Q8WZ42-12_TTN_S316; Q8WZ42-6_TTN_S316",
+      target: "Q8WZ42-2_TTN_S759; Q8WZ42-10_TTN_S805; Q8WZ42-12_TTN_S851; Q8WZ42-6_TTN_S851",
       weights: [0.51],
       attribs: ["samples4"],
       index: 366,
     },
     {
-      source:
-        "Q8WZ42-2_TTN_S316; Q8WZ42-10_TTN_S316; Q8WZ42-12_TTN_S316; Q8WZ42-6_TTN_S316",
+      source: "Q8WZ42-2_TTN_S316; Q8WZ42-10_TTN_S316; Q8WZ42-12_TTN_S316; Q8WZ42-6_TTN_S316",
       target: "Q8WZ42-2_TTN_T25650; Q8WZ42-10_TTN_T18443; Q8WZ42-12_TTN_T27383",
       weights: [0.56],
       attribs: ["samples4"],
       index: 367,
     },
     {
-      source:
-        "Q8WZ42-2_TTN_S316; Q8WZ42-10_TTN_S316; Q8WZ42-12_TTN_S316; Q8WZ42-6_TTN_S316",
+      source: "Q8WZ42-2_TTN_S316; Q8WZ42-10_TTN_S316; Q8WZ42-12_TTN_S316; Q8WZ42-6_TTN_S316",
       target: "Q9UQM7_CAMK2A_T337",
       weights: [0.61],
       attribs: ["samples4"],
       index: 368,
     },
     {
-      source:
-        "Q8WZ42-2_TTN_S316; Q8WZ42-10_TTN_S316; Q8WZ42-12_TTN_S316; Q8WZ42-6_TTN_S316",
+      source: "Q8WZ42-2_TTN_S316; Q8WZ42-10_TTN_S316; Q8WZ42-12_TTN_S316; Q8WZ42-6_TTN_S316",
       target: "Q8WZ42-2_TTN_S31778; Q8WZ42-10_TTN_S24571; Q8WZ42-12_TTN_S33511",
       weights: [0.54],
       attribs: ["samples4"],
@@ -3325,8 +3179,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "P62736_ACTA2_S370; P68133_ACTA1_S370; P68032_ACTC1_S370",
-      target:
-        "Q8WZ42-2_TTN_S33510, S33516; Q8WZ42-10_TTN_S26303, S26309; Q8WZ42-12_TTN_S35243, S35249",
+      target: "Q8WZ42-2_TTN_S33510, S33516; Q8WZ42-10_TTN_S26303, S26309; Q8WZ42-12_TTN_S35243, S35249",
       weights: [0.55],
       attribs: ["samples4"],
       index: 371,
@@ -3339,24 +3192,21 @@ const exampleGraph = JSON.stringify({
       index: 372,
     },
     {
-      source:
-        "P13535_MYH8_T381; Q9UKX3_MYH13_T380; P11055_MYH3_T379; P12882_MYH1_T381; Q9UKX2_MYH2_T381; Q9UKX2-2_MYH4_T381; Q9Y623_MYH8_T381",
+      source: "P13535_MYH8_T381; Q9UKX3_MYH13_T380; P11055_MYH3_T379; P12882_MYH1_T381; Q9UKX2_MYH2_T381; Q9UKX2-2_MYH4_T381; Q9Y623_MYH8_T381",
       target: "Q8WZ42-2_TTN_T29180; Q8WZ42-10_TTN_T21973; Q8WZ42-12_TTN_T30913",
       weights: [0.54],
       attribs: ["samples4"],
       index: 373,
     },
     {
-      source:
-        "P13535_MYH8_T381; Q9UKX3_MYH13_T380; P11055_MYH3_T379; P12882_MYH1_T381; Q9UKX2_MYH2_T381; Q9UKX2-2_MYH4_T381; Q9Y623_MYH8_T381",
+      source: "P13535_MYH8_T381; Q9UKX3_MYH13_T380; P11055_MYH3_T379; P12882_MYH1_T381; Q9UKX2_MYH2_T381; Q9UKX2-2_MYH4_T381; Q9Y623_MYH8_T381",
       target: "P09493-5_TPM1_S193; P09493-7_TPM1_S229; P09493-10_TPM1_S229",
       weights: [0.64],
       attribs: ["samples4"],
       index: 374,
     },
     {
-      source:
-        "P13535_MYH8_T381; Q9UKX3_MYH13_T380; P11055_MYH3_T379; P12882_MYH1_T381; Q9UKX2_MYH2_T381; Q9UKX2-2_MYH4_T381; Q9Y623_MYH8_T381",
+      source: "P13535_MYH8_T381; Q9UKX3_MYH13_T380; P11055_MYH3_T379; P12882_MYH1_T381; Q9UKX2_MYH2_T381; Q9UKX2-2_MYH4_T381; Q9Y623_MYH8_T381",
       target: "P62736_ACTA2_S370; P68133_ACTA1_S370; P68032_ACTC1_S370",
       weights: [0.61],
       attribs: ["samples4"],
@@ -3475,24 +3325,21 @@ const exampleGraph = JSON.stringify({
       index: 391,
     },
     {
-      source:
-        "Q9BX66-11_SORBS1_S89; Q9BX66-9_SORBS1_S89; Q9BX66-3_SORBS1_S89; Q9BX66-6_SORBS1_S89; Q9BX66-5_SORBS1_S89",
+      source: "Q9BX66-11_SORBS1_S89; Q9BX66-9_SORBS1_S89; Q9BX66-3_SORBS1_S89; Q9BX66-6_SORBS1_S89; Q9BX66-5_SORBS1_S89",
       target: "Q14677_CLINT1_S299",
       weights: [0.61],
       attribs: ["samples5"],
       index: 392,
     },
     {
-      source:
-        "Q9BX66-11_SORBS1_S89; Q9BX66-9_SORBS1_S89; Q9BX66-3_SORBS1_S89; Q9BX66-6_SORBS1_S89; Q9BX66-5_SORBS1_S89",
+      source: "Q9BX66-11_SORBS1_S89; Q9BX66-9_SORBS1_S89; Q9BX66-3_SORBS1_S89; Q9BX66-6_SORBS1_S89; Q9BX66-5_SORBS1_S89",
       target: "O94979_SEC31A_S799",
       weights: [0.57],
       attribs: ["samples5"],
       index: 393,
     },
     {
-      source:
-        "Q9BX66-11_SORBS1_S89; Q9BX66-9_SORBS1_S89; Q9BX66-3_SORBS1_S89; Q9BX66-6_SORBS1_S89; Q9BX66-5_SORBS1_S89",
+      source: "Q9BX66-11_SORBS1_S89; Q9BX66-9_SORBS1_S89; Q9BX66-3_SORBS1_S89; Q9BX66-6_SORBS1_S89; Q9BX66-5_SORBS1_S89",
       target: "O00499-11_BIN1_S280, S282; O00499-2_BIN1_S265, S267",
       weights: [0.53],
       attribs: ["samples5"],
@@ -3583,24 +3430,21 @@ const exampleGraph = JSON.stringify({
       index: 406,
     },
     {
-      source:
-        "Q8WZ42-2_TTN_T719, S721; Q8WZ42-10_TTN_T765, S767; Q8WZ42-12_TTN_T811, S813; Q8WZ42-6_TTN_T811, S813",
+      source: "Q8WZ42-2_TTN_T719, S721; Q8WZ42-10_TTN_T765, S767; Q8WZ42-12_TTN_T811, S813; Q8WZ42-6_TTN_T811, S813",
       target: "Q8WZ42-2_TTN_S33516; Q8WZ42-10_TTN_S26309; Q8WZ42-12_TTN_S35249",
       weights: [0.52],
       attribs: ["samples5"],
       index: 407,
     },
     {
-      source:
-        "P60709_ACTB_S60; P62736_ACTA2_S62; P68133_ACTA1_S62; P68032_ACTC1_S62",
+      source: "P60709_ACTB_S60; P62736_ACTA2_S62; P68133_ACTA1_S62; P68032_ACTC1_S62",
       target: "Q8WZ42-2_TTN_S18003; Q8WZ42-10_TTN_S10796; Q8WZ42-12_TTN_S19736",
       weights: [0.51],
       attribs: ["samples5"],
       index: 408,
     },
     {
-      source:
-        "Q00872_MYBPC1_S1023; Q00872-7_MYBPC1_S992; Q00872-2_MYBPC1_S1030; Q00872-5_MYBPC1_S979",
+      source: "Q00872_MYBPC1_S1023; Q00872-7_MYBPC1_S992; Q00872-2_MYBPC1_S1030; Q00872-5_MYBPC1_S979",
       target: "P35579_MYH9_S1943; P35579-2_MYH9_S1365",
       weights: [0.51],
       attribs: ["samples5"],
@@ -3636,25 +3480,21 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "Q8WZ42-2_TTN_S7224; Q8WZ42-12_TTN_S7633",
-      target:
-        "Q00872_MYBPC1_S1023; Q00872-7_MYBPC1_S992; Q00872-2_MYBPC1_S1030; Q00872-5_MYBPC1_S979",
+      target: "Q00872_MYBPC1_S1023; Q00872-7_MYBPC1_S992; Q00872-2_MYBPC1_S1030; Q00872-5_MYBPC1_S979",
       weights: [0.5],
       attribs: ["samples5"],
       index: 414,
     },
     {
-      source:
-        "Q8WZ42-2_TTN_S759; Q8WZ42-10_TTN_S805; Q8WZ42-12_TTN_S851; Q8WZ42-6_TTN_S851",
+      source: "Q8WZ42-2_TTN_S759; Q8WZ42-10_TTN_S805; Q8WZ42-12_TTN_S851; Q8WZ42-6_TTN_S851",
       target: "P60174-4_TPI1_S122; P60174_TPI1_S204",
       weights: [0.5],
       attribs: ["samples5"],
       index: 415,
     },
     {
-      source:
-        "Q8WZ42-2_TTN_S759; Q8WZ42-10_TTN_S805; Q8WZ42-12_TTN_S851; Q8WZ42-6_TTN_S851",
-      target:
-        "Q9BX66-11_SORBS1_S89; Q9BX66-9_SORBS1_S89; Q9BX66-3_SORBS1_S89; Q9BX66-6_SORBS1_S89; Q9BX66-5_SORBS1_S89",
+      source: "Q8WZ42-2_TTN_S759; Q8WZ42-10_TTN_S805; Q8WZ42-12_TTN_S851; Q8WZ42-6_TTN_S851",
+      target: "Q9BX66-11_SORBS1_S89; Q9BX66-9_SORBS1_S89; Q9BX66-3_SORBS1_S89; Q9BX66-6_SORBS1_S89; Q9BX66-5_SORBS1_S89",
       weights: [0.59],
       attribs: ["samples5"],
       index: 416,
@@ -3667,16 +3507,14 @@ const exampleGraph = JSON.stringify({
       index: 417,
     },
     {
-      source:
-        "P13535_MYH8_T1857; P12882_MYH1_T1858; P12883_MYH7_T1854; Q9UKX2_MYH2_T1860; Q9Y623_MYH4_T1858",
+      source: "P13535_MYH8_T1857; P12882_MYH1_T1858; P12883_MYH7_T1854; Q9UKX2_MYH2_T1860; Q9Y623_MYH4_T1858",
       target: "Q8WZ42-2_TTN_S29967; Q8WZ42-10_TTN_S22760; Q8WZ42-12_TTN_S31700",
       weights: [0.76],
       attribs: ["samples5"],
       index: 418,
     },
     {
-      source:
-        "P13535_MYH8_T1857; P12882_MYH1_T1858; P12883_MYH7_T1854; Q9UKX2_MYH2_T1860; Q9Y623_MYH4_T1858",
+      source: "P13535_MYH8_T1857; P12882_MYH1_T1858; P12883_MYH7_T1854; Q9UKX2_MYH2_T1860; Q9Y623_MYH4_T1858",
       target: "Q8WZ42-2_TTN_S7224; Q8WZ42-12_TTN_S7633",
       weights: [0.55],
       attribs: ["samples5"],
@@ -3705,8 +3543,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "Q8WZ42-2_TTN_S21750; Q8WZ42-10_TTN_S14543; Q8WZ42-12_TTN_S23483",
-      target:
-        "P60709_ACTB_S60; P62736_ACTA2_S62; P68133_ACTA1_S62; P68032_ACTC1_S62",
+      target: "P60709_ACTB_S60; P62736_ACTA2_S62; P68133_ACTA1_S62; P68032_ACTC1_S62",
       weights: [0.5],
       attribs: ["samples5"],
       index: 423,
@@ -3726,17 +3563,14 @@ const exampleGraph = JSON.stringify({
       index: 425,
     },
     {
-      source:
-        "P20929-3_NEB_S4173; P20929-2_NEB_S4659; P20929-3_NEB_S5145; P20929-2_NEB_S4173; P20929-3_NEB_S5145",
-      target:
-        "P20929-3_NEB_S1836; P20929-2_NEB_S2080; P20929-3_NEB_S4025; P20929-2_NEB_S1836; P20929-3_NEB_S4025",
+      source: "P20929-3_NEB_S4173; P20929-2_NEB_S4659; P20929-3_NEB_S5145; P20929-2_NEB_S4173; P20929-3_NEB_S5145",
+      target: "P20929-3_NEB_S1836; P20929-2_NEB_S2080; P20929-3_NEB_S4025; P20929-2_NEB_S1836; P20929-3_NEB_S4025",
       weights: [0.83],
       attribs: ["samples5"],
       index: 426,
     },
     {
-      source:
-        "P60709_ACTB_S52; P62736_ACTA2_S54; P68133_ACTA1_S54; P68032_ACTC1_S54",
+      source: "P60709_ACTB_S52; P62736_ACTA2_S54; P68133_ACTA1_S54; P68032_ACTC1_S54",
       target: "P07951_TPM2_S63",
       weights: [0.5],
       attribs: ["samples5"],
@@ -3744,16 +3578,14 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "P35609_ACTN2_T415",
-      target:
-        "P60709_ACTB_S60; P62736_ACTA2_S62; P68133_ACTA1_S62; P68032_ACTC1_S62",
+      target: "P60709_ACTB_S60; P62736_ACTA2_S62; P68133_ACTA1_S62; P68032_ACTC1_S62",
       weights: [0.61],
       attribs: ["samples5"],
       index: 428,
     },
     {
       source: "P35609_ACTN2_T415",
-      target:
-        "Q00872_MYBPC1_S1023; Q00872-7_MYBPC1_S992; Q00872-2_MYBPC1_S1030; Q00872-5_MYBPC1_S979",
+      target: "Q00872_MYBPC1_S1023; Q00872-7_MYBPC1_S992; Q00872-2_MYBPC1_S1030; Q00872-5_MYBPC1_S979",
       weights: [0.5],
       attribs: ["samples5"],
       index: 429,
@@ -3766,10 +3598,8 @@ const exampleGraph = JSON.stringify({
       index: 430,
     },
     {
-      source:
-        "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
-      target:
-        "Q00872_MYBPC1_S1023; Q00872-7_MYBPC1_S992; Q00872-2_MYBPC1_S1030; Q00872-5_MYBPC1_S979",
+      source: "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
+      target: "Q00872_MYBPC1_S1023; Q00872-7_MYBPC1_S992; Q00872-2_MYBPC1_S1030; Q00872-5_MYBPC1_S979",
       weights: [0.51],
       attribs: ["samples5"],
       index: 431,
@@ -3797,8 +3627,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "P06744_GPI_Y92",
-      target:
-        "P60709_ACTB_S60; P62736_ACTA2_S62; P68133_ACTA1_S62; P68032_ACTC1_S62",
+      target: "P60709_ACTB_S60; P62736_ACTA2_S62; P68133_ACTA1_S62; P68032_ACTC1_S62",
       weights: [0.51],
       attribs: ["samples5"],
       index: 435,
@@ -3819,8 +3648,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "Q8TAD8_SNIP1_S99",
-      target:
-        "Q9BX66-11_SORBS1_S89; Q9BX66-9_SORBS1_S89; Q9BX66-3_SORBS1_S89; Q9BX66-6_SORBS1_S89; Q9BX66-5_SORBS1_S89",
+      target: "Q9BX66-11_SORBS1_S89; Q9BX66-9_SORBS1_S89; Q9BX66-3_SORBS1_S89; Q9BX66-6_SORBS1_S89; Q9BX66-5_SORBS1_S89",
       weights: [0.56],
       attribs: ["samples5"],
       index: 438,
@@ -3904,8 +3732,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "O43395_PRPF3_S619",
-      target:
-        "Q9BX66-11_SORBS1_S89; Q9BX66-9_SORBS1_S89; Q9BX66-3_SORBS1_S89; Q9BX66-6_SORBS1_S89; Q9BX66-5_SORBS1_S89",
+      target: "Q9BX66-11_SORBS1_S89; Q9BX66-9_SORBS1_S89; Q9BX66-3_SORBS1_S89; Q9BX66-6_SORBS1_S89; Q9BX66-5_SORBS1_S89",
       weights: [0.51],
       attribs: ["samples5"],
       index: 450,
@@ -3919,8 +3746,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "O43395_PRPF3_S619",
-      target:
-        "Q8WZ42-2_TTN_S759; Q8WZ42-10_TTN_S805; Q8WZ42-12_TTN_S851; Q8WZ42-6_TTN_S851",
+      target: "Q8WZ42-2_TTN_S759; Q8WZ42-10_TTN_S805; Q8WZ42-12_TTN_S851; Q8WZ42-6_TTN_S851",
       weights: [0.56],
       attribs: ["samples5"],
       index: 452,
@@ -3955,8 +3781,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "P67809_YBX1_S176",
-      target:
-        "Q8WZ42-2_TTN_S759; Q8WZ42-10_TTN_S805; Q8WZ42-12_TTN_S851; Q8WZ42-6_TTN_S851",
+      target: "Q8WZ42-2_TTN_S759; Q8WZ42-10_TTN_S805; Q8WZ42-12_TTN_S851; Q8WZ42-6_TTN_S851",
       weights: [0.55],
       attribs: ["samples5"],
       index: 457,
@@ -3977,8 +3802,7 @@ const exampleGraph = JSON.stringify({
     },
     {
       source: "Q9UQM7_CAMK2A_T337",
-      target:
-        "Q9BX66-11_SORBS1_S89; Q9BX66-9_SORBS1_S89; Q9BX66-3_SORBS1_S89; Q9BX66-6_SORBS1_S89; Q9BX66-5_SORBS1_S89",
+      target: "Q9BX66-11_SORBS1_S89; Q9BX66-9_SORBS1_S89; Q9BX66-3_SORBS1_S89; Q9BX66-6_SORBS1_S89; Q9BX66-5_SORBS1_S89",
       weights: [0.55],
       attribs: ["samples5"],
       index: 460,
@@ -4030,4 +3854,5 @@ const exampleGraph = JSON.stringify({
     },
   ],
 });
-export default exampleGraph;
+
+export const exampleGraphJson = { name: "ExampleGraph.json", content: exampleGraph };

@@ -1,4 +1,6 @@
+import { exampleGraphJson } from "../../demographs/exampleGraphJSON.js";
 import log from "../../logger.js";
+import { joinGraphs } from "../GraphStuff/graphCalculations.js";
 import { defaultColorSchemes } from "./appearance.js";
 import { addFileDB, getByNameDB } from "./db.js";
 import { parseAnnotationMapping, parseColorScheme, parseGraphFile } from "./parseFiles.js";
@@ -77,4 +79,19 @@ export async function deleteGraphFile(uploadedGraphNames, filename, setUploadedG
 
   setUploadedGraphNames(updatedFileNames);
   removeFileByNameDB(filename);
+}
+
+export async function removeActiveGraphFile(file, activeFiles, setGraph, setActiveFiles) {
+  let stillActive = activeFiles.filter((f) => f.name !== file.name);
+  if (stillActive.length === 0) stillActive = [exampleGraphJson];
+
+  // no error handling since these graphs were previously active already
+  let graph = JSON.parse(stillActive[0].content);
+  for (let i = 1; i < stillActive.length; i++) {
+    const newGraph = JSON.parse(stillActive[i].content);
+    graph = joinGraphs(graph, newGraph);
+  }
+
+  setGraph(graph);
+  setActiveFiles(stillActive);
 }

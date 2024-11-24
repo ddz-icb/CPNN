@@ -259,4 +259,5 @@ const exampleGraph = JSON.stringify({
     { source: "79", target: "74", weights: [0.32], attribs: [1] },
   ],
 });
-export default exampleGraph;
+
+export const exampleGraphJson2 = { name: "ExampleGraph2.json", content: exampleGraph };
