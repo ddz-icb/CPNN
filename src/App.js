@@ -44,6 +44,7 @@ import {
   removeColorScheme,
   selectGraph,
   selectMapping,
+  setInitGraph,
 } from "./components/Other/handleFunctions.js";
 import { exampleGraphJson } from "./demographs/exampleGraphJSON.js";
 
@@ -271,24 +272,9 @@ function App() {
 
   // select example graph on startup
   useEffect(() => {
-    async function setInitGraph() {
-      log.info("Setting init graph data");
-      try {
-        let file = exampleGraphJson;
-        const newGraph = JSON.parse(file.content);
-        if (!newGraph) throw new Error("File format not recognized");
-        setGraph(newGraph);
-        setActiveFiles([file]);
-        simulationReset(); //the simulation has to be reloaded after
-        log.info("Graph loaded successfully:", newGraph);
-      } catch (error) {
-        setError("Error loading graph");
-        log.error("Error loading graph:", error);
-        return;
-      }
-    }
-
-    setInitGraph();
+    log.info("Setting init graph data");
+    setInitGraph(setGraph, setActiveFiles);
+    simulationReset();
   }, []);
 
   // init uploadedFileNames

@@ -98,3 +98,9 @@ export async function addActiveGraphFile(filename, setGraph, setActiveFiles, old
   setGraph(combinedGraph);
   setActiveFiles((activeFiles) => [...activeFiles, file]);
 }
+
+export async function setInitGraph(setGraph, setActiveFiles) {
+  const graph = JSON.parse(exampleGraphJson.content);
+  setGraph(graph);
+  setActiveFiles([exampleGraphJson]);
+}
