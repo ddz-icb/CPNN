@@ -165,7 +165,8 @@ function App() {
     removeColorScheme(colorSchemes, colorSchemeName, setNodeColorScheme, setLinkColorScheme, setColorSchemes, nodeColorScheme, linkColorScheme);
   };
 
-  const handleNewMapping = (event) => {
+  // processes new annotation mapping
+  const handleNewAnnotationMapping = (event) => {
     if (!event || !event.target || !event.target.files[0]) return;
     log.info("Processing new Mapping");
 
@@ -178,6 +179,7 @@ function App() {
     }
   };
 
+  // disables currently active annotation mapping
   const handleRemoveActiveAnnotationMapping = () => {
     log.info("Removing currently active annotation mapping");
 
@@ -185,6 +187,7 @@ function App() {
     simulationReset();
   };
 
+  // deletes annotation mapping files
   const handleDeleteAnnotationMapping = (mappingName) => {
     if (!mappingName) return;
     log.info("Deleting mapping with name", mappingName);
@@ -200,8 +203,8 @@ function App() {
     deleteGraphFile(uploadedGraphNames, filename, setUploadedGraphNames, removeFileByNameDB);
   };
 
-  // removes file from currently active files //
-  const handleRemoveActiveFile = (file) => {
+  // removes graph file from currently active files //
+  const handleRemoveActiveGraphFile = (file) => {
     let stillActive = activeFiles.filter((f) => f !== file);
     if (stillActive.length === 0) stillActive = [{ name: "ExampleGraph.json", content: exampleGraphJSON }];
 
@@ -419,13 +422,13 @@ function App() {
         activeFiles={activeFiles}
         handleSelectGraph={handleSelectGraph}
         handleDeleteGraphFile={handleDeleteGraphFile}
-        handleRemoveActiveFile={handleRemoveActiveFile}
+        handleRemoveActiveGraphFile={handleRemoveActiveGraphFile}
         handleAddFile={handleAddFileClick}
         physicsSettings={physicsSettings}
         setPhysicsSettings={setPhysicsSettings}
         filterSettings={filterSettings}
         setFilterSettings={setFilterSettings}
-        handleNewMapping={handleNewMapping}
+        handleNewAnnotationMapping={handleNewAnnotationMapping}
         mappingInputRef={mappingInputRef}
         handleUploadMappingClick={handleUploadMappingClick}
         activeAnnotationMapping={activeAnnotationMapping}

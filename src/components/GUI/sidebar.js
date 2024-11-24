@@ -15,13 +15,13 @@ export function Sidebar({
   activeFiles,
   handleSelectGraph,
   handleDeleteGraphFile,
-  handleRemoveActiveFile,
+  handleRemoveActiveGraphFile,
   handleAddFile,
   filterSettings,
   setFilterSettings,
   physicsSettings,
   setPhysicsSettings,
-  handleNewMapping,
+  handleNewAnnotationMapping,
   mappingInputRef,
   handleUploadMappingClick,
   activeAnnotationMapping,
@@ -60,12 +60,12 @@ export function Sidebar({
         <Back activeNavItem={activeNavItem} icon={<BackIcon />} onClick={() => handleNavItemClick("Main")} />
         <DataSidebar
           activeFiles={activeFiles}
-          handleRemoveActiveFile={handleRemoveActiveFile}
+          handleRemoveActiveGraphFile={handleRemoveActiveGraphFile}
           uploadedFiles={uploadedFiles}
           handleSelectGraph={handleSelectGraph}
           handleDeleteGraphFile={handleDeleteGraphFile}
           handleAddFile={handleAddFile}
-          handleNewMapping={handleNewMapping}
+          handleNewAnnotationMapping={handleNewAnnotationMapping}
           mappingInputRef={mappingInputRef}
           handleUploadMappingClick={handleUploadMappingClick}
           activeAnnotationMapping={activeAnnotationMapping}

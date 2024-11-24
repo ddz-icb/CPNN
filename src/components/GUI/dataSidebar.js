@@ -8,12 +8,12 @@ import { SidebarButtonRect, SidebarDropdownItem } from "./sidebar.js";
 
 export function DataSidebar({
   activeFiles,
-  handleRemoveActiveFile,
+  handleRemoveActiveGraphFile,
   uploadedFiles,
   handleSelectGraph,
   handleDeleteGraphFile,
   handleAddFile,
-  handleNewMapping,
+  handleNewAnnotationMapping,
   mappingInputRef,
   handleUploadMappingClick,
   activeAnnotationMapping,
@@ -35,11 +35,11 @@ export function DataSidebar({
         handleNewGraphFile={handleNewGraphFile}
         graphAbsInputRef={graphAbsInputRef}
         graphZeroInputRef={graphZeroInputRef}
-        handleNewMapping={handleNewMapping}
+        handleNewAnnotationMapping={handleNewAnnotationMapping}
         mappingInputRef={mappingInputRef}
         handleUploadMappingClick={handleUploadMappingClick}
       />
-      <ActiveFiles activeFiles={activeFiles} handleRemoveActiveFile={handleRemoveActiveFile} />
+      <ActiveFiles activeFiles={activeFiles} handleRemoveActiveGraphFile={handleRemoveActiveGraphFile} />
       <UploadedFiles
         uploadedFiles={uploadedFiles}
         handleSelectGraph={handleSelectGraph}
@@ -98,7 +98,7 @@ function UploadedFiles({ uploadedFiles, handleSelectGraph, handleDeleteGraphFile
   );
 }
 
-function ActiveFiles({ activeFiles, handleRemoveActiveFile }) {
+function ActiveFiles({ activeFiles, handleRemoveActiveGraphFile }) {
   return (
     <>
       <b className="heading-label">Currently Active Files</b>
@@ -113,7 +113,7 @@ function ActiveFiles({ activeFiles, handleRemoveActiveFile }) {
                 <DeleteIcon
                   data-tooltip-id={`remove-tooltip-${index}`}
                   data-tooltip-content="Remove Graph"
-                  onClick={() => handleRemoveActiveFile(file)}
+                  onClick={() => handleRemoveActiveGraphFile(file)}
                 />
                 <Tooltip id={`remove-tooltip-${index}`} place="top" effect="solid" className="sidebar-tooltip" />
               </td>
@@ -207,7 +207,7 @@ export function TopDataButtons({
   graphAbsInputRef,
   graphZeroInputRef,
   handleUploadMappingClick,
-  handleNewMapping,
+  handleNewAnnotationMapping,
   mappingInputRef,
 }) {
   const [dropdownActive, setDropdownActive] = useState(false);
@@ -257,7 +257,7 @@ export function TopDataButtons({
         />
         <SidebarButtonRect
           onClick={handleUploadMappingClick}
-          onChange={handleNewMapping}
+          onChange={handleNewAnnotationMapping}
           text={"Upload Gene/Protein Annotations"}
           linkRef={mappingInputRef}
           tooltip={"Upload Gene/Protein Annotation Mappings as TSV File"}
