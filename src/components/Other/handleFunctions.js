@@ -2,15 +2,11 @@ import { exampleGraphJson } from "../../demographs/exampleGraphJSON.js";
 import log from "../../logger.js";
 import { joinGraphs } from "../GraphStuff/graphCalculations.js";
 import { defaultColorSchemes } from "./appearance.js";
-import { addFileDB, getByNameDB } from "./db.js";
+import { addFileDB, getByNameDB, getGraphDB } from "./db.js";
 import { parseAnnotationMapping, parseColorScheme, parseGraphFile } from "./parseFiles.js";
 
 export async function selectGraph(filename, setGraph, setActiveFiles) {
-  const file = await getByNameDB(filename);
-  if (!file || !file.content) throw new Error(`No file found with the name ${filename}.`);
-
-  const graph = JSON.parse(file.content);
-  if (!graph) throw new Error("File format not recognized");
+  const { graph, file } = await getGraphDB(filename);
 
   setGraph(graph);
   setActiveFiles([file]);
@@ -94,4 +90,11 @@ export async function removeActiveGraphFile(file, activeFiles, setGraph, setActi
 
   setGraph(graph);
   setActiveFiles(stillActive);
+}
+
+export async function addActiveGraphFile(filename, setGraph, setActiveFiles, oldGraph) {
+  const { graph, file } = await getGraphDB(filename);
+  const combinedGraph = joinGraphs(oldGraph, graph);
+  setGraph(combinedGraph);
+  setActiveFiles((activeFiles) => [...activeFiles, file]);
 }

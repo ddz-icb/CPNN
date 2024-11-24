@@ -34,6 +34,7 @@ import {
 import { lightTheme, linkColorSchemeInit, nodeColorSchemeInit, themeInit } from "./components/Other/appearance.js";
 import { resetFilterSettings, resetPhysicsSettings } from "./components/Other/reset.js";
 import {
+  addActiveGraphFile,
   addAnnotationMapping,
   addNewColorScheme,
   addNewGraphFile,
@@ -229,33 +230,23 @@ function App() {
     mappingInputRef.current.click();
   };
 
-  const handleAddFileClick = (filename) => {
-    async function fetchAndJoinGraph() {
-      log.info("Fetching graph data");
-      try {
-        const file = await getByNameDB(filename);
-        if (!file) throw new Error(`No file found with the name ${filename}.`);
-        const newGraph = JSON.parse(file.content);
-        if (!newGraph) throw new Error("File format not recognized");
-        //add graph to other graph and then set graph
-        const combinedGraph = joinGraphs(graph, newGraph);
-        setGraph(combinedGraph);
-        setActiveFiles([...activeFiles, file]);
-        simulationReset(); //the simulation has to be reloaded after
-        log.info("Graph loaded successfully:", combinedGraph);
-      } catch (error) {
-        setError("Error loading graph");
-        log.error("Error loading graph:", error);
-        return;
-      }
-    }
-
-    log.info("Adding data to current graph");
-    if (activeFiles.includes(filename)) {
-      log.error("graph already active");
+  const handleAddActiveGraphFileClick = (filename) => {
+    if (!filename) return;
+    if (activeFiles.some((file) => file.name === filename)) {
+      setError("Graph already active");
+      log.error("Graph already active");
       return;
     }
-    fetchAndJoinGraph();
+    log.info("Adding file with name: ", filename);
+
+    try {
+      addActiveGraphFile(filename, setGraph, setActiveFiles, graph);
+      simulationReset();
+    } catch (error) {
+      setError("Error loading graph");
+      log.error("Error loading graph:", error);
+      return;
+    }
   };
 
   // initates reset //
@@ -412,7 +403,7 @@ function App() {
         handleSelectGraph={handleSelectGraph}
         handleDeleteGraphFile={handleDeleteGraphFile}
         handleRemoveActiveGraphFile={handleRemoveActiveGraphFile}
-        handleAddFile={handleAddFileClick}
+        handleAddFile={handleAddActiveGraphFileClick}
         physicsSettings={physicsSettings}
         setPhysicsSettings={setPhysicsSettings}
         filterSettings={filterSettings}
