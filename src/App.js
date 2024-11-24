@@ -5,14 +5,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { ForceGraph } from "./components/GraphStuff/forceGraph.js";
 import { Sidebar } from "./components/GUI/sidebar.js";
 import { HeaderBar } from "./components/GUI/headerBar.js";
-import { applyTheme, defaultColorSchemes } from "./components/Other/appearance.js";
-import {
-  applyNodeMapping,
-  getLinkAttribsToColorIndices,
-  getNodeAttribsToColorIndices,
-  joinGraphs,
-} from "./components/GraphStuff/graphCalculations.js";
-import { fromAllGetNameDB, getByNameDB, removeFileByNameDB } from "./components/Other/db.js";
+import { applyNodeMapping, getLinkAttribsToColorIndices, getNodeAttribsToColorIndices } from "./components/GraphStuff/graphCalculations.js";
 import {
   borderHeightInit,
   borderWidthInit,
@@ -31,7 +24,7 @@ import {
   xStrengthInit,
   yStrengthInit,
 } from "./components/GraphStuff/graphInitValues.js";
-import { lightTheme, linkColorSchemeInit, nodeColorSchemeInit, themeInit } from "./components/Other/appearance.js";
+import { linkColorSchemeInit, nodeColorSchemeInit, themeInit } from "./components/Other/appearance.js";
 import { resetFilterSettings, resetPhysicsSettings } from "./components/Other/reset.js";
 import {
   addActiveGraphFile,
@@ -53,7 +46,6 @@ import {
   storeColorSchemes,
   storeTheme,
 } from "./components/Other/handleFunctions.js";
-import { exampleGraphJson } from "./demographs/exampleGraphJSON.js";
 
 function App() {
   const [filterSettings, setFilterSettings] = useState({
@@ -210,7 +202,7 @@ function App() {
     if (!filename) return;
     log.info("Deleting files with name", filename);
 
-    deleteGraphFile(uploadedGraphNames, filename, setUploadedGraphNames, removeFileByNameDB);
+    deleteGraphFile(uploadedGraphNames, filename, setUploadedGraphNames);
   };
 
   // removes graph file from currently active files //

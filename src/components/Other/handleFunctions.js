@@ -2,7 +2,7 @@ import { exampleGraphJson } from "../../demographs/exampleGraphJSON.js";
 import log from "../../logger.js";
 import { joinGraphs } from "../GraphStuff/graphCalculations.js";
 import { applyTheme, defaultColorSchemes, lightTheme } from "./appearance.js";
-import { addFileDB, fromAllGetNameDB, getByNameDB, getGraphDB } from "./db.js";
+import { addFileDB, fromAllGetNameDB, getByNameDB, getGraphDB, removeFileByNameDB } from "./db.js";
 import { parseAnnotationMapping, parseColorScheme, parseGraphFile } from "./parseFiles.js";
 
 export async function selectGraph(filename, setGraph, setActiveFiles) {
@@ -68,7 +68,7 @@ export function deleteAnnotationMapping(uploadedAnnotationMappings, mappingName,
   setUploadedAnnotationMappings(updatedMappings);
 }
 
-export async function deleteGraphFile(uploadedGraphNames, filename, setUploadedGraphNames, removeFileByNameDB) {
+export async function deleteGraphFile(uploadedGraphNames, filename, setUploadedGraphNames) {
   const updatedFileNames = uploadedGraphNames.filter((name) => {
     return name !== filename;
   });
