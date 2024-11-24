@@ -35,9 +35,11 @@ import {
 import { lightTheme, linkColorSchemeInit, nodeColorSchemeInit, themeInit } from "./components/Other/appearance.js";
 import { resetFilterSettings, resetPhysicsSettings } from "./components/Other/reset.js";
 import {
-  addNewAnnotationMapping,
+  addAnnotationMapping,
   addNewColorScheme,
   addNewGraphFile,
+  deleteAnnotationMapping,
+  deleteGraphFile,
   removeColorScheme,
   selectGraph,
   selectMapping,
@@ -68,7 +70,7 @@ function App() {
 
   const [reset, setReset] = useState(false); // true indicates that the simulation has to be reloaded
 
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(null); // error gets printed on screen
 
   const [graph, setGraph] = useState(null); // graph without modifications
   const [graphCurrent, setGraphCurrent] = useState(null); // graph with modifications e.g. links filtered by threshold, it also contains the pixi node elements
@@ -169,7 +171,7 @@ function App() {
 
     const file = event.target.files[0];
     try {
-      addNewAnnotationMapping(file, setUploadedAnnotationMappings);
+      addAnnotationMapping(file, setUploadedAnnotationMappings);
     } catch (error) {
       setError("Error adding annotation mapping");
       log.error("Error adding annotation mapping:", error);
@@ -177,29 +179,25 @@ function App() {
   };
 
   const handleRemoveActiveAnnotationMapping = () => {
+    log.info("Removing currently active annotation mapping");
+
     setActiveAnnotationMapping(null);
     simulationReset();
   };
 
-  const handleDeleteMapping = (mappingName) => {
+  const handleDeleteAnnotationMapping = (mappingName) => {
     if (!mappingName) return;
     log.info("Deleting mapping with name", mappingName);
 
-    const updatedMappings = uploadedAnnotationMappings.filter((mapping) => mapping.name !== mappingName);
-    setUploadedAnnotationMappings(updatedMappings);
+    deleteAnnotationMapping(uploadedAnnotationMappings, mappingName, setUploadedAnnotationMappings);
   };
 
   // deletes uploaded files with filename //
-  const handleDeleteFile = (filename) => {
+  const handleDeleteGraphFile = (filename) => {
     if (!filename) return;
     log.info("Deleting files with name", filename);
 
-    const updatedFileNames = uploadedGraphNames.filter((name) => {
-      return name !== filename;
-    });
-
-    setUploadedGraphNames(updatedFileNames);
-    removeFileByNameDB(filename);
+    deleteGraphFile(uploadedGraphNames, filename, setUploadedGraphNames, removeFileByNameDB);
   };
 
   // removes file from currently active files //
@@ -420,7 +418,7 @@ function App() {
         uploadedFiles={uploadedGraphNames}
         activeFiles={activeFiles}
         handleSelectGraph={handleSelectGraph}
-        handleDeleteFile={handleDeleteFile}
+        handleDeleteGraphFile={handleDeleteGraphFile}
         handleRemoveActiveFile={handleRemoveActiveFile}
         handleAddFile={handleAddFileClick}
         physicsSettings={physicsSettings}
@@ -434,7 +432,7 @@ function App() {
         handleRemoveActiveAnnotationMapping={handleRemoveActiveAnnotationMapping}
         uploadedMappings={uploadedAnnotationMappings}
         handleAnnotationMappingSelect={handleAnnotationMappingSelect}
-        handleDeleteMapping={handleDeleteMapping}
+        handleDeleteAnnotationMapping={handleDeleteAnnotationMapping}
         handleGraphAbsUploadClick={handleGraphAbsUploadClick}
         handleGraphZeroUploadClick={handleGraphZeroUploadClick}
         handleNewGraphFile={handleNewGraphFile}

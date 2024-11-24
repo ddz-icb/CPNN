@@ -60,7 +60,21 @@ export async function addNewColorScheme(file, setColorSchemes) {
   setColorSchemes((colorSchemes) => [...colorSchemes, { name: file.name, colorScheme: colorScheme }]);
 }
 
-export async function addNewAnnotationMapping(file, setUploadedAnnotationMappings) {
+export async function addAnnotationMapping(file, setUploadedAnnotationMappings) {
   const mapping = await parseAnnotationMapping(file);
   setUploadedAnnotationMappings((uploadedAnnotationMappings) => (uploadedAnnotationMappings ? [...uploadedAnnotationMappings, mapping] : [mapping]));
+}
+
+export function deleteAnnotationMapping(uploadedAnnotationMappings, mappingName, setUploadedAnnotationMappings) {
+  const updatedMappings = uploadedAnnotationMappings.filter((mapping) => mapping.name !== mappingName);
+  setUploadedAnnotationMappings(updatedMappings);
+}
+
+export async function deleteGraphFile(uploadedGraphNames, filename, setUploadedGraphNames, removeFileByNameDB) {
+  const updatedFileNames = uploadedGraphNames.filter((name) => {
+    return name !== filename;
+  });
+
+  setUploadedGraphNames(updatedFileNames);
+  removeFileByNameDB(filename);
 }

@@ -14,7 +14,7 @@ export function Sidebar({
   uploadedFiles,
   activeFiles,
   handleSelectGraph,
-  handleDeleteFile,
+  handleDeleteGraphFile,
   handleRemoveActiveFile,
   handleAddFile,
   filterSettings,
@@ -28,7 +28,7 @@ export function Sidebar({
   handleRemoveActiveAnnotationMapping,
   uploadedMappings,
   handleAnnotationMappingSelect,
-  handleDeleteMapping,
+  handleDeleteAnnotationMapping,
   handleGraphAbsUploadClick,
   handleGraphZeroUploadClick,
   handleNewGraphFile,
@@ -63,7 +63,7 @@ export function Sidebar({
           handleRemoveActiveFile={handleRemoveActiveFile}
           uploadedFiles={uploadedFiles}
           handleSelectGraph={handleSelectGraph}
-          handleDeleteFile={handleDeleteFile}
+          handleDeleteGraphFile={handleDeleteGraphFile}
           handleAddFile={handleAddFile}
           handleNewMapping={handleNewMapping}
           mappingInputRef={mappingInputRef}
@@ -72,7 +72,7 @@ export function Sidebar({
           handleRemoveActiveAnnotationMapping={handleRemoveActiveAnnotationMapping}
           uploadedMappings={uploadedMappings}
           handleAnnotationMappingSelect={handleAnnotationMappingSelect}
-          handleDeleteMapping={handleDeleteMapping}
+          handleDeleteAnnotationMapping={handleDeleteAnnotationMapping}
           handleGraphAbsUploadClick={handleGraphAbsUploadClick}
           handleGraphZeroUploadClick={handleGraphZeroUploadClick}
           handleNewGraphFile={handleNewGraphFile}

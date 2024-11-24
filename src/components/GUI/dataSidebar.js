@@ -11,7 +11,7 @@ export function DataSidebar({
   handleRemoveActiveFile,
   uploadedFiles,
   handleSelectGraph,
-  handleDeleteFile,
+  handleDeleteGraphFile,
   handleAddFile,
   handleNewMapping,
   mappingInputRef,
@@ -20,7 +20,7 @@ export function DataSidebar({
   handleRemoveActiveAnnotationMapping,
   uploadedMappings,
   handleAnnotationMappingSelect,
-  handleDeleteMapping,
+  handleDeleteAnnotationMapping,
   handleGraphAbsUploadClick,
   handleGraphZeroUploadClick,
   graphAbsInputRef,
@@ -43,7 +43,7 @@ export function DataSidebar({
       <UploadedFiles
         uploadedFiles={uploadedFiles}
         handleSelectGraph={handleSelectGraph}
-        handleDeleteFile={handleDeleteFile}
+        handleDeleteGraphFile={handleDeleteGraphFile}
         handleAddFile={handleAddFile}
       />
       <ActiveAnnotationMapping
@@ -53,13 +53,13 @@ export function DataSidebar({
       <UploadedMappings
         uploadedMappings={uploadedMappings}
         handleAnnotationMappingSelect={handleAnnotationMappingSelect}
-        handleDeleteMapping={handleDeleteMapping}
+        handleDeleteAnnotationMapping={handleDeleteAnnotationMapping}
       />
     </>
   );
 }
 
-function UploadedFiles({ uploadedFiles, handleSelectGraph, handleDeleteFile, handleAddFile }) {
+function UploadedFiles({ uploadedFiles, handleSelectGraph, handleDeleteGraphFile, handleAddFile }) {
   return (
     <>
       <b className="heading-label">Uploaded Files</b>
@@ -78,7 +78,11 @@ function UploadedFiles({ uploadedFiles, handleSelectGraph, handleDeleteFile, han
                 <Tooltip id={`add-tooltip-${index}`} place="top" effect="solid" className="sidebar-tooltip" />
               </td>
               <td className="recent-item-logo sidebar-tooltip-wrapper">
-                <TrashIcon data-tooltip-id={`delete-tooltip-${index}`} data-tooltip-content="Delete Graph" onClick={() => handleDeleteFile(name)} />
+                <TrashIcon
+                  data-tooltip-id={`delete-tooltip-${index}`}
+                  data-tooltip-content="Delete Graph"
+                  onClick={() => handleDeleteGraphFile(name)}
+                />
                 <Tooltip id={`delete-tooltip-${index}`} place="top" effect="solid" className="sidebar-tooltip" />
               </td>
             </tr>
@@ -121,7 +125,7 @@ function ActiveFiles({ activeFiles, handleRemoveActiveFile }) {
   );
 }
 
-function UploadedMappings({ uploadedMappings, handleAnnotationMappingSelect, handleDeleteMapping }) {
+function UploadedMappings({ uploadedMappings, handleAnnotationMappingSelect, handleDeleteAnnotationMapping }) {
   return (
     <>
       <>
@@ -142,7 +146,7 @@ function UploadedMappings({ uploadedMappings, handleAnnotationMappingSelect, han
                       <TrashIcon
                         data-tooltip-id={`delete-mapping-tooltip-${index}`}
                         data-tooltip-content="Delete Annotation Mapping"
-                        onClick={() => handleDeleteMapping(mapping.name)}
+                        onClick={() => handleDeleteAnnotationMapping(mapping.name)}
                       />
                       <Tooltip id={`delete-mapping-tooltip-${index}`} place="top" effect="solid" className="sidebar-tooltip" />
                     </td>
