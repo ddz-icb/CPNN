@@ -116,6 +116,10 @@ export function loadTheme(setTheme) {
   setTheme(storedTheme);
 }
 
+export function storeTheme(theme) {
+  localStorage.setItem("theme", JSON.stringify(theme));
+}
+
 export function loadAnnotationMappings(setUploadedAnnotationMappings) {
   let mappings = JSON.parse(localStorage.getItem("mappings")) || [];
   if (mappings.length === 0) mappings = null;
@@ -124,4 +128,16 @@ export function loadAnnotationMappings(setUploadedAnnotationMappings) {
 
 export function storeAnnotationMappings(uploadedAnnotationMappings) {
   localStorage.setItem("mappings", JSON.stringify(uploadedAnnotationMappings));
+}
+
+export function loadColorSchemes(setColorSchemes) {
+  let storedSchemes = JSON.parse(localStorage.getItem("colorSchemes")) || [];
+  if (storedSchemes.length === 0) {
+    storedSchemes = defaultColorSchemes;
+  }
+  setColorSchemes(storedSchemes);
+}
+
+export function storeColorSchemes(colorSchemes) {
+  localStorage.setItem("colorSchemes", JSON.stringify(colorSchemes));
 }

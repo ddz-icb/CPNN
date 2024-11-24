@@ -41,6 +41,7 @@ import {
   deleteAnnotationMapping,
   deleteGraphFile,
   loadAnnotationMappings,
+  loadColorSchemes,
   loadFileNames,
   loadTheme,
   removeActiveGraphFile,
@@ -49,6 +50,8 @@ import {
   selectMapping,
   setInitGraph,
   storeAnnotationMappings,
+  storeColorSchemes,
+  storeTheme,
 } from "./components/Other/handleFunctions.js";
 import { exampleGraphJson } from "./demographs/exampleGraphJSON.js";
 
@@ -298,26 +301,32 @@ function App() {
     loadTheme(setTheme);
   }, []);
 
-  // load mapping files
+  // store current theme //
+  useEffect(() => {
+    if (!theme) return;
+    log.info("Storing theme");
+
+    storeTheme(theme);
+  }, [theme]);
+
+  // load uploaded annotation mapping files
   useEffect(() => {
     log.info("Loading annotation mapping files");
     loadAnnotationMappings(setUploadedAnnotationMappings);
   }, []);
 
-  // storing uploaded mapping files //
+  // store uploaded annotation mapping files //
   useEffect(() => {
-    log.info("Storing mapping files", uploadedAnnotationMappings);
+    if (!uploadedAnnotationMappings) return;
+    log.info("Storing mapping files");
+
     storeAnnotationMappings(uploadedAnnotationMappings);
   }, [uploadedAnnotationMappings]);
 
-  // load locally stored color schemes //
+  // load uploaded color schemes //
   useEffect(() => {
     log.info("Loading color schemes");
-    let storedSchemes = JSON.parse(localStorage.getItem("colorSchemes")) || [];
-    if (storedSchemes.length === 0) {
-      storedSchemes = defaultColorSchemes;
-    }
-    setColorSchemes(storedSchemes);
+    loadColorSchemes(setColorSchemes);
   }, []);
 
   // storing uploaded color schemes
@@ -325,22 +334,12 @@ function App() {
     if (!colorSchemes) return;
     log.info("Storing uploaded color schemes");
 
-    localStorage.setItem("colorSchemes", JSON.stringify(colorSchemes));
+    storeColorSchemes(colorSchemes);
   }, [colorSchemes]);
-
-  // store theme //
-  useEffect(() => {
-    if (!theme) return;
-    log.info("Storing theme");
-
-    localStorage.setItem("theme", JSON.stringify(theme));
-  }, [theme]);
 
   // forwards graph to forceGraph component //
   useEffect(() => {
-    if (!graph || !activeFiles) {
-      return;
-    }
+    if (!graph || !activeFiles) return;
     log.info("Modifying graph and forwarding it to the simulation component");
 
     let newGraphCurrent = structuredClone(graph);
@@ -425,5 +424,4 @@ function App() {
     </div>
   );
 }
-
 export default App;
