@@ -40,12 +40,15 @@ import {
   addNewGraphFile,
   deleteAnnotationMapping,
   deleteGraphFile,
+  loadAnnotationMappings,
   loadFileNames,
+  loadTheme,
   removeActiveGraphFile,
   removeColorScheme,
   selectGraph,
   selectMapping,
   setInitGraph,
+  storeAnnotationMappings,
 } from "./components/Other/handleFunctions.js";
 import { exampleGraphJson } from "./demographs/exampleGraphJSON.js";
 
@@ -292,33 +295,20 @@ function App() {
   // load current theme
   useEffect(() => {
     log.info("Loading Theme");
-    const storedTheme = JSON.parse(localStorage.getItem("theme")) || lightTheme;
-    applyTheme(document, storedTheme.theme);
-    setTheme(storedTheme);
+    loadTheme(setTheme);
   }, []);
 
   // load mapping files
   useEffect(() => {
-    log.info("Loading mapping files");
-    let mappings = JSON.parse(localStorage.getItem("mappings")) || [];
-    if (mappings.length === 0) mappings = null;
-    log.info("mappings: ", mappings);
-    setUploadedAnnotationMappings(mappings);
+    log.info("Loading annotation mapping files");
+    loadAnnotationMappings(setUploadedAnnotationMappings);
   }, []);
 
   // storing uploaded mapping files //
   useEffect(() => {
     log.info("Storing mapping files", uploadedAnnotationMappings);
-
-    localStorage.setItem("mappings", JSON.stringify(uploadedAnnotationMappings));
+    storeAnnotationMappings(uploadedAnnotationMappings);
   }, [uploadedAnnotationMappings]);
-
-  // storing active mapping file //
-  useEffect(() => {
-    log.info("Storing active annotation mapping", activeAnnotationMapping);
-
-    localStorage.setItem("activeMapping", JSON.stringify(activeAnnotationMapping));
-  }, [activeAnnotationMapping]);
 
   // load locally stored color schemes //
   useEffect(() => {

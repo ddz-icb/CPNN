@@ -1,7 +1,7 @@
 import { exampleGraphJson } from "../../demographs/exampleGraphJSON.js";
 import log from "../../logger.js";
 import { joinGraphs } from "../GraphStuff/graphCalculations.js";
-import { defaultColorSchemes } from "./appearance.js";
+import { applyTheme, defaultColorSchemes, lightTheme } from "./appearance.js";
 import { addFileDB, fromAllGetNameDB, getByNameDB, getGraphDB } from "./db.js";
 import { parseAnnotationMapping, parseColorScheme, parseGraphFile } from "./parseFiles.js";
 
@@ -108,4 +108,20 @@ export async function setInitGraph(setGraph, setActiveFiles) {
 export async function loadFileNames(setUploadedGraphNames) {
   const filenames = await fromAllGetNameDB();
   setUploadedGraphNames(filenames);
+}
+
+export function loadTheme(setTheme) {
+  const storedTheme = JSON.parse(localStorage.getItem("theme")) || lightTheme;
+  applyTheme(document, storedTheme.theme);
+  setTheme(storedTheme);
+}
+
+export function loadAnnotationMappings(setUploadedAnnotationMappings) {
+  let mappings = JSON.parse(localStorage.getItem("mappings")) || [];
+  if (mappings.length === 0) mappings = null;
+  setUploadedAnnotationMappings(mappings);
+}
+
+export function storeAnnotationMappings(uploadedAnnotationMappings) {
+  localStorage.setItem("mappings", JSON.stringify(uploadedAnnotationMappings));
 }
