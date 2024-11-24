@@ -2,7 +2,7 @@ import { exampleGraphJson } from "../../demographs/exampleGraphJSON.js";
 import log from "../../logger.js";
 import { joinGraphs } from "../GraphStuff/graphCalculations.js";
 import { defaultColorSchemes } from "./appearance.js";
-import { addFileDB, getByNameDB, getGraphDB } from "./db.js";
+import { addFileDB, fromAllGetNameDB, getByNameDB, getGraphDB } from "./db.js";
 import { parseAnnotationMapping, parseColorScheme, parseGraphFile } from "./parseFiles.js";
 
 export async function selectGraph(filename, setGraph, setActiveFiles) {
@@ -103,4 +103,9 @@ export async function setInitGraph(setGraph, setActiveFiles) {
   const graph = JSON.parse(exampleGraphJson.content);
   setGraph(graph);
   setActiveFiles([exampleGraphJson]);
+}
+
+export async function loadFileNames(setUploadedGraphNames) {
+  const filenames = await fromAllGetNameDB();
+  setUploadedGraphNames(filenames);
 }

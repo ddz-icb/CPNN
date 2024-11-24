@@ -40,6 +40,7 @@ import {
   addNewGraphFile,
   deleteAnnotationMapping,
   deleteGraphFile,
+  loadFileNames,
   removeActiveGraphFile,
   removeColorScheme,
   selectGraph,
@@ -279,12 +280,13 @@ function App() {
 
   // init uploadedFileNames
   useEffect(() => {
-    async function load() {
-      const filenames = await fromAllGetNameDB();
-      setUploadedGraphNames(filenames);
+    log.info("Loading uploaded files");
+    try {
+      loadFileNames(setUploadedGraphNames);
+    } catch (error) {
+      setError("Error loading files form database");
+      log.error("Error loading files form database");
     }
-
-    load();
   }, []);
 
   // load current theme
