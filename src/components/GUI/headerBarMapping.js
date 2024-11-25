@@ -6,7 +6,7 @@ import { fallbackColor, getColor } from "../Other/draw.js";
 
 import { Button } from "./headerBar.js";
 
-export function Mapping({ mapping, activeMenu, setActiveMenu, handleActiveMenuClick, nodeAttribsToColorIndices, linkAttribsToColorIndices }) {
+export function Mapping({ mapping, activeMenu, handleActiveMenuClick, nodeAttribsToColorIndices, linkAttribsToColorIndices }) {
   const { settings, setSettings } = useSettings();
   let content = null;
 

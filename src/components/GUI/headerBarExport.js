@@ -6,7 +6,7 @@ import React from "react";
 
 import { Button, Item } from "./headerBar.js";
 
-export function HeaderBarExport({ download, setDownload, activeMenu, setActiveMenu, handleActiveMenuClick }) {
+export function HeaderBarExport({ download, setDownload, activeMenu, handleActiveMenuClick }) {
   let content = null;
 
   const handleDownloadJsonClick = () => {

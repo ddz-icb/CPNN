@@ -32,7 +32,6 @@ export function HeaderBar({
       <Mapping
         mapping={activeAnnotationMapping}
         activeMenu={activeMenu}
-        setActiveMenu={setActiveMenu}
         handleActiveMenuClick={handleActiveMenuClick}
         nodeAttribsToColorIndices={nodeAttribsToColorIndices}
         linkAttribsToColorIndices={linkAttribsToColorIndices}
@@ -44,16 +43,9 @@ export function HeaderBar({
         colorSchemes={colorSchemes}
         handleDeleteColorScheme={handleDeleteColorScheme}
         activeMenu={activeMenu}
-        setActiveMenu={setActiveMenu}
         handleActiveMenuClick={handleActiveMenuClick}
       />
-      <HeaderBarExport
-        download={download}
-        setDownload={setDownload}
-        activeMenu={activeMenu}
-        setActiveMenu={setActiveMenu}
-        handleActiveMenuClick={handleActiveMenuClick}
-      />
+      <HeaderBarExport download={download} setDownload={setDownload} activeMenu={activeMenu} handleActiveMenuClick={handleActiveMenuClick} />
     </div>
   );
 }

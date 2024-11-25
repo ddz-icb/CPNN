@@ -16,7 +16,6 @@ export function Colors({
   colorSchemes,
   handleDeleteColorScheme,
   activeMenu,
-  setActiveMenu,
   handleActiveMenuClick,
 }) {
   const { settings, setSettings } = useSettings();

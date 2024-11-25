@@ -30,7 +30,7 @@ import {
 import { useSettings } from "./states.js";
 
 function App() {
-  const { settings, setSettings } = useSettings();
+  const { settings, setSettings } = useSettings(); // includes physics, filter and appearance settings
 
   const [reset, setReset] = useState(false); // true indicates that the simulation has to be reloaded
 
