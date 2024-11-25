@@ -9,8 +9,6 @@ import { DataSidebar } from "./dataSidebar.js";
 import { MainSidebar } from "./mainSidebar.js";
 
 export function Sidebar({
-  theme,
-  setTheme,
   uploadedFiles,
   activeFiles,
   handleSelectGraph,
@@ -47,7 +45,7 @@ export function Sidebar({
   if (activeNavItem === "Main") {
     content = (
       <Navbar short={true}>
-        <MainSidebar theme={theme} setTheme={setTheme} handleNavItemClick={handleNavItemClick} />
+        <MainSidebar handleNavItemClick={handleNavItemClick} />
       </Navbar>
     );
   } else if (activeNavItem === "Data") {
@@ -81,7 +79,7 @@ export function Sidebar({
     content = (
       <Navbar>
         <Back activeNavItem={activeNavItem} icon={<BackIcon />} onClick={() => handleNavItemClick("Main")} />
-        <FilterSidebar theme={theme} resetFilters={resetFilters} />
+        <FilterSidebar resetFilters={resetFilters} />
       </Navbar>
     );
   } else if (activeNavItem === "Physics") {

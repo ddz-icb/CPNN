@@ -19,7 +19,7 @@ import {
 } from "../GraphStuff/graphInitValues.js";
 
 export const resetPhysicsSettings = (setSettings) => {
-  setSettings("physicsSettings", {
+  setSettings("physics", {
     circleLayout: circleLayoutInit,
     xStrength: xStrengthInit,
     yStrength: yStrengthInit,
@@ -42,7 +42,7 @@ export const resetPhysicsSettings = (setSettings) => {
 };
 
 export const resetFilterSettings = (setSettings) => {
-  setSettings("filterSettings", {
+  setSettings("filter", {
     linkThreshold: linkThresholdInit,
     linkFilter: linkFilterInit,
     linkFilterText: linkFilterTextInit,

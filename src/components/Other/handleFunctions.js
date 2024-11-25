@@ -21,15 +21,7 @@ export function selectMapping(mapping, activeAnnotationMapping, setActiveAnnotat
   }
 }
 
-export function removeColorScheme(
-  colorSchemes,
-  colorSchemeName,
-  setNodeColorScheme,
-  setLinkColorScheme,
-  setColorSchemes,
-  nodeColorScheme,
-  linkColorScheme
-) {
+export function removeColorScheme(colorSchemes, setColorSchemes, colorSchemeName, nodeColorScheme, linkColorScheme, setSettings) {
   let updatedColorSchemes = colorSchemes.filter((colorScheme) => colorScheme.name !== colorSchemeName);
 
   if (updatedColorSchemes.length === 0) {
@@ -37,11 +29,11 @@ export function removeColorScheme(
   }
 
   if (nodeColorScheme.name === colorSchemeName) {
-    setNodeColorScheme(updatedColorSchemes[0]);
+    setSettings("nodeColorScheme", updatedColorSchemes[0]);
   }
 
   if (linkColorScheme.name === colorSchemeName) {
-    setLinkColorScheme(updatedColorSchemes[0]);
+    setSettings("linkColorScheme", updatedColorSchemes[0]);
   }
 
   setColorSchemes(updatedColorSchemes);
@@ -110,10 +102,10 @@ export async function loadFileNames(setUploadedGraphNames) {
   setUploadedGraphNames(filenames);
 }
 
-export function loadTheme(setTheme) {
+export function loadTheme(setSettings) {
   const storedTheme = JSON.parse(localStorage.getItem("theme")) || lightTheme;
-  applyTheme(document, storedTheme.theme);
-  setTheme(storedTheme);
+  applyTheme(document, storedTheme);
+  setSettings("appearance.theme", storedTheme);
 }
 
 export function storeTheme(theme) {

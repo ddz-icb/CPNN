@@ -6,7 +6,6 @@ import { ForceGraph } from "./components/GraphStuff/forceGraph.js";
 import { Sidebar } from "./components/GUI/sidebar.js";
 import { HeaderBar } from "./components/GUI/headerBar.js";
 import { applyNodeMapping, getLinkAttribsToColorIndices, getNodeAttribsToColorIndices } from "./components/GraphStuff/graphCalculations.js";
-import { linkColorSchemeInit, nodeColorSchemeInit, themeInit } from "./components/Other/appearance.js";
 import { resetFilterSettings, resetPhysicsSettings } from "./components/Other/reset.js";
 import {
   addActiveGraphFile,
@@ -61,11 +60,6 @@ function App() {
     downloadPng: null,
     downloadSvg: null,
   });
-
-  const [theme, setTheme] = useState(themeInit);
-
-  const [nodeColorScheme, setNodeColorScheme] = useState(nodeColorSchemeInit);
-  const [linkColorScheme, setLinkColorScheme] = useState(linkColorSchemeInit);
 
   // sets corresponding graph after file selection
   const handleSelectGraph = (filename) => {
@@ -127,7 +121,14 @@ function App() {
     if (!colorSchemeName) return;
     log.info("Deleting color schemes with name", colorSchemeName);
 
-    removeColorScheme(colorSchemes, colorSchemeName, setNodeColorScheme, setLinkColorScheme, setColorSchemes, nodeColorScheme, linkColorScheme);
+    removeColorScheme(
+      colorSchemes,
+      setColorSchemes,
+      colorSchemeName,
+      settings.appearance.nodeColorScheme,
+      settings.appearance.linkColorScheme,
+      setSettings
+    );
   };
 
   // processes new annotation mapping
@@ -253,16 +254,16 @@ function App() {
   // load current theme
   useEffect(() => {
     log.info("Loading Theme");
-    loadTheme(setTheme);
+    loadTheme(setSettings);
   }, []);
 
   // store current theme //
   useEffect(() => {
-    if (!theme) return;
+    if (!settings.appearance.theme) return;
     log.info("Storing theme");
 
-    storeTheme(theme);
-  }, [theme]);
+    storeTheme(settings.appearance.theme);
+  }, [settings.appearance.theme]);
 
   // load uploaded annotation mapping files
   useEffect(() => {
@@ -310,17 +311,13 @@ function App() {
   }, [graph, activeFiles, activeAnnotationMapping]);
 
   return (
-    <div className={theme.theme}>
+    <div className={settings.appearance.theme.name}>
       <HeaderBar
         download={download}
         setDownload={setDownload}
         handleUploadSchemeClick={handleUploadSchemeClick}
         colorSchemeInputRef={colorSchemeInputRef}
         handleNewScheme={handleNewScheme}
-        nodeColorScheme={nodeColorScheme}
-        setNodeColorScheme={setNodeColorScheme}
-        setLinkColorScheme={setLinkColorScheme}
-        linkColorScheme={linkColorScheme}
         colorSchemes={colorSchemes}
         activeAnnotationMapping={activeAnnotationMapping}
         handleDeleteColorScheme={handleDeleteColorScheme}
@@ -328,8 +325,6 @@ function App() {
         linkAttribsToColorIndices={linkAttribsToColorIndices}
       />
       <Sidebar
-        theme={theme}
-        setTheme={setTheme}
         uploadedFiles={uploadedGraphNames}
         activeFiles={activeFiles}
         handleSelectGraph={handleSelectGraph}
@@ -361,9 +356,6 @@ function App() {
           setReset={setReset}
           setError={setError}
           setGraphCurrent={setGraphCurrent}
-          nodeColorScheme={nodeColorScheme}
-          linkColorScheme={linkColorScheme}
-          theme={theme}
           activeAnnotationMapping={activeAnnotationMapping}
           nodeAttribsToColorIndices={nodeAttribsToColorIndices}
           linkAttribsToColorIndices={linkAttribsToColorIndices}

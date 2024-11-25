@@ -15,7 +15,7 @@ import { linkThresholdInit, minCompSizeInit } from "../GraphStuff/graphInitValue
 import { SidebarButtonRect, SidebarCodeEditorBlock, SidebarFieldBlock, SidebarSliderBlock } from "./sidebar.js";
 import { useSettings } from "../../states.js";
 
-export function FilterSidebar({ theme, resetFilters }) {
+export function FilterSidebar({ resetFilters }) {
   const { settings, setSettings } = useSettings();
 
   const linkFilterEditorRef = useRef(null);
@@ -37,8 +37,8 @@ export function FilterSidebar({ theme, resetFilters }) {
     const value = event.target.value;
 
     if (value >= 0 && value <= 1) {
-      setSettings("filterSettings.linkThresholdText", value);
-      setSettings("filterSettings.linkThreshold", value);
+      setSettings("filter.linkThresholdText", value);
+      setSettings("filter.linkThreshold", value);
     }
   };
 
@@ -46,7 +46,7 @@ export function FilterSidebar({ theme, resetFilters }) {
     const value = event.target.value;
 
     if (value >= 0 && value <= 1) {
-      setSettings("filterSettings.linkThresholdText", value);
+      setSettings("filter.linkThresholdText", value);
     }
   };
 
@@ -55,12 +55,12 @@ export function FilterSidebar({ theme, resetFilters }) {
 
     if (value === "") {
       event.target.innerText = 0;
-      setSettings("filterSettings.linkThresholdText", 0);
-      setSettings("filterSettings.linkThreshold", 0);
+      setSettings("filter.linkThresholdText", 0);
+      setSettings("filter.linkThreshold", 0);
     } else if (value >= 0 && value <= 1) {
       event.target.innerText = value;
-      setSettings("filterSettings.linkThresholdText", value);
-      setSettings("filterSettings.linkThreshold", value);
+      setSettings("filter.linkThresholdText", value);
+      setSettings("filter.linkThreshold", value);
     }
   };
 
@@ -69,9 +69,9 @@ export function FilterSidebar({ theme, resetFilters }) {
     const intValue = parseInt(value, 10);
 
     if (value === "") {
-      setSettings("filterSettings.minCompSizeText", "");
+      setSettings("filter.minCompSizeText", "");
     } else if (!isNaN(intValue)) {
-      setSettings("filterSettings.minCompSizeText", intValue);
+      setSettings("filter.minCompSizeText", intValue);
     }
   };
 
@@ -81,29 +81,29 @@ export function FilterSidebar({ theme, resetFilters }) {
 
     if (value === "") {
       event.target.innerText = 1;
-      setSettings("filterSettings.minCompSizeText", 1);
-      setSettings("filterSettings.minCompSize", 1);
+      setSettings("filter.minCompSizeText", 1);
+      setSettings("filter.minCompSize", 1);
     } else if (!isNaN(intValue) && intValue >= 0) {
       event.target.innerText = intValue;
-      setSettings("filterSettings.minCompSizeText", intValue);
-      setSettings("filterSettings.minCompSize", intValue);
+      setSettings("filter.minCompSizeText", intValue);
+      setSettings("filter.minCompSize", intValue);
     }
   };
 
   const handleLinkAttribsChange = (editor) => {
     const value = editor.getValue();
 
-    setSettings("filterSettings.linkFilterText", value);
+    setSettings("filter.linkFilterText", value);
   };
 
   const handleNodeFilterChange = (editor) => {
     const value = editor.getValue();
 
-    setSettings("filterSettings.nodeFilterText", value);
+    setSettings("filter.nodeFilterText", value);
   };
 
   const runCodeButtonFilterAttribs = (event) => {
-    const value = settings.filterSettings.linkFilterText;
+    const value = settings.filter.linkFilterText;
 
     const parsedValue = parseAttributesFilter(value);
     if (String(parsedValue).split(" ")[0] === "Error:") {
@@ -111,13 +111,13 @@ export function FilterSidebar({ theme, resetFilters }) {
       log.error("invalid input on attribs filter");
     } else {
       setCompilerErrorLinkFilter(null);
-      setSettings("filterSettings.linkFilterText", value);
-      setSettings("filterSettings.linkFilter", parsedValue);
+      setSettings("filter.linkFilterText", value);
+      setSettings("filter.linkFilter", parsedValue);
     }
   };
 
   const runCodeButtonFilterGroups = (event) => {
-    const value = settings.filterSettings.nodeFilterText;
+    const value = settings.filter.nodeFilterText;
 
     const parsedValue = parseGroupsFilter(value);
     if (String(parsedValue).split(" ")[0] === "Error:") {
@@ -125,8 +125,8 @@ export function FilterSidebar({ theme, resetFilters }) {
       log.error("invalid input on attribs filter");
     } else {
       setCompilerErrorNodeFilter(null);
-      setSettings("filterSettings.nodeFilterText", value);
-      setSettings("filterSettings.nodeFilter", parsedValue);
+      setSettings("filter.nodeFilterText", value);
+      setSettings("filter.nodeFilter", parsedValue);
     }
   };
 
@@ -135,7 +135,7 @@ export function FilterSidebar({ theme, resetFilters }) {
     if (linkFilterTextAreaRef.current) {
       linkFilterEditorRef.current = CodeMirror.fromTextArea(linkFilterTextAreaRef.current, {
         mode: "customMode",
-        theme: theme === "light" ? "default" : "material",
+        theme: settings.appearance.theme.name === "light" ? "default" : "material",
         linewrapping: false,
         bracketMatching: true,
         scrollbarStyle: "null",
@@ -150,7 +150,7 @@ export function FilterSidebar({ theme, resetFilters }) {
     if (nodeFilterTextAreaRef.current) {
       nodeFilterEditorRef.current = CodeMirror.fromTextArea(nodeFilterTextAreaRef.current, {
         mode: "customMode",
-        theme: theme === "light" ? "default" : "material",
+        theme: settings.appearance.theme.mame === "light" ? "default" : "material",
         linewrapping: false,
         bracketMatching: true,
         scrollbarStyle: "null",
@@ -171,8 +171,8 @@ export function FilterSidebar({ theme, resetFilters }) {
         max={1}
         stepSlider={0.05}
         stepField={0.01}
-        value={settings.filterSettings.linkThreshold}
-        valueText={settings.filterSettings.linkThresholdText}
+        value={settings.filter.linkThreshold}
+        valueText={settings.filter.linkThresholdText}
         onChangeSlider={handleLinkThresholdSliderChange}
         onChangeField={handleLinkThresholdFieldChange}
         onChangeBlur={handleLinkThresholdFieldBlur}
@@ -182,20 +182,20 @@ export function FilterSidebar({ theme, resetFilters }) {
         textareaRef={linkFilterTextAreaRef}
         compilerError={compilerErrorLinkFilter}
         onClick={runCodeButtonFilterAttribs}
-        defaultValue={settings.filterSettings.linkFilterText}
+        defaultValue={settings.filter.linkFilterText}
       />
       <SidebarCodeEditorBlock
         text={"Filter Nodes by Attributes"}
         textareaRef={nodeFilterTextAreaRef}
         compilerError={compilerErrorNodeFilter}
         onClick={runCodeButtonFilterGroups}
-        defaultValue={settings.filterSettings.nodeFilterText}
+        defaultValue={settings.filter.nodeFilterText}
       />
       <SidebarFieldBlock
         text={"Set Minimum Component Size"}
         min={1}
         step={1}
-        value={settings.filterSettings.minCompSizeText}
+        value={settings.filter.minCompSizeText}
         onChange={handleMinComponentFieldChange}
         onBlur={handleMinComponentFieldBlur}
       />

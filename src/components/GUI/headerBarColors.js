@@ -7,21 +7,20 @@ import React, { useState } from "react";
 import isEqual from "lodash/isEqual.js";
 
 import { Button, Item, UploadItem } from "./headerBar.js";
+import { useSettings } from "../../states.js";
 
 export function Colors({
   handleUploadSchemeClick,
   colorSchemeInputRef,
   handleNewScheme,
-  nodeColorScheme,
-  setNodeColorScheme,
   colorSchemes,
-  linkColorScheme,
-  setLinkColorScheme,
   handleDeleteColorScheme,
   activeMenu,
   setActiveMenu,
   handleActiveMenuClick,
 }) {
+  const { settings, setSettings } = useSettings();
+
   let content = null;
 
   if (activeMenu !== "ManageColorScheme" && activeMenu !== "ChooseColorScheme") {
@@ -90,10 +89,10 @@ export function Colors({
                 <tr key={index} className="recent-item-entry">
                   <ColorSchemeTableItem
                     name={colorScheme.name}
-                    isSelected={isEqual(colorScheme.colorScheme, nodeColorScheme.colorScheme)}
-                    isSelected2={isEqual(colorScheme.colorScheme, linkColorScheme.colorScheme)}
-                    onClick={() => setNodeColorScheme(colorScheme)}
-                    onClick2={() => setLinkColorScheme(colorScheme)}
+                    isSelected={isEqual(colorScheme.colorScheme, settings.appearance.nodeColorScheme.colorScheme)}
+                    isSelected2={isEqual(colorScheme.colorScheme, settings.appearance.linkColorScheme.colorScheme)}
+                    onClick={() => setSettings("appearance.nodeColorScheme", colorScheme)}
+                    onClick2={() => setSettings("appearance.linkColorScheme", colorScheme)}
                     handleDeleteColorScheme={handleDeleteColorScheme}
                   />
                 </tr>

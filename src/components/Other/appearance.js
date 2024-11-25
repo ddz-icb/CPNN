@@ -2,12 +2,12 @@ export const circleBorderColorLight = "#0d3b66";
 export const circleBorderColorDark = "#b2becd";
 
 export const lightTheme = {
-  theme: "light",
+  name: "light",
   circleBorderColor: circleBorderColorLight,
 };
 
 export const darkTheme = {
-  theme: "dark",
+  name: "dark",
   circleBorderColor: circleBorderColorDark,
 };
 

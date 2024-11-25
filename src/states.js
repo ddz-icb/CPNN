@@ -30,7 +30,7 @@ const setNestedValue = (obj, path, value) => {
 
 export const useSettings = create((set) => ({
   settings: {
-    physicsSettings: {
+    physics: {
       circleLayout: circleLayoutInit,
       xStrength: xStrengthInit,
       yStrength: yStrengthInit,
@@ -50,7 +50,7 @@ export const useSettings = create((set) => ({
       componentStrengthText: componentStrengthInit,
       nodeRepulsionStrengthText: nodeRepulsionStrengthInit,
     },
-    filterSettings: {
+    filter: {
       linkThreshold: linkThresholdInit,
       linkFilter: linkFilterInit,
       linkFilterText: linkFilterTextInit,
@@ -64,6 +64,9 @@ export const useSettings = create((set) => ({
       theme: themeInit,
       nodeColorScheme: nodeColorSchemeInit,
       linkColorScheme: linkColorSchemeInit,
+
+      // linksAttribsToColorIndices:
+      // nodeAttribsToColorIndices:
     },
   },
   setSettings: (path, value) =>

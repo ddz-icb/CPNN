@@ -11,10 +11,6 @@ export function HeaderBar({
   handleUploadSchemeClick,
   colorSchemeInputRef,
   handleNewScheme,
-  setNodeColorScheme,
-  nodeColorScheme,
-  linkColorScheme,
-  setLinkColorScheme,
   colorSchemes,
   activeAnnotationMapping,
   handleDeleteColorScheme,
@@ -35,8 +31,6 @@ export function HeaderBar({
     <div className="top-right-buttons">
       <Mapping
         mapping={activeAnnotationMapping}
-        nodeColorScheme={nodeColorScheme}
-        linkColorScheme={linkColorScheme}
         activeMenu={activeMenu}
         setActiveMenu={setActiveMenu}
         handleActiveMenuClick={handleActiveMenuClick}
@@ -47,10 +41,6 @@ export function HeaderBar({
         handleUploadSchemeClick={handleUploadSchemeClick}
         colorSchemeInputRef={colorSchemeInputRef}
         handleNewScheme={handleNewScheme}
-        setNodeColorScheme={setNodeColorScheme}
-        nodeColorScheme={nodeColorScheme}
-        linkColorScheme={linkColorScheme}
-        setLinkColorScheme={setLinkColorScheme}
         colorSchemes={colorSchemes}
         handleDeleteColorScheme={handleDeleteColorScheme}
         activeMenu={activeMenu}
