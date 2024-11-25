@@ -1,46 +1,15 @@
-import { useEffect, useState } from "react";
+import { SidebarButtonRect, SidebarSliderBlock, SidebarSwitchBlock } from "./sidebar.js";
 
-import { SidebarButtonRect, SidebarFieldBlock, SidebarSliderBlock, SidebarSwitchBlock } from "./sidebar.js";
+import { useSettings } from "../../states.js";
 
-import {
-  borderHeightInit,
-  borderWidthInit,
-  nodeRepulsionStrengthInit,
-  componentStrengthInit,
-  linkLengthInit,
-  xStrengthInit,
-  yStrengthInit,
-} from "../GraphStuff/graphInitValues.js";
-
-export function PhysicsSidebar({ physicsSettings, setPhysicsSettings, resetPhysics }) {
-  const [linkLengthText, setLinkLengthText] = useState(physicsSettings.linkLength);
-  const [borderHeightText, setBorderHeightText] = useState(physicsSettings.borderHeight);
-  const [borderWidthText, setBorderWidthText] = useState(physicsSettings.borderWidth);
-  const [xStrengthText, setXStrengthText] = useState(physicsSettings.xStrength);
-  const [yStrengthText, setYStrengthText] = useState(physicsSettings.yStrength);
-  const [componentStrengthText, setComponentStrengthText] = useState(physicsSettings.componentStrength);
-  const [nodeRepulsionStrengthText, setNodeRepulsionStrengthText] = useState(physicsSettings.nodeRepulsionStrength);
-
-  const [gravityAdvanced, setGravityAdvanced] = useState(false);
-
-  const handleResetPhysics = () => {
-    resetPhysics();
-
-    setLinkLengthText(linkLengthInit);
-    setBorderHeightText(borderHeightInit);
-    setBorderWidthText(borderWidthInit);
-    setXStrengthText(xStrengthInit);
-    setYStrengthText(yStrengthInit);
-    setComponentStrengthText(componentStrengthInit);
-    setNodeRepulsionStrengthText(nodeRepulsionStrengthInit);
-    setGravityAdvanced(false);
-  };
+export function PhysicsSidebar({ resetPhysics }) {
+  const { settings, setSettings } = useSettings();
 
   const handleLinkLengthSlider = (event) => {
     const value = event.target.value;
 
-    setPhysicsSettings((prev) => ({ ...prev, linkLength: value }));
-    setLinkLengthText(value);
+    setSettings("physicsSettings.linkLength", value);
+    setSettings("physicsSettings.linkLengthText", value);
   };
 
   const handleLinkLengthField = (event) => {
@@ -48,7 +17,7 @@ export function PhysicsSidebar({ physicsSettings, setPhysicsSettings, resetPhysi
     const intValue = parseInt(value);
 
     if (value === "" || (!isNaN(intValue) && intValue <= 1000)) {
-      setLinkLengthText(value);
+      setSettings("physicsSettings.linkLengthText", value);
     }
   };
 
@@ -57,23 +26,23 @@ export function PhysicsSidebar({ physicsSettings, setPhysicsSettings, resetPhysi
     const intValue = parseInt(value);
 
     if (value === "") {
-      setPhysicsSettings((prev) => ({ ...prev, linkLength: 0 }));
-      setLinkLengthText(0);
+      setSettings("physicsSettings.linkLength", 0);
+      setSettings("physicsSettings.linkLengthText", 0);
     } else if (!isNaN(intValue) && intValue <= 1000) {
-      setPhysicsSettings((prev) => ({ ...prev, linkLength: value }));
-      setLinkLengthText(value);
+      setSettings("physicsSettings.linkLength", value);
+      setSettings("physicsSettings.linkLengthText", value);
     }
   };
 
   const handleBorderHeightSlider = (event) => {
     const value = event.target.value;
-    setPhysicsSettings((prev) => ({ ...prev, borderHeight: value }));
-    setBorderHeightText(value);
+    setSettings("physicsSettings.borderHeight", value);
+    setSettings("physicsSettings.borderHeightText", value);
   };
 
   const handleBorderHeightField = (event) => {
     const value = event.target.value;
-    setBorderHeightText(value);
+    setSettings("physicsSettings.borderHeightText", value);
   };
 
   const handleBorderHeightFieldBlur = (event) => {
@@ -84,20 +53,20 @@ export function PhysicsSidebar({ physicsSettings, setPhysicsSettings, resetPhysi
       if (value < 250) {
         value = 250;
       }
-      setPhysicsSettings((prev) => ({ ...prev, borderHeight: value }));
-      setBorderHeightText(value);
+      setSettings("physicsSettings.borderHeight", value);
+      setSettings("physicsSettings.borderHeightText", value);
     }
   };
 
   const handleBorderWidthFieldSlider = (event) => {
     const value = event.target.value;
-    setPhysicsSettings((prev) => ({ ...prev, borderWidth: value }));
-    setBorderWidthText(value);
+    setSettings("physicsSettings.borderWidth", value);
+    setSettings("physicsSettings.borderWidthText", value);
   };
 
   const handleBorderWidthField = (event) => {
     const value = event.target.value;
-    setBorderWidthText(value);
+    setSettings("physicsSettings.borderWidthText", value);
   };
 
   const handleBorderWidthFieldBlur = (event) => {
@@ -108,26 +77,26 @@ export function PhysicsSidebar({ physicsSettings, setPhysicsSettings, resetPhysi
       if (value < 250) {
         value = 250;
       }
-      setPhysicsSettings((prev) => ({ ...prev, borderWidth: value }));
-      setBorderWidthText(value);
+      setSettings("physicsSettings.borderWidth", value);
+      setSettings("physicsSettings.borderWidthText", value);
     }
   };
 
   const handleCheckBorder = () => {
-    setPhysicsSettings((prev) => ({ ...prev, checkBorder: !physicsSettings.checkBorder }));
+    setSettings("physicsSettings.checkBorder", !settings.physicsSettings.checkBorder);
   };
 
   const handleXStrengthSlider = (event) => {
     const value = event.target.value;
-    setPhysicsSettings((prev) => ({ ...prev, xStrength: value }));
-    setXStrengthText(value);
+    setSettings("physicsSettings.xStrength", value);
+    setSettings("physicsSettings.xStrengthText", value);
   };
 
   const handleXStrengthField = (event) => {
     const value = event.target.value;
 
     if (value === "" || (value >= -1 && value <= 1)) {
-      setXStrengthText(value);
+      setSettings("physicsSettings.xStrengthText", value);
     }
   };
 
@@ -135,25 +104,25 @@ export function PhysicsSidebar({ physicsSettings, setPhysicsSettings, resetPhysi
     let value = event.target.value;
 
     if (value === "") {
-      setPhysicsSettings((prev) => ({ ...prev, xStrength: 0 }));
-      setXStrengthText(0);
+      setSettings("physicsSettings.xStrength", 0);
+      setSettings("physicsSettings.xStrengthText", 0);
     } else if (value >= -1 && value <= 1) {
-      setPhysicsSettings((prev) => ({ ...prev, xStrength: value }));
-      setXStrengthText(value);
+      setSettings("physicsSettings.xStrength", value);
+      setSettings("physicsSettings.xStrengthText", value);
     }
   };
 
   const handleYStrengthSlider = (event) => {
     const value = event.target.value;
-    setPhysicsSettings((prev) => ({ ...prev, yStrength: value }));
-    setYStrengthText(value);
+    setSettings("physicsSettings.yStrength", value);
+    setSettings("physicsSettings.yStrengthText", value);
   };
 
   const handleYStrengthField = (event) => {
     const value = event.target.value;
 
     if (value === "" || (value >= -1 && value <= 1)) {
-      setYStrengthText(value);
+      setSettings("physicsSettings.yStrengthText", value);
     }
   };
 
@@ -161,25 +130,25 @@ export function PhysicsSidebar({ physicsSettings, setPhysicsSettings, resetPhysi
     let value = event.target.value;
 
     if (value === "") {
-      setPhysicsSettings((prev) => ({ ...prev, yStrength: 0 }));
-      setYStrengthText(0);
+      setSettings("physicsSettings.yStrength", 0);
+      setSettings("physicsSettings.yStrengthText", 0);
     } else if (value >= -1 && value <= 1) {
-      setPhysicsSettings((prev) => ({ ...prev, yStrength: value }));
-      setYStrengthText(value);
+      setSettings("physicsSettings.yStrength", value);
+      setSettings("physicsSettings.yStrengthText", value);
     }
   };
 
   const handleComponentStrengthSlider = (event) => {
     const value = event.target.value;
-    setPhysicsSettings((prev) => ({ ...prev, componentStrength: value }));
-    setComponentStrengthText(value);
+    setSettings("physicsSettings.componentStrength", value);
+    setSettings("physicsSettings.componentStrengthText", value);
   };
 
   const handleComponentStrengthField = (event) => {
     const value = event.target.value;
 
     if (value === "" || (value >= -1 && value <= 1)) {
-      setComponentStrengthText(value);
+      setSettings("physicsSettings.componentStrengthText", value);
     }
   };
 
@@ -187,33 +156,33 @@ export function PhysicsSidebar({ physicsSettings, setPhysicsSettings, resetPhysi
     let value = event.target.value;
 
     if (value === "") {
-      setPhysicsSettings((prev) => ({ ...prev, componentStrength: 0 }));
-      setComponentStrengthText(0);
+      setSettings("physicsSettings.componentStrength", 0);
+      setSettings("physicsSettings.componentStrengthText", 0);
     } else if (value >= -1 && value <= 1) {
-      setPhysicsSettings((prev) => ({ ...prev, componentStrength: value }));
-      setComponentStrengthText(value);
+      setSettings("physicsSettings.componentStrength", value);
+      setSettings("physicsSettings.componentStrengthText", value);
     }
   };
 
   const handleGravityAdvanced = () => {
-    setGravityAdvanced(!gravityAdvanced);
+    setSettings("physicsSettings.gravityAdvanced", !settings.physicsSettings.gravityAdvanced);
   };
 
   const handleGravitySlider = (event) => {
     const value = event.target.value;
-    setPhysicsSettings((prev) => ({ ...prev, xStrength: value }));
-    setPhysicsSettings((prev) => ({ ...prev, yStrength: value }));
+    setSettings("physicsSettings.xStrength", value);
+    setSettings("physicsSettings.yStrength", value);
 
-    setXStrengthText(value);
-    setYStrengthText(value);
+    setSettings("physicsSettings.xStrengthText", value);
+    setSettings("physicsSettings.yStrengthText", value);
   };
 
   const handleGravityField = (event) => {
     const value = event.target.value;
 
     if (value === "" || (value >= -1 && value <= 1)) {
-      setXStrengthText(value);
-      setYStrengthText(value);
+      setSettings("physicsSettings.xStrengthText", value);
+      setSettings("physicsSettings.yStrengthText", value);
     }
   };
 
@@ -221,28 +190,28 @@ export function PhysicsSidebar({ physicsSettings, setPhysicsSettings, resetPhysi
     let value = event.target.value;
 
     if (value === "") {
-      setPhysicsSettings((prev) => ({ ...prev, xStrength: 0 }));
-      setPhysicsSettings((prev) => ({ ...prev, yStrength: 0 }));
+      setSettings("physicsSettings.xStrength", 0);
+      setSettings("physicsSettings.yStrength", 0);
 
-      setXStrengthText(0);
-      setYStrengthText(0);
+      setSettings("physicsSettings.xStrengthText", 0);
+      setSettings("physicsSettings.yStrengthText", 0);
     } else if (value >= -1 && value <= 1) {
-      setPhysicsSettings((prev) => ({ ...prev, xStrength: value }));
-      setPhysicsSettings((prev) => ({ ...prev, yStrength: value }));
+      setSettings("physicsSettings.xStrength", value);
+      setSettings("physicsSettings.yStrength", value);
 
-      setXStrengthText(value);
-      setYStrengthText(value);
+      setSettings("physicsSettings.xStrengthText", value);
+      setSettings("physicsSettings.yStrengthText", value);
     }
   };
 
   const handleLinkForce = () => {
-    setPhysicsSettings((prev) => ({ ...prev, linkForce: !physicsSettings.linkForce }));
+    setSettings("physicsSettings.linkForce", !settings.physicsSettings.linkForce);
   };
 
   const handleNodeRepulsionStrengthSlider = (event) => {
     const value = event.target.value;
-    setPhysicsSettings((prev) => ({ ...prev, nodeRepulsionStrength: value }));
-    setNodeRepulsionStrengthText(value);
+    setSettings("physicsSettings.nodeRepulsionStrength", value);
+    setSettings("physicsSettings.nodeRepulsionStrengthText", value);
   };
 
   const handleNodeRepulsionStrengthField = (event) => {
@@ -250,7 +219,7 @@ export function PhysicsSidebar({ physicsSettings, setPhysicsSettings, resetPhysi
     const intValue = parseInt(value);
 
     if (value === "" || !isNaN(intValue)) {
-      setNodeRepulsionStrengthText(value);
+      setSettings("physicsSettings.nodeRepulsionStrengthText", value);
     }
   };
 
@@ -259,25 +228,25 @@ export function PhysicsSidebar({ physicsSettings, setPhysicsSettings, resetPhysi
     const intValue = parseInt(value);
 
     if (value === "") {
-      setPhysicsSettings((prev) => ({ ...prev, nodeRepulsionStrength: 0 }));
-      setNodeRepulsionStrengthText(0);
+      setSettings("physicsSettings.nodeRepulsionStrength", 0);
+      setSettings("physicsSettings.nodeRepulsionStrengthText", 0);
     } else if (!isNaN(intValue)) {
-      setPhysicsSettings((prev) => ({ ...prev, nodeRepulsionStrength: value }));
-      setNodeRepulsionStrengthText(value);
+      setSettings("physicsSettings.deRepulsionStrength", value);
+      setSettings("physicsSettings.nodeRepulsionStrengthText", value);
     }
   };
 
   const handleCircleLayout = () => {
-    setPhysicsSettings((prev) => ({ ...prev, circleLayout: !physicsSettings.circleLayout }));
+    setSettings("physicsSettings.circleLayout", !settings.physicsSettings.circleLayout);
   };
 
   return (
     <>
       <div className="inline pad-top-05 pad-bottom-05">
-        <SidebarButtonRect text={"Set Phyiscs to Default"} onClick={handleResetPhysics} />
+        <SidebarButtonRect text={"Set Phyiscs to Default"} onClick={resetPhysics} />
       </div>
-      <SidebarSwitchBlock text={"Enable Circular Layout"} value={physicsSettings.circleLayout} onChange={handleCircleLayout} />
-      {!gravityAdvanced && (
+      <SidebarSwitchBlock text={"Enable Circular Layout"} value={settings.physicsSettings.circleLayout} onChange={handleCircleLayout} />
+      {!settings.physicsSettings.gravityAdvanced && (
         <>
           <SidebarSliderBlock
             text={"Set Gravity"}
@@ -285,15 +254,15 @@ export function PhysicsSidebar({ physicsSettings, setPhysicsSettings, resetPhysi
             max={1}
             stepSlider={0.05}
             stepField={0.01}
-            value={physicsSettings.xStrength}
-            valueText={xStrengthText}
+            value={settings.physicsSettings.xStrength}
+            valueText={settings.physicsSettings.xStrengthText}
             onChangeSlider={handleGravitySlider}
             onChangeField={handleGravityField}
             onChangeBlur={handleGravityFieldBlur}
           />
         </>
       )}
-      {gravityAdvanced && (
+      {settings.physicsSettings.gravityAdvanced && (
         <>
           <SidebarSliderBlock
             text={"Set Horizontal Gravity"}
@@ -301,8 +270,8 @@ export function PhysicsSidebar({ physicsSettings, setPhysicsSettings, resetPhysi
             max={1}
             stepSlider={0.05}
             stepField={0.01}
-            value={physicsSettings.xStrength}
-            valueText={xStrengthText}
+            value={settings.physicsSettings.xStrength}
+            valueText={settings.physicsSettings.xStrengthText}
             onChangeSlider={handleXStrengthSlider}
             onChangeField={handleXStrengthField}
             onChangeBlur={handleXStrengthFieldBlur}
@@ -313,23 +282,23 @@ export function PhysicsSidebar({ physicsSettings, setPhysicsSettings, resetPhysi
             max={1}
             stepSlider={0.05}
             stepField={0.01}
-            value={physicsSettings.yStrength}
-            valueText={yStrengthText}
+            value={settings.physicsSettings.yStrength}
+            valueText={settings.physicsSettings.yStrengthText}
             onChangeSlider={handleYStrengthSlider}
             onChangeField={handleYStrengthField}
             onChangeBlur={handleYStrengthFieldBlur}
           />
         </>
       )}
-      <SidebarSwitchBlock text={"Advanced Gravity Settings"} value={gravityAdvanced} onChange={handleGravityAdvanced} />
+      <SidebarSwitchBlock text={"Advanced Gravity Settings"} value={settings.physicsSettings.gravityAdvanced} onChange={handleGravityAdvanced} />
       <SidebarSliderBlock
         text={"Set Component Strength"}
         min={0}
         max={10}
         stepSlider={0.1}
         stepField={0.05}
-        value={physicsSettings.componentStrength}
-        valueText={componentStrengthText}
+        value={settings.physicsSettings.componentStrength}
+        valueText={settings.physicsSettings.componentStrengthText}
         onChangeSlider={handleComponentStrengthSlider}
         onChangeField={handleComponentStrengthField}
         onChangeBlur={handleComponentStrengthFieldBlur}
@@ -340,29 +309,29 @@ export function PhysicsSidebar({ physicsSettings, setPhysicsSettings, resetPhysi
         max={10}
         stepSlider={1}
         stepField={0.5}
-        value={physicsSettings.nodeRepulsionStrength}
-        valueText={nodeRepulsionStrengthText}
+        value={settings.physicsSettings.nodeRepulsionStrength}
+        valueText={settings.physicsSettings.nodeRepulsionStrengthText}
         onChangeSlider={handleNodeRepulsionStrengthSlider}
         onChangeField={handleNodeRepulsionStrengthField}
         onChangeBlur={handleNodeRepulsionStrengthFieldBlur}
       />
-      <SidebarSwitchBlock text={"Enable Link Force"} value={physicsSettings.linkForce} onChange={handleLinkForce} />
-      {physicsSettings.linkForce && (
+      <SidebarSwitchBlock text={"Enable Link Force"} value={settings.physicsSettings.linkForce} onChange={handleLinkForce} />
+      {settings.physicsSettings.linkForce && (
         <SidebarSliderBlock
           text={"Set Link Length"}
           min={0}
           max={300}
           stepSlider={10}
           stepField={5}
-          value={physicsSettings.linkLength}
-          valueText={linkLengthText}
+          value={settings.physicsSettings.linkLength}
+          valueText={settings.physicsSettings.linkLengthText}
           onChangeSlider={handleLinkLengthSlider}
           onChangeField={handleLinkLengthField}
           onChangeBlur={handleLinkLengthFieldBlur}
         />
       )}
-      <SidebarSwitchBlock text={"Enable Border"} value={physicsSettings.checkBorder} onChange={handleCheckBorder} />
-      {physicsSettings.checkBorder && (
+      <SidebarSwitchBlock text={"Enable Border"} value={settings.physicsSettings.checkBorder} onChange={handleCheckBorder} />
+      {settings.physicsSettings.checkBorder && (
         <>
           <SidebarSliderBlock
             text={"Set Border Height"}
@@ -370,8 +339,8 @@ export function PhysicsSidebar({ physicsSettings, setPhysicsSettings, resetPhysi
             max={999}
             stepSlider={10}
             stepField={5}
-            value={physicsSettings.borderHeight}
-            valueText={borderHeightText}
+            value={settings.physicsSettings.borderHeight}
+            valueText={settings.physicsSettings.borderHeightText}
             onChangeSlider={handleBorderHeightSlider}
             onChangeField={handleBorderHeightField}
             onChangeBlur={handleBorderHeightFieldBlur}
@@ -382,8 +351,8 @@ export function PhysicsSidebar({ physicsSettings, setPhysicsSettings, resetPhysi
             max={999}
             stepSlider={5}
             stepField={5}
-            value={physicsSettings.borderWidth}
-            valueText={borderWidthText}
+            value={settings.physicsSettings.borderWidth}
+            valueText={settings.physicsSettings.borderWidthText}
             onChangeSlider={handleBorderWidthFieldSlider}
             onChangeField={handleBorderWidthField}
             onChangeBlur={handleBorderWidthFieldBlur}

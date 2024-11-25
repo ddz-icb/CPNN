@@ -17,6 +17,7 @@ import {
   nodeFilterTextInit,
   xStrengthInit,
   yStrengthInit,
+  gravityAdvancedInit,
 } from "./components/GraphStuff/graphInitValues.js";
 import { linkColorSchemeInit, nodeColorSchemeInit, themeInit } from "./components/Other/appearance.js";
 
@@ -40,6 +41,14 @@ export const useSettings = create((set) => ({
       checkBorder: checkBorderInit,
       borderWidth: borderWidthInit,
       borderHeight: borderHeightInit,
+      gravityAdvanced: gravityAdvancedInit,
+      linkLengthText: linkLengthInit,
+      borderHeightText: borderHeightInit,
+      borderWidthText: borderWidthInit,
+      xStrengthText: xStrengthInit,
+      yStrengthText: yStrengthInit,
+      componentStrengthText: componentStrengthInit,
+      nodeRepulsionStrengthText: nodeRepulsionStrengthInit,
     },
     filterSettings: {
       linkThreshold: linkThresholdInit,
@@ -48,6 +57,8 @@ export const useSettings = create((set) => ({
       nodeFilter: nodeFilterInit,
       nodeFilterText: nodeFilterTextInit,
       minCompSize: minCompSizeInit,
+      linkThresholdText: linkThresholdInit,
+      minCompSizeText: minCompSizeInit,
     },
     appearance: {
       theme: themeInit,

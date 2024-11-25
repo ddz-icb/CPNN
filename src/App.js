@@ -6,24 +6,6 @@ import { ForceGraph } from "./components/GraphStuff/forceGraph.js";
 import { Sidebar } from "./components/GUI/sidebar.js";
 import { HeaderBar } from "./components/GUI/headerBar.js";
 import { applyNodeMapping, getLinkAttribsToColorIndices, getNodeAttribsToColorIndices } from "./components/GraphStuff/graphCalculations.js";
-import {
-  borderHeightInit,
-  borderWidthInit,
-  nodeRepulsionStrengthInit,
-  checkBorderInit,
-  circleLayoutInit,
-  componentStrengthInit,
-  linkFilterInit,
-  linkFilterTextInit,
-  linkForceInit,
-  linkLengthInit,
-  linkThresholdInit,
-  minCompSizeInit,
-  nodeFilterInit,
-  nodeFilterTextInit,
-  xStrengthInit,
-  yStrengthInit,
-} from "./components/GraphStuff/graphInitValues.js";
 import { linkColorSchemeInit, nodeColorSchemeInit, themeInit } from "./components/Other/appearance.js";
 import { resetFilterSettings, resetPhysicsSettings } from "./components/Other/reset.js";
 import {
@@ -46,29 +28,10 @@ import {
   storeColorSchemes,
   storeTheme,
 } from "./components/Other/handleFunctions.js";
+import { useSettings } from "./states.js";
 
 function App() {
-  const [filterSettings, setFilterSettings] = useState({
-    linkThreshold: linkThresholdInit,
-    linkFilter: linkFilterInit,
-    linkFilterText: linkFilterTextInit,
-    nodeFilter: nodeFilterInit,
-    nodeFilterText: nodeFilterTextInit,
-    minCompSize: minCompSizeInit,
-  });
-
-  const [physicsSettings, setPhysicsSettings] = useState({
-    circleLayout: circleLayoutInit,
-    xStrength: xStrengthInit,
-    yStrength: yStrengthInit,
-    componentStrength: componentStrengthInit,
-    nodeRepulsionStrength: nodeRepulsionStrengthInit,
-    linkForce: linkForceInit,
-    linkLength: linkLengthInit,
-    checkBorder: checkBorderInit,
-    borderWidth: borderWidthInit,
-    borderHeight: borderHeightInit,
-  });
+  const { settings, setSettings } = useSettings();
 
   const [reset, setReset] = useState(false); // true indicates that the simulation has to be reloaded
 
@@ -262,11 +225,11 @@ function App() {
   };
 
   const resetPhysics = () => {
-    resetPhysicsSettings(setPhysicsSettings);
+    resetPhysicsSettings(setSettings);
   };
 
   const resetFilters = () => {
-    resetFilterSettings(setFilterSettings);
+    resetFilterSettings(setSettings);
   };
 
   // select example graph on startup
@@ -373,10 +336,6 @@ function App() {
         handleDeleteGraphFile={handleDeleteGraphFile}
         handleRemoveActiveGraphFile={handleRemoveActiveGraphFile}
         handleAddFile={handleAddActiveGraphFileClick}
-        physicsSettings={physicsSettings}
-        setPhysicsSettings={setPhysicsSettings}
-        filterSettings={filterSettings}
-        setFilterSettings={setFilterSettings}
         handleNewAnnotationMapping={handleNewAnnotationMapping}
         mappingInputRef={mappingInputRef}
         handleUploadMappingClick={handleUploadMappingClick}
@@ -401,10 +360,7 @@ function App() {
           download={download}
           setReset={setReset}
           setError={setError}
-          filterSettings={filterSettings}
           setGraphCurrent={setGraphCurrent}
-          physicsSettings={physicsSettings}
-          setPhysicsSettings={setPhysicsSettings}
           nodeColorScheme={nodeColorScheme}
           linkColorScheme={linkColorScheme}
           theme={theme}

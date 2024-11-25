@@ -17,10 +17,6 @@ export function Sidebar({
   handleDeleteGraphFile,
   handleRemoveActiveGraphFile,
   handleAddFile,
-  filterSettings,
-  setFilterSettings,
-  physicsSettings,
-  setPhysicsSettings,
   handleNewAnnotationMapping,
   mappingInputRef,
   handleUploadMappingClick,
@@ -85,21 +81,14 @@ export function Sidebar({
     content = (
       <Navbar>
         <Back activeNavItem={activeNavItem} icon={<BackIcon />} onClick={() => handleNavItemClick("Main")} />
-        <FilterSidebar
-          linkThreshold={filterSettings.linkThreshold}
-          minCompSize={filterSettings.minCompSize}
-          filterSettings={filterSettings}
-          setFilterSettings={setFilterSettings}
-          theme={theme}
-          resetFilters={resetFilters}
-        />
+        <FilterSidebar theme={theme} resetFilters={resetFilters} />
       </Navbar>
     );
   } else if (activeNavItem === "Physics") {
     content = (
       <Navbar>
         <Back activeNavItem={activeNavItem} icon={<BackIcon />} onClick={() => handleNavItemClick("Main")} />
-        <PhysicsSidebar physicsSettings={physicsSettings} setPhysicsSettings={setPhysicsSettings} resetPhysics={resetPhysics} />
+        <PhysicsSidebar resetPhysics={resetPhysics} />
       </Navbar>
     );
   }

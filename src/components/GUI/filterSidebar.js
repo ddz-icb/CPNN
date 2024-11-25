@@ -13,24 +13,22 @@ import { parseGroupsFilter } from "../Other/parserNodeFilter.js";
 import { linkThresholdInit, minCompSizeInit } from "../GraphStuff/graphInitValues.js";
 
 import { SidebarButtonRect, SidebarCodeEditorBlock, SidebarFieldBlock, SidebarSliderBlock } from "./sidebar.js";
+import { useSettings } from "../../states.js";
 
-export function FilterSidebar({ linkThreshold, minCompSize, filterSettings, setFilterSettings, theme, resetFilters }) {
+export function FilterSidebar({ theme, resetFilters }) {
+  const { settings, setSettings } = useSettings();
+
   const linkFilterEditorRef = useRef(null);
   const nodeFilterEditorRef = useRef(null);
 
   const linkFilterTextAreaRef = useRef(null);
   const nodeFilterTextAreaRef = useRef(null);
 
-  const [linkThresholdText, setLinkThresholdText] = useState(linkThreshold);
-  const [minCompSizeText, setMinCompSizeText] = useState(minCompSize);
   const [compilerErrorLinkFilter, setCompilerErrorLinkFilter] = useState(null);
   const [compilerErrorNodeFilter, setCompilerErrorNodeFilter] = useState(null);
 
   const handleResetFilters = () => {
     resetFilters();
-
-    setLinkThresholdText(linkThresholdInit);
-    setMinCompSizeText(minCompSizeInit);
     setCompilerErrorLinkFilter(null);
     setCompilerErrorNodeFilter(null);
   };
@@ -39,8 +37,8 @@ export function FilterSidebar({ linkThreshold, minCompSize, filterSettings, setF
     const value = event.target.value;
 
     if (value >= 0 && value <= 1) {
-      setLinkThresholdText(value);
-      setFilterSettings((prev) => ({ ...prev, linkThreshold: value }));
+      setSettings("filterSettings.linkThresholdText", value);
+      setSettings("filterSettings.linkThreshold", value);
     }
   };
 
@@ -48,7 +46,7 @@ export function FilterSidebar({ linkThreshold, minCompSize, filterSettings, setF
     const value = event.target.value;
 
     if (value >= 0 && value <= 1) {
-      setLinkThresholdText(value);
+      setSettings("filterSettings.linkThresholdText", value);
     }
   };
 
@@ -57,12 +55,12 @@ export function FilterSidebar({ linkThreshold, minCompSize, filterSettings, setF
 
     if (value === "") {
       event.target.innerText = 0;
-      setLinkThresholdText(0);
-      setFilterSettings((prev) => ({ ...prev, linkThreshold: 0 }));
+      setSettings("filterSettings.linkThresholdText", 0);
+      setSettings("filterSettings.linkThreshold", 0);
     } else if (value >= 0 && value <= 1) {
       event.target.innerText = value;
-      setLinkThresholdText(value);
-      setFilterSettings((prev) => ({ ...prev, linkThreshold: value }));
+      setSettings("filterSettings.linkThresholdText", value);
+      setSettings("filterSettings.linkThreshold", value);
     }
   };
 
@@ -71,9 +69,9 @@ export function FilterSidebar({ linkThreshold, minCompSize, filterSettings, setF
     const intValue = parseInt(value, 10);
 
     if (value === "") {
-      setMinCompSizeText("");
+      setSettings("filterSettings.minCompSizeText", "");
     } else if (!isNaN(intValue)) {
-      setMinCompSizeText(intValue);
+      setSettings("filterSettings.minCompSizeText", intValue);
     }
   };
 
@@ -83,29 +81,29 @@ export function FilterSidebar({ linkThreshold, minCompSize, filterSettings, setF
 
     if (value === "") {
       event.target.innerText = 1;
-      setMinCompSizeText(1);
-      setFilterSettings((prev) => ({ ...prev, minCompSize: 1 }));
+      setSettings("filterSettings.minCompSizeText", 1);
+      setSettings("filterSettings.minCompSize", 1);
     } else if (!isNaN(intValue) && intValue >= 0) {
       event.target.innerText = intValue;
-      setMinCompSizeText(intValue);
-      setFilterSettings((prev) => ({ ...prev, minCompSize: intValue }));
+      setSettings("filterSettings.minCompSizeText", intValue);
+      setSettings("filterSettings.minCompSize", intValue);
     }
   };
 
   const handleLinkAttribsChange = (editor) => {
     const value = editor.getValue();
 
-    setFilterSettings((prev) => ({ ...prev, linkFilterText: value }));
+    setSettings("filterSettings.linkFilterText", value);
   };
 
   const handleNodeFilterChange = (editor) => {
     const value = editor.getValue();
 
-    setFilterSettings((prev) => ({ ...prev, nodeFilterText: value }));
+    setSettings("filterSettings.nodeFilterText", value);
   };
 
   const runCodeButtonFilterAttribs = (event) => {
-    const value = filterSettings.linkFilterText;
+    const value = settings.filterSettings.linkFilterText;
 
     const parsedValue = parseAttributesFilter(value);
     if (String(parsedValue).split(" ")[0] === "Error:") {
@@ -113,13 +111,13 @@ export function FilterSidebar({ linkThreshold, minCompSize, filterSettings, setF
       log.error("invalid input on attribs filter");
     } else {
       setCompilerErrorLinkFilter(null);
-      setFilterSettings((prev) => ({ ...prev, linkFilterText: value }));
-      setFilterSettings((prev) => ({ ...prev, linkFilter: parsedValue }));
+      setSettings("filterSettings.linkFilterText", value);
+      setSettings("filterSettings.linkFilter", parsedValue);
     }
   };
 
   const runCodeButtonFilterGroups = (event) => {
-    const value = filterSettings.nodeFilterText;
+    const value = settings.filterSettings.nodeFilterText;
 
     const parsedValue = parseGroupsFilter(value);
     if (String(parsedValue).split(" ")[0] === "Error:") {
@@ -127,8 +125,8 @@ export function FilterSidebar({ linkThreshold, minCompSize, filterSettings, setF
       log.error("invalid input on attribs filter");
     } else {
       setCompilerErrorNodeFilter(null);
-      setFilterSettings((prev) => ({ ...prev, nodeFilterText: value }));
-      setFilterSettings((prev) => ({ ...prev, nodeFilter: parsedValue }));
+      setSettings("filterSettings.nodeFilterText", value);
+      setSettings("filterSettings.nodeFilter", parsedValue);
     }
   };
 
@@ -173,8 +171,8 @@ export function FilterSidebar({ linkThreshold, minCompSize, filterSettings, setF
         max={1}
         stepSlider={0.05}
         stepField={0.01}
-        value={linkThreshold}
-        valueText={linkThresholdText}
+        value={settings.filterSettings.linkThreshold}
+        valueText={settings.filterSettings.linkThresholdText}
         onChangeSlider={handleLinkThresholdSliderChange}
         onChangeField={handleLinkThresholdFieldChange}
         onChangeBlur={handleLinkThresholdFieldBlur}
@@ -184,20 +182,20 @@ export function FilterSidebar({ linkThreshold, minCompSize, filterSettings, setF
         textareaRef={linkFilterTextAreaRef}
         compilerError={compilerErrorLinkFilter}
         onClick={runCodeButtonFilterAttribs}
-        defaultValue={filterSettings.linkFilterText}
+        defaultValue={settings.filterSettings.linkFilterText}
       />
       <SidebarCodeEditorBlock
         text={"Filter Nodes by Attributes"}
         textareaRef={nodeFilterTextAreaRef}
         compilerError={compilerErrorNodeFilter}
         onClick={runCodeButtonFilterGroups}
-        defaultValue={filterSettings.nodeFilterText}
+        defaultValue={settings.filterSettings.nodeFilterText}
       />
       <SidebarFieldBlock
         text={"Set Minimum Component Size"}
         min={1}
         step={1}
-        value={minCompSizeText}
+        value={settings.filterSettings.minCompSizeText}
         onChange={handleMinComponentFieldChange}
         onBlur={handleMinComponentFieldBlur}
       />
