@@ -7,7 +7,7 @@ import { cloneDeep } from "lodash";
 
 import { handleResize, initDragAndZoom } from "../Other/interactiveCanvas.js";
 import { initTooltips, Tooltips } from "../Other/toolTipCanvas.js";
-import { radius, changeCircleBorderColor, drawCircle, drawLine, changeNodeColors, getColor } from "../Other/draw.js";
+import { radius, changeCircleBorderColor, drawCircle, drawLine, changeNodeColors } from "../Other/draw.js";
 
 import {
   filterByThreshold,

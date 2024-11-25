@@ -2,7 +2,7 @@ import { ReactComponent as PictureIcon } from "../../icons/picture.svg";
 import { ReactComponent as FileIcon } from "../../icons/file.svg";
 import { ReactComponent as DownloadIcon } from "../../icons/download.svg";
 import { ReactComponent as XIcon } from "../../icons/x.svg";
-import React, { useState } from "react";
+import React from "react";
 
 import { Button, Item } from "./headerBar.js";
 

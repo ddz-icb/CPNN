@@ -1,0 +1,64 @@
+import { create } from "zustand";
+
+import {
+  borderHeightInit,
+  borderWidthInit,
+  nodeRepulsionStrengthInit,
+  checkBorderInit,
+  circleLayoutInit,
+  componentStrengthInit,
+  linkFilterInit,
+  linkFilterTextInit,
+  linkForceInit,
+  linkLengthInit,
+  linkThresholdInit,
+  minCompSizeInit,
+  nodeFilterInit,
+  nodeFilterTextInit,
+  xStrengthInit,
+  yStrengthInit,
+} from "./components/GraphStuff/graphInitValues.js";
+import { linkColorSchemeInit, nodeColorSchemeInit, themeInit } from "./components/Other/appearance.js";
+
+const setNestedValue = (obj, path, value) => {
+  const keys = path.split(".");
+  const lastKey = keys.pop();
+  const nested = keys.reduce((acc, key) => acc[key], obj);
+  nested[lastKey] = value;
+};
+
+export const useSettings = create((set) => ({
+  settings: {
+    physicsSettings: {
+      circleLayout: circleLayoutInit,
+      xStrength: xStrengthInit,
+      yStrength: yStrengthInit,
+      componentStrength: componentStrengthInit,
+      nodeRepulsionStrength: nodeRepulsionStrengthInit,
+      linkForce: linkForceInit,
+      linkLength: linkLengthInit,
+      checkBorder: checkBorderInit,
+      borderWidth: borderWidthInit,
+      borderHeight: borderHeightInit,
+    },
+    filterSettings: {
+      linkThreshold: linkThresholdInit,
+      linkFilter: linkFilterInit,
+      linkFilterText: linkFilterTextInit,
+      nodeFilter: nodeFilterInit,
+      nodeFilterText: nodeFilterTextInit,
+      minCompSize: minCompSizeInit,
+    },
+    appearance: {
+      theme: themeInit,
+      nodeColorScheme: nodeColorSchemeInit,
+      linkColorScheme: linkColorSchemeInit,
+    },
+  },
+  setSettings: (path, value) =>
+    set((state) => {
+      const updatedSettings = { ...state.settings };
+      setNestedValue(updatedSettings, path, value);
+      return { settings: updatedSettings };
+    }),
+}));
