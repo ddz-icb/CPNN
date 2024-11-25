@@ -4,12 +4,14 @@ import { ReactComponent as MoonIcon } from "../../icons/moon.svg";
 import { ReactComponent as MagnetIcon } from "../../icons/magnet.svg";
 import { ReactComponent as FilterIcon } from "../../icons/filter.svg";
 import { darkTheme, lightTheme } from "../Other/appearance.js";
-import log from "../../logger.js";
+import { useSettings } from "../../states.js";
 
-export function MainSidebar({ theme, setTheme, handleNavItemClick }) {
+export function MainSidebar({ handleNavItemClick }) {
+  const { settings, setSettings } = useSettings();
+
   const changeTheme = () => {
-    const newTheme = theme.theme === lightTheme.theme ? darkTheme : lightTheme;
-    setTheme(newTheme);
+    const newTheme = settings.appearance.theme.name === lightTheme.name ? darkTheme : lightTheme;
+    setSettings("appearance.theme", newTheme);
     localStorage.setItem("theme", newTheme);
   };
 
@@ -19,7 +21,7 @@ export function MainSidebar({ theme, setTheme, handleNavItemClick }) {
       <NavItem text={"Data"} icon={<DataIcon />} onClick={() => handleNavItemClick("Data")} />
       <NavItem text={"Filter"} icon={<FilterIcon />} onClick={() => handleNavItemClick("Filter")} />
       <NavItem text={"Physics"} icon={<MagnetIcon />} onClick={() => handleNavItemClick("Physics")}></NavItem>
-      <NavItem text={"Change Theme"} icon={theme.theme === lightTheme.theme ? <MoonIcon /> : <SunIcon />} onClick={changeTheme} />
+      <NavItem text={"Change Theme"} icon={settings.appearance.theme.name === lightTheme.name ? <MoonIcon /> : <SunIcon />} onClick={changeTheme} />
     </>
   );
 }

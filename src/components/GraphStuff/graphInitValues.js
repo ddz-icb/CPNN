@@ -16,3 +16,4 @@ export const circleLayoutInit = false;
 export const checkBorderInit = false;
 export const borderWidthInit = 200;
 export const borderHeightInit = 200;
+export const gravityAdvancedInit = false;

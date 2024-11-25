@@ -9,26 +9,20 @@ import { DataSidebar } from "./dataSidebar.js";
 import { MainSidebar } from "./mainSidebar.js";
 
 export function Sidebar({
-  theme,
-  setTheme,
   uploadedFiles,
   activeFiles,
   handleSelectGraph,
-  handleDeleteFile,
-  handleRemoveActiveFile,
+  handleDeleteGraphFile,
+  handleRemoveActiveGraphFile,
   handleAddFile,
-  filterSettings,
-  setFilterSettings,
-  physicsSettings,
-  setPhysicsSettings,
-  handleNewMapping,
+  handleNewAnnotationMapping,
   mappingInputRef,
   handleUploadMappingClick,
   activeAnnotationMapping,
   handleRemoveActiveAnnotationMapping,
   uploadedMappings,
   handleAnnotationMappingSelect,
-  handleDeleteMapping,
+  handleDeleteAnnotationMapping,
   handleGraphAbsUploadClick,
   handleGraphZeroUploadClick,
   handleNewGraphFile,
@@ -51,7 +45,7 @@ export function Sidebar({
   if (activeNavItem === "Main") {
     content = (
       <Navbar short={true}>
-        <MainSidebar theme={theme} setTheme={setTheme} handleNavItemClick={handleNavItemClick} />
+        <MainSidebar handleNavItemClick={handleNavItemClick} />
       </Navbar>
     );
   } else if (activeNavItem === "Data") {
@@ -60,19 +54,19 @@ export function Sidebar({
         <Back activeNavItem={activeNavItem} icon={<BackIcon />} onClick={() => handleNavItemClick("Main")} />
         <DataSidebar
           activeFiles={activeFiles}
-          handleRemoveActiveFile={handleRemoveActiveFile}
+          handleRemoveActiveGraphFile={handleRemoveActiveGraphFile}
           uploadedFiles={uploadedFiles}
           handleSelectGraph={handleSelectGraph}
-          handleDeleteFile={handleDeleteFile}
+          handleDeleteGraphFile={handleDeleteGraphFile}
           handleAddFile={handleAddFile}
-          handleNewMapping={handleNewMapping}
+          handleNewAnnotationMapping={handleNewAnnotationMapping}
           mappingInputRef={mappingInputRef}
           handleUploadMappingClick={handleUploadMappingClick}
           activeAnnotationMapping={activeAnnotationMapping}
           handleRemoveActiveAnnotationMapping={handleRemoveActiveAnnotationMapping}
           uploadedMappings={uploadedMappings}
           handleAnnotationMappingSelect={handleAnnotationMappingSelect}
-          handleDeleteMapping={handleDeleteMapping}
+          handleDeleteAnnotationMapping={handleDeleteAnnotationMapping}
           handleGraphAbsUploadClick={handleGraphAbsUploadClick}
           handleGraphZeroUploadClick={handleGraphZeroUploadClick}
           handleNewGraphFile={handleNewGraphFile}
@@ -85,21 +79,14 @@ export function Sidebar({
     content = (
       <Navbar>
         <Back activeNavItem={activeNavItem} icon={<BackIcon />} onClick={() => handleNavItemClick("Main")} />
-        <FilterSidebar
-          linkThreshold={filterSettings.linkThreshold}
-          minCompSize={filterSettings.minCompSize}
-          filterSettings={filterSettings}
-          setFilterSettings={setFilterSettings}
-          theme={theme}
-          resetFilters={resetFilters}
-        />
+        <FilterSidebar resetFilters={resetFilters} />
       </Navbar>
     );
   } else if (activeNavItem === "Physics") {
     content = (
       <Navbar>
         <Back activeNavItem={activeNavItem} icon={<BackIcon />} onClick={() => handleNavItemClick("Main")} />
-        <PhysicsSidebar physicsSettings={physicsSettings} setPhysicsSettings={setPhysicsSettings} resetPhysics={resetPhysics} />
+        <PhysicsSidebar resetPhysics={resetPhysics} />
       </Navbar>
     );
   }

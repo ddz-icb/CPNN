@@ -1,14 +1,12 @@
+import { exampleGraphJson } from "../../demographs/exampleGraphJSON.js";
 import log from "../../logger.js";
-import { defaultColorSchemes } from "./appearance.js";
-import { addFileDB, getByNameDB } from "./db.js";
+import { joinGraphs } from "../GraphStuff/graphCalculations.js";
+import { applyTheme, defaultColorSchemes, lightTheme } from "./appearance.js";
+import { addFileDB, fromAllGetNameDB, getByNameDB, getGraphDB, removeFileByNameDB } from "./db.js";
 import { parseAnnotationMapping, parseColorScheme, parseGraphFile } from "./parseFiles.js";
 
 export async function selectGraph(filename, setGraph, setActiveFiles) {
-  const file = await getByNameDB(filename);
-  if (!file || !file.content) throw new Error(`No file found with the name ${filename}.`);
-
-  const graph = JSON.parse(file.content);
-  if (!graph) throw new Error("File format not recognized");
+  const { graph, file } = await getGraphDB(filename);
 
   setGraph(graph);
   setActiveFiles([file]);
@@ -23,15 +21,7 @@ export function selectMapping(mapping, activeAnnotationMapping, setActiveAnnotat
   }
 }
 
-export function removeColorScheme(
-  colorSchemes,
-  colorSchemeName,
-  setNodeColorScheme,
-  setLinkColorScheme,
-  setColorSchemes,
-  nodeColorScheme,
-  linkColorScheme
-) {
+export function removeColorScheme(colorSchemes, setColorSchemes, colorSchemeName, nodeColorScheme, linkColorScheme, setSettings) {
   let updatedColorSchemes = colorSchemes.filter((colorScheme) => colorScheme.name !== colorSchemeName);
 
   if (updatedColorSchemes.length === 0) {
@@ -39,11 +29,11 @@ export function removeColorScheme(
   }
 
   if (nodeColorScheme.name === colorSchemeName) {
-    setNodeColorScheme(updatedColorSchemes[0]);
+    setSettings("nodeColorScheme", updatedColorSchemes[0]);
   }
 
   if (linkColorScheme.name === colorSchemeName) {
-    setLinkColorScheme(updatedColorSchemes[0]);
+    setSettings("linkColorScheme", updatedColorSchemes[0]);
   }
 
   setColorSchemes(updatedColorSchemes);
@@ -60,7 +50,86 @@ export async function addNewColorScheme(file, setColorSchemes) {
   setColorSchemes((colorSchemes) => [...colorSchemes, { name: file.name, colorScheme: colorScheme }]);
 }
 
-export async function addNewAnnotationMapping(file, setUploadedAnnotationMappings) {
+export async function addAnnotationMapping(file, setUploadedAnnotationMappings) {
   const mapping = await parseAnnotationMapping(file);
   setUploadedAnnotationMappings((uploadedAnnotationMappings) => (uploadedAnnotationMappings ? [...uploadedAnnotationMappings, mapping] : [mapping]));
+}
+
+export function deleteAnnotationMapping(uploadedAnnotationMappings, mappingName, setUploadedAnnotationMappings) {
+  const updatedMappings = uploadedAnnotationMappings.filter((mapping) => mapping.name !== mappingName);
+  setUploadedAnnotationMappings(updatedMappings);
+}
+
+export async function deleteGraphFile(uploadedGraphNames, filename, setUploadedGraphNames) {
+  const updatedFileNames = uploadedGraphNames.filter((name) => {
+    return name !== filename;
+  });
+
+  setUploadedGraphNames(updatedFileNames);
+  removeFileByNameDB(filename);
+}
+
+export async function removeActiveGraphFile(file, activeFiles, setGraph, setActiveFiles) {
+  let stillActive = activeFiles.filter((f) => f.name !== file.name);
+  if (stillActive.length === 0) stillActive = [exampleGraphJson];
+
+  // no error handling since these graphs were previously active already
+  let graph = JSON.parse(stillActive[0].content);
+  for (let i = 1; i < stillActive.length; i++) {
+    const newGraph = JSON.parse(stillActive[i].content);
+    graph = joinGraphs(graph, newGraph);
+  }
+
+  setGraph(graph);
+  setActiveFiles(stillActive);
+}
+
+export async function addActiveGraphFile(filename, setGraph, setActiveFiles, oldGraph) {
+  const { graph, file } = await getGraphDB(filename);
+  const combinedGraph = joinGraphs(oldGraph, graph);
+  setGraph(combinedGraph);
+  setActiveFiles((activeFiles) => [...activeFiles, file]);
+}
+
+export async function setInitGraph(setGraph, setActiveFiles) {
+  const graph = JSON.parse(exampleGraphJson.content);
+  setGraph(graph);
+  setActiveFiles([exampleGraphJson]);
+}
+
+export async function loadFileNames(setUploadedGraphNames) {
+  const filenames = await fromAllGetNameDB();
+  setUploadedGraphNames(filenames);
+}
+
+export function loadTheme(setSettings) {
+  const storedTheme = JSON.parse(localStorage.getItem("theme")) || lightTheme;
+  applyTheme(document, storedTheme);
+  setSettings("appearance.theme", storedTheme);
+}
+
+export function storeTheme(theme) {
+  localStorage.setItem("theme", JSON.stringify(theme));
+}
+
+export function loadAnnotationMappings(setUploadedAnnotationMappings) {
+  let mappings = JSON.parse(localStorage.getItem("mappings")) || [];
+  if (mappings.length === 0) mappings = null;
+  setUploadedAnnotationMappings(mappings);
+}
+
+export function storeAnnotationMappings(uploadedAnnotationMappings) {
+  localStorage.setItem("mappings", JSON.stringify(uploadedAnnotationMappings));
+}
+
+export function loadColorSchemes(setColorSchemes) {
+  let storedSchemes = JSON.parse(localStorage.getItem("colorSchemes")) || [];
+  if (storedSchemes.length === 0) {
+    storedSchemes = defaultColorSchemes;
+  }
+  setColorSchemes(storedSchemes);
+}
+
+export function storeColorSchemes(colorSchemes) {
+  localStorage.setItem("colorSchemes", JSON.stringify(colorSchemes));
 }

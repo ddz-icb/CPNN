@@ -72,3 +72,12 @@ export async function getByNameDB(name) {
     return null;
   }
 }
+
+export async function getGraphDB(filename) {
+  const file = await getByNameDB(filename);
+  if (!file || !file.content) throw new Error(`No file found with the name ${filename}.`);
+
+  const graph = JSON.parse(file.content);
+  if (!graph) throw new Error("File format not recognized");
+  return { graph, file };
+}

@@ -5,6 +5,7 @@ import { ReactComponent as TrashIcon } from "../../icons/trash.svg";
 import { ReactComponent as XIcon } from "../../icons/x.svg";
 import { extractDescription, extractFullName, extractPdbId } from "../RegexExtract/extract.js";
 import * as $3Dmol from "3dmol/build/3Dmol.js";
+import { useSettings } from "../../states.js";
 
 export function Tooltips({
   isClickTooltipActive,
@@ -14,7 +15,6 @@ export function Tooltips({
   setIsHoverTooltipActive,
   hoverTooltipData,
   setNodeToDelete,
-  theme,
   mapping,
 }) {
   return (
@@ -25,7 +25,6 @@ export function Tooltips({
           setIsActive={setIsClickTooltipActive}
           data={clickTooltipData}
           setNodeToDelete={setNodeToDelete}
-          theme={theme}
           mapping={mapping}
         />
       )}
@@ -36,7 +35,9 @@ export function Tooltips({
   );
 }
 
-export function ClickTooltip({ isActive, setIsActive, data, setNodeToDelete, theme, mapping }) {
+export function ClickTooltip({ isActive, setIsActive, data, setNodeToDelete, mapping }) {
+  const { settings, setSettings } = useSettings();
+
   const [fullName, setFullName] = useState("");
   const [description, setDescription] = useState("");
   const [pdbId, setPdbId] = useState("");
@@ -93,7 +94,7 @@ export function ClickTooltip({ isActive, setIsActive, data, setNodeToDelete, the
         if (!responsePdb) return;
 
         const config = {
-          backgroundColor: theme === "light" ? "0xffffff" : "0x2a2e35",
+          backgroundColor: settings.appearance.theme.name === "light" ? "0xffffff" : "0x2a2e35",
         };
         const viewer = $3Dmol.createViewer(viewerRef.current, config);
 
@@ -115,9 +116,9 @@ export function ClickTooltip({ isActive, setIsActive, data, setNodeToDelete, the
   useEffect(() => {
     if (!viewer) return;
 
-    const backgroundColor = theme === "light" ? "0xffffff" : "0x2a2e35";
+    const backgroundColor = settings.appearance.theme.name === "light" ? "0xffffff" : "0x2a2e35";
     viewer.setBackgroundColor(backgroundColor);
-  }, [theme]);
+  }, [settings.appearance.theme]);
 
   useEffect(() => {
     setFullName("");

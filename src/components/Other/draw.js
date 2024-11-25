@@ -103,9 +103,6 @@ export function drawLineCanvas(ctx, link, colorScheme, attribToColorIndex) {
   ctx.lineWidth = linkWidth;
 
   if (link.attribs.length === 1) {
-    log.info("link.attribs", link.attribs);
-    log.info("colorscheme", colorScheme);
-    log.info("COLOR", getColor(attribToColorIndex[link.attribs[0]], colorScheme), ctx.lineWidth);
     ctx.beginPath();
     ctx.moveTo(link.source.x, link.source.y);
     ctx.lineTo(link.target.x, link.target.y);

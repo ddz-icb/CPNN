@@ -1,74 +1,40 @@
 import "./index.css";
 import log from "./logger.js";
 import React, { useState, useRef, useEffect } from "react";
-import exampleGraphJSON from "./demographs/exampleGraphJSON.js";
 
 import { ForceGraph } from "./components/GraphStuff/forceGraph.js";
 import { Sidebar } from "./components/GUI/sidebar.js";
 import { HeaderBar } from "./components/GUI/headerBar.js";
-import { applyTheme, defaultColorSchemes } from "./components/Other/appearance.js";
-import {
-  applyNodeMapping,
-  getLinkAttribsToColorIndices,
-  getNodeAttribsToColorIndices,
-  joinGraphs,
-} from "./components/GraphStuff/graphCalculations.js";
-import { fromAllGetNameDB, getByNameDB, removeFileByNameDB } from "./components/Other/db.js";
-import {
-  borderHeightInit,
-  borderWidthInit,
-  nodeRepulsionStrengthInit,
-  checkBorderInit,
-  circleLayoutInit,
-  componentStrengthInit,
-  linkFilterInit,
-  linkFilterTextInit,
-  linkForceInit,
-  linkLengthInit,
-  linkThresholdInit,
-  minCompSizeInit,
-  nodeFilterInit,
-  nodeFilterTextInit,
-  xStrengthInit,
-  yStrengthInit,
-} from "./components/GraphStuff/graphInitValues.js";
-import { lightTheme, linkColorSchemeInit, nodeColorSchemeInit, themeInit } from "./components/Other/appearance.js";
+import { applyNodeMapping, getLinkAttribsToColorIndices, getNodeAttribsToColorIndices } from "./components/GraphStuff/graphCalculations.js";
 import { resetFilterSettings, resetPhysicsSettings } from "./components/Other/reset.js";
 import {
-  addNewAnnotationMapping,
+  addActiveGraphFile,
+  addAnnotationMapping,
   addNewColorScheme,
   addNewGraphFile,
+  deleteAnnotationMapping,
+  deleteGraphFile,
+  loadAnnotationMappings,
+  loadColorSchemes,
+  loadFileNames,
+  loadTheme,
+  removeActiveGraphFile,
   removeColorScheme,
   selectGraph,
   selectMapping,
+  setInitGraph,
+  storeAnnotationMappings,
+  storeColorSchemes,
+  storeTheme,
 } from "./components/Other/handleFunctions.js";
+import { useSettings } from "./states.js";
 
 function App() {
-  const [filterSettings, setFilterSettings] = useState({
-    linkThreshold: linkThresholdInit,
-    linkFilter: linkFilterInit,
-    linkFilterText: linkFilterTextInit,
-    nodeFilter: nodeFilterInit,
-    nodeFilterText: nodeFilterTextInit,
-    minCompSize: minCompSizeInit,
-  });
-
-  const [physicsSettings, setPhysicsSettings] = useState({
-    circleLayout: circleLayoutInit,
-    xStrength: xStrengthInit,
-    yStrength: yStrengthInit,
-    componentStrength: componentStrengthInit,
-    nodeRepulsionStrength: nodeRepulsionStrengthInit,
-    linkForce: linkForceInit,
-    linkLength: linkLengthInit,
-    checkBorder: checkBorderInit,
-    borderWidth: borderWidthInit,
-    borderHeight: borderHeightInit,
-  });
+  const { settings, setSettings } = useSettings(); // includes physics, filter and appearance settings
 
   const [reset, setReset] = useState(false); // true indicates that the simulation has to be reloaded
 
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(null); // error gets printed on screen
 
   const [graph, setGraph] = useState(null); // graph without modifications
   const [graphCurrent, setGraphCurrent] = useState(null); // graph with modifications e.g. links filtered by threshold, it also contains the pixi node elements
@@ -94,11 +60,6 @@ function App() {
     downloadPng: null,
     downloadSvg: null,
   });
-
-  const [theme, setTheme] = useState(themeInit);
-
-  const [nodeColorScheme, setNodeColorScheme] = useState(nodeColorSchemeInit);
-  const [linkColorScheme, setLinkColorScheme] = useState(linkColorSchemeInit);
 
   // sets corresponding graph after file selection
   const handleSelectGraph = (filename) => {
@@ -160,64 +121,61 @@ function App() {
     if (!colorSchemeName) return;
     log.info("Deleting color schemes with name", colorSchemeName);
 
-    removeColorScheme(colorSchemes, colorSchemeName, setNodeColorScheme, setLinkColorScheme, setColorSchemes, nodeColorScheme, linkColorScheme);
+    removeColorScheme(
+      colorSchemes,
+      setColorSchemes,
+      colorSchemeName,
+      settings.appearance.nodeColorScheme,
+      settings.appearance.linkColorScheme,
+      setSettings
+    );
   };
 
-  const handleNewMapping = (event) => {
+  // processes new annotation mapping
+  const handleNewAnnotationMapping = (event) => {
     if (!event || !event.target || !event.target.files[0]) return;
     log.info("Processing new Mapping");
 
     const file = event.target.files[0];
     try {
-      addNewAnnotationMapping(file, setUploadedAnnotationMappings);
+      addAnnotationMapping(file, setUploadedAnnotationMappings);
     } catch (error) {
       setError("Error adding annotation mapping");
       log.error("Error adding annotation mapping:", error);
     }
   };
 
+  // disables currently active annotation mapping
   const handleRemoveActiveAnnotationMapping = () => {
+    log.info("Removing currently active annotation mapping");
+
     setActiveAnnotationMapping(null);
     simulationReset();
   };
 
-  const handleDeleteMapping = (mappingName) => {
+  // deletes annotation mapping files
+  const handleDeleteAnnotationMapping = (mappingName) => {
     if (!mappingName) return;
     log.info("Deleting mapping with name", mappingName);
 
-    const updatedMappings = uploadedAnnotationMappings.filter((mapping) => mapping.name !== mappingName);
-    setUploadedAnnotationMappings(updatedMappings);
+    deleteAnnotationMapping(uploadedAnnotationMappings, mappingName, setUploadedAnnotationMappings);
   };
 
   // deletes uploaded files with filename //
-  const handleDeleteFile = (filename) => {
+  const handleDeleteGraphFile = (filename) => {
     if (!filename) return;
     log.info("Deleting files with name", filename);
 
-    const updatedFileNames = uploadedGraphNames.filter((name) => {
-      return name !== filename;
-    });
-
-    setUploadedGraphNames(updatedFileNames);
-    removeFileByNameDB(filename);
+    deleteGraphFile(uploadedGraphNames, filename, setUploadedGraphNames);
   };
 
-  // removes file from currently active files //
-  const handleRemoveActiveFile = (file) => {
-    let stillActive = activeFiles.filter((f) => f !== file);
-    if (stillActive.length === 0) stillActive = [{ name: "ExampleGraph.json", content: exampleGraphJSON }];
+  // removes graph file from currently active files //
+  const handleRemoveActiveGraphFile = (file) => {
+    if (!file || !file.name) return;
+    log.info("removing graph file with name:", file.name);
 
-    // no error handling since these graphs were previously active already
-    let graph = JSON.parse(stillActive[0].content);
-    for (let i = 1; i < stillActive.length; i++) {
-      const newGraph = JSON.parse(stillActive[i].content);
-      graph = joinGraphs(graph, newGraph);
-    }
-
-    setGraph(graph);
-    setActiveFiles(stillActive);
-    simulationReset(); //the simulation has to be reloaded after
-    log.info("Graph loaded successfully:", graph);
+    removeActiveGraphFile(file, activeFiles, setGraph, setActiveFiles);
+    simulationReset();
   };
 
   const handleGraphAbsUploadClick = () => {
@@ -236,33 +194,23 @@ function App() {
     mappingInputRef.current.click();
   };
 
-  const handleAddFileClick = (filename) => {
-    async function fetchAndJoinGraph() {
-      log.info("Fetching graph data");
-      try {
-        const file = await getByNameDB(filename);
-        if (!file) throw new Error(`No file found with the name ${filename}.`);
-        const newGraph = JSON.parse(file.content);
-        if (!newGraph) throw new Error("File format not recognized");
-        //add graph to other graph and then set graph
-        const combinedGraph = joinGraphs(graph, newGraph);
-        setGraph(combinedGraph);
-        setActiveFiles([...activeFiles, file]);
-        simulationReset(); //the simulation has to be reloaded after
-        log.info("Graph loaded successfully:", combinedGraph);
-      } catch (error) {
-        setError("Error loading graph");
-        log.error("Error loading graph:", error);
-        return;
-      }
-    }
-
-    log.info("Adding data to current graph");
-    if (activeFiles.includes(filename)) {
-      log.error("graph already active");
+  const handleAddActiveGraphFileClick = (filename) => {
+    if (!filename) return;
+    if (activeFiles.some((file) => file.name === filename)) {
+      setError("Graph already active");
+      log.error("Graph already active");
       return;
     }
-    fetchAndJoinGraph();
+    log.info("Adding file with name: ", filename);
+
+    try {
+      addActiveGraphFile(filename, setGraph, setActiveFiles, graph);
+      simulationReset();
+    } catch (error) {
+      setError("Error loading graph");
+      log.error("Error loading graph:", error);
+      return;
+    }
   };
 
   // initates reset //
@@ -278,87 +226,63 @@ function App() {
   };
 
   const resetPhysics = () => {
-    resetPhysicsSettings(setPhysicsSettings);
+    resetPhysicsSettings(setSettings);
   };
 
   const resetFilters = () => {
-    resetFilterSettings(setFilterSettings);
+    resetFilterSettings(setSettings);
   };
 
   // select example graph on startup
   useEffect(() => {
-    async function setInitGraph() {
-      log.info("Setting init graph data");
-      try {
-        let file = {
-          name: "ExampleGraph.json",
-          content: exampleGraphJSON,
-        };
-        const newGraph = JSON.parse(file.content);
-        if (!newGraph) throw new Error("File format not recognized");
-        setGraph(newGraph);
-        setActiveFiles([file]);
-        simulationReset(); //the simulation has to be reloaded after
-        log.info("Graph loaded successfully:", newGraph);
-      } catch (error) {
-        setError("Error loading graph");
-        log.error("Error loading graph:", error);
-        return;
-      }
-    }
-
-    setInitGraph();
+    log.info("Setting init graph data");
+    setInitGraph(setGraph, setActiveFiles);
+    simulationReset();
   }, []);
 
   // init uploadedFileNames
   useEffect(() => {
-    async function load() {
-      const filenames = await fromAllGetNameDB();
-      setUploadedGraphNames(filenames);
+    log.info("Loading uploaded files");
+    try {
+      loadFileNames(setUploadedGraphNames);
+    } catch (error) {
+      setError("Error loading files form database");
+      log.error("Error loading files form database");
     }
-
-    load();
   }, []);
 
   // load current theme
   useEffect(() => {
     log.info("Loading Theme");
-    const storedTheme = JSON.parse(localStorage.getItem("theme")) || lightTheme;
-    applyTheme(document, storedTheme.theme);
-    setTheme(storedTheme);
+    loadTheme(setSettings);
   }, []);
 
-  // load mapping files
+  // store current theme //
   useEffect(() => {
-    log.info("Loading mapping files");
-    let mappings = JSON.parse(localStorage.getItem("mappings")) || [];
-    if (mappings.length === 0) mappings = null;
-    log.info("mappings: ", mappings);
-    setUploadedAnnotationMappings(mappings);
+    if (!settings.appearance.theme) return;
+    log.info("Storing theme");
+
+    storeTheme(settings.appearance.theme);
+  }, [settings.appearance.theme]);
+
+  // load uploaded annotation mapping files
+  useEffect(() => {
+    log.info("Loading annotation mapping files");
+    loadAnnotationMappings(setUploadedAnnotationMappings);
   }, []);
 
-  // storing uploaded mapping files //
+  // store uploaded annotation mapping files //
   useEffect(() => {
-    log.info("Storing mapping files", uploadedAnnotationMappings);
+    if (!uploadedAnnotationMappings) return;
+    log.info("Storing mapping files");
 
-    localStorage.setItem("mappings", JSON.stringify(uploadedAnnotationMappings));
+    storeAnnotationMappings(uploadedAnnotationMappings);
   }, [uploadedAnnotationMappings]);
 
-  // storing active mapping file //
-  useEffect(() => {
-    log.info("Storing active annotation mapping", activeAnnotationMapping);
-
-    localStorage.setItem("activeMapping", JSON.stringify(activeAnnotationMapping));
-  }, [activeAnnotationMapping]);
-
-  // load locally stored color schemes //
+  // load uploaded color schemes //
   useEffect(() => {
     log.info("Loading color schemes");
-    let storedSchemes = JSON.parse(localStorage.getItem("colorSchemes")) || [];
-    if (storedSchemes.length === 0) {
-      storedSchemes = defaultColorSchemes;
-    }
-    setColorSchemes(storedSchemes);
+    loadColorSchemes(setColorSchemes);
   }, []);
 
   // storing uploaded color schemes
@@ -366,22 +290,12 @@ function App() {
     if (!colorSchemes) return;
     log.info("Storing uploaded color schemes");
 
-    localStorage.setItem("colorSchemes", JSON.stringify(colorSchemes));
+    storeColorSchemes(colorSchemes);
   }, [colorSchemes]);
-
-  // store theme //
-  useEffect(() => {
-    if (!theme) return;
-    log.info("Storing theme");
-
-    localStorage.setItem("theme", JSON.stringify(theme));
-  }, [theme]);
 
   // forwards graph to forceGraph component //
   useEffect(() => {
-    if (!graph || !activeFiles) {
-      return;
-    }
+    if (!graph || !activeFiles) return;
     log.info("Modifying graph and forwarding it to the simulation component");
 
     let newGraphCurrent = structuredClone(graph);
@@ -397,17 +311,13 @@ function App() {
   }, [graph, activeFiles, activeAnnotationMapping]);
 
   return (
-    <div className={theme.theme}>
+    <div className={settings.appearance.theme.name}>
       <HeaderBar
         download={download}
         setDownload={setDownload}
         handleUploadSchemeClick={handleUploadSchemeClick}
         colorSchemeInputRef={colorSchemeInputRef}
         handleNewScheme={handleNewScheme}
-        nodeColorScheme={nodeColorScheme}
-        setNodeColorScheme={setNodeColorScheme}
-        setLinkColorScheme={setLinkColorScheme}
-        linkColorScheme={linkColorScheme}
         colorSchemes={colorSchemes}
         activeAnnotationMapping={activeAnnotationMapping}
         handleDeleteColorScheme={handleDeleteColorScheme}
@@ -415,26 +325,20 @@ function App() {
         linkAttribsToColorIndices={linkAttribsToColorIndices}
       />
       <Sidebar
-        theme={theme}
-        setTheme={setTheme}
         uploadedFiles={uploadedGraphNames}
         activeFiles={activeFiles}
         handleSelectGraph={handleSelectGraph}
-        handleDeleteFile={handleDeleteFile}
-        handleRemoveActiveFile={handleRemoveActiveFile}
-        handleAddFile={handleAddFileClick}
-        physicsSettings={physicsSettings}
-        setPhysicsSettings={setPhysicsSettings}
-        filterSettings={filterSettings}
-        setFilterSettings={setFilterSettings}
-        handleNewMapping={handleNewMapping}
+        handleDeleteGraphFile={handleDeleteGraphFile}
+        handleRemoveActiveGraphFile={handleRemoveActiveGraphFile}
+        handleAddFile={handleAddActiveGraphFileClick}
+        handleNewAnnotationMapping={handleNewAnnotationMapping}
         mappingInputRef={mappingInputRef}
         handleUploadMappingClick={handleUploadMappingClick}
         activeAnnotationMapping={activeAnnotationMapping}
         handleRemoveActiveAnnotationMapping={handleRemoveActiveAnnotationMapping}
         uploadedMappings={uploadedAnnotationMappings}
         handleAnnotationMappingSelect={handleAnnotationMappingSelect}
-        handleDeleteMapping={handleDeleteMapping}
+        handleDeleteAnnotationMapping={handleDeleteAnnotationMapping}
         handleGraphAbsUploadClick={handleGraphAbsUploadClick}
         handleGraphZeroUploadClick={handleGraphZeroUploadClick}
         handleNewGraphFile={handleNewGraphFile}
@@ -451,13 +355,7 @@ function App() {
           download={download}
           setReset={setReset}
           setError={setError}
-          filterSettings={filterSettings}
           setGraphCurrent={setGraphCurrent}
-          physicsSettings={physicsSettings}
-          setPhysicsSettings={setPhysicsSettings}
-          nodeColorScheme={nodeColorScheme}
-          linkColorScheme={linkColorScheme}
-          theme={theme}
           activeAnnotationMapping={activeAnnotationMapping}
           nodeAttribsToColorIndices={nodeAttribsToColorIndices}
           linkAttribsToColorIndices={linkAttribsToColorIndices}
@@ -466,5 +364,4 @@ function App() {
     </div>
   );
 }
-
 export default App;

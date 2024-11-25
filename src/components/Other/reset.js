@@ -1,10 +1,10 @@
-import log from "../../logger.js";
 import {
   borderHeightInit,
   borderWidthInit,
   checkBorderInit,
   circleLayoutInit,
   componentStrengthInit,
+  gravityAdvancedInit,
   linkFilterInit,
   linkFilterTextInit,
   linkForceInit,
@@ -18,30 +18,38 @@ import {
   yStrengthInit,
 } from "../GraphStuff/graphInitValues.js";
 
-export const resetPhysicsSettings = (setPhysicsSettings) => {
-  setPhysicsSettings((prev) => ({
-    ...prev,
-    linkForce: linkForceInit,
-    linkLength: linkLengthInit,
+export const resetPhysicsSettings = (setSettings) => {
+  setSettings("physics", {
+    circleLayout: circleLayoutInit,
     xStrength: xStrengthInit,
     yStrength: yStrengthInit,
     componentStrength: componentStrengthInit,
     nodeRepulsionStrength: nodeRepulsionStrengthInit,
-    circleLayout: circleLayoutInit,
+    linkForce: linkForceInit,
+    linkLength: linkLengthInit,
     checkBorder: checkBorderInit,
     borderWidth: borderWidthInit,
     borderHeight: borderHeightInit,
-  }));
+    gravityAdvanced: gravityAdvancedInit,
+    linkLengthText: linkLengthInit,
+    borderHeightText: borderHeightInit,
+    borderWidthText: borderWidthInit,
+    xStrengthText: xStrengthInit,
+    yStrengthText: yStrengthInit,
+    componentStrengthText: componentStrengthInit,
+    nodeRepulsionStrengthText: nodeRepulsionStrengthInit,
+  });
 };
 
-export const resetFilterSettings = (setFilterSettings) => {
-  setFilterSettings((prev) => ({
-    ...prev,
+export const resetFilterSettings = (setSettings) => {
+  setSettings("filter", {
     linkThreshold: linkThresholdInit,
-    minCompSize: minCompSizeInit,
     linkFilter: linkFilterInit,
     linkFilterText: linkFilterTextInit,
     nodeFilter: nodeFilterInit,
     nodeFilterText: nodeFilterTextInit,
-  }));
+    minCompSize: minCompSizeInit,
+    linkThresholdText: linkThresholdInit,
+    minCompSizeText: minCompSizeInit,
+  });
 };
