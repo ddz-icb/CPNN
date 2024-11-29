@@ -25,7 +25,7 @@ import { simCircularLayout } from "./simulationHandling.js";
 import { lightTheme, themeInit } from "../Other/appearance.js";
 import { useSettings } from "../../states.js";
 
-export function ForceGraph({ graphCurrent, reset, download, setReset, setError, setGraphCurrent, activeAnnotationMapping }) {
+export function ForceGraph({ graphCurrent, reset, setReset, setError, setGraphCurrent, activeAnnotationMapping }) {
   const { settings, setSettings } = useSettings();
 
   const containerRef = useRef(null);
@@ -224,7 +224,7 @@ export function ForceGraph({ graphCurrent, reset, download, setReset, setError, 
 
   // download graph data as json //
   useEffect(() => {
-    if (download.downloadJson != null && graphCurrent) {
+    if (settings.download.json != null && graphCurrent) {
       try {
         log.info("Downloading graph as JSON");
         downloadGraphJson(graphCurrent, "Graph.json");
@@ -232,12 +232,12 @@ export function ForceGraph({ graphCurrent, reset, download, setReset, setError, 
         log.error("Error downloading the graph as JSON:", error);
       }
     }
-  }, [download.downloadJson]);
+  }, [settings.download.json]);
 
   // download graph as png //
   // <-- put this in app.js? or separate file? -->
   useEffect(() => {
-    if (download.downloadPng != null && graphCurrent) {
+    if (settings.download.png != null && graphCurrent) {
       log.info("Downloading graph as PNG");
 
       changeCircleBorderColor(circles, lightTheme.circleBorderColor);
@@ -246,11 +246,11 @@ export function ForceGraph({ graphCurrent, reset, download, setReset, setError, 
 
       changeCircleBorderColor(circles, settings.appearance.theme.circleBorderColor);
     }
-  }, [download.downloadPng]);
+  }, [settings.download.png]);
 
   // download graph as png //
   useEffect(() => {
-    if (download.downloadSvg != null && graphCurrent) {
+    if (settings.download.svg != null && graphCurrent) {
       log.info("Downloading graph as SVG");
 
       downloadAsSVG(
@@ -264,7 +264,7 @@ export function ForceGraph({ graphCurrent, reset, download, setReset, setError, 
         circleNodeMap
       );
     }
-  }, [download.downloadSvg]);
+  }, [settings.download.svg]);
 
   // switch circle border color //
   useEffect(() => {

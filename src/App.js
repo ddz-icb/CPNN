@@ -51,13 +51,6 @@ function App() {
   const [uploadedGraphNames, setUploadedGraphNames] = useState([]); // names of all files in local storage
   const [colorSchemes, setColorSchemes] = useState(null); // all color schemes in local storage
 
-  const [download, setDownload] = useState({
-    // on state change: indicates graph should be downloaded
-    downloadJson: null,
-    downloadPng: null,
-    downloadSvg: null,
-  });
-
   // sets corresponding graph after file selection
   const handleSelectGraph = (filename) => {
     if (!filename) return;
@@ -217,7 +210,7 @@ function App() {
 
     resetFilters();
     resetPhysics();
-    setDownload((prev) => ({ ...prev, downloadJson: null, downloadPng: null, downloadSvg: null }));
+    setSettings("download", { json: null, png: null, svg: null });
     setError(null);
     setReset(true);
   };
@@ -310,8 +303,6 @@ function App() {
   return (
     <div className={settings.appearance.theme.name}>
       <HeaderBar
-        download={download}
-        setDownload={setDownload}
         handleUploadSchemeClick={handleUploadSchemeClick}
         colorSchemeInputRef={colorSchemeInputRef}
         handleNewScheme={handleNewScheme}
@@ -347,7 +338,6 @@ function App() {
         <ForceGraph
           reset={reset}
           graphCurrent={graphCurrent}
-          download={download}
           setReset={setReset}
           setError={setError}
           setGraphCurrent={setGraphCurrent}

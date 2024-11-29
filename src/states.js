@@ -67,6 +67,12 @@ export const useSettings = create((set) => ({
       linkAttribsToColorIndices: null,
       nodeAttribsToColorIndices: null,
     },
+    download: {
+      // on state change: indicates graph should be downloaded
+      json: null,
+      png: null,
+      svg: null,
+    },
   },
   setSettings: (path, value) =>
     set((state) => {

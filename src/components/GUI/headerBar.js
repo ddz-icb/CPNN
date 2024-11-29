@@ -6,8 +6,6 @@ import { Mapping } from "./headerBarMapping.js";
 import { HeaderBarExport } from "./headerBarExport.js";
 
 export function HeaderBar({
-  download,
-  setDownload,
   handleUploadSchemeClick,
   colorSchemeInputRef,
   handleNewScheme,
@@ -37,7 +35,7 @@ export function HeaderBar({
         activeMenu={activeMenu}
         handleActiveMenuClick={handleActiveMenuClick}
       />
-      <HeaderBarExport download={download} setDownload={setDownload} activeMenu={activeMenu} handleActiveMenuClick={handleActiveMenuClick} />
+      <HeaderBarExport activeMenu={activeMenu} handleActiveMenuClick={handleActiveMenuClick} />
     </div>
   );
 }
