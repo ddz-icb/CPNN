@@ -6,7 +6,7 @@ import { fallbackColor, getColor } from "../Other/draw.js";
 
 import { Button } from "./headerBar.js";
 
-export function Mapping({ mapping, activeMenu, handleActiveMenuClick, nodeAttribsToColorIndices, linkAttribsToColorIndices }) {
+export function Mapping({ mapping, activeMenu, handleActiveMenuClick }) {
   const { settings, setSettings } = useSettings();
   let content = null;
 
@@ -23,17 +23,17 @@ export function Mapping({ mapping, activeMenu, handleActiveMenuClick, nodeAttrib
     );
   } else if (activeMenu === "Mapping") {
     let nodeContent = [];
-    for (const key in nodeAttribsToColorIndices) {
+    for (const key in settings.appearance.nodeAttribsToColorIndices) {
       if (
-        nodeAttribsToColorIndices.hasOwnProperty(key) &&
-        getColor(nodeAttribsToColorIndices[key], settings.appearance.nodeColorScheme.colorScheme) !== fallbackColor
+        settings.appearance.nodeAttribsToColorIndices.hasOwnProperty(key) &&
+        getColor(settings.appearance.nodeAttribsToColorIndices[key], settings.appearance.nodeColorScheme.colorScheme) !== fallbackColor
       ) {
         nodeContent.push(
           <div key={key} className="colorscheme-container">
             <div
               className="color-square colorscheme-item"
               style={{
-                backgroundColor: getColor(nodeAttribsToColorIndices[key], settings.appearance.nodeColorScheme.colorScheme),
+                backgroundColor: getColor(settings.appearance.nodeAttribsToColorIndices[key], settings.appearance.nodeColorScheme.colorScheme),
               }}
             ></div>
             {mapping && mapping.groupMapping && mapping.groupMapping.hasOwnProperty(key) ? (
@@ -58,17 +58,17 @@ export function Mapping({ mapping, activeMenu, handleActiveMenuClick, nodeAttrib
     );
 
     let linkContent = [];
-    for (const key in linkAttribsToColorIndices) {
+    for (const key in settings.appearance.linkAttribsToColorIndices) {
       if (
-        linkAttribsToColorIndices.hasOwnProperty(key) &&
-        getColor(linkAttribsToColorIndices[key], settings.appearance.linkColorScheme.colorScheme) !== fallbackColor
+        settings.appearance.linkAttribsToColorIndices.hasOwnProperty(key) &&
+        getColor(settings.appearance.linkAttribsToColorIndices[key], settings.appearance.linkColorScheme.colorScheme) !== fallbackColor
       ) {
         linkContent.push(
           <div key={key} className="colorscheme-container">
             <div
               className="color-square colorscheme-item"
               style={{
-                backgroundColor: getColor(linkAttribsToColorIndices[key], settings.appearance.linkColorScheme.colorScheme),
+                backgroundColor: getColor(settings.appearance.linkAttribsToColorIndices[key], settings.appearance.linkColorScheme.colorScheme),
               }}
             ></div>
             <span className="colorscheme-item">{key}</span>

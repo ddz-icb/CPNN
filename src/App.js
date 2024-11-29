@@ -51,9 +51,6 @@ function App() {
   const [uploadedGraphNames, setUploadedGraphNames] = useState([]); // names of all files in local storage
   const [colorSchemes, setColorSchemes] = useState(null); // all color schemes in local storage
 
-  const [nodeAttribsToColorIndices, setNodeAttribsToColorIndices] = useState(null); // mapping of the node attributes to color indices
-  const [linkAttribsToColorIndices, setLinkAttribsToColorIndices] = useState(null); // mapping of the link attributes to color indices
-
   const [download, setDownload] = useState({
     // on state change: indicates graph should be downloaded
     downloadJson: null,
@@ -302,10 +299,10 @@ function App() {
     newGraphCurrent = applyNodeMapping(newGraphCurrent, activeAnnotationMapping);
 
     const nodeAttribsToColorIndices = getNodeAttribsToColorIndices(newGraphCurrent);
-    setNodeAttribsToColorIndices(nodeAttribsToColorIndices);
+    setSettings("appearance.nodeAttribsToColorIndices", nodeAttribsToColorIndices);
 
     const linkAttribsToColorIndices = getLinkAttribsToColorIndices(newGraphCurrent);
-    setLinkAttribsToColorIndices(linkAttribsToColorIndices);
+    setSettings("appearance.linkAttribsToColorIndices", linkAttribsToColorIndices);
 
     setGraphCurrent(newGraphCurrent);
   }, [graph, activeFiles, activeAnnotationMapping]);
@@ -321,8 +318,6 @@ function App() {
         colorSchemes={colorSchemes}
         activeAnnotationMapping={activeAnnotationMapping}
         handleDeleteColorScheme={handleDeleteColorScheme}
-        nodeAttribsToColorIndices={nodeAttribsToColorIndices}
-        linkAttribsToColorIndices={linkAttribsToColorIndices}
       />
       <Sidebar
         uploadedFiles={uploadedGraphNames}
@@ -357,8 +352,6 @@ function App() {
           setError={setError}
           setGraphCurrent={setGraphCurrent}
           activeAnnotationMapping={activeAnnotationMapping}
-          nodeAttribsToColorIndices={nodeAttribsToColorIndices}
-          linkAttribsToColorIndices={linkAttribsToColorIndices}
         />
       </main>
     </div>

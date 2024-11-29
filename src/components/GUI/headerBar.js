@@ -14,8 +14,6 @@ export function HeaderBar({
   colorSchemes,
   activeAnnotationMapping,
   handleDeleteColorScheme,
-  nodeAttribsToColorIndices,
-  linkAttribsToColorIndices,
 }) {
   const [activeMenu, setActiveMenu] = useState("None");
 
@@ -29,13 +27,7 @@ export function HeaderBar({
 
   return (
     <div className="top-right-buttons">
-      <Mapping
-        mapping={activeAnnotationMapping}
-        activeMenu={activeMenu}
-        handleActiveMenuClick={handleActiveMenuClick}
-        nodeAttribsToColorIndices={nodeAttribsToColorIndices}
-        linkAttribsToColorIndices={linkAttribsToColorIndices}
-      />
+      <Mapping mapping={activeAnnotationMapping} activeMenu={activeMenu} handleActiveMenuClick={handleActiveMenuClick} />
       <Colors
         handleUploadSchemeClick={handleUploadSchemeClick}
         colorSchemeInputRef={colorSchemeInputRef}

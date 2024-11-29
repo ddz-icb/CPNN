@@ -25,17 +25,7 @@ import { simCircularLayout } from "./simulationHandling.js";
 import { lightTheme, themeInit } from "../Other/appearance.js";
 import { useSettings } from "../../states.js";
 
-export function ForceGraph({
-  graphCurrent,
-  reset,
-  download,
-  setReset,
-  setError,
-  setGraphCurrent,
-  activeAnnotationMapping,
-  nodeAttribsToColorIndices,
-  linkAttribsToColorIndices,
-}) {
+export function ForceGraph({ graphCurrent, reset, download, setReset, setError, setGraphCurrent, activeAnnotationMapping }) {
   const { settings, setSettings } = useSettings();
 
   const containerRef = useRef(null);
@@ -157,7 +147,7 @@ export function ForceGraph({
         node,
         settings.appearance.theme.circleBorderColor,
         settings.appearance.nodeColorScheme.colorScheme,
-        nodeAttribsToColorIndices
+        settings.appearance.nodeAttribsToColorIndices
       );
       circle.id = node.id;
       circle.interactive = true;
@@ -267,10 +257,10 @@ export function ForceGraph({
         document,
         graphCurrent,
         settings.appearance.linkColorScheme,
-        linkAttribsToColorIndices,
+        settings.appearance.linkAttribsToColorIndices,
         themeInit.circleBorderColor,
         settings.appearance.nodeColorScheme,
-        nodeAttribsToColorIndices,
+        settings.appearance.nodeAttribsToColorIndices,
         circleNodeMap
       );
     }
@@ -294,7 +284,7 @@ export function ForceGraph({
       circleNodeMap,
       settings.appearance.theme.circleBorderColor,
       settings.appearance.nodeColorScheme.colorScheme,
-      nodeAttribsToColorIndices
+      settings.appearance.nodeAttribsToColorIndices
     );
   }, [settings.appearance.nodeColorScheme]);
 
@@ -528,7 +518,7 @@ export function ForceGraph({
     lines.clear();
 
     for (const link of graph.links) {
-      drawLine(lines, link, linkColorScheme.colorScheme, linkAttribsToColorIndices);
+      drawLine(lines, link, linkColorScheme.colorScheme, settings.appearance.linkAttribsToColorIndices);
     }
 
     app.renderer.render(app.stage);

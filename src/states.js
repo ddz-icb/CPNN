@@ -64,9 +64,8 @@ export const useSettings = create((set) => ({
       theme: themeInit,
       nodeColorScheme: nodeColorSchemeInit,
       linkColorScheme: linkColorSchemeInit,
-
-      // linksAttribsToColorIndices:
-      // nodeAttribsToColorIndices:
+      linkAttribsToColorIndices: null,
+      nodeAttribsToColorIndices: null,
     },
   },
   setSettings: (path, value) =>
