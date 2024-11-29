@@ -27,12 +27,13 @@ import {
   storeColorSchemes,
   storeTheme,
 } from "./components/Other/handleFunctions.js";
-import { useSettings } from "./states.js";
+import { useInputRefs, useSettings } from "./states.js";
 
 function App() {
   const { settings, setSettings } = useSettings(); // includes physics, filter and appearance settings
+  const { inputRefs, setInputRefs } = useInputRefs(); // references to new input files
 
-  const [reset, setReset] = useState(false); // true indicates that the simulation has to be reloaded
+  const [reset, setReset] = useState(false); // true indicates that the simulation (in forceGraph.js) has to be reloaded
 
   const [error, setError] = useState(null); // error gets printed on screen
 
@@ -41,11 +42,6 @@ function App() {
 
   const [activeAnnotationMapping, setActiveAnnotationMapping] = useState(null); // active node annotation mapping
   const [uploadedAnnotationMappings, setUploadedAnnotationMappings] = useState(null); // uploaded node attribute mappings
-
-  const graphAbsInputRef = useRef(null); // reference to newly selected graph (link weights should be interpreted as absolute values)
-  const graphZeroInputRef = useRef(null); // reference to newly selected graph (negative link weights should be interpreted as 0)
-  const colorSchemeInputRef = useRef(null); // reference to newly selected color scheme
-  const mappingInputRef = useRef(null); // reference to newly selected mapping
 
   const [activeFiles, setActiveFiles] = useState(null); // currently active files
   const [uploadedGraphNames, setUploadedGraphNames] = useState([]); // names of all files in local storage
@@ -169,19 +165,19 @@ function App() {
   };
 
   const handleGraphAbsUploadClick = () => {
-    graphAbsInputRef.current.click();
+    inputRefs.graphAbs.current.click();
   };
 
   const handleGraphZeroUploadClick = () => {
-    graphZeroInputRef.current.click();
+    inputRefs.graphZero.current.click();
   };
 
   const handleUploadSchemeClick = () => {
-    colorSchemeInputRef.current.click();
+    inputRefs.colorScheme.current.click();
   };
 
   const handleUploadMappingClick = () => {
-    mappingInputRef.current.click();
+    inputRefs.annotationMapping.current.click();
   };
 
   const handleAddActiveGraphFileClick = (filename) => {
@@ -304,11 +300,10 @@ function App() {
     <div className={settings.appearance.theme.name}>
       <HeaderBar
         handleUploadSchemeClick={handleUploadSchemeClick}
-        colorSchemeInputRef={colorSchemeInputRef}
+        handleDeleteColorScheme={handleDeleteColorScheme}
         handleNewScheme={handleNewScheme}
         colorSchemes={colorSchemes}
         activeAnnotationMapping={activeAnnotationMapping}
-        handleDeleteColorScheme={handleDeleteColorScheme}
       />
       <Sidebar
         uploadedFiles={uploadedGraphNames}
@@ -318,7 +313,6 @@ function App() {
         handleRemoveActiveGraphFile={handleRemoveActiveGraphFile}
         handleAddFile={handleAddActiveGraphFileClick}
         handleNewAnnotationMapping={handleNewAnnotationMapping}
-        mappingInputRef={mappingInputRef}
         handleUploadMappingClick={handleUploadMappingClick}
         activeAnnotationMapping={activeAnnotationMapping}
         handleRemoveActiveAnnotationMapping={handleRemoveActiveAnnotationMapping}
@@ -330,8 +324,6 @@ function App() {
         handleNewGraphFile={handleNewGraphFile}
         resetPhysics={resetPhysics}
         resetFilters={resetFilters}
-        graphAbsInputRef={graphAbsInputRef}
-        graphZeroInputRef={graphZeroInputRef}
       />
       <main>
         {error && <div className="errorStyle">{error}</div>}

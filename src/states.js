@@ -81,3 +81,18 @@ export const useSettings = create((set) => ({
       return { settings: updatedSettings };
     }),
 }));
+
+export const useInputRefs = create((set) => ({
+  inputRefs: {
+    graphAbs: null, // reference to newly selected graph (link weights should be interpreted as absolute values)
+    graphZero: null, // reference to newly selected graph (negative link weights should be interpreted as 0)
+    colorScheme: null, // reference to newly selected color scheme
+    annotationMapping: null, // reference to newly selected mapping
+  },
+  setInputRefs: (path, value) =>
+    set((state) => {
+      const updatedRefs = { ...state.inputRefs };
+      setNestedValue(updatedRefs, path, value);
+      return { inputRefs: updatedRefs };
+    }),
+}));

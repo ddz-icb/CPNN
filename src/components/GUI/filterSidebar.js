@@ -10,8 +10,6 @@ import "../Other/syntaxHighlighting.js";
 import { parseAttributesFilter } from "../Other/parser.js";
 import { parseGroupsFilter } from "../Other/parserNodeFilter.js";
 
-import { linkThresholdInit, minCompSizeInit } from "../GraphStuff/graphInitValues.js";
-
 import { SidebarButtonRect, SidebarCodeEditorBlock, SidebarFieldBlock, SidebarSliderBlock } from "./sidebar.js";
 import { useSettings } from "../../states.js";
 
