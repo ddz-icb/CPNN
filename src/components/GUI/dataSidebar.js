@@ -16,25 +16,16 @@ export function DataSidebar({
   handleDeleteGraphFile,
   handleAddFile,
   handleNewAnnotationMapping,
-  handleUploadMappingClick,
   activeAnnotationMapping,
   handleRemoveActiveAnnotationMapping,
   uploadedMappings,
   handleAnnotationMappingSelect,
   handleDeleteAnnotationMapping,
-  handleGraphAbsUploadClick,
-  handleGraphZeroUploadClick,
   handleNewGraphFile,
 }) {
   return (
     <>
-      <TopDataButtons
-        handleGraphAbsUploadClick={handleGraphAbsUploadClick}
-        handleGraphZeroUploadClick={handleGraphZeroUploadClick}
-        handleNewGraphFile={handleNewGraphFile}
-        handleNewAnnotationMapping={handleNewAnnotationMapping}
-        handleUploadMappingClick={handleUploadMappingClick}
-      />
+      <TopDataButtons handleNewGraphFile={handleNewGraphFile} handleNewAnnotationMapping={handleNewAnnotationMapping} />
       <ActiveFiles activeFiles={activeFiles} handleRemoveActiveGraphFile={handleRemoveActiveGraphFile} />
       <UploadedFiles
         uploadedFiles={uploadedFiles}
@@ -196,13 +187,7 @@ function ActiveAnnotationMapping({ activeAnnotationMapping, handleRemoveActiveAn
   );
 }
 
-export function TopDataButtons({
-  handleGraphAbsUploadClick,
-  handleGraphZeroUploadClick,
-  handleNewGraphFile,
-  handleUploadMappingClick,
-  handleNewAnnotationMapping,
-}) {
+export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping }) {
   const { inputRefs, setInputRefs } = useInputRefs();
 
   const annotationMappingRef = useRef(null);
@@ -226,6 +211,18 @@ export function TopDataButtons({
   useEffect(() => {
     setInputRefs("graphZero", graphZeroRef);
   }, []);
+
+  const handleGraphAbsUploadClick = () => {
+    inputRefs.graphAbs.current.click();
+  };
+
+  const handleGraphZeroUploadClick = () => {
+    inputRefs.graphZero.current.click();
+  };
+
+  const handleUploadMappingClick = () => {
+    inputRefs.annotationMapping.current.click();
+  };
 
   let content = null;
 

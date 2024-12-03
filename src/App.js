@@ -164,22 +164,6 @@ function App() {
     simulationReset();
   };
 
-  const handleGraphAbsUploadClick = () => {
-    inputRefs.graphAbs.current.click();
-  };
-
-  const handleGraphZeroUploadClick = () => {
-    inputRefs.graphZero.current.click();
-  };
-
-  const handleUploadSchemeClick = () => {
-    inputRefs.colorScheme.current.click();
-  };
-
-  const handleUploadMappingClick = () => {
-    inputRefs.annotationMapping.current.click();
-  };
-
   const handleAddActiveGraphFileClick = (filename) => {
     if (!filename) return;
     if (activeFiles.some((file) => file.name === filename)) {
@@ -299,7 +283,6 @@ function App() {
   return (
     <div className={settings.appearance.theme.name}>
       <HeaderBar
-        handleUploadSchemeClick={handleUploadSchemeClick}
         handleDeleteColorScheme={handleDeleteColorScheme}
         handleNewScheme={handleNewScheme}
         colorSchemes={colorSchemes}
@@ -313,14 +296,11 @@ function App() {
         handleRemoveActiveGraphFile={handleRemoveActiveGraphFile}
         handleAddFile={handleAddActiveGraphFileClick}
         handleNewAnnotationMapping={handleNewAnnotationMapping}
-        handleUploadMappingClick={handleUploadMappingClick}
         activeAnnotationMapping={activeAnnotationMapping}
         handleRemoveActiveAnnotationMapping={handleRemoveActiveAnnotationMapping}
         uploadedMappings={uploadedAnnotationMappings}
         handleAnnotationMappingSelect={handleAnnotationMappingSelect}
         handleDeleteAnnotationMapping={handleDeleteAnnotationMapping}
-        handleGraphAbsUploadClick={handleGraphAbsUploadClick}
-        handleGraphZeroUploadClick={handleGraphZeroUploadClick}
         handleNewGraphFile={handleNewGraphFile}
         resetPhysics={resetPhysics}
         resetFilters={resetFilters}

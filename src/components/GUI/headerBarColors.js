@@ -9,7 +9,7 @@ import isEqual from "lodash/isEqual.js";
 import { Button, Item, UploadItem } from "./headerBar.js";
 import { useInputRefs, useSettings } from "../../states.js";
 
-export function Colors({ handleUploadSchemeClick, handleNewScheme, colorSchemes, handleDeleteColorScheme, activeMenu, handleActiveMenuClick }) {
+export function Colors({ handleNewScheme, colorSchemes, handleDeleteColorScheme, activeMenu, handleActiveMenuClick }) {
   const { settings, setSettings } = useSettings();
   const { inputRefs, setInputRefs } = useInputRefs();
 
@@ -20,6 +20,10 @@ export function Colors({ handleUploadSchemeClick, handleNewScheme, colorSchemes,
   useEffect(() => {
     setInputRefs("colorScheme", colorSchemeRef);
   }, []);
+
+  const handleUploadSchemeClick = () => {
+    inputRefs.colorScheme.current.click();
+  };
 
   if (activeMenu !== "ManageColorScheme" && activeMenu !== "ChooseColorScheme") {
     content = (

@@ -16,14 +16,11 @@ export function Sidebar({
   handleRemoveActiveGraphFile,
   handleAddFile,
   handleNewAnnotationMapping,
-  handleUploadMappingClick,
   activeAnnotationMapping,
   handleRemoveActiveAnnotationMapping,
   uploadedMappings,
   handleAnnotationMappingSelect,
   handleDeleteAnnotationMapping,
-  handleGraphAbsUploadClick,
-  handleGraphZeroUploadClick,
   handleNewGraphFile,
   resetPhysics,
   resetFilters,
@@ -57,14 +54,11 @@ export function Sidebar({
           handleDeleteGraphFile={handleDeleteGraphFile}
           handleAddFile={handleAddFile}
           handleNewAnnotationMapping={handleNewAnnotationMapping}
-          handleUploadMappingClick={handleUploadMappingClick}
           activeAnnotationMapping={activeAnnotationMapping}
           handleRemoveActiveAnnotationMapping={handleRemoveActiveAnnotationMapping}
           uploadedMappings={uploadedMappings}
           handleAnnotationMappingSelect={handleAnnotationMappingSelect}
           handleDeleteAnnotationMapping={handleDeleteAnnotationMapping}
-          handleGraphAbsUploadClick={handleGraphAbsUploadClick}
-          handleGraphZeroUploadClick={handleGraphZeroUploadClick}
           handleNewGraphFile={handleNewGraphFile}
         />
       </Navbar>
