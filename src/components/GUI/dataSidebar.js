@@ -5,7 +5,6 @@ import { Tooltip } from "react-tooltip";
 import { useEffect, useRef, useState } from "react";
 
 import { SidebarButtonRect, SidebarDropdownItem } from "./sidebar.js";
-import { useInputRefs } from "../../states.js";
 import log from "../../logger.js";
 
 export function DataSidebar({
@@ -188,8 +187,6 @@ function ActiveAnnotationMapping({ activeAnnotationMapping, handleRemoveActiveAn
 }
 
 export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping }) {
-  const { inputRefs, setInputRefs } = useInputRefs();
-
   const annotationMappingRef = useRef(null);
   const graphAbsRef = useRef(null);
   const graphZeroRef = useRef(null);
@@ -200,28 +197,16 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
     setDropdownActive(!dropdownActive);
   };
 
-  useEffect(() => {
-    setInputRefs("annotationMapping", annotationMappingRef);
-  }, []);
-
-  useEffect(() => {
-    setInputRefs("graphAbs", graphAbsRef);
-  }, []);
-
-  useEffect(() => {
-    setInputRefs("graphZero", graphZeroRef);
-  }, []);
-
   const handleGraphAbsUploadClick = () => {
-    inputRefs.graphAbs.current.click();
+    graphAbsRef.current.click();
   };
 
   const handleGraphZeroUploadClick = () => {
-    inputRefs.graphZero.current.click();
+    graphZeroRef.current.click();
   };
 
   const handleUploadMappingClick = () => {
-    inputRefs.annotationMapping.current.click();
+    annotationMappingRef.current.click();
   };
 
   let content = null;

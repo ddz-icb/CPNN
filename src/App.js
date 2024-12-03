@@ -27,11 +27,10 @@ import {
   storeColorSchemes,
   storeTheme,
 } from "./components/Other/handleFunctions.js";
-import { useInputRefs, useSettings } from "./states.js";
+import { useSettings } from "./states.js";
 
 function App() {
   const { settings, setSettings } = useSettings(); // includes physics, filter and appearance settings
-  const { inputRefs, setInputRefs } = useInputRefs(); // references to new input files
 
   const [reset, setReset] = useState(false); // true indicates that the simulation (in forceGraph.js) has to be reloaded
 
@@ -164,7 +163,7 @@ function App() {
     simulationReset();
   };
 
-  const handleAddActiveGraphFileClick = (filename) => {
+  const handleAddActiveGraphFile = (filename) => {
     if (!filename) return;
     if (activeFiles.some((file) => file.name === filename)) {
       setError("Graph already active");
@@ -294,7 +293,7 @@ function App() {
         handleSelectGraph={handleSelectGraph}
         handleDeleteGraphFile={handleDeleteGraphFile}
         handleRemoveActiveGraphFile={handleRemoveActiveGraphFile}
-        handleAddFile={handleAddActiveGraphFileClick}
+        handleAddFile={handleAddActiveGraphFile}
         handleNewAnnotationMapping={handleNewAnnotationMapping}
         activeAnnotationMapping={activeAnnotationMapping}
         handleRemoveActiveAnnotationMapping={handleRemoveActiveAnnotationMapping}

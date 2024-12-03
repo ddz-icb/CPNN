@@ -7,22 +7,17 @@ import React, { useEffect, useRef, useState } from "react";
 import isEqual from "lodash/isEqual.js";
 
 import { Button, Item, UploadItem } from "./headerBar.js";
-import { useInputRefs, useSettings } from "../../states.js";
+import { useSettings } from "../../states.js";
 
 export function Colors({ handleNewScheme, colorSchemes, handleDeleteColorScheme, activeMenu, handleActiveMenuClick }) {
   const { settings, setSettings } = useSettings();
-  const { inputRefs, setInputRefs } = useInputRefs();
 
   const colorSchemeRef = useRef(null);
 
   let content = null;
 
-  useEffect(() => {
-    setInputRefs("colorScheme", colorSchemeRef);
-  }, []);
-
   const handleUploadSchemeClick = () => {
-    inputRefs.colorScheme.current.click();
+    colorSchemeRef.current.click();
   };
 
   if (activeMenu !== "ManageColorScheme" && activeMenu !== "ChooseColorScheme") {
