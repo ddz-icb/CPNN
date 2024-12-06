@@ -14,19 +14,12 @@ export function Tooltips({
   isHoverTooltipActive,
   setIsHoverTooltipActive,
   hoverTooltipData,
-  setNodeToDelete,
   mapping,
 }) {
   return (
     <>
       {isClickTooltipActive && (
-        <ClickTooltip
-          isActive={isClickTooltipActive}
-          setIsActive={setIsClickTooltipActive}
-          data={clickTooltipData}
-          setNodeToDelete={setNodeToDelete}
-          mapping={mapping}
-        />
+        <ClickTooltip isActive={isClickTooltipActive} setIsActive={setIsClickTooltipActive} data={clickTooltipData} mapping={mapping} />
       )}
       {!isClickTooltipActive && isHoverTooltipActive && (
         <HoverTooltip isActive={isHoverTooltipActive} setIsActive={setIsHoverTooltipActive} data={hoverTooltipData} />
@@ -35,7 +28,7 @@ export function Tooltips({
   );
 }
 
-export function ClickTooltip({ isActive, setIsActive, data, setNodeToDelete, mapping }) {
+export function ClickTooltip({ isActive, setIsActive, data, mapping }) {
   const { settings, setSettings } = useSettings();
 
   const [fullName, setFullName] = useState("");
@@ -144,10 +137,6 @@ export function ClickTooltip({ isActive, setIsActive, data, setNodeToDelete, map
     setIsActive(false);
   };
 
-  const handleDeleteNode = () => {
-    setNodeToDelete(data.node);
-  };
-
   let groupContent = [];
   if (mapping && mapping.groupMapping && data.nodeGroups[0]) {
     data.nodeGroups.forEach((group) => {
@@ -239,10 +228,6 @@ export function ClickTooltip({ isActive, setIsActive, data, setNodeToDelete, map
               To RCSB PDB
             </a>
           )}
-
-          <span className="tooltip-footer-item tooltip-button" onClick={handleDeleteNode}>
-            <TrashIcon />
-          </span>
         </div>
       </div>
     </div>

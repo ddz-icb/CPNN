@@ -40,18 +40,18 @@ export function ForceGraph({ graphCurrent, reset, setReset, setError, setGraphCu
   const [linksStored, setLinksStored] = useState(false);
   const [nodesStored, setNodesStored] = useState(false);
 
+  const [filteredAfterStart, setFilteredAfterStart] = useState(false);
+
   // these variables contain the default values for the nodes
   const [allLinks, setAllLinks] = useState(null);
   const [allNodes, setAllNodes] = useState(null);
 
-  const [filteredAfterStart, setFilteredAfterStart] = useState(false);
+  // mapping from circles to nodes
+  const [circleNodeMap, setCircleNodeMap] = useState(null);
 
   // these are the PIXI containers for drawing
-  const [circleNodeMap, setCircleNodeMap] = useState(null);
   const [circles, setCircles] = useState(null);
   const [lines, setLines] = useState(null);
-
-  const [nodeToDelete, setNodeToDelete] = useState(null);
 
   // tooltip stuff
   const [isClickTooltipActive, setIsClickTooltipActive] = useState(false);
@@ -492,27 +492,6 @@ export function ForceGraph({ graphCurrent, reset, setReset, setError, setGraphCu
     simCircularLayout(graphCurrent, simulation);
   }, [settings.physics.circleLayout, graphCurrent]);
 
-  // remove node
-  useEffect(() => {
-    if (!nodeToDelete || !graphCurrent) return;
-    log.info("Deleting node", nodeToDelete);
-
-    let filteredGraph = {
-      ...graphCurrent,
-    };
-
-    filteredGraph = deleteNode(filteredGraph, circles, nodeToDelete);
-
-    filteredGraph = filterNodesExist(filteredGraph);
-
-    filterActiveCircles(circles, filteredGraph, circleNodeMap);
-    setGraphCurrent(filteredGraph);
-
-    setNodeToDelete(null);
-    setIsClickTooltipActive(false);
-    setClickTooltipData(null);
-  }, [nodeToDelete]);
-
   // redraw runs while the simulation is active //
   function redraw(graph, linkColorScheme) {
     lines.clear();
@@ -538,7 +517,6 @@ export function ForceGraph({ graphCurrent, reset, setReset, setError, setGraphCu
         isHoverTooltipActive={isHoverTooltipActive}
         setIsHoverTooltipActive={setIsHoverTooltipActive}
         hoverTooltipData={hoverTooltipData}
-        setNodeToDelete={setNodeToDelete}
         mapping={activeAnnotationMapping}
       />
       <div ref={containerRef} className="container" />
