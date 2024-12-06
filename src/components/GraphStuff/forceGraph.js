@@ -15,15 +15,15 @@ import {
   filterMinCompSize,
   filterByAttribs,
   returnComponentData,
-  deleteNode,
   filterNodes,
   filterActiveCircles,
+  returnAdjacentData,
 } from "./graphCalculations.js";
 import { downloadAsPNG, downloadAsSVG, downloadGraphJson } from "./download.js";
-import { getSimulation, borderCheck, componentForce, nodeRepulsionMultiplier } from "./graphPhysics.js";
-import { simCircularLayout } from "./simulationHandling.js";
+import { getSimulation, borderCheck, componentForce, nodeRepulsionMultiplier, circularLayout } from "./graphPhysics.js";
 import { lightTheme, themeInit } from "../Other/appearance.js";
 import { useSettings } from "../../states.js";
+import { SettingControl } from "./settingControl.js";
 
 export function ForceGraph({ graphCurrent, reset, setReset, setError, setGraphCurrent, activeAnnotationMapping }) {
   const { settings, setSettings } = useSettings();
@@ -182,7 +182,7 @@ export function ForceGraph({ graphCurrent, reset, setReset, setError, setGraphCu
     initDragAndZoom(app, newSimulation, radius, setIsClickTooltipActive, setIsHoverTooltipActive, width, height);
 
     setSimulation(newSimulation);
-  }, [app, graphCurrent, settings.physics.linkLength]);
+  }, [app, graphCurrent]);
 
   // running simulation //
   useEffect(() => {
@@ -489,7 +489,12 @@ export function ForceGraph({ graphCurrent, reset, setReset, setError, setGraphCu
     // have to disable link force for this
     setSettings("physics.linkForce", false);
 
-    simCircularLayout(graphCurrent, simulation);
+    const [componentArray, componentSizeArray] = returnComponentData(graphCurrent);
+    const adjacentCountMap = returnAdjacentData(graphCurrent);
+    const minCircleSize = 6;
+
+    simulation.force("circleLayout", circularLayout(componentArray, adjacentCountMap, minCircleSize));
+    simulation.alpha(1).restart();
   }, [settings.physics.circleLayout, graphCurrent]);
 
   // redraw runs while the simulation is active //
@@ -519,6 +524,7 @@ export function ForceGraph({ graphCurrent, reset, setReset, setError, setGraphCu
         hoverTooltipData={hoverTooltipData}
         mapping={activeAnnotationMapping}
       />
+      <SettingControl />
       <div ref={containerRef} className="container" />
     </>
   );
