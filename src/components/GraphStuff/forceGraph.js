@@ -8,17 +8,17 @@ import { handleResize, initDragAndZoom } from "../Other/interactiveCanvas.js";
 import { initTooltips, Tooltips } from "../Other/toolTipCanvas.js";
 import { radius, drawCircle, drawLine } from "../Other/draw.js";
 import { getSimulation } from "./graphPhysics.js";
-import { useSettings, useTooltipSettings } from "../../states.js";
+import { useGraphSettings, useSettings, useTooltipSettings } from "../../states.js";
 import { SettingControl } from "./settingControl.js";
 
 export function ForceGraph({ graphCurrent, reset, setReset, setError, setGraphCurrent, activeAnnotationMapping }) {
   const { settings, setSettings } = useSettings();
   const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
+  const { graphSettings, setGraphSettings } = useGraphSettings();
 
-  const containerRef = useRef(null);
+  ///////////////////////// NEXT: ALLE UNTEN EINGEBOXTEN VARIABLEN IN GRAPHSETTINGS ALS GLOBALE VARIABLE DEFINIEREN (SIE ZEILE HIERDRÜBER)
 
-  const [app, setApp] = useState(null);
-  const [simulation, setSimulation] = useState(null);
+  // + GRAPHCURRENT
 
   // these indicate whether allLinks or allNodes respectfully are already stored
   const [linksStored, setLinksStored] = useState(false);
@@ -37,6 +37,12 @@ export function ForceGraph({ graphCurrent, reset, setReset, setError, setGraphCu
   const [circles, setCircles] = useState(null);
   const [lines, setLines] = useState(null);
 
+  /////////////////////////
+
+  const containerRef = useRef(null);
+
+  const [app, setApp] = useState(null);
+  const [simulation, setSimulation] = useState(null);
   // reset simulation //
   useEffect(() => {
     if (!reset) return;

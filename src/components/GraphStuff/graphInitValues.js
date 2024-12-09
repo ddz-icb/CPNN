@@ -10,7 +10,7 @@ export const linkLengthInit = 70;
 export const xStrengthInit = 0.05;
 export const yStrengthInit = 0.05;
 export const componentStrengthInit = 0;
-export const nodeRepulsionStrengthInit = 5;
+export const nodeRepulsionStrengthInit = 1;
 export const circleLayoutInit = false;
 
 export const checkBorderInit = false;

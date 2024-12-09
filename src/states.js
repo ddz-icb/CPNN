@@ -100,3 +100,13 @@ export const useTooltipSettings = create((set) => ({
       return { tooltipSettings: updatedTooltipSettings };
     }),
 }));
+
+export const useGraphSettings = create((set) => ({
+  graphSettings: {},
+  setGraphSettings: (path, value) =>
+    set((state) => {
+      const updatedGraphSettings = { ...state.graphSettings };
+      setNestedValue(updatedGraphSettings, path, value);
+      return { graphSettings: updatedGraphSettings };
+    }),
+}));
