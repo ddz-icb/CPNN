@@ -17,9 +17,6 @@ export function ForceGraph({ graphCurrent, reset, setReset, setError, setGraphCu
 
   const containerRef = useRef(null);
 
-  const [height, setHeight] = useState(null);
-  const [width, setWidth] = useState(null);
-
   const [app, setApp] = useState(null);
   const [simulation, setSimulation] = useState(null);
 
@@ -79,8 +76,9 @@ export function ForceGraph({ graphCurrent, reset, setReset, setError, setGraphCu
     const containerRect = containerRef.current.getBoundingClientRect();
     const height = containerRect.height;
     const width = containerRect.width;
-    setHeight(height);
-    setWidth(width);
+
+    setSettings("container.height", height);
+    setSettings("container.width", width);
 
     const initPIXI = async () => {
       const app = new PIXI.Application();
@@ -108,7 +106,16 @@ export function ForceGraph({ graphCurrent, reset, setReset, setError, setGraphCu
 
   // set stage //
   useEffect(() => {
-    if (!app || !graphCurrent || circles || !width || !height || !settings.appearance.theme || !settings.appearance.nodeColorScheme) return;
+    if (
+      !app ||
+      !graphCurrent ||
+      circles ||
+      !settings.container.width ||
+      !settings.container.height ||
+      !settings.appearance.theme ||
+      !settings.appearance.nodeColorScheme
+    )
+      return;
     log.info("Setting stage");
 
     const newLines = new PIXI.Graphics();
@@ -130,8 +137,8 @@ export function ForceGraph({ graphCurrent, reset, setReset, setError, setGraphCu
       circle.id = node.id;
       circle.interactive = true;
       circle.buttonMode = true;
-      circle.x = width / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
-      circle.y = height / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
+      circle.x = settings.container.width / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
+      circle.y = settings.container.height / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
       initTooltips(circle, node, setTooltipSettings);
       newCircles.addChild(circle);
       circleNodeMap[node.id] = { node, circle };
@@ -150,14 +157,14 @@ export function ForceGraph({ graphCurrent, reset, setReset, setError, setGraphCu
     log.info("Init simulation");
 
     const newSimulation = getSimulation(
-      width,
-      height,
+      settings.container.width,
+      settings.container.height,
       settings.physics.linkLength,
       settings.physics.xStrength,
       settings.physics.yStrength,
       settings.physics.nodeRepulsionStrength
     );
-    initDragAndZoom(app, newSimulation, radius, setTooltipSettings, width, height);
+    initDragAndZoom(app, newSimulation, radius, setTooltipSettings, settings.container.width, settings.container.height);
 
     setSimulation(newSimulation);
   }, [app, graphCurrent]);
@@ -261,8 +268,8 @@ export function ForceGraph({ graphCurrent, reset, setReset, setError, setGraphCu
         allLinks={allLinks}
         allNodes={allNodes}
         setFilteredAfterStart={setFilteredAfterStart}
-        width={width}
-        height={height}
+        width={settings.container.width}
+        height={settings.container.height}
       />
       <div ref={containerRef} className="container" />
     </>

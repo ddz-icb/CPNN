@@ -73,6 +73,10 @@ export const useSettings = create((set) => ({
       png: null,
       svg: null,
     },
+    container: {
+      height: null,
+      width: null,
+    },
   },
   setSettings: (path, value) =>
     set((state) => {
