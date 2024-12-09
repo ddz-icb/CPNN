@@ -21,15 +21,7 @@ const zoom = d3.zoom();
 let distanceDragged = 0;
 let startPosition = { x: 0, y: 0 };
 
-export function initDragAndZoom(
-  initialApp,
-  initialSimulation,
-  initialRadius,
-  setIsClickTooltipActive,
-  setIsHoverTooltipActive,
-  width,
-  height
-) {
+export function initDragAndZoom(initialApp, initialSimulation, initialRadius, setTooltipSettings, width, height) {
   app = initialApp;
   simulation = initialSimulation;
   radius = initialRadius;
@@ -40,11 +32,9 @@ export function initDragAndZoom(
       d3
         .drag()
         .subject(dragsubject)
-        .on("start", (event) => dragstarted(event, setIsHoverTooltipActive))
+        .on("start", (event) => dragstarted(event, setTooltipSettings))
         .on("drag", dragged)
-        .on("end", (event) =>
-          dragended(event, setIsClickTooltipActive, setIsHoverTooltipActive)
-        )
+        .on("end", (event) => dragended(event, setTooltipSettings))
     )
     .call(zoom.on("zoom", zoomed));
 }
@@ -61,14 +51,10 @@ const zoomed = (event) => {
 };
 
 const dragsubject = (event) => {
-  return simulation.find(
-    transform.invertX(event.x),
-    transform.invertY(event.y),
-    radius
-  );
+  return simulation.find(transform.invertX(event.x), transform.invertY(event.y), radius);
 };
 
-const dragstarted = (event, setIsHoverTooltipActive) => {
+const dragstarted = (event, setTooltipSettings) => {
   if (!event.active) simulation.alphaTarget(0.3).restart();
 
   event.subject.fx = event.subject.x;
@@ -77,7 +63,7 @@ const dragstarted = (event, setIsHoverTooltipActive) => {
   startPosition = { x: event.subject.x, y: event.subject.y };
   distanceDragged = 0;
 
-  setIsHoverTooltipActive(false);
+  setTooltipSettings("isHoverTooltipActive", false);
 };
 
 const dragged = (event) => {
@@ -89,14 +75,14 @@ const dragged = (event) => {
   distanceDragged = Math.sqrt(dx * dx + dy * dy);
 };
 
-const dragended = (event, setIsClickTooltipActive, setIsHoverTooltipActive) => {
+const dragended = (event, setTooltipSettings) => {
   if (!event.active) simulation.alphaTarget(0);
 
   event.subject.fx = null;
   event.subject.fy = null;
 
   if (distanceDragged > 10) {
-    setIsClickTooltipActive(false);
+    setTooltipSettings("isClickTooltipActive", false);
   }
-  setIsHoverTooltipActive(false);
+  setTooltipSettings("isHoverTooltipActive", false);
 };

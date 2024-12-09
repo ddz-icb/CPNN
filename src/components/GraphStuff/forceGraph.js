@@ -8,11 +8,12 @@ import { handleResize, initDragAndZoom } from "../Other/interactiveCanvas.js";
 import { initTooltips, Tooltips } from "../Other/toolTipCanvas.js";
 import { radius, drawCircle, drawLine } from "../Other/draw.js";
 import { getSimulation } from "./graphPhysics.js";
-import { useSettings } from "../../states.js";
+import { useSettings, useTooltipSettings } from "../../states.js";
 import { SettingControl } from "./settingControl.js";
 
 export function ForceGraph({ graphCurrent, reset, setReset, setError, setGraphCurrent, activeAnnotationMapping }) {
   const { settings, setSettings } = useSettings();
+  const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
 
   const containerRef = useRef(null);
 
@@ -39,12 +40,6 @@ export function ForceGraph({ graphCurrent, reset, setReset, setError, setGraphCu
   const [circles, setCircles] = useState(null);
   const [lines, setLines] = useState(null);
 
-  // tooltip stuff
-  const [isClickTooltipActive, setIsClickTooltipActive] = useState(false);
-  const [clickTooltipData, setClickTooltipData] = useState(null);
-  const [isHoverTooltipActive, setIsHoverTooltipActive] = useState(false);
-  const [hoverTooltipData, setHoverTooltipData] = useState(null);
-
   // reset simulation //
   useEffect(() => {
     if (!reset) return;
@@ -63,10 +58,7 @@ export function ForceGraph({ graphCurrent, reset, setReset, setError, setGraphCu
 
     setFilteredAfterStart(false);
 
-    setIsClickTooltipActive(false);
-    setClickTooltipData(null);
-    setIsHoverTooltipActive(false);
-    setHoverTooltipData(null);
+    setTooltipSettings("", { isClickTooltipActive: false, clickTooltipData: null, isHoverTooltipActive: false, hoverTooltipData: null });
 
     if (simulation) {
       simulation.stop();
@@ -140,7 +132,7 @@ export function ForceGraph({ graphCurrent, reset, setReset, setError, setGraphCu
       circle.buttonMode = true;
       circle.x = width / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
       circle.y = height / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
-      initTooltips(circle, node, setIsHoverTooltipActive, setHoverTooltipData, setIsClickTooltipActive, setClickTooltipData);
+      initTooltips(circle, node, setTooltipSettings);
       newCircles.addChild(circle);
       circleNodeMap[node.id] = { node, circle };
     }
@@ -165,7 +157,7 @@ export function ForceGraph({ graphCurrent, reset, setReset, setError, setGraphCu
       settings.physics.yStrength,
       settings.physics.nodeRepulsionStrength
     );
-    initDragAndZoom(app, newSimulation, radius, setIsClickTooltipActive, setIsHoverTooltipActive, width, height);
+    initDragAndZoom(app, newSimulation, radius, setTooltipSettings, width, height);
 
     setSimulation(newSimulation);
   }, [app, graphCurrent]);
@@ -257,15 +249,7 @@ export function ForceGraph({ graphCurrent, reset, setReset, setError, setGraphCu
 
   return (
     <>
-      <Tooltips
-        isClickTooltipActive={isClickTooltipActive}
-        setIsClickTooltipActive={setIsClickTooltipActive}
-        clickTooltipData={clickTooltipData}
-        isHoverTooltipActive={isHoverTooltipActive}
-        setIsHoverTooltipActive={setIsHoverTooltipActive}
-        hoverTooltipData={hoverTooltipData}
-        mapping={activeAnnotationMapping}
-      />
+      <Tooltips mapping={activeAnnotationMapping} />
       <SettingControl
         graphCurrent={graphCurrent}
         setGraphCurrent={setGraphCurrent}

@@ -81,3 +81,18 @@ export const useSettings = create((set) => ({
       return { settings: updatedSettings };
     }),
 }));
+
+export const useTooltipSettings = create((set) => ({
+  tooltipSettings: {
+    isClickTooltipActive: false,
+    clickTooltipData: null,
+    isHoverTooltipActive: false,
+    hoverTooltipData: null,
+  },
+  setTooltipSettings: (path, value) =>
+    set((state) => {
+      const updatedTooltipSettings = { ...state.tooltipSettings };
+      setNestedValue(updatedTooltipSettings, path, value);
+      return { tooltipSettings: updatedTooltipSettings };
+    }),
+}));
