@@ -163,7 +163,7 @@ export function ClickTooltip({ mapping }) {
     isoforms.forEach((isoform) => {
       if (isoform.pepId) {
         isoformContent.push(
-          <div key={isoform.pepId}>
+          <div key={`${isoform.phosphosites}-${isoform.pepId}`}>
             {isoform.pepId}
             {isoform.phosphosites ? ": " + isoform.phosphosites : ""}
           </div>
