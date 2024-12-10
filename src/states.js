@@ -101,12 +101,31 @@ export const useTooltipSettings = create((set) => ({
     }),
 }));
 
-export const useGraphSettings = create((set) => ({
-  graphSettings: {},
-  setGraphSettings: (path, value) =>
+export const useGraphData = create((set) => ({
+  graphData: {
+    graph: null, // graph without modifications
+    graphCurrent: null, // graph with modifications e.g. links filtered by threshold, it also contains the pixi node elements
+
+    linksStored: false, // indicates whether allLinks are already stored
+    nodesStored: false, // indicates whether allNodes are already stored
+    allLinks: null, // default values of the links
+    allNodes: null, // default values of the nodes
+    filteredAfterStart: false,
+    circleNodeMap: null, // mapping from circles to nodes
+    circles: null, // PIXI containers for drawing the nodes
+    lines: null, // PIXI container (singular!) for drawing the edges
+  },
+  setGraphData: (path, value) =>
     set((state) => {
-      const updatedGraphSettings = { ...state.graphSettings };
-      setNestedValue(updatedGraphSettings, path, value);
-      return { graphSettings: updatedGraphSettings };
+      const updatedGraphData = { ...state.graphData };
+
+      let newValue;
+      if (typeof value === "function") {
+        newValue = value(updatedGraphData);
+        return { graphData: newValue };
+      } else {
+        setNestedValue(updatedGraphData, path, value);
+        return { graphData: updatedGraphData };
+      }
     }),
 }));

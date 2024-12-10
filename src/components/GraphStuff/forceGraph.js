@@ -8,36 +8,13 @@ import { handleResize, initDragAndZoom } from "../Other/interactiveCanvas.js";
 import { initTooltips, Tooltips } from "../Other/toolTipCanvas.js";
 import { radius, drawCircle, drawLine } from "../Other/draw.js";
 import { getSimulation } from "./graphPhysics.js";
-import { useGraphSettings, useSettings, useTooltipSettings } from "../../states.js";
+import { useGraphData, useSettings, useTooltipSettings } from "../../states.js";
 import { SettingControl } from "./settingControl.js";
 
-export function ForceGraph({ graphCurrent, reset, setReset, setError, setGraphCurrent, activeAnnotationMapping }) {
+export function ForceGraph({ reset, setReset, setError, activeAnnotationMapping }) {
   const { settings, setSettings } = useSettings();
   const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
-  const { graphSettings, setGraphSettings } = useGraphSettings();
-
-  ///////////////////////// NEXT: ALLE UNTEN EINGEBOXTEN VARIABLEN IN GRAPHSETTINGS ALS GLOBALE VARIABLE DEFINIEREN (SIE ZEILE HIERDRÜBER)
-
-  // + GRAPHCURRENT
-
-  // these indicate whether allLinks or allNodes respectfully are already stored
-  const [linksStored, setLinksStored] = useState(false);
-  const [nodesStored, setNodesStored] = useState(false);
-
-  const [filteredAfterStart, setFilteredAfterStart] = useState(false);
-
-  // these variables contain the default values for the nodes
-  const [allLinks, setAllLinks] = useState(null);
-  const [allNodes, setAllNodes] = useState(null);
-
-  // mapping from circles to nodes
-  const [circleNodeMap, setCircleNodeMap] = useState(null);
-
-  // these are the PIXI containers for drawing
-  const [circles, setCircles] = useState(null);
-  const [lines, setLines] = useState(null);
-
-  /////////////////////////
+  const { graphData, setGraphData } = useGraphData();
 
   const containerRef = useRef(null);
 
@@ -50,16 +27,16 @@ export function ForceGraph({ graphCurrent, reset, setReset, setError, setGraphCu
 
     setReset(null);
 
-    setCircles(null);
-    setLines(null);
-
-    setLinksStored(false);
-    setNodesStored(false);
-
-    setAllLinks(null);
-    setAllNodes(null);
-
-    setFilteredAfterStart(false);
+    setGraphData("", (prev) => ({
+      ...prev,
+      circles: null,
+      lines: null,
+      linksStored: false,
+      nodesStored: false,
+      allLinks: null,
+      allNodes: null,
+      filteredAfterStart: false,
+    }));
 
     setTooltipSettings("", { isClickTooltipActive: false, clickTooltipData: null, isHoverTooltipActive: false, hoverTooltipData: null });
 
@@ -76,7 +53,7 @@ export function ForceGraph({ graphCurrent, reset, setReset, setError, setGraphCu
 
   // init Pixi //
   useEffect(() => {
-    if (!containerRef.current || app || !graphCurrent) return;
+    if (!containerRef.current || app || !graphData.graphCurrent) return;
     log.info("Init PIXI app");
 
     const containerRect = containerRef.current.getBoundingClientRect();
@@ -108,14 +85,14 @@ export function ForceGraph({ graphCurrent, reset, setReset, setError, setGraphCu
     };
 
     initPIXI();
-  }, [containerRef, graphCurrent]);
+  }, [containerRef, graphData.graphCurrent]);
 
   // set stage //
   useEffect(() => {
     if (
+      graphData.circles ||
       !app ||
-      !graphCurrent ||
-      circles ||
+      !graphData.graphCurrent ||
       !settings.container.width ||
       !settings.container.height ||
       !settings.appearance.theme ||
@@ -129,9 +106,9 @@ export function ForceGraph({ graphCurrent, reset, setReset, setError, setGraphCu
     app.stage.addChild(newLines);
     app.stage.addChild(newCircles);
 
-    const offsetSpawnValue = graphCurrent.nodes.length * 10;
+    const offsetSpawnValue = graphData.graphCurrent.nodes.length * 10;
     const circleNodeMap = {};
-    for (const node of graphCurrent.nodes) {
+    for (const node of graphData.graphCurrent.nodes) {
       let circle = new PIXI.Graphics();
       circle = drawCircle(
         circle,
@@ -149,15 +126,18 @@ export function ForceGraph({ graphCurrent, reset, setReset, setError, setGraphCu
       newCircles.addChild(circle);
       circleNodeMap[node.id] = { node, circle };
     }
-    setLines(newLines);
-    setCircles(newCircles);
 
-    setCircleNodeMap(circleNodeMap);
-  }, [app, graphCurrent]);
+    setGraphData("", (prev) => ({
+      ...prev,
+      lines: newLines,
+      circles: newCircles,
+      circleNodeMap: circleNodeMap,
+    }));
+  }, [app, graphData.graphCurrent]);
 
   // init simulation //
   useEffect(() => {
-    if (!app || !graphCurrent || simulation) {
+    if (!app || !graphData.graphCurrent || simulation) {
       return;
     }
     log.info("Init simulation");
@@ -173,22 +153,22 @@ export function ForceGraph({ graphCurrent, reset, setReset, setError, setGraphCu
     initDragAndZoom(app, newSimulation, radius, setTooltipSettings, settings.container.width, settings.container.height);
 
     setSimulation(newSimulation);
-  }, [app, graphCurrent]);
+  }, [app, graphData.graphCurrent]);
 
   // running simulation //
   useEffect(() => {
-    if (!circles || !graphCurrent || !simulation || !filteredAfterStart || !lines) return;
-    log.info("Running simulation with the following graph:", graphCurrent);
+    if (!graphData.circles || !graphData.graphCurrent || !simulation || !graphData.filteredAfterStart || !graphData.lines) return;
+    log.info("Running simulation with the following graph:", graphData.graphCurrent);
 
     try {
-      let activeCircles = circles.children.filter((circle) => circle.visible);
+      let activeCircles = graphData.circles.children.filter((circle) => circle.visible);
 
       simulation
-        .on("tick.redraw", () => redraw(graphCurrent))
+        .on("tick.redraw", () => redraw(graphData.graphCurrent))
         .on("end", render)
         .nodes(activeCircles)
         .force("link")
-        .links(graphCurrent.links);
+        .links(graphData.graphCurrent.links);
 
       // restart the simulation and reheat if necessary to make sure everything is being rerendered correctly
       simulation.restart();
@@ -211,7 +191,7 @@ export function ForceGraph({ graphCurrent, reset, setReset, setError, setGraphCu
         simulation.stop();
       }
     };
-  }, [graphCurrent, circles, simulation]);
+  }, [graphData.graphCurrent, graphData.circles, simulation]);
 
   // resize the canvas on window resize //
   useEffect(() => {
@@ -226,30 +206,30 @@ export function ForceGraph({ graphCurrent, reset, setReset, setError, setGraphCu
 
   // store all links in variable at start to enable filtering etc. //
   useEffect(() => {
-    if (!graphCurrent || linksStored) return;
-    log.info("saving link data", graphCurrent.links);
+    if (!graphData.graphCurrent || graphData.linksStored) return;
+    log.info("saving link data", graphData.graphCurrent.links);
 
     // deep clone so allLinks doesn't change
-    setAllLinks(cloneDeep(graphCurrent.links));
-    setLinksStored(true);
-  }, [graphCurrent]);
+    setGraphData("allLinks", cloneDeep(graphData.graphCurrent.links));
+    setGraphData("linksStored", true);
+  }, [graphData.graphCurrent]);
 
   // store all nodes in variable at start to enable filtering //
   useEffect(() => {
-    if (!graphCurrent || nodesStored) return;
-    log.info("saving node data", graphCurrent.nodes);
+    if (!graphData.graphCurrent || graphData.nodesStored) return;
+    log.info("saving node data", graphData.graphCurrent.nodes);
 
     // deep clone so allNodes doesn't change
-    setAllNodes(cloneDeep(graphCurrent.nodes));
-    setNodesStored(true);
-  }, [graphCurrent]);
+    setGraphData("allNodes", cloneDeep(graphData.graphCurrent.nodes));
+    setGraphData("nodesStored", true);
+  }, [graphData.graphCurrent]);
 
   // redraw runs while the simulation is active //
   function redraw(graph) {
-    lines.clear();
+    graphData.lines.clear();
 
     for (const link of graph.links) {
-      drawLine(lines, link, settings.appearance.linkColorScheme.colorScheme, settings.appearance.linkAttribsToColorIndices);
+      drawLine(graphData.lines, link, settings.appearance.linkColorScheme.colorScheme, settings.appearance.linkAttribsToColorIndices);
     }
 
     app.renderer.render(app.stage);
@@ -263,20 +243,7 @@ export function ForceGraph({ graphCurrent, reset, setReset, setError, setGraphCu
   return (
     <>
       <Tooltips mapping={activeAnnotationMapping} />
-      <SettingControl
-        graphCurrent={graphCurrent}
-        setGraphCurrent={setGraphCurrent}
-        simulation={simulation}
-        app={app}
-        circles={circles}
-        circleNodeMap={circleNodeMap}
-        redraw={redraw}
-        allLinks={allLinks}
-        allNodes={allNodes}
-        setFilteredAfterStart={setFilteredAfterStart}
-        width={settings.container.width}
-        height={settings.container.height}
-      />
+      <SettingControl simulation={simulation} app={app} redraw={redraw} />
       <div ref={containerRef} className="container" />
     </>
   );

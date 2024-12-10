@@ -27,17 +27,15 @@ import {
   storeColorSchemes,
   storeTheme,
 } from "./components/Other/handleFunctions.js";
-import { useSettings } from "./states.js";
+import { useGraphData, useSettings } from "./states.js";
 
 function App() {
   const { settings, setSettings } = useSettings(); // includes physics, filter and appearance settings
+  const { graphData, setGraphData } = useGraphData(); // includes all data concerning the graph
 
   const [reset, setReset] = useState(false); // true indicates that the simulation (in forceGraph.js) has to be reloaded
 
   const [error, setError] = useState(null); // error gets printed on screen
-
-  const [graph, setGraph] = useState(null); // graph without modifications
-  const [graphCurrent, setGraphCurrent] = useState(null); // graph with modifications e.g. links filtered by threshold, it also contains the pixi node elements
 
   const [activeAnnotationMapping, setActiveAnnotationMapping] = useState(null); // active node annotation mapping
   const [uploadedAnnotationMappings, setUploadedAnnotationMappings] = useState(null); // uploaded node attribute mappings
@@ -52,7 +50,7 @@ function App() {
     log.info("Replacing graph");
 
     try {
-      selectGraph(filename, setGraph, setActiveFiles);
+      selectGraph(filename, setGraphData, setActiveFiles);
       simulationReset();
     } catch (error) {
       setError("Error loading graph");
@@ -159,7 +157,7 @@ function App() {
     if (!file || !file.name) return;
     log.info("removing graph file with name:", file.name);
 
-    removeActiveGraphFile(file, activeFiles, setGraph, setActiveFiles);
+    removeActiveGraphFile(file, activeFiles, setGraphData, setActiveFiles);
     simulationReset();
   };
 
@@ -173,7 +171,7 @@ function App() {
     log.info("Adding file with name: ", filename);
 
     try {
-      addActiveGraphFile(filename, setGraph, setActiveFiles, graph);
+      addActiveGraphFile(filename, setGraphData, setActiveFiles, graphData.graph);
       simulationReset();
     } catch (error) {
       setError("Error loading graph");
@@ -205,7 +203,7 @@ function App() {
   // select example graph on startup
   useEffect(() => {
     log.info("Setting init graph data");
-    setInitGraph(setGraph, setActiveFiles);
+    setInitGraph(setGraphData, setActiveFiles);
     simulationReset();
   }, []);
 
@@ -264,10 +262,10 @@ function App() {
 
   // forwards graph to forceGraph component //
   useEffect(() => {
-    if (!graph || !activeFiles) return;
+    if (!graphData.graph || !activeFiles) return;
     log.info("Modifying graph and forwarding it to the simulation component");
 
-    let newGraphCurrent = structuredClone(graph);
+    let newGraphCurrent = structuredClone(graphData.graph);
     newGraphCurrent = applyNodeMapping(newGraphCurrent, activeAnnotationMapping);
 
     const nodeAttribsToColorIndices = getNodeAttribsToColorIndices(newGraphCurrent);
@@ -276,8 +274,8 @@ function App() {
     const linkAttribsToColorIndices = getLinkAttribsToColorIndices(newGraphCurrent);
     setSettings("appearance.linkAttribsToColorIndices", linkAttribsToColorIndices);
 
-    setGraphCurrent(newGraphCurrent);
-  }, [graph, activeFiles, activeAnnotationMapping]);
+    setGraphData("graphCurrent", newGraphCurrent);
+  }, [graphData.graph, activeFiles, activeAnnotationMapping]);
 
   return (
     <div className={settings.appearance.theme.name}>
@@ -306,14 +304,7 @@ function App() {
       />
       <main>
         {error && <div className="errorStyle">{error}</div>}
-        <ForceGraph
-          reset={reset}
-          graphCurrent={graphCurrent}
-          setReset={setReset}
-          setError={setError}
-          setGraphCurrent={setGraphCurrent}
-          activeAnnotationMapping={activeAnnotationMapping}
-        />
+        <ForceGraph reset={reset} setReset={setReset} setError={setError} activeAnnotationMapping={activeAnnotationMapping} />
       </main>
     </div>
   );
