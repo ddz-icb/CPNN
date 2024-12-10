@@ -274,12 +274,7 @@ function App() {
 
   return (
     <div className={settings.appearance.theme.name}>
-      <HeaderBar
-        handleDeleteColorScheme={handleDeleteColorScheme}
-        handleNewScheme={handleNewScheme}
-        colorSchemes={colorSchemes}
-        activeAnnotationMapping={graphData.activeAnnotationMapping}
-      />
+      <HeaderBar handleDeleteColorScheme={handleDeleteColorScheme} handleNewScheme={handleNewScheme} colorSchemes={colorSchemes} />
       <Sidebar
         handleSelectGraph={handleSelectGraph}
         handleDeleteGraphFile={handleDeleteGraphFile}

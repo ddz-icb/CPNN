@@ -1,13 +1,15 @@
 import { ReactComponent as EyeIcon } from "../../icons/eye.svg";
 import { ReactComponent as XIcon } from "../../icons/x.svg";
-import { useSettings } from "../../states.js";
+import { useGraphData, useSettings } from "../../states.js";
 
 import { fallbackColor, getColor } from "../Other/draw.js";
 
 import { Button } from "./headerBar.js";
 
-export function Mapping({ mapping, activeMenu, handleActiveMenuClick }) {
+export function Mapping({ activeMenu, handleActiveMenuClick }) {
   const { settings, setSettings } = useSettings();
+  const { graphData, setGraphData } = useGraphData();
+
   let content = null;
 
   if (activeMenu !== "Mapping") {
@@ -36,8 +38,8 @@ export function Mapping({ mapping, activeMenu, handleActiveMenuClick }) {
                 backgroundColor: getColor(settings.appearance.nodeAttribsToColorIndices[key], settings.appearance.nodeColorScheme.colorScheme),
               }}
             ></div>
-            {mapping && mapping.groupMapping && mapping.groupMapping.hasOwnProperty(key) ? (
-              <span className="colorscheme-item">{mapping.groupMapping[key].name}</span>
+            {graphData.mapping && graphData.mapping.groupMapping && graphData.mapping.groupMapping.hasOwnProperty(key) ? (
+              <span className="colorscheme-item">{graphData.mapping.groupMapping[key].name}</span>
             ) : (
               <span className="colorscheme-item">{key}</span>
             )}
