@@ -2,42 +2,41 @@ import { ReactComponent as DeleteIcon } from "../../icons/delete.svg";
 import { ReactComponent as TrashIcon } from "../../icons/trash.svg";
 import { ReactComponent as PlusIcon } from "../../icons/plus.svg";
 import { Tooltip } from "react-tooltip";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 import { SidebarButtonRect, SidebarDropdownItem } from "./sidebar.js";
 import log from "../../logger.js";
+import { useGraphData } from "../../states.js";
 
 export function DataSidebar({
-  activeFiles,
   handleRemoveActiveGraphFile,
-  uploadedFiles,
   handleSelectGraph,
   handleDeleteGraphFile,
   handleAddFile,
   handleNewAnnotationMapping,
-  activeAnnotationMapping,
   handleRemoveActiveAnnotationMapping,
-  uploadedMappings,
   handleAnnotationMappingSelect,
   handleDeleteAnnotationMapping,
   handleNewGraphFile,
 }) {
+  const { graphData, setGraphData } = useGraphData();
+
   return (
     <>
       <TopDataButtons handleNewGraphFile={handleNewGraphFile} handleNewAnnotationMapping={handleNewAnnotationMapping} />
-      <ActiveFiles activeFiles={activeFiles} handleRemoveActiveGraphFile={handleRemoveActiveGraphFile} />
+      <ActiveFiles activeGraphFiles={graphData.activeGraphFiles} handleRemoveActiveGraphFile={handleRemoveActiveGraphFile} />
       <UploadedFiles
-        uploadedFiles={uploadedFiles}
+        uploadedFiles={graphData.uploadedGraphFileNames}
         handleSelectGraph={handleSelectGraph}
         handleDeleteGraphFile={handleDeleteGraphFile}
         handleAddFile={handleAddFile}
       />
       <ActiveAnnotationMapping
-        activeAnnotationMapping={activeAnnotationMapping}
+        activeAnnotationMapping={graphData.activeAnnotationMapping}
         handleRemoveActiveAnnotationMapping={handleRemoveActiveAnnotationMapping}
       />
       <UploadedMappings
-        uploadedMappings={uploadedMappings}
+        uploadedAnnotationMappings={graphData.uploadedAnnotationMappings}
         handleAnnotationMappingSelect={handleAnnotationMappingSelect}
         handleDeleteAnnotationMapping={handleDeleteAnnotationMapping}
       />
@@ -84,13 +83,13 @@ function UploadedFiles({ uploadedFiles, handleSelectGraph, handleDeleteGraphFile
   );
 }
 
-function ActiveFiles({ activeFiles, handleRemoveActiveGraphFile }) {
+function ActiveFiles({ activeGraphFiles, handleRemoveActiveGraphFile }) {
   return (
     <>
       <b className="heading-label">Currently Active Files</b>
       <table className="active-item-table">
         <tbody>
-          {activeFiles?.map((file, index) => (
+          {activeGraphFiles?.map((file, index) => (
             <tr key={index} className="recent-item-entry">
               <td>
                 <span className="pad-left-025">{file.name}</span>
@@ -111,16 +110,16 @@ function ActiveFiles({ activeFiles, handleRemoveActiveGraphFile }) {
   );
 }
 
-function UploadedMappings({ uploadedMappings, handleAnnotationMappingSelect, handleDeleteAnnotationMapping }) {
+function UploadedMappings({ uploadedAnnotationMappings, handleAnnotationMappingSelect, handleDeleteAnnotationMapping }) {
   return (
     <>
       <>
         <b className="heading-label">Uploaded Annotation Mappings</b>
         <table className="recent-item-table">
           <tbody>
-            {uploadedMappings && (
+            {uploadedAnnotationMappings && (
               <>
-                {uploadedMappings?.map((mapping, index) => (
+                {uploadedAnnotationMappings?.map((mapping, index) => (
                   <tr key={index} className="recent-item-entry recent-item-entry-highlight">
                     <td className="recent-item-text sidebar-tooltip-wrapper" onClick={() => handleAnnotationMappingSelect(mapping)}>
                       <div data-tooltip-id={`replace-mapping-tooltip-${index}`} data-tooltip-content="Replace Active Annotation Mapping">
@@ -140,7 +139,7 @@ function UploadedMappings({ uploadedMappings, handleAnnotationMappingSelect, han
                 ))}
               </>
             )}
-            {(!uploadedMappings || uploadedMappings.length === 0) && (
+            {(!uploadedAnnotationMappings || uploadedAnnotationMappings.length === 0) && (
               <tr className="recent-item-entry">
                 <td>None</td>
               </tr>

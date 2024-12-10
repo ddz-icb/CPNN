@@ -106,6 +106,12 @@ export const useGraphData = create((set) => ({
     graph: null, // graph without modifications
     graphCurrent: null, // graph with modifications e.g. links filtered by threshold, it also contains the pixi node elements
 
+    activeGraphFiles: null, // currently active files
+    uploadedGraphFileNames: [], // names of all graph files in local storage
+
+    activeAnnotationMapping: null, // active node annotation mapping
+    uploadedAnnotationMappings: null, // uploaded node attribute mappings
+
     linksStored: false, // indicates whether allLinks are already stored
     nodesStored: false, // indicates whether allNodes are already stored
     allLinks: null, // default values of the links

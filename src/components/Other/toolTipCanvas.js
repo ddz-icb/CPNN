@@ -4,14 +4,15 @@ import { useState, useEffect, useRef } from "react";
 import { ReactComponent as XIcon } from "../../icons/x.svg";
 import { extractDescription, extractFullName, extractPdbId } from "../RegexExtract/extract.js";
 import * as $3Dmol from "3dmol/build/3Dmol.js";
-import { useSettings, useTooltipSettings } from "../../states.js";
+import { useGraphData, useSettings, useTooltipSettings } from "../../states.js";
 
-export function Tooltips({ mapping }) {
+export function Tooltips({}) {
   const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
+  const { graphData, setGraphData } = useGraphData();
 
   return (
     <>
-      {tooltipSettings.isClickTooltipActive && <ClickTooltip mapping={mapping} />}
+      {tooltipSettings.isClickTooltipActive && <ClickTooltip mapping={graphData.mapping} />}
       {!tooltipSettings.isClickTooltipActive && tooltipSettings.isHoverTooltipActive && <HoverTooltip />}
     </>
   );

@@ -9,16 +9,12 @@ import { DataSidebar } from "./dataSidebar.js";
 import { MainSidebar } from "./mainSidebar.js";
 
 export function Sidebar({
-  uploadedFiles,
-  activeFiles,
   handleSelectGraph,
   handleDeleteGraphFile,
   handleRemoveActiveGraphFile,
   handleAddFile,
   handleNewAnnotationMapping,
-  activeAnnotationMapping,
   handleRemoveActiveAnnotationMapping,
-  uploadedMappings,
   handleAnnotationMappingSelect,
   handleDeleteAnnotationMapping,
   handleNewGraphFile,
@@ -47,16 +43,12 @@ export function Sidebar({
       <Navbar>
         <Back activeNavItem={activeNavItem} icon={<BackIcon />} onClick={() => handleNavItemClick("Main")} />
         <DataSidebar
-          activeFiles={activeFiles}
           handleRemoveActiveGraphFile={handleRemoveActiveGraphFile}
-          uploadedFiles={uploadedFiles}
           handleSelectGraph={handleSelectGraph}
           handleDeleteGraphFile={handleDeleteGraphFile}
           handleAddFile={handleAddFile}
           handleNewAnnotationMapping={handleNewAnnotationMapping}
-          activeAnnotationMapping={activeAnnotationMapping}
           handleRemoveActiveAnnotationMapping={handleRemoveActiveAnnotationMapping}
-          uploadedMappings={uploadedMappings}
           handleAnnotationMappingSelect={handleAnnotationMappingSelect}
           handleDeleteAnnotationMapping={handleDeleteAnnotationMapping}
           handleNewGraphFile={handleNewGraphFile}

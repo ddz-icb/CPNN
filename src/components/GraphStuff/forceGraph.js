@@ -11,15 +11,16 @@ import { getSimulation } from "./graphPhysics.js";
 import { useGraphData, useSettings, useTooltipSettings } from "../../states.js";
 import { SettingControl } from "./settingControl.js";
 
-export function ForceGraph({ reset, setReset, setError, activeAnnotationMapping }) {
+export function ForceGraph({ reset, setReset, setError }) {
   const { settings, setSettings } = useSettings();
-  const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
   const { graphData, setGraphData } = useGraphData();
+  const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
 
   const containerRef = useRef(null);
 
   const [app, setApp] = useState(null);
   const [simulation, setSimulation] = useState(null);
+
   // reset simulation //
   useEffect(() => {
     if (!reset) return;
@@ -172,8 +173,8 @@ export function ForceGraph({ reset, setReset, setError, activeAnnotationMapping 
 
       // restart the simulation and reheat if necessary to make sure everything is being rerendered correctly
       simulation.restart();
-      if (simulation.alpha() <= 0.05) {
-        simulation.alpha(0.1);
+      if (simulation.alpha() < 0.5) {
+        simulation.alpha(0.5);
       }
 
       setSimulation(simulation);
@@ -242,7 +243,7 @@ export function ForceGraph({ reset, setReset, setError, activeAnnotationMapping 
 
   return (
     <>
-      <Tooltips mapping={activeAnnotationMapping} />
+      <Tooltips />
       <SettingControl simulation={simulation} app={app} redraw={redraw} />
       <div ref={containerRef} className="container" />
     </>

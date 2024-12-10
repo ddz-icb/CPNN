@@ -257,7 +257,7 @@ export function SettingControl({ simulation, app, redraw }) {
 
   // enable circular layout
   useEffect(() => {
-    if (!simulation) return;
+    if (!simulation || !settings.physics.circleLayout) return;
     if (settings.physics.circleLayout === false) {
       log.info("Disabling circular layout");
 

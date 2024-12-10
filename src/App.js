@@ -37,11 +37,6 @@ function App() {
 
   const [error, setError] = useState(null); // error gets printed on screen
 
-  const [activeAnnotationMapping, setActiveAnnotationMapping] = useState(null); // active node annotation mapping
-  const [uploadedAnnotationMappings, setUploadedAnnotationMappings] = useState(null); // uploaded node attribute mappings
-
-  const [activeFiles, setActiveFiles] = useState(null); // currently active files
-  const [uploadedGraphNames, setUploadedGraphNames] = useState([]); // names of all files in local storage
   const [colorSchemes, setColorSchemes] = useState(null); // all color schemes in local storage
 
   // sets corresponding graph after file selection
@@ -50,7 +45,7 @@ function App() {
     log.info("Replacing graph");
 
     try {
-      selectGraph(filename, setGraphData, setActiveFiles);
+      selectGraph(filename, setGraphData);
       simulationReset();
     } catch (error) {
       setError("Error loading graph");
@@ -64,7 +59,7 @@ function App() {
     log.info("Replacing annotation mapping");
 
     try {
-      selectMapping(mapping, activeAnnotationMapping, setActiveAnnotationMapping);
+      selectMapping(mapping, graphData.activeAnnotationMapping, setGraphData);
       simulationReset();
     } catch (error) {
       setError("Mapping is already the current mapping");
@@ -78,7 +73,7 @@ function App() {
     log.info("Adding new file");
 
     const file = event.target.files[0];
-    addNewGraphFile(file, setUploadedGraphNames, takeAbs)
+    addNewGraphFile(file, graphData.uploadedGraphFileNames, setGraphData, takeAbs)
       .then(() => {})
       .catch((error) => {
         setError("Error adding graph file");
@@ -121,7 +116,7 @@ function App() {
 
     const file = event.target.files[0];
     try {
-      addAnnotationMapping(file, setUploadedAnnotationMappings);
+      addAnnotationMapping(file, graphData.uploadedAnnotationMappings, setGraphData);
     } catch (error) {
       setError("Error adding annotation mapping");
       log.error("Error adding annotation mapping:", error);
@@ -132,7 +127,7 @@ function App() {
   const handleRemoveActiveAnnotationMapping = () => {
     log.info("Removing currently active annotation mapping");
 
-    setActiveAnnotationMapping(null);
+    setGraphData("activeAnnotationMapping", null);
     simulationReset();
   };
 
@@ -141,7 +136,7 @@ function App() {
     if (!mappingName) return;
     log.info("Deleting mapping with name", mappingName);
 
-    deleteAnnotationMapping(uploadedAnnotationMappings, mappingName, setUploadedAnnotationMappings);
+    deleteAnnotationMapping(graphData.uploadedAnnotationMappings, mappingName, setGraphData);
   };
 
   // deletes uploaded files with filename //
@@ -149,7 +144,7 @@ function App() {
     if (!filename) return;
     log.info("Deleting files with name", filename);
 
-    deleteGraphFile(uploadedGraphNames, filename, setUploadedGraphNames);
+    deleteGraphFile(graphData.uploadedGraphFileNames, filename, setGraphData);
   };
 
   // removes graph file from currently active files //
@@ -157,13 +152,13 @@ function App() {
     if (!file || !file.name) return;
     log.info("removing graph file with name:", file.name);
 
-    removeActiveGraphFile(file, activeFiles, setGraphData, setActiveFiles);
+    removeActiveGraphFile(file, graphData.activeGraphFiles, setGraphData);
     simulationReset();
   };
 
   const handleAddActiveGraphFile = (filename) => {
     if (!filename) return;
-    if (activeFiles.some((file) => file.name === filename)) {
+    if (graphData.activeGraphFiles.some((file) => file.name === filename)) {
       setError("Graph already active");
       log.error("Graph already active");
       return;
@@ -171,7 +166,7 @@ function App() {
     log.info("Adding file with name: ", filename);
 
     try {
-      addActiveGraphFile(filename, setGraphData, setActiveFiles, graphData.graph);
+      addActiveGraphFile(filename, graphData.activeGraphFiles, setGraphData, graphData.graph);
       simulationReset();
     } catch (error) {
       setError("Error loading graph");
@@ -182,7 +177,7 @@ function App() {
 
   // initates reset //
   const simulationReset = () => {
-    if (!activeFiles) return;
+    if (!graphData.activeGraphFiles) return;
     log.info("Handle Simulation Reset");
 
     resetFilters();
@@ -203,15 +198,15 @@ function App() {
   // select example graph on startup
   useEffect(() => {
     log.info("Setting init graph data");
-    setInitGraph(setGraphData, setActiveFiles);
+    setInitGraph(setGraphData);
     simulationReset();
   }, []);
 
-  // init uploadedFileNames
+  // init uploadedGraphFileNames
   useEffect(() => {
     log.info("Loading uploaded files");
     try {
-      loadFileNames(setUploadedGraphNames);
+      loadFileNames(setGraphData);
     } catch (error) {
       setError("Error loading files form database");
       log.error("Error loading files form database");
@@ -235,16 +230,16 @@ function App() {
   // load uploaded annotation mapping files
   useEffect(() => {
     log.info("Loading annotation mapping files");
-    loadAnnotationMappings(setUploadedAnnotationMappings);
+    loadAnnotationMappings(setGraphData);
   }, []);
 
   // store uploaded annotation mapping files //
   useEffect(() => {
-    if (!uploadedAnnotationMappings) return;
+    if (!graphData.uploadedAnnotationMappings) return;
     log.info("Storing mapping files");
 
-    storeAnnotationMappings(uploadedAnnotationMappings);
-  }, [uploadedAnnotationMappings]);
+    storeAnnotationMappings(graphData.uploadedAnnotationMappings);
+  }, [graphData.uploadedAnnotationMappings]);
 
   // load uploaded color schemes //
   useEffect(() => {
@@ -262,11 +257,11 @@ function App() {
 
   // forwards graph to forceGraph component //
   useEffect(() => {
-    if (!graphData.graph || !activeFiles) return;
+    if (!graphData.graph || !graphData.activeGraphFiles) return;
     log.info("Modifying graph and forwarding it to the simulation component");
 
     let newGraphCurrent = structuredClone(graphData.graph);
-    newGraphCurrent = applyNodeMapping(newGraphCurrent, activeAnnotationMapping);
+    newGraphCurrent = applyNodeMapping(newGraphCurrent, graphData.activeAnnotationMapping);
 
     const nodeAttribsToColorIndices = getNodeAttribsToColorIndices(newGraphCurrent);
     setSettings("appearance.nodeAttribsToColorIndices", nodeAttribsToColorIndices);
@@ -275,7 +270,7 @@ function App() {
     setSettings("appearance.linkAttribsToColorIndices", linkAttribsToColorIndices);
 
     setGraphData("graphCurrent", newGraphCurrent);
-  }, [graphData.graph, activeFiles, activeAnnotationMapping]);
+  }, [graphData.graph, graphData.activeGraphFiles, graphData.activeAnnotationMapping]);
 
   return (
     <div className={settings.appearance.theme.name}>
@@ -283,19 +278,15 @@ function App() {
         handleDeleteColorScheme={handleDeleteColorScheme}
         handleNewScheme={handleNewScheme}
         colorSchemes={colorSchemes}
-        activeAnnotationMapping={activeAnnotationMapping}
+        activeAnnotationMapping={graphData.activeAnnotationMapping}
       />
       <Sidebar
-        uploadedFiles={uploadedGraphNames}
-        activeFiles={activeFiles}
         handleSelectGraph={handleSelectGraph}
         handleDeleteGraphFile={handleDeleteGraphFile}
         handleRemoveActiveGraphFile={handleRemoveActiveGraphFile}
         handleAddFile={handleAddActiveGraphFile}
         handleNewAnnotationMapping={handleNewAnnotationMapping}
-        activeAnnotationMapping={activeAnnotationMapping}
         handleRemoveActiveAnnotationMapping={handleRemoveActiveAnnotationMapping}
-        uploadedMappings={uploadedAnnotationMappings}
         handleAnnotationMappingSelect={handleAnnotationMappingSelect}
         handleDeleteAnnotationMapping={handleDeleteAnnotationMapping}
         handleNewGraphFile={handleNewGraphFile}
@@ -304,7 +295,7 @@ function App() {
       />
       <main>
         {error && <div className="errorStyle">{error}</div>}
-        <ForceGraph reset={reset} setReset={setReset} setError={setError} activeAnnotationMapping={activeAnnotationMapping} />
+        <ForceGraph reset={reset} setReset={setReset} setError={setError} />
       </main>
     </div>
   );
