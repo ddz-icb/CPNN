@@ -64,9 +64,18 @@ export const useSettings = create((set) => ({
       theme: themeInit,
       nodeColorScheme: nodeColorSchemeInit,
       linkColorScheme: linkColorSchemeInit,
-
-      // linksAttribsToColorIndices:
-      // nodeAttribsToColorIndices:
+      linkAttribsToColorIndices: null,
+      nodeAttribsToColorIndices: null,
+    },
+    download: {
+      // on state change: indicates graph should be downloaded
+      json: null,
+      png: null,
+      svg: null,
+    },
+    container: {
+      height: null,
+      width: null,
     },
   },
   setSettings: (path, value) =>
@@ -74,5 +83,49 @@ export const useSettings = create((set) => ({
       const updatedSettings = { ...state.settings };
       setNestedValue(updatedSettings, path, value);
       return { settings: updatedSettings };
+    }),
+}));
+
+export const useTooltipSettings = create((set) => ({
+  tooltipSettings: {
+    isClickTooltipActive: false,
+    clickTooltipData: null,
+    isHoverTooltipActive: false,
+    hoverTooltipData: null,
+  },
+  setTooltipSettings: (path, value) =>
+    set((state) => {
+      const updatedTooltipSettings = { ...state.tooltipSettings };
+      setNestedValue(updatedTooltipSettings, path, value);
+      return { tooltipSettings: updatedTooltipSettings };
+    }),
+}));
+
+export const useGraphData = create((set) => ({
+  graphData: {
+    graph: null, // graph without modifications
+    graphCurrent: null, // graph with modifications e.g. links filtered by threshold, it also contains the pixi node elements
+
+    linksStored: false, // indicates whether allLinks are already stored
+    nodesStored: false, // indicates whether allNodes are already stored
+    allLinks: null, // default values of the links
+    allNodes: null, // default values of the nodes
+    filteredAfterStart: false,
+    circleNodeMap: null, // mapping from circles to nodes
+    circles: null, // PIXI containers for drawing the nodes
+    lines: null, // PIXI container (singular!) for drawing the edges
+  },
+  setGraphData: (path, value) =>
+    set((state) => {
+      const updatedGraphData = { ...state.graphData };
+
+      let newValue;
+      if (typeof value === "function") {
+        newValue = value(updatedGraphData);
+        return { graphData: newValue };
+      } else {
+        setNestedValue(updatedGraphData, path, value);
+        return { graphData: updatedGraphData };
+      }
     }),
 }));

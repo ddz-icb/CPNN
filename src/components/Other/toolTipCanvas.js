@@ -1,42 +1,25 @@
 import log from "../../logger.js";
 import axios from "axios";
 import { useState, useEffect, useRef } from "react";
-import { ReactComponent as TrashIcon } from "../../icons/trash.svg";
 import { ReactComponent as XIcon } from "../../icons/x.svg";
 import { extractDescription, extractFullName, extractPdbId } from "../RegexExtract/extract.js";
 import * as $3Dmol from "3dmol/build/3Dmol.js";
-import { useSettings } from "../../states.js";
+import { useSettings, useTooltipSettings } from "../../states.js";
 
-export function Tooltips({
-  isClickTooltipActive,
-  setIsClickTooltipActive,
-  clickTooltipData,
-  isHoverTooltipActive,
-  setIsHoverTooltipActive,
-  hoverTooltipData,
-  setNodeToDelete,
-  mapping,
-}) {
+export function Tooltips({ mapping }) {
+  const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
+
   return (
     <>
-      {isClickTooltipActive && (
-        <ClickTooltip
-          isActive={isClickTooltipActive}
-          setIsActive={setIsClickTooltipActive}
-          data={clickTooltipData}
-          setNodeToDelete={setNodeToDelete}
-          mapping={mapping}
-        />
-      )}
-      {!isClickTooltipActive && isHoverTooltipActive && (
-        <HoverTooltip isActive={isHoverTooltipActive} setIsActive={setIsHoverTooltipActive} data={hoverTooltipData} />
-      )}
+      {tooltipSettings.isClickTooltipActive && <ClickTooltip mapping={mapping} />}
+      {!tooltipSettings.isClickTooltipActive && tooltipSettings.isHoverTooltipActive && <HoverTooltip />}
     </>
   );
 }
 
-export function ClickTooltip({ isActive, setIsActive, data, setNodeToDelete, mapping }) {
+export function ClickTooltip({ mapping }) {
   const { settings, setSettings } = useSettings();
+  const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
 
   const [fullName, setFullName] = useState("");
   const [description, setDescription] = useState("");
@@ -52,11 +35,11 @@ export function ClickTooltip({ isActive, setIsActive, data, setNodeToDelete, map
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const entries = data.node.split(";");
+        const entries = tooltipSettings.clickTooltipData.node.split(";");
 
         const protIdNoIsoform = entries[0].split("_")[0].split("-")[0];
         if (protIdNoIsoform) setProtIdNoIsoform(protIdNoIsoform);
-        const gene = data.node.split("_")[1];
+        const gene = tooltipSettings.clickTooltipData.node.split("_")[1];
         if (gene) setGene(gene);
 
         const isoforms = [];
@@ -82,10 +65,10 @@ export function ClickTooltip({ isActive, setIsActive, data, setNodeToDelete, map
       }
     };
 
-    if (data.node) {
+    if (tooltipSettings.clickTooltipData.node) {
       fetchData();
     }
-  }, [data]);
+  }, [tooltipSettings.clickTooltipData]);
 
   useEffect(() => {
     const initViewer = async () => {
@@ -96,6 +79,7 @@ export function ClickTooltip({ isActive, setIsActive, data, setNodeToDelete, map
         const config = {
           backgroundColor: settings.appearance.theme.name === "light" ? "0xffffff" : "0x2a2e35",
         };
+        if (!viewerRef || !viewerRef.current) return; // need this check as the await from axios may take a while -> viewerRef.current has a different state
         const viewer = $3Dmol.createViewer(viewerRef.current, config);
 
         viewer.addModel(responsePdb.data, "pdb");
@@ -125,10 +109,10 @@ export function ClickTooltip({ isActive, setIsActive, data, setNodeToDelete, map
     setDescription("");
     setPdbId("");
 
-    if (isActive) {
+    if (tooltipSettings.isClickTooltipActive) {
       setStyle({
-        left: `${data.x + 15}px`,
-        top: `${data.y}px`,
+        left: `${tooltipSettings.clickTooltipData.x + 15}px`,
+        top: `${tooltipSettings.clickTooltipData.y}px`,
         opacity: 0.95,
         transition: "opacity 0.2s",
       });
@@ -138,19 +122,15 @@ export function ClickTooltip({ isActive, setIsActive, data, setNodeToDelete, map
         transition: "opacity 0.2s",
       });
     }
-  }, [isActive, data]);
+  }, [tooltipSettings.isClickTooltipActive, tooltipSettings.clickTooltipData]);
 
   const closeTooltip = () => {
-    setIsActive(false);
-  };
-
-  const handleDeleteNode = () => {
-    setNodeToDelete(data.node);
+    setTooltipSettings("isClickTooltipActive", false);
   };
 
   let groupContent = [];
-  if (mapping && mapping.groupMapping && data.nodeGroups[0]) {
-    data.nodeGroups.forEach((group) => {
+  if (mapping && mapping.groupMapping && tooltipSettings.clickTooltipData.nodeGroups[0]) {
+    tooltipSettings.clickTooltipData.nodeGroups.forEach((group) => {
       const groupName = mapping.groupMapping[group]?.name;
       const reactomeId = mapping.groupMapping[group]?.reactomeId;
 
@@ -165,7 +145,7 @@ export function ClickTooltip({ isActive, setIsActive, data, setNodeToDelete, map
       }
     });
   } else {
-    data.nodeGroups.forEach((group) => {
+    tooltipSettings.clickTooltipData.nodeGroups.forEach((group) => {
       groupContent.push(group);
     });
   }
@@ -183,7 +163,7 @@ export function ClickTooltip({ isActive, setIsActive, data, setNodeToDelete, map
     isoforms.forEach((isoform) => {
       if (isoform.pepId) {
         isoformContent.push(
-          <div key={isoform.pepId}>
+          <div key={`${isoform.phosphosites}-${isoform.pepId}`}>
             {isoform.pepId}
             {isoform.phosphosites ? ": " + isoform.phosphosites : ""}
           </div>
@@ -194,75 +174,77 @@ export function ClickTooltip({ isActive, setIsActive, data, setNodeToDelete, map
 
   return (
     <div className="tooltip tooltip-click" style={style}>
-      <div className="tooltip-content">
-        <div className="tooltip-header">
-          <b>{gene || data.node}</b>
-          <span className="tooltip-button" onClick={closeTooltip}>
-            <XIcon />
-          </span>
+      {style.opacity > 0 && (
+        <div className="tooltip-content">
+          <div className="tooltip-header">
+            <b>{gene}</b>
+            <span className="tooltip-button" onClick={closeTooltip}>
+              <XIcon />
+            </span>
+          </div>
+          <div className="tooltip-body">
+            {fullName && (
+              <>
+                <b className="no-margin-bottom text-secondary">Full Name</b>
+                <div className="no-margin-top pad-bottom-05">{fullName}</div>
+              </>
+            )}
+            {isoforms && isoforms.length > 0 && (
+              <>
+                <b className="no-margin-bottom text-secondary">Protein-IDs and Phosphosites</b>
+                <div className="no-margin-top pad-bottom-05">{isoformContent}</div>
+              </>
+            )}
+            {groupContent && groupContent.length > 0 && (
+              <>
+                <b className="no-margin-bottom text-secondary">Gene/Protein Annotations</b>
+                <div className="no-margin-top pad-bottom-05">{groupContent}</div>
+              </>
+            )}
+            {description && (
+              <>
+                <b className="no-margin-bottom text-secondary">Decription</b>
+                <div className="no-margin-top pad-bottom-05">{description}</div>
+              </>
+            )}
+          </div>
+          {pdbId && <div className="pdb-viewer" ref={viewerRef}></div>}
+          <div className="tooltip-footer">
+            {fullName && (
+              <a className="tooltip-footer-item" href={`https://www.uniprot.org/uniprotkb/${protIdNoIsoform}/`} target="_blank" rel="noreferrer">
+                To UniProt
+              </a>
+            )}
+            {pdbId && (
+              <a className="tooltip-footer-item" href={`https://www.rcsb.org/structure/${pdbId}/`} target="_blank" rel="noreferrer">
+                To RCSB PDB
+              </a>
+            )}
+          </div>
         </div>
-        <div className="tooltip-body">
-          {fullName && (
-            <>
-              <b className="no-margin-bottom text-secondary">Full Name</b>
-              <div className="no-margin-top pad-bottom-05">{fullName}</div>
-            </>
-          )}
-          {isoforms && isoforms.length > 0 && (
-            <>
-              <b className="no-margin-bottom text-secondary">Protein-IDs and Phosphosites</b>
-              <div className="no-margin-top pad-bottom-05">{isoformContent}</div>
-            </>
-          )}
-          {groupContent && groupContent.length > 0 && (
-            <>
-              <b className="no-margin-bottom text-secondary">Gene/Protein Annotations</b>
-              <div className="no-margin-top pad-bottom-05">{groupContent}</div>
-              {description && (
-                <>
-                  <b className="no-margin-bottom text-secondary">Decription</b>
-                  <div className="no-margin-top pad-bottom-05">{description}</div>
-                </>
-              )}
-            </>
-          )}
-        </div>
-        {pdbId && <div className="pdb-viewer" ref={viewerRef}></div>}
-        <div className="tooltip-footer">
-          {fullName && (
-            <a className="tooltip-footer-item" href={`https://www.uniprot.org/uniprotkb/${protIdNoIsoform}/`} target="_blank" rel="noreferrer">
-              To UniProt
-            </a>
-          )}
-          {pdbId && (
-            <a className="tooltip-footer-item" href={`https://www.rcsb.org/structure/${pdbId}/`} target="_blank" rel="noreferrer">
-              To RCSB PDB
-            </a>
-          )}
-
-          <span className="tooltip-footer-item tooltip-button" onClick={handleDeleteNode}>
-            <TrashIcon />
-          </span>
-        </div>
-      </div>
+      )}
     </div>
   );
 }
 
-export function HoverTooltip({ isActive, data }) {
+export function HoverTooltip({}) {
+  const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
+
   const [style, setStyle] = useState({});
   const [gene, setGene] = useState("");
 
   useEffect(() => {
-    const gene = data.node.split("_")[1];
+    if (!tooltipSettings.hoverTooltipData) return;
+
+    const gene = tooltipSettings.hoverTooltipData.node.split("_")[1];
     if (gene) setGene(gene);
-  }, [data]);
+  }, [tooltipSettings.hoverTooltipData]);
 
   useEffect(() => {
-    if (isActive) {
+    if (tooltipSettings.isHoverTooltipActive) {
       setStyle({
-        left: `${data.x + 15}px`,
-        top: `${data.y}px`,
+        left: `${tooltipSettings.hoverTooltipData.x + 15}px`,
+        top: `${tooltipSettings.hoverTooltipData.y}px`,
         opacity: 0.95,
         transition: "opacity 0.2s",
       });
@@ -272,35 +254,35 @@ export function HoverTooltip({ isActive, data }) {
         transition: "opacity 0.2s",
       });
     }
-  }, [isActive, data]);
+  }, [tooltipSettings.isHoverTooltipActive, tooltipSettings.hoverTooltipData]);
 
   return (
     <div className="tooltip" style={style}>
-      <b>{gene || data.node}</b>
+      {style.opacity > 0 && <b>{gene}</b>}
     </div>
   );
 }
 
-export function initTooltips(circle, node, setIsHoverTooltipActive, setHoverTooltipData, setIsClickTooltipActive, setClickTooltipData) {
+export function initTooltips(circle, node, setTooltipSettings) {
   circle.on("mouseover", (mouseData) => {
-    setIsHoverTooltipActive(true);
-    setHoverTooltipData({
+    setTooltipSettings("hoverTooltipData", {
       node: node.id,
       nodeGroups: node.groups,
       x: mouseData.originalEvent.pageX,
       y: mouseData.originalEvent.pageY,
     });
+    setTooltipSettings("isHoverTooltipActive", true);
   });
   circle.on("mouseout", () => {
-    setIsHoverTooltipActive(false);
+    setTooltipSettings("isHoverTooltipActive", false);
   });
   circle.on("click", (mouseData) => {
-    setIsClickTooltipActive(true);
-    setClickTooltipData({
+    setTooltipSettings("clickTooltipData", {
       node: node.id,
       nodeGroups: node.groups,
       x: mouseData.originalEvent.pageX,
       y: mouseData.originalEvent.pageY,
     });
+    setTooltipSettings("isClickTooltipActive", true);
   });
 }

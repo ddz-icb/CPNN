@@ -3,24 +3,22 @@ import { ReactComponent as XIcon } from "../../icons/x.svg";
 import { ReactComponent as PaintRollerIcon } from "../../icons/paintRoller.svg";
 import { ReactComponent as SwatchBookIcon } from "../../icons/swatchbook.svg";
 import { ReactComponent as TrashIcon } from "../../icons/trash.svg";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import isEqual from "lodash/isEqual.js";
 
 import { Button, Item, UploadItem } from "./headerBar.js";
 import { useSettings } from "../../states.js";
 
-export function Colors({
-  handleUploadSchemeClick,
-  colorSchemeInputRef,
-  handleNewScheme,
-  colorSchemes,
-  handleDeleteColorScheme,
-  activeMenu,
-  handleActiveMenuClick,
-}) {
+export function Colors({ handleNewScheme, colorSchemes, handleDeleteColorScheme, activeMenu, handleActiveMenuClick }) {
   const { settings, setSettings } = useSettings();
 
+  const colorSchemeRef = useRef(null);
+
   let content = null;
+
+  const handleUploadSchemeClick = () => {
+    colorSchemeRef.current.click();
+  };
 
   if (activeMenu !== "ManageColorScheme" && activeMenu !== "ChooseColorScheme") {
     content = (
@@ -50,7 +48,7 @@ export function Colors({
             onClick={handleUploadSchemeClick}
             onChange={handleNewScheme}
             icon={<PaintRollerIcon />}
-            linkRef={colorSchemeInputRef}
+            linkRef={colorSchemeRef}
           ></UploadItem>
           <Item
             text={"Choose color scheme"}

@@ -2,9 +2,10 @@ import { ReactComponent as DeleteIcon } from "../../icons/delete.svg";
 import { ReactComponent as TrashIcon } from "../../icons/trash.svg";
 import { ReactComponent as PlusIcon } from "../../icons/plus.svg";
 import { Tooltip } from "react-tooltip";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { SidebarButtonRect, SidebarDropdownItem } from "./sidebar.js";
+import log from "../../logger.js";
 
 export function DataSidebar({
   activeFiles,
@@ -14,31 +15,16 @@ export function DataSidebar({
   handleDeleteGraphFile,
   handleAddFile,
   handleNewAnnotationMapping,
-  mappingInputRef,
-  handleUploadMappingClick,
   activeAnnotationMapping,
   handleRemoveActiveAnnotationMapping,
   uploadedMappings,
   handleAnnotationMappingSelect,
   handleDeleteAnnotationMapping,
-  handleGraphAbsUploadClick,
-  handleGraphZeroUploadClick,
-  graphAbsInputRef,
-  graphZeroInputRef,
   handleNewGraphFile,
 }) {
   return (
     <>
-      <TopDataButtons
-        handleGraphAbsUploadClick={handleGraphAbsUploadClick}
-        handleGraphZeroUploadClick={handleGraphZeroUploadClick}
-        handleNewGraphFile={handleNewGraphFile}
-        graphAbsInputRef={graphAbsInputRef}
-        graphZeroInputRef={graphZeroInputRef}
-        handleNewAnnotationMapping={handleNewAnnotationMapping}
-        mappingInputRef={mappingInputRef}
-        handleUploadMappingClick={handleUploadMappingClick}
-      />
+      <TopDataButtons handleNewGraphFile={handleNewGraphFile} handleNewAnnotationMapping={handleNewAnnotationMapping} />
       <ActiveFiles activeFiles={activeFiles} handleRemoveActiveGraphFile={handleRemoveActiveGraphFile} />
       <UploadedFiles
         uploadedFiles={uploadedFiles}
@@ -200,20 +186,27 @@ function ActiveAnnotationMapping({ activeAnnotationMapping, handleRemoveActiveAn
   );
 }
 
-export function TopDataButtons({
-  handleGraphAbsUploadClick,
-  handleGraphZeroUploadClick,
-  handleNewGraphFile,
-  graphAbsInputRef,
-  graphZeroInputRef,
-  handleUploadMappingClick,
-  handleNewAnnotationMapping,
-  mappingInputRef,
-}) {
+export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping }) {
+  const annotationMappingRef = useRef(null);
+  const graphAbsRef = useRef(null);
+  const graphZeroRef = useRef(null);
+
   const [dropdownActive, setDropdownActive] = useState(false);
 
   const handleMainButtonClick = () => {
     setDropdownActive(!dropdownActive);
+  };
+
+  const handleGraphAbsUploadClick = () => {
+    graphAbsRef.current.click();
+  };
+
+  const handleGraphZeroUploadClick = () => {
+    graphZeroRef.current.click();
+  };
+
+  const handleUploadMappingClick = () => {
+    annotationMappingRef.current.click();
   };
 
   let content = null;
@@ -225,7 +218,7 @@ export function TopDataButtons({
           <SidebarDropdownItem
             text={"take absolute value of link weights"}
             onClick={handleGraphAbsUploadClick}
-            linkRef={graphAbsInputRef}
+            linkRef={graphAbsRef}
             onChange={(event) => {
               const takeAbs = true;
               handleNewGraphFile(event, takeAbs);
@@ -234,7 +227,7 @@ export function TopDataButtons({
           <SidebarDropdownItem
             text={"set negative link weights to 0"}
             onClick={handleGraphZeroUploadClick}
-            linkRef={graphZeroInputRef}
+            linkRef={graphZeroRef}
             onChange={(event) => {
               const takeAbs = false;
               handleNewGraphFile(event, takeAbs);
@@ -253,13 +246,12 @@ export function TopDataButtons({
           tooltip={"Upload Graph as CSV/TSV Matrix or JSON File"}
           tooltipId={"upload-graph-tooltip"}
           onChange={handleNewGraphFile}
-          linkRef={graphAbsInputRef}
         />
         <SidebarButtonRect
           onClick={handleUploadMappingClick}
           onChange={handleNewAnnotationMapping}
           text={"Upload Gene/Protein Annotations"}
-          linkRef={mappingInputRef}
+          linkRef={annotationMappingRef}
           tooltip={"Upload Gene/Protein Annotation Mappings as TSV File"}
           tooltipId={"upload-graph-tooltip"}
         />

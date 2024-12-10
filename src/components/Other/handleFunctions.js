@@ -5,10 +5,10 @@ import { applyTheme, defaultColorSchemes, lightTheme } from "./appearance.js";
 import { addFileDB, fromAllGetNameDB, getByNameDB, getGraphDB, removeFileByNameDB } from "./db.js";
 import { parseAnnotationMapping, parseColorScheme, parseGraphFile } from "./parseFiles.js";
 
-export async function selectGraph(filename, setGraph, setActiveFiles) {
+export async function selectGraph(filename, setGraphData, setActiveFiles) {
   const { graph, file } = await getGraphDB(filename);
 
-  setGraph(graph);
+  setGraphData("graph", graph);
   setActiveFiles([file]);
   log.info("Graph Loaded Successfully:", graph);
 }
@@ -69,7 +69,7 @@ export async function deleteGraphFile(uploadedGraphNames, filename, setUploadedG
   removeFileByNameDB(filename);
 }
 
-export async function removeActiveGraphFile(file, activeFiles, setGraph, setActiveFiles) {
+export async function removeActiveGraphFile(file, activeFiles, setGraphData, setActiveFiles) {
   let stillActive = activeFiles.filter((f) => f.name !== file.name);
   if (stillActive.length === 0) stillActive = [exampleGraphJson];
 
@@ -80,20 +80,20 @@ export async function removeActiveGraphFile(file, activeFiles, setGraph, setActi
     graph = joinGraphs(graph, newGraph);
   }
 
-  setGraph(graph);
+  setGraphData("graph", graph);
   setActiveFiles(stillActive);
 }
 
-export async function addActiveGraphFile(filename, setGraph, setActiveFiles, oldGraph) {
+export async function addActiveGraphFile(filename, setGraphData, setActiveFiles, oldGraph) {
   const { graph, file } = await getGraphDB(filename);
   const combinedGraph = joinGraphs(oldGraph, graph);
-  setGraph(combinedGraph);
+  setGraphData("graph", combinedGraph);
   setActiveFiles((activeFiles) => [...activeFiles, file]);
 }
 
-export async function setInitGraph(setGraph, setActiveFiles) {
+export async function setInitGraph(setGraphData, setActiveFiles) {
   const graph = JSON.parse(exampleGraphJson.content);
-  setGraph(graph);
+  setGraphData("graph", graph);
   setActiveFiles([exampleGraphJson]);
 }
 

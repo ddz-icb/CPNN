@@ -5,20 +5,22 @@ import { ReactComponent as XIcon } from "../../icons/x.svg";
 import React from "react";
 
 import { Button, Item } from "./headerBar.js";
+import { useSettings } from "../../states.js";
 
-export function HeaderBarExport({ download, setDownload, activeMenu, handleActiveMenuClick }) {
+export function HeaderBarExport({ activeMenu, handleActiveMenuClick }) {
+  const { settings, setSettings } = useSettings();
   let content = null;
 
   const handleDownloadJsonClick = () => {
-    setDownload((prev) => ({ ...prev, downloadJson: !download.downloadJson }));
+    setSettings("download.json", !settings.download.json);
   };
 
   const handleDownloadPngClick = () => {
-    setDownload((prev) => ({ ...prev, downloadPng: !download.downloadPng }));
+    setSettings("download.png", !settings.download.png);
   };
 
   const handleDownloadSvgClick = () => {
-    setDownload((prev) => ({ ...prev, downloadSvg: !download.downloadSvg }));
+    setSettings("download.svg", !settings.download.svg);
   };
 
   if (activeMenu !== "Export") {

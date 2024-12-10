@@ -27,39 +27,22 @@ import {
   storeColorSchemes,
   storeTheme,
 } from "./components/Other/handleFunctions.js";
-import { useSettings } from "./states.js";
+import { useGraphData, useSettings } from "./states.js";
 
 function App() {
   const { settings, setSettings } = useSettings(); // includes physics, filter and appearance settings
+  const { graphData, setGraphData } = useGraphData(); // includes all data concerning the graph
 
-  const [reset, setReset] = useState(false); // true indicates that the simulation has to be reloaded
+  const [reset, setReset] = useState(false); // true indicates that the simulation (in forceGraph.js) has to be reloaded
 
   const [error, setError] = useState(null); // error gets printed on screen
-
-  const [graph, setGraph] = useState(null); // graph without modifications
-  const [graphCurrent, setGraphCurrent] = useState(null); // graph with modifications e.g. links filtered by threshold, it also contains the pixi node elements
 
   const [activeAnnotationMapping, setActiveAnnotationMapping] = useState(null); // active node annotation mapping
   const [uploadedAnnotationMappings, setUploadedAnnotationMappings] = useState(null); // uploaded node attribute mappings
 
-  const graphAbsInputRef = useRef(null); // reference to newly selected graph (link weights should be interpreted as absolute values)
-  const graphZeroInputRef = useRef(null); // reference to newly selected graph (negative link weights should be interpreted as 0)
-  const colorSchemeInputRef = useRef(null); // reference to newly selected color scheme
-  const mappingInputRef = useRef(null); // reference to newly selected mapping
-
   const [activeFiles, setActiveFiles] = useState(null); // currently active files
   const [uploadedGraphNames, setUploadedGraphNames] = useState([]); // names of all files in local storage
   const [colorSchemes, setColorSchemes] = useState(null); // all color schemes in local storage
-
-  const [nodeAttribsToColorIndices, setNodeAttribsToColorIndices] = useState(null); // mapping of the node attributes to color indices
-  const [linkAttribsToColorIndices, setLinkAttribsToColorIndices] = useState(null); // mapping of the link attributes to color indices
-
-  const [download, setDownload] = useState({
-    // on state change: indicates graph should be downloaded
-    downloadJson: null,
-    downloadPng: null,
-    downloadSvg: null,
-  });
 
   // sets corresponding graph after file selection
   const handleSelectGraph = (filename) => {
@@ -67,7 +50,7 @@ function App() {
     log.info("Replacing graph");
 
     try {
-      selectGraph(filename, setGraph, setActiveFiles);
+      selectGraph(filename, setGraphData, setActiveFiles);
       simulationReset();
     } catch (error) {
       setError("Error loading graph");
@@ -174,27 +157,11 @@ function App() {
     if (!file || !file.name) return;
     log.info("removing graph file with name:", file.name);
 
-    removeActiveGraphFile(file, activeFiles, setGraph, setActiveFiles);
+    removeActiveGraphFile(file, activeFiles, setGraphData, setActiveFiles);
     simulationReset();
   };
 
-  const handleGraphAbsUploadClick = () => {
-    graphAbsInputRef.current.click();
-  };
-
-  const handleGraphZeroUploadClick = () => {
-    graphZeroInputRef.current.click();
-  };
-
-  const handleUploadSchemeClick = () => {
-    colorSchemeInputRef.current.click();
-  };
-
-  const handleUploadMappingClick = () => {
-    mappingInputRef.current.click();
-  };
-
-  const handleAddActiveGraphFileClick = (filename) => {
+  const handleAddActiveGraphFile = (filename) => {
     if (!filename) return;
     if (activeFiles.some((file) => file.name === filename)) {
       setError("Graph already active");
@@ -204,7 +171,7 @@ function App() {
     log.info("Adding file with name: ", filename);
 
     try {
-      addActiveGraphFile(filename, setGraph, setActiveFiles, graph);
+      addActiveGraphFile(filename, setGraphData, setActiveFiles, graphData.graph);
       simulationReset();
     } catch (error) {
       setError("Error loading graph");
@@ -220,7 +187,7 @@ function App() {
 
     resetFilters();
     resetPhysics();
-    setDownload((prev) => ({ ...prev, downloadJson: null, downloadPng: null, downloadSvg: null }));
+    setSettings("download", { json: null, png: null, svg: null });
     setError(null);
     setReset(true);
   };
@@ -236,7 +203,7 @@ function App() {
   // select example graph on startup
   useEffect(() => {
     log.info("Setting init graph data");
-    setInitGraph(setGraph, setActiveFiles);
+    setInitGraph(setGraphData, setActiveFiles);
     simulationReset();
   }, []);
 
@@ -295,34 +262,28 @@ function App() {
 
   // forwards graph to forceGraph component //
   useEffect(() => {
-    if (!graph || !activeFiles) return;
+    if (!graphData.graph || !activeFiles) return;
     log.info("Modifying graph and forwarding it to the simulation component");
 
-    let newGraphCurrent = structuredClone(graph);
+    let newGraphCurrent = structuredClone(graphData.graph);
     newGraphCurrent = applyNodeMapping(newGraphCurrent, activeAnnotationMapping);
 
     const nodeAttribsToColorIndices = getNodeAttribsToColorIndices(newGraphCurrent);
-    setNodeAttribsToColorIndices(nodeAttribsToColorIndices);
+    setSettings("appearance.nodeAttribsToColorIndices", nodeAttribsToColorIndices);
 
     const linkAttribsToColorIndices = getLinkAttribsToColorIndices(newGraphCurrent);
-    setLinkAttribsToColorIndices(linkAttribsToColorIndices);
+    setSettings("appearance.linkAttribsToColorIndices", linkAttribsToColorIndices);
 
-    setGraphCurrent(newGraphCurrent);
-  }, [graph, activeFiles, activeAnnotationMapping]);
+    setGraphData("graphCurrent", newGraphCurrent);
+  }, [graphData.graph, activeFiles, activeAnnotationMapping]);
 
   return (
     <div className={settings.appearance.theme.name}>
       <HeaderBar
-        download={download}
-        setDownload={setDownload}
-        handleUploadSchemeClick={handleUploadSchemeClick}
-        colorSchemeInputRef={colorSchemeInputRef}
+        handleDeleteColorScheme={handleDeleteColorScheme}
         handleNewScheme={handleNewScheme}
         colorSchemes={colorSchemes}
         activeAnnotationMapping={activeAnnotationMapping}
-        handleDeleteColorScheme={handleDeleteColorScheme}
-        nodeAttribsToColorIndices={nodeAttribsToColorIndices}
-        linkAttribsToColorIndices={linkAttribsToColorIndices}
       />
       <Sidebar
         uploadedFiles={uploadedGraphNames}
@@ -330,36 +291,20 @@ function App() {
         handleSelectGraph={handleSelectGraph}
         handleDeleteGraphFile={handleDeleteGraphFile}
         handleRemoveActiveGraphFile={handleRemoveActiveGraphFile}
-        handleAddFile={handleAddActiveGraphFileClick}
+        handleAddFile={handleAddActiveGraphFile}
         handleNewAnnotationMapping={handleNewAnnotationMapping}
-        mappingInputRef={mappingInputRef}
-        handleUploadMappingClick={handleUploadMappingClick}
         activeAnnotationMapping={activeAnnotationMapping}
         handleRemoveActiveAnnotationMapping={handleRemoveActiveAnnotationMapping}
         uploadedMappings={uploadedAnnotationMappings}
         handleAnnotationMappingSelect={handleAnnotationMappingSelect}
         handleDeleteAnnotationMapping={handleDeleteAnnotationMapping}
-        handleGraphAbsUploadClick={handleGraphAbsUploadClick}
-        handleGraphZeroUploadClick={handleGraphZeroUploadClick}
         handleNewGraphFile={handleNewGraphFile}
         resetPhysics={resetPhysics}
         resetFilters={resetFilters}
-        graphAbsInputRef={graphAbsInputRef}
-        graphZeroInputRef={graphZeroInputRef}
       />
       <main>
         {error && <div className="errorStyle">{error}</div>}
-        <ForceGraph
-          reset={reset}
-          graphCurrent={graphCurrent}
-          download={download}
-          setReset={setReset}
-          setError={setError}
-          setGraphCurrent={setGraphCurrent}
-          activeAnnotationMapping={activeAnnotationMapping}
-          nodeAttribsToColorIndices={nodeAttribsToColorIndices}
-          linkAttribsToColorIndices={linkAttribsToColorIndices}
-        />
+        <ForceGraph reset={reset} setReset={setReset} setError={setError} activeAnnotationMapping={activeAnnotationMapping} />
       </main>
     </div>
   );

@@ -5,18 +5,7 @@ import { Colors } from "./headerBarColors.js";
 import { Mapping } from "./headerBarMapping.js";
 import { HeaderBarExport } from "./headerBarExport.js";
 
-export function HeaderBar({
-  download,
-  setDownload,
-  handleUploadSchemeClick,
-  colorSchemeInputRef,
-  handleNewScheme,
-  colorSchemes,
-  activeAnnotationMapping,
-  handleDeleteColorScheme,
-  nodeAttribsToColorIndices,
-  linkAttribsToColorIndices,
-}) {
+export function HeaderBar({ handleNewScheme, colorSchemes, activeAnnotationMapping, handleDeleteColorScheme }) {
   const [activeMenu, setActiveMenu] = useState("None");
 
   const handleActiveMenuClick = (item) => {
@@ -29,23 +18,15 @@ export function HeaderBar({
 
   return (
     <div className="top-right-buttons">
-      <Mapping
-        mapping={activeAnnotationMapping}
-        activeMenu={activeMenu}
-        handleActiveMenuClick={handleActiveMenuClick}
-        nodeAttribsToColorIndices={nodeAttribsToColorIndices}
-        linkAttribsToColorIndices={linkAttribsToColorIndices}
-      />
+      <Mapping mapping={activeAnnotationMapping} activeMenu={activeMenu} handleActiveMenuClick={handleActiveMenuClick} />
       <Colors
-        handleUploadSchemeClick={handleUploadSchemeClick}
-        colorSchemeInputRef={colorSchemeInputRef}
         handleNewScheme={handleNewScheme}
         colorSchemes={colorSchemes}
         handleDeleteColorScheme={handleDeleteColorScheme}
         activeMenu={activeMenu}
         handleActiveMenuClick={handleActiveMenuClick}
       />
-      <HeaderBarExport download={download} setDownload={setDownload} activeMenu={activeMenu} handleActiveMenuClick={handleActiveMenuClick} />
+      <HeaderBarExport activeMenu={activeMenu} handleActiveMenuClick={handleActiveMenuClick} />
     </div>
   );
 }

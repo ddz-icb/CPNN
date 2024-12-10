@@ -16,20 +16,14 @@ export function Sidebar({
   handleRemoveActiveGraphFile,
   handleAddFile,
   handleNewAnnotationMapping,
-  mappingInputRef,
-  handleUploadMappingClick,
   activeAnnotationMapping,
   handleRemoveActiveAnnotationMapping,
   uploadedMappings,
   handleAnnotationMappingSelect,
   handleDeleteAnnotationMapping,
-  handleGraphAbsUploadClick,
-  handleGraphZeroUploadClick,
   handleNewGraphFile,
   resetPhysics,
   resetFilters,
-  graphAbsInputRef,
-  graphZeroInputRef,
 }) {
   const [activeNavItem, setActiveNavItem] = useState("Main");
 
@@ -60,18 +54,12 @@ export function Sidebar({
           handleDeleteGraphFile={handleDeleteGraphFile}
           handleAddFile={handleAddFile}
           handleNewAnnotationMapping={handleNewAnnotationMapping}
-          mappingInputRef={mappingInputRef}
-          handleUploadMappingClick={handleUploadMappingClick}
           activeAnnotationMapping={activeAnnotationMapping}
           handleRemoveActiveAnnotationMapping={handleRemoveActiveAnnotationMapping}
           uploadedMappings={uploadedMappings}
           handleAnnotationMappingSelect={handleAnnotationMappingSelect}
           handleDeleteAnnotationMapping={handleDeleteAnnotationMapping}
-          handleGraphAbsUploadClick={handleGraphAbsUploadClick}
-          handleGraphZeroUploadClick={handleGraphZeroUploadClick}
           handleNewGraphFile={handleNewGraphFile}
-          graphAbsInputRef={graphAbsInputRef}
-          graphZeroInputRef={graphZeroInputRef}
         />
       </Navbar>
     );

@@ -238,15 +238,6 @@ export function filterNodes(graph, filterRequest) {
   return graph;
 }
 
-export function deleteNode(graph, circles, nodeToDelete) {
-  let filteredGraph = {
-    ...graph,
-    nodes: graph.nodes.filter((node) => node.id !== nodeToDelete),
-  };
-
-  return filteredGraph;
-}
-
 export function filterActiveCircles(circles, graph, circleNodeMap) {
   circles.children.forEach((circle) => (circle.visible = false));
   graph.nodes.forEach((node) => {

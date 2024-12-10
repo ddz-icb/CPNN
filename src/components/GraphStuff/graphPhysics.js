@@ -2,7 +2,7 @@ import * as d3 from "d3";
 
 const accuracyBarnesHut = 0.1;
 const maxDistanceChargeForce = 300;
-export const nodeRepulsionMultiplier = -100;
+export const nodeRepulsionMultiplier = -300;
 export const borderMultiplier = 10;
 
 export function getSimulation(width, height, linkLength, xStrength, yStrength, nodeRepulsionStrength) {
