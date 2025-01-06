@@ -7,6 +7,7 @@ import { useRef, useState } from "react";
 import { SidebarButtonRect, SidebarDropdownItem } from "./sidebar.js";
 import log from "../../logger.js";
 import { useGraphData } from "../../states.js";
+import { exampleGraphJson } from "../../demographs/exampleGraphJSON.js";
 
 export function DataSidebar({
   handleRemoveActiveGraphFile,
@@ -26,7 +27,7 @@ export function DataSidebar({
       <TopDataButtons handleNewGraphFile={handleNewGraphFile} handleNewAnnotationMapping={handleNewAnnotationMapping} />
       <ActiveFiles activeGraphFileNames={graphData.activeGraphFileNames} handleRemoveActiveGraphFile={handleRemoveActiveGraphFile} />
       <UploadedFiles
-        uploadedFiles={graphData.uploadedGraphFileNames}
+        uploadedGraphFileNames={graphData.uploadedGraphFileNames}
         handleSelectGraph={handleSelectGraph}
         handleDeleteGraphFile={handleDeleteGraphFile}
         handleAddFile={handleAddFile}
@@ -44,13 +45,15 @@ export function DataSidebar({
   );
 }
 
-function UploadedFiles({ uploadedFiles, handleSelectGraph, handleDeleteGraphFile, handleAddFile }) {
+function UploadedFiles({ uploadedGraphFileNames, handleSelectGraph, handleDeleteGraphFile, handleAddFile }) {
+  let uploadedGraphFileNamesNoExample = uploadedGraphFileNames.filter((name) => name != exampleGraphJson.name);
+
   return (
     <>
       <b className="heading-label">Uploaded Files</b>
       <table className="recent-item-table">
         <tbody>
-          {uploadedFiles?.map((filename, index) => (
+          {uploadedGraphFileNamesNoExample?.map((filename, index) => (
             <tr key={index} className="recent-item-entry recent-item-entry-highlight">
               <td className="recent-item-text sidebar-tooltip-wrapper" onClick={() => handleSelectGraph(filename)}>
                 <div data-tooltip-id={`replace-tooltip-${index}`} data-tooltip-content="Replace Active Graphs" className="pad-left-025">
@@ -72,9 +75,14 @@ function UploadedFiles({ uploadedFiles, handleSelectGraph, handleDeleteGraphFile
               </td>
             </tr>
           ))}
-          {(!uploadedFiles || uploadedFiles.length === 0) && (
+          {(!uploadedGraphFileNamesNoExample || uploadedGraphFileNamesNoExample.length === 0) && (
             <tr className="recent-item-entry">
-              <td>None</td>
+              <td className="recent-item-text sidebar-tooltip-wrapper" onClick={() => handleSelectGraph(exampleGraphJson.name)}>
+                <div data-tooltip-id={`replace-tooltip-example`} data-tooltip-content="Replace Active Graphs" className="pad-left-025">
+                  {exampleGraphJson.name}
+                </div>
+                <Tooltip id={`replace-tooltip-example`} place="top" effect="solid" className="sidebar-tooltip" />
+              </td>
             </tr>
           )}
         </tbody>

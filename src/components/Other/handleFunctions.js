@@ -42,7 +42,7 @@ export function removeColorScheme(colorSchemes, setColorSchemes, colorSchemeName
 export async function addNewGraphFile(file, uploadedGraphFileNames, setGraphData, takeAbs) {
   const graphFile = await parseGraphFile(file, takeAbs);
   addGraphFileDB(graphFile);
-  setGraphData("uploadedGraphFileNames", [...uploadedGraphFileNames, file.name]);
+  setGraphData("uploadedGraphFileNames", [...(uploadedGraphFileNames || []), file.name]);
 }
 
 export async function addNewColorScheme(file, setColorSchemes) {

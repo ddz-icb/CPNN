@@ -1,3 +1,4 @@
+import { exampleGraphJson } from "../../demographs/exampleGraphJSON.js";
 import log from "../../logger.js";
 import Dexie from "dexie";
 
@@ -49,6 +50,11 @@ export async function removeGraphFileDB(id) {
 }
 
 export async function removeGraphFileByNameDB(name) {
+  if (name == exampleGraphJson.name) {
+    log.warn("The example graph cannot be removed");
+    return;
+  }
+
   try {
     const file = await db.uploadedFiles.where("name").equals(name).first();
     if (file) {
