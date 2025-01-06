@@ -266,7 +266,7 @@ function App() {
 
   // forwards graph to forceGraph component //
   useEffect(() => {
-    if (!graphData.originGraph || !graphData.activeGraphFileNames) return;
+    if (!graphData.originGraph || !graphData.activeGraphFileNames || graphData.filteredAfterStart) return;
     log.info("Modifying graph and forwarding it to the simulation component");
 
     let newGraph = structuredClone(graphData.originGraph);
@@ -281,7 +281,7 @@ function App() {
     log.info("OLDGRAPH", graphData);
     log.info("NEWGRAPH", newGraph.nodes);
     setGraphData("graph", newGraph);
-  }, [graphData.originGraph, graphData.activeGraphFileNames, graphData.activeAnnotationMapping]);
+  }, [graphData.originGraph, graphData.activeGraphFileNames, graphData.activeAnnotationMapping, graphData.filteredAfterStart]);
 
   return (
     <div className={settings.appearance.theme.name}>
