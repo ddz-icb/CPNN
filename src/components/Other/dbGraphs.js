@@ -1,13 +1,13 @@
 import log from "../../logger.js";
 import Dexie from "dexie";
 
-export const db = new Dexie("myDatabase");
+export const db = new Dexie("graphs");
 
 db.version(1).stores({
   uploadedFiles: "++id, name",
 });
 
-export async function addFileDB(file) {
+export async function addGraphFileDB(file) {
   try {
     const id = await db.uploadedFiles.add({
       name: file.name,
@@ -20,7 +20,26 @@ export async function addFileDB(file) {
   }
 }
 
-export async function removeFileDB(id) {
+export async function addGraphFileIfNotExistsDB(file) {
+  try {
+    const graph = await getByGraphNameDB(file.name);
+    if (graph) {
+      log.info("Graph with this name already exists");
+      return;
+    }
+
+    const id = await db.uploadedFiles.add({
+      name: file.name,
+      content: file.content,
+    });
+
+    log.info(`File ${file.name} successfully added. Got id ${id}`);
+  } catch (error) {
+    log.error(`Failed to add ${file.name}: ${error}`);
+  }
+}
+
+export async function removeGraphFileDB(id) {
   try {
     await db.uploadedFiles.delete(id);
     log.info(`File with id ${id} successfully removed.`);
@@ -29,7 +48,7 @@ export async function removeFileDB(id) {
   }
 }
 
-export async function removeFileByNameDB(name) {
+export async function removeGraphFileByNameDB(name) {
   try {
     const file = await db.uploadedFiles.where("name").equals(name).first();
     if (file) {
@@ -43,7 +62,7 @@ export async function removeFileByNameDB(name) {
   }
 }
 
-export async function fromAllGetNameDB() {
+export async function fromAllGetGraphNameDB() {
   try {
     const names = [];
     await db.uploadedFiles.toCollection().each((file) => {
@@ -58,7 +77,7 @@ export async function fromAllGetNameDB() {
   }
 }
 
-export async function getByNameDB(name) {
+export async function getByGraphNameDB(name) {
   try {
     const file = await db.uploadedFiles.where("name").equals(name).first();
     if (file) {
@@ -74,7 +93,7 @@ export async function getByNameDB(name) {
 }
 
 export async function getGraphDB(filename) {
-  const file = await getByNameDB(filename);
+  const file = await getByGraphNameDB(filename);
   if (!file || !file.content) throw new Error(`No file found with the name ${filename}.`);
 
   const graph = JSON.parse(file.content);

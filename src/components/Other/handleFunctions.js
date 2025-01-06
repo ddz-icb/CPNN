@@ -2,14 +2,14 @@ import { exampleGraphJson } from "../../demographs/exampleGraphJSON.js";
 import log from "../../logger.js";
 import { joinGraphs } from "../GraphStuff/graphCalculations.js";
 import { applyTheme, defaultColorSchemes, lightTheme } from "./appearance.js";
-import { addFileDB, fromAllGetNameDB, getGraphDB, removeFileByNameDB } from "./db.js";
+import { addGraphFileDB, addGraphFileIfNotExistsDB, fromAllGetGraphNameDB, getGraphDB, removeGraphFileByNameDB } from "./dbGraphs.js";
 import { parseAnnotationMapping, parseColorScheme, parseGraphFile } from "./parseFiles.js";
 
 export async function selectGraph(filename, setGraphData) {
   const { graph, file } = await getGraphDB(filename);
 
   setGraphData("graph", graph);
-  setGraphData("activeGraphFiles", [file]);
+  setGraphData("activeGraphFileNames", [file.name]);
   log.info("Graph Loaded Successfully:", graph);
 }
 
@@ -41,7 +41,7 @@ export function removeColorScheme(colorSchemes, setColorSchemes, colorSchemeName
 
 export async function addNewGraphFile(file, uploadedGraphFileNames, setGraphData, takeAbs) {
   const graphFile = await parseGraphFile(file, takeAbs);
-  addFileDB(graphFile);
+  addGraphFileDB(graphFile);
   setGraphData("uploadedGraphFileNames", [...uploadedGraphFileNames, file.name]);
 }
 
@@ -66,39 +66,48 @@ export async function deleteGraphFile(uploadedGraphFileNames, filename, setGraph
   });
 
   setGraphData("uploadedGraphFileNames", updatedGraphFileNames);
-  removeFileByNameDB(filename);
+  removeGraphFileByNameDB(filename);
 }
 
-export async function removeActiveGraphFile(file, activeFiles, setGraphData) {
-  let stillActive = activeFiles.filter((f) => f.name !== file.name);
-  if (stillActive.length === 0) stillActive = [exampleGraphJson];
-
-  // no error handling since these graphs were previously active already
-  let graph = JSON.parse(stillActive[0].content);
-  for (let i = 1; i < stillActive.length; i++) {
-    const newGraph = JSON.parse(stillActive[i].content);
-    graph = joinGraphs(graph, newGraph);
+export async function removeActiveGraphFile(filename, activeGraphFileNames, setGraphData) {
+  let stillActiveFileNames = activeGraphFileNames.filter((name) => name !== filename);
+  if (stillActiveFileNames.length === 0) stillActiveFileNames = [exampleGraphJson.name];
+  try {
+    log.info("STILLEXISTS", stillActiveFileNames);
+    let { graph, file } = await getGraphDB(stillActiveFileNames[0]);
+    let combinedGraph = graph;
+    log.info("FIRSTGRAPH", combinedGraph);
+    for (let i = 1; i < stillActiveFileNames.length; i++) {
+      let { graph, file } = await getGraphDB(stillActiveFileNames[i]);
+      log.info("NEXT GRAPH", graph);
+      combinedGraph = joinGraphs(combinedGraph, graph);
+    }
+    setGraphData("graph", combinedGraph);
+    setGraphData("activeGraphFileNames", stillActiveFileNames);
+  } catch (error) {
+    log.error("the graph file doesn't exist. This shouldn't be possible");
+    return;
   }
-
-  setGraphData("graph", graph);
-  setGraphData("activeGraphFiles", stillActive);
 }
 
-export async function addActiveGraphFile(filename, activeGraphFiles, setGraphData, oldGraph) {
+export async function addActiveGraphFile(filename, activeGraphFileNames, setGraphData, oldGraph) {
   const { graph, file } = await getGraphDB(filename);
   const combinedGraph = joinGraphs(oldGraph, graph);
   setGraphData("graph", combinedGraph);
-  setGraphData("activeGraphFiles", [...activeGraphFiles, file]);
+  setGraphData("activeGraphFileNames", [...activeGraphFileNames, filename]);
 }
 
 export async function setInitGraph(setGraphData) {
+  log.info("Making sure example graph is in DB");
+
   const graph = JSON.parse(exampleGraphJson.content);
+  addGraphFileIfNotExistsDB(exampleGraphJson);
   setGraphData("graph", graph);
-  setGraphData("activeGraphFiles", [exampleGraphJson]);
+  setGraphData("activeGraphFileNames", [exampleGraphJson.name]);
 }
 
 export async function loadFileNames(setGraphData) {
-  const filenames = await fromAllGetNameDB();
+  const filenames = await fromAllGetGraphNameDB();
   setGraphData("uploadedGraphFileNames", filenames);
 }
 

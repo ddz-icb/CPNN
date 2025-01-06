@@ -24,7 +24,7 @@ export function DataSidebar({
   return (
     <>
       <TopDataButtons handleNewGraphFile={handleNewGraphFile} handleNewAnnotationMapping={handleNewAnnotationMapping} />
-      <ActiveFiles activeGraphFiles={graphData.activeGraphFiles} handleRemoveActiveGraphFile={handleRemoveActiveGraphFile} />
+      <ActiveFiles activeGraphFileNames={graphData.activeGraphFileNames} handleRemoveActiveGraphFile={handleRemoveActiveGraphFile} />
       <UploadedFiles
         uploadedFiles={graphData.uploadedGraphFileNames}
         handleSelectGraph={handleSelectGraph}
@@ -50,23 +50,23 @@ function UploadedFiles({ uploadedFiles, handleSelectGraph, handleDeleteGraphFile
       <b className="heading-label">Uploaded Files</b>
       <table className="recent-item-table">
         <tbody>
-          {uploadedFiles?.map((name, index) => (
+          {uploadedFiles?.map((filename, index) => (
             <tr key={index} className="recent-item-entry recent-item-entry-highlight">
-              <td className="recent-item-text sidebar-tooltip-wrapper" onClick={() => handleSelectGraph(name)}>
+              <td className="recent-item-text sidebar-tooltip-wrapper" onClick={() => handleSelectGraph(filename)}>
                 <div data-tooltip-id={`replace-tooltip-${index}`} data-tooltip-content="Replace Active Graphs" className="pad-left-025">
-                  {name}
+                  {filename}
                 </div>
                 <Tooltip id={`replace-tooltip-${index}`} place="top" effect="solid" className="sidebar-tooltip" />
               </td>
               <td className="recent-item-logo sidebar-tooltip-wrapper">
-                <PlusIcon data-tooltip-id={`add-tooltip-${index}`} data-tooltip-content="Set Graph Active" onClick={() => handleAddFile(name)} />
+                <PlusIcon data-tooltip-id={`add-tooltip-${index}`} data-tooltip-content="Set Graph Active" onClick={() => handleAddFile(filename)} />
                 <Tooltip id={`add-tooltip-${index}`} place="top" effect="solid" className="sidebar-tooltip" />
               </td>
               <td className="recent-item-logo sidebar-tooltip-wrapper">
                 <TrashIcon
                   data-tooltip-id={`delete-tooltip-${index}`}
                   data-tooltip-content="Delete Graph"
-                  onClick={() => handleDeleteGraphFile(name)}
+                  onClick={() => handleDeleteGraphFile(filename)}
                 />
                 <Tooltip id={`delete-tooltip-${index}`} place="top" effect="solid" className="sidebar-tooltip" />
               </td>
@@ -83,22 +83,22 @@ function UploadedFiles({ uploadedFiles, handleSelectGraph, handleDeleteGraphFile
   );
 }
 
-function ActiveFiles({ activeGraphFiles, handleRemoveActiveGraphFile }) {
+function ActiveFiles({ activeGraphFileNames, handleRemoveActiveGraphFile }) {
   return (
     <>
       <b className="heading-label">Currently Active Files</b>
       <table className="active-item-table">
         <tbody>
-          {activeGraphFiles?.map((file, index) => (
+          {activeGraphFileNames?.map((filename, index) => (
             <tr key={index} className="recent-item-entry">
               <td>
-                <span className="pad-left-025">{file.name}</span>
+                <span className="pad-left-025">{filename}</span>
               </td>
               <td className="recent-item-logo sidebar-tooltip-wrapper">
                 <DeleteIcon
                   data-tooltip-id={`remove-tooltip-${index}`}
                   data-tooltip-content="Remove Graph"
-                  onClick={() => handleRemoveActiveGraphFile(file)}
+                  onClick={() => handleRemoveActiveGraphFile(filename)}
                 />
                 <Tooltip id={`remove-tooltip-${index}`} place="top" effect="solid" className="sidebar-tooltip" />
               </td>

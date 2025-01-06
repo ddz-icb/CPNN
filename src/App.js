@@ -34,7 +34,6 @@ function App() {
   const { graphData, setGraphData } = useGraphData(); // includes all data concerning the graph
 
   const [reset, setReset] = useState(false); // true indicates that the simulation (in forceGraph.js) has to be reloaded
-
   const [error, setError] = useState(null); // error gets printed on screen
 
   const [colorSchemes, setColorSchemes] = useState(null); // all color schemes in local storage
@@ -142,23 +141,28 @@ function App() {
   // deletes uploaded files with filename //
   const handleDeleteGraphFile = (filename) => {
     if (!filename) return;
+    if (graphData.activeGraphFileNames.includes(filename)) {
+      log.warn("Graph is still active. Cannot remove graph");
+      setError("Graph is still active. Cannot remove graph");
+      return;
+    }
     log.info("Deleting files with name", filename);
 
     deleteGraphFile(graphData.uploadedGraphFileNames, filename, setGraphData);
   };
 
   // removes graph file from currently active files //
-  const handleRemoveActiveGraphFile = (file) => {
-    if (!file || !file.name) return;
-    log.info("removing graph file with name:", file.name);
+  const handleRemoveActiveGraphFile = (filename) => {
+    if (!filename) return;
+    log.info("removing graph file with name:", filename);
 
-    removeActiveGraphFile(file, graphData.activeGraphFiles, setGraphData);
+    removeActiveGraphFile(filename, graphData.activeGraphFileNames, setGraphData);
     simulationReset();
   };
 
   const handleAddActiveGraphFile = (filename) => {
     if (!filename) return;
-    if (graphData.activeGraphFiles.some((file) => file.name === filename)) {
+    if (graphData.activeGraphFileNames.some((name) => name === filename)) {
       setError("Graph already active");
       log.error("Graph already active");
       return;
@@ -166,7 +170,7 @@ function App() {
     log.info("Adding file with name: ", filename);
 
     try {
-      addActiveGraphFile(filename, graphData.activeGraphFiles, setGraphData, graphData.graph);
+      addActiveGraphFile(filename, graphData.activeGraphFileNames, setGraphData, graphData.graph);
       simulationReset();
     } catch (error) {
       setError("Error loading graph");
@@ -177,7 +181,7 @@ function App() {
 
   // initates reset //
   const simulationReset = () => {
-    if (!graphData.activeGraphFiles) return;
+    if (!graphData.activeGraphFileNames) return;
     log.info("Handle Simulation Reset");
 
     resetFilters();
@@ -257,7 +261,7 @@ function App() {
 
   // forwards graph to forceGraph component //
   useEffect(() => {
-    if (!graphData.graph || !graphData.activeGraphFiles) return;
+    if (!graphData.graph || !graphData.activeGraphFileNames) return;
     log.info("Modifying graph and forwarding it to the simulation component");
 
     let newGraphCurrent = structuredClone(graphData.graph);
@@ -270,7 +274,7 @@ function App() {
     setSettings("appearance.linkAttribsToColorIndices", linkAttribsToColorIndices);
 
     setGraphData("graphCurrent", newGraphCurrent);
-  }, [graphData.graph, graphData.activeGraphFiles, graphData.activeAnnotationMapping]);
+  }, [graphData.graph, graphData.activeGraphFileNames, graphData.activeAnnotationMapping]);
 
   return (
     <div className={settings.appearance.theme.name}>
