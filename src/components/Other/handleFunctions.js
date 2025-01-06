@@ -8,7 +8,7 @@ import { parseAnnotationMapping, parseColorScheme, parseGraphFile } from "./pars
 export async function selectGraph(filename, setGraphData) {
   const { graph, file } = await getGraphDB(filename);
 
-  setGraphData("graph", graph);
+  setGraphData("originGraph", graph);
   setGraphData("activeGraphFileNames", [file.name]);
   log.info("Graph Loaded Successfully:", graph);
 }
@@ -82,7 +82,7 @@ export async function removeActiveGraphFile(filename, activeGraphFileNames, setG
       log.info("NEXT GRAPH", graph);
       combinedGraph = joinGraphs(combinedGraph, graph);
     }
-    setGraphData("graph", combinedGraph);
+    setGraphData("originGraph", combinedGraph);
     setGraphData("activeGraphFileNames", stillActiveFileNames);
   } catch (error) {
     log.error("the graph file doesn't exist. This shouldn't be possible");
@@ -93,7 +93,7 @@ export async function removeActiveGraphFile(filename, activeGraphFileNames, setG
 export async function addActiveGraphFile(filename, activeGraphFileNames, setGraphData, oldGraph) {
   const { graph, file } = await getGraphDB(filename);
   const combinedGraph = joinGraphs(oldGraph, graph);
-  setGraphData("graph", combinedGraph);
+  setGraphData("originGraph", combinedGraph);
   setGraphData("activeGraphFileNames", [...activeGraphFileNames, filename]);
 }
 
@@ -102,7 +102,7 @@ export async function setInitGraph(setGraphData) {
 
   const graph = JSON.parse(exampleGraphJson.content);
   addGraphFileIfNotExistsDB(exampleGraphJson);
-  setGraphData("graph", graph);
+  setGraphData("originGraph", graph);
   setGraphData("activeGraphFileNames", [exampleGraphJson.name]);
 }
 

@@ -54,7 +54,7 @@ export function ForceGraph({ reset, setReset, setError }) {
 
   // init Pixi //
   useEffect(() => {
-    if (!containerRef.current || app || !graphData.graphCurrent) return;
+    if (!containerRef.current || app || !graphData.graph) return;
     log.info("Init PIXI app");
 
     const containerRect = containerRef.current.getBoundingClientRect();
@@ -86,14 +86,14 @@ export function ForceGraph({ reset, setReset, setError }) {
     };
 
     initPIXI();
-  }, [containerRef, graphData.graphCurrent]);
+  }, [containerRef, graphData.graph]);
 
   // set stage //
   useEffect(() => {
     if (
       graphData.circles ||
       !app ||
-      !graphData.graphCurrent ||
+      !graphData.graph ||
       !settings.container.width ||
       !settings.container.height ||
       !settings.appearance.theme ||
@@ -107,9 +107,9 @@ export function ForceGraph({ reset, setReset, setError }) {
     app.stage.addChild(newLines);
     app.stage.addChild(newCircles);
 
-    const offsetSpawnValue = graphData.graphCurrent.nodes.length * 10;
+    const offsetSpawnValue = graphData.graph.nodes.length * 10;
     const circleNodeMap = {};
-    for (const node of graphData.graphCurrent.nodes) {
+    for (const node of graphData.graph.nodes) {
       let circle = new PIXI.Graphics();
       circle = drawCircle(
         circle,
@@ -134,11 +134,11 @@ export function ForceGraph({ reset, setReset, setError }) {
       circles: newCircles,
       circleNodeMap: circleNodeMap,
     }));
-  }, [app, graphData.graphCurrent]);
+  }, [app, graphData.graph]);
 
   // init simulation //
   useEffect(() => {
-    if (!app || !graphData.graphCurrent || simulation) {
+    if (!app || !graphData.graph || simulation) {
       return;
     }
     log.info("Init simulation");
@@ -154,22 +154,22 @@ export function ForceGraph({ reset, setReset, setError }) {
     initDragAndZoom(app, newSimulation, radius, setTooltipSettings, settings.container.width, settings.container.height);
 
     setSimulation(newSimulation);
-  }, [app, graphData.graphCurrent]);
+  }, [app, graphData.graph]);
 
   // running simulation //
   useEffect(() => {
-    if (!graphData.circles || !graphData.graphCurrent || !simulation || !graphData.filteredAfterStart || !graphData.lines) return;
-    log.info("Running simulation with the following graph:", graphData.graphCurrent);
+    if (!graphData.circles || !graphData.graph || !simulation || !graphData.filteredAfterStart || !graphData.lines) return;
+    log.info("Running simulation with the following graph:", graphData.graph);
 
     try {
       let activeCircles = graphData.circles.children.filter((circle) => circle.visible);
 
       simulation
-        .on("tick.redraw", () => redraw(graphData.graphCurrent))
+        .on("tick.redraw", () => redraw(graphData.graph))
         .on("end", render)
         .nodes(activeCircles)
         .force("link")
-        .links(graphData.graphCurrent.links);
+        .links(graphData.graph.links);
 
       // restart the simulation and reheat if necessary to make sure everything is being rerendered correctly
       simulation.restart();
@@ -192,7 +192,7 @@ export function ForceGraph({ reset, setReset, setError }) {
         simulation.stop();
       }
     };
-  }, [graphData.graphCurrent, graphData.circles, simulation]);
+  }, [graphData.graph, graphData.circles, simulation]);
 
   // resize the canvas on window resize //
   useEffect(() => {
@@ -207,23 +207,23 @@ export function ForceGraph({ reset, setReset, setError }) {
 
   // store all links in variable at start to enable filtering etc. //
   useEffect(() => {
-    if (!graphData.graphCurrent || graphData.linksStored) return;
-    log.info("saving link data", graphData.graphCurrent.links);
+    if (!graphData.graph || graphData.linksStored) return;
+    log.info("saving link data", graphData.graph.links);
 
     // deep clone so allLinks doesn't change
-    setGraphData("allLinks", cloneDeep(graphData.graphCurrent.links));
+    setGraphData("allLinks", cloneDeep(graphData.graph.links));
     setGraphData("linksStored", true);
-  }, [graphData.graphCurrent]);
+  }, [graphData.graph]);
 
   // store all nodes in variable at start to enable filtering //
   useEffect(() => {
-    if (!graphData.graphCurrent || graphData.nodesStored) return;
-    log.info("saving node data", graphData.graphCurrent.nodes);
+    if (!graphData.graph || graphData.nodesStored) return;
+    log.info("saving node data", graphData.graph.nodes);
 
     // deep clone so allNodes doesn't change
-    setGraphData("allNodes", cloneDeep(graphData.graphCurrent.nodes));
+    setGraphData("allNodes", cloneDeep(graphData.graph.nodes));
     setGraphData("nodesStored", true);
-  }, [graphData.graphCurrent]);
+  }, [graphData.graph]);
 
   // redraw runs while the simulation is active //
   function redraw(graph) {

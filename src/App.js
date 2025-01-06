@@ -68,10 +68,15 @@ function App() {
 
   // adds new graph file //
   const handleNewGraphFile = async (event, takeAbs) => {
-    if (!event || !event.target || !event.target.files[0]) return;
-    log.info("Adding new file");
-
     const file = event.target.files[0];
+    if (!event || !event.target || !file) return;
+    if (graphData.uploadedGraphFileNames.includes(file.name)) {
+      log.warn("Graph with this name already exists");
+      setError("Graph with this name already exists");
+      return;
+    }
+    log.info("Adding new graph file");
+
     addNewGraphFile(file, graphData.uploadedGraphFileNames, setGraphData, takeAbs)
       .then(() => {})
       .catch((error) => {
@@ -170,7 +175,7 @@ function App() {
     log.info("Adding file with name: ", filename);
 
     try {
-      addActiveGraphFile(filename, graphData.activeGraphFileNames, setGraphData, graphData.graph);
+      addActiveGraphFile(filename, graphData.activeGraphFileNames, setGraphData, graphData.originGraph);
       simulationReset();
     } catch (error) {
       setError("Error loading graph");
@@ -261,20 +266,20 @@ function App() {
 
   // forwards graph to forceGraph component //
   useEffect(() => {
-    if (!graphData.graph || !graphData.activeGraphFileNames) return;
+    if (!graphData.originGraph || !graphData.activeGraphFileNames) return;
     log.info("Modifying graph and forwarding it to the simulation component");
 
-    let newGraphCurrent = structuredClone(graphData.graph);
-    newGraphCurrent = applyNodeMapping(newGraphCurrent, graphData.activeAnnotationMapping);
+    let newGraph = structuredClone(graphData.originGraph);
+    newGraph = applyNodeMapping(newGraph, graphData.activeAnnotationMapping);
 
-    const nodeAttribsToColorIndices = getNodeAttribsToColorIndices(newGraphCurrent);
+    const nodeAttribsToColorIndices = getNodeAttribsToColorIndices(newGraph);
     setSettings("appearance.nodeAttribsToColorIndices", nodeAttribsToColorIndices);
 
-    const linkAttribsToColorIndices = getLinkAttribsToColorIndices(newGraphCurrent);
+    const linkAttribsToColorIndices = getLinkAttribsToColorIndices(newGraph);
     setSettings("appearance.linkAttribsToColorIndices", linkAttribsToColorIndices);
 
-    setGraphData("graphCurrent", newGraphCurrent);
-  }, [graphData.graph, graphData.activeGraphFileNames, graphData.activeAnnotationMapping]);
+    setGraphData("graph", newGraph);
+  }, [graphData.originGraph, graphData.activeGraphFileNames, graphData.activeAnnotationMapping]);
 
   return (
     <div className={settings.appearance.theme.name}>

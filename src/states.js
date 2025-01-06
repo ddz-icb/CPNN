@@ -103,8 +103,8 @@ export const useTooltipSettings = create((set) => ({
 
 export const useGraphData = create((set) => ({
   graphData: {
-    graph: null, // graph without modifications
-    graphCurrent: null, // graph with modifications e.g. links filtered by threshold, it also contains the pixi node elements
+    originGraph: null, // graph without modifications
+    graph: null, // graph with modifications e.g. links filtered by threshold, it also contains the pixi node elements
 
     activeGraphFileNames: null, // currently active file names
     uploadedGraphFileNames: [], // names of all graph files in local storage
