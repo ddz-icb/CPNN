@@ -112,11 +112,11 @@ export const useGraphData = create((set) => ({
     activeAnnotationMapping: null, // active node annotation mapping
     uploadedAnnotationMappings: null, // uploaded node annotation mappings
 
+    filteredAfterStart: false,
     linksStored: false, // indicates whether allLinks are already stored
     nodesStored: false, // indicates whether allNodes are already stored
     allLinks: null, // default values of the links
     allNodes: null, // default values of the nodes
-    filteredAfterStart: false,
     circleNodeMap: null, // mapping from circles to nodes
     circles: null, // PIXI containers for drawing the nodes
     lines: null, // PIXI container (singular!) for drawing the edges
