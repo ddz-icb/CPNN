@@ -73,13 +73,10 @@ export async function removeActiveGraphFile(filename, activeGraphFileNames, setG
   let stillActiveFileNames = activeGraphFileNames.filter((name) => name !== filename);
   if (stillActiveFileNames.length === 0) stillActiveFileNames = [exampleGraphJson.name];
   try {
-    log.info("STILLEXISTS", stillActiveFileNames);
     let { graph, file } = await getGraphDB(stillActiveFileNames[0]);
     let combinedGraph = graph;
-    log.info("FIRSTGRAPH", combinedGraph);
     for (let i = 1; i < stillActiveFileNames.length; i++) {
       let { graph, file } = await getGraphDB(stillActiveFileNames[i]);
-      log.info("NEXT GRAPH", graph);
       combinedGraph = joinGraphs(combinedGraph, graph);
     }
     setGraphData("originGraph", combinedGraph);

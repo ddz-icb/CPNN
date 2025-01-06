@@ -1,4 +1,5 @@
 import UnionFind from "union-find";
+import log from "../../logger.js";
 
 export function joinGraphs(graph, newGraph) {
   const nodeMap = new Map(graph.nodes.map((node) => [node.id, { ...node }]));
@@ -178,18 +179,8 @@ export function filterByAttribs(graph, filterRequest) {
           }
         }
 
-        // meets all Terms
-        // const filteredAttribs = link.attribs.filter(
-        //   (attrib, i) => newLinks[i] === 1
-        // );
-        // const filteredWeights = link.weights.filter(
-        //   (weights, i) => newLinks[i] === 1
-        // );
-
         return {
           ...link,
-          // attribs: filteredAttribs,
-          // weight: filteredWeights,
         };
       })
       .filter((link) => link.attribs.length > 0),

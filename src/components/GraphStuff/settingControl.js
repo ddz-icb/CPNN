@@ -24,7 +24,18 @@ export function SettingControl({ simulation, app, redraw }) {
 
   // filter nodes and links //
   useEffect(() => {
-    if (!graphData.graph || !graphData.allLinks || !graphData.circles || !graphData.allNodes) return;
+    if (
+      !graphData.graph ||
+      !graphData.originGraph ||
+      !graphData.originGraph.links ||
+      !graphData.originGraph.nodes ||
+      !graphData.circles ||
+      !graphData.circleNodeMap ||
+      graphData.filteredAfterStart
+    ) {
+      return;
+    }
+
     log.info(
       "Filtering nodes and links.\n    Threshold:  ",
       settings.filter.linkThreshold,
@@ -36,13 +47,16 @@ export function SettingControl({ simulation, app, redraw }) {
       settings.filter.nodeFilter
     );
 
+    log.info("GRAPHGRAPH", graphData.originGraph);
+
     let filteredGraph = {
       ...graphData.graph,
-      nodes: graphData.allNodes,
-      links: graphData.allLinks,
+      nodes: graphData.originGraph.nodes,
+      links: graphData.originGraph.links,
     };
 
     filteredGraph = filterNodes(filteredGraph, settings.filter.nodeFilter);
+
     filteredGraph = filterNodesExist(filteredGraph);
 
     filteredGraph = filterByThreshold(filteredGraph, settings.filter.linkThreshold);
@@ -59,8 +73,7 @@ export function SettingControl({ simulation, app, redraw }) {
     settings.filter.linkFilter,
     settings.filter.nodeFilter,
     settings.filter.minCompSize,
-    graphData.allLinks,
-    graphData.allNodes,
+    graphData.originGraph,
     graphData.circles,
   ]);
 

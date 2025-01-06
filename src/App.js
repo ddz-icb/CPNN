@@ -278,6 +278,8 @@ function App() {
     const linkAttribsToColorIndices = getLinkAttribsToColorIndices(newGraph);
     setSettings("appearance.linkAttribsToColorIndices", linkAttribsToColorIndices);
 
+    log.info("OLDGRAPH", graphData);
+    log.info("NEWGRAPH", newGraph.nodes);
     setGraphData("graph", newGraph);
   }, [graphData.originGraph, graphData.activeGraphFileNames, graphData.activeAnnotationMapping]);
 

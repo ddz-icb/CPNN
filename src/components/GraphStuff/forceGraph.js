@@ -26,16 +26,12 @@ export function ForceGraph({ reset, setReset, setError }) {
     if (!reset) return;
     log.info("Resetting simulation");
 
-    setReset(null);
-
     setGraphData("", (prev) => ({
       ...prev,
+      graph: null,
+      circleNodeMap: null,
       circles: null,
       lines: null,
-      linksStored: false,
-      nodesStored: false,
-      allLinks: null,
-      allNodes: null,
       filteredAfterStart: false,
     }));
 
@@ -50,6 +46,8 @@ export function ForceGraph({ reset, setReset, setError }) {
       app.stage.removeChildren();
       containerRef.current.appendChild(app.canvas);
     }
+
+    setReset(null);
   }, [reset]);
 
   // init Pixi //
@@ -138,7 +136,7 @@ export function ForceGraph({ reset, setReset, setError }) {
 
   // init simulation //
   useEffect(() => {
-    if (!app || !graphData.graph || simulation) {
+    if (!app || !graphData.graph || simulation || graphData.filteredAfterStart) {
       return;
     }
     log.info("Init simulation");
@@ -204,26 +202,6 @@ export function ForceGraph({ reset, setReset, setError }) {
       window.removeEventListener("resize", () => handleResize(window, app));
     };
   }, [app]);
-
-  // store all links in variable at start to enable filtering etc. //
-  useEffect(() => {
-    if (!graphData.graph || graphData.linksStored) return;
-    log.info("saving link data", graphData.graph.links);
-
-    // deep clone so allLinks doesn't change
-    setGraphData("allLinks", cloneDeep(graphData.graph.links));
-    setGraphData("linksStored", true);
-  }, [graphData.graph]);
-
-  // store all nodes in variable at start to enable filtering //
-  useEffect(() => {
-    if (!graphData.graph || graphData.nodesStored) return;
-    log.info("saving node data", graphData.graph.nodes);
-
-    // deep clone so allNodes doesn't change
-    setGraphData("allNodes", cloneDeep(graphData.graph.nodes));
-    setGraphData("nodesStored", true);
-  }, [graphData.graph]);
 
   // redraw runs while the simulation is active //
   function redraw(graph) {
