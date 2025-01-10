@@ -158,6 +158,24 @@ export function FilterSidebar({ resetFilters }) {
     }
   }, []);
 
+  useEffect(() => {
+    if (!nodeFilterEditorRef.current) return;
+
+    const currentValue = nodeFilterEditorRef.current.getValue();
+    if (currentValue !== settings.filter.nodeFilterText) {
+      nodeFilterEditorRef.current.setValue(settings.filter.nodeFilterText);
+    }
+  }, [settings.filter.nodeFilterText]);
+
+  useEffect(() => {
+    if (!linkFilterEditorRef.current) return;
+
+    const currentValue = linkFilterEditorRef.current.getValue();
+    if (currentValue !== settings.filter.linkFilterText) {
+      linkFilterEditorRef.current.setValue(settings.filter.linkFilterText);
+    }
+  }, [settings.filter.linkFilterText]);
+
   return (
     <>
       <div className="inline pad-top-05 pad-bottom-05">
