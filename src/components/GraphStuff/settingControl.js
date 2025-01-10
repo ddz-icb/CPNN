@@ -30,8 +30,7 @@ export function SettingControl({ simulation, app, redraw }) {
       !graphData.originGraph.links ||
       !graphData.originGraph.nodes ||
       !graphData.circles ||
-      !graphData.circleNodeMap ||
-      graphData.filteredAfterStart
+      !graphData.circleNodeMap
     ) {
       return;
     }
@@ -46,8 +45,6 @@ export function SettingControl({ simulation, app, redraw }) {
       "\n    Groups: ",
       settings.filter.nodeFilter
     );
-
-    log.info("GRAPHGRAPH", graphData.originGraph);
 
     let filteredGraph = {
       ...graphData.graph,
