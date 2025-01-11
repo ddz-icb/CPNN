@@ -111,6 +111,7 @@ export const useGraphData = create((set) => ({
     lines: null, // PIXI container (singular!) for drawing the edges
 
     filteredAfterStart: false,
+    graphIsPreprocessed: false,
 
     activeGraphFileNames: null, // currently active file names
     uploadedGraphFileNames: null, // names of all graph files in local storage

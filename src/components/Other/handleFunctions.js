@@ -115,6 +115,13 @@ export function loadTheme(setSettings) {
 }
 
 export function storeTheme(theme) {
+  let storedTheme = localStorage.getItem("theme");
+  if (storedTheme) {
+    storedTheme = JSON.parse(localStorage.getItem("theme"));
+    if (theme.name == storedTheme?.name) return;
+  }
+
+  log.info("Storing theme");
   localStorage.setItem("theme", JSON.stringify(theme));
 }
 

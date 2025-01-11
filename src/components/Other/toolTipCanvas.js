@@ -32,6 +32,7 @@ export function ClickTooltip({ mapping }) {
   const [style, setStyle] = useState({});
   const [viewer, setViewer] = useState(null);
   const viewerRef = useRef(null);
+  const tooltipRef = useRef(null); // wahrscheinlich noch zu löschen
 
   useEffect(() => {
     const fetchData = async () => {
@@ -110,17 +111,36 @@ export function ClickTooltip({ mapping }) {
     setDescription("");
     setPdbId("");
 
+    // NEXT: sicherstellen, dass die breite absolut ist und nicht kleiner wird falls zu nahe am rechten rand
     if (tooltipSettings.isClickTooltipActive) {
-      setStyle({
-        left: `${tooltipSettings.clickTooltipData.x + 15}px`,
-        top: `${tooltipSettings.clickTooltipData.y}px`,
-        opacity: 0.95,
-        transition: "opacity 0.2s",
-      });
+      let x = `${tooltipSettings.clickTooltipData.x + 15}px`;
+      let x2 = `${tooltipSettings.clickTooltipData.x - 15}px`;
+      let y = `${tooltipSettings.clickTooltipData.y}px`;
+
+      if (tooltipSettings.clickTooltipData.y > settings.container.height / 2) {
+        setStyle({
+          left: x,
+          top: y,
+          opacity: 0.95,
+          transform: "translateY(-100%)",
+        });
+      } else if (tooltipSettings.clickTooltipData.x > settings.container.width / 2) {
+        setStyle({
+          left: x2,
+          top: y,
+          opacity: 0.95,
+          transform: "translateX(-100%)",
+        });
+      } else {
+        setStyle({
+          left: x,
+          top: y,
+          opacity: 0.95,
+        });
+      }
     } else {
       setStyle({
         opacity: 0,
-        transition: "opacity 0.2s",
       });
     }
   }, [tooltipSettings.isClickTooltipActive, tooltipSettings.clickTooltipData]);
@@ -174,7 +194,7 @@ export function ClickTooltip({ mapping }) {
   }
 
   return (
-    <div className="tooltip tooltip-click" style={style}>
+    <div className="tooltip tooltip-click" style={style} ref={tooltipRef}>
       {style.opacity > 0 && (
         <div className="tooltip-content">
           <div className="tooltip-header">

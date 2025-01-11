@@ -30,7 +30,8 @@ export function SettingControl({ simulation, app, redraw }) {
       !graphData.originGraph.links ||
       !graphData.originGraph.nodes ||
       !graphData.circles ||
-      !graphData.circleNodeMap
+      !graphData.circleNodeMap ||
+      !graphData.graphIsPreprocessed
     ) {
       return;
     }

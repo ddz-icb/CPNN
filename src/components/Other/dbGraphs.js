@@ -24,10 +24,7 @@ export async function addGraphFileDB(file) {
 export async function addGraphFileIfNotExistsDB(file) {
   try {
     const graph = await getByGraphNameDB(file.name);
-    if (graph) {
-      log.info("Graph with this name already exists");
-      return;
-    }
+    if (graph) return;
 
     const id = await db.uploadedFiles.add({
       name: file.name,

@@ -28,6 +28,7 @@ import {
   storeTheme,
 } from "./components/Other/handleFunctions.js";
 import { useGraphData, useSettings } from "./states.js";
+import { lightTheme } from "./components/Other/appearance.js";
 
 function App() {
   const { settings, setSettings } = useSettings(); // includes physics, filter and appearance settings
@@ -45,6 +46,7 @@ function App() {
 
     try {
       selectGraph(filename, setGraphData);
+      setGraphData("graphIsPreprocessed", false);
       simulationReset();
     } catch (error) {
       setError("Error loading graph");
@@ -59,6 +61,7 @@ function App() {
 
     try {
       selectMapping(mapping, graphData.activeAnnotationMapping, setGraphData);
+      setGraphData("graphIsPreprocessed", false);
       simulationReset();
     } catch (error) {
       setError("Mapping is already the current mapping");
@@ -132,6 +135,7 @@ function App() {
     log.info("Removing currently active annotation mapping");
 
     setGraphData("activeAnnotationMapping", null);
+    setGraphData("graphIsPreprocessed", false);
     simulationReset();
   };
 
@@ -162,6 +166,7 @@ function App() {
     log.info("removing graph file with name:", filename);
 
     removeActiveGraphFile(filename, graphData.activeGraphFileNames, setGraphData);
+    setGraphData("graphIsPreprocessed", false);
     simulationReset();
   };
 
@@ -176,6 +181,7 @@ function App() {
 
     try {
       addActiveGraphFile(filename, graphData.activeGraphFileNames, setGraphData, graphData.originGraph);
+      setGraphData("graphIsPreprocessed", false);
       simulationReset();
     } catch (error) {
       setError("Error loading graph");
@@ -208,7 +214,7 @@ function App() {
   useEffect(() => {
     log.info("Setting init graph data");
     setInitGraph(setGraphData);
-    simulationReset();
+    setGraphData("graphIsPreprocessed", false);
   }, []);
 
   // init uploadedGraphFileNames
@@ -231,7 +237,6 @@ function App() {
   // store current theme //
   useEffect(() => {
     if (!settings.appearance.theme) return;
-    log.info("Storing theme");
 
     storeTheme(settings.appearance.theme);
   }, [settings.appearance.theme]);
@@ -266,7 +271,7 @@ function App() {
 
   // forwards graph to forceGraph component //
   useEffect(() => {
-    if (!graphData.originGraph || !graphData.activeGraphFileNames || graphData.filteredAfterStart) return;
+    if (!graphData.originGraph || !graphData.activeGraphFileNames) return;
     log.info("Modifying graph and forwarding it to the simulation component");
 
     let newGraph = structuredClone(graphData.originGraph);
@@ -278,10 +283,9 @@ function App() {
     const linkAttribsToColorIndices = getLinkAttribsToColorIndices(newGraph);
     setSettings("appearance.linkAttribsToColorIndices", linkAttribsToColorIndices);
 
-    log.info("OLDGRAPH", graphData);
-    log.info("NEWGRAPH", newGraph.nodes);
     setGraphData("graph", newGraph);
-  }, [graphData.originGraph, graphData.activeGraphFileNames, graphData.activeAnnotationMapping, graphData.filteredAfterStart]);
+    setGraphData("graphIsPreprocessed", true);
+  }, [graphData.originGraph, graphData.activeGraphFileNames, graphData.activeAnnotationMapping]);
 
   return (
     <div className={settings.appearance.theme.name}>
