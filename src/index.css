@@ -940,7 +940,7 @@ input[type="radio"]:checked:after {
 .tooltip {
   z-index: 5;
   display: block;
-  position: absolute;
+  position: fixed;
   text-align: center;
   padding: 10px;
   background: var(--tooltip-background-color);
@@ -958,8 +958,8 @@ input[type="radio"]:checked:after {
 .tooltip-content {
   display: flex;
   flex-direction: column;
-  max-width: 20rem;
-  min-width: 7rem;
+  max-width: 30rem;
+  min-width: 20rem;
   align-items: center;
   position: relative;
 }
