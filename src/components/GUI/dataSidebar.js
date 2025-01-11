@@ -160,7 +160,6 @@ function UploadedMappings({ uploadedAnnotationMappingNames, handleAnnotationMapp
 }
 
 function ActiveAnnotationMapping({ activeAnnotationMapping, handleRemoveActiveAnnotationMapping }) {
-  log.info("ACTIVEMAPPING", activeAnnotationMapping);
   return (
     <>
       <>
