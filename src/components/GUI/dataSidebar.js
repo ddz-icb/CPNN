@@ -229,6 +229,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
             onChange={(event) => {
               const takeAbs = true;
               handleNewGraphFile(event, takeAbs);
+              event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
             }}
           />
           <SidebarDropdownItem
@@ -238,6 +239,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
             onChange={(event) => {
               const takeAbs = false;
               handleNewGraphFile(event, takeAbs);
+              event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
             }}
           />
         </div>
@@ -252,11 +254,13 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
           text={"Upload Graph"}
           tooltip={"Upload Graph as CSV/TSV Matrix or JSON File"}
           tooltipId={"upload-graph-tooltip"}
-          onChange={handleNewGraphFile}
         />
         <SidebarButtonRect
           onClick={handleUploadMappingClick}
-          onChange={handleNewAnnotationMapping}
+          onChange={(event) => {
+            handleNewAnnotationMapping(event);
+            event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
+          }}
           text={"Upload Gene/Protein Annotations"}
           linkRef={annotationMappingRef}
           tooltip={"Upload Gene/Protein Annotation Mappings as TSV File"}
