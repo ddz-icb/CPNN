@@ -9,26 +9,24 @@ import { applyNodeMapping, getLinkAttribsToColorIndices, getNodeAttribsToColorIn
 import { resetFilterSettings, resetPhysicsSettings } from "./components/Other/reset.js";
 import {
   addActiveGraphFile,
-  addAnnotationMapping,
+  addNewAnnotationMappingFile,
   addNewColorScheme,
   addNewGraphFile,
   deleteAnnotationMapping,
   deleteGraphFile,
   loadAnnotationMappings,
   loadColorSchemes,
-  loadFileNames,
+  loadGraphFileNames,
   loadTheme,
   removeActiveGraphFile,
   removeColorScheme,
   selectGraph,
   selectMapping,
   setInitGraph,
-  storeAnnotationMappings,
   storeColorSchemes,
   storeTheme,
 } from "./components/Other/handleFunctions.js";
 import { useGraphData, useSettings } from "./states.js";
-import { lightTheme } from "./components/Other/appearance.js";
 
 function App() {
   const { settings, setSettings } = useSettings(); // includes physics, filter and appearance settings
@@ -55,12 +53,12 @@ function App() {
   };
 
   // sets corresponding mapping after selection
-  const handleAnnotationMappingSelect = (mapping) => {
-    if (!mapping) return;
+  const handleSelectAnnotationMapping = (mappingName) => {
+    if (!mappingName) return;
     log.info("Replacing annotation mapping");
 
     try {
-      selectMapping(mapping, graphData.activeAnnotationMapping, setGraphData);
+      selectMapping(mappingName, setGraphData);
       setGraphData("graphIsPreprocessed", false);
       simulationReset();
     } catch (error) {
@@ -118,16 +116,21 @@ function App() {
 
   // processes new annotation mapping
   const handleNewAnnotationMapping = (event) => {
-    if (!event || !event.target || !event.target.files[0]) return;
-    log.info("Processing new Mapping");
-
     const file = event.target.files[0];
-    try {
-      addAnnotationMapping(file, graphData.uploadedAnnotationMappings, setGraphData);
-    } catch (error) {
-      setError("Error adding annotation mapping");
-      log.error("Error adding annotation mapping:", error);
+    if (!event || !event.target || !file) return;
+    if (graphData.uploadedAnnotationMappingNames.includes(file.name)) {
+      log.warn("Mapping with this name already exists");
+      setError("Mapping with this name already exists");
+      return;
     }
+    log.info("Adding new mapping file");
+
+    addNewAnnotationMappingFile(file, graphData.uploadedAnnotationMappingNames, setGraphData)
+      .then(() => {})
+      .catch((error) => {
+        setError("Error adding mapping file");
+        log.error("Error adding mapping file:", error);
+      });
   };
 
   // disables currently active annotation mapping
@@ -144,7 +147,7 @@ function App() {
     if (!mappingName) return;
     log.info("Deleting mapping with name", mappingName);
 
-    deleteAnnotationMapping(graphData.uploadedAnnotationMappings, mappingName, setGraphData);
+    deleteAnnotationMapping(graphData.uploadedAnnotationMappingNames, mappingName, setGraphData);
   };
 
   // deletes uploaded files with filename //
@@ -219,12 +222,12 @@ function App() {
 
   // init uploadedGraphFileNames
   useEffect(() => {
-    log.info("Loading uploaded files");
+    log.info("Loading uploaded graph files");
     try {
-      loadFileNames(setGraphData);
+      loadGraphFileNames(setGraphData);
     } catch (error) {
-      setError("Error loading files form database");
-      log.error("Error loading files form database");
+      setError("Error loading graph files form database");
+      log.error("Error loading graph files form database");
     }
   }, []);
 
@@ -241,19 +244,16 @@ function App() {
     storeTheme(settings.appearance.theme);
   }, [settings.appearance.theme]);
 
-  // load uploaded annotation mapping files
+  // init uploadedMappingFileNames
   useEffect(() => {
-    log.info("Loading annotation mapping files");
-    loadAnnotationMappings(setGraphData);
+    log.info("Loading uploaded mapping files");
+    try {
+      loadAnnotationMappings(setGraphData);
+    } catch (error) {
+      setError("Error loading mapping files form database");
+      log.error("Error loading mapping files form database");
+    }
   }, []);
-
-  // store uploaded annotation mapping files //
-  useEffect(() => {
-    if (!graphData.uploadedAnnotationMappings) return;
-    log.info("Storing mapping files");
-
-    storeAnnotationMappings(graphData.uploadedAnnotationMappings);
-  }, [graphData.uploadedAnnotationMappings]);
 
   // load uploaded color schemes //
   useEffect(() => {
@@ -297,7 +297,7 @@ function App() {
         handleAddFile={handleAddActiveGraphFile}
         handleNewAnnotationMapping={handleNewAnnotationMapping}
         handleRemoveActiveAnnotationMapping={handleRemoveActiveAnnotationMapping}
-        handleAnnotationMappingSelect={handleAnnotationMappingSelect}
+        handleAnnotationMappingSelect={handleSelectAnnotationMapping}
         handleDeleteAnnotationMapping={handleDeleteAnnotationMapping}
         handleNewGraphFile={handleNewGraphFile}
         resetPhysics={resetPhysics}

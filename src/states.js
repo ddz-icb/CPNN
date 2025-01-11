@@ -117,7 +117,7 @@ export const useGraphData = create((set) => ({
     uploadedGraphFileNames: null, // names of all graph files in local storage
 
     activeAnnotationMapping: null, // active node annotation mapping
-    uploadedAnnotationMappings: null, // uploaded node annotation mappings
+    uploadedAnnotationMappingNames: null, // uploaded node annotation mappings
   },
   setGraphData: (path, value) =>
     set((state) => {

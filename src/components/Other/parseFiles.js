@@ -131,7 +131,7 @@ function parseFileAsText(file) {
   });
 }
 
-export async function parseAnnotationMapping(file) {
+export async function parseAnnotationMappingFile(file) {
   try {
     const fileContent = await parseFileAsText(file);
     let fileData = Papa.parse(fileContent, {
@@ -171,8 +171,11 @@ export async function parseAnnotationMapping(file) {
 
     return {
       name: file.name,
-      nodeMapping: nodeMapping,
-      groupMapping: groupMapping,
+      content: JSON.stringify({
+        name: file.name,
+        nodeMapping: nodeMapping,
+        groupMapping: groupMapping,
+      }),
     };
   } catch (error) {
     throw new Error(`Erorr parsing annotation mapping ${file}.`);

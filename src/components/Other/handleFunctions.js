@@ -3,7 +3,8 @@ import log from "../../logger.js";
 import { joinGraphs } from "../GraphStuff/graphCalculations.js";
 import { applyTheme, defaultColorSchemes, lightTheme } from "./appearance.js";
 import { addGraphFileDB, addGraphFileIfNotExistsDB, fromAllGetGraphNameDB, getGraphDB, removeGraphFileByNameDB } from "./dbGraphs.js";
-import { parseAnnotationMapping, parseColorScheme, parseGraphFile } from "./parseFiles.js";
+import { addMappingFileDB, addMappingFileIfNotExistsDB, fromAllGetMappingNameDB, getMappingDB, removeMappingFileByNameDB } from "./dbMappings.js";
+import { parseAnnotationMappingFile, parseColorScheme, parseGraphFile } from "./parseFiles.js";
 
 export async function selectGraph(filename, setGraphData) {
   const { graph, file } = await getGraphDB(filename);
@@ -13,12 +14,12 @@ export async function selectGraph(filename, setGraphData) {
   log.info("Graph Loaded Successfully:", graph);
 }
 
-export function selectMapping(mapping, activeAnnotationMapping, setGraphData) {
-  if (mapping !== activeAnnotationMapping) {
-    setGraphData("activeAnnotationMapping", mapping);
-  } else {
-    throw new Error("Mapping is already the current mapping");
-  }
+export async function selectMapping(mappingName, setGraphData) {
+  const { mapping, file } = await getMappingDB(mappingName);
+
+  setGraphData("activeAnnotationMapping", mapping);
+  setGraphData("uploadedAnnotationMappingNames", [file.name]);
+  log.info("Mapping Loaded Successfully:", mapping);
 }
 
 export function removeColorScheme(colorSchemes, setColorSchemes, colorSchemeName, nodeColorScheme, linkColorScheme, setSettings) {
@@ -50,14 +51,16 @@ export async function addNewColorScheme(file, setColorSchemes) {
   setColorSchemes((colorSchemes) => [...colorSchemes, { name: file.name, colorScheme: colorScheme }]);
 }
 
-export async function addAnnotationMapping(file, uploadedAnnotationMappings, setGraphData) {
-  const mapping = await parseAnnotationMapping(file);
-  setGraphData("uploadedAnnotationMappings", uploadedAnnotationMappings ? [...uploadedAnnotationMappings, mapping] : [mapping]);
+export async function addNewAnnotationMappingFile(file, uploadedAnnotationMappingNames, setGraphData) {
+  const mappingFile = await parseAnnotationMappingFile(file);
+  addMappingFileDB(mappingFile);
+  setGraphData("uploadedAnnotationMappingNames", [...(uploadedAnnotationMappingNames || []), file.name]);
 }
 
-export function deleteAnnotationMapping(uploadedAnnotationMappings, mappingName, setGraphData) {
-  const updatedMappings = uploadedAnnotationMappings.filter((mapping) => mapping.name !== mappingName);
-  setGraphData("uploadedAnnotationMappings", updatedMappings);
+export function deleteAnnotationMapping(uploadedAnnotationMappingNames, mappingName, setGraphData) {
+  const updatedMappingNames = uploadedAnnotationMappingNames.filter((name) => name !== mappingName);
+  setGraphData("uploadedAnnotationMappingNames", updatedMappingNames);
+  removeMappingFileByNameDB(mappingName);
 }
 
 export async function deleteGraphFile(uploadedGraphFileNames, filename, setGraphData) {
@@ -103,7 +106,7 @@ export async function setInitGraph(setGraphData) {
   setGraphData("activeGraphFileNames", [exampleGraphJson.name]);
 }
 
-export async function loadFileNames(setGraphData) {
+export async function loadGraphFileNames(setGraphData) {
   const filenames = await fromAllGetGraphNameDB();
   setGraphData("uploadedGraphFileNames", filenames);
 }
@@ -125,14 +128,9 @@ export function storeTheme(theme) {
   localStorage.setItem("theme", JSON.stringify(theme));
 }
 
-export function loadAnnotationMappings(setGraphData) {
-  let mappings = JSON.parse(localStorage.getItem("mappings")) || [];
-  if (mappings.length === 0) mappings = null;
-  setGraphData("uploadedAnnotationMappings", mappings);
-}
-
-export function storeAnnotationMappings(uploadedAnnotationMappings) {
-  localStorage.setItem("mappings", JSON.stringify(uploadedAnnotationMappings));
+export async function loadAnnotationMappings(setGraphData) {
+  const mappings = await fromAllGetMappingNameDB();
+  setGraphData("uploadedAnnotationMappingNames", mappings);
 }
 
 export function loadColorSchemes(setColorSchemes) {

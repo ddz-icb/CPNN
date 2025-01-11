@@ -20,6 +20,22 @@ export async function addMappingFileDB(file) {
   }
 }
 
+export async function addMappingFileIfNotExistsDB(file) {
+  try {
+    const mapping = await getByMappingNameDB(file.name);
+    if (mapping) return;
+
+    const id = await db.uploadedFiles.add({
+      name: file.name,
+      content: file.content,
+    });
+
+    log.info(`File ${file.name} successfully added. Got id ${id}`);
+  } catch (error) {
+    log.error(`Failed to add ${file.name}: ${error}`);
+  }
+}
+
 export async function removeMappingFileDB(id) {
   try {
     await db.uploadedFiles.delete(id);
