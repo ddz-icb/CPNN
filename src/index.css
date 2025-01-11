@@ -958,7 +958,7 @@ input[type="radio"]:checked:after {
 .tooltip-content {
   display: flex;
   flex-direction: column;
-  max-width: 30rem;
+  max-width: 25rem;
   min-width: 20rem;
   align-items: center;
   position: relative;
