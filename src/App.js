@@ -28,6 +28,7 @@ import {
 } from "./components/Other/handleFunctions.js";
 import { useGraphData, useSettings } from "./states.js";
 import { Erorr } from "./components/Other/error.js";
+import { defaultColorSchemes } from "./components/Other/appearance.js";
 
 function App() {
   const { settings, setSettings } = useSettings(); // includes physics, filter and appearance settings
@@ -103,6 +104,16 @@ function App() {
 
   const handleDeleteColorScheme = (colorSchemeName) => {
     if (!colorSchemeName) return;
+    if (defaultColorSchemes.some((scheme) => scheme.name === colorSchemeName)) {
+      log.warn("Cannot remove default color schemes");
+      setError("Cannot remove default color schemes");
+      return;
+    }
+    if (settings.appearance.nodeColorScheme.name == colorSchemeName || settings.appearance.linkColorScheme.name == colorSchemeName) {
+      log.warn("Cannot remove selected color scheme as it's still active");
+      setError("Cannot remove selected color scheme as it's still active");
+      return;
+    }
     log.info("Deleting color schemes with name", colorSchemeName);
 
     removeColorScheme(
