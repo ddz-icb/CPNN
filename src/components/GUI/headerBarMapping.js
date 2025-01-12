@@ -100,8 +100,8 @@ export function Mapping({ activeMenu, handleActiveMenuClick }) {
           tooltip={"Close"}
           tooltipId={"close-view-mapping-tooltip"}
         />
-        <div className={"dropdown"}>
-          <div className="dropdown-section-container pad-top-05">
+        <div className={"dropdown-mapping margin-left-20"}>
+          <div className="dropdown-section-container pad-top-1">
             <div className="dropdown-section">
               <b className="heading-label">Nodes</b>
               {nodeContent}

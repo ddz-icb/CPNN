@@ -72,7 +72,7 @@ export function Colors({ handleNewScheme, colorSchemes, handleDeleteColorScheme,
             tooltip={"Close"}
             tooltipId={"close-select-color-scheme-tooltip"}
           />
-          <table className="dropdown no-wrap pad-05 spaced-table-05">
+          <table className="dropdown margin-left-30 no-wrap pad-05 spaced-table-05">
             <thead>
               <tr>
                 <th className="left-align heading pad-bottom-05">Color scheme</th>
