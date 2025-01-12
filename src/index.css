@@ -1101,10 +1101,10 @@ input[type="radio"]:checked:after {
   min-width: 30px;
   width: 30px;
   height: 15px;
+  margin-right: 0.75rem;
 }
 
 .colorscheme-item {
-  margin-right: 0.75rem;
   color: var(--text-primary);
 }
 
