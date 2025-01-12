@@ -50,8 +50,8 @@ export function Item({ icon, onClick, tooltip, tooltipId, text, children }) {
     <div className="sidebar-tooltip-wrapper">
       <li className="dropdown-item" data-tooltip-id={tooltipId} data-tooltip-content={tooltip}>
         <a className="dropdown-link" onClick={onClick}>
-          <span className="fa-primary">{icon}</span>
-          <b className="dropdown-text pad-right-05">{text}</b>
+          <span className="fa-primary small-icon">{icon}</span>
+          <p className="dropdown-text pad-right-1">{text}</p>
         </a>
         <Tooltip id={tooltipId} place="top" effect="solid" className="sidebar-tooltip" />
         {children}
@@ -64,8 +64,8 @@ export function UploadItem({ icon, onClick, onChange, linkRef, text, children })
   return (
     <li className="dropdown-item">
       <a className="dropdown-link" onClick={onClick}>
-        <span className="fa-primary">{icon}</span>
-        <b className="dropdown-text pad-right-05">{text}</b>
+        <span className="fa-primary small-icon">{icon}</span>
+        <p className="dropdown-text pad-right-1 inline">{text}</p>
         <input type="file" style={{ display: "none" }} onChange={onChange} ref={linkRef} />
       </a>
       {children}

@@ -45,7 +45,7 @@ export function HeaderBarExport({ activeMenu, handleActiveMenuClick }) {
           tooltip={"Close"}
           tooltipId={"close-export-graph-tooltip"}
         />
-        <div className="dropdown">
+        <div className="dropdown min-width-250">
           <Item
             text={"Export as JSON"}
             onClick={() => {

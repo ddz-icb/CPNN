@@ -798,22 +798,7 @@ input[type="radio"]:checked:after {
   position: absolute;
   margin-top: 4rem;
   width: auto;
-  background-color: var(--bg-primary);
-  border: var(--border-size) solid var(--border-color);
-  border-radius: var(--border-radius);
-  box-shadow: 0 0px 1.5px 0 var(--box-shadow-color);
-  max-height: 800px; /* 750 | 500 */
-  overflow: auto;
-}
-
-.dropdown-mapping {
-  z-index: 10;
-  position: absolute;
-  margin-top: 4rem;
-  width: auto;
-  min-width: 300px;
-  max-width: 500px;
-  left: -110%;
+  right: 1rem;
   background-color: var(--bg-primary);
   border: var(--border-size) solid var(--border-color);
   border-radius: var(--border-radius);
@@ -835,7 +820,7 @@ input[type="radio"]:checked:after {
 .dropdown-item {
   display: flex;
   align-items: center;
-  height: 4rem;
+  height: auto;
   color: var(--text-primary);
   text-decoration: none;
   transition: var(--transition-speed);
@@ -866,6 +851,7 @@ input[type="radio"]:checked:after {
   display: flex;
   align-items: center;
   justify-content: center;
+  white-space: nowrap;
 }
 
 .dropdown-link {
@@ -1228,12 +1214,27 @@ input[type="radio"]:checked:after {
   margin-left: 10px;
 }
 
+.margin-left-5 {
+  margin-left: 5px;
+}
+
 .margin-left-20 {
   margin-left: 20px;
 }
 
 .margin-left-30 {
   margin-left: 30px;
+}
+
+.min-width-400 {
+  min-width: 400px;
+}
+
+.small-icon svg {
+  width: 24px;
+  height: 24px;
+  margin-left: 8px;
+  margin-right: 8px;
 }
 
 .dropdown-sidebar {
