@@ -46,7 +46,7 @@ export function DataSidebar({
 }
 
 function UploadedFiles({ uploadedGraphFileNames, handleSelectGraph, handleDeleteGraphFile, handleAddFile }) {
-  let uploadedGraphFileNamesNoExample = uploadedGraphFileNames.filter((name) => name != exampleGraphJson.name);
+  let uploadedGraphFileNamesNoExample = uploadedGraphFileNames?.filter((name) => name != exampleGraphJson.name);
 
   return (
     <>

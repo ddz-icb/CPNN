@@ -44,8 +44,8 @@
   --color5: #2a2e35;
   --color6: #12181b;
   --color7: #0084a5;
-  --color8: #a82dd1;
-  --color9: #fff565;
+  --color8: #fcc600;
+  --color9: #fc6100;
   --color10: #006f0d;
   --color11: #0d3b66;
   --color12: #3f95ba;
@@ -150,6 +150,7 @@ ul {
   --bg-logo: var(--bg-secondary);
   --icon-color-tertiary: white;
   --dropdown-item-color: white;
+  --error-color: var(--color9);
 }
 
 .dark {
@@ -199,6 +200,7 @@ ul {
   --bg-logo: var(--bg-secondary);
   --icon-color-tertiary: var(--color26);
   --dropdown-item-color: white;
+  --error-color: var(--color8);
 }
 
 .light .logo {
@@ -649,13 +651,6 @@ ul {
   background-color: var(--bg-input-field) !important;
 }
 
-.warning {
-  color: var(--error-color);
-  line-height: 1rem;
-  margin-left: 1rem;
-  margin-right: 1rem;
-}
-
 /* Sidebar Checkbox */
 /*------------------*/
 
@@ -916,18 +911,6 @@ input[type="radio"]:checked:after {
   background-color: var(--bg-canvas);
 }
 
-.errorStyle {
-  z-index: 10; /* makes sure error message is on top of canvas not below */
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-family: "pingFangSC", sans-serif;
-  font-size: 24px;
-  color: var(--error-color);
-  text-align: center;
-}
-
 .loadingStyle {
   position: fixed;
   top: 50%;
@@ -1029,6 +1012,41 @@ input[type="radio"]:checked:after {
 
 .tooltip a:hover {
   filter: grayscale(0%) opacity(1);
+}
+
+.error-overlay {
+  z-index: 5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.error-container {
+  background: var(--tooltip-background-color);
+  color: var(--tooltip-text-color);
+  border-radius: var(--border-radius);
+  box-shadow: 0 0px 1.5px 0 var(--box-shadow-color);
+  border: var(--border-size-tooltip) solid var(--error-color);
+  padding: 20px;
+  max-width: 400px;
+  max-height: 200px;
+  width: 90%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.error-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  color: var(--error-color);
 }
 
 .sidebar-tooltip-wrapper .sidebar-tooltip {

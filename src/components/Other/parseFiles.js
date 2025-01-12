@@ -80,7 +80,7 @@ export function parseColorSchemeCSV(content) {
 
   let colorData = fileData.data;
   colorData = colorData.reduce((acc, row) => {
-    const validColors = row.map((element) => element.toLowerCase()).filter((element) => hexColorRegex.test(element) && element.length !== 0);
+    const validColors = row.map((element) => element.toLowerCase())?.filter((element) => hexColorRegex.test(element) && element.length !== 0);
     return acc.concat(validColors);
   }, []);
 

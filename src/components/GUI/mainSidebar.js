@@ -12,7 +12,7 @@ export function MainSidebar({ handleNavItemClick }) {
   const changeTheme = () => {
     const newTheme = settings.appearance.theme.name === lightTheme.name ? darkTheme : lightTheme;
     setSettings("appearance.theme", newTheme);
-    localStorage.setItem("theme", newTheme);
+    localStorage.setItem("theme", JSON.stringify(newTheme));
   };
 
   return (

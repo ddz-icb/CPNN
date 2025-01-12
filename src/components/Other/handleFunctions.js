@@ -23,7 +23,7 @@ export async function selectMapping(mappingName, setGraphData) {
 }
 
 export function removeColorScheme(colorSchemes, setColorSchemes, colorSchemeName, nodeColorScheme, linkColorScheme, setSettings) {
-  let updatedColorSchemes = colorSchemes.filter((colorScheme) => colorScheme.name !== colorSchemeName);
+  let updatedColorSchemes = colorSchemes?.filter((colorScheme) => colorScheme.name !== colorSchemeName);
 
   if (updatedColorSchemes.length === 0) {
     updatedColorSchemes = defaultColorSchemes;
@@ -58,13 +58,13 @@ export async function addNewAnnotationMappingFile(file, uploadedAnnotationMappin
 }
 
 export function deleteAnnotationMapping(uploadedAnnotationMappingNames, mappingName, setGraphData) {
-  const updatedMappingNames = uploadedAnnotationMappingNames.filter((name) => name !== mappingName);
+  const updatedMappingNames = uploadedAnnotationMappingNames?.filter((name) => name !== mappingName);
   setGraphData("uploadedAnnotationMappingNames", updatedMappingNames);
   removeMappingFileByNameDB(mappingName);
 }
 
 export async function deleteGraphFile(uploadedGraphFileNames, filename, setGraphData) {
-  const updatedGraphFileNames = uploadedGraphFileNames.filter((name) => {
+  const updatedGraphFileNames = uploadedGraphFileNames?.filter((name) => {
     return name !== filename;
   });
 
@@ -73,7 +73,7 @@ export async function deleteGraphFile(uploadedGraphFileNames, filename, setGraph
 }
 
 export async function removeActiveGraphFile(filename, activeGraphFileNames, setGraphData) {
-  let stillActiveFileNames = activeGraphFileNames.filter((name) => name !== filename);
+  let stillActiveFileNames = activeGraphFileNames?.filter((name) => name !== filename);
   if (stillActiveFileNames.length === 0) stillActiveFileNames = [exampleGraphJson.name];
   try {
     let { graph, file } = await getGraphDB(stillActiveFileNames[0]);
@@ -112,19 +112,39 @@ export async function loadGraphFileNames(setGraphData) {
 }
 
 export function loadTheme(setSettings) {
-  const storedTheme = JSON.parse(localStorage.getItem("theme")) || lightTheme;
+  let storedTheme = localStorage.getItem("theme");
+
+  log.info("Stored Theme:", storedTheme);
+
+  if (storedTheme) {
+    try {
+      storedTheme = JSON.parse(storedTheme);
+    } catch (error) {
+      log.error("Fehler beim Parsen des gespeicherten Themes:", error);
+      storedTheme = lightTheme;
+      localStorage.setItem("theme", JSON.stringify(lightTheme));
+    }
+  } else {
+    storedTheme = lightTheme;
+    localStorage.setItem("theme", JSON.stringify(lightTheme));
+  }
   applyTheme(document, storedTheme);
   setSettings("appearance.theme", storedTheme);
 }
 
 export function storeTheme(theme) {
   let storedTheme = localStorage.getItem("theme");
+
   if (storedTheme) {
-    storedTheme = JSON.parse(localStorage.getItem("theme"));
-    if (theme.name == storedTheme?.name) return;
+    try {
+      storedTheme = JSON.parse(storedTheme);
+      if (theme.name === storedTheme.name) return;
+    } catch (error) {
+      log.error("Error parsing stored theme:", error);
+    }
   }
 
-  log.info("Storing theme");
+  log.info("Storing theme:", theme);
   localStorage.setItem("theme", JSON.stringify(theme));
 }
 

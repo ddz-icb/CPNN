@@ -27,6 +27,7 @@ import {
   storeTheme,
 } from "./components/Other/handleFunctions.js";
 import { useGraphData, useSettings } from "./states.js";
+import { Erorr } from "./components/Other/error.js";
 
 function App() {
   const { settings, setSettings } = useSettings(); // includes physics, filter and appearance settings
@@ -240,6 +241,7 @@ function App() {
   // store current theme //
   useEffect(() => {
     if (!settings.appearance.theme) return;
+    log.info("Storing current theme if needed");
 
     storeTheme(settings.appearance.theme);
   }, [settings.appearance.theme]);
@@ -304,7 +306,7 @@ function App() {
         resetFilters={resetFilters}
       />
       <main>
-        {error && <div className="errorStyle">{error}</div>}
+        {error && <Erorr error={error} setError={setError} />}
         <ForceGraph reset={reset} setReset={setReset} setError={setError} />
       </main>
     </div>
