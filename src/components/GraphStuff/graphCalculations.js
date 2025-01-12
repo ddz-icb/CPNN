@@ -257,8 +257,10 @@ export function applyNodeMapping(graph, mapping) {
 
     let groupsSet = new Set();
     protIdsForLookup.forEach((protId) => {
-      if (nodeMapping[protId]) {
-        groupsSet = new Set([...groupsSet, ...nodeMapping[protId].pathwayNames]);
+      const protIdStr = String(protId).trim();
+
+      if (nodeMapping.hasOwnProperty(protIdStr)) {
+        groupsSet = new Set([...groupsSet, ...nodeMapping[protIdStr].pathwayNames]);
       }
     });
     node.groups = Array.from(groupsSet);
