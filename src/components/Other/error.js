@@ -1,4 +1,4 @@
-import { XIcon } from "lucide-react";
+import { ReactComponent as XIcon } from "../../icons/x.svg";
 import { useSettings } from "../../states.js";
 
 export function Erorr({ error, setError }) {
@@ -11,9 +11,9 @@ export function Erorr({ error, setError }) {
   return (
     <div className="error-overlay">
       <div className="error-container">
-        <div className="error-header pad-bottom-05">
+        <div className="error-header pad-bottom-1">
           {error && <b>Warning</b>}
-          <span className="tooltip-button" onClick={closeError}>
+          <span className="error-button" onClick={closeError}>
             <XIcon />
           </span>
         </div>

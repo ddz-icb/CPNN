@@ -1032,9 +1032,9 @@ input[type="radio"]:checked:after {
   border-radius: var(--border-radius);
   box-shadow: 0 0px 1.5px 0 var(--box-shadow-color);
   border: var(--border-size-tooltip) solid var(--error-color);
-  padding: 20px;
-  max-width: 400px;
-  max-height: 200px;
+  padding: 10px;
+  max-width: 350px;
+  max-height: 250px;
   width: 90%;
   box-sizing: border-box;
   display: flex;
@@ -1047,6 +1047,20 @@ input[type="radio"]:checked:after {
   display: flex;
   justify-content: space-between;
   color: var(--error-color);
+}
+
+.error-button {
+  cursor: pointer;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.error-button svg {
+  fill: var(--error-color);
 }
 
 .sidebar-tooltip-wrapper .sidebar-tooltip {

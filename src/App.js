@@ -146,6 +146,11 @@ function App() {
   // deletes annotation mapping files
   const handleDeleteAnnotationMapping = (mappingName) => {
     if (!mappingName) return;
+    if (graphData.activeAnnotationMapping.name == mappingName) {
+      log.warn("Cannot remove selected mapping as it's still active");
+      setError("Cannot remove selected mapping as it's still active");
+      return;
+    }
     log.info("Deleting mapping with name", mappingName);
 
     deleteAnnotationMapping(graphData.uploadedAnnotationMappingNames, mappingName, setGraphData);
@@ -155,8 +160,8 @@ function App() {
   const handleDeleteGraphFile = (filename) => {
     if (!filename) return;
     if (graphData.activeGraphFileNames.includes(filename)) {
-      log.warn("Graph is still active. Cannot remove graph");
-      setError("Graph is still active. Cannot remove graph");
+      log.warn("Cannot remove selected graph as it's still active");
+      setError("Cannot remove selected graph as it's still active");
       return;
     }
     log.info("Deleting files with name", filename);
