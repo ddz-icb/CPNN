@@ -75,15 +75,14 @@ export function Colors({ handleNewScheme, colorSchemes, handleDeleteColorScheme,
           <table className="dropdown no-wrap pad-05 spaced-table-05">
             <thead>
               <tr>
-                <th className="left-align heading pad-bottom-05">Color scheme</th>
-                <th className="left-align heading pad-bottom-05">Node</th>
-                <th className="left-align heading pad-bottom-05">Link</th>
-                <th className="left-align heading pad-bottom-05">Delete</th>
+                <th className="left-align heading">Color scheme</th>
+                <th className="left-align heading">Node</th>
+                <th className="left-align heading">Link</th>
               </tr>
             </thead>
             <tbody>
               {colorSchemes.map((colorScheme, index) => (
-                <tr key={index} className="recent-item-entry">
+                <tr key={index} className="colorscheme-entry">
                   <ColorSchemeTableItem
                     name={colorScheme.name}
                     isSelected={isEqual(colorScheme.colorScheme, settings.appearance.nodeColorScheme.colorScheme)}
@@ -115,7 +114,7 @@ export function ColorSchemeTableItem({ name, isSelected, isSelected2, onClick, o
         <input type="radio" checked={isSelected2} onChange={onClick2} className="radio-button" />
       </td>
       <td>
-        <div className={"recent-item-logo"} onClick={() => handleDeleteColorScheme(name)}>
+        <div className={"colorscheme-bin-logo"} onClick={() => handleDeleteColorScheme(name)}>
           <TrashIcon />
         </div>
       </td>

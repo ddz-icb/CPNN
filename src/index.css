@@ -431,6 +431,11 @@ ul {
   height: 1.7rem;
 }
 
+.colorscheme-entry {
+  color: var(--text-primary);
+  height: auto;
+}
+
 .recent-item-entry-highlight:hover {
   background-color: var(--bg-table-item-hover);
   transition: var(--transition-speed);
@@ -450,6 +455,15 @@ ul {
   margin: auto;
   fill: var(--icon-color);
   width: 3rem;
+}
+
+.colorscheme-bin-logo {
+  display: block;
+  margin: auto;
+  fill: var(--icon-color);
+  width: 1rem;
+  right: 1rem;
+  left: 1rem;
 }
 
 .recent-item-logo:hover svg {
