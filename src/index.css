@@ -457,13 +457,19 @@ ul {
   width: 3rem;
 }
 
-.colorscheme-bin-logo {
-  display: block;
-  margin: auto;
+.colorscheme-logo {
   fill: var(--icon-color);
   width: 1rem;
   right: 1rem;
   left: 1rem;
+}
+
+.colorscheme-logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  cursor: pointer;
 }
 
 .recent-item-logo:hover svg {

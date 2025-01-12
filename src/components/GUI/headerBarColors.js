@@ -114,8 +114,8 @@ export function ColorSchemeTableItem({ name, isSelected, isSelected2, onClick, o
         <input type="radio" checked={isSelected2} onChange={onClick2} className="radio-button" />
       </td>
       <td>
-        <div className={"colorscheme-bin-logo"} onClick={() => handleDeleteColorScheme(name)}>
-          <TrashIcon />
+        <div className="colorscheme-logo-container" onClick={() => handleDeleteColorScheme(name)}>
+          <TrashIcon className={"colorscheme-logo"} />
         </div>
       </td>
     </>
