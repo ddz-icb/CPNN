@@ -1075,6 +1075,41 @@ input[type="radio"]:checked:after {
   fill: var(--error-color);
 }
 
+.popup-overlay {
+  z-index: 5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.popup-container {
+  background: var(--tooltip-background-color);
+  color: var(--tooltip-text-color);
+  border-radius: var(--border-radius);
+  box-shadow: 0 0px 1.5px 0 var(--box-shadow-color);
+  border: var(--border-size-tooltip) solid var(--border-color);
+  padding: 10px;
+  max-width: 350px;
+  max-height: 250px;
+  width: 90%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.popup-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-primary);
+}
+
 .sidebar-tooltip-wrapper .sidebar-tooltip {
   border-radius: var(--border-radius);
   color: var(--tooltip-sidebar-text);

@@ -1,6 +1,7 @@
 import { ReactComponent as DeleteIcon } from "../../icons/delete.svg";
 import { ReactComponent as TrashIcon } from "../../icons/trash.svg";
 import { ReactComponent as PlusIcon } from "../../icons/plus.svg";
+import { ReactComponent as XIcon } from "../../icons/x.svg";
 import { Tooltip } from "react-tooltip";
 import { useRef, useState } from "react";
 
@@ -198,10 +199,10 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
   const graphAbsRef = useRef(null);
   const graphZeroRef = useRef(null);
 
-  const [dropdownActive, setDropdownActive] = useState(false);
+  const [graphPopUpActive, setGraphPopUpActive] = useState(false);
 
-  const handleMainButtonClick = () => {
-    setDropdownActive(!dropdownActive);
+  const handleUploadGraphClick = () => {
+    setGraphPopUpActive(!graphPopUpActive);
   };
 
   const handleGraphAbsUploadClick = () => {
@@ -216,41 +217,42 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
     annotationMappingRef.current.click();
   };
 
-  let content = null;
+  // if (dropdownActive) {
+  //   // soon to be deprecated
+  //   content = (
+  //     <div className="pad-left-1 inline">
+  //       <div className="dropdown-sidebar">
+  //         <SidebarDropdownItem
+  //           text={"take absolute value of link weights"}
+  //           onClick={handleGraphAbsUploadClick}
+  //           linkRef={graphAbsRef}
+  //           onChange={(event) => {
+  //             const takeAbs = true;
+  //             handleNewGraphFile(event, takeAbs);
+  //             event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
+  //           }}
+  //         />
+  //         <SidebarDropdownItem
+  //           text={"set negative link weights to 0"}
+  //           onClick={handleGraphZeroUploadClick}
+  //           linkRef={graphZeroRef}
+  //           onChange={(event) => {
+  //             const takeAbs = false;
+  //             handleNewGraphFile(event, takeAbs);
+  //             event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
+  //           }}
+  //         />
+  //       </div>
+  //       <SidebarButtonRect onClick={handleMainButtonClick} text={"close"} tooltipId={"close-dropdown-tooltip"} />
+  //     </div>
+  //   );
+  // }
 
-  if (dropdownActive) {
-    content = (
-      <div className="pad-left-1 inline">
-        <div className="dropdown-sidebar">
-          <SidebarDropdownItem
-            text={"take absolute value of link weights"}
-            onClick={handleGraphAbsUploadClick}
-            linkRef={graphAbsRef}
-            onChange={(event) => {
-              const takeAbs = true;
-              handleNewGraphFile(event, takeAbs);
-              event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
-            }}
-          />
-          <SidebarDropdownItem
-            text={"set negative link weights to 0"}
-            onClick={handleGraphZeroUploadClick}
-            linkRef={graphZeroRef}
-            onChange={(event) => {
-              const takeAbs = false;
-              handleNewGraphFile(event, takeAbs);
-              event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
-            }}
-          />
-        </div>
-        <SidebarButtonRect onClick={handleMainButtonClick} text={"close"} tooltipId={"close-dropdown-tooltip"} />
-      </div>
-    );
-  } else {
-    content = (
-      <>
+  return (
+    <>
+      <div className="pad-bottom-1 pad-top-05 data-buttons">
         <SidebarButtonRect
-          onClick={handleMainButtonClick}
+          onClick={handleUploadGraphClick}
           text={"Upload Graph"}
           tooltip={"Upload Graph as CSV/TSV Matrix or JSON File"}
           tooltipId={"upload-graph-tooltip"}
@@ -266,9 +268,39 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
           tooltip={"Upload Gene/Protein Annotation Mappings as TSV File"}
           tooltipId={"upload-graph-tooltip"}
         />
-      </>
-    );
-  }
-
-  return <div className="pad-bottom-1 pad-top-05 data-buttons">{content}</div>;
+      </div>
+      {graphPopUpActive && (
+        <div className="popup-overlay">
+          <div className="popup-container">
+            <div className="popup-header pad-bottom-1">
+              <b>Upload your Graph here</b>
+              <span className="tooltip-button" onClick={handleUploadGraphClick}>
+                <XIcon />
+              </span>
+            </div>
+            <SidebarDropdownItem
+              text={"take absolute value of link weights"}
+              onClick={handleGraphAbsUploadClick}
+              linkRef={graphAbsRef}
+              onChange={(event) => {
+                const takeAbs = true;
+                handleNewGraphFile(event, takeAbs);
+                event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
+              }}
+            />
+            <SidebarDropdownItem
+              text={"set negative link weights to 0"}
+              onClick={handleGraphZeroUploadClick}
+              linkRef={graphZeroRef}
+              onChange={(event) => {
+                const takeAbs = false;
+                handleNewGraphFile(event, takeAbs);
+                event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
+              }}
+            />
+          </div>
+        </div>
+      )}
+    </>
+  );
 }

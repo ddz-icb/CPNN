@@ -124,7 +124,7 @@ export function ClickTooltip({ mapping }) {
           opacity: 0.95,
           transform: "translateY(-100%)",
         });
-        if (tooltipSettings.clickTooltipData.x > settings.container.width / 2) {
+        if (tooltipSettings.clickTooltipData.x > (2 * settings.container.width) / 3) {
           setStyle({
             left: x2,
             top: y,
@@ -132,7 +132,7 @@ export function ClickTooltip({ mapping }) {
             transform: "translateX(-100%) translateY(-100%)",
           });
         }
-      } else if (tooltipSettings.clickTooltipData.x > settings.container.width / 2) {
+      } else if (tooltipSettings.clickTooltipData.x > (2 * settings.container.width) / 3) {
         setStyle({
           left: x2,
           top: y,
