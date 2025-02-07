@@ -140,6 +140,20 @@ export function SidebarSwitchBlock({ text, value, onChange }) {
   );
 }
 
+export function PopUpSwitchBlock({ text, value, onChange }) {
+  return (
+    <>
+      <div className="popup-block">
+        <label className="label">{text}</label>
+        <label className="switch">
+          <input type="checkbox" checked={value} onChange={onChange} className="checkbox-input" />
+          <span className="slider round"></span>
+        </label>
+      </div>
+    </>
+  );
+}
+
 export function SidebarFieldBlock({ text, min, max, step, value, onChange, onBlur }) {
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
@@ -173,6 +187,18 @@ export function SidebarButtonRect({ onClick, onChange, linkRef, tooltip, tooltip
         <input type="file" style={{ display: "none" }} onChange={onChange} ref={linkRef} />
       </button>
       <Tooltip id={tooltipId} place="top" effect="solid" className="sidebar-tooltip" />
+    </div>
+  );
+}
+
+export function PopupButtonRect({ onClick, onChange, linkRef, tooltip, tooltipId, text }) {
+  return (
+    <div className="popup-tooltip-wrapper justify-right">
+      <button className="popup-button-rect" data-tooltip-id={tooltipId} data-tooltip-content={tooltip} onClick={onClick}>
+        <span className="popup-button-rect-text">{text}</span>
+        <input type="file" style={{ display: "none" }} onChange={onChange} ref={linkRef} />
+      </button>
+      <Tooltip id={tooltipId} place="top" effect="solid" className="popup-tooltip" />
     </div>
   );
 }

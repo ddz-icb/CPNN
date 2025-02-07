@@ -1094,13 +1094,49 @@ input[type="radio"]:checked:after {
   box-shadow: 0 0px 1.5px 0 var(--box-shadow-color);
   border: var(--border-size-tooltip) solid var(--border-color);
   padding: 10px;
-  max-width: 350px;
+  max-width: 600px;
   max-height: 250px;
   width: 90%;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+.popup-block {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 2rem;
+  box-sizing: border-box;
+}
+
+.popup-button-rect {
+  min-width: 3.5rem;
+  height: 1.7rem;
+  line-height: 10rem;
+  color: var(--sidebar-button-color);
+  background-color: var(--bg-button-sidebar);
+  font-size: 1rem;
+  display: inline-block;
+  border: 1px solid var(--border-button-sidebar);
+  line-height: 1.5rem;
+  cursor: pointer;
+  border-radius: var(--border-radius-button);
+}
+
+.popup-button-rect:hover {
+  background-color: var(--bg-button-sidebar-hover);
+  border: 1px solid var(--border-button-sidebar-hover);
+  transition: var(--transition-speed);
+}
+
+.popup-tooltip-wrapper .popup-tooltip {
+  border-radius: var(--border-radius);
+  color: var(--tooltip-sidebar-text);
+  background-color: var(--bg-tooltip-sidebar);
+  z-index: 20;
 }
 
 .popup-header {
@@ -1290,6 +1326,11 @@ input[type="radio"]:checked:after {
   height: 24px;
   margin-left: 8px;
   margin-right: 8px;
+}
+
+.justify-right {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .dropdown-sidebar {

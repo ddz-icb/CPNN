@@ -5,7 +5,7 @@ import { ReactComponent as XIcon } from "../../icons/x.svg";
 import { Tooltip } from "react-tooltip";
 import { useRef, useState } from "react";
 
-import { SidebarButtonRect, SidebarDropdownItem } from "./sidebar.js";
+import { PopupButtonRect, PopUpSwitchBlock, SidebarButtonRect, SidebarDropdownItem, SidebarSwitchBlock } from "./sidebar.js";
 import log from "../../logger.js";
 import { useGraphData } from "../../states.js";
 import { exampleGraphJson } from "../../demographs/exampleGraphJSON.js";
@@ -47,7 +47,7 @@ export function DataSidebar({
 }
 
 function UploadedFiles({ uploadedGraphFileNames, handleSelectGraph, handleDeleteGraphFile, handleAddFile }) {
-  let uploadedGraphFileNamesNoExample = uploadedGraphFileNames?.filter((name) => name != exampleGraphJson.name);
+  let uploadedGraphFileNamesNoExample = uploadedGraphFileNames?.filter((name) => name !== exampleGraphJson.name);
 
   return (
     <>
@@ -196,63 +196,29 @@ function ActiveAnnotationMapping({ activeAnnotationMapping, handleRemoveActiveAn
 
 export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping }) {
   const annotationMappingRef = useRef(null);
-  const graphAbsRef = useRef(null);
-  const graphZeroRef = useRef(null);
+  const graphFileRef = useRef(null);
 
   const [graphPopUpActive, setGraphPopUpActive] = useState(false);
 
-  const handleUploadGraphClick = () => {
+  const [takeAbs, setTakeAbs] = useState(false);
+
+  const handleUploadGraphPopUp = () => {
     setGraphPopUpActive(!graphPopUpActive);
   };
 
-  const handleGraphAbsUploadClick = () => {
-    graphAbsRef.current.click();
-  };
-
-  const handleGraphZeroUploadClick = () => {
-    graphZeroRef.current.click();
+  const handleGraphUploadClick = () => {
+    graphFileRef.current.click();
   };
 
   const handleUploadMappingClick = () => {
     annotationMappingRef.current.click();
   };
 
-  // if (dropdownActive) {
-  //   // soon to be deprecated
-  //   content = (
-  //     <div className="pad-left-1 inline">
-  //       <div className="dropdown-sidebar">
-  //         <SidebarDropdownItem
-  //           text={"take absolute value of link weights"}
-  //           onClick={handleGraphAbsUploadClick}
-  //           linkRef={graphAbsRef}
-  //           onChange={(event) => {
-  //             const takeAbs = true;
-  //             handleNewGraphFile(event, takeAbs);
-  //             event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
-  //           }}
-  //         />
-  //         <SidebarDropdownItem
-  //           text={"set negative link weights to 0"}
-  //           onClick={handleGraphZeroUploadClick}
-  //           linkRef={graphZeroRef}
-  //           onChange={(event) => {
-  //             const takeAbs = false;
-  //             handleNewGraphFile(event, takeAbs);
-  //             event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
-  //           }}
-  //         />
-  //       </div>
-  //       <SidebarButtonRect onClick={handleMainButtonClick} text={"close"} tooltipId={"close-dropdown-tooltip"} />
-  //     </div>
-  //   );
-  // }
-
   return (
     <>
       <div className="pad-bottom-1 pad-top-05 data-buttons">
         <SidebarButtonRect
-          onClick={handleUploadGraphClick}
+          onClick={handleUploadGraphPopUp}
           text={"Upload Graph"}
           tooltip={"Upload Graph as CSV/TSV Matrix or JSON File"}
           tooltipId={"upload-graph-tooltip"}
@@ -274,28 +240,25 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
           <div className="popup-container">
             <div className="popup-header pad-bottom-1">
               <b>Upload your Graph here</b>
-              <span className="tooltip-button" onClick={handleUploadGraphClick}>
+              <span className="tooltip-button" onClick={handleUploadGraphPopUp}>
                 <XIcon />
               </span>
             </div>
-            <SidebarDropdownItem
-              text={"take absolute value of link weights"}
-              onClick={handleGraphAbsUploadClick}
-              linkRef={graphAbsRef}
-              onChange={(event) => {
-                const takeAbs = true;
-                handleNewGraphFile(event, takeAbs);
-                event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
+            <PopUpSwitchBlock
+              text={"Include negative correlations by taking the absolute value"}
+              value={takeAbs}
+              onChange={() => {
+                setTakeAbs(!takeAbs);
               }}
             />
-            <SidebarDropdownItem
-              text={"set negative link weights to 0"}
-              onClick={handleGraphZeroUploadClick}
-              linkRef={graphZeroRef}
+            <PopupButtonRect
+              text={"Upload Graph File"}
+              onClick={handleGraphUploadClick}
+              linkRef={graphFileRef}
               onChange={(event) => {
-                const takeAbs = false;
                 handleNewGraphFile(event, takeAbs);
                 event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
+                setGraphPopUpActive(false);
               }}
             />
           </div>
