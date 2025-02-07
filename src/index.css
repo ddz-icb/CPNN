@@ -961,7 +961,7 @@ input[type="radio"]:checked:after {
 
 .tooltip-header {
   width: 100%;
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   display: flex;
   justify-content: space-between;
   color: var(--tooltip-header-color);
@@ -1055,10 +1055,16 @@ input[type="radio"]:checked:after {
 }
 
 .error-header {
+  font-size: 1.15rem;
   width: 100%;
   display: flex;
   justify-content: space-between;
   color: var(--error-color);
+}
+
+.error-header b {
+  flex-grow: 1;
+  text-align: center;
 }
 
 .error-button {
@@ -1095,7 +1101,7 @@ input[type="radio"]:checked:after {
   border: var(--border-size-tooltip) solid var(--border-color);
   padding: 10px;
   max-width: 600px;
-  max-height: 250px;
+  max-height: 800px;
   width: 90%;
   box-sizing: border-box;
   display: flex;
@@ -1108,8 +1114,22 @@ input[type="radio"]:checked:after {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 2rem;
+  padding-bottom: 0.75rem;
   box-sizing: border-box;
+}
+
+.popup-text-field {
+  font-size: 1rem;
+  display: inline-block;
+  border: 1px solid var(--border-input-field-sidebar-focus);
+  background-color: var(--bg-input-field);
+  color: var(--text-primary);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
+  text-align: center;
+  border-radius: var(--border-radius-button);
 }
 
 .popup-button-rect {
@@ -1140,10 +1160,16 @@ input[type="radio"]:checked:after {
 }
 
 .popup-header {
+  font-size: 1.15rem;
   width: 100%;
   display: flex;
   justify-content: space-between;
   color: var(--text-primary);
+}
+
+.popup-header b {
+  flex-grow: 1;
+  text-align: center;
 }
 
 .sidebar-tooltip-wrapper .sidebar-tooltip {

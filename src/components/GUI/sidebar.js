@@ -193,7 +193,7 @@ export function SidebarButtonRect({ onClick, onChange, linkRef, tooltip, tooltip
 
 export function PopupButtonRect({ onClick, onChange, linkRef, tooltip, tooltipId, text }) {
   return (
-    <div className="popup-tooltip-wrapper justify-right">
+    <div className="popup-tooltip-wrapper justify-right pad-top-1">
       <button className="popup-button-rect" data-tooltip-id={tooltipId} data-tooltip-content={tooltip} onClick={onClick}>
         <span className="popup-button-rect-text">{text}</span>
         <input type="file" style={{ display: "none" }} onChange={onChange} ref={linkRef} />
@@ -214,6 +214,17 @@ export function SidebarCodeEditorBlock({ text, onClick, compilerError, defaultVa
         <SidebarButtonRect onClick={onClick} text={"Run"} />
       </div>
       <span className={`warning ${compilerError ? "pad-bottom-1" : ""}`}>{compilerError}</span>
+    </>
+  );
+}
+
+export function PopUpTextField({ textInfront, textInside }) {
+  return (
+    <>
+      <label className="label">{textInfront}</label>
+      <div className={"popup-block"}>
+        <div className="popup-text-field">{textInside}</div>
+      </div>
     </>
   );
 }

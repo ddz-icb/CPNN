@@ -5,7 +5,15 @@ import { ReactComponent as XIcon } from "../../icons/x.svg";
 import { Tooltip } from "react-tooltip";
 import { useRef, useState } from "react";
 
-import { PopupButtonRect, PopUpSwitchBlock, SidebarButtonRect, SidebarDropdownItem, SidebarSwitchBlock } from "./sidebar.js";
+import {
+  PopupButtonRect,
+  PopUpSwitchBlock,
+  PopUpTextField,
+  SidebarButtonRect,
+  SidebarCodeEditorBlock,
+  SidebarDropdownItem,
+  SidebarSwitchBlock,
+} from "./sidebar.js";
 import log from "../../logger.js";
 import { useGraphData } from "../../states.js";
 import { exampleGraphJson } from "../../demographs/exampleGraphJSON.js";
@@ -239,7 +247,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
         <div className="popup-overlay">
           <div className="popup-container">
             <div className="popup-header pad-bottom-1">
-              <b>Upload your Graph here</b>
+              <b>Upload Your Graph Here</b>
               <span className="tooltip-button" onClick={handleUploadGraphPopUp}>
                 <XIcon />
               </span>
@@ -250,6 +258,29 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
               onChange={() => {
                 setTakeAbs(!takeAbs);
               }}
+            />
+            <PopUpSwitchBlock
+              text={"Node IDs contain the gene name"}
+              // value={takeAbs}
+              // onChange={() => {
+              //   setTakeAbs(!takeAbs);
+              // }}
+            />
+            <PopUpSwitchBlock
+              text={"Node IDs contain phosphosites"}
+              // value={takeAbs}
+              // onChange={() => {
+              //   setTakeAbs(!takeAbs);
+              // }}
+            />
+            <PopUpTextField
+              textInfront={"Node ID format to use"}
+              // NEXT: DEPENDING ON THE SELECTED ID ATTRIBUTES THE FORMAT AND EXAMPLE SHOWN SHOULD CHANGE
+              textInside={"UNIPROT-ID-1_GENE-1_SITE-A, SITE-B, ..., SITE-X; UNIPROT-ID-2_GENE-2_SITE-Y, ..."}
+            />
+            <PopUpTextField
+              textInfront={"Node ID example"}
+              textInside={"Q8WZ42-2_TTN_T719, S721; Q8WZ42-10_TTN_T765, S767; Q8WZ42-12_TTN_T811, S813;"}
             />
             <PopupButtonRect
               text={"Upload Graph File"}
