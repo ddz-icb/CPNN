@@ -113,8 +113,6 @@ export const useGraphData = create((set) => ({
     filteredAfterStart: false,
     graphIsPreprocessed: false,
 
-    idsHavePhosphosites: false, // do the node ids have phosphosites
-
     activeGraphFileNames: null, // currently active file names
     uploadedGraphFileNames: null, // names of all graph files in local storage
 

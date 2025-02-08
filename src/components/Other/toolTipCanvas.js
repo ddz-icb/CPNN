@@ -20,6 +20,7 @@ export function Tooltips({}) {
 
 export function ClickTooltip({ mapping }) {
   const { settings, setSettings } = useSettings();
+
   const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
 
   const [fullName, setFullName] = useState("");
@@ -28,6 +29,7 @@ export function ClickTooltip({ mapping }) {
   const [protIdNoIsoform, setProtIdNoIsoform] = useState("");
   const [gene, setGene] = useState("");
   const [isoforms, setIsoforms] = useState("");
+  const [hasPhosphosites, setHasPhosphosites] = useState(false);
 
   const [style, setStyle] = useState({});
   const [viewer, setViewer] = useState(null);
@@ -41,14 +43,18 @@ export function ClickTooltip({ mapping }) {
 
         const protIdNoIsoform = entries[0].split("_")[0].split("-")[0];
         if (protIdNoIsoform) setProtIdNoIsoform(protIdNoIsoform);
-        const gene = tooltipSettings.clickTooltipData.node.split("_")[1];
+
+        const gene = entries[0].split("_")[1];
         if (gene) setGene(gene);
+
+        const phosphosites = entries[0].split("_")[2];
+        setHasPhosphosites(!!phosphosites);
 
         const isoforms = [];
         entries.forEach((entry) => {
           const pepId = entry.split("_")[0];
           const phosphosites = entry.split("_")[2];
-          if (pepId && phosphosites) isoforms.push({ pepId: pepId, phosphosites: phosphosites });
+          if (pepId) isoforms.push({ pepId: pepId, phosphosites: phosphosites });
         });
         if (isoforms) setIsoforms(isoforms);
 
@@ -220,7 +226,7 @@ export function ClickTooltip({ mapping }) {
             )}
             {isoforms && isoforms.length > 0 && (
               <>
-                <b className="no-margin-bottom text-secondary">Protein-IDs and Phosphosites</b>
+                <b className="no-margin-bottom text-secondary">Protein-IDs {hasPhosphosites ? "and Phosphosites" : ""}</b>
                 <div className="no-margin-top pad-bottom-05">{isoformContent}</div>
               </>
             )}

@@ -306,10 +306,6 @@ function App() {
     const linkAttribsToColorIndices = getLinkAttribsToColorIndices(newGraph);
     setSettings("appearance.linkAttribsToColorIndices", linkAttribsToColorIndices);
 
-    const idsHavePhosphosites = getIdsHavePhosphosites(newGraph);
-    log.info("ASLDKFJASÖLFJASÖLDJFKLSAF", idsHavePhosphosites);
-    setGraphData("idsHavePhosphosites", idsHavePhosphosites);
-
     setGraphData("graph", newGraph);
     setGraphData("graphIsPreprocessed", true);
   }, [graphData.originGraph, graphData.activeGraphFileNames, graphData.activeAnnotationMapping]);
