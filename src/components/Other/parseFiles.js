@@ -139,7 +139,7 @@ export async function parseAnnotationMappingFile(file) {
       dynamicTyping: true,
       skipEmptyLines: true,
       transform: function (value, field) {
-        if (field !== "UniProt ID") {
+        if (field !== "UniProt-ID") {
           return value.split(";").map((item) => item.trim());
         }
         return value;
@@ -150,7 +150,7 @@ export async function parseAnnotationMappingFile(file) {
     const groupMapping = {};
 
     for (let row of fileData.data) {
-      const uniProtId = row["UniProt ID"];
+      const uniProtId = row["UniProt-ID"];
       const pathwayNames = row["Pathway Name"];
       const reactomeIds = row["Reactome-ID"];
 

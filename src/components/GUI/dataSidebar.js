@@ -9,8 +9,9 @@ import { PopupButtonRect, PopUpDoubleTextField, PopUpSwitchBlock, PopUpTextField
 import log from "../../logger.js";
 import { useGraphData } from "../../states.js";
 import { exampleGraphJson } from "../../demodata/exampleGraphJSON.js";
-import { downloadCsvFile, downloadGraphJson, downloadObjectAsFile } from "../GraphStuff/download.js";
+import { downloadCsvFile, downloadObjectAsFile } from "../GraphStuff/download.js";
 import { exampleGraphCsv } from "../../demodata/exampleGraphCSV.js";
+import { exampleMappingCsv } from "../../demodata/exampleMappingCSV.js";
 
 export function DataSidebar({
   handleRemoveActiveGraphFile,
@@ -211,6 +212,9 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
   const [nodeIdExample1, setNodeIdExample1] = useState("");
   const [nodeIdExample2, setNodeIdExample2] = useState("");
 
+  const annotationMappingFormat = "Uniprot-ID, Pathway Name, Reactome-ID";
+  const annotationMappingExample = "O60306,mRNA Splicing,R-HSA-72172";
+
   const handleGraphPopUp = () => {
     setGraphPopUpActive(!graphPopUpActive);
   };
@@ -254,8 +258,8 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
         />
         <SidebarButtonRect
           onClick={handleMappingPopUp}
-          text={"Upload Gene/Protein Annotations"}
-          tooltip={"Upload Gene/Protein Annotation Mappings as a TSV or CSV File"}
+          text={"Upload Pathway Mappings"}
+          tooltip={"Upload Pathway Annotation Mappings as a TSV or CSV File"}
           tooltipId={"upload-graph-tooltip"}
         />
       </div>
@@ -263,31 +267,31 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
         <div className="popup-overlay">
           <div className="popup-container">
             <div className="popup-header pad-bottom-1">
-              <b>Uploading Your Annotation Mapping</b>
+              <b>Uploading Your Pathway Mapping</b>
               <span className="tooltip-button" onClick={handleMappingPopUp}>
                 <XIcon />
               </span>
             </div>
             <div className="popup-block color-text-primary">
-              Annotation mappings can provide additional context to classify nodes, determining their color. For instance, you can upload a “Pathway
-              Mapping” that associates nodes —such as peptides— with one or more pathways. Nodes belonging to the same pathway will then be colored
-              accordingly.
+              Uploading pathway mappings can provide additional context to classify nodes, determining their color. By doing so nodes —such as
+              peptides— are associated with one or more pathways. Nodes belonging to the same pathway will then be colored accordingly.
               <br />
               <br />
-              Annotation mappings can be uploaded in CSV or TSV format. To better understand the required format, you can download the example graphs
-              below.
+              Pathway mappings can be uploaded in CSV or TSV format. These mappings must contain a "UniProt-ID" and a "Pathway Name" column. If
+              supplied with a "Reactome-ID" column, links to reactome.org with the corresponding pathway will be embedded, when klicking on nodes. To
+              better understand the required format, you can download the example graphs below.
             </div>
-            <PopUpTextField textInfront={"Your Annotation Mapping format:"} textInside={nodeIdFormat} />
-            <PopUpDoubleTextField textInfront={"Annotation Mapping example:"} textInside1={nodeIdExample1} textInside2={nodeIdExample2} />
+            <PopUpTextField textInfront={"Your Annotation Mapping format:"} textInside={annotationMappingFormat} />
+            <PopUpTextField textInfront={"Annotation Mapping example:"} textInside={annotationMappingExample} />
             <div className="popup-block">
               <PopupButtonRect
                 text={"Download Example Annotation Mapping"}
                 onClick={() => {
-                  downloadObjectAsFile(exampleGraphJson.content, exampleGraphJson.name);
+                  downloadCsvFile(exampleMappingCsv.content, exampleMappingCsv.name);
                 }}
               />
               <PopupButtonRect
-                text={"Upload Own Annotation Mapping"}
+                text={"Upload Own Pathway Mapping"}
                 onClick={handleUploadMappingClick}
                 linkRef={annotationMappingRef}
                 onChange={(event) => {
