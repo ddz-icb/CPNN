@@ -70,17 +70,7 @@ function App() {
   };
 
   // adds new graph file //
-  const handleNewGraphFile = async (event, takeAbs, containsGene, containsSites, containsUniprotId) => {
-    log.info(
-      "Handling new graph file with the following settings:\n    take absolute values:",
-      takeAbs,
-      "\n    contains Uniprot ID:",
-      containsUniprotId,
-      "\n    contains gene:",
-      containsGene,
-      "\n    contains phosphosites:",
-      containsSites
-    );
+  const handleNewGraphFile = async (event, takeAbs) => {
     const file = event.target.files[0];
     if (!event || !event.target || !file) return;
     if (graphData.uploadedGraphFileNames.includes(file.name)) {

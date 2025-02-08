@@ -201,6 +201,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
   const [graphPopUpActive, setGraphPopUpActive] = useState(false);
 
   const [takeAbs, setTakeAbs] = useState(false);
+
   const [containsUniprotId, setContainsUniprotIds] = useState(false);
   const [containsGene, setContainsGene] = useState(false);
   const [containsSites, setContainsSites] = useState(false);
@@ -232,7 +233,6 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
     const idExample = `${containsUniprotId ? "Q8WZ42" : "ID123"}${containsGene ? "_TTN" : ""}${containsSites ? "_T719, S721" : ""}${
       containsUniprotId ? "; Q8WZ42-12 ..." : ""
     }`;
-    // let idExample = "Q8WZ42-2_TTN_T719, S721; Q8WZ42-10_TTN_T765, S767; Q8WZ42-12_TTN_T811, S813";
 
     setNodeIdFormat(idFormat);
     setNodeIdExample(idExample);
@@ -296,19 +296,14 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
                 setContainsSites(!containsSites);
               }}
             />
-            <PopUpTextField
-              textInfront={"Your Node ID format:"}
-              // NEXT: DEPENDING ON THE SELECTED ID ATTRIBUTES THE FORMAT AND EXAMPLE SHOWN SHOULD CHANGE (MAKE FORMAT AND EXAMPLE FOR EVERY CASE)
-              // DEPENDING ON THE SELECTED ID ATTRIBUTES THE PARSING HAS TO BE HANDLED ALTERNATIVELY
-              textInside={nodeIdFormat}
-            />
+            <PopUpTextField textInfront={"Your Node ID format:"} textInside={nodeIdFormat} />
             <PopUpTextField textInfront={"Node ID example:"} textInside={nodeIdExample} />
             <PopupButtonRect
               text={"Upload Graph File"}
               onClick={handleGraphUploadClick}
               linkRef={graphFileRef}
               onChange={(event) => {
-                handleNewGraphFile(event, takeAbs, containsGene, containsSites, containsUniprotId);
+                handleNewGraphFile(event, takeAbs);
                 event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
                 setGraphPopUpActive(false);
               }}
