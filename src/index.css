@@ -1371,3 +1371,7 @@ input[type="radio"]:checked:after {
   max-height: 500px;
   overflow: auto;
 }
+
+.color-text-primary {
+  color: var(--text-primary);
+}

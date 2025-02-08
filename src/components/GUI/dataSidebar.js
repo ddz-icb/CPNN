@@ -8,9 +8,9 @@ import { useEffect, useRef, useState } from "react";
 import { PopupButtonRect, PopUpDoubleTextField, PopUpSwitchBlock, PopUpTextField, SidebarButtonRect } from "./sidebar.js";
 import log from "../../logger.js";
 import { useGraphData } from "../../states.js";
-import { exampleGraphJson } from "../../demographs/exampleGraphJSON.js";
+import { exampleGraphJson } from "../../demodata/exampleGraphJSON.js";
 import { downloadCsvFile, downloadGraphJson, downloadObjectAsFile } from "../GraphStuff/download.js";
-import { exampleGraphCsv } from "../../demographs/exampleGraphCSV.js";
+import { exampleGraphCsv } from "../../demodata/exampleGraphCSV.js";
 
 export function DataSidebar({
   handleRemoveActiveGraphFile,
@@ -201,6 +201,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
   const graphFileRef = useRef(null);
 
   const [graphPopUpActive, setGraphPopUpActive] = useState(false);
+  const [mappingPopUpActive, setMappingPopUpActive] = useState(false);
 
   const [takeAbs, setTakeAbs] = useState(false);
 
@@ -210,8 +211,12 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
   const [nodeIdExample1, setNodeIdExample1] = useState("");
   const [nodeIdExample2, setNodeIdExample2] = useState("");
 
-  const handleUploadGraphPopUp = () => {
+  const handleGraphPopUp = () => {
     setGraphPopUpActive(!graphPopUpActive);
+  };
+
+  const handleMappingPopUp = () => {
+    setMappingPopUpActive(!mappingPopUpActive);
   };
 
   const handleGraphUploadClick = () => {
@@ -242,31 +247,71 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
     <>
       <div className="pad-bottom-1 pad-top-05 data-buttons">
         <SidebarButtonRect
-          onClick={handleUploadGraphPopUp}
+          onClick={handleGraphPopUp}
           text={"Upload Graph"}
           tooltip={"Upload Graph as CSV/TSV Matrix or JSON File"}
           tooltipId={"upload-graph-tooltip"}
         />
         <SidebarButtonRect
-          onClick={handleUploadMappingClick}
-          onChange={(event) => {
-            handleNewAnnotationMapping(event);
-            event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
-          }}
+          onClick={handleMappingPopUp}
           text={"Upload Gene/Protein Annotations"}
-          linkRef={annotationMappingRef}
-          tooltip={"Upload Gene/Protein Annotation Mappings as TSV File"}
+          tooltip={"Upload Gene/Protein Annotation Mappings as a TSV or CSV File"}
           tooltipId={"upload-graph-tooltip"}
         />
       </div>
+      {mappingPopUpActive && (
+        <div className="popup-overlay">
+          <div className="popup-container">
+            <div className="popup-header pad-bottom-1">
+              <b>Uploading Your Annotation Mapping</b>
+              <span className="tooltip-button" onClick={handleMappingPopUp}>
+                <XIcon />
+              </span>
+            </div>
+            <div className="popup-block color-text-primary">
+              Annotation mappings can provide additional context to classify nodes, determining their color. For instance, you can upload a “Pathway
+              Mapping” that associates nodes —such as peptides— with one or more pathways. Nodes belonging to the same pathway will then be colored
+              accordingly.
+              <br />
+              <br />
+              Annotation mappings can be uploaded in CSV or TSV format. To better understand the required format, you can download the example graphs
+              below.
+            </div>
+            <PopUpTextField textInfront={"Your Annotation Mapping format:"} textInside={nodeIdFormat} />
+            <PopUpDoubleTextField textInfront={"Annotation Mapping example:"} textInside1={nodeIdExample1} textInside2={nodeIdExample2} />
+            <div className="popup-block">
+              <PopupButtonRect
+                text={"Download Example Annotation Mapping"}
+                onClick={() => {
+                  downloadObjectAsFile(exampleGraphJson.content, exampleGraphJson.name);
+                }}
+              />
+              <PopupButtonRect
+                text={"Upload Own Annotation Mapping"}
+                onClick={handleUploadMappingClick}
+                linkRef={annotationMappingRef}
+                onChange={(event) => {
+                  handleNewAnnotationMapping(event);
+                  event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
+                  setMappingPopUpActive(false);
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
       {graphPopUpActive && (
         <div className="popup-overlay">
           <div className="popup-container">
             <div className="popup-header pad-bottom-1">
-              <b>Upload Your Graph Here</b>
-              <span className="tooltip-button" onClick={handleUploadGraphPopUp}>
+              <b>Uploading Your Graph</b>
+              <span className="tooltip-button" onClick={handleGraphPopUp}>
                 <XIcon />
               </span>
+            </div>
+            <div className="popup-block color-text-primary">
+              You can upload your graphs in JSON, CSV or TSV format. CSV and TSV files must be structured as a symmetric matrix, while JSON contains a
+              list of nodes and links. You can download the example graphs below to take a closer look at the required format.
             </div>
             <PopUpSwitchBlock
               text={"Include negative correlations by taking the absolute value"}

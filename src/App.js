@@ -34,6 +34,7 @@ import {
 import { useGraphData, useSettings } from "./states.js";
 import { Erorr } from "./components/Other/error.js";
 import { defaultColorSchemes } from "./components/Other/appearance.js";
+import { getFileNameWithoutExtension } from "./components/Other/parseFiles.js";
 
 function App() {
   const { settings, setSettings } = useSettings(); // includes physics, filter and appearance settings
@@ -78,7 +79,7 @@ function App() {
   const handleNewGraphFile = async (event, takeAbs) => {
     const file = event.target.files[0];
     if (!event || !event.target || !file) return;
-    if (graphData.uploadedGraphFileNames.includes(file.name)) {
+    if (graphData.uploadedGraphFileNames.some((name) => getFileNameWithoutExtension(name) === getFileNameWithoutExtension(file.name))) {
       log.warn("Graph with this name already exists");
       setError("Graph with this name already exists");
       return;
@@ -135,7 +136,7 @@ function App() {
   const handleNewAnnotationMapping = (event) => {
     const file = event.target.files[0];
     if (!event || !event.target || !file) return;
-    if (graphData.uploadedAnnotationMappingNames.includes(file.name)) {
+    if (graphData.uploadedAnnotationMappingNames.some((name) => getFileNameWithoutExtension(name) === getFileNameWithoutExtension(file.name))) {
       log.warn("Mapping with this name already exists");
       setError("Mapping with this name already exists");
       return;
@@ -162,7 +163,7 @@ function App() {
   // deletes annotation mapping files
   const handleDeleteAnnotationMapping = (mappingName) => {
     if (!mappingName) return;
-    if (graphData.activeAnnotationMapping.name == mappingName) {
+    if (graphData?.activeAnnotationMapping?.name == mappingName) {
       log.warn("Cannot remove selected mapping as it's still active");
       setError("Cannot remove selected mapping as it's still active");
       return;
@@ -175,7 +176,7 @@ function App() {
   // deletes uploaded files with filename //
   const handleDeleteGraphFile = (filename) => {
     if (!filename) return;
-    if (graphData.activeGraphFileNames.includes(filename)) {
+    if (graphData?.activeGraphFileNames?.includes(filename)) {
       log.warn("Cannot remove selected graph as it's still active");
       setError("Cannot remove selected graph as it's still active");
       return;

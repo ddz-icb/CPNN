@@ -2,7 +2,7 @@ import log from "../../logger.js";
 import canvasToSvg from "canvas-to-svg";
 
 import { drawCircleCanvas, drawLineCanvas } from "../Other/draw.js";
-import { exampleGraphJson } from "../../demographs/exampleGraphJSON.js";
+import { exampleGraphJson } from "../../demodata/exampleGraphJSON.js";
 
 export function downloadAsPNG(app, document) {
   function getHtmlImageElement() {

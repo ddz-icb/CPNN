@@ -1,4 +1,4 @@
-import { exampleGraphJson } from "../../demographs/exampleGraphJSON.js";
+import { exampleGraphJson } from "../../demodata/exampleGraphJSON.js";
 import log from "../../logger.js";
 import { joinGraphs } from "../GraphStuff/graphCalculations.js";
 import { applyTheme, defaultColorSchemes, lightTheme } from "./appearance.js";

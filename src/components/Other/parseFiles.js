@@ -181,3 +181,5 @@ export async function parseAnnotationMappingFile(file) {
     throw new Error(`Erorr parsing annotation mapping ${file}.`);
   }
 }
+
+export const getFileNameWithoutExtension = (filename) => filename.replace(/\.[^/.]+$/, "");
