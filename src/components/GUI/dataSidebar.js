@@ -203,7 +203,6 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
   const [takeAbs, setTakeAbs] = useState(false);
 
   const [containsUniprotId, setContainsUniprotIds] = useState(false);
-  const [containsGene, setContainsGene] = useState(false);
   const [containsSites, setContainsSites] = useState(false);
 
   const [nodeIdFormat, setNodeIdFormat] = useState("");
@@ -222,21 +221,21 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
   };
 
   useEffect(() => {
-    let id = containsUniprotId ? "UNIPROT-ID" : "NODE-ID";
-    let gene = "GENE";
-    let sites = "SITE-A, SITE-B, ... SITE-T";
+    let id = containsUniprotId ? "UniprotID" : "ID";
+    let name = "Name";
+    let sites = "SiteA, SiteB, ... SiteT";
 
-    const idFormat = `${id}${containsUniprotId ? "-1" : ""}${containsGene ? "_" + gene + (containsUniprotId ? "-1" : "") : ""}${
-      containsSites ? "_" + sites : ""
-    }${containsUniprotId ? "; " + id + "-2 ..." : ""}`;
+    const idFormat = `${id}${containsUniprotId ? "1" : ""}_ ${name}${containsUniprotId ? "1" : ""}${containsSites ? "_" + sites : ""}${
+      containsUniprotId ? "; " + id + `2_${name}2 ...` : ""
+    }`;
 
-    const idExample = `${containsUniprotId ? "Q8WZ42" : "ID123"}${containsGene ? "_TTN" : ""}${containsSites ? "_T719, S721" : ""}${
-      containsUniprotId ? "; Q8WZ42-12 ..." : ""
+    const idExample = `${containsUniprotId ? "Q8WZ42" : "1x3yC9z"}_TTN${containsSites ? "_T719, S721" : ""}${
+      containsUniprotId ? `; Q8WZ42-12_TTN${containsSites ? "_T765, S767" : ""}` : ""
     }`;
 
     setNodeIdFormat(idFormat);
     setNodeIdExample(idExample);
-  }, [containsUniprotId, containsGene, containsSites]);
+  }, [containsUniprotId, containsSites]);
 
   return (
     <>
@@ -280,13 +279,6 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
               value={containsUniprotId}
               onChange={() => {
                 setContainsUniprotIds(!containsUniprotId);
-              }}
-            />
-            <PopUpSwitchBlock
-              text={"Node IDs contain the gene name"}
-              value={containsGene}
-              onChange={() => {
-                setContainsGene(!containsGene);
               }}
             />
             <PopUpSwitchBlock
