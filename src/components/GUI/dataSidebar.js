@@ -275,7 +275,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
               }}
             />
             <PopUpSwitchBlock
-              text={"Node IDs contain Uniprot IDs"}
+              text={"Node IDs contain Uniprot IDs (can be multiple per node ID)"}
               value={containsUniprotId}
               onChange={() => {
                 setContainsUniprotIds(!containsUniprotId);
