@@ -5,7 +5,7 @@ import { ReactComponent as XIcon } from "../../icons/x.svg";
 import { Tooltip } from "react-tooltip";
 import { useEffect, useRef, useState } from "react";
 
-import { PopupButtonRect, PopUpSwitchBlock, PopUpTextField, SidebarButtonRect } from "./sidebar.js";
+import { PopupButtonRect, PopUpDoubleTextField, PopUpSwitchBlock, PopUpTextField, SidebarButtonRect } from "./sidebar.js";
 import log from "../../logger.js";
 import { useGraphData } from "../../states.js";
 import { exampleGraphJson } from "../../demographs/exampleGraphJSON.js";
@@ -202,11 +202,11 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
 
   const [takeAbs, setTakeAbs] = useState(false);
 
-  const [containsUniprotId, setContainsUniprotIds] = useState(false);
   const [containsSites, setContainsSites] = useState(false);
 
   const [nodeIdFormat, setNodeIdFormat] = useState("");
-  const [nodeIdExample, setNodeIdExample] = useState("");
+  const [nodeIdExample1, setNodeIdExample1] = useState("");
+  const [nodeIdExample2, setNodeIdExample2] = useState("");
 
   const handleUploadGraphPopUp = () => {
     setGraphPopUpActive(!graphPopUpActive);
@@ -221,21 +221,20 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
   };
 
   useEffect(() => {
-    let id = containsUniprotId ? "UniprotID" : "ID";
+    let id = "UniprotID";
     let name = "Name";
     let sites = "SiteA, SiteB, ... SiteT";
+    let sites2 = "SiteU, SiteV, ... SiteW";
 
-    const idFormat = `${id}${containsUniprotId ? "1" : ""}_ ${name}${containsUniprotId ? "1" : ""}${containsSites ? "_" + sites : ""}${
-      containsUniprotId ? "; " + id + `2_${name}2 ...` : ""
-    }`;
+    const idFormat = `${id}1_ ${name}1${containsSites ? "_" + sites : ""}; ${id}2_${name}2${containsSites ? "_" + sites2 : ""}; ...`;
 
-    const idExample = `${containsUniprotId ? "Q8WZ42" : "1x3yC9z"}_TTN${containsSites ? "_T719, S721" : ""}${
-      containsUniprotId ? `; Q8WZ42-12_TTN${containsSites ? "_T765, S767" : ""}` : ""
-    }`;
+    const idExample1 = `P08590_MYL3${containsSites ? "_T165" : ""}`;
+    const idExample2 = `Q8WZ42_TTN${containsSites ? "_T719, S721" : ""}; Q8WZ42-12_TTN${containsSites ? "_T765, S767" : ""}`;
 
     setNodeIdFormat(idFormat);
-    setNodeIdExample(idExample);
-  }, [containsUniprotId, containsSites]);
+    setNodeIdExample1(idExample1);
+    setNodeIdExample2(idExample2);
+  }, [containsSites]);
 
   return (
     <>
@@ -275,13 +274,6 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
               }}
             />
             <PopUpSwitchBlock
-              text={"Node IDs contain Uniprot IDs (can be multiple per node ID)"}
-              value={containsUniprotId}
-              onChange={() => {
-                setContainsUniprotIds(!containsUniprotId);
-              }}
-            />
-            <PopUpSwitchBlock
               text={"Node IDs contain phosphosites"}
               value={containsSites}
               onChange={() => {
@@ -289,7 +281,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
               }}
             />
             <PopUpTextField textInfront={"Your Node ID format:"} textInside={nodeIdFormat} />
-            <PopUpTextField textInfront={"Node ID example:"} textInside={nodeIdExample} />
+            <PopUpDoubleTextField textInfront={"Node ID examples:"} textInside1={nodeIdExample1} textInside2={nodeIdExample2} />
             <PopupButtonRect
               text={"Upload Graph File"}
               onClick={handleGraphUploadClick}

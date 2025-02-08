@@ -229,6 +229,20 @@ export function PopUpTextField({ textInfront, textInside }) {
   );
 }
 
+export function PopUpDoubleTextField({ textInfront, textInside1, textInside2 }) {
+  return (
+    <>
+      <label className="label">{textInfront}</label>
+      <div className={"popup-block"}>
+        <div className="popup-text-field">{textInside1}</div>
+      </div>
+      <div className={"popup-block"}>
+        <div className="popup-text-field">{textInside2}</div>
+      </div>
+    </>
+  );
+}
+
 export function SidebarDropdownItem({ onClick, onChange, linkRef, tooltip, tooltipId, text, children }) {
   return (
     <div className="sidebar-tooltip-wrapper">
