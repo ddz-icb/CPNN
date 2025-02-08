@@ -300,3 +300,10 @@ export function getLinkAttribsToColorIndices(graph) {
 
   return linkAttribsToColorIndices;
 }
+
+export function getIdsHavePhosphosites(graph) {
+  const nodeId = graph.nodes[0].id;
+  const firstNodeIdElement = nodeId.split(";")[0];
+  const phosphosites = firstNodeIdElement.split("_")[2];
+  return phosphosites ? true : false;
+}

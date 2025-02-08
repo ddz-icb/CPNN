@@ -5,7 +5,12 @@ import React, { useState, useRef, useEffect } from "react";
 import { ForceGraph } from "./components/GraphStuff/forceGraph.js";
 import { Sidebar } from "./components/GUI/sidebar.js";
 import { HeaderBar } from "./components/GUI/headerBar.js";
-import { applyNodeMapping, getLinkAttribsToColorIndices, getNodeAttribsToColorIndices } from "./components/GraphStuff/graphCalculations.js";
+import {
+  applyNodeMapping,
+  getIdsHavePhosphosites,
+  getLinkAttribsToColorIndices,
+  getNodeAttribsToColorIndices,
+} from "./components/GraphStuff/graphCalculations.js";
 import { resetFilterSettings, resetPhysicsSettings } from "./components/Other/reset.js";
 import {
   addActiveGraphFile,
@@ -300,6 +305,10 @@ function App() {
 
     const linkAttribsToColorIndices = getLinkAttribsToColorIndices(newGraph);
     setSettings("appearance.linkAttribsToColorIndices", linkAttribsToColorIndices);
+
+    const idsHavePhosphosites = getIdsHavePhosphosites(newGraph);
+    log.info("ASLDKFJASÖLFJASÖLDJFKLSAF", idsHavePhosphosites);
+    setGraphData("idsHavePhosphosites", idsHavePhosphosites);
 
     setGraphData("graph", newGraph);
     setGraphData("graphIsPreprocessed", true);
