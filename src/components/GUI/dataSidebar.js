@@ -9,6 +9,8 @@ import { PopupButtonRect, PopUpDoubleTextField, PopUpSwitchBlock, PopUpTextField
 import log from "../../logger.js";
 import { useGraphData } from "../../states.js";
 import { exampleGraphJson } from "../../demographs/exampleGraphJSON.js";
+import { downloadCsvFile, downloadGraphJson, downloadObjectAsFile } from "../GraphStuff/download.js";
+import { exampleGraphCsv } from "../../demographs/exampleGraphCSV.js";
 
 export function DataSidebar({
   handleRemoveActiveGraphFile,
@@ -282,8 +284,22 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
             />
             <PopUpTextField textInfront={"Your Node ID format:"} textInside={nodeIdFormat} />
             <PopUpDoubleTextField textInfront={"Node ID examples:"} textInside1={nodeIdExample1} textInside2={nodeIdExample2} />
+            <div className="popup-block">
+              <PopupButtonRect
+                text={"Download JSON Example Graph"}
+                onClick={() => {
+                  downloadObjectAsFile(exampleGraphJson.content, exampleGraphJson.name);
+                }}
+              />
+              <PopupButtonRect
+                text={"Download CSV Example Graph"}
+                onClick={() => {
+                  downloadCsvFile(exampleGraphCsv.content, exampleGraphCsv.name);
+                }}
+              />
+            </div>
             <PopupButtonRect
-              text={"Upload Graph File"}
+              text={"Upload Own Graph File"}
               onClick={handleGraphUploadClick}
               linkRef={graphFileRef}
               onChange={(event) => {

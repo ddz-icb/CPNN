@@ -2,6 +2,7 @@ import log from "../../logger.js";
 import canvasToSvg from "canvas-to-svg";
 
 import { drawCircleCanvas, drawLineCanvas } from "../Other/draw.js";
+import { exampleGraphJson } from "../../demographs/exampleGraphJSON.js";
 
 export function downloadAsPNG(app, document) {
   function getHtmlImageElement() {
@@ -131,6 +132,36 @@ export function downloadGraphJson(graph, filename) {
   const a = document.createElement("a");
   a.href = url;
   a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+export function downloadObjectAsFile(object, name) {
+  const formattedJson = typeof object === "string" ? JSON.stringify(JSON.parse(object), null, 4) : JSON.stringify(object, null, 4);
+
+  const blob = new Blob([formattedJson], { type: "application/json" });
+
+  console.info("Downloading object as file");
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+export function downloadCsvFile(csvContent, fileName) {
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+
+  console.info("Downloading CSV file");
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = fileName.endsWith(".csv") ? fileName : `${fileName}.csv`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
