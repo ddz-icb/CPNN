@@ -246,6 +246,7 @@ export function PhysicsSidebar({ resetPhysics }) {
         <SidebarButtonRect text={"Set Phyiscs to Default"} onClick={resetPhysics} />
       </div>
       <SidebarSwitchBlock text={"Enable Circular Layout"} value={settings.physics.circleLayout} onChange={handleCircleLayout} />
+      <SidebarSwitchBlock text={"Advanced Gravity Settings"} value={settings.physics.gravityAdvanced} onChange={handleGravityAdvanced} />
       {!settings.physics.gravityAdvanced && (
         <>
           <SidebarSliderBlock
@@ -290,7 +291,6 @@ export function PhysicsSidebar({ resetPhysics }) {
           />
         </>
       )}
-      <SidebarSwitchBlock text={"Advanced Gravity Settings"} value={settings.physics.gravityAdvanced} onChange={handleGravityAdvanced} />
       <SidebarSliderBlock
         text={"Set Component Strength"}
         min={0}

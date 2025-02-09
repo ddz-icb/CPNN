@@ -108,7 +108,7 @@ export function SidebarSliderBlock({ text, value, valueText, onChangeSlider, onC
   return (
     <>
       <label className="label pad-left-1">{text}</label>
-      <div className="sidebar-block">
+      <div className="sidebar-block pad-bottom-15">
         <input className="sidebar-slider" type="range" min={min} max={max} step={stepSlider} value={value} onChange={onChangeSlider}></input>
         <input
           className="input-field"

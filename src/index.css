@@ -1117,7 +1117,7 @@ input[type="radio"]:checked:after {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 0.75rem;
+  padding-top: 0.5rem;
   box-sizing: border-box;
 }
 
@@ -1251,6 +1251,14 @@ input[type="radio"]:checked:after {
 
 .pad-bottom-2 {
   padding-bottom: 2rem;
+}
+
+.pad-bottom-15 {
+  padding-bottom: 1.5rem;
+}
+
+.pad-bottom-175 {
+  padding-bottom: 1.75rem;
 }
 
 .pad-bottom-1 {
