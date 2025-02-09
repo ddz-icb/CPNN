@@ -54,7 +54,9 @@ function UploadedFiles({ uploadedGraphFileNames, handleSelectGraph, handleDelete
 
   return (
     <>
-      <b className="heading-label">Uploaded Files</b>
+      <div className="center-parent-container">
+        <span className="heading-label">Uploaded Graphs</span>
+      </div>
       <table className="recent-item-table">
         <tbody>
           {uploadedGraphFileNamesNoExample?.map((filename, index) => (
@@ -98,7 +100,7 @@ function UploadedFiles({ uploadedGraphFileNames, handleSelectGraph, handleDelete
 function ActiveFiles({ activeGraphFileNames, handleRemoveActiveGraphFile }) {
   return (
     <>
-      <b className="heading-label">Currently Active Files</b>
+      <span className="heading-label">Currently Active Graphs</span>
       <table className="active-item-table">
         <tbody>
           {activeGraphFileNames?.map((filename, index) => (
@@ -126,7 +128,7 @@ function UploadedMappings({ uploadedAnnotationMappingNames, handleAnnotationMapp
   return (
     <>
       <>
-        <b className="heading-label">Uploaded Annotation Mappings</b>
+        <span className="heading-label">Uploaded Pathway Mappings</span>
         <table className="recent-item-table">
           <tbody>
             {uploadedAnnotationMappingNames && (
@@ -134,7 +136,7 @@ function UploadedMappings({ uploadedAnnotationMappingNames, handleAnnotationMapp
                 {uploadedAnnotationMappingNames?.map((mappingName, index) => (
                   <tr key={index} className="recent-item-entry recent-item-entry-highlight">
                     <td className="recent-item-text sidebar-tooltip-wrapper" onClick={() => handleAnnotationMappingSelect(mappingName)}>
-                      <div data-tooltip-id={`replace-mapping-tooltip-${index}`} data-tooltip-content="Replace Active Annotation Mapping">
+                      <div data-tooltip-id={`replace-mapping-tooltip-${index}`} data-tooltip-content="Replace Active Pathway Mapping">
                         <span className="pad-left-025">{mappingName}</span>
                       </div>
                       <Tooltip id={`replace-mapping-tooltip-${index}`} place="top" effect="solid" className="sidebar-tooltip" />
@@ -153,7 +155,9 @@ function UploadedMappings({ uploadedAnnotationMappingNames, handleAnnotationMapp
             )}
             {(!uploadedAnnotationMappingNames || uploadedAnnotationMappingNames.length === 0) && (
               <tr className="recent-item-entry">
-                <td>None</td>
+                <td>
+                  <span className="pad-left-025">None</span>
+                </td>
               </tr>
             )}
           </tbody>
@@ -167,7 +171,7 @@ function ActiveAnnotationMapping({ activeAnnotationMapping, handleRemoveActiveAn
   return (
     <>
       <>
-        <b className="heading-label">Currently Active Annotation Mapping</b>
+        <span className="heading-label">Currently Active Pathway Mapping</span>
         <table className="active-item-table">
           <tbody>
             {activeAnnotationMapping && (
@@ -187,7 +191,9 @@ function ActiveAnnotationMapping({ activeAnnotationMapping, handleRemoveActiveAn
             )}
             {!activeAnnotationMapping && (
               <tr className="recent-item-entry">
-                <td>None</td>
+                <td>
+                  <span className="pad-left-025">None</span>
+                </td>
               </tr>
             )}
           </tbody>
@@ -249,7 +255,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
 
   return (
     <>
-      <div className="pad-bottom-1 pad-top-05 data-buttons">
+      <div className="sidebar-two-buttons">
         <SidebarButtonRect
           onClick={handleGraphPopUp}
           text={"Upload Graph"}
@@ -273,19 +279,19 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
               </span>
             </div>
             <div className="popup-block color-text-primary">
-              Uploading pathway mappings can provide additional context to classify nodes, determining their color. By doing so nodes —such as
-              peptides— are associated with one or more pathways. Nodes belonging to the same pathway will then be colored accordingly.
+              Uploading pathway mappings can provide additional context to classify nodes, determining their color. By doing so, nodes −such as
+              peptides− are associated with one or more pathways. Nodes belonging to the same pathway will then be colored accordingly.
               <br />
               <br />
               Pathway mappings can be uploaded in CSV or TSV format. These mappings must contain a "UniProt-ID" and a "Pathway Name" column. If
               supplied with a "Reactome-ID" column, links to reactome.org with the corresponding pathway will be embedded, when klicking on nodes. To
-              better understand the required format, you can download the example graphs below.
+              better understand the required format, you can download the example mapping below.
             </div>
-            <PopUpTextField textInfront={"Your Annotation Mapping format:"} textInside={annotationMappingFormat} />
-            <PopUpTextField textInfront={"Annotation Mapping example:"} textInside={annotationMappingExample} />
+            <PopUpTextField textInfront={"Your Pathway Mapping format:"} textInside={annotationMappingFormat} />
+            <PopUpTextField textInfront={"Pathway Mapping example:"} textInside={annotationMappingExample} />
             <div className="popup-block">
               <PopupButtonRect
-                text={"Download Example Annotation Mapping"}
+                text={"Download Example Pathway Mapping"}
                 onClick={() => {
                   downloadCsvFile(exampleMappingCsv.content, exampleMappingCsv.name);
                 }}

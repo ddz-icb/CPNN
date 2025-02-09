@@ -541,7 +541,6 @@ ul {
   -webkit-appearance: none;
   -moz-appearance: textfield;
   font-size: 1.2rem;
-  margin-left: 1rem;
   display: inline-block;
   border: 1px solid var(--border-input-field-sidebar);
   background-color: var(--bg-input-field);
@@ -576,7 +575,7 @@ ul {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 1rem 2rem 1rem;
+  padding: 0 1rem 1rem 1rem;
   box-sizing: border-box;
 }
 
@@ -629,14 +628,18 @@ ul {
 .label {
   font-size: 1rem;
   padding-bottom: 0.5rem;
-  padding-top: 0.5rem;
+  padding-top: 1rem;
   color: var(--text-primary);
   text-align: left;
 }
 
 .heading-label {
   color: var(--text-secondary);
-  margin-left: 1rem;
+  padding-top: 0.5rem;
+  font-size: 1.15rem;
+  width: 100%;
+  padding-left: 1.25rem;
+  display: block;
 }
 
 /* Editor stuff */
@@ -1287,6 +1290,10 @@ input[type="radio"]:checked:after {
   margin-right: 1rem;
 }
 
+.margin-left-1 {
+  margin-left: 1rem;
+}
+
 .no-margin-top {
   margin-top: 0rem;
 }
@@ -1321,10 +1328,15 @@ input[type="radio"]:checked:after {
   color: var(--text-primary);
 }
 
-.data-buttons {
+.sidebar-two-buttons {
   position: relative;
   display: flex;
+  width: 100%;
+  align-items: center;
   justify-content: space-between;
+  padding: 0 1rem 1rem 0rem;
+  padding-top: 0.5rem;
+  box-sizing: border-box;
 }
 
 .margin-left-10 {
@@ -1374,4 +1386,11 @@ input[type="radio"]:checked:after {
 
 .color-text-primary {
   color: var(--text-primary);
+}
+
+.center-parent-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 }

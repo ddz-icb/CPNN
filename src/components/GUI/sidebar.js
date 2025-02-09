@@ -162,20 +162,22 @@ export function SidebarFieldBlock({ text, min, max, step, value, onChange, onBlu
   };
 
   return (
-    <div className="sidebar-block">
-      <label className="label">{text}</label>
-      <input
-        className="input-field"
-        type="number"
-        min={min}
-        max={max}
-        step={step}
-        onChange={onChange}
-        onKeyDown={handleKeyDown}
-        value={value}
-        onBlur={onBlur}
-      ></input>
-    </div>
+    <>
+      <label className="label pad-left-1">{text}</label>
+      <div className="sidebar-block">
+        <input
+          className="input-field"
+          type="number"
+          min={min}
+          max={max}
+          step={step}
+          onChange={onChange}
+          onKeyDown={handleKeyDown}
+          value={value}
+          onBlur={onBlur}
+        ></input>
+      </div>
+    </>
   );
 }
 

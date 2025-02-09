@@ -178,7 +178,7 @@ export function FilterSidebar({ resetFilters }) {
 
   return (
     <>
-      <div className="inline pad-top-05 pad-bottom-05">
+      <div className="inline pad-top-1 pad-bottom-1">
         <SidebarButtonRect text={"Reset Filters"} onClick={handleResetFilters} />
       </div>
       <SidebarSliderBlock
