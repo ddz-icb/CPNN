@@ -259,7 +259,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
         <SidebarButtonRect
           onClick={handleGraphPopUp}
           text={"Upload Graph"}
-          tooltip={"Upload Graph as CSV/TSV Matrix or JSON File"}
+          tooltip={"Upload Graph as CSV, TSV or JSON File"}
           tooltipId={"upload-graph-tooltip"}
         />
         <SidebarButtonRect

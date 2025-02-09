@@ -433,7 +433,7 @@ ul {
 
 .colorscheme-entry {
   color: var(--text-primary);
-  height: auto;
+  height: 2rem;
 }
 
 .recent-item-entry-highlight:hover {
@@ -1269,8 +1269,12 @@ input[type="radio"]:checked:after {
   padding-bottom: 0.5rem;
 }
 
-.pad-05 {
-  padding: 0.5rem;
+.pad-top-025 {
+  padding-top: 0.25rem;
+}
+
+.pad-bottom-025 {
+  padding-bottom: 0.25rem;
 }
 
 .inline {
