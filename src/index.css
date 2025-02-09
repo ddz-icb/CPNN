@@ -648,6 +648,13 @@ ul {
   display: block;
 }
 
+.heading-label-no-pad {
+  color: var(--text-secondary);
+  font-size: 1.15rem;
+  width: 100%;
+  display: block;
+}
+
 /* Editor stuff */
 /*--------------*/
 .custom-editor {

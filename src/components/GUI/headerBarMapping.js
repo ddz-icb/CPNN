@@ -103,13 +103,13 @@ export function Mapping({ activeMenu, handleActiveMenuClick }) {
           tooltipId={"close-view-mapping-tooltip"}
         />
         <div className={"dropdown min-width-400 margin-left-20"}>
-          <div className="dropdown-section-container pad-top-1">
+          <div className="dropdown-section-container pad-top-05">
             <div className="dropdown-section">
-              <b className="heading-label">Nodes</b>
+              <b className="heading-label-no-pad pad-left-1">Nodes</b>
               {nodeContent}
             </div>
             <div className="dropdown-section">
-              <b className="heading-label">Links</b>
+              <b className="heading-label-no-pad pad-left-1">Links</b>
               {linkContent}
             </div>
           </div>
