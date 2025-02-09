@@ -223,7 +223,7 @@ export function SidebarCodeEditorBlock({ text, onClick, compilerError, defaultVa
 export function PopUpTextField({ textInfront, textInside }) {
   return (
     <>
-      <label className="label">{textInfront}</label>
+      <label className="label-no-pad pad-top-1">{textInfront}</label>
       <div className={"popup-block"}>
         <div className="popup-text-field">{textInside}</div>
       </div>
@@ -234,7 +234,7 @@ export function PopUpTextField({ textInfront, textInside }) {
 export function PopUpDoubleTextField({ textInfront, textInside1, textInside2 }) {
   return (
     <>
-      <label className="label">{textInfront}</label>
+      <label className="label-no-pad pad-top-1">{textInfront}</label>
       <div className={"popup-block"}>
         <div className="popup-text-field">{textInside1}</div>
       </div>

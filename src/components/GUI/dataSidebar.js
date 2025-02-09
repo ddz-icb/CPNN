@@ -287,7 +287,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
               supplied with a "Reactome-ID" column, links to reactome.org with the corresponding pathway will be embedded, when klicking on nodes. To
               better understand the required format, you can download the example mapping below.
             </div>
-            <PopUpTextField textInfront={"Your Pathway Mapping format:"} textInside={annotationMappingFormat} />
+            <PopUpTextField textInfront={"Pathway Mapping format:"} textInside={annotationMappingFormat} />
             <PopUpTextField textInfront={"Pathway Mapping example:"} textInside={annotationMappingExample} />
             <div className="popup-block">
               <PopupButtonRect
@@ -337,7 +337,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
                 setContainsSites(!containsSites);
               }}
             />
-            <PopUpTextField textInfront={"Your Node ID format:"} textInside={nodeIdFormat} />
+            <PopUpTextField textInfront={"Node ID format:"} textInside={nodeIdFormat} />
             <PopUpDoubleTextField textInfront={"Node ID examples:"} textInside1={nodeIdExample1} textInside2={nodeIdExample2} />
             <div className="popup-block">
               <PopupButtonRect

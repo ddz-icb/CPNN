@@ -633,6 +633,12 @@ ul {
   text-align: left;
 }
 
+.label-no-pad {
+  font-size: 1rem;
+  color: var(--text-primary);
+  text-align: left;
+}
+
 .heading-label {
   color: var(--text-secondary);
   padding-top: 0.5rem;
