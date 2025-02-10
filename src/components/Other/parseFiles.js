@@ -8,8 +8,9 @@ export function parseGraph(name, content, takeAbs) {
 
   if (fileExtension === "json") {
     graph = JSON.parse(content);
-  } else if (fileExtension === "csv") {
-    const fileData = parseGraphCSV(content);
+  } else if (fileExtension === "csv" || fileExtension === "tsv") {
+    const fileData = parseGraphCSVorTSV(content);
+
     if (!fileData) return null;
 
     const linkAttribMatch = name.match(/dataset(\w+)/);
@@ -51,10 +52,12 @@ export function parseGraph(name, content, takeAbs) {
   return graph;
 }
 
-function parseGraphCSV(content) {
+function parseGraphCSVorTSV(content) {
   let fileData = Papa.parse(content, {
     header: false,
-    delimiter: ",",
+    dynamicTyping: true,
+    skipEmptyLines: true,
+    delimiter: "",
   });
 
   if (!fileData.data || fileData.data.length === 0) return null;
@@ -98,7 +101,7 @@ export async function parseGraphFile(file, takeAbs) {
 
     return { name: file.name, content: JSON.stringify(graph) };
   } catch (error) {
-    throw new Error(`Unable to process file: ${error.message}`);
+    throw new Error(`Unable to process file. ${error.message}`);
   }
 }
 
@@ -118,7 +121,7 @@ export async function parseColorScheme(file) {
     return colorScheme;
   } catch (error) {
     log.error(error.message);
-    throw new Error(`Unable to process file: ${error.message}`);
+    throw new Error(`Unable to process file. ${error.message}`);
   }
 }
 
@@ -132,12 +135,16 @@ function parseFileAsText(file) {
 }
 
 export async function parseAnnotationMappingFile(file) {
+  const fileExtension = file.name.split(".").pop();
+  if (fileExtension !== "csv" || fileExtension !== "tsv") throw new Error(`Wrong file extension. Only .csv and .tsv is allowed.`);
+
   try {
     const fileContent = await parseFileAsText(file);
     let fileData = Papa.parse(fileContent, {
       header: true,
       dynamicTyping: true,
       skipEmptyLines: true,
+      delimiter: "",
       transform: function (value, field) {
         if (field !== "UniProt-ID") {
           return value.split(";").map((item) => item.trim());
