@@ -2,7 +2,6 @@ import "../../index.css";
 import log from "../../logger.js";
 import * as PIXI from "pixi.js";
 import { useRef, useEffect, useState } from "react";
-import { cloneDeep } from "lodash";
 
 import { handleResize, initDragAndZoom } from "../Other/interactiveCanvas.js";
 import { initTooltips, Tooltips } from "../Other/toolTipCanvas.js";
