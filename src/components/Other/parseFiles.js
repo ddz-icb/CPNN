@@ -74,7 +74,7 @@ function parseGraphCSVorTSV(content) {
   };
 }
 
-export function parseColorSchemeCSV(content) {
+export function parseColorScheme(content) {
   let fileData = Papa.parse(content, {
     skipEmptyLines: true,
   });
@@ -115,7 +115,7 @@ export async function parseColorSchemeFile(file) {
 
   try {
     const fileContent = await parseFileAsText(file);
-    const colorScheme = parseColorSchemeCSV(fileContent);
+    const colorScheme = parseColorScheme(fileContent);
 
     if (!colorScheme) {
       throw new Error("Error parsing file");

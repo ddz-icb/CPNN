@@ -95,17 +95,18 @@ function App() {
   };
 
   // adds new color scheme
-  const handleNewScheme = async (event) => {
+  const handleNewColorScheme = async (event) => {
     if (!event || !event.target || !event.target.files[0]) return;
     log.info("Adding new color scheme");
 
     const file = event.target.files[0];
-    try {
-      addNewColorScheme(file, setColorSchemes);
-    } catch (error) {
-      setError("Error adding color scheme");
-      log.error("Error adding color scheme:", error);
-    }
+
+    addNewColorScheme(file, setColorSchemes)
+      .then(() => {})
+      .catch((error) => {
+        setError(`${error}`);
+        log.error("Error adding color scheme:", error);
+      });
   };
 
   const handleDeleteColorScheme = (colorSchemeName) => {
@@ -313,7 +314,7 @@ function App() {
 
   return (
     <div className={settings.appearance.theme.name}>
-      <HeaderBar handleDeleteColorScheme={handleDeleteColorScheme} handleNewScheme={handleNewScheme} colorSchemes={colorSchemes} />
+      <HeaderBar handleDeleteColorScheme={handleDeleteColorScheme} handleNewScheme={handleNewColorScheme} colorSchemes={colorSchemes} />
       <Sidebar
         handleSelectGraph={handleSelectGraph}
         handleDeleteGraphFile={handleDeleteGraphFile}
