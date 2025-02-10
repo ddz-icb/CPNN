@@ -53,6 +53,7 @@ export function Colors({ handleNewScheme, colorSchemes, handleDeleteColorScheme,
             text={"Upload color scheme"}
             onClick={() => {
               setColorSchemePopUpActive(!colorSchemePopoUpActive);
+              handleActiveMenuClick("None");
             }}
             icon={<PaintRollerIcon />}
           />
