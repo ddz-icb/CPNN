@@ -9,16 +9,12 @@ import { DataSidebar } from "./dataSidebar.js";
 import { MainSidebar } from "./mainSidebar.js";
 
 export function Sidebar({
-  uploadedFiles,
-  activeFiles,
   handleSelectGraph,
   handleDeleteGraphFile,
   handleRemoveActiveGraphFile,
   handleAddFile,
   handleNewAnnotationMapping,
-  activeAnnotationMapping,
   handleRemoveActiveAnnotationMapping,
-  uploadedMappings,
   handleAnnotationMappingSelect,
   handleDeleteAnnotationMapping,
   handleNewGraphFile,
@@ -47,16 +43,12 @@ export function Sidebar({
       <Navbar>
         <Back activeNavItem={activeNavItem} icon={<BackIcon />} onClick={() => handleNavItemClick("Main")} />
         <DataSidebar
-          activeFiles={activeFiles}
           handleRemoveActiveGraphFile={handleRemoveActiveGraphFile}
-          uploadedFiles={uploadedFiles}
           handleSelectGraph={handleSelectGraph}
           handleDeleteGraphFile={handleDeleteGraphFile}
           handleAddFile={handleAddFile}
           handleNewAnnotationMapping={handleNewAnnotationMapping}
-          activeAnnotationMapping={activeAnnotationMapping}
           handleRemoveActiveAnnotationMapping={handleRemoveActiveAnnotationMapping}
-          uploadedMappings={uploadedMappings}
           handleAnnotationMappingSelect={handleAnnotationMappingSelect}
           handleDeleteAnnotationMapping={handleDeleteAnnotationMapping}
           handleNewGraphFile={handleNewGraphFile}
@@ -116,7 +108,7 @@ export function SidebarSliderBlock({ text, value, valueText, onChangeSlider, onC
   return (
     <>
       <label className="label pad-left-1">{text}</label>
-      <div className="sidebar-block">
+      <div className="sidebar-block pad-bottom-15">
         <input className="sidebar-slider" type="range" min={min} max={max} step={stepSlider} value={value} onChange={onChangeSlider}></input>
         <input
           className="input-field"
@@ -148,6 +140,20 @@ export function SidebarSwitchBlock({ text, value, onChange }) {
   );
 }
 
+export function PopUpSwitchBlock({ text, value, onChange }) {
+  return (
+    <>
+      <div className="popup-block">
+        <label className="label">{text}</label>
+        <label className="switch">
+          <input type="checkbox" checked={value} onChange={onChange} className="checkbox-input" />
+          <span className="slider round"></span>
+        </label>
+      </div>
+    </>
+  );
+}
+
 export function SidebarFieldBlock({ text, min, max, step, value, onChange, onBlur }) {
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
@@ -156,20 +162,22 @@ export function SidebarFieldBlock({ text, min, max, step, value, onChange, onBlu
   };
 
   return (
-    <div className="sidebar-block">
-      <label className="label">{text}</label>
-      <input
-        className="input-field"
-        type="number"
-        min={min}
-        max={max}
-        step={step}
-        onChange={onChange}
-        onKeyDown={handleKeyDown}
-        value={value}
-        onBlur={onBlur}
-      ></input>
-    </div>
+    <>
+      <label className="label pad-left-1">{text}</label>
+      <div className="sidebar-block">
+        <input
+          className="input-field"
+          type="number"
+          min={min}
+          max={max}
+          step={step}
+          onChange={onChange}
+          onKeyDown={handleKeyDown}
+          value={value}
+          onBlur={onBlur}
+        ></input>
+      </div>
+    </>
   );
 }
 
@@ -185,6 +193,18 @@ export function SidebarButtonRect({ onClick, onChange, linkRef, tooltip, tooltip
   );
 }
 
+export function PopupButtonRect({ onClick, onChange, linkRef, tooltip, tooltipId, text }) {
+  return (
+    <div className="popup-tooltip-wrapper justify-right pad-top-1">
+      <button className="popup-button-rect" data-tooltip-id={tooltipId} data-tooltip-content={tooltip} onClick={onClick}>
+        <span className="popup-button-rect-text">{text}</span>
+        <input type="file" style={{ display: "none" }} onChange={onChange} ref={linkRef} />
+      </button>
+      <Tooltip id={tooltipId} place="top" effect="solid" className="popup-tooltip" />
+    </div>
+  );
+}
+
 export function SidebarCodeEditorBlock({ text, onClick, compilerError, defaultValue, textareaRef }) {
   return (
     <>
@@ -196,6 +216,31 @@ export function SidebarCodeEditorBlock({ text, onClick, compilerError, defaultVa
         <SidebarButtonRect onClick={onClick} text={"Run"} />
       </div>
       <span className={`warning ${compilerError ? "pad-bottom-1" : ""}`}>{compilerError}</span>
+    </>
+  );
+}
+
+export function PopUpTextField({ textInfront, textInside }) {
+  return (
+    <>
+      <label className="label-no-pad pad-top-1">{textInfront}</label>
+      <div className={"popup-block"}>
+        <div className="popup-text-field">{textInside}</div>
+      </div>
+    </>
+  );
+}
+
+export function PopUpDoubleTextField({ textInfront, textInside1, textInside2 }) {
+  return (
+    <>
+      <label className="label-no-pad pad-top-1">{textInfront}</label>
+      <div className={"popup-block"}>
+        <div className="popup-text-field">{textInside1}</div>
+      </div>
+      <div className={"popup-block"}>
+        <div className="popup-text-field">{textInside2}</div>
+      </div>
     </>
   );
 }

@@ -1,4 +1,5 @@
 import UnionFind from "union-find";
+import log from "../../logger.js";
 
 export function joinGraphs(graph, newGraph) {
   const nodeMap = new Map(graph.nodes.map((node) => [node.id, { ...node }]));
@@ -178,18 +179,8 @@ export function filterByAttribs(graph, filterRequest) {
           }
         }
 
-        // meets all Terms
-        // const filteredAttribs = link.attribs.filter(
-        //   (attrib, i) => newLinks[i] === 1
-        // );
-        // const filteredWeights = link.weights.filter(
-        //   (weights, i) => newLinks[i] === 1
-        // );
-
         return {
           ...link,
-          // attribs: filteredAttribs,
-          // weight: filteredWeights,
         };
       })
       .filter((link) => link.attribs.length > 0),
@@ -266,8 +257,10 @@ export function applyNodeMapping(graph, mapping) {
 
     let groupsSet = new Set();
     protIdsForLookup.forEach((protId) => {
-      if (nodeMapping[protId]) {
-        groupsSet = new Set([...groupsSet, ...nodeMapping[protId].pathwayNames]);
+      const protIdStr = String(protId).trim();
+
+      if (nodeMapping.hasOwnProperty(protIdStr)) {
+        groupsSet = new Set([...groupsSet, ...nodeMapping[protIdStr].pathwayNames]);
       }
     });
     node.groups = Array.from(groupsSet);
@@ -306,4 +299,11 @@ export function getLinkAttribsToColorIndices(graph) {
   });
 
   return linkAttribsToColorIndices;
+}
+
+export function getIdsHavePhosphosites(graph) {
+  const nodeId = graph.nodes[0].id;
+  const firstNodeIdElement = nodeId.split(";")[0];
+  const phosphosites = firstNodeIdElement.split("_")[2];
+  return phosphosites ? true : false;
 }

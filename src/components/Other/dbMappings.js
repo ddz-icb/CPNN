@@ -1,13 +1,13 @@
 import log from "../../logger.js";
 import Dexie from "dexie";
 
-export const db = new Dexie("myDatabase");
+export const db = new Dexie("mappings");
 
 db.version(1).stores({
   uploadedFiles: "++id, name",
 });
 
-export async function addFileDB(file) {
+export async function addMappingFileDB(file) {
   try {
     const id = await db.uploadedFiles.add({
       name: file.name,
@@ -20,7 +20,23 @@ export async function addFileDB(file) {
   }
 }
 
-export async function removeFileDB(id) {
+export async function addMappingFileIfNotExistsDB(file) {
+  try {
+    const mapping = await getByMappingNameDB(file.name);
+    if (mapping) return;
+
+    const id = await db.uploadedFiles.add({
+      name: file.name,
+      content: file.content,
+    });
+
+    log.info(`File ${file.name} successfully added. Got id ${id}`);
+  } catch (error) {
+    log.error(`Failed to add ${file.name}: ${error}`);
+  }
+}
+
+export async function removeMappingFileDB(id) {
   try {
     await db.uploadedFiles.delete(id);
     log.info(`File with id ${id} successfully removed.`);
@@ -29,7 +45,7 @@ export async function removeFileDB(id) {
   }
 }
 
-export async function removeFileByNameDB(name) {
+export async function removeMappingFileByNameDB(name) {
   try {
     const file = await db.uploadedFiles.where("name").equals(name).first();
     if (file) {
@@ -43,7 +59,7 @@ export async function removeFileByNameDB(name) {
   }
 }
 
-export async function fromAllGetNameDB() {
+export async function fromAllGetMappingNameDB() {
   try {
     const names = [];
     await db.uploadedFiles.toCollection().each((file) => {
@@ -58,7 +74,7 @@ export async function fromAllGetNameDB() {
   }
 }
 
-export async function getByNameDB(name) {
+export async function getByMappingNameDB(name) {
   try {
     const file = await db.uploadedFiles.where("name").equals(name).first();
     if (file) {
@@ -73,11 +89,11 @@ export async function getByNameDB(name) {
   }
 }
 
-export async function getGraphDB(filename) {
-  const file = await getByNameDB(filename);
+export async function getMappingDB(filename) {
+  const file = await getByMappingNameDB(filename);
   if (!file || !file.content) throw new Error(`No file found with the name ${filename}.`);
 
-  const graph = JSON.parse(file.content);
-  if (!graph) throw new Error("File format not recognized");
-  return { graph, file };
+  const mapping = JSON.parse(file.content);
+  if (!mapping) throw new Error("File format not recognized");
+  return { mapping, file };
 }

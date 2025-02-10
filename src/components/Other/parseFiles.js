@@ -1,6 +1,22 @@
 import log from "../../logger.js";
 import Papa from "papaparse";
 
+export async function parseGraphFile(file, takeAbs) {
+  if (!file) {
+    throw new Error(`No file found with the name ${file}.`);
+  }
+
+  try {
+    const fileContent = await parseFileAsText(file);
+    const graph = parseGraph(file.name, fileContent, takeAbs);
+    verifyGraph(graph);
+
+    return { name: file.name, content: JSON.stringify(graph) };
+  } catch (error) {
+    throw new Error(`${error.message}`);
+  }
+}
+
 export function parseGraph(name, content, takeAbs) {
   const fileExtension = name.split(".").pop();
 
@@ -8,8 +24,9 @@ export function parseGraph(name, content, takeAbs) {
 
   if (fileExtension === "json") {
     graph = JSON.parse(content);
-  } else if (fileExtension === "csv") {
-    const fileData = parseGraphCSV(content);
+  } else if (fileExtension === "csv" || fileExtension === "tsv") {
+    const fileData = parseGraphCSVorTSV(content);
+
     if (!fileData) return null;
 
     const linkAttribMatch = name.match(/dataset(\w+)/);
@@ -30,7 +47,7 @@ export function parseGraph(name, content, takeAbs) {
           source: fileData.header[i],
           target: fileData.header[j],
           weights: [fileData.data[i][j]],
-          attribs: [linkAttrib] || [],
+          attribs: [linkAttrib],
         });
       }
     }
@@ -51,10 +68,12 @@ export function parseGraph(name, content, takeAbs) {
   return graph;
 }
 
-function parseGraphCSV(content) {
+function parseGraphCSVorTSV(content) {
   let fileData = Papa.parse(content, {
     header: false,
-    delimiter: ",",
+    dynamicTyping: true,
+    skipEmptyLines: true,
+    delimiter: "",
   });
 
   if (!fileData.data || fileData.data.length === 0) return null;
@@ -71,75 +90,115 @@ function parseGraphCSV(content) {
   };
 }
 
-export function parseColorSchemeCSV(content) {
+function verifyGraph(graph) {
+  if (!graph || typeof graph !== "object") {
+    throw new Error("Error while parsing the graph file. It does not have the right format.");
+  }
+
+  const { nodes, links } = graph;
+  if (!Array.isArray(nodes) || !Array.isArray(links)) {
+    throw new Error("Graph file must contain 'nodes' and 'links' arrays.");
+  }
+
+  nodes.forEach((node, i) => {
+    if (node.id === undefined) {
+      throw new Error(`Node at index ${i} is missing the 'id' property.`);
+    }
+    if (node.groups === undefined) {
+      throw new Error(`Node at index ${i} is missing the 'groups' property.`);
+    }
+  });
+
+  links.forEach((link, i) => {
+    if (link.source === undefined) {
+      throw new Error(`Link at index ${i} is missing the 'source' property.`);
+    }
+    if (link.target === undefined) {
+      throw new Error(`Link at index ${i} is missing the 'target' property.`);
+    }
+    if (link.weights === undefined) {
+      throw new Error(`Link at index ${i} is missing the 'weights' property.`);
+    }
+    if (link.attribs === undefined) {
+      throw new Error(`Link at index ${i} is missing the 'attribs' property.`);
+    }
+  });
+}
+
+export async function parseColorSchemeFile(file) {
+  if (!file) {
+    throw new Error(`No file found with the name ${file}.`);
+  }
+
+  const fileExtension = file.name.split(".").pop();
+  if (fileExtension !== "csv" && fileExtension !== "tsv") throw new Error(`Wrong file extension. Only .csv and .tsv is allowed.`);
+
+  try {
+    const fileContent = await parseFileAsText(file);
+    const colorScheme = parseColorScheme(fileContent);
+    verifyColorScheme(colorScheme);
+
+    return colorScheme;
+  } catch (error) {
+    log.error(error.message);
+    throw new Error(`${error.message}`);
+  }
+}
+
+export function parseColorScheme(content) {
   let fileData = Papa.parse(content, {
     skipEmptyLines: true,
   });
 
-  const hexColorRegex = /^#[0-9A-Fa-f]{6}$/;
-
   let colorData = fileData.data;
   colorData = colorData.reduce((acc, row) => {
-    const validColors = row.map((element) => element.toLowerCase()).filter((element) => hexColorRegex.test(element) && element.length !== 0);
+    const validColors = row.map((element) => element.toLowerCase())?.filter((element) => element.length !== 0);
     return acc.concat(validColors);
   }, []);
 
   return colorData;
 }
 
-export async function parseGraphFile(file, takeAbs) {
-  if (!file) {
-    throw new Error(`No file found with the name ${file}.`);
+function verifyColorScheme(colorScheme) {
+  if (!Array.isArray(colorScheme)) {
+    throw new Error("The color scheme must be a list.");
   }
 
-  try {
-    const fileContent = await parseFileAsText(file);
-    const graph = parseGraph(file.name, fileContent, takeAbs);
-
-    return { name: file.name, content: JSON.stringify(graph) };
-  } catch (error) {
-    throw new Error(`Unable to process file: ${error.message}`);
-  }
-}
-
-export async function parseColorScheme(file) {
-  if (!file) {
-    throw new Error(`No file found with the name ${file}.`);
-  }
-
-  try {
-    const fileContent = await parseFileAsText(file);
-    const colorScheme = parseColorSchemeCSV(fileContent);
-
-    if (!colorScheme) {
-      throw new Error("Error parsing file");
+  const hexColorRegex = /^#[0-9A-Fa-f]{6}$/;
+  colorScheme.forEach((color, index) => {
+    if (typeof color !== "string" || !hexColorRegex.test(color)) {
+      throw new Error(`Invalid hex-color at index ${index}: ${color}`);
     }
-
-    return colorScheme;
-  } catch (error) {
-    log.error(error.message);
-    throw new Error(`Unable to process file: ${error.message}`);
-  }
-}
-
-function parseFileAsText(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = (e) => resolve(e.target.result);
-    reader.onerror = () => reject(new Error("Error reading file"));
-    reader.readAsText(file);
   });
 }
 
-export async function parseAnnotationMapping(file) {
+export async function parseAnnotationMappingFile(file) {
+  if (!file) {
+    throw new Error(`No file found with the name ${file}.`);
+  }
+
+  const fileExtension = file.name.split(".").pop();
+  if (fileExtension !== "csv" && fileExtension !== "tsv") throw new Error(`Wrong file extension. Only .csv and .tsv is allowed.`);
+
   try {
     const fileContent = await parseFileAsText(file);
-    let fileData = Papa.parse(fileContent, {
+    const mapping = parseAnnotationMapping(fileContent, file.name);
+    verifyAnnotationMapping(mapping);
+    return { name: file.name, content: JSON.stringify(mapping) };
+  } catch (error) {
+    throw new Error(`${error.message}`);
+  }
+}
+
+export function parseAnnotationMapping(content, filename) {
+  try {
+    let fileData = Papa.parse(content, {
       header: true,
       dynamicTyping: true,
       skipEmptyLines: true,
+      delimiter: "",
       transform: function (value, field) {
-        if (field !== "UniProt ID") {
+        if (field !== "UniProt-ID") {
           return value.split(";").map((item) => item.trim());
         }
         return value;
@@ -150,9 +209,9 @@ export async function parseAnnotationMapping(file) {
     const groupMapping = {};
 
     for (let row of fileData.data) {
-      const uniProtId = row["UniProt ID"];
+      const uniProtId = row["UniProt-ID"];
       const pathwayNames = row["Pathway Name"];
-      const reactomeIds = row["Reactome-ID"];
+      const reactomeIds = row["Reactome-ID"] || [];
 
       nodeMapping[uniProtId] = {
         pathwayNames: pathwayNames,
@@ -170,11 +229,42 @@ export async function parseAnnotationMapping(file) {
     }
 
     return {
-      name: file.name,
+      name: filename,
       nodeMapping: nodeMapping,
       groupMapping: groupMapping,
     };
   } catch (error) {
-    throw new Error(`Erorr parsing annotation mapping ${file}.`);
+    throw new Error(`Erorr parsing pathway mapping with name ${filename}.`);
   }
+}
+
+function verifyAnnotationMapping(mapping) {
+  if (!mapping || typeof mapping !== "object") {
+    throw new Error("Error while parsing the mapping file. It does not have the right format.");
+  }
+
+  if (!Array.isArray(mapping.groupMapping)) {
+    throw new Error("Error while parsing the mapping file. It does not have the right format.");
+  }
+
+  if (!Array.isArray(mapping.nodeMapping)) {
+    throw new Error("Error while parsing the mapping file. It does not have the right format.");
+  }
+
+  mapping.nodeMapping.forEach((node, index) => {
+    if (!node.hasOwnProperty("pathwayNames")) {
+      throw new Error(`${node} is missing the 'Pathway Name' property.`);
+    }
+  });
+}
+
+export const getFileNameWithoutExtension = (filename) => filename.replace(/\.[^/.]+$/, "");
+
+function parseFileAsText(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => resolve(e.target.result);
+    reader.onerror = () => reject(new Error("Error reading file"));
+    reader.readAsText(file);
+  });
 }

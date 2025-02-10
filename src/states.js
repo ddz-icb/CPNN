@@ -103,17 +103,21 @@ export const useTooltipSettings = create((set) => ({
 
 export const useGraphData = create((set) => ({
   graphData: {
-    graph: null, // graph without modifications
-    graphCurrent: null, // graph with modifications e.g. links filtered by threshold, it also contains the pixi node elements
+    graph: null, // graph with modifications e.g. links filtered by threshold, it also contains the pixi node elements
+    originGraph: null, // graph without modifications
 
-    linksStored: false, // indicates whether allLinks are already stored
-    nodesStored: false, // indicates whether allNodes are already stored
-    allLinks: null, // default values of the links
-    allNodes: null, // default values of the nodes
-    filteredAfterStart: false,
     circleNodeMap: null, // mapping from circles to nodes
     circles: null, // PIXI containers for drawing the nodes
     lines: null, // PIXI container (singular!) for drawing the edges
+
+    filteredAfterStart: false,
+    graphIsPreprocessed: false,
+
+    activeGraphFileNames: null, // currently active file names
+    uploadedGraphFileNames: null, // names of all graph files in local storage
+
+    activeAnnotationMapping: null, // active node annotation mapping
+    uploadedAnnotationMappingNames: null, // uploaded node annotation mappings
   },
   setGraphData: (path, value) =>
     set((state) => {

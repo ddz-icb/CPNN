@@ -1,43 +1,47 @@
 import { ReactComponent as DeleteIcon } from "../../icons/delete.svg";
 import { ReactComponent as TrashIcon } from "../../icons/trash.svg";
 import { ReactComponent as PlusIcon } from "../../icons/plus.svg";
+import { ReactComponent as XIcon } from "../../icons/x.svg";
 import { Tooltip } from "react-tooltip";
 import { useEffect, useRef, useState } from "react";
 
-import { SidebarButtonRect, SidebarDropdownItem } from "./sidebar.js";
+import { PopupButtonRect, PopUpDoubleTextField, PopUpSwitchBlock, PopUpTextField, SidebarButtonRect } from "./sidebar.js";
 import log from "../../logger.js";
+import { useGraphData } from "../../states.js";
+import { exampleGraphJson } from "../../demodata/exampleGraphJSON.js";
+import { downloadCsvFile, downloadObjectAsFile } from "../GraphStuff/download.js";
+import { exampleGraphCsv } from "../../demodata/exampleGraphCSV.js";
+import { exampleMappingCsv } from "../../demodata/exampleMappingCSV.js";
 
 export function DataSidebar({
-  activeFiles,
   handleRemoveActiveGraphFile,
-  uploadedFiles,
   handleSelectGraph,
   handleDeleteGraphFile,
   handleAddFile,
   handleNewAnnotationMapping,
-  activeAnnotationMapping,
   handleRemoveActiveAnnotationMapping,
-  uploadedMappings,
   handleAnnotationMappingSelect,
   handleDeleteAnnotationMapping,
   handleNewGraphFile,
 }) {
+  const { graphData, setGraphData } = useGraphData();
+
   return (
     <>
       <TopDataButtons handleNewGraphFile={handleNewGraphFile} handleNewAnnotationMapping={handleNewAnnotationMapping} />
-      <ActiveFiles activeFiles={activeFiles} handleRemoveActiveGraphFile={handleRemoveActiveGraphFile} />
+      <ActiveFiles activeGraphFileNames={graphData.activeGraphFileNames} handleRemoveActiveGraphFile={handleRemoveActiveGraphFile} />
       <UploadedFiles
-        uploadedFiles={uploadedFiles}
+        uploadedGraphFileNames={graphData.uploadedGraphFileNames}
         handleSelectGraph={handleSelectGraph}
         handleDeleteGraphFile={handleDeleteGraphFile}
         handleAddFile={handleAddFile}
       />
       <ActiveAnnotationMapping
-        activeAnnotationMapping={activeAnnotationMapping}
+        activeAnnotationMapping={graphData.activeAnnotationMapping}
         handleRemoveActiveAnnotationMapping={handleRemoveActiveAnnotationMapping}
       />
       <UploadedMappings
-        uploadedMappings={uploadedMappings}
+        uploadedAnnotationMappingNames={graphData.uploadedAnnotationMappingNames}
         handleAnnotationMappingSelect={handleAnnotationMappingSelect}
         handleDeleteAnnotationMapping={handleDeleteAnnotationMapping}
       />
@@ -45,37 +49,50 @@ export function DataSidebar({
   );
 }
 
-function UploadedFiles({ uploadedFiles, handleSelectGraph, handleDeleteGraphFile, handleAddFile }) {
+function UploadedFiles({ uploadedGraphFileNames, handleSelectGraph, handleDeleteGraphFile, handleAddFile }) {
+  let uploadedGraphFileNamesNoExample = uploadedGraphFileNames?.filter((name) => name !== exampleGraphJson.name);
+
   return (
     <>
-      <b className="heading-label">Uploaded Files</b>
+      <div className="center-parent-container">
+        <span className="heading-label">Uploaded Graphs</span>
+      </div>
       <table className="recent-item-table">
         <tbody>
-          {uploadedFiles?.map((name, index) => (
+          {uploadedGraphFileNamesNoExample?.map((filename, index) => (
             <tr key={index} className="recent-item-entry recent-item-entry-highlight">
-              <td className="recent-item-text sidebar-tooltip-wrapper" onClick={() => handleSelectGraph(name)}>
+              <td className="recent-item-text sidebar-tooltip-wrapper" onClick={() => handleSelectGraph(filename)}>
                 <div data-tooltip-id={`replace-tooltip-${index}`} data-tooltip-content="Replace Active Graphs" className="pad-left-025">
-                  {name}
+                  {filename}
                 </div>
                 <Tooltip id={`replace-tooltip-${index}`} place="top" effect="solid" className="sidebar-tooltip" />
               </td>
               <td className="recent-item-logo sidebar-tooltip-wrapper">
-                <PlusIcon data-tooltip-id={`add-tooltip-${index}`} data-tooltip-content="Set Graph Active" onClick={() => handleAddFile(name)} />
+                <PlusIcon
+                  data-tooltip-id={`add-tooltip-${index}`}
+                  data-tooltip-content="Add Graph to Currently Active Graphs"
+                  onClick={() => handleAddFile(filename)}
+                />
                 <Tooltip id={`add-tooltip-${index}`} place="top" effect="solid" className="sidebar-tooltip" />
               </td>
               <td className="recent-item-logo sidebar-tooltip-wrapper">
                 <TrashIcon
                   data-tooltip-id={`delete-tooltip-${index}`}
                   data-tooltip-content="Delete Graph"
-                  onClick={() => handleDeleteGraphFile(name)}
+                  onClick={() => handleDeleteGraphFile(filename)}
                 />
                 <Tooltip id={`delete-tooltip-${index}`} place="top" effect="solid" className="sidebar-tooltip" />
               </td>
             </tr>
           ))}
-          {(!uploadedFiles || uploadedFiles.length === 0) && (
+          {(!uploadedGraphFileNamesNoExample || uploadedGraphFileNamesNoExample.length === 0) && (
             <tr className="recent-item-entry">
-              <td>None</td>
+              <td className="recent-item-text sidebar-tooltip-wrapper" onClick={() => handleSelectGraph(exampleGraphJson.name)}>
+                <div data-tooltip-id={`replace-tooltip-example`} data-tooltip-content="Replace Active Graphs" className="pad-left-025">
+                  {exampleGraphJson.name}
+                </div>
+                <Tooltip id={`replace-tooltip-example`} place="top" effect="solid" className="sidebar-tooltip" />
+              </td>
             </tr>
           )}
         </tbody>
@@ -84,22 +101,22 @@ function UploadedFiles({ uploadedFiles, handleSelectGraph, handleDeleteGraphFile
   );
 }
 
-function ActiveFiles({ activeFiles, handleRemoveActiveGraphFile }) {
+function ActiveFiles({ activeGraphFileNames, handleRemoveActiveGraphFile }) {
   return (
     <>
-      <b className="heading-label">Currently Active Files</b>
+      <span className="heading-label">Currently Active Graphs</span>
       <table className="active-item-table">
         <tbody>
-          {activeFiles?.map((file, index) => (
+          {activeGraphFileNames?.map((filename, index) => (
             <tr key={index} className="recent-item-entry">
               <td>
-                <span className="pad-left-025">{file.name}</span>
+                <span className="pad-left-025">{filename}</span>
               </td>
               <td className="recent-item-logo sidebar-tooltip-wrapper">
                 <DeleteIcon
                   data-tooltip-id={`remove-tooltip-${index}`}
                   data-tooltip-content="Remove Graph"
-                  onClick={() => handleRemoveActiveGraphFile(file)}
+                  onClick={() => handleRemoveActiveGraphFile(filename)}
                 />
                 <Tooltip id={`remove-tooltip-${index}`} place="top" effect="solid" className="sidebar-tooltip" />
               </td>
@@ -111,20 +128,20 @@ function ActiveFiles({ activeFiles, handleRemoveActiveGraphFile }) {
   );
 }
 
-function UploadedMappings({ uploadedMappings, handleAnnotationMappingSelect, handleDeleteAnnotationMapping }) {
+function UploadedMappings({ uploadedAnnotationMappingNames, handleAnnotationMappingSelect, handleDeleteAnnotationMapping }) {
   return (
     <>
       <>
-        <b className="heading-label">Uploaded Annotation Mappings</b>
+        <span className="heading-label">Uploaded Pathway Mappings</span>
         <table className="recent-item-table">
           <tbody>
-            {uploadedMappings && (
+            {uploadedAnnotationMappingNames && (
               <>
-                {uploadedMappings?.map((mapping, index) => (
+                {uploadedAnnotationMappingNames?.map((mappingName, index) => (
                   <tr key={index} className="recent-item-entry recent-item-entry-highlight">
-                    <td className="recent-item-text sidebar-tooltip-wrapper" onClick={() => handleAnnotationMappingSelect(mapping)}>
-                      <div data-tooltip-id={`replace-mapping-tooltip-${index}`} data-tooltip-content="Replace Active Annotation Mapping">
-                        <span className="pad-left-025">{mapping.name}</span>
+                    <td className="recent-item-text sidebar-tooltip-wrapper" onClick={() => handleAnnotationMappingSelect(mappingName)}>
+                      <div data-tooltip-id={`replace-mapping-tooltip-${index}`} data-tooltip-content="Replace Active Pathway Mapping">
+                        <span className="pad-left-025">{mappingName}</span>
                       </div>
                       <Tooltip id={`replace-mapping-tooltip-${index}`} place="top" effect="solid" className="sidebar-tooltip" />
                     </td>
@@ -132,7 +149,7 @@ function UploadedMappings({ uploadedMappings, handleAnnotationMappingSelect, han
                       <TrashIcon
                         data-tooltip-id={`delete-mapping-tooltip-${index}`}
                         data-tooltip-content="Delete Annotation Mapping"
-                        onClick={() => handleDeleteAnnotationMapping(mapping.name)}
+                        onClick={() => handleDeleteAnnotationMapping(mappingName)}
                       />
                       <Tooltip id={`delete-mapping-tooltip-${index}`} place="top" effect="solid" className="sidebar-tooltip" />
                     </td>
@@ -140,9 +157,11 @@ function UploadedMappings({ uploadedMappings, handleAnnotationMappingSelect, han
                 ))}
               </>
             )}
-            {(!uploadedMappings || uploadedMappings.length === 0) && (
+            {(!uploadedAnnotationMappingNames || uploadedAnnotationMappingNames.length === 0) && (
               <tr className="recent-item-entry">
-                <td>None</td>
+                <td>
+                  <span className="pad-left-025">None</span>
+                </td>
               </tr>
             )}
           </tbody>
@@ -156,7 +175,7 @@ function ActiveAnnotationMapping({ activeAnnotationMapping, handleRemoveActiveAn
   return (
     <>
       <>
-        <b className="heading-label">Currently Active Annotation Mapping</b>
+        <span className="heading-label">Currently Active Pathway Mapping</span>
         <table className="active-item-table">
           <tbody>
             {activeAnnotationMapping && (
@@ -176,7 +195,9 @@ function ActiveAnnotationMapping({ activeAnnotationMapping, handleRemoveActiveAn
             )}
             {!activeAnnotationMapping && (
               <tr className="recent-item-entry">
-                <td>None</td>
+                <td>
+                  <span className="pad-left-025">None</span>
+                </td>
               </tr>
             )}
           </tbody>
@@ -188,76 +209,167 @@ function ActiveAnnotationMapping({ activeAnnotationMapping, handleRemoveActiveAn
 
 export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping }) {
   const annotationMappingRef = useRef(null);
-  const graphAbsRef = useRef(null);
-  const graphZeroRef = useRef(null);
+  const graphFileRef = useRef(null);
 
-  const [dropdownActive, setDropdownActive] = useState(false);
+  const [graphPopUpActive, setGraphPopUpActive] = useState(false);
+  const [mappingPopUpActive, setMappingPopUpActive] = useState(false);
 
-  const handleMainButtonClick = () => {
-    setDropdownActive(!dropdownActive);
+  const [takeAbs, setTakeAbs] = useState(false);
+
+  const [containsSites, setContainsSites] = useState(false);
+
+  const [nodeIdFormat, setNodeIdFormat] = useState("");
+  const [nodeIdExample1, setNodeIdExample1] = useState("");
+  const [nodeIdExample2, setNodeIdExample2] = useState("");
+
+  const annotationMappingFormat = "Uniprot-ID, Pathway Name, Reactome-ID";
+  const annotationMappingExample = "O60306,mRNA Splicing,R-HSA-72172";
+
+  const handleGraphPopUp = () => {
+    setGraphPopUpActive(!graphPopUpActive);
   };
 
-  const handleGraphAbsUploadClick = () => {
-    graphAbsRef.current.click();
+  const handleMappingPopUp = () => {
+    setMappingPopUpActive(!mappingPopUpActive);
   };
 
-  const handleGraphZeroUploadClick = () => {
-    graphZeroRef.current.click();
+  const handleGraphUploadClick = () => {
+    graphFileRef.current.click();
   };
 
   const handleUploadMappingClick = () => {
     annotationMappingRef.current.click();
   };
 
-  let content = null;
+  useEffect(() => {
+    let id = "UniprotID";
+    let name = "Name";
+    let sites = "SiteA, SiteB, ... SiteT";
+    let sites2 = "SiteU, SiteV, ... SiteW";
 
-  if (dropdownActive) {
-    content = (
-      <div className="pad-left-1 inline">
-        <div className="dropdown-sidebar">
-          <SidebarDropdownItem
-            text={"take absolute value of link weights"}
-            onClick={handleGraphAbsUploadClick}
-            linkRef={graphAbsRef}
-            onChange={(event) => {
-              const takeAbs = true;
-              handleNewGraphFile(event, takeAbs);
-            }}
-          />
-          <SidebarDropdownItem
-            text={"set negative link weights to 0"}
-            onClick={handleGraphZeroUploadClick}
-            linkRef={graphZeroRef}
-            onChange={(event) => {
-              const takeAbs = false;
-              handleNewGraphFile(event, takeAbs);
-            }}
-          />
-        </div>
-        <SidebarButtonRect onClick={handleMainButtonClick} text={"close"} tooltipId={"close-dropdown-tooltip"} />
-      </div>
-    );
-  } else {
-    content = (
-      <>
+    const idFormat = `${id}1_ ${name}1${containsSites ? "_" + sites : ""}; ${id}2_${name}2${containsSites ? "_" + sites2 : ""}; ...`;
+
+    const idExample1 = `P08590_MYL3${containsSites ? "_T165" : ""}`;
+    const idExample2 = `Q8WZ42_TTN${containsSites ? "_T719, S721" : ""}; Q8WZ42-12_TTN${containsSites ? "_T765, S767" : ""}`;
+
+    setNodeIdFormat(idFormat);
+    setNodeIdExample1(idExample1);
+    setNodeIdExample2(idExample2);
+  }, [containsSites]);
+
+  return (
+    <>
+      <div className="sidebar-two-buttons">
         <SidebarButtonRect
-          onClick={handleMainButtonClick}
+          onClick={handleGraphPopUp}
           text={"Upload Graph"}
-          tooltip={"Upload Graph as CSV/TSV Matrix or JSON File"}
+          tooltip={"Upload Graph as CSV, TSV or JSON File"}
           tooltipId={"upload-graph-tooltip"}
-          onChange={handleNewGraphFile}
         />
         <SidebarButtonRect
-          onClick={handleUploadMappingClick}
-          onChange={handleNewAnnotationMapping}
-          text={"Upload Gene/Protein Annotations"}
-          linkRef={annotationMappingRef}
-          tooltip={"Upload Gene/Protein Annotation Mappings as TSV File"}
+          onClick={handleMappingPopUp}
+          text={"Upload Pathway Mappings"}
+          tooltip={"Upload Pathway Annotation Mappings as a TSV or CSV File"}
           tooltipId={"upload-graph-tooltip"}
         />
-      </>
-    );
-  }
-
-  return <div className="pad-bottom-1 pad-top-05 data-buttons">{content}</div>;
+      </div>
+      {mappingPopUpActive && (
+        <div className="popup-overlay">
+          <div className="popup-container">
+            <div className="popup-header pad-bottom-1">
+              <b>Uploading Your Pathway Mapping</b>
+              <span className="tooltip-button" onClick={handleMappingPopUp}>
+                <XIcon />
+              </span>
+            </div>
+            <div className="popup-block color-text-primary">
+              Uploading pathway mappings can provide additional context to classify nodes, determining their color. By doing so, nodes −such as
+              peptides− are associated with one or more pathways. Nodes belonging to the same pathway will then be colored accordingly.
+              <br />
+              <br />
+              Pathway mappings can be uploaded in CSV or TSV format. These mappings must contain a "UniProt-ID" and a "Pathway Name" column. If
+              supplied with a "Reactome-ID" column, links to reactome.org with the corresponding pathway will be embedded, when klicking on nodes. To
+              better understand the required format, you can download the example mapping below.
+            </div>
+            <PopUpTextField textInfront={"Pathway Mapping format:"} textInside={annotationMappingFormat} />
+            <PopUpTextField textInfront={"Pathway Mapping example:"} textInside={annotationMappingExample} />
+            <div className="popup-block">
+              <PopupButtonRect
+                text={"Download Example Pathway Mapping"}
+                onClick={() => {
+                  downloadCsvFile(exampleMappingCsv.content, exampleMappingCsv.name);
+                }}
+              />
+              <PopupButtonRect
+                text={"Upload Own Pathway Mapping"}
+                onClick={handleUploadMappingClick}
+                linkRef={annotationMappingRef}
+                onChange={(event) => {
+                  handleNewAnnotationMapping(event);
+                  event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
+                  setMappingPopUpActive(false);
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+      {graphPopUpActive && (
+        <div className="popup-overlay">
+          <div className="popup-container">
+            <div className="popup-header pad-bottom-1">
+              <b>Uploading Your Graph</b>
+              <span className="tooltip-button" onClick={handleGraphPopUp}>
+                <XIcon />
+              </span>
+            </div>
+            <div className="popup-block color-text-primary">
+              You can upload your graphs in JSON, CSV or TSV format. CSV and TSV files must be structured as a symmetric matrix, while JSON contains a
+              list of nodes and links. You can download the example graphs below to take a closer look at the required format.
+            </div>
+            <PopUpSwitchBlock
+              text={"Include negative correlations by taking the absolute value"}
+              value={takeAbs}
+              onChange={() => {
+                setTakeAbs(!takeAbs);
+              }}
+            />
+            <PopUpSwitchBlock
+              text={"Node IDs contain phosphosites"}
+              value={containsSites}
+              onChange={() => {
+                setContainsSites(!containsSites);
+              }}
+            />
+            <PopUpTextField textInfront={"Node ID format:"} textInside={nodeIdFormat} />
+            <PopUpDoubleTextField textInfront={"Node ID examples:"} textInside1={nodeIdExample1} textInside2={nodeIdExample2} />
+            <div className="popup-block">
+              <PopupButtonRect
+                text={"Download JSON Example Graph"}
+                onClick={() => {
+                  downloadObjectAsFile(exampleGraphJson.content, exampleGraphJson.name);
+                }}
+              />
+              <PopupButtonRect
+                text={"Download CSV Example Graph"}
+                onClick={() => {
+                  downloadCsvFile(exampleGraphCsv.content, exampleGraphCsv.name);
+                }}
+              />
+            </div>
+            <PopupButtonRect
+              text={"Upload Own Graph File"}
+              onClick={handleGraphUploadClick}
+              linkRef={graphFileRef}
+              onChange={(event) => {
+                handleNewGraphFile(event, takeAbs);
+                event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
+                setGraphPopUpActive(false);
+              }}
+            />
+          </div>
+        </div>
+      )}
+    </>
+  );
 }

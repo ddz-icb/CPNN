@@ -4,14 +4,15 @@ import { useState, useEffect, useRef } from "react";
 import { ReactComponent as XIcon } from "../../icons/x.svg";
 import { extractDescription, extractFullName, extractPdbId } from "../RegexExtract/extract.js";
 import * as $3Dmol from "3dmol/build/3Dmol.js";
-import { useSettings, useTooltipSettings } from "../../states.js";
+import { useGraphData, useSettings, useTooltipSettings } from "../../states.js";
 
-export function Tooltips({ mapping }) {
+export function Tooltips({}) {
   const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
+  const { graphData, setGraphData } = useGraphData();
 
   return (
     <>
-      {tooltipSettings.isClickTooltipActive && <ClickTooltip mapping={mapping} />}
+      {tooltipSettings.isClickTooltipActive && <ClickTooltip mapping={graphData.activeAnnotationMapping} />}
       {!tooltipSettings.isClickTooltipActive && tooltipSettings.isHoverTooltipActive && <HoverTooltip />}
     </>
   );
@@ -19,6 +20,7 @@ export function Tooltips({ mapping }) {
 
 export function ClickTooltip({ mapping }) {
   const { settings, setSettings } = useSettings();
+
   const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
 
   const [fullName, setFullName] = useState("");
@@ -27,10 +29,12 @@ export function ClickTooltip({ mapping }) {
   const [protIdNoIsoform, setProtIdNoIsoform] = useState("");
   const [gene, setGene] = useState("");
   const [isoforms, setIsoforms] = useState("");
+  const [hasPhosphosites, setHasPhosphosites] = useState(false);
 
   const [style, setStyle] = useState({});
   const [viewer, setViewer] = useState(null);
   const viewerRef = useRef(null);
+  const tooltipRef = useRef(null); // wahrscheinlich noch zu löschen
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,14 +43,18 @@ export function ClickTooltip({ mapping }) {
 
         const protIdNoIsoform = entries[0].split("_")[0].split("-")[0];
         if (protIdNoIsoform) setProtIdNoIsoform(protIdNoIsoform);
-        const gene = tooltipSettings.clickTooltipData.node.split("_")[1];
+
+        const gene = entries[0].split("_")[1];
         if (gene) setGene(gene);
+
+        const phosphosites = entries[0].split("_")[2];
+        setHasPhosphosites(!!phosphosites);
 
         const isoforms = [];
         entries.forEach((entry) => {
           const pepId = entry.split("_")[0];
           const phosphosites = entry.split("_")[2];
-          if (pepId && phosphosites) isoforms.push({ pepId: pepId, phosphosites: phosphosites });
+          if (pepId) isoforms.push({ pepId: pepId, phosphosites: phosphosites });
         });
         if (isoforms) setIsoforms(isoforms);
 
@@ -109,17 +117,44 @@ export function ClickTooltip({ mapping }) {
     setDescription("");
     setPdbId("");
 
+    // NEXT: sicherstellen, dass die breite absolut ist und nicht kleiner wird falls zu nahe am rechten rand
     if (tooltipSettings.isClickTooltipActive) {
-      setStyle({
-        left: `${tooltipSettings.clickTooltipData.x + 15}px`,
-        top: `${tooltipSettings.clickTooltipData.y}px`,
-        opacity: 0.95,
-        transition: "opacity 0.2s",
-      });
+      let x = `${tooltipSettings.clickTooltipData.x + 15}px`;
+      let x2 = `${tooltipSettings.clickTooltipData.x - 15}px`;
+      let y = `${tooltipSettings.clickTooltipData.y}px`;
+
+      if (tooltipSettings.clickTooltipData.y > settings.container.height / 2) {
+        setStyle({
+          left: x,
+          top: y,
+          opacity: 0.95,
+          transform: "translateY(-100%)",
+        });
+        if (tooltipSettings.clickTooltipData.x > (2 * settings.container.width) / 3) {
+          setStyle({
+            left: x2,
+            top: y,
+            opacity: 0.95,
+            transform: "translateX(-100%) translateY(-100%)",
+          });
+        }
+      } else if (tooltipSettings.clickTooltipData.x > (2 * settings.container.width) / 3) {
+        setStyle({
+          left: x2,
+          top: y,
+          opacity: 0.95,
+          transform: "translateX(-100%)",
+        });
+      } else {
+        setStyle({
+          left: x,
+          top: y,
+          opacity: 0.95,
+        });
+      }
     } else {
       setStyle({
         opacity: 0,
-        transition: "opacity 0.2s",
       });
     }
   }, [tooltipSettings.isClickTooltipActive, tooltipSettings.clickTooltipData]);
@@ -173,7 +208,7 @@ export function ClickTooltip({ mapping }) {
   }
 
   return (
-    <div className="tooltip tooltip-click" style={style}>
+    <div className="tooltip tooltip-click" style={style} ref={tooltipRef}>
       {style.opacity > 0 && (
         <div className="tooltip-content">
           <div className="tooltip-header">
@@ -191,7 +226,7 @@ export function ClickTooltip({ mapping }) {
             )}
             {isoforms && isoforms.length > 0 && (
               <>
-                <b className="no-margin-bottom text-secondary">Protein-IDs and Phosphosites</b>
+                <b className="no-margin-bottom text-secondary">Protein-IDs {hasPhosphosites ? "and Phosphosites" : ""}</b>
                 <div className="no-margin-top pad-bottom-05">{isoformContent}</div>
               </>
             )}
