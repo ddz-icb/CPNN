@@ -174,7 +174,7 @@ export async function parseAnnotationMapping(content, filename) {
     for (let row of fileData.data) {
       const uniProtId = row["UniProt-ID"];
       const pathwayNames = row["Pathway Name"];
-      const reactomeIds = row["Reactome-ID"];
+      const reactomeIds = row["Reactome-ID"] || [];
 
       nodeMapping[uniProtId] = {
         pathwayNames: pathwayNames,
