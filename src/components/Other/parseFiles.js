@@ -105,10 +105,13 @@ export async function parseGraphFile(file, takeAbs) {
   }
 }
 
-export async function parseColorScheme(file) {
+export async function parseColorSchemeFile(file) {
   if (!file) {
     throw new Error(`No file found with the name ${file}.`);
   }
+
+  const fileExtension = file.name.split(".").pop();
+  if (fileExtension !== "csv" && fileExtension !== "tsv") throw new Error(`Wrong file extension. Only .csv and .tsv is allowed.`);
 
   try {
     const fileContent = await parseFileAsText(file);
@@ -135,12 +138,24 @@ function parseFileAsText(file) {
 }
 
 export async function parseAnnotationMappingFile(file) {
+  if (!file) {
+    throw new Error(`No file found with the name ${file}.`);
+  }
+
   const fileExtension = file.name.split(".").pop();
-  if (fileExtension !== "csv" || fileExtension !== "tsv") throw new Error(`Wrong file extension. Only .csv and .tsv is allowed.`);
+  if (fileExtension !== "csv" && fileExtension !== "tsv") throw new Error(`Wrong file extension. Only .csv and .tsv is allowed.`);
 
   try {
     const fileContent = await parseFileAsText(file);
-    let fileData = Papa.parse(fileContent, {
+    return parseAnnotationMapping(fileContent, file.name);
+  } catch (error) {
+    throw new Error(`Unable to process file. ${error.message}`);
+  }
+}
+
+export async function parseAnnotationMapping(content, filename) {
+  try {
+    let fileData = Papa.parse(content, {
       header: true,
       dynamicTyping: true,
       skipEmptyLines: true,
@@ -177,15 +192,15 @@ export async function parseAnnotationMappingFile(file) {
     }
 
     return {
-      name: file.name,
+      name: filename,
       content: JSON.stringify({
-        name: file.name,
+        name: filename,
         nodeMapping: nodeMapping,
         groupMapping: groupMapping,
       }),
     };
   } catch (error) {
-    throw new Error(`Erorr parsing annotation mapping ${file}.`);
+    throw new Error(`Erorr parsing annotation mapping with name ${filename}.`);
   }
 }
 

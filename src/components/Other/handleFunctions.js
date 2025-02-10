@@ -3,8 +3,8 @@ import log from "../../logger.js";
 import { joinGraphs } from "../GraphStuff/graphCalculations.js";
 import { applyTheme, defaultColorSchemes, lightTheme } from "./appearance.js";
 import { addGraphFileDB, addGraphFileIfNotExistsDB, fromAllGetGraphNameDB, getGraphDB, removeGraphFileByNameDB } from "./dbGraphs.js";
-import { addMappingFileDB, addMappingFileIfNotExistsDB, fromAllGetMappingNameDB, getMappingDB, removeMappingFileByNameDB } from "./dbMappings.js";
-import { parseAnnotationMappingFile, parseColorScheme, parseGraphFile } from "./parseFiles.js";
+import { addMappingFileDB, fromAllGetMappingNameDB, getMappingDB, removeMappingFileByNameDB } from "./dbMappings.js";
+import { parseAnnotationMappingFile, parseColorSchemeFile, parseGraphFile } from "./parseFiles.js";
 
 export async function selectGraph(filename, setGraphData) {
   const { graph, file } = await getGraphDB(filename);
@@ -47,7 +47,7 @@ export async function addNewGraphFile(file, uploadedGraphFileNames, setGraphData
 }
 
 export async function addNewColorScheme(file, setColorSchemes) {
-  const colorScheme = await parseColorScheme(file);
+  const colorScheme = await parseColorSchemeFile(file);
   setColorSchemes((colorSchemes) => [...colorSchemes, { name: file.name, colorScheme: colorScheme }]);
 }
 
