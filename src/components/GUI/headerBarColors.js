@@ -92,8 +92,8 @@ export function Colors({ handleNewScheme, colorSchemes, handleDeleteColorScheme,
                 <tr key={index} className="colorscheme-entry">
                   <ColorSchemeTableItem
                     name={colorScheme.name}
-                    isSelected={isEqual(colorScheme.colorScheme, settings.appearance.nodeColorScheme.colorScheme)}
-                    isSelected2={isEqual(colorScheme.colorScheme, settings.appearance.linkColorScheme.colorScheme)}
+                    isSelected={isEqual(colorScheme.name, settings.appearance.nodeColorScheme.name)}
+                    isSelected2={isEqual(colorScheme.name, settings.appearance.linkColorScheme.name)}
                     onClick={() => setSettings("appearance.nodeColorScheme", colorScheme)}
                     onClick2={() => setSettings("appearance.linkColorScheme", colorScheme)}
                     handleDeleteColorScheme={handleDeleteColorScheme}

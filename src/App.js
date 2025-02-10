@@ -97,9 +97,15 @@ function App() {
   // adds new color scheme
   const handleNewColorScheme = async (event) => {
     if (!event || !event.target || !event.target.files[0]) return;
-    log.info("Adding new color scheme");
+    log.info("Adding new color scheme", colorSchemes);
 
     const file = event.target.files[0];
+
+    if (colorSchemes.some((scheme) => getFileNameWithoutExtension(scheme.name) === getFileNameWithoutExtension(file.name))) {
+      log.warn("Mapping with this name already exists");
+      setError("Mapping with this name already exists");
+      return;
+    }
 
     addNewColorScheme(file, setColorSchemes)
       .then(() => {})
