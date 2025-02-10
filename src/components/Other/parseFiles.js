@@ -1,6 +1,22 @@
 import log from "../../logger.js";
 import Papa from "papaparse";
 
+export async function parseGraphFile(file, takeAbs) {
+  if (!file) {
+    throw new Error(`No file found with the name ${file}.`);
+  }
+
+  try {
+    const fileContent = await parseFileAsText(file);
+    const graph = parseGraph(file.name, fileContent, takeAbs);
+    verifyGraph(graph);
+
+    return { name: file.name, content: JSON.stringify(graph) };
+  } catch (error) {
+    throw new Error(`Unable to process file. ${error.message}`);
+  }
+}
+
 export function parseGraph(name, content, takeAbs) {
   const fileExtension = name.split(".").pop();
 
@@ -31,7 +47,7 @@ export function parseGraph(name, content, takeAbs) {
           source: fileData.header[i],
           target: fileData.header[j],
           weights: [fileData.data[i][j]],
-          attribs: [linkAttrib] || [],
+          attribs: [linkAttrib],
         });
       }
     }
@@ -74,35 +90,39 @@ function parseGraphCSVorTSV(content) {
   };
 }
 
-export function parseColorScheme(content) {
-  let fileData = Papa.parse(content, {
-    skipEmptyLines: true,
+function verifyGraph(graph) {
+  if (!graph || typeof graph !== "object") {
+    throw new Error("Error while parsing the graph file. It does not have the right format.");
+  }
+
+  const { nodes, links } = graph;
+  if (!Array.isArray(nodes) || !Array.isArray(links)) {
+    throw new Error("Graph file must contain 'nodes' and 'links' arrays.");
+  }
+
+  nodes.forEach((node, i) => {
+    if (node.id === undefined) {
+      throw new Error(`Node at index ${i} is missing the 'id' property.`);
+    }
+    if (node.groups === undefined) {
+      throw new Error(`Node at index ${i} is missing the 'groups' property.`);
+    }
   });
 
-  const hexColorRegex = /^#[0-9A-Fa-f]{6}$/;
-
-  let colorData = fileData.data;
-  colorData = colorData.reduce((acc, row) => {
-    const validColors = row.map((element) => element.toLowerCase())?.filter((element) => hexColorRegex.test(element) && element.length !== 0);
-    return acc.concat(validColors);
-  }, []);
-
-  return colorData;
-}
-
-export async function parseGraphFile(file, takeAbs) {
-  if (!file) {
-    throw new Error(`No file found with the name ${file}.`);
-  }
-
-  try {
-    const fileContent = await parseFileAsText(file);
-    const graph = parseGraph(file.name, fileContent, takeAbs);
-
-    return { name: file.name, content: JSON.stringify(graph) };
-  } catch (error) {
-    throw new Error(`Unable to process file. ${error.message}`);
-  }
+  links.forEach((link, i) => {
+    if (link.source === undefined) {
+      throw new Error(`Link at index ${i} is missing the 'source' property.`);
+    }
+    if (link.target === undefined) {
+      throw new Error(`Link at index ${i} is missing the 'target' property.`);
+    }
+    if (link.weights === undefined) {
+      throw new Error(`Link at index ${i} is missing the 'weights' property.`);
+    }
+    if (link.attribs === undefined) {
+      throw new Error(`Link at index ${i} is missing the 'attribs' property.`);
+    }
+  });
 }
 
 export async function parseColorSchemeFile(file) {
@@ -116,10 +136,7 @@ export async function parseColorSchemeFile(file) {
   try {
     const fileContent = await parseFileAsText(file);
     const colorScheme = parseColorScheme(fileContent);
-
-    if (!colorScheme) {
-      throw new Error("Error parsing file");
-    }
+    verifyColorScheme(colorScheme);
 
     return colorScheme;
   } catch (error) {
@@ -128,12 +145,30 @@ export async function parseColorSchemeFile(file) {
   }
 }
 
-function parseFileAsText(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = (e) => resolve(e.target.result);
-    reader.onerror = () => reject(new Error("Error reading file"));
-    reader.readAsText(file);
+export function parseColorScheme(content) {
+  let fileData = Papa.parse(content, {
+    skipEmptyLines: true,
+  });
+
+  let colorData = fileData.data;
+  colorData = colorData.reduce((acc, row) => {
+    const validColors = row.map((element) => element.toLowerCase())?.filter((element) => element.length !== 0);
+    return acc.concat(validColors);
+  }, []);
+
+  return colorData;
+}
+
+function verifyColorScheme(colorScheme) {
+  if (!Array.isArray(colorScheme)) {
+    throw new Error("The color scheme must be a list.");
+  }
+
+  const hexColorRegex = /^#[0-9A-Fa-f]{6}$/;
+  colorScheme.forEach((color, index) => {
+    if (typeof color !== "string" || !hexColorRegex.test(color)) {
+      throw new Error(`Invalid hex-color at index ${index}: ${color}`);
+    }
   });
 }
 
@@ -205,3 +240,12 @@ export async function parseAnnotationMapping(content, filename) {
 }
 
 export const getFileNameWithoutExtension = (filename) => filename.replace(/\.[^/.]+$/, "");
+
+function parseFileAsText(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => resolve(e.target.result);
+    reader.onerror = () => reject(new Error("Error reading file"));
+    reader.readAsText(file);
+  });
+}
