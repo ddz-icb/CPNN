@@ -68,7 +68,11 @@ function UploadedFiles({ uploadedGraphFileNames, handleSelectGraph, handleDelete
                 <Tooltip id={`replace-tooltip-${index}`} place="top" effect="solid" className="sidebar-tooltip" />
               </td>
               <td className="recent-item-logo sidebar-tooltip-wrapper">
-                <PlusIcon data-tooltip-id={`add-tooltip-${index}`} data-tooltip-content="Set Graph Active" onClick={() => handleAddFile(filename)} />
+                <PlusIcon
+                  data-tooltip-id={`add-tooltip-${index}`}
+                  data-tooltip-content="Add Graph to Currently Active Graphs"
+                  onClick={() => handleAddFile(filename)}
+                />
                 <Tooltip id={`add-tooltip-${index}`} place="top" effect="solid" className="sidebar-tooltip" />
               </td>
               <td className="recent-item-logo sidebar-tooltip-wrapper">

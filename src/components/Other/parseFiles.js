@@ -13,7 +13,7 @@ export async function parseGraphFile(file, takeAbs) {
 
     return { name: file.name, content: JSON.stringify(graph) };
   } catch (error) {
-    throw new Error(`Unable to process file. ${error.message}`);
+    throw new Error(`${error.message}`);
   }
 }
 
@@ -141,7 +141,7 @@ export async function parseColorSchemeFile(file) {
     return colorScheme;
   } catch (error) {
     log.error(error.message);
-    throw new Error(`Unable to process file. ${error.message}`);
+    throw new Error(`${error.message}`);
   }
 }
 
@@ -182,13 +182,15 @@ export async function parseAnnotationMappingFile(file) {
 
   try {
     const fileContent = await parseFileAsText(file);
-    return parseAnnotationMapping(fileContent, file.name);
+    const mapping = parseAnnotationMapping(fileContent, file.name);
+    verifyAnnotationMapping(mapping);
+    return { name: file.name, content: JSON.stringify(mapping) };
   } catch (error) {
-    throw new Error(`Unable to process file. ${error.message}`);
+    throw new Error(`${error.message}`);
   }
 }
 
-export async function parseAnnotationMapping(content, filename) {
+export function parseAnnotationMapping(content, filename) {
   try {
     let fileData = Papa.parse(content, {
       header: true,
@@ -228,15 +230,32 @@ export async function parseAnnotationMapping(content, filename) {
 
     return {
       name: filename,
-      content: JSON.stringify({
-        name: filename,
-        nodeMapping: nodeMapping,
-        groupMapping: groupMapping,
-      }),
+      nodeMapping: nodeMapping,
+      groupMapping: groupMapping,
     };
   } catch (error) {
-    throw new Error(`Erorr parsing annotation mapping with name ${filename}.`);
+    throw new Error(`Erorr parsing pathway mapping with name ${filename}.`);
   }
+}
+
+function verifyAnnotationMapping(mapping) {
+  if (!mapping || typeof mapping !== "object") {
+    throw new Error("Error while parsing the mapping file. It does not have the right format.");
+  }
+
+  if (!Array.isArray(mapping.groupMapping)) {
+    throw new Error("Error while parsing the mapping file. It does not have the right format.");
+  }
+
+  if (!Array.isArray(mapping.nodeMapping)) {
+    throw new Error("Error while parsing the mapping file. It does not have the right format.");
+  }
+
+  mapping.nodeMapping.forEach((node, index) => {
+    if (!node.hasOwnProperty("pathwayNames")) {
+      throw new Error(`${node} is missing the 'Pathway Name' property.`);
+    }
+  });
 }
 
 export const getFileNameWithoutExtension = (filename) => filename.replace(/\.[^/.]+$/, "");

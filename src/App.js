@@ -89,7 +89,7 @@ function App() {
     addNewGraphFile(file, graphData.uploadedGraphFileNames, setGraphData, takeAbs)
       .then(() => {})
       .catch((error) => {
-        setError(`${error}`);
+        setError(`${error.message}`);
         log.error("Error adding graph file:", error);
       });
   };
@@ -110,7 +110,7 @@ function App() {
     addNewColorScheme(file, setColorSchemes)
       .then(() => {})
       .catch((error) => {
-        setError(`${error}`);
+        setError(`${error.message}`);
         log.error("Error adding color scheme:", error);
       });
   };
@@ -153,7 +153,7 @@ function App() {
     addNewAnnotationMappingFile(file, graphData.uploadedAnnotationMappingNames, setGraphData)
       .then(() => {})
       .catch((error) => {
-        setError(`${error}`);
+        setError(`${error.message}`);
         log.error("Error adding mapping file:", error);
       });
   };

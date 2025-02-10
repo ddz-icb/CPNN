@@ -178,7 +178,7 @@ export function ForceGraph({ reset, setReset, setError }) {
       setSimulation(simulation);
     } catch (error) {
       setError("Error loading graph. The graph data is most likely incorrect", error.message);
-      log.error("error: ", error);
+      log.error(`${error.message}`);
 
       if (simulation) {
         simulation.stop();
