@@ -30,7 +30,7 @@ export function parseGraph(name, content, takeAbs) {
     if (!fileData) return null;
 
     const linkAttribMatch = name.match(/dataset(\w+)/);
-    const linkAttrib = linkAttribMatch ? linkAttribMatch[1] : name.substring(0, 5);
+    const linkAttrib = linkAttribMatch ? linkAttribMatch[1] : name;
 
     graph = { nodes: [], links: [] };
 
