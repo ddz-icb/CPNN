@@ -1,14 +1,15 @@
 import log from "../../logger.js";
 import Papa from "papaparse";
+import { filterByThreshold, filterMinCompSize } from "../GraphStuff/graphCalculations.js";
 
-export async function parseGraphFile(file, takeAbs) {
+export async function parseGraphFile(file, takeAbs, minCorrForEdge, minCompSizeForNode) {
   if (!file) {
     throw new Error(`No file found with the name ${file}.`);
   }
 
   try {
     const fileContent = await parseFileAsText(file);
-    const graph = parseGraph(file.name, fileContent, takeAbs);
+    const graph = parseGraph(file.name, fileContent, takeAbs, minCorrForEdge, minCompSizeForNode);
     verifyGraph(graph);
 
     return { name: file.name, content: JSON.stringify(graph) };
@@ -17,7 +18,7 @@ export async function parseGraphFile(file, takeAbs) {
   }
 }
 
-export function parseGraph(name, content, takeAbs) {
+export function parseGraph(name, content, takeAbs, minCorrForEdge, minCompSizeForNode) {
   const fileExtension = name.split(".").pop();
 
   let graph = null;
@@ -54,6 +55,12 @@ export function parseGraph(name, content, takeAbs) {
   } else {
     throw new Error(`File format not recognized`);
   }
+
+  log.info("MINCORR", minCorrForEdge);
+  log.info("MINCOMP", minCompSizeForNode);
+  graph = filterByThreshold(graph, minCorrForEdge);
+  graph = filterMinCompSize(graph, minCompSizeForNode);
+  // graph = filterNodesExist(graph);
 
   if (takeAbs) {
     graph.links.forEach((link) => {

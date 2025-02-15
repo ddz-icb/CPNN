@@ -5,7 +5,15 @@ import { ReactComponent as XIcon } from "../../icons/x.svg";
 import { Tooltip } from "react-tooltip";
 import { useEffect, useRef, useState } from "react";
 
-import { PopupButtonRect, PopUpDoubleTextField, PopUpSwitchBlock, PopUpTextField, SidebarButtonRect } from "./sidebar.js";
+import {
+  PopupButtonRect,
+  PopUpDoubleTextField,
+  PopUpSwitchBlock,
+  PopUpTextField,
+  SidebarButtonRect,
+  PopUpSliderBlock,
+  PopUpFieldBlock,
+} from "./sidebar.js";
 import log from "../../logger.js";
 import { useGraphData } from "../../states.js";
 import { exampleGraphJson } from "../../demodata/exampleGraphJSON.js";
@@ -216,6 +224,12 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
 
   const [takeAbs, setTakeAbs] = useState(false);
 
+  const [minCorrForEdge, setMinCorrForEdge] = useState(0);
+  const [minCorrForEdgeText, setMinCorrForEdgeText] = useState(0);
+
+  const [minCompSizeForNode, setMinCompSizeForNode] = useState(2);
+  const [minCompSizeForNodeText, setMinCompSizeForNodeText] = useState(2);
+
   const [containsSites, setContainsSites] = useState(false);
 
   const [nodeIdFormat, setNodeIdFormat] = useState("");
@@ -239,6 +253,63 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
 
   const handleUploadMappingClick = () => {
     annotationMappingRef.current.click();
+  };
+
+  const handleMinCorrSliderChange = (event) => {
+    const value = event.target.value;
+
+    if (value >= 0 && value <= 1) {
+      setMinCorrForEdge(value);
+      setMinCorrForEdgeText(value);
+    }
+  };
+
+  const handleMinCorrFieldChange = (event) => {
+    const value = event.target.value;
+
+    if (value >= 0 && value <= 1) {
+      setMinCorrForEdgeText(value);
+    }
+  };
+
+  const handleMinCorrFieldBlur = (event) => {
+    let value = event.target.value;
+
+    if (value === "") {
+      event.target.innerText = 0;
+      setMinCorrForEdge(0);
+      setMinCorrForEdgeText(0);
+    } else if (value >= 0 && value <= 1) {
+      event.target.innerText = value;
+      setMinCorrForEdge(value);
+      setMinCorrForEdgeText(value);
+    }
+  };
+
+  const handleMinComponentFieldChange = (event) => {
+    const value = event.target.value;
+    const intValue = parseInt(value, 10);
+
+    if (value === "") {
+      setMinCompSizeForNodeText("");
+    } else if (!isNaN(intValue)) {
+      setMinCompSizeForNodeText(intValue);
+    }
+  };
+
+  const handleMinComponentFieldBlur = (event) => {
+    const value = event.target.value;
+    const intValue = parseInt(value, 10);
+
+    if (value === "") {
+      event.target.innerText = 1;
+      setMinCompSizeForNode(1);
+      setMinCompSizeForNodeText(1);
+    } else if (!isNaN(intValue) && intValue >= 0) {
+      event.target.innerText = intValue;
+      setMinCompSizeForNode(intValue);
+      setMinCompSizeForNodeText(intValue);
+    }
   };
 
   useEffect(() => {
@@ -334,6 +405,26 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
                 setTakeAbs(!takeAbs);
               }}
             />
+            <PopUpSliderBlock
+              text={<>Minimum component correlation value to be interpreted as an edge</>}
+              min={0}
+              max={1}
+              stepSlider={0.05}
+              stepField={0.01}
+              value={minCorrForEdge}
+              valueText={minCorrForEdgeText}
+              onChangeSlider={handleMinCorrSliderChange}
+              onChangeField={handleMinCorrFieldChange}
+              onChangeBlur={handleMinCorrFieldBlur}
+            />
+            <PopUpFieldBlock
+              text={<>Minimum component size to be loaded for above minimum component correlation</>}
+              min={1}
+              step={1}
+              value={minCompSizeForNodeText}
+              onChange={handleMinComponentFieldChange}
+              onBlur={handleMinComponentFieldBlur}
+            />
             <PopUpSwitchBlock
               text={"Node IDs contain phosphosites"}
               value={containsSites}
@@ -362,7 +453,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
               onClick={handleGraphUploadClick}
               linkRef={graphFileRef}
               onChange={(event) => {
-                handleNewGraphFile(event, takeAbs);
+                handleNewGraphFile(event, takeAbs, minCorrForEdge, minCompSizeForNode);
                 event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
                 setGraphPopUpActive(false);
               }}

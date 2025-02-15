@@ -126,6 +126,34 @@ export function SidebarSliderBlock({ text, value, valueText, onChangeSlider, onC
   );
 }
 
+export function PopUpSliderBlock({ text, value, valueText, onChangeSlider, onChangeField, onChangeBlur, min, max, stepSlider, stepField }) {
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      event.target.blur();
+    }
+  };
+
+  return (
+    <>
+      <label className="label">{text}</label>
+      <div className="popup-block pad-bottom-05">
+        <input className="sidebar-slider" type="range" min={min} max={max} step={stepSlider} value={value} onChange={onChangeSlider}></input>
+        <input
+          className="input-field"
+          type="number"
+          min={min}
+          max={max}
+          step={stepField}
+          value={valueText}
+          onChange={onChangeField}
+          onKeyDown={handleKeyDown}
+          onBlur={onChangeBlur}
+        />
+      </div>
+    </>
+  );
+}
+
 export function SidebarSwitchBlock({ text, value, onChange }) {
   return (
     <>
@@ -165,6 +193,33 @@ export function SidebarFieldBlock({ text, min, max, step, value, onChange, onBlu
     <>
       <label className="label pad-left-1">{text}</label>
       <div className="sidebar-block">
+        <input
+          className="input-field"
+          type="number"
+          min={min}
+          max={max}
+          step={step}
+          onChange={onChange}
+          onKeyDown={handleKeyDown}
+          value={value}
+          onBlur={onBlur}
+        ></input>
+      </div>
+    </>
+  );
+}
+
+export function PopUpFieldBlock({ text, min, max, step, value, onChange, onBlur }) {
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      event.target.blur();
+    }
+  };
+
+  return (
+    <>
+      <div className="popup-block">
+        <label className="label">{text}</label>
         <input
           className="input-field"
           type="number"

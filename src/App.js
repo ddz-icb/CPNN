@@ -76,7 +76,7 @@ function App() {
   };
 
   // adds new graph file //
-  const handleNewGraphFile = async (event, takeAbs) => {
+  const handleNewGraphFile = async (event, takeAbs, minCorrForEdge, minCompSizeForNode) => {
     const file = event.target.files[0];
     if (!event || !event.target || !file) return;
     if (graphData.uploadedGraphFileNames.some((name) => getFileNameWithoutExtension(name) === getFileNameWithoutExtension(file.name))) {
@@ -86,7 +86,7 @@ function App() {
     }
     log.info("Adding new graph file");
 
-    addNewGraphFile(file, graphData.uploadedGraphFileNames, setGraphData, takeAbs)
+    addNewGraphFile(file, graphData.uploadedGraphFileNames, setGraphData, takeAbs, minCorrForEdge, minCompSizeForNode)
       .then(() => {})
       .catch((error) => {
         setError(`${error.message}`);

@@ -40,8 +40,8 @@ export function removeColorScheme(colorSchemes, setColorSchemes, colorSchemeName
   setColorSchemes(updatedColorSchemes);
 }
 
-export async function addNewGraphFile(file, uploadedGraphFileNames, setGraphData, takeAbs) {
-  const graphFile = await parseGraphFile(file, takeAbs);
+export async function addNewGraphFile(file, uploadedGraphFileNames, setGraphData, takeAbs, minCorrForEdge, minCompSizeForNode) {
+  const graphFile = await parseGraphFile(file, takeAbs, minCorrForEdge, minCompSizeForNode);
   addGraphFileDB(graphFile);
   setGraphData("uploadedGraphFileNames", [...(uploadedGraphFileNames || []), file.name]);
 }
