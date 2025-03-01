@@ -320,7 +320,7 @@ function App() {
 
   return (
     <div className={settings.appearance.theme.name}>
-      <HeaderBar handleDeleteColorScheme={handleDeleteColorScheme} handleNewScheme={handleNewColorScheme} colorSchemes={colorSchemes} />
+      <HeaderBar />
       <Sidebar
         handleSelectGraph={handleSelectGraph}
         handleDeleteGraphFile={handleDeleteGraphFile}

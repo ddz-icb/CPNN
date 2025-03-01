@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { Tooltip } from "react-tooltip";
 
-import { Colors } from "./headerBarColors.js";
 import { Mapping } from "./headerBarMapping.js";
 import { HeaderBarExport } from "./headerBarExport.js";
 
-export function HeaderBar({ handleNewScheme, colorSchemes, handleDeleteColorScheme }) {
+export function HeaderBar({}) {
   const [activeMenu, setActiveMenu] = useState("None");
 
   const handleActiveMenuClick = (item) => {
@@ -19,13 +18,6 @@ export function HeaderBar({ handleNewScheme, colorSchemes, handleDeleteColorSche
   return (
     <div className="top-right-buttons">
       <Mapping activeMenu={activeMenu} handleActiveMenuClick={handleActiveMenuClick} />
-      <Colors
-        handleNewScheme={handleNewScheme}
-        colorSchemes={colorSchemes}
-        handleDeleteColorScheme={handleDeleteColorScheme}
-        activeMenu={activeMenu}
-        handleActiveMenuClick={handleActiveMenuClick}
-      />
       <HeaderBarExport activeMenu={activeMenu} handleActiveMenuClick={handleActiveMenuClick} />
     </div>
   );
