@@ -7,6 +7,7 @@ import { FilterSidebar } from "./filterSidebar.js";
 import { PhysicsSidebar } from "./physicsSidebar.js";
 import { DataSidebar } from "./dataSidebar.js";
 import { MainSidebar } from "./mainSidebar.js";
+import { AppearanceSidebar } from "./appearanceSidebar.js";
 
 export function Sidebar({
   handleSelectGraph,
@@ -67,6 +68,13 @@ export function Sidebar({
       <Navbar>
         <Back activeNavItem={activeNavItem} icon={<BackIcon />} onClick={() => handleNavItemClick("Main")} />
         <PhysicsSidebar resetPhysics={resetPhysics} />
+      </Navbar>
+    );
+  } else if (activeNavItem === "Appearance") {
+    content = (
+      <Navbar>
+        <Back activeNavItem={activeNavItem} icon={<BackIcon />} onClick={() => handleNavItemClick("Main")} />
+        <AppearanceSidebar />
       </Navbar>
     );
   }

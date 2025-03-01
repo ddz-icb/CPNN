@@ -3,6 +3,7 @@ import { ReactComponent as DataIcon } from "../../icons/data.svg";
 import { ReactComponent as MoonIcon } from "../../icons/moon.svg";
 import { ReactComponent as MagnetIcon } from "../../icons/magnet.svg";
 import { ReactComponent as FilterIcon } from "../../icons/filter.svg";
+import { ReactComponent as PaletteIcon } from "../../icons/colorPalette.svg";
 import { darkTheme, lightTheme } from "../Other/appearance.js";
 import { useSettings } from "../../states.js";
 
@@ -21,6 +22,7 @@ export function MainSidebar({ handleNavItemClick }) {
       <NavItem text={"Data"} icon={<DataIcon />} onClick={() => handleNavItemClick("Data")} />
       <NavItem text={"Filter"} icon={<FilterIcon />} onClick={() => handleNavItemClick("Filter")} />
       <NavItem text={"Physics"} icon={<MagnetIcon />} onClick={() => handleNavItemClick("Physics")}></NavItem>
+      <NavItem text={"Appearance"} icon={<PaletteIcon />} onClick={() => handleNavItemClick("Appearance")}></NavItem>
       <NavItem text={"Change Theme"} icon={settings.appearance.theme.name === lightTheme.name ? <MoonIcon /> : <SunIcon />} onClick={changeTheme} />
     </>
   );
@@ -30,7 +32,7 @@ function Logo({ onClick }) {
   return (
     <li className="logo-container" onClick={onClick}>
       <div className="nav-link">
-        <img src="./logos/ddz_logo_en.png" className="link-text logo" />
+        <img src="./logos/ddz_logo_en.png" className="logo" />
       </div>
     </li>
   );

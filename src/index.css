@@ -310,7 +310,6 @@ ul {
 
 .link-text {
   display: inline;
-  margin-left: 1rem;
   position: flex;
   opacity: 0;
   transform: translateX(-100%);
@@ -332,6 +331,7 @@ ul {
 }
 
 .logo {
+  margin-left: 1rem;
   text-align: center;
   width: 100%;
 }
