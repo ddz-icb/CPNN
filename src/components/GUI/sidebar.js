@@ -19,6 +19,9 @@ export function Sidebar({
   handleAnnotationMappingSelect,
   handleDeleteAnnotationMapping,
   handleNewGraphFile,
+  handleNewColorScheme,
+  handleDeleteColorScheme,
+  colorSchemes,
   resetPhysics,
   resetFilters,
 }) {
@@ -74,7 +77,11 @@ export function Sidebar({
     content = (
       <Navbar>
         <Back activeNavItem={activeNavItem} icon={<BackIcon />} onClick={() => handleNavItemClick("Main")} />
-        <AppearanceSidebar />
+        <AppearanceSidebar
+          handleNewColorScheme={handleNewColorScheme}
+          handleDeleteColorScheme={handleDeleteColorScheme}
+          colorSchemes={colorSchemes}
+        />
       </Navbar>
     );
   }

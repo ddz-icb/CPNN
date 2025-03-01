@@ -331,6 +331,9 @@ function App() {
         handleAnnotationMappingSelect={handleSelectAnnotationMapping}
         handleDeleteAnnotationMapping={handleDeleteAnnotationMapping}
         handleNewGraphFile={handleNewGraphFile}
+        handleNewColorScheme={handleNewColorScheme}
+        handleDeleteColorScheme={handleDeleteColorScheme}
+        colorSchemes={colorSchemes}
         resetPhysics={resetPhysics}
         resetFilters={resetFilters}
       />

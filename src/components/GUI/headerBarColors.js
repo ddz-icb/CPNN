@@ -16,7 +16,7 @@ import { colorSchemeCsv } from "../../demodata/exampleColorSchemeCSV.js";
 export function Colors({ handleNewScheme, colorSchemes, handleDeleteColorScheme, activeMenu, handleActiveMenuClick }) {
   const { settings, setSettings } = useSettings();
 
-  const [colorSchemePopoUpActive, setColorSchemePopUpActive] = useState(false);
+  const [colorSchemePopUpActive, setColorSchemePopUpActive] = useState(false);
 
   const colorSchemeRef = useRef(null);
 
@@ -52,7 +52,7 @@ export function Colors({ handleNewScheme, colorSchemes, handleDeleteColorScheme,
           <UploadItem
             text={"Upload color scheme"}
             onClick={() => {
-              setColorSchemePopUpActive(!colorSchemePopoUpActive);
+              setColorSchemePopUpActive(!colorSchemePopUpActive);
               handleActiveMenuClick("None");
             }}
             icon={<PaintRollerIcon />}
@@ -109,7 +109,7 @@ export function Colors({ handleNewScheme, colorSchemes, handleDeleteColorScheme,
 
   return (
     <>
-      {colorSchemePopoUpActive && (
+      {colorSchemePopUpActive && (
         <div className="popup-overlay">
           <div className="popup-container">
             <div className="popup-header pad-bottom-1">
