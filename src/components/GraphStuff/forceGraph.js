@@ -99,6 +99,17 @@ export function ForceGraph({ reset, setReset, setError }) {
       return;
     log.info("Setting stage");
 
+    PIXI.BitmapFont.install({
+      name: "SDF",
+      chars: [["A", "Z"], ["a", "z"], ["0", "9"], " !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"],
+      padding: 4,
+      resolution: 4,
+      distanceField: { type: "sdf", range: 8 },
+      style: new PIXI.TextStyle({
+        fill: getTextStyle(settings.appearance.theme.textColor).fill || getTextStyle(settings.appearance.theme.textColor),
+      }),
+    });
+
     const newLines = new PIXI.Graphics();
     const newCircles = new PIXI.Container();
     const newNodeLabels = new PIXI.Container();
@@ -125,13 +136,14 @@ export function ForceGraph({ reset, setReset, setError }) {
       initTooltips(circle, node, setTooltipSettings);
       newCircles.addChild(circle);
 
-      let nodeLabel = new PIXI.Text({
-        text: getNodeIdName(node.id),
-        style: getTextStyle(settings.appearance.theme.textColor),
+      let nodeLabel = new PIXI.BitmapText(getNodeIdName(node.id), {
+        fontName: "SDF",
+        fontSize: 12,
       });
+
       nodeLabel.x = circle.x;
       nodeLabel.y = circle.y - getNodeLabelOffsetY(node.id);
-      nodeLabel.anchor.x = 0.5;
+      nodeLabel.pivot.x = nodeLabel.width / 2;
       nodeLabel.visible = false;
       newNodeLabels.addChild(nodeLabel);
 
