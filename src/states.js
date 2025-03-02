@@ -64,6 +64,7 @@ export const useSettings = create((set) => ({
       theme: themeInit,
       nodeColorScheme: nodeColorSchemeInit,
       linkColorScheme: linkColorSchemeInit,
+      showNodeLabels: true,
       linkAttribsToColorIndices: null,
       nodeAttribsToColorIndices: null,
     },
@@ -106,9 +107,10 @@ export const useGraphData = create((set) => ({
     graph: null, // graph with modifications e.g. links filtered by threshold, it also contains the pixi node elements
     originGraph: null, // graph without modifications
 
-    circleNodeMap: null, // mapping from circles to nodes
+    nodeMap: null, // mapping from nodes to circles and nodelabels
     circles: null, // PIXI containers for drawing the nodes
-    lines: null, // PIXI container (singular!) for drawing the edges
+    nodeLabels: null, // PIXI container for drawing node labels
+    lines: null, // PIXI object (singular!) for drawing the edges
 
     filteredAfterStart: false,
     graphIsPreprocessed: false,

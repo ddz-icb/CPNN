@@ -7,7 +7,7 @@ import { downloadAsPNG, downloadAsSVG, downloadGraphJson } from "./download.js";
 import { changeCircleBorderColor, changeNodeColors, radius } from "../Other/draw.js";
 import { lightTheme, themeInit } from "../Other/appearance.js";
 import {
-  filterActiveCircles,
+  filterActiveNodesForPixi,
   filterByAttribs,
   filterByThreshold,
   filterMinCompSize,
@@ -32,7 +32,7 @@ export function SettingControl({ simulation, app, redraw }) {
       !graphData.circles ||
       !graphData.circles.children ||
       !graphData.circles.children.length > 0 ||
-      !graphData.circleNodeMap ||
+      !graphData.nodeMap ||
       !graphData.graphIsPreprocessed
     ) {
       return;
@@ -65,7 +65,7 @@ export function SettingControl({ simulation, app, redraw }) {
 
     filteredGraph = filterNodesExist(filteredGraph);
 
-    filterActiveCircles(graphData.circles, filteredGraph, graphData.circleNodeMap);
+    filterActiveNodesForPixi(graphData.circles, graphData.nodeLabels, settings.appearance.showNodeLabels, filteredGraph, graphData.nodeMap);
     setGraphData("filteredAfterStart", true);
     setGraphData("graph", filteredGraph);
   }, [
@@ -76,6 +76,24 @@ export function SettingControl({ simulation, app, redraw }) {
     graphData.originGraph,
     graphData.circles,
   ]);
+
+  useEffect(() => {
+    if (!graphData.circles || !app) return;
+    log.info("Enabling/Disabling node labels");
+
+    if (settings.appearance.showNodeLabels == true) {
+      graphData.graph.nodes.forEach((n) => {
+        const { node, circle, nodeLabel } = graphData.nodeMap[n.id];
+        nodeLabel.visible = true;
+      });
+      simulation.on("tick.redraw", () => redraw(graphData.graph));
+      redraw(graphData.graph);
+    } else {
+      graphData.nodeLabels.children.forEach((label) => (label.visible = false));
+      simulation.on("tick.redraw", () => redraw(graphData.graph));
+      redraw(graphData.graph);
+    }
+  }, [settings.appearance.showNodeLabels]);
 
   // download graph data as json //
   useEffect(() => {
@@ -115,7 +133,7 @@ export function SettingControl({ simulation, app, redraw }) {
         themeInit.circleBorderColor,
         settings.appearance.nodeColorScheme,
         settings.appearance.nodeAttribsToColorIndices,
-        graphData.circleNodeMap
+        graphData.nodeMap
       );
     }
   }, [settings.download.svg]);
@@ -135,7 +153,7 @@ export function SettingControl({ simulation, app, redraw }) {
 
     changeNodeColors(
       graphData.circles,
-      graphData.circleNodeMap,
+      graphData.nodeMap,
       settings.appearance.theme.circleBorderColor,
       settings.appearance.nodeColorScheme.colorScheme,
       settings.appearance.nodeAttribsToColorIndices

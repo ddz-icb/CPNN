@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ReactComponent as TrashIcon } from "../../icons/trash.svg";
 import { ReactComponent as PlusIcon } from "../../icons/plus.svg";
-import { PopupButtonRect, PopUpTextField, SidebarButtonRect } from "./sidebar.js";
+import { PopupButtonRect, PopUpTextField, SidebarButtonRect, SidebarSwitchBlock } from "./sidebar.js";
 import { ReactComponent as LinesVertical } from "../../icons/lines-vertical.svg";
 import { ReactComponent as CircleHollow } from "../../icons/circle-hollow.svg";
 import { ReactComponent as XIcon } from "../../icons/x.svg";
@@ -9,10 +9,12 @@ import { colorSchemeCsv } from "../../demodata/exampleColorSchemeCSV.js";
 import { downloadCsvFile } from "../GraphStuff/download.js";
 import { Tooltip } from "react-tooltip";
 import { useSettings } from "../../states.js";
+import log from "../../logger.js";
 
 export function AppearanceSidebar({ handleNewColorScheme, handleDeleteColorScheme, colorSchemes }) {
   return (
     <>
+      <AppearanceSettings />
       <TopAppearanceButtons
         handleNewColorScheme={handleNewColorScheme}
         colorSchemes={colorSchemes}
@@ -25,7 +27,21 @@ export function AppearanceSidebar({ handleNewColorScheme, handleDeleteColorSchem
   );
 }
 
-export function TopAppearanceButtons({ handleNewColorScheme, colorSchemes, handleDeleteColorScheme, activeMenu, handleActiveMenuClick }) {
+export function AppearanceSettings({}) {
+  const { settings, setSettings } = useSettings();
+
+  const handleShowNodeLabels = () => {
+    setSettings("appearance.showNodeLabels", !settings.appearance.showNodeLabels);
+  };
+
+  return (
+    <>
+      <SidebarSwitchBlock text={"Show Node Labels"} value={settings.appearance.showNodeLabels} onChange={handleShowNodeLabels} />
+    </>
+  );
+}
+
+export function TopAppearanceButtons({ handleNewColorScheme }) {
   const [colorSchemePopUpActive, setColorSchemePopUpActive] = useState(false);
 
   const colorSchemeRef = useRef(null);

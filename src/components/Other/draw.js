@@ -1,10 +1,20 @@
 import log from "../../logger.js";
 import * as d3 from "d3";
+import * as PIXI from "pixi.js";
+import { useSettings } from "../../states.js";
 
 export const radius = 8;
 export const linkWidth = 2;
 export const color = d3.scaleOrdinal(d3.schemeCategory10);
 export const fallbackColor = "#777777";
+
+export function getTextStyle(settings) {
+  return new PIXI.TextStyle({
+    fontFamily: "Arial",
+    fontSize: 12,
+    fill: settings.appearance.theme.textColor,
+  });
+}
 
 export function getColor(index, colorScheme) {
   if (index == null || isNaN(index) || index >= colorScheme.length || index < 0) {
@@ -61,9 +71,9 @@ export function changeCircleBorderColor(circles, newColor) {
   }
 }
 
-export function changeNodeColors(circles, circleNodeMap, circleBorderColor, colorScheme, nodeAttribsToColorIndices) {
+export function changeNodeColors(circles, nodeMap, circleBorderColor, colorScheme, nodeAttribsToColorIndices) {
   for (const circle of circles.children) {
-    const { node, sameCircle } = circleNodeMap[circle.id];
+    const { node, sameCircle } = nodeMap[circle.id];
     drawCircle(circle, node, circleBorderColor, colorScheme, nodeAttribsToColorIndices);
   }
 }

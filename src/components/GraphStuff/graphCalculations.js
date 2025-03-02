@@ -229,10 +229,16 @@ export function filterNodes(graph, filterRequest) {
   return graph;
 }
 
-export function filterActiveCircles(circles, graph, circleNodeMap) {
+export function filterActiveNodesForPixi(circles, nodeLabels, showNodeLabels, graph, nodeMap) {
   circles.children.forEach((circle) => (circle.visible = false));
-  graph.nodes.forEach((node) => {
-    circleNodeMap[node.id].circle.visible = true;
+  nodeLabels.children.forEach((label) => (label.visible = false));
+
+  graph.nodes.forEach((n) => {
+    const { node, circle, nodeLabel } = nodeMap[n.id];
+    circle.visible = true;
+    if (showNodeLabels) {
+      nodeLabel.visible = true;
+    }
   });
 }
 
@@ -306,4 +312,16 @@ export function getIdsHavePhosphosites(graph) {
   const firstNodeIdElement = nodeId.split(";")[0];
   const phosphosites = firstNodeIdElement.split("_")[2];
   return phosphosites ? true : false;
+}
+
+export function getNodeIdName(nodeId) {
+  return nodeId.split("_")[1];
+}
+
+export function getNodeLabelOffsetX(nodeId) {
+  return -getNodeIdName(nodeId).length * 4.1;
+}
+
+export function getNodeLabelOffsetY(nodeId) {
+  return -25;
 }

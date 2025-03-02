@@ -44,10 +44,10 @@ export function downloadAsSVG(
   circleBorderColor,
   nodeColorScheme,
   nodeAttribsToColorIndices,
-  circleNodeMap
+  nodeMap
 ) {
   const firstNode = graph.nodes[0];
-  const { alsoFirstNode, circle: firstCircle } = circleNodeMap[firstNode.id];
+  const { alsoFirstNode, circle: firstCircle } = nodeMap[firstNode.id];
 
   let minX = firstCircle.x;
   let maxX = firstCircle.x;
@@ -55,7 +55,7 @@ export function downloadAsSVG(
   let maxY = firstCircle.y;
 
   for (const node of graph.nodes) {
-    const { sameNode, circle } = circleNodeMap[node.id];
+    const { sameNode, circle } = nodeMap[node.id];
     if (circle.x < minX) {
       minX = circle.x;
     }
@@ -94,7 +94,7 @@ export function downloadAsSVG(
   }
 
   for (const node of graph.nodes) {
-    const { sameNode, circle } = circleNodeMap[node.id];
+    const { sameNode, circle } = nodeMap[node.id];
 
     drawCircleCanvas(ctx, node, circle, circleBorderColor, nodeColorScheme.colorScheme, nodeAttribsToColorIndices);
   }

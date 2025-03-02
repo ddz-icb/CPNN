@@ -2,14 +2,14 @@ import "../../index.css";
 import log from "../../logger.js";
 import * as PIXI from "pixi.js";
 import { useRef, useEffect, useState } from "react";
-import { cloneDeep } from "lodash";
-
 import { handleResize, initDragAndZoom } from "../Other/interactiveCanvas.js";
 import { initTooltips, Tooltips } from "../Other/toolTipCanvas.js";
-import { radius, drawCircle, drawLine } from "../Other/draw.js";
+import { radius, drawCircle, drawLine, getTextStyle } from "../Other/draw.js";
 import { getSimulation } from "./graphPhysics.js";
 import { useGraphData, useSettings, useTooltipSettings } from "../../states.js";
 import { SettingControl } from "./settingControl.js";
+import { App } from "antd";
+import { getNodeIdName, getNodeLabelOffsetX, getNodeLabelOffsetY } from "./graphCalculations.js";
 
 export function ForceGraph({ reset, setReset, setError }) {
   const { settings, setSettings } = useSettings();
@@ -29,7 +29,7 @@ export function ForceGraph({ reset, setReset, setError }) {
     setGraphData("", (prev) => ({
       ...prev,
       graph: null,
-      circleNodeMap: null,
+      nodeMap: null,
       circles: null,
       lines: null,
       filteredAfterStart: false,
@@ -102,11 +102,13 @@ export function ForceGraph({ reset, setReset, setError }) {
 
     const newLines = new PIXI.Graphics();
     const newCircles = new PIXI.Container();
+    const newNodeLabels = new PIXI.Container();
     app.stage.addChild(newLines);
     app.stage.addChild(newCircles);
+    app.stage.addChild(newNodeLabels);
 
     const offsetSpawnValue = graphData.graph.nodes.length * 10;
-    const circleNodeMap = {};
+    const nodeMap = {};
     for (const node of graphData.graph.nodes) {
       let circle = new PIXI.Graphics();
       circle = drawCircle(
@@ -123,14 +125,25 @@ export function ForceGraph({ reset, setReset, setError }) {
       circle.y = settings.container.height / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
       initTooltips(circle, node, setTooltipSettings);
       newCircles.addChild(circle);
-      circleNodeMap[node.id] = { node, circle };
+
+      let nodeLabel = new PIXI.Text({
+        text: getNodeIdName(node.id),
+        style: getTextStyle(settings),
+      });
+      nodeLabel.x = circle.x - getNodeLabelOffsetX(node.id);
+      nodeLabel.y = circle.y - getNodeLabelOffsetY(node.id);
+      nodeLabel.visible = false;
+      newNodeLabels.addChild(nodeLabel);
+
+      nodeMap[node.id] = { node, circle, nodeLabel };
     }
 
     setGraphData("", (prev) => ({
       ...prev,
       lines: newLines,
       circles: newCircles,
-      circleNodeMap: circleNodeMap,
+      nodeMap: nodeMap,
+      nodeLabels: newNodeLabels,
     }));
   }, [app, graphData.graph]);
 
@@ -209,6 +222,14 @@ export function ForceGraph({ reset, setReset, setError }) {
 
     for (const link of graph.links) {
       drawLine(graphData.lines, link, settings.appearance.linkColorScheme.colorScheme, settings.appearance.linkAttribsToColorIndices);
+    }
+
+    if (settings.appearance.showNodeLabels) {
+      graph.nodes.forEach((n) => {
+        const { node, circle, nodeLabel } = graphData.nodeMap[n.id];
+        nodeLabel.x = circle.x + getNodeLabelOffsetX(node.id);
+        nodeLabel.y = circle.y + getNodeLabelOffsetY(node.id);
+      });
     }
 
     app.renderer.render(app.stage);
