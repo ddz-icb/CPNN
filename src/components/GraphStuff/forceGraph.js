@@ -68,7 +68,7 @@ export function ForceGraph({ reset, setReset, setError }) {
         width,
         height,
         antialias: !0,
-        resolution: window.devicePixelRatio || 1,
+        resolution: window.devicePixelRatio || 2,
         backgroundAlpha: 0, // makes the canvas fully transparent
       });
 
@@ -128,7 +128,7 @@ export function ForceGraph({ reset, setReset, setError }) {
 
       let nodeLabel = new PIXI.Text({
         text: getNodeIdName(node.id),
-        style: getTextStyle(settings),
+        style: getTextStyle(settings.appearance.theme.textColor),
       });
       nodeLabel.x = circle.x - getNodeLabelOffsetX(node.id);
       nodeLabel.y = circle.y - getNodeLabelOffsetY(node.id);

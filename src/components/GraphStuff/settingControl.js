@@ -4,7 +4,7 @@ import log from "../../logger.js";
 import * as d3 from "d3";
 
 import { downloadAsPNG, downloadAsSVG, downloadGraphJson } from "./download.js";
-import { changeCircleBorderColor, changeNodeColors, radius } from "../Other/draw.js";
+import { changeCircleBorderColor, changeNodeColors, changeNodeLabelColor, radius } from "../Other/draw.js";
 import { lightTheme, themeInit } from "../Other/appearance.js";
 import {
   filterActiveNodesForPixi,
@@ -138,12 +138,13 @@ export function SettingControl({ simulation, app, redraw }) {
     }
   }, [settings.download.svg]);
 
-  // switch circle border color //
+  // switch colors upon changing theme //
   useEffect(() => {
     if (!graphData.circles) return;
-    log.info("Switching circle border color");
+    log.info("Switching colors");
 
     changeCircleBorderColor(graphData.circles, settings.appearance.theme.circleBorderColor);
+    changeNodeLabelColor(graphData.nodeLabels, settings.appearance.theme.textColor);
   }, [settings.appearance.theme]);
 
   // switch node color scheme

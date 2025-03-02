@@ -8,11 +8,12 @@ export const linkWidth = 2;
 export const color = d3.scaleOrdinal(d3.schemeCategory10);
 export const fallbackColor = "#777777";
 
-export function getTextStyle(settings) {
+export function getTextStyle(textColor) {
   return new PIXI.TextStyle({
     fontFamily: "Arial",
     fontSize: 12,
-    fill: settings.appearance.theme.textColor,
+    fill: textColor,
+    resolution: 2,
   });
 }
 
@@ -68,6 +69,12 @@ export function drawCircleCanvas(ctx, node, circle, circleBorderColor, colorSche
 export function changeCircleBorderColor(circles, newColor) {
   for (const circle of circles.children) {
     circle.circle(0, 0, radius || 8).stroke({ color: newColor, width: 2 });
+  }
+}
+
+export function changeNodeLabelColor(nodeLabels, settings) {
+  for (const label of nodeLabels.children) {
+    label.style = getTextStyle(settings);
   }
 }
 
