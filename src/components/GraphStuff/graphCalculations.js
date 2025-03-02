@@ -318,10 +318,6 @@ export function getNodeIdName(nodeId) {
   return nodeId.split("_")[1];
 }
 
-export function getNodeLabelOffsetX(nodeId) {
-  return -getNodeIdName(nodeId).length * 4.1;
-}
-
 export function getNodeLabelOffsetY(nodeId) {
   return -25;
 }

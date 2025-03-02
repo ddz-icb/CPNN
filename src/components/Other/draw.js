@@ -14,6 +14,7 @@ export function getTextStyle(textColor) {
     fontSize: 12,
     fill: textColor,
     resolution: 2,
+    align: "center",
   });
 }
 

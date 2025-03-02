@@ -8,8 +8,7 @@ import { radius, drawCircle, drawLine, getTextStyle } from "../Other/draw.js";
 import { getSimulation } from "./graphPhysics.js";
 import { useGraphData, useSettings, useTooltipSettings } from "../../states.js";
 import { SettingControl } from "./settingControl.js";
-import { App } from "antd";
-import { getNodeIdName, getNodeLabelOffsetX, getNodeLabelOffsetY } from "./graphCalculations.js";
+import { getNodeIdName, getNodeLabelOffsetY } from "./graphCalculations.js";
 
 export function ForceGraph({ reset, setReset, setError }) {
   const { settings, setSettings } = useSettings();
@@ -130,8 +129,9 @@ export function ForceGraph({ reset, setReset, setError }) {
         text: getNodeIdName(node.id),
         style: getTextStyle(settings.appearance.theme.textColor),
       });
-      nodeLabel.x = circle.x - getNodeLabelOffsetX(node.id);
+      nodeLabel.x = circle.x;
       nodeLabel.y = circle.y - getNodeLabelOffsetY(node.id);
+      nodeLabel.anchor.x = 0.5;
       nodeLabel.visible = false;
       newNodeLabels.addChild(nodeLabel);
 
@@ -227,7 +227,7 @@ export function ForceGraph({ reset, setReset, setError }) {
     if (settings.appearance.showNodeLabels) {
       graph.nodes.forEach((n) => {
         const { node, circle, nodeLabel } = graphData.nodeMap[n.id];
-        nodeLabel.x = circle.x + getNodeLabelOffsetX(node.id);
+        nodeLabel.x = circle.x;
         nodeLabel.y = circle.y + getNodeLabelOffsetY(node.id);
       });
     }
