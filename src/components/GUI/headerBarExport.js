@@ -23,6 +23,10 @@ export function HeaderBarExport({ activeMenu, handleActiveMenuClick }) {
     setSettings("download.svg", !settings.download.svg);
   };
 
+  const handleDownloadPdfClick = () => {
+    setSettings("download.pdf", !settings.download.svg);
+  };
+
   if (activeMenu !== "Export") {
     content = (
       <Button
@@ -66,6 +70,14 @@ export function HeaderBarExport({ activeMenu, handleActiveMenuClick }) {
             text={"Export as SVG"}
             onClick={() => {
               handleDownloadSvgClick();
+              handleActiveMenuClick("Export");
+            }}
+            icon={<PictureIcon />}
+          />
+          <Item
+            text={"Export as PDF"}
+            onClick={() => {
+              handleDownloadPdfClick();
               handleActiveMenuClick("Export");
             }}
             icon={<PictureIcon />}

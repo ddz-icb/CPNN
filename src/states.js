@@ -73,6 +73,7 @@ export const useSettings = create((set) => ({
       json: null,
       png: null,
       svg: null,
+      pdf: null,
     },
     container: {
       height: null,

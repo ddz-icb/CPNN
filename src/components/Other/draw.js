@@ -73,9 +73,9 @@ export function changeCircleBorderColor(circles, newColor) {
   }
 }
 
-export function changeNodeLabelColor(nodeLabels, settings) {
+export function changeNodeLabelColor(nodeLabels, textColor) {
   for (const label of nodeLabels.children) {
-    label.style = getTextStyle(settings);
+    label.style = getTextStyle(textColor);
   }
 }
 
