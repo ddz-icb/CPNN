@@ -1,8 +1,8 @@
 import log from "../../logger.js";
 import canvasToSvg from "canvas-to-svg";
-
+import { jsPDF } from "jspdf";
+import { svg2pdf } from "svg2pdf.js";
 import { drawCircleCanvas, drawLineCanvas } from "../Other/draw.js";
-import { exampleGraphJson } from "../../demodata/exampleGraphJSON.js";
 
 export function downloadAsPNG(app, document) {
   function getHtmlImageElement() {
@@ -112,6 +112,69 @@ export function downloadAsSVG(
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
+}
+
+export function downloadAsPDF(
+  graph,
+  linkColorScheme,
+  linksAttribsToColorIndices,
+  circleBorderColor,
+  nodeColorScheme,
+  nodeAttribsToColorIndices,
+  nodeMap
+) {
+  const firstNode = graph.nodes[0];
+  const { circle: firstCircle } = nodeMap[firstNode.id];
+
+  let minX = firstCircle.x;
+  let maxX = firstCircle.x;
+  let minY = firstCircle.y;
+  let maxY = firstCircle.y;
+
+  for (const node of graph.nodes) {
+    const { circle } = nodeMap[node.id];
+    minX = Math.min(minX, circle.x);
+    maxX = Math.max(maxX, circle.x);
+    minY = Math.min(minY, circle.y);
+    maxY = Math.max(maxY, circle.y);
+  }
+
+  // Puffer hinzufügen
+  minX -= 10;
+  maxX += 10;
+  minY -= 10;
+  maxY += 10;
+
+  const width = maxX - minX;
+  const height = maxY - minY;
+
+  const ctx = new canvasToSvg(width, height);
+  const svgElement = ctx.getSvg();
+  svgElement.setAttribute("viewBox", `${minX} ${minY} ${width} ${height}`);
+  svgElement.setAttribute("width", width);
+  svgElement.setAttribute("height", height);
+
+  for (const link of graph.links) {
+    drawLineCanvas(ctx, link, linkColorScheme.colorScheme, linksAttribsToColorIndices);
+  }
+
+  for (const node of graph.nodes) {
+    const { circle } = nodeMap[node.id];
+    drawCircleCanvas(ctx, node, circle, circleBorderColor, nodeColorScheme.colorScheme, nodeAttribsToColorIndices);
+  }
+
+  // PDF-Seite auf die SVG-Größe plus Rand einstellen (10px an allen Seiten)
+  const pdf = new jsPDF({
+    orientation: width > height ? "landscape" : "portrait",
+    unit: "px",
+    format: [width + 20, height + 20],
+  });
+  pdf.setFontSize(10);
+  pdf.setFillColor(255, 255, 255);
+
+  svg2pdf(svgElement, pdf, { xOffset: 10, yOffset: 10, scale: 1 }).then(() => {
+    pdf.save("Graph.pdf");
+  });
 }
 
 export function downloadGraphJson(graph, filename) {

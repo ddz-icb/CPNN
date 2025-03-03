@@ -31,8 +31,8 @@ export function drawCircle(circle, node, circleBorderColor, colorScheme, nodeAtt
     .fill({ color: getColor(nodeAttribsToColorIndices[node.groups[0]], colorScheme) })
     .stroke({ color: circleBorderColor, width: 2 });
   for (let i = 1; i < node.groups.length; i++) {
-    let startAngle = (i * 2 * 3.1415) / node.groups.length;
-    let endAngle = ((i + 1) * 2 * 3.1415) / node.groups.length;
+    let startAngle = (i * 2 * Math.PI) / node.groups.length;
+    let endAngle = ((i + 1) * 2 * Math.PI) / node.groups.length;
 
     // radius - 1 so it doesn't cover the outer stroke
     circle

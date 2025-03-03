@@ -302,7 +302,7 @@ function App() {
 
   // forwards graph to forceGraph component //
   useEffect(() => {
-    if (!graphData.originGraph || !graphData.activeGraphFileNames) return;
+    if (!graphData.originGraph || !graphData.activeGraphFileNames || graphData.graphIsPreprocessed) return;
     log.info("Modifying graph and forwarding it to the simulation component");
 
     let newGraph = structuredClone(graphData.originGraph);
@@ -314,6 +314,7 @@ function App() {
     const linkAttribsToColorIndices = getLinkAttribsToColorIndices(newGraph);
     setSettings("appearance.linkAttribsToColorIndices", linkAttribsToColorIndices);
 
+    setGraphData("originGraph", newGraph);
     setGraphData("graph", newGraph);
     setGraphData("graphIsPreprocessed", true);
   }, [graphData.originGraph, graphData.activeGraphFileNames, graphData.activeAnnotationMapping]);

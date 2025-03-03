@@ -3,7 +3,7 @@ import { useGraphData, useSettings } from "../../states.js";
 import log from "../../logger.js";
 import * as d3 from "d3";
 
-import { downloadAsPNG, downloadAsSVG, downloadGraphJson } from "./download.js";
+import { downloadAsPDF, downloadAsPNG, downloadAsSVG, downloadGraphJson } from "./download.js";
 import { changeCircleBorderColor, changeNodeColors, changeNodeLabelColor, radius } from "../Other/draw.js";
 import { lightTheme, themeInit } from "../Other/appearance.js";
 import {
@@ -125,6 +125,8 @@ export function SettingControl({ simulation, app, redraw }) {
     if (settings.download.svg != null && graphData.graph) {
       log.info("Downloading graph as SVG");
 
+      log.info("GRAPH", graphData.graph);
+
       downloadAsSVG(
         document,
         graphData.graph,
@@ -137,6 +139,23 @@ export function SettingControl({ simulation, app, redraw }) {
       );
     }
   }, [settings.download.svg]);
+
+  // download graph as pdf //
+  useEffect(() => {
+    if (settings.download.pdf != null && graphData.graph) {
+      log.info("Downloading graph as PDF");
+
+      downloadAsPDF(
+        graphData.graph,
+        settings.appearance.linkColorScheme,
+        settings.appearance.linkAttribsToColorIndices,
+        themeInit.circleBorderColor,
+        settings.appearance.nodeColorScheme,
+        settings.appearance.nodeAttribsToColorIndices,
+        graphData.nodeMap
+      );
+    }
+  }, [settings.download.pdf]);
 
   // switch colors upon changing theme //
   useEffect(() => {

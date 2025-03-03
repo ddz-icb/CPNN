@@ -125,12 +125,15 @@ export function ForceGraph({ reset, setReset, setError }) {
       initTooltips(circle, node, setTooltipSettings);
       newCircles.addChild(circle);
 
-      let nodeLabel = new PIXI.BitmapText(getNodeIdName(node.id), {
-        chars: [["A", "Z"], ["a", "z"], ["0", "9"], " !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"],
-        padding: 4,
-        resolution: 4,
-        distanceField: { type: "sdf", range: 8 },
-        fontSize: 12,
+      let nodeLabel = new PIXI.BitmapText({
+        text: getNodeIdName(node.id),
+        style: {
+          chars: [["A", "Z"], ["a", "z"], ["0", "9"], " !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"],
+          padding: 4,
+          resolution: 4,
+          distanceField: { type: "sdf", range: 8 },
+          fontSize: 12,
+        },
       });
 
       nodeLabel.style = getTextStyle(settings.appearance.theme.textColor);
