@@ -1,5 +1,7 @@
-import { ReactComponent as PictureIcon } from "../../icons/picture.svg";
-import { ReactComponent as FileIcon } from "../../icons/file.svg";
+import { ReactComponent as FileLines } from "../../icons/fileLines.svg";
+import { ReactComponent as PdfIcon } from "../../icons/pdf.svg";
+import { ReactComponent as FileWaveform } from "../../icons/fileWaveform.svg";
+import { ReactComponent as FileImage } from "../../icons/fileImage.svg";
 import { ReactComponent as DownloadIcon } from "../../icons/download.svg";
 import { ReactComponent as XIcon } from "../../icons/x.svg";
 import React from "react";
@@ -56,7 +58,7 @@ export function HeaderBarExport({ activeMenu, handleActiveMenuClick }) {
               handleDownloadJsonClick();
               handleActiveMenuClick("Export");
             }}
-            icon={<FileIcon />}
+            icon={<FileLines />}
           />
           <Item
             text={"Export as PNG"}
@@ -64,7 +66,7 @@ export function HeaderBarExport({ activeMenu, handleActiveMenuClick }) {
               handleDownloadPngClick();
               handleActiveMenuClick("Export");
             }}
-            icon={<PictureIcon />}
+            icon={<FileImage />}
           />
           <Item
             text={"Export as SVG"}
@@ -72,7 +74,7 @@ export function HeaderBarExport({ activeMenu, handleActiveMenuClick }) {
               handleDownloadSvgClick();
               handleActiveMenuClick("Export");
             }}
-            icon={<PictureIcon />}
+            icon={<FileWaveform />}
           />
           <Item
             text={"Export as PDF"}
@@ -80,7 +82,7 @@ export function HeaderBarExport({ activeMenu, handleActiveMenuClick }) {
               handleDownloadPdfClick();
               handleActiveMenuClick("Export");
             }}
-            icon={<PictureIcon />}
+            icon={<PdfIcon />}
           />
         </div>
       </>
