@@ -113,10 +113,12 @@ export function SettingControl({ simulation, app, redraw }) {
       log.info("Downloading graph as PNG");
 
       changeCircleBorderColor(graphData.circles, lightTheme.circleBorderColor);
+      changeNodeLabelColor(graphData.nodeLabels, lightTheme.textColor);
 
       downloadAsPNG(app, document);
 
       changeCircleBorderColor(graphData.circles, settings.appearance.theme.circleBorderColor);
+      changeNodeLabelColor(graphData.nodeLabels, settings.appearance.theme.textColor);
     }
   }, [settings.download.png]);
 
