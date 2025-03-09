@@ -176,6 +176,13 @@ export function FilterSidebar({ resetFilters }) {
     }
   }, [settings.filter.linkFilterText]);
 
+  useEffect(() => {
+    log.info("changing code editor theme");
+
+    nodeFilterEditorRef.current.setOption("theme", settings.appearance.theme.name === "light" ? "default" : "material");
+    linkFilterEditorRef.current.setOption("theme", settings.appearance.theme.name === "light" ? "default" : "material");
+  }, [settings.appearance.theme]);
+
   return (
     <>
       <div className="inline pad-top-1 pad-bottom-1">
