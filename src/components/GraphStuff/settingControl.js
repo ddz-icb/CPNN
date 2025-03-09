@@ -127,8 +127,6 @@ export function SettingControl({ simulation, app, redraw }) {
     if (settings.download.svg != null && graphData.graph) {
       log.info("Downloading graph as SVG");
 
-      log.info("GRAPH", graphData.graph);
-
       downloadAsSVG(
         document,
         graphData.graph,
@@ -226,6 +224,7 @@ export function SettingControl({ simulation, app, redraw }) {
   useEffect(() => {
     if (!simulation) return;
     if (settings.physics.xStrength === 0) {
+      simulation.alpha(1).restart();
       simulation.force("x", null);
       return;
     }
@@ -239,6 +238,7 @@ export function SettingControl({ simulation, app, redraw }) {
   useEffect(() => {
     if (!simulation) return;
     if (settings.physics.yStrength === 0) {
+      simulation.alpha(1).restart();
       simulation.force("y", null);
       return;
     }
@@ -253,6 +253,7 @@ export function SettingControl({ simulation, app, redraw }) {
     if (!simulation) return;
     if (settings.physics.componentStrength === 0) {
       simulation.force("component", null);
+      simulation.alpha(1).restart();
       return;
     }
     log.info("Changing component strength", settings.physics.componentStrength);
@@ -310,11 +311,15 @@ export function SettingControl({ simulation, app, redraw }) {
 
   // enable circular layout
   useEffect(() => {
-    if (!simulation || !settings.physics.circleLayout) return;
+    if (!simulation) return;
     if (settings.physics.circleLayout === false) {
       log.info("Disabling circular layout");
 
+      // enabling link force by default
+      setSettings("physics.linkForce", true);
+
       simulation.force("circleLayout", null);
+      simulation.alpha(1).restart();
       return;
     }
 
