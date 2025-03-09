@@ -190,6 +190,7 @@ export async function parseAnnotationMappingFile(file) {
   try {
     const fileContent = await parseFileAsText(file);
     const mapping = parseAnnotationMapping(fileContent, file.name);
+    log.info("LALALALLA", mapping);
     verifyAnnotationMapping(mapping);
     return { name: file.name, content: JSON.stringify(mapping) };
   } catch (error) {
@@ -250,17 +251,15 @@ function verifyAnnotationMapping(mapping) {
     throw new Error("Error while parsing the mapping file. It does not have the right format.");
   }
 
-  if (!Array.isArray(mapping.groupMapping)) {
-    throw new Error("Error while parsing the mapping file. It does not have the right format.");
-  }
+  Object.entries(mapping.groupMapping).forEach(([key, node]) => {
+    if (!node.hasOwnProperty("name")) {
+      throw new Error(`${key} is missing the 'name' property.`);
+    }
+  });
 
-  if (!Array.isArray(mapping.nodeMapping)) {
-    throw new Error("Error while parsing the mapping file. It does not have the right format.");
-  }
-
-  mapping.nodeMapping.forEach((node, index) => {
+  Object.entries(mapping.nodeMapping).forEach(([key, node]) => {
     if (!node.hasOwnProperty("pathwayNames")) {
-      throw new Error(`${node} is missing the 'Pathway Name' property.`);
+      throw new Error(`${key} is missing the 'Pathway Name' property.`);
     }
   });
 }
