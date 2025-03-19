@@ -1111,19 +1111,21 @@ input[type="radio"]:checked:after {
 }
 
 .popup-container {
+  z-index: 20;
+  display: block;
+  position: fixed;
+  text-align: center;
+  padding: 10px;
+  min-width: 250px;
+  min-height: 100px;
+  max-width: 600px;
+  max-height: 800px;
   background: var(--tooltip-background-color);
   color: var(--tooltip-text-color);
   border-radius: var(--border-radius);
   box-shadow: 0 0px 1.5px 0 var(--box-shadow-color);
-  border: var(--border-size-tooltip) solid var(--border-color);
-  padding: 10px;
-  max-width: 600px;
-  max-height: 800px;
-  width: 90%;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  border: var(--border-size-tooltip) solid var(--border-tooltip-color);
+  pointer-events: auto;
 }
 
 .popup-block {
@@ -1292,7 +1294,7 @@ input[type="radio"]:checked:after {
 }
 
 .inline {
-  display: flex;
+  display: inline-flex;
   align-items: center;
 }
 

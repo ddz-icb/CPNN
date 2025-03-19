@@ -206,6 +206,7 @@ export function FilterSidebar({ resetFilters }) {
         compilerError={compilerErrorLinkFilter}
         onClick={runCodeButtonFilterAttribs}
         defaultValue={settings.filter.linkFilterText}
+        info={"HEHEHEH"}
       />
       <SidebarCodeEditorBlock
         text={"Filter Nodes by Attributes"}

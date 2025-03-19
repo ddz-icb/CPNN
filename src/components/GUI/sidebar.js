@@ -1,6 +1,8 @@
 import "../../index.css";
 import React, { useState } from "react";
 import { ReactComponent as BackIcon } from "../../icons/leftArrow.svg";
+import { ReactComponent as InfoIcon } from "../../icons/info.svg";
+import { ReactComponent as XIcon } from "../../icons/x.svg";
 import { Tooltip } from "react-tooltip";
 
 import { FilterSidebar } from "./filterSidebar.js";
@@ -276,16 +278,24 @@ export function PopupButtonRect({ onClick, onChange, linkRef, tooltip, tooltipId
 }
 
 export function SidebarCodeEditorBlock({ text, onClick, compilerError, defaultValue, textareaRef }) {
+  const [infoIsOpen, setInfoIsOpen] = useState(false);
+
   return (
     <>
-      <label className="label pad-left-1">{text}</label>
+      <div className="inline">
+        <label className="label pad-left-1">{text}</label>
+        <span className="tooltip-button pad-left-1 pad-top-05" onClick={() => setInfoIsOpen(true)}>
+          <InfoIcon />
+        </span>
+      </div>
       <div className={`sidebar-block ${compilerError ? "no-pad-bottom" : ""}`}>
         <div className="custom-editor">
           <textarea ref={textareaRef} defaultValue={defaultValue}></textarea>
         </div>
-        <SidebarButtonRect onClick={onClick} text={"Run"} />
+        <SidebarButtonRect onClick={onClick} text="Run" />
       </div>
       <span className={`warning ${compilerError ? "pad-bottom-1" : ""}`}>{compilerError}</span>
+      <PopUp heading="Heading" description="descrip" isOpen={infoIsOpen} setIsOpen={setInfoIsOpen} />
     </>
   );
 }
@@ -332,5 +342,24 @@ export function SidebarDropdownItem({ onClick, onChange, linkRef, tooltip, toolt
         {children}
       </li>
     </div>
+  );
+}
+
+export function PopUp({ heading, description, children, isOpen, setIsOpen }) {
+  return (
+    isOpen && (
+      <div className="popup-overlay">
+        <div className="popup-container">
+          <div className="popup-header pad-bottom-1">
+            <b>{heading}</b>
+            <span className="tooltip-button" onClick={() => setIsOpen(false)}>
+              <XIcon />
+            </span>
+          </div>
+          <div className="popup-block color-text-primary">{description}</div>
+          {children}
+        </div>
+      </div>
+    )
   );
 }
