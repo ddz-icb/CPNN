@@ -361,7 +361,7 @@ export function PopUp({ heading, description, children, isOpen, setIsOpen }) {
       <div className="popup-overlay">
         <div className="popup-container">
           <div className="popup-header pad-bottom-1">
-            <b>{heading}</b>
+            <p>{heading}</p>
             <span className="tooltip-button" onClick={() => setIsOpen(false)}>
               <XIcon />
             </span>

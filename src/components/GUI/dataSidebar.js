@@ -348,7 +348,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
         <div className="popup-overlay">
           <div className="popup-container">
             <div className="popup-header pad-bottom-1">
-              <b>Uploading Your Pathway Mapping</b>
+              <p>Uploading Your Pathway Mapping</p>
               <span className="tooltip-button" onClick={handleMappingPopUp}>
                 <XIcon />
               </span>
@@ -363,6 +363,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
               better understand the required format, you can download the example mapping below.
             </div>
             <PopUpTextField textInfront={"Pathway Mapping format:"} textInside={annotationMappingFormat} />
+            <div className="popup-block" />
             <PopUpTextField textInfront={"Pathway Mapping example:"} textInside={annotationMappingExample} />
             <div className="popup-block">
               <PopupButtonRect
@@ -389,7 +390,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
         <div className="popup-overlay">
           <div className="popup-container">
             <div className="popup-header pad-bottom-1">
-              <b>Uploading Your Graph</b>
+              <p>Uploading Your Graph</p>
               <span className="tooltip-button" onClick={handleGraphPopUp}>
                 <XIcon />
               </span>

@@ -70,9 +70,9 @@ export function TopAppearanceButtons({ handleNewColorScheme }) {
         <div className="popup-overlay">
           <div className="popup-container">
             <div className="popup-header pad-bottom-1">
-              <b>Uploading Your Color Scheme</b>
+              <p className="popup-header-text">Uploading Your Color Scheme</p>
               <span
-                className="tooltip-button"
+                className="tooltip-button popup-header-button"
                 onClick={() => {
                   setColorSchemePopUpActive(false);
                 }}
@@ -88,6 +88,7 @@ export function TopAppearanceButtons({ handleNewColorScheme }) {
               Color schemes can be uploaded as either CSV or TSV files. The colors should be listed using the HEX-format.
             </div>
             <PopUpTextField textInfront={"Color Scheme format:"} textInside={"Color1, Color2, Color3, ..."} />
+            <div className="popup-block" />
             <PopUpTextField textInfront={"Color Scheme example:"} textInside={"#e69f00,#56b4e9,#009e73"} />
             <div className="popup-block">
               <PopupButtonRect

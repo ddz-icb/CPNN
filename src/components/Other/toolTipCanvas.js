@@ -212,7 +212,7 @@ export function ClickTooltip({ mapping }) {
       {style.opacity > 0 && (
         <div className="tooltip-content">
           <div className="tooltip-header">
-            <b>{gene}</b>
+            <p>{gene}</p>
             <span className="tooltip-button" onClick={closeTooltip}>
               <XIcon />
             </span>
@@ -293,7 +293,7 @@ export function HoverTooltip({}) {
 
   return (
     <div className="tooltip" style={style}>
-      {style.opacity > 0 && <b>{gene}</b>}
+      {style.opacity > 0 && <p className="margin-0">{gene}</p>}
     </div>
   );
 }
