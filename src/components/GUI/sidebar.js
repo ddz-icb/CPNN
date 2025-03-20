@@ -277,7 +277,7 @@ export function PopupButtonRect({ onClick, onChange, linkRef, tooltip, tooltipId
   );
 }
 
-export function SidebarCodeEditorBlock({ text, onClick, compilerError, defaultValue, textareaRef }) {
+export function SidebarCodeEditorBlock({ text, onClick, compilerError, defaultValue, textareaRef, infoHeading, infoDescription }) {
   const [infoIsOpen, setInfoIsOpen] = useState(false);
 
   return (
@@ -295,19 +295,30 @@ export function SidebarCodeEditorBlock({ text, onClick, compilerError, defaultVa
         <SidebarButtonRect onClick={onClick} text="Run" />
       </div>
       <span className={`warning ${compilerError ? "pad-bottom-1" : ""}`}>{compilerError}</span>
-      <PopUp heading="Heading" description="descrip" isOpen={infoIsOpen} setIsOpen={setInfoIsOpen} />
+      <PopUp heading={infoHeading} description={infoDescription} isOpen={infoIsOpen} setIsOpen={setInfoIsOpen} />
     </>
+  );
+}
+
+export function PopUpTextFieldInline({ textInfront, textInside }) {
+  return (
+    <div className="inline">
+      <label className="label-no-pad pad-top-1">{textInfront}</label>
+      <div className={"popup-block"}>
+        <div className="popup-text-field pad-left-025 pad-right-025">{textInside}</div>
+      </div>
+    </div>
   );
 }
 
 export function PopUpTextField({ textInfront, textInside }) {
   return (
-    <>
+    <div>
       <label className="label-no-pad pad-top-1">{textInfront}</label>
       <div className={"popup-block"}>
-        <div className="popup-text-field">{textInside}</div>
+        <div className="popup-text-field pad-left-025 pad-right-025">{textInside}</div>
       </div>
-    </>
+    </div>
   );
 }
 
@@ -316,10 +327,10 @@ export function PopUpDoubleTextField({ textInfront, textInside1, textInside2 }) 
     <>
       <label className="label-no-pad pad-top-1">{textInfront}</label>
       <div className={"popup-block"}>
-        <div className="popup-text-field">{textInside1}</div>
+        <div className="popup-text-field pad-left-025 pad-right-025">{textInside1}</div>
       </div>
       <div className={"popup-block"}>
-        <div className="popup-text-field">{textInside2}</div>
+        <div className="popup-text-field pad-left-025 pad-right-025">{textInside2}</div>
       </div>
     </>
   );

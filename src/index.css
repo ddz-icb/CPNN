@@ -1114,7 +1114,6 @@ input[type="radio"]:checked:after {
   z-index: 20;
   display: block;
   position: fixed;
-  text-align: center;
   padding: 10px;
   min-width: 250px;
   min-height: 100px;
@@ -1310,6 +1309,10 @@ input[type="radio"]:checked:after {
   padding-right: 0.5rem;
 }
 
+.pad-right-025 {
+  padding-right: 0.25rem;
+}
+
 .pad-right-1 {
   padding-right: 1rem;
 }
@@ -1432,4 +1435,8 @@ input[type="radio"]:checked:after {
   justify-content: center;
   align-items: center;
   width: 100%;
+}
+
+.margin-0 {
+  margin: 0;
 }

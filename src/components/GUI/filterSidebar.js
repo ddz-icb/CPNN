@@ -10,7 +10,7 @@ import "../Other/syntaxHighlighting.js";
 import { parseAttributesFilter } from "../Other/parser.js";
 import { parseGroupsFilter } from "../Other/parserNodeFilter.js";
 
-import { SidebarButtonRect, SidebarCodeEditorBlock, SidebarFieldBlock, SidebarSliderBlock } from "./sidebar.js";
+import { PopUpTextField, PopUpTextFieldInline, SidebarButtonRect, SidebarCodeEditorBlock, SidebarFieldBlock, SidebarSliderBlock } from "./sidebar.js";
 import { useSettings } from "../../states.js";
 
 export function FilterSidebar({ resetFilters }) {
@@ -206,7 +206,24 @@ export function FilterSidebar({ resetFilters }) {
         compilerError={compilerErrorLinkFilter}
         onClick={runCodeButtonFilterAttribs}
         defaultValue={settings.filter.linkFilterText}
-        info={"HEHEHEH"}
+        infoHeading={"Filtering Links by Attributes"}
+        infoDescription={
+          <div>
+            <p className="margin-0">
+              You can filter the links by formulating a query. These queries must follow the Conjunctive Normal Form (CNF), meaning that conditions
+              grouped with <PopUpTextFieldInline textInside={"or"} /> (e.g., <PopUpTextFieldInline textInside={"(A or B)"} /> ) are combined using{" "}
+              <PopUpTextFieldInline textInside={"and"} />. To address one (or multiple) attributes parts of the attribute name can be used (e.g.{" "}
+              <PopUpTextFieldInline textInside={"lean"} /> ) includes all attributes that contain the word "lean". If the attribute consists of more
+              than one word, quotation marks can be used (e.g. <PopUpTextFieldInline textInside={'"lean group"'} /> )
+            </p>
+            <p>
+              For example, with the link attributes <PopUpTextFieldInline textInside={"lean group"} />,{" "}
+              <PopUpTextFieldInline textInside={"obese group"} />, and <PopUpTextFieldInline textInside={"t2d group"} />, some valid queries could be:
+            </p>
+            <PopUpTextFieldInline textInside={"t2d"} /> <PopUpTextFieldInline textInside={'"t2d group" and lean'} />{" "}
+            <PopUpTextFieldInline textInside={"(obese or lean)"} /> <PopUpTextFieldInline textInside={"(obese or lean) and t2d"} />
+          </div>
+        }
       />
       <SidebarCodeEditorBlock
         text={"Filter Nodes by Attributes"}
@@ -214,6 +231,26 @@ export function FilterSidebar({ resetFilters }) {
         compilerError={compilerErrorNodeFilter}
         onClick={runCodeButtonFilterGroups}
         defaultValue={settings.filter.nodeFilterText}
+        infoHeading={"Filter Nodes by Attributes"}
+        infoDescription={
+          <div>
+            <p className="margin-0">
+              You can filter the nodes by formulating a query. These queries must follow the Conjunctive Normal Form (CNF), meaning that conditions
+              grouped with <PopUpTextFieldInline textInside={"or"} /> (e.g., <PopUpTextFieldInline textInside={"(A or B)"} /> ) are combined using{" "}
+              <PopUpTextFieldInline textInside={"and"} />. To address one (or multiple) attributes parts of the attribute name can be used (e.g.{" "}
+              <PopUpTextFieldInline textInside={"signaling"} /> ) includes all attributes that contain the word "signaling". If the attribute consists
+              of more than one word, quotation marks can be used (e.g. <PopUpTextFieldInline textInside={'"mRNA splicing"'} /> )
+            </p>
+            <p>
+              For example, with the link attributes <PopUpTextFieldInline textInside={"mRNA splicing"} />,{" "}
+              <PopUpTextFieldInline textInside={"glucose metabolism"} />, <PopUpTextFieldInline textInside={"VEGF signaling"} /> and{" "}
+              <PopUpTextFieldInline textInside={"MTOR signaling"} />, some valid queries could be:
+            </p>
+            <PopUpTextFieldInline textInside={"signaling"} /> <PopUpTextFieldInline textInside={'signaling and "mRNA splicing"'} />{" "}
+            <PopUpTextFieldInline textInside={"(metabolism or signaling)"} />{" "}
+            <PopUpTextFieldInline textInside={'("mRNA splicing" or VEGF) and ("glucose metabolism" or MTOR)'} />
+          </div>
+        }
       />
       <SidebarFieldBlock
         text={"Set Minimum Component Size"}
