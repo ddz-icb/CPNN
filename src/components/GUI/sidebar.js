@@ -114,7 +114,22 @@ function Back({ activeNavItem, icon, onClick }) {
   );
 }
 
-export function SidebarSliderBlock({ text, value, valueText, onChangeSlider, onChangeField, onChangeBlur, min, max, stepSlider, stepField }) {
+export function SidebarSliderBlock({
+  text,
+  value,
+  valueText,
+  onChangeSlider,
+  onChangeField,
+  onChangeBlur,
+  min,
+  max,
+  stepSlider,
+  stepField,
+  infoHeading,
+  infoDescription,
+}) {
+  const [infoIsOpen, setInfoIsOpen] = useState(false);
+
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       event.target.blur();
@@ -123,7 +138,12 @@ export function SidebarSliderBlock({ text, value, valueText, onChangeSlider, onC
 
   return (
     <>
-      <label className="label pad-left-1">{text}</label>
+      <div className="inline">
+        <label className="label pad-left-1">{text}</label>
+        <span className="tooltip-button pad-left-05 pad-top-05" onClick={() => setInfoIsOpen(true)}>
+          <InfoIcon />
+        </span>
+      </div>
       <div className="sidebar-block pad-bottom-15">
         <input className="sidebar-slider" type="range" min={min} max={max} step={stepSlider} value={value} onChange={onChangeSlider}></input>
         <input
@@ -138,6 +158,7 @@ export function SidebarSliderBlock({ text, value, valueText, onChangeSlider, onC
           onBlur={onChangeBlur}
         />
       </div>
+      <PopUp heading={infoHeading} description={infoDescription} isOpen={infoIsOpen} setIsOpen={setInfoIsOpen} />
     </>
   );
 }
@@ -170,16 +191,24 @@ export function PopUpSliderBlock({ text, value, valueText, onChangeSlider, onCha
   );
 }
 
-export function SidebarSwitchBlock({ text, value, onChange }) {
+export function SidebarSwitchBlock({ text, value, onChange, infoHeading, infoDescription }) {
+  const [infoIsOpen, setInfoIsOpen] = useState(false);
+
   return (
     <>
       <div className="sidebar-block">
-        <label className="label">{text}</label>
+        <div className="inline">
+          <label className="label">{text}</label>
+          <span className="tooltip-button pad-left-05 pad-top-05" onClick={() => setInfoIsOpen(true)}>
+            <InfoIcon />
+          </span>
+        </div>
         <label className="switch">
           <input type="checkbox" checked={value} onChange={onChange} className="checkbox-input" />
           <span className="slider round"></span>
         </label>
       </div>
+      <PopUp heading={infoHeading} description={infoDescription} isOpen={infoIsOpen} setIsOpen={setInfoIsOpen} />
     </>
   );
 }
@@ -198,7 +227,9 @@ export function PopUpSwitchBlock({ text, value, onChange }) {
   );
 }
 
-export function SidebarFieldBlock({ text, min, max, step, value, onChange, onBlur }) {
+export function SidebarFieldBlock({ text, min, max, step, value, onChange, onBlur, infoHeading, infoDescription }) {
+  const [infoIsOpen, setInfoIsOpen] = useState(false);
+
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       event.target.blur();
@@ -207,7 +238,12 @@ export function SidebarFieldBlock({ text, min, max, step, value, onChange, onBlu
 
   return (
     <>
-      <label className="label pad-left-1">{text}</label>
+      <div className="inline">
+        <label className="label pad-left-1">{text}</label>
+        <span className="tooltip-button pad-left-05 pad-top-05" onClick={() => setInfoIsOpen(true)}>
+          <InfoIcon />
+        </span>
+      </div>
       <div className="sidebar-block">
         <input
           className="input-field"
@@ -221,6 +257,7 @@ export function SidebarFieldBlock({ text, min, max, step, value, onChange, onBlu
           onBlur={onBlur}
         ></input>
       </div>
+      <PopUp heading={infoHeading} description={infoDescription} isOpen={infoIsOpen} setIsOpen={setInfoIsOpen} />
     </>
   );
 }
@@ -283,7 +320,7 @@ export function SidebarCodeEditorBlock({ text, onClick, compilerError, defaultVa
     <>
       <div className="inline">
         <label className="label pad-left-1">{text}</label>
-        <span className="tooltip-button pad-left-1 pad-top-05" onClick={() => setInfoIsOpen(true)}>
+        <span className="tooltip-button pad-left-05 pad-top-05" onClick={() => setInfoIsOpen(true)}>
           <InfoIcon />
         </span>
       </div>

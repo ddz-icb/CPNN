@@ -86,58 +86,6 @@ export function PhysicsSidebar({ resetPhysics }) {
     setSettings("physics.checkBorder", !settings.physics.checkBorder);
   };
 
-  const handleXStrengthSlider = (event) => {
-    const value = event.target.value;
-    setSettings("physics.xStrength", value);
-    setSettings("physics.xStrengthText", value);
-  };
-
-  const handleXStrengthField = (event) => {
-    const value = event.target.value;
-
-    if (value === "" || (value >= -1 && value <= 1)) {
-      setSettings("physics.xStrengthText", value);
-    }
-  };
-
-  const handleXStrengthFieldBlur = (event) => {
-    let value = event.target.value;
-
-    if (value === "") {
-      setSettings("physics.xStrength", 0);
-      setSettings("physics.xStrengthText", 0);
-    } else if (value >= -1 && value <= 1) {
-      setSettings("physics.xStrength", value);
-      setSettings("physics.xStrengthText", value);
-    }
-  };
-
-  const handleYStrengthSlider = (event) => {
-    const value = event.target.value;
-    setSettings("physics.yStrength", value);
-    setSettings("physics.yStrengthText", value);
-  };
-
-  const handleYStrengthField = (event) => {
-    const value = event.target.value;
-
-    if (value === "" || (value >= -1 && value <= 1)) {
-      setSettings("physics.yStrengthText", value);
-    }
-  };
-
-  const handleYStrengthFieldBlur = (event) => {
-    let value = event.target.value;
-
-    if (value === "") {
-      setSettings("physics.yStrength", 0);
-      setSettings("physics.yStrengthText", 0);
-    } else if (value >= -1 && value <= 1) {
-      setSettings("physics.yStrength", value);
-      setSettings("physics.yStrengthText", value);
-    }
-  };
-
   const handleComponentStrengthSlider = (event) => {
     const value = event.target.value;
     setSettings("physics.componentStrength", value);
@@ -162,10 +110,6 @@ export function PhysicsSidebar({ resetPhysics }) {
       setSettings("physics.componentStrength", value);
       setSettings("physics.componentStrengthText", value);
     }
-  };
-
-  const handleGravityAdvanced = () => {
-    setSettings("physics.gravityAdvanced", !settings.physics.gravityAdvanced);
   };
 
   const handleGravitySlider = (event) => {
@@ -245,54 +189,43 @@ export function PhysicsSidebar({ resetPhysics }) {
       <div className="inline pad-top-05 pad-bottom-05">
         <SidebarButtonRect text={"Set Phyiscs to Default"} onClick={resetPhysics} />
       </div>
-      <SidebarSwitchBlock text={"Enable Circular Layout"} value={settings.physics.circleLayout} onChange={handleCircleLayout} />
-      <SidebarSwitchBlock text={"Advanced Gravity Settings"} value={settings.physics.gravityAdvanced} onChange={handleGravityAdvanced} />
-      {!settings.physics.gravityAdvanced && (
-        <>
-          <SidebarSliderBlock
-            text={"Set Gravity"}
-            min={0}
-            max={1}
-            stepSlider={0.05}
-            stepField={0.01}
-            value={settings.physics.xStrength}
-            valueText={settings.physics.xStrengthText}
-            onChangeSlider={handleGravitySlider}
-            onChangeField={handleGravityField}
-            onChangeBlur={handleGravityFieldBlur}
-          />
-        </>
-      )}
-      {settings.physics.gravityAdvanced && (
-        <>
-          <SidebarSliderBlock
-            text={"Set Horizontal Gravity"}
-            min={0}
-            max={1}
-            stepSlider={0.05}
-            stepField={0.01}
-            value={settings.physics.xStrength}
-            valueText={settings.physics.xStrengthText}
-            onChangeSlider={handleXStrengthSlider}
-            onChangeField={handleXStrengthField}
-            onChangeBlur={handleXStrengthFieldBlur}
-          />
-          <SidebarSliderBlock
-            text={"Set Vertical Gravity"}
-            min={0}
-            max={1}
-            stepSlider={0.05}
-            stepField={0.01}
-            value={settings.physics.yStrength}
-            valueText={settings.physics.yStrengthText}
-            onChangeSlider={handleYStrengthSlider}
-            onChangeField={handleYStrengthField}
-            onChangeBlur={handleYStrengthFieldBlur}
-          />
-        </>
-      )}
+      <SidebarSwitchBlock
+        text={"Circular Layout"}
+        value={settings.physics.circleLayout}
+        onChange={handleCircleLayout}
+        infoHeading={"Enabling Circular layout"}
+        infoDescription={
+          <div>
+            <p className="margin-0">
+              Components/Clusters can be displayed in a circular layout, with the nodes arranged clockwise in descending order based on the number of
+              adjacent nodes. <br />
+              Activating this force automatically disables the link force, as they're incompatible.
+            </p>
+          </div>
+        }
+      />
       <SidebarSliderBlock
-        text={"Set Component Strength"}
+        text={"Gravitational Force"}
+        min={0}
+        max={1}
+        stepSlider={0.05}
+        stepField={0.01}
+        value={settings.physics.xStrength}
+        valueText={settings.physics.xStrengthText}
+        onChangeSlider={handleGravitySlider}
+        onChangeField={handleGravityField}
+        onChangeBlur={handleGravityFieldBlur}
+        infoHeading={"Adjusting the Gravity"}
+        infoDescription={
+          <div>
+            <p className="margin-0">
+              With an active gravitational force, nodes are pulled towards the center of the network. The strength of this force can be adjusted.
+            </p>
+          </div>
+        }
+      />
+      <SidebarSliderBlock
+        text={"Component Force"}
         min={0}
         max={10}
         stepSlider={0.1}
@@ -302,9 +235,18 @@ export function PhysicsSidebar({ resetPhysics }) {
         onChangeSlider={handleComponentStrengthSlider}
         onChangeField={handleComponentStrengthField}
         onChangeBlur={handleComponentStrengthFieldBlur}
+        infoHeading={"Adjusting the Component Strength"}
+        infoDescription={
+          <div>
+            <p className="margin-0">
+              The component force can be used to separate components/clusters from one another. The components separate further with an increasing
+              force.
+            </p>
+          </div>
+        }
       />
       <SidebarSliderBlock
-        text={"Set Node Repulsion Strength"}
+        text={"Node Repulsion Force"}
         min={0}
         max={10}
         stepSlider={1}
@@ -314,11 +256,32 @@ export function PhysicsSidebar({ resetPhysics }) {
         onChangeSlider={handleNodeRepulsionStrengthSlider}
         onChangeField={handleNodeRepulsionStrengthField}
         onChangeBlur={handleNodeRepulsionStrengthFieldBlur}
+        infoHeading={"Adjusting the Node Repulsion Strength"}
+        infoDescription={
+          <div>
+            <p className="margin-0">
+              The node repulsion force is used to maintain a certain distance between nodes. The distance increases with a higher node repulsion
+              force.
+            </p>
+          </div>
+        }
       />
-      <SidebarSwitchBlock text={"Enable Link Force"} value={settings.physics.linkForce} onChange={handleLinkForce} />
+      <SidebarSwitchBlock
+        text={"Link Force"}
+        value={settings.physics.linkForce}
+        onChange={handleLinkForce}
+        infoHeading={"Enabling the Link Force"}
+        infoDescription={
+          <div>
+            <p className="margin-0">
+              The link force treats links as a rubber band. If the link is stretched past it's length, the link will try to contract itself.
+            </p>
+          </div>
+        }
+      />
       {settings.physics.linkForce && (
         <SidebarSliderBlock
-          text={"Set Link Length"}
+          text={"Link Length"}
           min={0}
           max={300}
           stepSlider={10}
@@ -328,13 +291,29 @@ export function PhysicsSidebar({ resetPhysics }) {
           onChangeSlider={handleLinkLengthSlider}
           onChangeField={handleLinkLengthField}
           onChangeBlur={handleLinkLengthFieldBlur}
+          infoHeading={"Adjusting the Link Length"}
+          infoDescription={
+            <div>
+              <p className="margin-0">This setting can be used to set the default length of the links.</p>
+            </div>
+          }
         />
       )}
-      <SidebarSwitchBlock text={"Enable Border"} value={settings.physics.checkBorder} onChange={handleCheckBorder} />
+      <SidebarSwitchBlock
+        text={"Border Force"}
+        value={settings.physics.checkBorder}
+        onChange={handleCheckBorder}
+        infoHeading={"Enabling the Border Force"}
+        infoDescription={
+          <div>
+            <p className="margin-0">The border force can be used to contain the graph within an adjustable rectangle.</p>
+          </div>
+        }
+      />
       {settings.physics.checkBorder && (
         <>
           <SidebarSliderBlock
-            text={"Set Border Height"}
+            text={"Border Height"}
             min={25}
             max={999}
             stepSlider={10}
@@ -344,9 +323,15 @@ export function PhysicsSidebar({ resetPhysics }) {
             onChangeSlider={handleBorderHeightSlider}
             onChangeField={handleBorderHeightField}
             onChangeBlur={handleBorderHeightFieldBlur}
+            infoHeading={"Adjusting the Border Height"}
+            infoDescription={
+              <div>
+                <p className="margin-0">The border height determines the vertical size of the border rectangle.</p>
+              </div>
+            }
           />
           <SidebarSliderBlock
-            text={"Set Border Width"}
+            text={"Border Width"}
             min={25}
             max={999}
             stepSlider={5}
@@ -356,6 +341,12 @@ export function PhysicsSidebar({ resetPhysics }) {
             onChangeSlider={handleBorderWidthFieldSlider}
             onChangeField={handleBorderWidthField}
             onChangeBlur={handleBorderWidthFieldBlur}
+            infoHeading={"Adjusting the Border Width"}
+            infoDescription={
+              <div>
+                <p className="margin-0">The border height determines the horizontal size of the border rectangle.</p>
+              </div>
+            }
           />
         </>
       )}

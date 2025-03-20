@@ -199,6 +199,15 @@ export function FilterSidebar({ resetFilters }) {
         onChangeSlider={handleLinkThresholdSliderChange}
         onChangeField={handleLinkThresholdFieldChange}
         onChangeBlur={handleLinkThresholdFieldBlur}
+        infoHeading={"Filtering Links by Threshold"}
+        infoDescription={
+          <div>
+            <p className="margin-0">
+              You can filter the links by adjusting their threshold. Links will only be drawn, if their link weight is larger or equal to the set
+              threshold. For example, if the weight of a link is 0.75 and the threshold is set to 0.8, the link will not be drawn.
+            </p>
+          </div>
+        }
       />
       <SidebarCodeEditorBlock
         text={"Filter Links by Attributes"}
@@ -253,12 +262,21 @@ export function FilterSidebar({ resetFilters }) {
         }
       />
       <SidebarFieldBlock
-        text={"Set Minimum Component Size"}
+        text={"Minimum Component Size"}
         min={1}
         step={1}
         value={settings.filter.minCompSizeText}
         onChange={handleMinComponentFieldChange}
         onBlur={handleMinComponentFieldBlur}
+        infoHeading={"Filter Nodes by Attributes"}
+        infoDescription={
+          <div>
+            <p className="margin-0">
+              You can filter the components/clusters by setting a minimum size. If a given component is smaller than the applied threshold, the whole
+              component will not be drawn.
+            </p>
+          </div>
+        }
       />
     </>
   );

@@ -1112,7 +1112,7 @@ input[type="radio"]:checked:after {
   position: fixed;
   padding: 10px;
   min-width: 250px;
-  min-height: 100px;
+  min-height: 50px;
   max-width: 600px;
   max-height: 800px;
   background: var(--tooltip-background-color);
