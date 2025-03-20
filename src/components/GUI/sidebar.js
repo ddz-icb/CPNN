@@ -105,7 +105,6 @@ function Back({ activeNavItem, icon, onClick }) {
       <li className="back sidebar-tooltip-wrapper">
         <span data-tooltip-id={`back-tooltip`} data-tooltip-content="Go Back" className="back-icon" onClick={onClick}>
           {icon}
-          <Tooltip id={`back-tooltip`} place="bottom" effect="solid" className="sidebar-tooltip scale-15 margin-left-2" />
         </span>
         <div className="link-text-container">
           <p className="link-text back-text">{activeNavItem}</p>

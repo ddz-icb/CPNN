@@ -143,8 +143,8 @@ ul {
   --border-switch-on: var(--color22);
   --bg-icon-button: var(--color30);
   --sidebar-button-color: white;
-  --back-icon-color: var(--color18);
-  --back-icon-color-hover: white;
+  --back-icon-color: white;
+  --back-icon-color-hover: var(--color18);
   --bg-switch: var(--color13);
   --nav-link-hover-color: white;
   --active-item-table-color: white;
@@ -337,13 +337,6 @@ ul {
   width: 100%;
 }
 
-.logo-text {
-  font-size: 1.3rem;
-  letter-spacing: 0.2ch;
-  display: inline;
-  transition: var(--transition-speed);
-}
-
 /* for the Back Button on the sidebar */
 
 .back {
@@ -366,7 +359,7 @@ ul {
   margin-right: 1.5rem;
   padding-left: 1rem;
   z-index: 10;
-  transform: scale(0.6);
+  transform: scale(0.5);
 }
 
 .back-icon:hover {
@@ -375,7 +368,7 @@ ul {
 }
 
 .back-text {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   color: var(--sidebar-back-color);
 }
 
@@ -753,9 +746,8 @@ input:checked + .slider:before {
   top: 0;
   right: 0;
   display: flex;
-  gap: 1rem;
-  padding-right: 1rem;
-  padding-top: 1rem;
+  padding-right: 0.5rem;
+  padding-top: 0.5rem;
 }
 
 .button {
@@ -815,6 +807,7 @@ input[type="radio"]:checked:after {
   display: flex;
   align-items: center;
   justify-content: center;
+  transform: scale(0.8);
 }
 
 .icon-button svg {
@@ -1444,8 +1437,4 @@ input[type="radio"]:checked:after {
 
 .margin-0 {
   margin: 0;
-}
-
-.scale-15 {
-  transform: scale(1.5);
 }
