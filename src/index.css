@@ -329,7 +329,6 @@ ul {
   text-align: center;
   background: var(--bg-logo);
   width: 100%;
-  border-bottom: var(--border-size) solid var(--border-bottom-logo);
 }
 
 .logo {
@@ -355,9 +354,8 @@ ul {
   background: var(--bg-sidebar-back);
   width: 100%;
   cursor: pointer;
-  height: 5rem;
+  height: 3rem;
   text-decoration: none;
-  border-bottom: var(--border-size) solid var(--border-bottom-logo);
 }
 
 .back-icon {
@@ -368,6 +366,7 @@ ul {
   margin-right: 1.5rem;
   padding-left: 1rem;
   z-index: 10;
+  transform: scale(0.6);
 }
 
 .back-icon:hover {
@@ -376,7 +375,7 @@ ul {
 }
 
 .back-text {
-  font-size: 2rem;
+  font-size: 1.3rem;
   color: var(--sidebar-back-color);
 }
 
@@ -710,8 +709,8 @@ ul {
   bottom: 0;
   background-color: var(--bg-switch);
   border: 1px solid var(--border-switch-off);
-  -webkit-transition: 0.4s;
-  transition: 0.4s;
+  -webkit-transition: 0.2s;
+  transition: 0.2s;
 }
 
 .slider:before {
@@ -720,10 +719,10 @@ ul {
   height: 1.3rem;
   width: 1.3rem;
   left: 0.15rem;
-  bottom: 0.14rem;
+  bottom: 0.16rem;
   background-color: white;
-  -webkit-transition: 0.4s;
-  transition: 0.4s;
+  -webkit-transition: 0.2s;
+  transition: 0.2s;
 }
 
 input:checked + .slider {
@@ -1327,6 +1326,10 @@ input[type="radio"]:checked:after {
   margin-left: 1rem;
 }
 
+.margin-left-2 {
+  margin-left: 2rem;
+}
+
 .no-margin-top {
   margin-top: 0rem;
 }
@@ -1441,4 +1444,8 @@ input[type="radio"]:checked:after {
 
 .margin-0 {
   margin: 0;
+}
+
+.scale-15 {
+  transform: scale(1.5);
 }

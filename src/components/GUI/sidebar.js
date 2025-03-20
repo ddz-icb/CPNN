@@ -1,6 +1,6 @@
 import "../../index.css";
 import React, { useState } from "react";
-import { ReactComponent as BackIcon } from "../../icons/leftArrow.svg";
+import { ReactComponent as BackArrowIcon } from "../../icons/backArrow.svg";
 import { ReactComponent as InfoIcon } from "../../icons/info.svg";
 import { ReactComponent as XIcon } from "../../icons/x.svg";
 import { Tooltip } from "react-tooltip";
@@ -47,7 +47,7 @@ export function Sidebar({
   } else if (activeNavItem === "Data") {
     content = (
       <Navbar>
-        <Back activeNavItem={activeNavItem} icon={<BackIcon />} onClick={() => handleNavItemClick("Main")} />
+        <Back activeNavItem={activeNavItem} icon={<BackArrowIcon />} onClick={() => handleNavItemClick("Main")} />
         <DataSidebar
           handleRemoveActiveGraphFile={handleRemoveActiveGraphFile}
           handleSelectGraph={handleSelectGraph}
@@ -64,21 +64,21 @@ export function Sidebar({
   } else if (activeNavItem === "Filter") {
     content = (
       <Navbar>
-        <Back activeNavItem={activeNavItem} icon={<BackIcon />} onClick={() => handleNavItemClick("Main")} />
+        <Back activeNavItem={activeNavItem} icon={<BackArrowIcon />} onClick={() => handleNavItemClick("Main")} />
         <FilterSidebar resetFilters={resetFilters} />
       </Navbar>
     );
   } else if (activeNavItem === "Physics") {
     content = (
       <Navbar>
-        <Back activeNavItem={activeNavItem} icon={<BackIcon />} onClick={() => handleNavItemClick("Main")} />
+        <Back activeNavItem={activeNavItem} icon={<BackArrowIcon />} onClick={() => handleNavItemClick("Main")} />
         <PhysicsSidebar resetPhysics={resetPhysics} />
       </Navbar>
     );
   } else if (activeNavItem === "Appearance") {
     content = (
       <Navbar>
-        <Back activeNavItem={activeNavItem} icon={<BackIcon />} onClick={() => handleNavItemClick("Main")} />
+        <Back activeNavItem={activeNavItem} icon={<BackArrowIcon />} onClick={() => handleNavItemClick("Main")} />
         <AppearanceSidebar
           handleNewColorScheme={handleNewColorScheme}
           handleDeleteColorScheme={handleDeleteColorScheme}
@@ -105,10 +105,10 @@ function Back({ activeNavItem, icon, onClick }) {
       <li className="back sidebar-tooltip-wrapper">
         <span data-tooltip-id={`back-tooltip`} data-tooltip-content="Go Back" className="back-icon" onClick={onClick}>
           {icon}
-          <Tooltip id={`back-tooltip`} place="bottom" effect="solid" className="sidebar-tooltip" />
+          <Tooltip id={`back-tooltip`} place="bottom" effect="solid" className="sidebar-tooltip scale-15 margin-left-2" />
         </span>
         <div className="link-text-container">
-          <b className="link-text back-text">{activeNavItem}</b>
+          <p className="link-text back-text">{activeNavItem}</p>
         </div>
       </li>
     </>
