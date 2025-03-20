@@ -286,19 +286,13 @@ export function SettingControl({ simulation, app, redraw }) {
 
     if (!settings.physics.checkBorder) {
       log.info("Disabling graph border");
-      simulation.on("tick.border", null);
+      simulation.force("border", null);
     } else {
       log.info("Setting graph border");
-      simulation.on("tick.border", () => {
-        borderCheck(
-          graphData.circles,
-          radius,
-          settings.physics.borderHeight,
-          settings.physics.borderWidth,
-          settings.container.width,
-          settings.container.height
-        );
-      });
+      simulation.force(
+        "border",
+        borderCheck(radius, settings.physics.borderHeight, settings.physics.borderWidth, settings.container.width, settings.container.height)
+      );
     }
     simulation.alpha(1).restart();
   }, [

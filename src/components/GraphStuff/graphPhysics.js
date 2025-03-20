@@ -31,36 +31,51 @@ export function getSimulation(width, height, linkLength, xStrength, yStrength, n
   return simulation;
 }
 
-export function borderCheck(circles, radius, borderHeight, borderWidth, width, height) {
-  const strength = 1;
+export function borderCheck(radius, borderHeight, borderWidth, width, height) {
+  let nodes;
+  let strength = 1;
+  let borderMultiplier = 1; // oder als Parameter übergeben, falls benötigt
 
   const centerX = width / 2;
   const centerY = height / 2;
-
   const leftBorder = centerX - (borderWidth * borderMultiplier) / 2;
   const rightBorder = centerX + (borderWidth * borderMultiplier) / 2;
   const topBorder = centerY - (borderHeight * borderMultiplier) / 2;
   const bottomBorder = centerY + (borderHeight * borderMultiplier) / 2;
 
-  circles.children.forEach((node) => {
-    let dx = 0;
-    let dy = 0;
+  function force(alpha) {
+    nodes.forEach((node) => {
+      let dx = 0;
+      let dy = 0;
 
-    if (node.x < leftBorder + radius) {
-      dx += (leftBorder + radius - node.x) * strength;
-    } else if (node.x > rightBorder - radius) {
-      dx += (rightBorder - radius - node.x) * strength;
-    }
+      if (node.x < leftBorder + radius) {
+        dx += (leftBorder + radius - node.x) * strength;
+      } else if (node.x > rightBorder - radius) {
+        dx += (rightBorder - radius - node.x) * strength;
+      }
 
-    if (node.y < topBorder + radius) {
-      dy += (topBorder + radius - node.y) * strength;
-    } else if (node.y > bottomBorder - radius) {
-      dy += (bottomBorder - radius - node.y) * strength;
-    }
+      if (node.y < topBorder + radius) {
+        dy += (topBorder + radius - node.y) * strength;
+      } else if (node.y > bottomBorder - radius) {
+        dy += (bottomBorder - radius - node.y) * strength;
+      }
 
-    node.vx += dx;
-    node.vy += dy;
-  });
+      node.vx += dx;
+      node.vy += dy;
+    });
+  }
+
+  force.initialize = function (_) {
+    nodes = _;
+  };
+
+  force.strength = function (_) {
+    if (typeof _ === "undefined") return strength;
+    strength = _;
+    return force;
+  };
+
+  return force;
 }
 
 export function componentForce(componentArray, componentSizeArray, centroidThreshold) {
