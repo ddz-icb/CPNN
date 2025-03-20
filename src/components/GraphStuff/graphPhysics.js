@@ -34,14 +34,13 @@ export function getSimulation(width, height, linkLength, xStrength, yStrength, n
 export function borderCheck(radius, borderHeight, borderWidth, width, height) {
   let nodes;
   let strength = 1;
-  let borderMultiplier = 1; // oder als Parameter übergeben, falls benötigt
 
   const centerX = width / 2;
   const centerY = height / 2;
-  const leftBorder = centerX - (borderWidth * borderMultiplier) / 2;
-  const rightBorder = centerX + (borderWidth * borderMultiplier) / 2;
-  const topBorder = centerY - (borderHeight * borderMultiplier) / 2;
-  const bottomBorder = centerY + (borderHeight * borderMultiplier) / 2;
+  const leftBorder = centerX - (borderWidth * strength) / 2;
+  const rightBorder = centerX + (borderWidth * strength) / 2;
+  const topBorder = centerY - (borderHeight * strength) / 2;
+  const bottomBorder = centerY + (borderHeight * strength) / 2;
 
   function force(alpha) {
     nodes.forEach((node) => {
@@ -60,8 +59,8 @@ export function borderCheck(radius, borderHeight, borderWidth, width, height) {
         dy += (bottomBorder - radius - node.y) * strength;
       }
 
-      node.vx += dx;
-      node.vy += dy;
+      node.vx += dx * alpha;
+      node.vy += dy * alpha;
     });
   }
 
