@@ -316,7 +316,7 @@ export function PhysicsSidebar({ resetPhysics }) {
             text={"Border Height"}
             min={25}
             max={999}
-            stepSlider={10}
+            stepSlider={5}
             stepField={5}
             value={settings.physics.borderHeight}
             valueText={settings.physics.borderHeightText}
