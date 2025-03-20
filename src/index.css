@@ -319,7 +319,8 @@ ul {
 /* svg of navbar item */
 .nav-link svg {
   min-width: 2rem;
-  margin: 0 1.5rem;
+  margin-left: 1rem;
+  margin-right: 0.5rem;
 }
 
 /* logo stuff */
@@ -922,6 +923,7 @@ input[type="radio"]:checked:after {
   fill: var(--icon-color);
   transition: var(--transition-speed);
   filter: grayscale(100%) opacity(0.7);
+  transform: scale(0.75);
 }
 
 .fa-primary:hover {
