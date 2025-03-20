@@ -433,6 +433,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
               }}
             />
             <PopUpTextField textInfront={"Node ID format:"} textInside={nodeIdFormat} />
+            <div className="popup-block"></div>
             <PopUpDoubleTextField textInfront={"Node ID examples:"} textInside1={nodeIdExample1} textInside2={nodeIdExample2} />
             <div className="popup-block">
               <PopupButtonRect
