@@ -105,11 +105,11 @@ export function Mapping({ activeMenu, handleActiveMenuClick }) {
         <div className={"dropdown min-width-400 margin-left-20"}>
           <div className="dropdown-section-container pad-top-05">
             <div className="dropdown-section">
-              <b className="heading-label-no-pad pad-left-1">Nodes</b>
+              <p className="heading-label-no-pad pad-left-1 margin-0">Nodes</p>
               {nodeContent}
             </div>
             <div className="dropdown-section">
-              <b className="heading-label-no-pad pad-left-1">Links</b>
+              <p className="heading-label-no-pad pad-left-1 margin-0">Links</p>
               {linkContent}
             </div>
           </div>
