@@ -74,6 +74,7 @@ export const useSettings = create((set) => ({
       png: null,
       svg: null,
       pdf: null,
+      legendPdf: null,
     },
     container: {
       height: null,

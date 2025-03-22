@@ -3,7 +3,7 @@ import { useGraphData, useSettings } from "../../states.js";
 import log from "../../logger.js";
 import * as d3 from "d3";
 
-import { downloadAsPDF, downloadAsPNG, downloadAsSVG, downloadGraphJson } from "./download.js";
+import { downloadAsPDF, downloadAsPNG, downloadAsSVG, downloadGraphJson, downloadLegendPdf } from "./download.js";
 import { changeCircleBorderColor, changeNodeColors, changeNodeLabelColor, radius } from "../Other/draw.js";
 import { lightTheme, themeInit } from "../Other/appearance.js";
 import {
@@ -156,6 +156,15 @@ export function SettingControl({ simulation, app, redraw }) {
       );
     }
   }, [settings.download.pdf]);
+
+  // download legend as pdf //
+  useEffect(() => {
+    if (settings.download.legendPdf != null && graphData.graph) {
+      log.info("Downloading legend as PDF");
+
+      downloadLegendPdf(settings, graphData);
+    }
+  }, [settings.download.legendPdf]);
 
   // switch colors upon changing theme //
   useEffect(() => {

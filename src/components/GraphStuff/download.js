@@ -230,3 +230,56 @@ export function downloadCsvFile(csvContent, fileName) {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
+
+export function downloadLegendPdf(settings, graphData) {
+  const pdf = new jsPDF({ orientation: "portrait", unit: "pt", format: "a4" });
+  const padding = 20;
+  const rectWidth = 18;
+  let y = padding;
+
+  pdf.setFontSize(13);
+  pdf.text("Nodes", padding, y);
+  y += 6;
+
+  for (const key in settings.appearance.nodeAttribsToColorIndices) {
+    if (settings.appearance.nodeAttribsToColorIndices.hasOwnProperty(key)) {
+      const colorIndex = settings.appearance.nodeAttribsToColorIndices[key];
+      const color = settings.appearance.nodeColorScheme.colorScheme[colorIndex];
+      const label = graphData.activeAnnotationMapping?.groupMapping?.[key]?.name || key;
+
+      y += 20;
+      pdf.setFillColor(color);
+      pdf.rect(padding, y - 12, rectWidth, 10, "F");
+      pdf.text(label, padding + rectWidth + 6, y - 3);
+    }
+  }
+
+  y += 20;
+  pdf.setFillColor("#cccccc");
+  pdf.rect(padding, y - 12, rectWidth, 10, "F");
+  pdf.text("No Value Available", padding + rectWidth + 6, y - 3);
+
+  y += 30;
+  pdf.setFontSize(13);
+  pdf.text("Links", padding, y);
+  y += 6;
+
+  for (const key in settings.appearance.linkAttribsToColorIndices) {
+    if (settings.appearance.linkAttribsToColorIndices.hasOwnProperty(key)) {
+      const colorIndex = settings.appearance.linkAttribsToColorIndices[key];
+      const color = settings.appearance.linkColorScheme.colorScheme[colorIndex];
+
+      y += 20;
+      pdf.setFillColor(color);
+      pdf.rect(padding, y - 12, rectWidth, 10, "F");
+      pdf.text(key, padding + rectWidth + 6, y - 3);
+    }
+  }
+
+  y += 20;
+  pdf.setFillColor("#cccccc");
+  pdf.rect(padding, y - 12, rectWidth, 10, "F");
+  pdf.text("No Value Available", padding + rectWidth + 6, y - 3);
+
+  pdf.save("Graph_Legend.pdf");
+}

@@ -29,6 +29,10 @@ export function HeaderBarExport({ activeMenu, handleActiveMenuClick }) {
     setSettings("download.pdf", !settings.download.svg);
   };
 
+  const handleDownloadLegendPdfClick = () => {
+    setSettings("download.legendPdf", !settings.download.legendPdf);
+  };
+
   if (activeMenu !== "Export") {
     content = (
       <Button
@@ -80,6 +84,14 @@ export function HeaderBarExport({ activeMenu, handleActiveMenuClick }) {
             text={"Export as PDF"}
             onClick={() => {
               handleDownloadPdfClick();
+              handleActiveMenuClick("Export");
+            }}
+            icon={<PdfIcon />}
+          />
+          <Item
+            text={"Export Legend as PDF"}
+            onClick={() => {
+              handleDownloadLegendPdfClick();
               handleActiveMenuClick("Export");
             }}
             icon={<PdfIcon />}
