@@ -59,6 +59,7 @@ export function ClickTooltip({ mapping }) {
         if (isoforms) setIsoforms(isoforms);
 
         // send request to localhost:3001 to append CORS-Header
+        // HERE!!!!!!! REPLACE URL WITH https://cpnn.ddz.de/api/uniprot/${prodIdNoIsoform}
         const responseUniprot = await axios.get(`http://localhost:3001/uniprot/${protIdNoIsoform}`);
         const fullName = extractFullName(responseUniprot.data);
         if (fullName) setFullName(fullName);

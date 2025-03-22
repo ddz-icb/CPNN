@@ -36,7 +36,13 @@ export function AppearanceSettings({}) {
 
   return (
     <>
-      <SidebarSwitchBlock text={"Show Node Labels"} value={settings.appearance.showNodeLabels} onChange={handleShowNodeLabels} />
+      <SidebarSwitchBlock
+        text={"Node Labels"}
+        value={settings.appearance.showNodeLabels}
+        onChange={handleShowNodeLabels}
+        infoHeading={"Enabling Node Labels"}
+        infoDescription={"Shows the name of each node above itself in the graph."}
+      />
     </>
   );
 }
