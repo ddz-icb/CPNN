@@ -139,7 +139,6 @@ export function downloadAsPDF(
     maxY = Math.max(maxY, circle.y);
   }
 
-  // Puffer hinzufügen
   minX -= 10;
   maxX += 10;
   minY -= 10;
@@ -163,7 +162,6 @@ export function downloadAsPDF(
     drawCircleCanvas(ctx, node, circle, circleBorderColor, nodeColorScheme.colorScheme, nodeAttribsToColorIndices);
   }
 
-  // PDF-Seite auf die SVG-Größe plus Rand einstellen (10px an allen Seiten)
   const pdf = new jsPDF({
     orientation: width > height ? "landscape" : "portrait",
     unit: "px",
@@ -232,12 +230,55 @@ export function downloadCsvFile(csvContent, fileName) {
 }
 
 export function downloadLegendPdf(settings, graphData) {
-  const pdf = new jsPDF({ orientation: "portrait", unit: "pt", format: "a4" });
   const padding = 20;
   const rectWidth = 18;
-  let y = padding;
 
+  const tempPdf = new jsPDF({ orientation: "portrait", unit: "pt", format: "a4" });
+  tempPdf.setFontSize(13);
+
+  let maxTextWidth = tempPdf.getTextWidth("Nodes");
+  for (const key in settings.appearance.nodeAttribsToColorIndices) {
+    if (settings.appearance.nodeAttribsToColorIndices.hasOwnProperty(key)) {
+      const label = graphData.activeAnnotationMapping?.groupMapping?.[key]?.name || key;
+      const textWidth = tempPdf.getTextWidth(label);
+      if (textWidth > maxTextWidth) {
+        maxTextWidth = textWidth;
+      }
+    }
+  }
+  maxTextWidth = Math.max(maxTextWidth, tempPdf.getTextWidth("No Value Available"));
+  maxTextWidth = Math.max(maxTextWidth, tempPdf.getTextWidth("Links"));
+  for (const key in settings.appearance.linkAttribsToColorIndices) {
+    if (settings.appearance.linkAttribsToColorIndices.hasOwnProperty(key)) {
+      const textWidth = tempPdf.getTextWidth(key);
+      if (textWidth > maxTextWidth) {
+        maxTextWidth = textWidth;
+      }
+    }
+  }
+
+  const pdfWidth = padding + rectWidth + 6 + maxTextWidth + padding;
+
+  let y = padding;
+  y += 6;
+  const nodesCount = Object.keys(settings.appearance.nodeAttribsToColorIndices).length;
+  y += nodesCount * 20; // Pro Node 20pt
+  y += 20;
+  y += 30;
+  y += 6;
+  const linksCount = Object.keys(settings.appearance.linkAttribsToColorIndices).length;
+  y += linksCount * 20; // Pro Link 20pt
+  y += 20;
+  const pdfHeight = y + padding;
+
+  const pdf = new jsPDF({
+    orientation: pdfWidth > pdfHeight ? "landscape" : "portrait",
+    unit: "pt",
+    format: [pdfWidth, pdfHeight],
+  });
   pdf.setFontSize(13);
+
+  y = padding;
   pdf.text("Nodes", padding, y);
   y += 6;
 
@@ -260,7 +301,6 @@ export function downloadLegendPdf(settings, graphData) {
   pdf.text("No Value Available", padding + rectWidth + 6, y - 3);
 
   y += 30;
-  pdf.setFontSize(13);
   pdf.text("Links", padding, y);
   y += 6;
 
