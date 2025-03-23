@@ -3,7 +3,7 @@ import { useGraphData, useSettings } from "../../states.js";
 import log from "../../logger.js";
 import * as d3 from "d3";
 
-import { downloadAsPDF, downloadAsPNG, downloadAsSVG, downloadGraphJson, downloadLegendPdf } from "./download.js";
+import { downloadAsPDF, downloadAsPNG, downloadAsSVG, downloadGraphJson, downloadGraphWithLegendPdf, downloadLegendPdf } from "./download.js";
 import { changeCircleBorderColor, changeNodeColors, changeNodeLabelColor, radius } from "../Other/draw.js";
 import { lightTheme, themeInit } from "../Other/appearance.js";
 import {
@@ -162,9 +162,43 @@ export function SettingControl({ simulation, app, redraw }) {
     if (settings.download.legendPdf != null && graphData.graph) {
       log.info("Downloading legend as PDF");
 
-      downloadLegendPdf(settings, graphData);
+      downloadLegendPdf(
+        graphData.graph,
+        settings.appearance.linkColorScheme,
+        settings.appearance.linkAttribsToColorIndices,
+        settings.appearance.nodeColorScheme,
+        settings.appearance.nodeAttribsToColorIndices,
+        graphData.activeAnnotationMapping
+      );
     }
   }, [settings.download.legendPdf]);
+
+  // switch colors upon changing theme //
+  useEffect(() => {
+    if (!graphData.circles) return;
+    log.info("Switching colors");
+
+    changeCircleBorderColor(graphData.circles, settings.appearance.theme.circleBorderColor);
+    changeNodeLabelColor(graphData.nodeLabels, settings.appearance.theme.textColor);
+  }, [settings.appearance.theme]);
+
+  // download graph and legend as pdf //
+  useEffect(() => {
+    if (settings.download.graphWithLegendPdf != null && graphData.graph) {
+      log.info("Downloading legend as PDF");
+
+      downloadGraphWithLegendPdf(
+        graphData.graph,
+        settings.appearance.linkColorScheme,
+        settings.appearance.linkAttribsToColorIndices,
+        settings.appearance.theme.circleBorderColor,
+        settings.appearance.nodeColorScheme,
+        settings.appearance.nodeAttribsToColorIndices,
+        graphData.nodeMap,
+        graphData.activeAnnotationMapping
+      );
+    }
+  }, [settings.download.graphWithLegendPdf]);
 
   // switch colors upon changing theme //
   useEffect(() => {

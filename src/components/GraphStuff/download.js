@@ -40,7 +40,7 @@ export function downloadAsSVG(
   document,
   graph,
   linkColorScheme,
-  linksAttribsToColorIndices,
+  linkAttribsToColorIndices,
   circleBorderColor,
   nodeColorScheme,
   nodeAttribsToColorIndices,
@@ -90,7 +90,7 @@ export function downloadAsSVG(
   svgElement.setAttribute("height", height);
 
   for (const link of graph.links) {
-    drawLineCanvas(ctx, link, linkColorScheme.colorScheme, linksAttribsToColorIndices);
+    drawLineCanvas(ctx, link, linkColorScheme.colorScheme, linkAttribsToColorIndices);
   }
 
   for (const node of graph.nodes) {
@@ -117,7 +117,7 @@ export function downloadAsSVG(
 export function downloadAsPDF(
   graph,
   linkColorScheme,
-  linksAttribsToColorIndices,
+  linkAttribsToColorIndices,
   circleBorderColor,
   nodeColorScheme,
   nodeAttribsToColorIndices,
@@ -154,7 +154,7 @@ export function downloadAsPDF(
   svgElement.setAttribute("height", height);
 
   for (const link of graph.links) {
-    drawLineCanvas(ctx, link, linkColorScheme.colorScheme, linksAttribsToColorIndices);
+    drawLineCanvas(ctx, link, linkColorScheme.colorScheme, linkAttribsToColorIndices);
   }
 
   for (const node of graph.nodes) {
@@ -229,17 +229,24 @@ export function downloadCsvFile(csvContent, fileName) {
   URL.revokeObjectURL(url);
 }
 
-export function downloadLegendPdf(settings, graphData) {
+export function downloadLegendPdf(
+  graph,
+  linkColorScheme,
+  linkAttribsToColorIndices,
+  nodeColorScheme,
+  nodeAttribsToColorIndices,
+  activeAnnotationMapping
+) {
   const padding = 20;
   const rectWidth = 18;
 
   const tempPdf = new jsPDF({ orientation: "portrait", unit: "pt", format: "a4" });
-  tempPdf.setFontSize(13);
+  tempPdf.setFontSize(15);
 
   let maxTextWidth = tempPdf.getTextWidth("Nodes");
-  for (const key in settings.appearance.nodeAttribsToColorIndices) {
-    if (settings.appearance.nodeAttribsToColorIndices.hasOwnProperty(key)) {
-      const label = graphData.activeAnnotationMapping?.groupMapping?.[key]?.name || key;
+  for (const key in nodeAttribsToColorIndices) {
+    if (nodeAttribsToColorIndices.hasOwnProperty(key)) {
+      const label = activeAnnotationMapping?.groupMapping?.[key]?.name || key;
       const textWidth = tempPdf.getTextWidth(label);
       if (textWidth > maxTextWidth) {
         maxTextWidth = textWidth;
@@ -248,8 +255,8 @@ export function downloadLegendPdf(settings, graphData) {
   }
   maxTextWidth = Math.max(maxTextWidth, tempPdf.getTextWidth("No Value Available"));
   maxTextWidth = Math.max(maxTextWidth, tempPdf.getTextWidth("Links"));
-  for (const key in settings.appearance.linkAttribsToColorIndices) {
-    if (settings.appearance.linkAttribsToColorIndices.hasOwnProperty(key)) {
+  for (const key in linkAttribsToColorIndices) {
+    if (linkAttribsToColorIndices.hasOwnProperty(key)) {
       const textWidth = tempPdf.getTextWidth(key);
       if (textWidth > maxTextWidth) {
         maxTextWidth = textWidth;
@@ -261,12 +268,12 @@ export function downloadLegendPdf(settings, graphData) {
 
   let y = padding;
   y += 6;
-  const nodesCount = Object.keys(settings.appearance.nodeAttribsToColorIndices).length;
-  y += nodesCount * 20; // Pro Node 20pt
+  const nodesCount = Object.keys(nodeAttribsToColorIndices).length;
+  y += nodesCount * 20;
   y += 20;
   y += 30;
   y += 6;
-  const linksCount = Object.keys(settings.appearance.linkAttribsToColorIndices).length;
+  const linksCount = Object.keys(linkAttribsToColorIndices).length;
   y += linksCount * 20; // Pro Link 20pt
   y += 20;
   const pdfHeight = y + padding;
@@ -276,17 +283,19 @@ export function downloadLegendPdf(settings, graphData) {
     unit: "pt",
     format: [pdfWidth, pdfHeight],
   });
-  pdf.setFontSize(13);
+  pdf.setFontSize(15);
 
   y = padding;
+  pdf.setFontSize(18);
   pdf.text("Nodes", padding, y);
+  pdf.setFontSize(15);
   y += 6;
 
-  for (const key in settings.appearance.nodeAttribsToColorIndices) {
-    if (settings.appearance.nodeAttribsToColorIndices.hasOwnProperty(key)) {
-      const colorIndex = settings.appearance.nodeAttribsToColorIndices[key];
-      const color = settings.appearance.nodeColorScheme.colorScheme[colorIndex];
-      const label = graphData.activeAnnotationMapping?.groupMapping?.[key]?.name || key;
+  for (const key in nodeAttribsToColorIndices) {
+    if (nodeAttribsToColorIndices.hasOwnProperty(key)) {
+      const colorIndex = nodeAttribsToColorIndices[key];
+      const color = nodeColorScheme.colorScheme[colorIndex];
+      const label = activeAnnotationMapping?.groupMapping?.[key]?.name || key;
 
       y += 20;
       pdf.setFillColor(color);
@@ -301,13 +310,15 @@ export function downloadLegendPdf(settings, graphData) {
   pdf.text("No Value Available", padding + rectWidth + 6, y - 3);
 
   y += 30;
+  pdf.setFontSize(18);
   pdf.text("Links", padding, y);
+  pdf.setFontSize(15);
   y += 6;
 
-  for (const key in settings.appearance.linkAttribsToColorIndices) {
-    if (settings.appearance.linkAttribsToColorIndices.hasOwnProperty(key)) {
-      const colorIndex = settings.appearance.linkAttribsToColorIndices[key];
-      const color = settings.appearance.linkColorScheme.colorScheme[colorIndex];
+  for (const key in linkAttribsToColorIndices) {
+    if (linkAttribsToColorIndices.hasOwnProperty(key)) {
+      const colorIndex = linkAttribsToColorIndices[key];
+      const color = linkColorScheme.colorScheme[colorIndex];
 
       y += 20;
       pdf.setFillColor(color);
@@ -322,4 +333,154 @@ export function downloadLegendPdf(settings, graphData) {
   pdf.text("No Value Available", padding + rectWidth + 6, y - 3);
 
   pdf.save("Graph_Legend.pdf");
+}
+
+export function downloadGraphWithLegendPdf(
+  graph,
+  linkColorScheme,
+  linkAttribsToColorIndices,
+  circleBorderColor,
+  nodeColorScheme,
+  nodeAttribsToColorIndices,
+  nodeMap,
+  activeAnnotationMapping
+) {
+  const firstNode = graph.nodes[0];
+  const { circle: firstCircle } = nodeMap[firstNode.id];
+  let minX = firstCircle.x;
+  let maxX = firstCircle.x;
+  let minY = firstCircle.y;
+  let maxY = firstCircle.y;
+  for (const node of graph.nodes) {
+    const { circle } = nodeMap[node.id];
+    minX = Math.min(minX, circle.x);
+    maxX = Math.max(maxX, circle.x);
+    minY = Math.min(minY, circle.y);
+    maxY = Math.max(maxY, circle.y);
+  }
+  minX -= 10;
+  maxX += 10;
+  minY -= 10;
+  maxY += 10;
+  const graphWidth = maxX - minX;
+  const graphHeight = maxY - minY;
+  const graphAreaWidth = graphWidth + 20;
+  const graphAreaHeight = graphHeight + 20;
+
+  const ctx = new canvasToSvg(graphWidth, graphHeight);
+  const svgElement = ctx.getSvg();
+  svgElement.setAttribute("viewBox", `${minX} ${minY} ${graphWidth} ${graphHeight}`);
+  svgElement.setAttribute("width", graphWidth);
+  svgElement.setAttribute("height", graphHeight);
+  for (const link of graph.links) {
+    drawLineCanvas(ctx, link, linkColorScheme.colorScheme, linkAttribsToColorIndices);
+  }
+  for (const node of graph.nodes) {
+    const { circle } = nodeMap[node.id];
+    drawCircleCanvas(ctx, node, circle, circleBorderColor, nodeColorScheme.colorScheme, nodeAttribsToColorIndices);
+  }
+
+  const padding = 20;
+  const rectWidth = 18;
+  const headerFontSize = 18;
+  const labelFontSize = 15;
+  const tempPdf = new jsPDF({ orientation: "portrait", unit: "pt", format: "a4" });
+
+  tempPdf.setFontSize(labelFontSize);
+  let maxTextWidth = 0;
+  for (const key in nodeAttribsToColorIndices) {
+    if (nodeAttribsToColorIndices.hasOwnProperty(key)) {
+      const label = activeAnnotationMapping?.groupMapping?.[key]?.name || key;
+      maxTextWidth = Math.max(maxTextWidth, tempPdf.getTextWidth(label));
+    }
+  }
+  maxTextWidth = Math.max(maxTextWidth, tempPdf.getTextWidth("No Value Available"));
+  for (const key in linkAttribsToColorIndices) {
+    if (linkAttribsToColorIndices.hasOwnProperty(key)) {
+      maxTextWidth = Math.max(maxTextWidth, tempPdf.getTextWidth(key));
+    }
+  }
+  tempPdf.setFontSize(headerFontSize);
+  maxTextWidth = Math.max(maxTextWidth, tempPdf.getTextWidth("Nodes"), tempPdf.getTextWidth("Links"));
+
+  const legendWidth = padding + rectWidth + 6 + maxTextWidth + padding;
+
+  let legendY = padding;
+  legendY += 6;
+  const nodesCount = Object.keys(nodeAttribsToColorIndices).length;
+  legendY += nodesCount * 20;
+  legendY += 20;
+  legendY += 30;
+  legendY += 6;
+  const linksCount = Object.keys(linkAttribsToColorIndices).length;
+  legendY += linksCount * 20;
+  legendY += 20;
+  const legendHeight = legendY + padding;
+
+  const pdfWidth = graphAreaWidth + legendWidth;
+  const pdfHeight = Math.max(graphAreaHeight, legendHeight);
+
+  const pdf = new jsPDF({
+    orientation: pdfWidth > pdfHeight ? "landscape" : "portrait",
+    unit: "px",
+    format: [pdfWidth, pdfHeight],
+  });
+  pdf.setFontSize(10);
+  pdf.setFillColor(255, 255, 255);
+
+  const graphOffsetX = 10;
+  const graphOffsetY = 10;
+
+  svg2pdf(svgElement, pdf, { xOffset: graphOffsetX, yOffset: graphOffsetY, scale: 1 }).then(() => {
+    const legendOffsetX = pdfWidth - legendWidth;
+    const legendOffsetY = pdfHeight - legendHeight;
+
+    pdf.setFillColor(245, 245, 245);
+    pdf.rect(legendOffsetX, legendOffsetY, legendWidth, legendHeight, "F");
+
+    let yPos = legendOffsetY + padding;
+    pdf.setTextColor(0, 0, 0);
+    pdf.setFontSize(18);
+    pdf.text("Nodes", legendOffsetX + padding, yPos);
+    pdf.setFontSize(15);
+    yPos += 6;
+    for (const key in nodeAttribsToColorIndices) {
+      if (nodeAttribsToColorIndices.hasOwnProperty(key)) {
+        const colorIndex = nodeAttribsToColorIndices[key];
+        const color = nodeColorScheme.colorScheme[colorIndex];
+        const label = activeAnnotationMapping?.groupMapping?.[key]?.name || key;
+        yPos += 20;
+        pdf.setFillColor(color);
+        pdf.rect(legendOffsetX + padding, yPos - 12, rectWidth, 10, "F");
+        pdf.text(label, legendOffsetX + padding + rectWidth + 6, yPos - 3);
+      }
+    }
+    yPos += 20;
+    pdf.setFillColor("#cccccc");
+    pdf.rect(legendOffsetX + padding, yPos - 12, rectWidth, 10, "F");
+    pdf.text("No Value Available", legendOffsetX + padding + rectWidth + 6, yPos - 3);
+    yPos += 30;
+    pdf.setFontSize(18);
+    pdf.text("Links", legendOffsetX + padding, yPos);
+    pdf.setFontSize(15);
+    yPos += 6;
+    for (const key in linkAttribsToColorIndices) {
+      if (linkAttribsToColorIndices.hasOwnProperty(key)) {
+        const colorIndex = linkAttribsToColorIndices[key];
+        const color = linkColorScheme.colorScheme[colorIndex];
+        yPos += 20;
+        pdf.setFillColor(color);
+        pdf.rect(legendOffsetX + padding, yPos - 12, rectWidth, 10, "F");
+        pdf.setDrawColor(0, 0, 0);
+        pdf.rect(legendOffsetX, legendOffsetY, legendWidth, legendHeight);
+        pdf.text(key, legendOffsetX + padding + rectWidth + 6, yPos - 3);
+      }
+    }
+    yPos += 20;
+    pdf.setFillColor("#cccccc");
+    pdf.rect(legendOffsetX + padding, yPos - 12, rectWidth, 10, "F");
+    pdf.text("No Value Available", legendOffsetX + padding + rectWidth + 6, yPos - 3);
+
+    pdf.save("Graph_With_Legend.pdf");
+  });
 }

@@ -75,6 +75,7 @@ export const useSettings = create((set) => ({
       svg: null,
       pdf: null,
       legendPdf: null,
+      graphWithLegendPdf: null,
     },
     container: {
       height: null,

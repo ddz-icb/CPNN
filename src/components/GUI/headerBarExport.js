@@ -33,6 +33,10 @@ export function HeaderBarExport({ activeMenu, handleActiveMenuClick }) {
     setSettings("download.legendPdf", !settings.download.legendPdf);
   };
 
+  const handleDownloadGraphWithLegendPdfClick = () => {
+    setSettings("download.graphWithLegendPdf", !settings.download.graphWithLegendPdf);
+  };
+
   if (activeMenu !== "Export") {
     content = (
       <Button
@@ -92,6 +96,14 @@ export function HeaderBarExport({ activeMenu, handleActiveMenuClick }) {
             text={"Export Legend as PDF"}
             onClick={() => {
               handleDownloadLegendPdfClick();
+              handleActiveMenuClick("Export");
+            }}
+            icon={<PdfIcon />}
+          />
+          <Item
+            text={"Export Graph with Legend as PDF"}
+            onClick={() => {
+              handleDownloadGraphWithLegendPdfClick();
               handleActiveMenuClick("Export");
             }}
             icon={<PdfIcon />}
