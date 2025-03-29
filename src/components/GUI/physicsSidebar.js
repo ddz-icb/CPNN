@@ -315,7 +315,7 @@ export function PhysicsSidebar({ resetPhysics }) {
           <SidebarSliderBlock
             text={"Border Height"}
             min={25}
-            max={999}
+            max={5000}
             stepSlider={5}
             stepField={5}
             value={settings.physics.borderHeight}
@@ -333,7 +333,7 @@ export function PhysicsSidebar({ resetPhysics }) {
           <SidebarSliderBlock
             text={"Border Width"}
             min={25}
-            max={999}
+            max={5000}
             stepSlider={5}
             stepField={5}
             value={settings.physics.borderWidth}

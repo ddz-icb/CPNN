@@ -3,7 +3,15 @@ import { useGraphData, useSettings } from "../../states.js";
 import log from "../../logger.js";
 import * as d3 from "d3";
 
-import { downloadAsPDF, downloadAsPNG, downloadAsSVG, downloadGraphJson, downloadGraphWithLegendPdf, downloadLegendPdf } from "./download.js";
+import {
+  downloadAsPDF,
+  downloadAsPNG,
+  downloadAsSVG,
+  downloadGraphJson,
+  downloadGraphWithLegendPdf,
+  downloadLegendPdf,
+  downloadGraphJsonWithCoordinates,
+} from "./download.js";
 import { changeCircleBorderColor, changeNodeColors, changeNodeLabelColor, radius } from "../Other/draw.js";
 import { lightTheme, themeInit } from "../Other/appearance.js";
 import {
@@ -106,6 +114,18 @@ export function SettingControl({ simulation, app, redraw }) {
       }
     }
   }, [settings.download.json]);
+
+  // download graph data as json with coordinates //
+  useEffect(() => {
+    if (settings.download.jsonWithCoordinates != null && graphData.graph) {
+      try {
+        log.info("Downloading graph as JSON with coordinates");
+        downloadGraphJsonWithCoordinates(graphData.graph, "Graph.json", graphData.nodeMap);
+      } catch (error) {
+        log.error("Error downloading the graph as JSON with coordinates:", error);
+      }
+    }
+  }, [settings.download.jsonWithCoordinates]);
 
   // download graph as png //
   useEffect(() => {

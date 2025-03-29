@@ -120,8 +120,8 @@ export function ForceGraph({ reset, setReset, setError }) {
       circle.id = node.id;
       circle.interactive = true;
       circle.buttonMode = true;
-      circle.x = settings.container.width / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
-      circle.y = settings.container.height / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
+      circle.x = node.x || settings.container.width / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
+      circle.y = node.y || settings.container.height / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
       initTooltips(circle, node, setTooltipSettings);
       newCircles.addChild(circle);
 

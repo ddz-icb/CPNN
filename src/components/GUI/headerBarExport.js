@@ -17,6 +17,10 @@ export function HeaderBarExport({ activeMenu, handleActiveMenuClick }) {
     setSettings("download.json", !settings.download.json);
   };
 
+  const handleDownloadJsonWithCoordinatesClick = () => {
+    setSettings("download.jsonWithCoordinates", !settings.download.jsonWithCoordinates);
+  };
+
   const handleDownloadPngClick = () => {
     setSettings("download.png", !settings.download.png);
   };
@@ -64,6 +68,14 @@ export function HeaderBarExport({ activeMenu, handleActiveMenuClick }) {
             text={"Export Graph as JSON"}
             onClick={() => {
               handleDownloadJsonClick();
+              handleActiveMenuClick("Export");
+            }}
+            icon={<FileLines />}
+          />
+          <Item
+            text={"Export Graph with coordinates as JSON"}
+            onClick={() => {
+              handleDownloadJsonWithCoordinatesClick();
               handleActiveMenuClick("Export");
             }}
             icon={<FileLines />}

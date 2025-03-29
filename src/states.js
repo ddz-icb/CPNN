@@ -71,6 +71,7 @@ export const useSettings = create((set) => ({
     download: {
       // on state change: indicates graph should be downloaded
       json: null,
+      jsonWithCoordinates: null,
       png: null,
       svg: null,
       pdf: null,
@@ -110,7 +111,7 @@ export const useGraphData = create((set) => ({
     graph: null, // graph with modifications e.g. links filtered by threshold, it also contains the pixi node elements
     originGraph: null, // graph without modifications
 
-    nodeMap: null, // mapping from nodes to circles and nodelabels
+    nodeMap: null, // mapping from nodes to circles and nodelabels; structure: {node, circle, nodeLabel}
     circles: null, // PIXI containers for drawing the nodes
     nodeLabels: null, // PIXI container for drawing node labels
     lines: null, // PIXI object (singular!) for drawing the edges

@@ -90,7 +90,7 @@ export function downloadAsSVG(
   }
 
   for (const node of graph.nodes) {
-    const { sameNode, circle } = nodeMap[node.id];
+    const { circle } = nodeMap[node.id];
 
     drawCircleCanvas(ctx, node, circle, circleBorderColor, nodeColorScheme.colorScheme, nodeAttribsToColorIndices);
   }
@@ -204,6 +204,34 @@ export function downloadGraphJson(graph, filename) {
     }));
   }
   const blob = new Blob([JSON.stringify({ nodes: graph.nodes, links: convertLinks(graph.links) }, null, 4)], {
+    type: "application/json",
+  });
+
+  log.info("Downloading graph as JSON");
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+export function downloadGraphJsonWithCoordinates(graph, filename, nodeMap) {
+  // this function maps the objects contained in source and target to its id (representing the node id)
+  function convertLinks(links) {
+    return links.map((link) => ({
+      ...link,
+      source: link.source.id,
+      target: link.target.id,
+    }));
+  }
+  const exportedNodes = graph.nodes.map((node) => {
+    const { circle } = nodeMap[node.id];
+    return { ...node, x: circle.x, y: circle.y };
+  });
+  const blob = new Blob([JSON.stringify({ nodes: exportedNodes, links: convertLinks(graph.links) }, null, 4)], {
     type: "application/json",
   });
 
