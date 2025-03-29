@@ -422,7 +422,7 @@ export function downloadGraphWithLegendPdf(
 
   const pdf = new jsPDF({
     orientation: pdfWidth > pdfHeight ? "landscape" : "portrait",
-    unit: "px",
+    unit: "pt",
     format: [pdfWidth, pdfHeight],
   });
   pdf.setFontSize(10);
