@@ -1095,7 +1095,7 @@ input[type="radio"]:checked:after {
 }
 
 .popup-overlay {
-  z-index: 5;
+  z-index: 40;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1107,7 +1107,6 @@ input[type="radio"]:checked:after {
 }
 
 .popup-container {
-  z-index: 20;
   display: block;
   position: fixed;
   padding: 10px;
