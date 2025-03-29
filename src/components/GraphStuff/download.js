@@ -125,30 +125,36 @@ export function downloadAsPDF(
   linkColorScheme,
   linkAttribsToColorIndices,
   circleBorderColor,
+  textColor,
   nodeColorScheme,
   nodeAttribsToColorIndices,
   nodeMap
 ) {
-  const firstNode = graph.nodes[0];
-  const { circle: firstCircle } = nodeMap[firstNode.id];
+  let minX = Infinity;
+  let maxX = -Infinity;
+  let minY = Infinity;
+  let maxY = -Infinity;
 
-  let minX = firstCircle.x;
-  let maxX = firstCircle.x;
-  let minY = firstCircle.y;
-  let maxY = firstCircle.y;
+  const tempCanvas = document.createElement("canvas");
+  const tempCtx = tempCanvas.getContext("2d");
 
   for (const node of graph.nodes) {
-    const { circle } = nodeMap[node.id];
-    minX = Math.min(minX, circle.x);
-    maxX = Math.max(maxX, circle.x);
-    minY = Math.min(minY, circle.y);
-    maxY = Math.max(maxY, circle.y);
-  }
+    const { circle, nodeLabel } = nodeMap[node.id];
 
-  minX -= 10;
-  maxX += 10;
-  minY -= 10;
-  maxY += 10;
+    if (nodeLabel && nodeLabel.visible) {
+      tempCtx.font = `${nodeLabel._fontSize || 12}px sans-serif`;
+    }
+
+    const textWidth = nodeLabel?.visible ? tempCtx.measureText(nodeLabel.text).width : 0;
+    const labelXMin = nodeLabel?.visible ? nodeLabel.x - textWidth / 2 : circle.x;
+    const labelXMax = nodeLabel?.visible ? nodeLabel.x + textWidth / 2 : circle.x;
+    const labelY = nodeLabel?.visible ? nodeLabel.y + 10 : circle.y;
+
+    minX = Math.min(minX, circle.x - 10, labelXMin - 10);
+    maxX = Math.max(maxX, circle.x + 10, labelXMax + 10);
+    minY = Math.min(minY, circle.y - 10, labelY - 10);
+    maxY = Math.max(maxY, circle.y + 10, labelY + 10);
+  }
 
   const width = maxX - minX;
   const height = maxY - minY;
@@ -166,6 +172,13 @@ export function downloadAsPDF(
   for (const node of graph.nodes) {
     const { circle } = nodeMap[node.id];
     drawCircleCanvas(ctx, node, circle, circleBorderColor, nodeColorScheme.colorScheme, nodeAttribsToColorIndices);
+    const { nodeLabel } = nodeMap[node.id];
+    if (nodeLabel && nodeLabel.visible) {
+      ctx.font = `${nodeLabel._fontSize || 12}px sans-serif`;
+      ctx.fillStyle = textColor;
+      const textWidth = ctx.measureText(nodeLabel.text).width;
+      ctx.fillText(nodeLabel.text, nodeLabel.x - textWidth / 2, nodeLabel.y + 10);
+    }
   }
 
   const pdf = new jsPDF({
@@ -346,28 +359,37 @@ export function downloadGraphWithLegendPdf(
   linkColorScheme,
   linkAttribsToColorIndices,
   circleBorderColor,
+  textColor,
   nodeColorScheme,
   nodeAttribsToColorIndices,
   nodeMap,
   activeAnnotationMapping
 ) {
-  const firstNode = graph.nodes[0];
-  const { circle: firstCircle } = nodeMap[firstNode.id];
-  let minX = firstCircle.x;
-  let maxX = firstCircle.x;
-  let minY = firstCircle.y;
-  let maxY = firstCircle.y;
+  let minX = Infinity;
+  let maxX = -Infinity;
+  let minY = Infinity;
+  let maxY = -Infinity;
+
+  const tempCanvas = document.createElement("canvas");
+  const tempCtx = tempCanvas.getContext("2d");
+
   for (const node of graph.nodes) {
-    const { circle } = nodeMap[node.id];
-    minX = Math.min(minX, circle.x);
-    maxX = Math.max(maxX, circle.x);
-    minY = Math.min(minY, circle.y);
-    maxY = Math.max(maxY, circle.y);
+    const { circle, nodeLabel } = nodeMap[node.id];
+
+    if (nodeLabel && nodeLabel.visible) {
+      tempCtx.font = `${nodeLabel._fontSize || 12}px sans-serif`;
+    }
+
+    const textWidth = nodeLabel?.visible ? tempCtx.measureText(nodeLabel.text).width : 0;
+    const labelXMin = nodeLabel?.visible ? nodeLabel.x - textWidth / 2 : circle.x;
+    const labelXMax = nodeLabel?.visible ? nodeLabel.x + textWidth / 2 : circle.x;
+    const labelY = nodeLabel?.visible ? nodeLabel.y + 10 : circle.y;
+
+    minX = Math.min(minX, circle.x - 10, labelXMin - 10);
+    maxX = Math.max(maxX, circle.x + 10, labelXMax + 10);
+    minY = Math.min(minY, circle.y - 10, labelY - 10);
+    maxY = Math.max(maxY, circle.y + 10, labelY + 10);
   }
-  minX -= 10;
-  maxX += 10;
-  minY -= 10;
-  maxY += 10;
   const graphWidth = maxX - minX;
   const graphHeight = maxY - minY;
   const graphAreaWidth = graphWidth + 20;
@@ -384,6 +406,13 @@ export function downloadGraphWithLegendPdf(
   for (const node of graph.nodes) {
     const { circle } = nodeMap[node.id];
     drawCircleCanvas(ctx, node, circle, circleBorderColor, nodeColorScheme.colorScheme, nodeAttribsToColorIndices);
+    const { nodeLabel } = nodeMap[node.id];
+    if (nodeLabel && nodeLabel.visible) {
+      ctx.font = `${nodeLabel._fontSize || 12}px sans-serif`;
+      ctx.fillStyle = textColor;
+      const textWidth = ctx.measureText(nodeLabel.text).width;
+      ctx.fillText(nodeLabel.text, nodeLabel.x - textWidth / 2, nodeLabel.y + 10);
+    }
   }
 
   const padding = 20;

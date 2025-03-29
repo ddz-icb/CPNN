@@ -151,6 +151,7 @@ export function SettingControl({ simulation, app, redraw }) {
         settings.appearance.linkColorScheme,
         settings.appearance.linkAttribsToColorIndices,
         themeInit.circleBorderColor,
+        themeInit.textColor,
         settings.appearance.nodeColorScheme,
         settings.appearance.nodeAttribsToColorIndices,
         graphData.nodeMap
@@ -192,7 +193,8 @@ export function SettingControl({ simulation, app, redraw }) {
         graphData.graph,
         settings.appearance.linkColorScheme,
         settings.appearance.linkAttribsToColorIndices,
-        settings.appearance.theme.circleBorderColor,
+        themeInit.circleBorderColor,
+        themeInit.textColor,
         settings.appearance.nodeColorScheme,
         settings.appearance.nodeAttribsToColorIndices,
         graphData.nodeMap,

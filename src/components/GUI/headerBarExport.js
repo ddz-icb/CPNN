@@ -26,7 +26,7 @@ export function HeaderBarExport({ activeMenu, handleActiveMenuClick }) {
   };
 
   const handleDownloadPdfClick = () => {
-    setSettings("download.pdf", !settings.download.svg);
+    setSettings("download.pdf", !settings.download.pdf);
   };
 
   const handleDownloadLegendPdfClick = () => {
@@ -61,7 +61,7 @@ export function HeaderBarExport({ activeMenu, handleActiveMenuClick }) {
         />
         <div className="dropdown min-width-250">
           <Item
-            text={"Export as JSON"}
+            text={"Export Graph as JSON"}
             onClick={() => {
               handleDownloadJsonClick();
               handleActiveMenuClick("Export");
@@ -69,7 +69,7 @@ export function HeaderBarExport({ activeMenu, handleActiveMenuClick }) {
             icon={<FileLines />}
           />
           <Item
-            text={"Export as PNG"}
+            text={"Export Graph as PNG"}
             onClick={() => {
               handleDownloadPngClick();
               handleActiveMenuClick("Export");
@@ -77,7 +77,7 @@ export function HeaderBarExport({ activeMenu, handleActiveMenuClick }) {
             icon={<FileImage />}
           />
           <Item
-            text={"Export as SVG"}
+            text={"Export Graph as SVG"}
             onClick={() => {
               handleDownloadSvgClick();
               handleActiveMenuClick("Export");
@@ -85,7 +85,7 @@ export function HeaderBarExport({ activeMenu, handleActiveMenuClick }) {
             icon={<FileWaveform />}
           />
           <Item
-            text={"Export as PDF"}
+            text={"Export Graph as PDF"}
             onClick={() => {
               handleDownloadPdfClick();
               handleActiveMenuClick("Export");

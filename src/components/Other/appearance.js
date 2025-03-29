@@ -1,10 +1,11 @@
 export const darkBlue = "#0d3b66";
 export const lightGrey = "#b2becd";
+export const black = "#000000";
 
 export const lightTheme = {
   name: "light",
   circleBorderColor: darkBlue,
-  textColor: darkBlue,
+  textColor: black,
 };
 
 export const darkTheme = {
