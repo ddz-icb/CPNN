@@ -138,7 +138,7 @@ export function ForceGraph({ reset, setReset, setError }) {
 
       nodeLabel.style = getTextStyle(settings.appearance.theme.textColor);
       nodeLabel.x = circle.x;
-      nodeLabel.y = circle.y - getNodeLabelOffsetY(node.id);
+      nodeLabel.y = circle.y + getNodeLabelOffsetY(node.id);
       nodeLabel.pivot.x = nodeLabel.width / 2;
       nodeLabel.visible = false;
       newNodeLabels.addChild(nodeLabel);

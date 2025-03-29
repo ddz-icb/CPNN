@@ -3,6 +3,7 @@ import canvasToSvg from "canvas-to-svg";
 import { jsPDF } from "jspdf";
 import { svg2pdf } from "svg2pdf.js";
 import { drawCircleCanvas, drawLineCanvas } from "../Other/draw.js";
+import { getNodeLabelOffsetY } from "./graphCalculations.js";
 
 export function downloadAsPNG(app, document) {
   function getHtmlImageElement() {
@@ -42,41 +43,36 @@ export function downloadAsSVG(
   linkColorScheme,
   linkAttribsToColorIndices,
   circleBorderColor,
+  textColor,
   nodeColorScheme,
   nodeAttribsToColorIndices,
   nodeMap
 ) {
-  const firstNode = graph.nodes[0];
-  const { alsoFirstNode, circle: firstCircle } = nodeMap[firstNode.id];
+  let minX = Infinity;
+  let maxX = -Infinity;
+  let minY = Infinity;
+  let maxY = -Infinity;
 
-  let minX = firstCircle.x;
-  let maxX = firstCircle.x;
-  let minY = firstCircle.y;
-  let maxY = firstCircle.y;
+  const tempCanvas = document.createElement("canvas");
+  const tempCtx = tempCanvas.getContext("2d");
 
   for (const node of graph.nodes) {
-    const { sameNode, circle } = nodeMap[node.id];
-    if (circle.x < minX) {
-      minX = circle.x;
+    const { circle, nodeLabel } = nodeMap[node.id];
+
+    if (nodeLabel && nodeLabel.visible) {
+      tempCtx.font = `${nodeLabel._fontSize || 12}px sans-serif`;
     }
 
-    if (circle.x > maxX) {
-      maxX = circle.x;
-    }
+    const textWidth = nodeLabel?.visible ? tempCtx.measureText(nodeLabel.text).width : 0;
+    const labelXMin = nodeLabel?.visible ? nodeLabel.x - textWidth / 2 : circle.x;
+    const labelXMax = nodeLabel?.visible ? nodeLabel.x + textWidth / 2 : circle.x;
+    const labelY = nodeLabel?.visible ? nodeLabel.y + 10 : circle.y;
 
-    if (circle.y < minY) {
-      minY = circle.y;
-    }
-
-    if (circle.y > maxY) {
-      maxY = circle.y;
-    }
+    minX = Math.min(minX, circle.x - 10, labelXMin - 10);
+    maxX = Math.max(maxX, circle.x + 10, labelXMax + 10);
+    minY = Math.min(minY, circle.y - 10, labelY - 10);
+    maxY = Math.max(maxY, circle.y + 10, labelY + 10);
   }
-
-  minX = minX - 10;
-  maxX = maxX + 10;
-  minY = minY - 10;
-  maxY = maxY + 10;
 
   const width = maxX - minX;
   const height = maxY - minY;
@@ -97,6 +93,16 @@ export function downloadAsSVG(
     const { sameNode, circle } = nodeMap[node.id];
 
     drawCircleCanvas(ctx, node, circle, circleBorderColor, nodeColorScheme.colorScheme, nodeAttribsToColorIndices);
+  }
+
+  for (const node of graph.nodes) {
+    const { nodeLabel } = nodeMap[node.id];
+    if (nodeLabel && nodeLabel.visible) {
+      ctx.font = `${nodeLabel._fontSize || 12}px sans-serif`;
+      ctx.fillStyle = textColor;
+      const textWidth = ctx.measureText(nodeLabel.text).width;
+      ctx.fillText(nodeLabel.text, nodeLabel.x - textWidth / 2, nodeLabel.y + 10);
+    }
   }
 
   const mySerializedSVG = ctx.getSerializedSvg();

@@ -133,6 +133,7 @@ export function SettingControl({ simulation, app, redraw }) {
         settings.appearance.linkColorScheme,
         settings.appearance.linkAttribsToColorIndices,
         themeInit.circleBorderColor,
+        themeInit.textColor,
         settings.appearance.nodeColorScheme,
         settings.appearance.nodeAttribsToColorIndices,
         graphData.nodeMap
