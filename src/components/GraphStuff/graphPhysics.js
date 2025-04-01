@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 
-const accuracyBarnesHut = 0.1;
-const maxDistanceChargeForce = 300;
+export const accuracyBarnesHut = 0.1;
+export const maxDistanceChargeForce = 300;
 export const nodeRepulsionMultiplier = -300;
 export const borderMultiplier = 10;
 

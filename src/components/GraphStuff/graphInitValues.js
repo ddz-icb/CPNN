@@ -11,6 +11,7 @@ export const xStrengthInit = 0.05;
 export const yStrengthInit = 0.05;
 export const componentStrengthInit = 0;
 export const nodeRepulsionStrengthInit = 1;
+export const nodeCollisionInit = true;
 export const circleLayoutInit = false;
 
 export const checkBorderInit = false;

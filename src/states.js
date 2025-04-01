@@ -17,6 +17,7 @@ import {
   nodeFilterTextInit,
   xStrengthInit,
   yStrengthInit,
+  nodeCollisionInit,
 } from "./components/GraphStuff/graphInitValues.js";
 import { linkColorSchemeInit, nodeColorSchemeInit, themeInit } from "./components/Other/appearance.js";
 
@@ -33,6 +34,7 @@ export const expectedPhysicTypes = {
   yStrength: "number",
   componentStrength: "number",
   nodeRepulsionStrength: "number",
+  nodeCollision: "boolean",
   linkForce: "number",
   linkLength: "number",
   checkBorder: "boolean",
@@ -49,6 +51,7 @@ export const useSettings = create((set) => ({
       yStrength: yStrengthInit,
       componentStrength: componentStrengthInit,
       nodeRepulsionStrength: nodeRepulsionStrengthInit,
+      nodeCollision: nodeCollisionInit,
       linkForce: linkForceInit,
       linkLength: linkLengthInit,
       checkBorder: checkBorderInit,

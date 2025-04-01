@@ -25,7 +25,16 @@ import {
   returnAdjacentData,
   returnComponentData,
 } from "./graphCalculations.js";
-import { applyPhysics, borderCheck, circularLayout, componentForce, nodeRepulsionMultiplier } from "./graphPhysics.js";
+import {
+  accuracyBarnesHut,
+  applyPhysics,
+  borderCheck,
+  circularLayout,
+  componentForce,
+  maxDistanceChargeForce,
+  nodeCollisionMultiplier,
+  nodeRepulsionMultiplier,
+} from "./graphPhysics.js";
 
 export function SettingControl({ simulation, app, redraw }) {
   const { settings, setSettings } = useSettings();
@@ -280,7 +289,7 @@ export function SettingControl({ simulation, app, redraw }) {
   // enable or disable link force //
   useEffect(() => {
     if (!simulation) return;
-    if (settings.physics.linkForce === false) {
+    if (settings.physics.linkForce == false) {
       log.info("Disabling link force");
 
       simulation.force("link").strength(0);
@@ -303,7 +312,7 @@ export function SettingControl({ simulation, app, redraw }) {
 
   // change link length //
   useEffect(() => {
-    if (!simulation || settings.physics.linkForce === false) return;
+    if (!simulation || settings.physics.linkForce == false) return;
     log.info("changing link length", settings.physics.linkLength);
 
     simulation.force("link").distance(settings.physics.linkLength);
@@ -313,7 +322,7 @@ export function SettingControl({ simulation, app, redraw }) {
   // change X Strength //
   useEffect(() => {
     if (!simulation) return;
-    if (settings.physics.xStrength === 0) {
+    if (settings.physics.xStrength == 0) {
       simulation.alpha(1).restart();
       simulation.force("x", null);
       return;
@@ -327,7 +336,7 @@ export function SettingControl({ simulation, app, redraw }) {
   // change Y Strength //
   useEffect(() => {
     if (!simulation) return;
-    if (settings.physics.yStrength === 0) {
+    if (settings.physics.yStrength == 0) {
       simulation.alpha(1).restart();
       simulation.force("y", null);
       return;
@@ -341,7 +350,7 @@ export function SettingControl({ simulation, app, redraw }) {
   // change component Strength //
   useEffect(() => {
     if (!simulation) return;
-    if (settings.physics.componentStrength === 0) {
+    if (settings.physics.componentStrength == 0) {
       simulation.force("component", null);
       simulation.alpha(1).restart();
       return;
@@ -360,15 +369,38 @@ export function SettingControl({ simulation, app, redraw }) {
   // change node repulsion strength //
   useEffect(() => {
     if (!simulation) return;
-    if (settings.physics.nodeRepulsionStrength === 0) {
+    if (settings.physics.nodeRepulsionStrength == 0) {
       simulation.force("charge", null);
       return;
     }
     log.info("Changing node repulsion strength", settings.physics.nodeRepulsionStrength);
 
-    simulation.force("charge").strength(settings.physics.nodeRepulsionStrength * nodeRepulsionMultiplier);
+    simulation.force(
+      "charge",
+      d3
+        .forceManyBody()
+        .theta(accuracyBarnesHut)
+        .distanceMax(maxDistanceChargeForce)
+        .strength(settings.physics.nodeRepulsionStrength * nodeRepulsionMultiplier)
+    );
     simulation.alpha(1).restart();
   }, [settings.physics.nodeRepulsionStrength]);
+
+  // change node repulsion strength //
+  useEffect(() => {
+    if (!simulation) return;
+    if (settings.physics.nodeCollision == false) {
+      simulation.force("collision", null);
+      return;
+    }
+    log.info("Changing node collision strength", settings.physics.nodeCollision);
+
+    simulation.force(
+      "collision",
+      d3.forceCollide((d) => radius + 1)
+    );
+    simulation.alpha(1).restart();
+  }, [settings.physics.nodeCollision]);
 
   // change graph border //
   useEffect(() => {
@@ -396,7 +428,7 @@ export function SettingControl({ simulation, app, redraw }) {
   // enable circular layout
   useEffect(() => {
     if (!simulation) return;
-    if (settings.physics.circleLayout === false) {
+    if (settings.physics.circleLayout == false) {
       log.info("Disabling circular layout");
 
       // enabling link force by default

@@ -152,6 +152,10 @@ export function PhysicsSidebar({ resetPhysics }) {
     setSettings("physics.linkForce", !settings.physics.linkForce);
   };
 
+  const handleNodeCollision = () => {
+    setSettings("physics.nodeCollision", !settings.physics.nodeCollision);
+  };
+
   const handleNodeRepulsionStrengthSlider = (event) => {
     const value = event.target.value;
     setSettings("physics.nodeRepulsionStrength", value);
@@ -263,6 +267,17 @@ export function PhysicsSidebar({ resetPhysics }) {
               The node repulsion force is used to maintain a certain distance between nodes. The distance increases with a higher node repulsion
               force.
             </p>
+          </div>
+        }
+      />
+      <SidebarSwitchBlock
+        text={"Node Collision"}
+        value={settings.physics.nodeCollision}
+        onChange={handleNodeCollision}
+        infoHeading={"Enabling the Node Collision Force"}
+        infoDescription={
+          <div>
+            <p className="margin-0">The node collision force kicks nodes apart from each other upon impact.</p>
           </div>
         }
       />
