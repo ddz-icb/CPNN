@@ -450,5 +450,5 @@ export function SettingControl({ simulation, app, redraw }) {
 
     simulation.force("circleLayout", circularLayout(componentArray, adjacentCountMap, minCircleSize));
     simulation.alpha(1).restart();
-  }, [settings.physics.circleLayout, graphData.graph]);
+  }, [settings.physics.circleLayout]);
 }
