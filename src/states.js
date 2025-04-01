@@ -17,7 +17,6 @@ import {
   nodeFilterTextInit,
   xStrengthInit,
   yStrengthInit,
-  gravityAdvancedInit,
 } from "./components/GraphStuff/graphInitValues.js";
 import { linkColorSchemeInit, nodeColorSchemeInit, themeInit } from "./components/Other/appearance.js";
 
@@ -41,7 +40,6 @@ export const useSettings = create((set) => ({
       checkBorder: checkBorderInit,
       borderWidth: borderWidthInit,
       borderHeight: borderHeightInit,
-      gravityAdvanced: gravityAdvancedInit,
       linkLengthText: linkLengthInit,
       borderHeightText: borderHeightInit,
       borderWidthText: borderWidthInit,
