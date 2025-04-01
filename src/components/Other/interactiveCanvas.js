@@ -16,7 +16,7 @@ let app;
 let radius;
 let simulation;
 
-let transform = d3.zoomIdentity.scale(0.8); // view transformation-values
+let transform = d3.zoomIdentity; // view transformation-values
 const zoom = d3.zoom();
 let distanceDragged = 0;
 let startPosition = { x: 0, y: 0 };
@@ -25,7 +25,7 @@ export function initDragAndZoom(initialApp, initialSimulation, initialRadius, se
   app = initialApp;
   simulation = initialSimulation;
   radius = initialRadius;
-  transform = d3.zoomIdentity.translate(width / 2, height / 2).scale(0.8);
+  transform = d3.zoomIdentity.scale(0.95).translate((width / 2) * (1 - 0.95), (height / 2) * (1 - 0.95));
 
   d3.select(app.renderer.canvas)
     .call(
@@ -37,6 +37,8 @@ export function initDragAndZoom(initialApp, initialSimulation, initialRadius, se
         .on("end", (event) => dragended(event, setTooltipSettings))
     )
     .call(zoom.on("zoom", zoomed));
+
+  d3.select(app.renderer.canvas).call(zoom.transform, transform);
 }
 
 const zoomed = (event) => {
