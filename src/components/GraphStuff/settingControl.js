@@ -11,6 +11,7 @@ import {
   downloadGraphWithLegendPdf,
   downloadLegendPdf,
   downloadGraphJsonWithCoordinates,
+  downloadGraphJsonWithCoordinatesPhysics,
 } from "./download.js";
 import { changeCircleBorderColor, changeNodeColors, changeNodeLabelColor, radius } from "../Other/draw.js";
 import { lightTheme, themeInit } from "../Other/appearance.js";
@@ -135,6 +136,18 @@ export function SettingControl({ simulation, app, redraw }) {
       }
     }
   }, [settings.download.jsonWithCoordinates]);
+
+  // download graph data as json with coordinates and physics //
+  useEffect(() => {
+    if (settings.download.jsonWithCoordinatesPhysics != null && graphData.graph) {
+      try {
+        log.info("Downloading graph as JSON with coordinates and physics");
+        downloadGraphJsonWithCoordinatesPhysics(graphData.graph, "Graph.json", graphData.nodeMap, settings.physics);
+      } catch (error) {
+        log.error("Error downloading the graph as JSON with coordinates:", error);
+      }
+    }
+  }, [settings.download.jsonWithCoordinatesPhysics]);
 
   // download graph as png //
   useEffect(() => {

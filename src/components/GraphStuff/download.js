@@ -246,6 +246,34 @@ export function downloadGraphJsonWithCoordinates(graph, filename, nodeMap) {
   URL.revokeObjectURL(url);
 }
 
+export function downloadGraphJsonWithCoordinatesPhysics(graph, filename, nodeMap, physics) {
+  // this function maps the objects contained in source and target to its id (representing the node id)
+  function convertLinks(links) {
+    return links.map((link) => ({
+      ...link,
+      source: link.source.id,
+      target: link.target.id,
+    }));
+  }
+  const exportedNodes = graph.nodes.map((node) => {
+    const { circle } = nodeMap[node.id];
+    return { ...node, x: circle.x, y: circle.y };
+  });
+  const blob = new Blob([JSON.stringify({ nodes: exportedNodes, links: convertLinks(graph.links), physics: physics }, null, 4)], {
+    type: "application/json",
+  });
+
+  log.info("Downloading graph as JSON");
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
 export function downloadObjectAsFile(object, name) {
   const formattedJson = typeof object === "string" ? JSON.stringify(JSON.parse(object), null, 4) : JSON.stringify(object, null, 4);
 

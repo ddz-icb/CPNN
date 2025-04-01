@@ -21,6 +21,10 @@ export function HeaderBarExport({ activeMenu, handleActiveMenuClick }) {
     setSettings("download.jsonWithCoordinates", !settings.download.jsonWithCoordinates);
   };
 
+  const handleDownloadJsonWithCoordinatesPhysicsClick = () => {
+    setSettings("download.jsonWithCoordinatesPhysics", !settings.download.jsonWithCoordinates);
+  };
+
   const handleDownloadPngClick = () => {
     setSettings("download.png", !settings.download.png);
   };
@@ -80,6 +84,15 @@ export function HeaderBarExport({ activeMenu, handleActiveMenuClick }) {
             }}
             icon={<FileLines />}
           />
+          <Item
+            text={"Export Graph with coordinates and physics as JSON"}
+            onClick={() => {
+              handleDownloadJsonWithCoordinatesPhysicsClick();
+              handleActiveMenuClick("Export");
+            }}
+            icon={<PdfIcon />}
+          />
+
           <Item
             text={"Export Graph as PNG"}
             onClick={() => {
