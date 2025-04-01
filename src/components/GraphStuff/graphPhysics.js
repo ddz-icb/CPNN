@@ -148,7 +148,7 @@ export function componentForce(componentArray, componentSizeArray, centroidThres
 
 export function circularLayout(componentArray, adjacentCountMap, minCircleSize) {
   let nodes;
-  let strength = 5; // this variable can be changed via user input
+  let strength = 1;
 
   function calculateCentroid(componentNodes) {
     let x = 0,
