@@ -174,34 +174,60 @@ export function circularLayout(componentArray, adjacentCountMap, minCircleSize) 
       componentNodes[component].push(node);
     });
 
-    const centroids = {};
+    const centroidsCircularCluster = {};
+    const centroidsCluster = {};
     for (const component in componentNodes) {
-      const componentSize = componentNodes[component].length;
-      if (componentSize >= minCircleSize) {
-        centroids[component] = calculateCentroid(componentNodes[component]);
+      const compSize = componentNodes[component].length;
+      centroidsCluster[component] = calculateCentroid(componentNodes[component]);
+      if (compSize >= minCircleSize) {
+        centroidsCircularCluster[component] = centroidsCluster[component];
       }
     }
 
     for (const component in componentNodes) {
-      const componentSize = componentNodes[component].length;
-      if (componentSize >= minCircleSize) {
-        const centroid = centroids[component];
-        const radius = 50 * Math.sqrt(componentSize);
-
-        // sort by adjacent count descending
-        componentNodes[component].sort((x, y) => adjacentCountMap.get(y.id) - adjacentCountMap.get(x.id));
-
+      const compSize = componentNodes[component].length;
+      if (compSize >= minCircleSize) {
+        const centroid = centroidsCircularCluster[component];
+        const radius = 50 * Math.sqrt(compSize);
+        componentNodes[component].sort((a, b) => adjacentCountMap.get(b.id) - adjacentCountMap.get(a.id));
         componentNodes[component].forEach((node, i) => {
-          const angle = (2 * Math.PI * i) / componentSize;
+          const angle = (2 * Math.PI * i) / compSize;
           const targetX = centroid.x + radius * Math.cos(angle - Math.PI / 2);
           const targetY = centroid.y + radius * Math.sin(angle - Math.PI / 2);
-
           const dx = targetX - node.x;
           const dy = targetY - node.y;
-
           node.vx += dx * alpha * strength;
           node.vy += dy * alpha * strength;
         });
+      }
+    }
+
+    const clusterKeys = Object.keys(centroidsCluster);
+    for (let i = 0; i < clusterKeys.length; i++) {
+      for (let j = i + 1; j < clusterKeys.length; j++) {
+        const key1 = clusterKeys[i];
+        const key2 = clusterKeys[j];
+        const c1 = centroidsCluster[key1];
+        const c2 = centroidsCluster[key2];
+        const size1 = componentNodes[key1].length;
+        const size2 = componentNodes[key2].length;
+        const radius1 = 50 * Math.sqrt(size1);
+        const radius2 = 50 * Math.sqrt(size2);
+        const dx = c2.x - c1.x;
+        const dy = c2.y - c1.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const minDistance = radius1 + radius2 + 10;
+        if (distance < minDistance && distance > 0) {
+          const repulse = ((minDistance - distance) / distance) * alpha;
+          componentNodes[key1].forEach((node) => {
+            node.vx -= dx * repulse;
+            node.vy -= dy * repulse;
+          });
+          componentNodes[key2].forEach((node) => {
+            node.vx += dx * repulse;
+            node.vy += dy * repulse;
+          });
+        }
       }
     }
   }
