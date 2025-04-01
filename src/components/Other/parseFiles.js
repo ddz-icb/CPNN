@@ -70,6 +70,13 @@ export function parseGraph(name, content, takeAbs, minCorrForEdge, minCompSizeFo
     });
   }
 
+  graph.nodes.sort((a, b) => a.id.localeCompare(b.id));
+  graph.links.sort((a, b) => {
+    const sourceComparison = a.source.localeCompare(b.source);
+    if (sourceComparison !== 0) return sourceComparison;
+    return a.target.localeCompare(b.target);
+  });
+
   return graph;
 }
 

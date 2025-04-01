@@ -218,7 +218,7 @@ export function circularLayout(componentArray, adjacentCountMap, minCircleSize) 
         const distance = Math.sqrt(dx * dx + dy * dy);
         const minDistance = radius1 + radius2 + 10;
         if (distance < minDistance && distance > 0) {
-          const repulse = ((minDistance - distance) / distance) * alpha;
+          const repulse = ((minDistance - distance) / distance) * alpha * strength;
           componentNodes[key1].forEach((node) => {
             node.vx -= dx * repulse;
             node.vy -= dy * repulse;
