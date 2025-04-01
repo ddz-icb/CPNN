@@ -279,7 +279,7 @@ export function downloadObjectAsFile(object, name) {
 
   const blob = new Blob([formattedJson], { type: "application/json" });
 
-  console.info("Downloading object as file");
+  log.info("Downloading object as file");
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
@@ -293,7 +293,7 @@ export function downloadObjectAsFile(object, name) {
 export function downloadCsvFile(csvContent, fileName) {
   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
 
-  console.info("Downloading CSV file");
+  log.info("Downloading CSV file");
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
