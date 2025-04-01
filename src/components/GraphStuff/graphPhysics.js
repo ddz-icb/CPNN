@@ -212,3 +212,37 @@ export function circularLayout(componentArray, adjacentCountMap, minCircleSize) 
 
   return force;
 }
+
+export function applyPhysics(physics, setSettings) {
+  if (physics.circleLayout !== undefined) setSettings("physics.circleLayout", physics.circleLayout);
+  if (physics.xStrength !== undefined) {
+    setSettings("physics.xStrength", physics.xStrength);
+    setSettings("physics.xStrengthText", physics.xStrength);
+  }
+  if (physics.yStrength !== undefined) {
+    setSettings("physics.yStrength", physics.yStrength);
+    setSettings("physics.yStrengthText", physics.yStrength);
+  }
+  if (physics.componentStrength !== undefined) {
+    setSettings("physics.componentStrength", physics.componentStrength);
+    setSettings("physics.componentStrengthText", physics.componentStrength);
+  }
+  if (physics.nodeRepulsionStrength !== undefined) {
+    setSettings("physics.nodeRepulsionStrength", physics.nodeRepulsionStrength);
+    setSettings("physics.nodeRepulsionStrengthText", physics.nodeRepulsionStrength);
+  }
+  if (physics.linkForce !== undefined) setSettings("physics.linkForce", physics.linkForce);
+  if (physics.linkLength !== undefined) {
+    setSettings("physics.linkLength", physics.linkLength);
+    setSettings("physics.linkLengthText", physics.linkLength);
+  }
+  if (physics.checkBorder !== undefined) setSettings("physics.checkBorder", physics.checkBorder);
+  if (physics.borderWidth !== undefined) {
+    setSettings("physics.borderWidth", physics.borderWidth);
+    setSettings("physics.borderWidthText", physics.borderWidth);
+  }
+  if (physics.borderHeight !== undefined) {
+    setSettings("physics.borderHeight", physics.borderHeight);
+    setSettings("physics.borderHeightText", physics.borderHeight);
+  }
+}

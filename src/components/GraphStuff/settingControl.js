@@ -24,7 +24,7 @@ import {
   returnAdjacentData,
   returnComponentData,
 } from "./graphCalculations.js";
-import { borderCheck, circularLayout, componentForce, nodeRepulsionMultiplier } from "./graphPhysics.js";
+import { applyPhysics, borderCheck, circularLayout, componentForce, nodeRepulsionMultiplier } from "./graphPhysics.js";
 
 export function SettingControl({ simulation, app, redraw }) {
   const { settings, setSettings } = useSettings();
@@ -86,12 +86,21 @@ export function SettingControl({ simulation, app, redraw }) {
   ]);
 
   useEffect(() => {
+    if (!graphData.graph || !graphData.graph.physics) return;
+    const physics = graphData.graph.physics;
+    log.info("applying physics settings", physics);
+
+    applyPhysics(physics, setSettings);
+  }, [graphData.graph?.physics]);
+
+  // enable/disable node labels
+  useEffect(() => {
     if (!graphData.circles || !app) return;
     log.info("Enabling/Disabling node labels");
 
     if (settings.appearance.showNodeLabels == true) {
       graphData.graph.nodes.forEach((n) => {
-        const { node, circle, nodeLabel } = graphData.nodeMap[n.id];
+        const { nodeLabel } = graphData.nodeMap[n.id];
         nodeLabel.visible = true;
       });
       simulation.on("tick.redraw", () => redraw(graphData.graph));
