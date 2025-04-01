@@ -1,6 +1,7 @@
 import log from "../../logger.js";
 import Papa from "papaparse";
 import { filterByThreshold, filterMinCompSize, filterNodesExist } from "../GraphStuff/graphCalculations.js";
+import { expectedPhysicTypes } from "../../states.js";
 
 export async function parseGraphFile(file, takeAbs, minCorrForEdge, minCompSizeForNode) {
   if (!file) {
@@ -135,6 +136,21 @@ function verifyGraph(graph) {
       throw new Error(`Link at index ${i} is missing the 'attribs' property.`);
     }
   });
+
+  if (graph.physics !== undefined) {
+    if (typeof graph.physics !== "object" || Array.isArray(graph.physics)) {
+      throw new Error("The 'physics' property must be an object.");
+    }
+    const expectedTypes = expectedPhysicTypes;
+
+    for (const key in graph.physics) {
+      if (expectedTypes.hasOwnProperty(key)) {
+        if (typeof graph.physics[key] !== expectedTypes[key]) {
+          throw new Error(`Invalid type for physics.${key}: expected ${expectedTypes[key]}, got ${typeof graph.physics[key]}.`);
+        }
+      }
+    }
+  }
 }
 
 export async function parseColorSchemeFile(file) {

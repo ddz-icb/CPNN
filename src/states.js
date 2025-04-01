@@ -27,6 +27,20 @@ const setNestedValue = (obj, path, value) => {
   nested[lastKey] = value;
 };
 
+export const expectedPhysicTypes = {
+  circleLayout: "boolean",
+  xStrength: "number",
+  yStrength: "number",
+  componentStrength: "number",
+  nodeRepulsionStrength: "number",
+  linkForce: "number",
+  linkLength: "number",
+  checkBorder: "boolean",
+  borderWidth: "number",
+  borderHeight: "number",
+  gravityAdvanced: "boolean",
+};
+
 export const useSettings = create((set) => ({
   settings: {
     physics: {
