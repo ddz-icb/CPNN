@@ -296,6 +296,8 @@ export function SettingControl({ simulation, app, redraw }) {
         .distance(settings.physics.linkLength)
     );
 
+    setSettings("physics.circleLayout", false);
+
     simulation.alpha(1).restart();
   }, [settings.physics.linkForce]);
 
