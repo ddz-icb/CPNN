@@ -13,6 +13,7 @@ import {
   SidebarButtonRect,
   PopUpSliderBlock,
   PopUpFieldBlock,
+  PopUp,
 } from "./sidebar.js";
 import log from "../../logger.js";
 import { useGraphData } from "../../states.js";
@@ -239,10 +240,6 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
   const annotationMappingFormat = "Uniprot-ID, Pathway Name, Reactome-ID";
   const annotationMappingExample = "O60306,mRNA Splicing,R-HSA-72172";
 
-  const handleGraphPopUp = () => {
-    setGraphPopUpActive(!graphPopUpActive);
-  };
-
   const handleMappingPopUp = () => {
     setMappingPopUpActive(!mappingPopUpActive);
   };
@@ -332,137 +329,130 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
     <>
       <div className="sidebar-two-buttons">
         <SidebarButtonRect
-          onClick={handleGraphPopUp}
+          onClick={() => {
+            setGraphPopUpActive(!graphPopUpActive);
+          }}
           text={"Upload Graph"}
           tooltip={"Upload Graph as CSV, TSV or JSON File"}
           tooltipId={"upload-graph-tooltip"}
         />
         <SidebarButtonRect
-          onClick={handleMappingPopUp}
+          onClick={() => {
+            setMappingPopUpActive(!mappingPopUpActive);
+          }}
           text={"Upload Pathway Mappings"}
           tooltip={"Upload Pathway Annotation Mappings as a TSV or CSV File"}
           tooltipId={"upload-graph-tooltip"}
         />
       </div>
-      {mappingPopUpActive && (
-        <div className="popup-overlay">
-          <div className="popup-container">
-            <div className="popup-header pad-bottom-1">
-              <p>Uploading Your Pathway Mapping</p>
-              <span className="tooltip-button" onClick={handleMappingPopUp}>
-                <XIcon />
-              </span>
-            </div>
-            <div className="popup-block color-text-primary">
-              Uploading pathway mappings can provide additional context to classify nodes, determining their color. By doing so, nodes −such as
-              peptides− are associated with one or more pathways. Nodes belonging to the same pathway will then be colored accordingly.
-              <br />
-              <br />
-              Pathway mappings can be uploaded in CSV or TSV format. These mappings must contain a "UniProt-ID" and a "Pathway Name" column. If
-              supplied with a "Reactome-ID" column, links to reactome.org with the corresponding pathway will be embedded, when klicking on nodes. To
-              better understand the required format, you can download the example mapping below.
-            </div>
-            <PopUpTextField textInfront={"Pathway Mapping format:"} textInside={annotationMappingFormat} />
-            <div className="popup-block" />
-            <PopUpTextField textInfront={"Pathway Mapping example:"} textInside={annotationMappingExample} />
-            <div className="popup-block">
-              <PopupButtonRect
-                text={"Download Example Pathway Mapping"}
-                onClick={() => {
-                  downloadCsvFile(exampleMappingCsv.content, exampleMappingCsv.name);
-                }}
-              />
-              <PopupButtonRect
-                text={"Upload Own Pathway Mapping"}
-                onClick={handleUploadMappingClick}
-                linkRef={annotationMappingRef}
-                onChange={(event) => {
-                  handleNewAnnotationMapping(event);
-                  event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
-                  setMappingPopUpActive(false);
-                }}
-              />
-            </div>
+      <PopUp
+        heading={"Uploading Your Pathway Mapping"}
+        description={
+          <div className="popup-block color-text-primary">
+            Uploading pathway mappings can provide additional context to classify nodes, determining their color. By doing so, nodes −such as
+            peptides− are associated with one or more pathways. Nodes belonging to the same pathway will then be colored accordingly.
+            <br />
+            <br />
+            Pathway mappings can be uploaded in CSV or TSV format. These mappings must contain a "UniProt-ID" and a "Pathway Name" column. If supplied
+            with a "Reactome-ID" column, links to reactome.org with the corresponding pathway will be embedded, when klicking on nodes. To better
+            understand the required format, you can download the example mapping below.
           </div>
+        }
+        isOpen={mappingPopUpActive}
+        setIsOpen={setMappingPopUpActive}
+      >
+        <PopUpTextField textInfront={"Pathway Mapping format:"} textInside={annotationMappingFormat} />
+        <div className="popup-block" />
+        <PopUpTextField textInfront={"Pathway Mapping example:"} textInside={annotationMappingExample} />
+        <div className="popup-block">
+          <PopupButtonRect
+            text={"Download Example Pathway Mapping"}
+            onClick={() => {
+              downloadCsvFile(exampleMappingCsv.content, exampleMappingCsv.name);
+            }}
+          />
+          <PopupButtonRect
+            text={"Upload Own Pathway Mapping"}
+            onClick={handleUploadMappingClick}
+            linkRef={annotationMappingRef}
+            onChange={(event) => {
+              handleNewAnnotationMapping(event);
+              event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
+              setMappingPopUpActive(false);
+            }}
+          />
         </div>
-      )}
-      {graphPopUpActive && (
-        <div className="popup-overlay">
-          <div className="popup-container">
-            <div className="popup-header pad-bottom-1">
-              <p>Uploading Your Graph</p>
-              <span className="tooltip-button" onClick={handleGraphPopUp}>
-                <XIcon />
-              </span>
-            </div>
-            <div className="popup-block color-text-primary">
-              You can upload your graphs in JSON, CSV or TSV format. CSV and TSV files must be structured as a symmetric matrix, while JSON contains a
-              list of nodes and links. You can download the example graphs below to take a closer look at the required format.
-            </div>
-            <PopUpSwitchBlock
-              text={"Include negative correlations by taking the absolute value"}
-              value={takeAbs}
-              onChange={() => {
-                setTakeAbs(!takeAbs);
-              }}
-            />
-            <PopUpSliderBlock
-              text={<>Minimum component correlation value to be interpreted as an edge</>}
-              min={0}
-              max={1}
-              stepSlider={0.05}
-              stepField={0.01}
-              value={minCorrForEdge}
-              valueText={minCorrForEdgeText}
-              onChangeSlider={handleMinCorrSliderChange}
-              onChangeField={handleMinCorrFieldChange}
-              onChangeBlur={handleMinCorrFieldBlur}
-            />
-            <PopUpFieldBlock
-              text={<>Minimum component size to be loaded for above minimum component correlation</>}
-              min={1}
-              step={1}
-              value={minCompSizeForNodeText}
-              onChange={handleMinComponentFieldChange}
-              onBlur={handleMinComponentFieldBlur}
-            />
-            <PopUpSwitchBlock
-              text={"Node IDs contain phosphosites"}
-              value={containsSites}
-              onChange={() => {
-                setContainsSites(!containsSites);
-              }}
-            />
-            <PopUpTextField textInfront={"Node ID format:"} textInside={nodeIdFormat} />
-            <div className="popup-block"></div>
-            <PopUpDoubleTextField textInfront={"Node ID examples:"} textInside1={nodeIdExample1} textInside2={nodeIdExample2} />
-            <div className="popup-block">
-              <PopupButtonRect
-                text={"Download JSON Example Graph"}
-                onClick={() => {
-                  downloadObjectAsFile(exampleGraphJson.content, exampleGraphJson.name);
-                }}
-              />
-              <PopupButtonRect
-                text={"Download CSV Example Graph"}
-                onClick={() => {
-                  downloadCsvFile(exampleGraphCsv.content, exampleGraphCsv.name);
-                }}
-              />
-            </div>
-            <PopupButtonRect
-              text={"Upload Own Graph File"}
-              onClick={handleGraphUploadClick}
-              linkRef={graphFileRef}
-              onChange={(event) => {
-                handleNewGraphFile(event, takeAbs, minCorrForEdge, minCompSizeForNode);
-                event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
-                setGraphPopUpActive(false);
-              }}
-            />
-          </div>
+      </PopUp>
+      <PopUp
+        heading={"Set Color Scheme"}
+        description={
+          "You can upload your graphs in JSON, CSV or TSV format. CSV and TSV files must be structured as a symmetric matrix, while JSON contains a list of nodes and links. You can download the example graphs below to take a closer look at the required format."
+        }
+        isOpen={graphPopUpActive}
+        setIsOpen={setGraphPopUpActive}
+      >
+        <PopUpSwitchBlock
+          text={"Include negative correlations by taking the absolute value"}
+          value={takeAbs}
+          onChange={() => {
+            setTakeAbs(!takeAbs);
+          }}
+        />
+        <PopUpSliderBlock
+          text={<>Minimum component correlation value to be interpreted as an edge</>}
+          min={0}
+          max={1}
+          stepSlider={0.05}
+          stepField={0.01}
+          value={minCorrForEdge}
+          valueText={minCorrForEdgeText}
+          onChangeSlider={handleMinCorrSliderChange}
+          onChangeField={handleMinCorrFieldChange}
+          onChangeBlur={handleMinCorrFieldBlur}
+        />
+        <PopUpFieldBlock
+          text={<>Minimum component size to be loaded for above minimum component correlation</>}
+          min={1}
+          step={1}
+          value={minCompSizeForNodeText}
+          onChange={handleMinComponentFieldChange}
+          onBlur={handleMinComponentFieldBlur}
+        />
+        <PopUpSwitchBlock
+          text={"Node IDs contain phosphosites"}
+          value={containsSites}
+          onChange={() => {
+            setContainsSites(!containsSites);
+          }}
+        />
+        <PopUpTextField textInfront={"Node ID format:"} textInside={nodeIdFormat} />
+        <div className="popup-block"></div>
+        <PopUpDoubleTextField textInfront={"Node ID examples:"} textInside1={nodeIdExample1} textInside2={nodeIdExample2} />
+        <div className="popup-block">
+          <PopupButtonRect
+            text={"Download JSON Example Graph"}
+            onClick={() => {
+              downloadObjectAsFile(exampleGraphJson.content, exampleGraphJson.name);
+            }}
+          />
+          <PopupButtonRect
+            text={"Download CSV Example Graph"}
+            onClick={() => {
+              downloadCsvFile(exampleGraphCsv.content, exampleGraphCsv.name);
+            }}
+          />
         </div>
-      )}
+        <PopupButtonRect
+          text={"Upload Own Graph File"}
+          onClick={handleGraphUploadClick}
+          linkRef={graphFileRef}
+          onChange={(event) => {
+            handleNewGraphFile(event, takeAbs, minCorrForEdge, minCompSizeForNode);
+            event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
+            setGraphPopUpActive(false);
+          }}
+        />
+      </PopUp>
     </>
   );
 }

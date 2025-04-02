@@ -13,7 +13,7 @@ export const componentStrengthInit = 0;
 export const nodeRepulsionStrengthInit = 1;
 export const nodeCollisionInit = true;
 export const circleLayoutInit = false;
-export const compDensityInit = 0;
+export const compDensityInit = 1;
 
 export const checkBorderInit = false;
 export const borderWidthInit = 200;
