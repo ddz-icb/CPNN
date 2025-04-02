@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ReactComponent as TrashIcon } from "../../icons/trash.svg";
 import { ReactComponent as PlusIcon } from "../../icons/plus.svg";
-import { PopupButtonRect, PopUpTextField, SidebarButtonRect, SidebarSwitchBlock } from "./sidebar.js";
+import { PopUp, PopupButtonRect, PopUpTextField, SidebarButtonRect, SidebarSwitchBlock } from "./sidebar.js";
 import { ReactComponent as LinesVertical } from "../../icons/lines-vertical.svg";
 import { ReactComponent as CircleHollow } from "../../icons/circle-hollow.svg";
 import { ReactComponent as XIcon } from "../../icons/x.svg";
@@ -125,57 +125,61 @@ export function TopAppearanceButtons({ handleNewColorScheme }) {
 function UploadedColorSchemes({ colorSchemes, handleDeleteColorScheme }) {
   const { settings, setSettings } = useSettings();
 
+  const [selectSchemePopUp, setSelectSchemePopUp] = useState(false);
+  const [selectedScheme, setSelectedScheme] = useState(null);
+
   return (
     <>
-      <>
-        <span className="heading-label">Uploaded Color Schemes</span>
-        <table className="recent-item-table">
-          <tbody>
-            {colorSchemes && (
-              <>
-                {colorSchemes?.map((colorScheme, index) => (
-                  <tr key={index} className="recent-item-entry recent-item-entry-highlight">
-                    <td>
+      <span className="heading-label">Uploaded Color Schemes</span>
+      <table className="recent-item-table">
+        <tbody>
+          {colorSchemes && (
+            <>
+              {colorSchemes?.map((colorScheme, index) => (
+                <tr key={index} className="recent-item-entry recent-item-entry-highlight">
+                  <td
+                    onClick={() => {
+                      setSelectedScheme(colorScheme);
+                      setSelectSchemePopUp(true);
+                    }}
+                  >
+                    <div data-tooltip-id={`change-color-scheme${index}`} data-tooltip-content="Replace Node/Link Color Scheme">
                       <span className="pad-left-025">{colorScheme.name}</span>
-                    </td>
-                    <td className="recent-item-logo sidebar-tooltip-wrapper">
-                      <CircleHollow
-                        data-tooltip-id={`add-tooltip-${index}`}
-                        data-tooltip-content="Replace Active Node Color Scheme"
-                        onClick={() => setSettings("appearance.nodeColorScheme", colorScheme)}
-                      />
-                      <Tooltip id={`add-tooltip-${index}`} place="top" effect="solid" className="sidebar-tooltip" />
-                    </td>
-                    <td className="recent-item-logo sidebar-tooltip-wrapper">
-                      <LinesVertical
-                        data-tooltip-id={`add-tooltip-${index}`}
-                        data-tooltip-content="Replace Active Link Color Scheme"
-                        onClick={() => setSettings("appearance.linkColorScheme", colorScheme)}
-                      />
-                      <Tooltip id={`add-tooltip-${index}`} place="top" effect="solid" className="sidebar-tooltip" />
-                    </td>
-                    <td className="recent-item-logo sidebar-tooltip-wrapper">
-                      <TrashIcon
-                        data-tooltip-id={`delete-mapping-tooltip-${index}`}
-                        data-tooltip-content="Delete Color Scheme"
-                        onClick={() => handleDeleteColorScheme(colorScheme.name)}
-                      />
-                      <Tooltip id={`delete-mapping-tooltip-${index}`} place="top" effect="solid" className="sidebar-tooltip" />
-                    </td>
-                  </tr>
-                ))}
-              </>
-            )}
-            {(!colorSchemes || colorSchemes.length === 0) && (
-              <tr className="recent-item-entry">
-                <td>
-                  <span className="pad-left-025">None</span>
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </>
+                    </div>
+                    <Tooltip id={`change-color-scheme${index}`} place="top" effect="solid" className="sidebar-tooltip" />
+                  </td>
+                  <td className="recent-item-logo sidebar-tooltip-wrapper">
+                    <TrashIcon
+                      data-tooltip-id={`delete-mapping-tooltip-${index}`}
+                      data-tooltip-content="Delete Color Scheme"
+                      onClick={() => handleDeleteColorScheme(colorScheme.name)}
+                    />
+                    <Tooltip id={`delete-mapping-tooltip-${index}`} place="top" effect="solid" className="sidebar-tooltip" />
+                  </td>
+                </tr>
+              ))}
+            </>
+          )}
+          {(!colorSchemes || colorSchemes.length === 0) && (
+            <tr className="recent-item-entry">
+              <td>
+                <span className="pad-left-025">None</span>
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+      <PopUp
+        heading={"Set Color Scheme"}
+        description={"Select what the color scheme should be applied to"}
+        isOpen={selectSchemePopUp}
+        setIsOpen={setSelectSchemePopUp}
+      >
+        <div className="popup-block">
+          <PopupButtonRect onClick={() => setSettings("appearance.nodeColorScheme", selectedScheme)} text={"Set for Nodes"} />
+          <PopupButtonRect onClick={() => setSettings("appearance.linkColorScheme", selectedScheme)} text={"Set for Links"} />
+        </div>
+      </PopUp>
     </>
   );
 }
