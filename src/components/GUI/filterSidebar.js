@@ -88,6 +88,32 @@ export function FilterSidebar({ resetFilters }) {
     }
   };
 
+  const handleCompDensityFieldChange = (event) => {
+    const value = event.target.value;
+    const floatValue = parseFloat(value);
+
+    if (value === "") {
+      setSettings("filter.compDensityText", "");
+    } else if (!isNaN(floatValue)) {
+      setSettings("filter.compDensityText", floatValue);
+    }
+  };
+
+  const handleCompDensityFieldBlur = (event) => {
+    const value = event.target.value;
+    const floatValue = parseFloat(value);
+
+    if (value === "") {
+      event.target.innerText = 1;
+      setSettings("filter.compDensityText", 1);
+      setSettings("filter.compDensity", 1);
+    } else if (!isNaN(floatValue) && floatValue >= 0) {
+      event.target.innerText = floatValue;
+      setSettings("filter.compDensityText", floatValue);
+      setSettings("filter.compDensity", floatValue);
+    }
+  };
+
   const handleLinkAttribsChange = (editor) => {
     const value = editor.getValue();
 
@@ -189,7 +215,7 @@ export function FilterSidebar({ resetFilters }) {
         <SidebarButtonRect text={"Reset Filters"} onClick={handleResetFilters} />
       </div>
       <SidebarSliderBlock
-        text={"Filter Links by Threshold"}
+        text={"Link Weight Threshold"}
         min={0}
         max={1}
         stepSlider={0.05}
@@ -262,7 +288,7 @@ export function FilterSidebar({ resetFilters }) {
         }
       />
       <SidebarFieldBlock
-        text={"Minimum Component Size"}
+        text={"Component Size"}
         min={1}
         step={1}
         value={settings.filter.minCompSizeText}
@@ -274,6 +300,23 @@ export function FilterSidebar({ resetFilters }) {
             <p className="margin-0">
               You can filter the components/clusters by setting a minimum size. If a given component is smaller than the applied threshold, the whole
               component will not be drawn.
+            </p>
+          </div>
+        }
+      />
+      <SidebarFieldBlock
+        text={"Component Density"}
+        min={0}
+        step={1}
+        value={settings.filter.compDensityText}
+        onChange={handleCompDensityFieldChange}
+        onBlur={handleCompDensityFieldBlur}
+        infoHeading={"Filter by Component Density"}
+        infoDescription={
+          <div>
+            <p className="margin-0">
+              You can filter the components/clusters based on their density. The density is measured as the average amount of neighbors per node. If a
+              given component has a smaller density than the applied threshold, the component will not be drawn.
             </p>
           </div>
         }

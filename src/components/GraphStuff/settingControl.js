@@ -17,13 +17,14 @@ import { changeCircleBorderColor, changeNodeColors, changeNodeLabelColor, radius
 import { lightTheme, themeInit } from "../Other/appearance.js";
 import {
   filterActiveNodesForPixi,
-  filterByAttribs,
+  filterByLinkAttribs,
   filterByThreshold,
   filterMinCompSize,
-  filterNodes,
+  filterByNodeAttribs,
   filterNodesExist,
   returnAdjacentData,
   returnComponentData,
+  filterCompDensity,
 } from "./graphCalculations.js";
 import {
   accuracyBarnesHut,
@@ -32,7 +33,6 @@ import {
   circularLayout,
   componentForce,
   maxDistanceChargeForce,
-  nodeCollisionMultiplier,
   nodeRepulsionMultiplier,
 } from "./graphPhysics.js";
 
@@ -64,7 +64,9 @@ export function SettingControl({ simulation, app, redraw }) {
       "\n    Mininum component size: ",
       settings.filter.minCompSize,
       "\n    Groups: ",
-      settings.filter.nodeFilter
+      settings.filter.nodeFilter,
+      "\n    Comp Density: ",
+      settings.filter.compDensity
     );
 
     let filteredGraph = {
@@ -73,14 +75,16 @@ export function SettingControl({ simulation, app, redraw }) {
       links: graphData.originGraph.links,
     };
 
-    filteredGraph = filterNodes(filteredGraph, settings.filter.nodeFilter);
-
+    filteredGraph = filterByNodeAttribs(filteredGraph, settings.filter.nodeFilter);
     filteredGraph = filterNodesExist(filteredGraph);
 
     filteredGraph = filterByThreshold(filteredGraph, settings.filter.linkThreshold);
-    filteredGraph = filterByAttribs(filteredGraph, settings.filter.linkFilter);
-    filteredGraph = filterMinCompSize(filteredGraph, settings.filter.minCompSize);
+    filteredGraph = filterByLinkAttribs(filteredGraph, settings.filter.linkFilter);
 
+    filteredGraph = filterCompDensity(filteredGraph, settings.filter.compDensity);
+    filteredGraph = filterNodesExist(filteredGraph);
+
+    filteredGraph = filterMinCompSize(filteredGraph, settings.filter.minCompSize);
     filteredGraph = filterNodesExist(filteredGraph);
 
     filterActiveNodesForPixi(graphData.circles, graphData.nodeLabels, settings.appearance.showNodeLabels, filteredGraph, graphData.nodeMap);
@@ -91,6 +95,7 @@ export function SettingControl({ simulation, app, redraw }) {
     settings.filter.linkFilter,
     settings.filter.nodeFilter,
     settings.filter.minCompSize,
+    settings.filter.compDensity,
     graphData.originGraph,
     graphData.circles,
   ]);

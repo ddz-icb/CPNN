@@ -3,6 +3,7 @@ import {
   borderWidthInit,
   checkBorderInit,
   circleLayoutInit,
+  compDensityInit,
   componentStrengthInit,
   linkFilterInit,
   linkFilterTextInit,
@@ -49,5 +50,7 @@ export const resetFilterSettings = (setSettings) => {
     minCompSize: minCompSizeInit,
     linkThresholdText: linkThresholdInit,
     minCompSizeText: minCompSizeInit,
+    compDensity: compDensityInit,
+    compDensityText: compDensityInit,
   });
 };

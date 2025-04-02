@@ -18,6 +18,7 @@ import {
   xStrengthInit,
   yStrengthInit,
   nodeCollisionInit,
+  compDensityInit,
 } from "./components/GraphStuff/graphInitValues.js";
 import { linkColorSchemeInit, nodeColorSchemeInit, themeInit } from "./components/Other/appearance.js";
 
@@ -67,13 +68,15 @@ export const useSettings = create((set) => ({
     },
     filter: {
       linkThreshold: linkThresholdInit,
+      linkThresholdText: linkThresholdInit,
       linkFilter: linkFilterInit,
       linkFilterText: linkFilterTextInit,
       nodeFilter: nodeFilterInit,
       nodeFilterText: nodeFilterTextInit,
       minCompSize: minCompSizeInit,
-      linkThresholdText: linkThresholdInit,
       minCompSizeText: minCompSizeInit,
+      compDensity: compDensityInit,
+      compDensityText: compDensityInit,
     },
     appearance: {
       theme: themeInit,

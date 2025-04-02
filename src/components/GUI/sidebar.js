@@ -238,13 +238,13 @@ export function SidebarFieldBlock({ text, min, max, step, value, onChange, onBlu
 
   return (
     <>
-      <div className="inline">
-        <label className="label pad-left-1">{text}</label>
-        <span className="tooltip-button pad-left-05 pad-top-05" onClick={() => setInfoIsOpen(true)}>
-          <InfoIcon />
-        </span>
-      </div>
       <div className="sidebar-block">
+        <div className="inline">
+          <label className="label">{text}</label>
+          <span className="tooltip-button pad-left-05 pad-top-05" onClick={() => setInfoIsOpen(true)}>
+            <InfoIcon />
+          </span>
+        </div>
         <input
           className="input-field"
           type="number"

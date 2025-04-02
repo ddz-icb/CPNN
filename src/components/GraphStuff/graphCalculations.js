@@ -86,8 +86,8 @@ export function returnAdjacentData(graph) {
   const adjacentData = {};
 
   graph.links.forEach((link) => {
-    adjacentData[link.source.id] = (adjacentData[link.source.id] || 0) + 1;
-    adjacentData[link.target.id] = (adjacentData[link.target.id] || 0) + 1;
+    adjacentData[link.source.id || link.source] = (adjacentData[link.source.id || link.source] || 0) + 1;
+    adjacentData[link.target.id || link.target] = (adjacentData[link.target.id || link.target] || 0) + 1;
   });
 
   const adjacentMap = new Map();
@@ -119,6 +119,36 @@ export function filterByThreshold(graph, linkThreshold) {
   return graph;
 }
 
+export function filterCompDensity(graph, compDensity) {
+  const [componentArray, componentSizeArray] = returnComponentData(graph);
+
+  const componentEdgeCount = [];
+  graph.links.forEach((link) => {
+    const sourceId = link.source.id || link.source;
+    const targetId = link.target.id || link.target;
+    const compSource = componentArray[sourceId];
+    const compTarget = componentArray[targetId];
+    if (compSource === compTarget) {
+      componentEdgeCount[compSource] = (componentEdgeCount[compSource] || 0) + 1;
+    }
+  });
+
+  const componentAvgDegree = [];
+  for (let comp in componentSizeArray) {
+    const n = componentSizeArray[comp];
+    const m = componentEdgeCount[comp] || 0;
+    componentAvgDegree[comp] = n > 0 ? (2 * m) / n : 0;
+  }
+
+  return {
+    ...graph,
+    nodes: graph.nodes.filter((node) => {
+      const comp = componentArray[node.id];
+      return componentAvgDegree[comp] >= compDensity;
+    }),
+  };
+}
+
 export function filterNodesExist(graph) {
   const nodeSet = new Set(graph.nodes.map((node) => node.id));
 
@@ -136,18 +166,12 @@ export function filterMinCompSize(graph, minCompSize) {
   graph = {
     ...graph,
     nodes: graph.nodes.filter((node) => componentSizeArray[componentArray[node.id]] >= minCompSize),
-    links: graph.links.filter((link) => {
-      const sourceExists = componentSizeArray[componentArray[link.source.id || link.source]] >= minCompSize;
-      const targetExists = componentSizeArray[componentArray[link.target.id || link.target]] >= minCompSize;
-
-      return sourceExists && targetExists;
-    }),
   };
 
   return graph;
 }
 
-export function filterByAttribs(graph, filterRequest) {
+export function filterByLinkAttribs(graph, filterRequest) {
   // linkAttribs is true if the filterRequest was empty
   if (filterRequest === true) return graph;
 
@@ -189,7 +213,7 @@ export function filterByAttribs(graph, filterRequest) {
   return graph;
 }
 
-export function filterNodes(graph, filterRequest) {
+export function filterByNodeAttribs(graph, filterRequest) {
   // filterRequest is true if the filter is empty
   if (filterRequest === true) return graph;
 
