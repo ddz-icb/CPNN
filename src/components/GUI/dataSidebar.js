@@ -222,6 +222,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
 
   const [graphPopUpActive, setGraphPopUpActive] = useState(false);
   const [mappingPopUpActive, setMappingPopUpActive] = useState(false);
+  const [differencePopUpActive, setDifferencePopUpActive] = useState(false);
 
   const [takeAbs, setTakeAbs] = useState(false);
 
@@ -239,10 +240,6 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
 
   const annotationMappingFormat = "Uniprot-ID, Pathway Name, Reactome-ID";
   const annotationMappingExample = "O60306,mRNA Splicing,R-HSA-72172";
-
-  const handleMappingPopUp = () => {
-    setMappingPopUpActive(!mappingPopUpActive);
-  };
 
   const handleGraphUploadClick = () => {
     graphFileRef.current.click();
@@ -329,22 +326,24 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
     <>
       <div className="sidebar-two-buttons">
         <SidebarButtonRect
-          onClick={() => {
-            setGraphPopUpActive(!graphPopUpActive);
-          }}
+          onClick={() => setGraphPopUpActive(!graphPopUpActive)}
           text={"Upload Graph"}
           tooltip={"Upload Graph as CSV, TSV or JSON File"}
           tooltipId={"upload-graph-tooltip"}
         />
         <SidebarButtonRect
-          onClick={() => {
-            setMappingPopUpActive(!mappingPopUpActive);
-          }}
+          onClick={() => setMappingPopUpActive(!mappingPopUpActive)}
           text={"Upload Pathway Mappings"}
           tooltip={"Upload Pathway Annotation Mappings as a TSV or CSV File"}
-          tooltipId={"upload-graph-tooltip"}
+          tooltipId={"upload-mapping-tooltip"}
         />
       </div>
+      <SidebarButtonRect
+        onClick={() => setDifferencePopUpActive(!differencePopUpActive)}
+        text={"Create Difference Graph"}
+        tooltip={"Create graph resembling the difference between two graphs"}
+        tooltipId={"difference-graph-tooltip"}
+      />
       <PopUp
         heading={"Uploading Your Pathway Mapping"}
         description={
@@ -453,6 +452,17 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
           }}
         />
       </PopUp>
+      <PopUp
+        heading={"Create Difference Graph"}
+        description={
+          <div className="popup-block color-text-primary">
+            Generates a graph that visualizes the differences between two uploaded graphs. The edge weights of the resulting graph represent the
+            difference between the corresponding edge weights of the original graphs.{" "}
+          </div>
+        }
+        isOpen={differencePopUpActive}
+        setIsOpen={setDifferencePopUpActive}
+      ></PopUp>
     </>
   );
 }
