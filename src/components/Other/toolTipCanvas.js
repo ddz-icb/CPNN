@@ -58,7 +58,8 @@ export function ClickTooltip({ mapping }) {
         });
         if (isoforms) setIsoforms(isoforms);
 
-        const responseUniprot = await axios.get(`https://cpnn.ddz.de/api/uniprot/${protIdNoIsoform}`);
+        const responseUniprot = await axios.get(`http://localhost:3000/uniprot/${protIdNoIsoform}`);
+        // const responseUniprot = await axios.get(`https://cpnn.ddz.de/api/uniprot/${protIdNoIsoform}`);
         const fullName = extractFullName(responseUniprot.data);
         if (fullName) setFullName(fullName);
 
@@ -194,10 +195,10 @@ export function ClickTooltip({ mapping }) {
 
   let isoformContent = [];
   if (isoforms[0]) {
-    isoforms.forEach((isoform) => {
+    isoforms.forEach((isoform, index) => {
       if (isoform.pepId) {
         isoformContent.push(
-          <div key={`${isoform.phosphosites}-${isoform.pepId}`}>
+          <div key={`${isoform.pepId}-${index}`}>
             {isoform.pepId}
             {isoform.phosphosites ? ": " + isoform.phosphosites : ""}
           </div>
