@@ -58,7 +58,7 @@ export function ClickTooltip({ mapping }) {
         });
         if (isoforms) setIsoforms(isoforms);
 
-        const responseUniprot = await axios.get(`http://localhost:3000/uniprot/${protIdNoIsoform}`);
+        const responseUniprot = await axios.get(`http://localhost:3001/uniprot/${protIdNoIsoform}`);
         // const responseUniprot = await axios.get(`https://cpnn.ddz.de/api/uniprot/${protIdNoIsoform}`);
         const fullName = extractFullName(responseUniprot.data);
         if (fullName) setFullName(fullName);
