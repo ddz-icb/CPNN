@@ -23,6 +23,7 @@
     "canvas-to-svg": "^1.0.3",
     "canvg": "^4.0.3",
     "codemirror": "^5.65.19",
+    "concurrently": "^9.1.2",
     "cors": "^2.8.5",
     "csv-parse": "^5.6.0",
     "d3": "^7.9.0",
