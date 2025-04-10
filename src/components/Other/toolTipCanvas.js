@@ -30,22 +30,36 @@ export function ClickTooltip({ mapping }) {
   const [gene, setGene] = useState("");
   const [isoforms, setIsoforms] = useState("");
   const [hasPhosphosites, setHasPhosphosites] = useState(false);
+  const [responsePdb, setResponsePdb] = useState(null);
 
   const [style, setStyle] = useState({});
   const [viewer, setViewer] = useState(null);
   const viewerRef = useRef(null);
-  const tooltipRef = useRef(null); // wahrscheinlich noch zu löschen
 
+  // fetch data
   useEffect(() => {
+    log.info("Fetching data for tooltip");
     const fetchData = async () => {
       try {
-        const entries = tooltipSettings.clickTooltipData.node.split(";");
+        const entries = tooltipSettings.clickTooltipData.node?.split(";");
+        if (!entries || entries.length === 0) {
+          log.info("No entries found in tooltip data");
+          return;
+        }
 
         const protIdNoIsoform = entries[0].split("_")[0].split("-")[0];
-        if (protIdNoIsoform) setProtIdNoIsoform(protIdNoIsoform);
+        if (!protIdNoIsoform) {
+          log.info("No protein ID found");
+          return;
+        }
+        setProtIdNoIsoform(protIdNoIsoform);
 
         const gene = entries[0].split("_")[1];
-        if (gene) setGene(gene);
+        if (!gene) {
+          log.info("No gene found");
+          return;
+        }
+        setGene(gene);
 
         const phosphosites = entries[0].split("_")[2];
         setHasPhosphosites(!!phosphosites);
@@ -56,18 +70,43 @@ export function ClickTooltip({ mapping }) {
           const phosphosites = entry.split("_")[2];
           if (pepId) isoforms.push({ pepId: pepId, phosphosites: phosphosites });
         });
-        if (isoforms) setIsoforms(isoforms);
+        if (isoforms.length > 0) {
+          setIsoforms(isoforms);
+        }
 
         const responseUniprot = await axios.get(`http://localhost:3001/uniprot/${protIdNoIsoform}`);
-        // const responseUniprot = await axios.get(`https://cpnn.ddz.de/api/uniprot/${protIdNoIsoform}`);
+        if (!responseUniprot || !responseUniprot.data) {
+          log.info("No response from Uniprot");
+          return;
+        }
+
         const fullName = extractFullName(responseUniprot.data);
-        if (fullName) setFullName(fullName);
+        if (!fullName) {
+          log.info("No full name extracted");
+          return;
+        }
+        setFullName(fullName);
 
         const description = extractDescription(responseUniprot.data);
-        if (description) setDescription(description);
+        if (!description) {
+          log.info("No description extracted");
+          return;
+        }
+        setDescription(description);
 
         const pdbId = extractPdbId(responseUniprot.data);
-        if (pdbId) setPdbId(pdbId);
+        if (!pdbId) {
+          log.info("No PDB ID extracted");
+          return;
+        }
+        setPdbId(pdbId);
+
+        const responsePdb = await axios.get(`https://files.rcsb.org/download/${pdbId}.pdb`);
+        if (!responsePdb || !responsePdb.data) {
+          log.info("No response from RCSB for PDB");
+          return;
+        }
+        setResponsePdb(responsePdb);
       } catch (error) {
         log.error(error);
       }
@@ -78,12 +117,12 @@ export function ClickTooltip({ mapping }) {
     }
   }, [tooltipSettings.clickTooltipData]);
 
+  // init viewer
   useEffect(() => {
     const initViewer = async () => {
+      log.info("init 3dmol viewer");
       try {
-        const responsePdb = await axios.get(`https://files.rcsb.org/download/${pdbId}.pdb`);
-        if (!responsePdb) return;
-
+        if (!responsePdb || !responsePdb.data) return;
         const config = {
           backgroundColor: settings.appearance.theme.name === "light" ? "0xffffff" : "0x2a2e35",
         };
@@ -94,16 +133,17 @@ export function ClickTooltip({ mapping }) {
         viewer.setStyle({}, { cartoon: { color: "spectrum" } });
         viewer.zoomTo();
         viewer.render();
+
         setViewer(viewer);
       } catch (error) {
         log.error(error);
       }
     };
 
-    if (pdbId && viewerRef.current) {
+    if (responsePdb && viewerRef) {
       initViewer();
     }
-  }, [pdbId]);
+  }, [responsePdb]);
 
   useEffect(() => {
     if (!viewer) return;
@@ -117,7 +157,6 @@ export function ClickTooltip({ mapping }) {
     setDescription("");
     setPdbId("");
 
-    // NEXT: sicherstellen, dass die breite absolut ist und nicht kleiner wird falls zu nahe am rechten rand
     if (tooltipSettings.isClickTooltipActive) {
       let x = `${tooltipSettings.clickTooltipData.x + 15}px`;
       let x2 = `${tooltipSettings.clickTooltipData.x - 15}px`;
@@ -127,14 +166,12 @@ export function ClickTooltip({ mapping }) {
         setStyle({
           left: x,
           top: y,
-          opacity: 0.95,
           transform: "translateY(-100%)",
         });
         if (tooltipSettings.clickTooltipData.x > (2 * settings.container.width) / 3) {
           setStyle({
             left: x2,
             top: y,
-            opacity: 0.95,
             transform: "translateX(-100%) translateY(-100%)",
           });
         }
@@ -142,20 +179,14 @@ export function ClickTooltip({ mapping }) {
         setStyle({
           left: x2,
           top: y,
-          opacity: 0.95,
           transform: "translateX(-100%)",
         });
       } else {
         setStyle({
           left: x,
           top: y,
-          opacity: 0.95,
         });
       }
-    } else {
-      setStyle({
-        opacity: 0,
-      });
     }
   }, [tooltipSettings.isClickTooltipActive, tooltipSettings.clickTooltipData]);
 
@@ -208,56 +239,54 @@ export function ClickTooltip({ mapping }) {
   }
 
   return (
-    <div className="tooltip tooltip-click" style={style} ref={tooltipRef}>
-      {style.opacity > 0 && (
-        <div className="tooltip-content">
-          <div className="tooltip-header">
-            <p>{gene}</p>
-            <span className="tooltip-button" onClick={closeTooltip}>
-              <XIcon />
-            </span>
-          </div>
-          <div className="tooltip-body">
-            {fullName && (
-              <>
-                <b className="no-margin-bottom text-secondary">Full Name</b>
-                <div className="no-margin-top pad-bottom-05">{fullName}</div>
-              </>
-            )}
-            {isoforms && isoforms.length > 0 && (
-              <>
-                <b className="no-margin-bottom text-secondary">Protein-IDs {hasPhosphosites ? "and Phosphosites" : ""}</b>
-                <div className="no-margin-top pad-bottom-05">{isoformContent}</div>
-              </>
-            )}
-            {groupContent && groupContent.length > 0 && (
-              <>
-                <b className="no-margin-bottom text-secondary">Gene/Protein Annotations</b>
-                <div className="no-margin-top pad-bottom-05">{groupContent}</div>
-              </>
-            )}
-            {description && (
-              <>
-                <b className="no-margin-bottom text-secondary">Decription</b>
-                <div className="no-margin-top pad-bottom-05">{description}</div>
-              </>
-            )}
-          </div>
-          {pdbId && <div className="pdb-viewer" ref={viewerRef}></div>}
-          <div className="tooltip-footer">
-            {fullName && (
-              <a className="tooltip-footer-item" href={`https://www.uniprot.org/uniprotkb/${protIdNoIsoform}/`} target="_blank" rel="noreferrer">
-                To UniProt
-              </a>
-            )}
-            {pdbId && (
-              <a className="tooltip-footer-item" href={`https://www.rcsb.org/structure/${pdbId}/`} target="_blank" rel="noreferrer">
-                To RCSB PDB
-              </a>
-            )}
-          </div>
+    <div className="tooltip tooltip-click" style={{ ...style, opacity: 0.95 }}>
+      <div className="tooltip-content">
+        <div className="tooltip-header">
+          <p>{gene}</p>
+          <span className="tooltip-button" onClick={closeTooltip}>
+            <XIcon />
+          </span>
         </div>
-      )}
+        <div className="tooltip-body">
+          {fullName && (
+            <>
+              <b className="no-margin-bottom text-secondary">Full Name</b>
+              <div className="no-margin-top pad-bottom-05">{fullName}</div>
+            </>
+          )}
+          {isoforms && isoforms.length > 0 && (
+            <>
+              <b className="no-margin-bottom text-secondary">Protein-IDs {hasPhosphosites ? "and Phosphosites" : ""}</b>
+              <div className="no-margin-top pad-bottom-05">{isoformContent}</div>
+            </>
+          )}
+          {groupContent && groupContent.length > 0 && (
+            <>
+              <b className="no-margin-bottom text-secondary">Gene/Protein Annotations</b>
+              <div className="no-margin-top pad-bottom-05">{groupContent}</div>
+            </>
+          )}
+          {description && (
+            <>
+              <b className="no-margin-bottom text-secondary">Decription</b>
+              <div className="no-margin-top pad-bottom-05">{description}</div>
+            </>
+          )}
+        </div>
+        {pdbId && <div className="pdb-viewer" ref={viewerRef}></div>}
+        <div className="tooltip-footer">
+          {fullName && (
+            <a className="tooltip-footer-item" href={`https://www.uniprot.org/uniprotkb/${protIdNoIsoform}/`} target="_blank" rel="noreferrer">
+              To UniProt
+            </a>
+          )}
+          {pdbId && (
+            <a className="tooltip-footer-item" href={`https://www.rcsb.org/structure/${pdbId}/`} target="_blank" rel="noreferrer">
+              To RCSB PDB
+            </a>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
@@ -280,20 +309,13 @@ export function HoverTooltip({}) {
       setStyle({
         left: `${tooltipSettings.hoverTooltipData.x + 15}px`,
         top: `${tooltipSettings.hoverTooltipData.y}px`,
-        opacity: 0.95,
-        transition: "opacity 0.2s",
-      });
-    } else {
-      setStyle({
-        opacity: 0,
-        transition: "opacity 0.2s",
       });
     }
   }, [tooltipSettings.isHoverTooltipActive, tooltipSettings.hoverTooltipData]);
 
   return (
     <div className="tooltip" style={style}>
-      {style.opacity > 0 && <p className="margin-0">{gene}</p>}
+      <p className="margin-0">{gene}</p>
     </div>
   );
 }
