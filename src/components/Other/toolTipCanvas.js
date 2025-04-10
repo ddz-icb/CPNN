@@ -153,6 +153,10 @@ export function ClickTooltip({ mapping }) {
   }, [settings.appearance.theme]);
 
   useEffect(() => {
+    if (viewer) {
+      viewer.clear();
+    }
+
     setFullName("");
     setDescription("");
     setPdbId("");
@@ -273,7 +277,7 @@ export function ClickTooltip({ mapping }) {
             </>
           )}
         </div>
-        {pdbId && <div className="pdb-viewer" ref={viewerRef}></div>}
+        {responsePdb && <div className="pdb-viewer" ref={viewerRef}></div>}
         <div className="tooltip-footer">
           {fullName && (
             <a className="tooltip-footer-item" href={`https://www.uniprot.org/uniprotkb/${protIdNoIsoform}/`} target="_blank" rel="noreferrer">
