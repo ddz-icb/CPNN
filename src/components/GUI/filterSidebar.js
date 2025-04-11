@@ -10,11 +10,12 @@ import "../Other/syntaxHighlighting.js";
 import { parseAttributesFilter } from "../Other/parser.js";
 import { parseGroupsFilter } from "../Other/parserNodeFilter.js";
 
-import { PopUpTextField, PopUpTextFieldInline, SidebarButtonRect, SidebarCodeEditorBlock, SidebarFieldBlock, SidebarSliderBlock } from "./sidebar.js";
-import { useSettings } from "../../states.js";
+import { PopUpTextFieldInline, SidebarButtonRect, SidebarCodeEditorBlock, SidebarFieldBlock, SidebarSliderBlock } from "./sidebar.js";
+import { useGraphData, useSettings } from "../../states.js";
 
 export function FilterSidebar({ resetFilters }) {
   const { settings, setSettings } = useSettings();
+  const { graphData, setGraphData } = useGraphData();
 
   const linkFilterEditorRef = useRef(null);
   const nodeFilterEditorRef = useRef(null);
@@ -216,8 +217,8 @@ export function FilterSidebar({ resetFilters }) {
       </div>
       <SidebarSliderBlock
         text={"Link Weight Threshold"}
-        min={0}
-        max={1}
+        min={Math.floor(graphData.linkWeightMin / 0.05) * 0.05}
+        max={Math.ceil(graphData.linkWeightMax / 0.05) * 0.05}
         stepSlider={0.05}
         stepField={0.01}
         value={settings.filter.linkThreshold}

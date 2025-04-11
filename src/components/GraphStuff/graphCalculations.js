@@ -1,5 +1,6 @@
 import UnionFind from "union-find";
 import log from "../../logger.js";
+import { max } from "lodash";
 
 export function joinGraphs(graph, newGraph) {
   const nodeMap = new Map(graph.nodes.map((node) => [node.id, { ...node }]));
@@ -410,4 +411,18 @@ export function getDifferenceGraph(graph1, graph2) {
 
   const links = Array.from(linkMap.values());
   return { nodes, links };
+}
+
+export function getLinkWeightMinMax(graph) {
+  let minWeight = Infinity;
+  let maxWeight = -Infinity;
+
+  graph.links.forEach((link) => {
+    link.weights.forEach((w) => {
+      if (w < minWeight) minWeight = w;
+      if (w > maxWeight) maxWeight = w;
+    });
+  });
+
+  return { minWeight: minWeight, maxWeight: maxWeight };
 }

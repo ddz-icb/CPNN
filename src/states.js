@@ -130,6 +130,9 @@ export const useGraphData = create((set) => ({
     graph: null, // graph with modifications e.g. links filtered by threshold, it also contains the pixi node elements
     originGraph: null, // graph without modifications
 
+    linkWeightMin: null, // minimum link weight value of the entire graph
+    linkWeightMax: null, // maximum link weight value of the entire graph
+
     nodeMap: null, // mapping from nodes to circles and nodelabels; structure: {node, circle, nodeLabel}
     circles: null, // PIXI containers for drawing the nodes
     nodeLabels: null, // PIXI container for drawing node labels

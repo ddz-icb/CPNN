@@ -10,6 +10,7 @@ import {
   getDifferenceGraph,
   getIdsHavePhosphosites,
   getLinkAttribsToColorIndices,
+  getLinkWeightMinMax,
   getNodeAttribsToColorIndices,
 } from "./components/GraphStuff/graphCalculations.js";
 import { resetFilterSettings, resetPhysicsSettings } from "./components/Other/reset.js";
@@ -337,6 +338,10 @@ function App() {
 
     let newGraph = structuredClone(graphData.originGraph);
     newGraph = applyNodeMapping(newGraph, graphData.activeAnnotationMapping);
+
+    const { minWeight, maxWeight } = getLinkWeightMinMax(newGraph);
+    setGraphData("linkWeightMin", minWeight);
+    setGraphData("linkWeightMax", maxWeight);
 
     const nodeAttribsToColorIndices = getNodeAttribsToColorIndices(newGraph);
     setSettings("appearance.nodeAttribsToColorIndices", nodeAttribsToColorIndices);
