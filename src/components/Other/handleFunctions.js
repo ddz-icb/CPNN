@@ -1,10 +1,10 @@
 import { exampleGraphJson } from "../../demodata/exampleGraphJSON.js";
 import log from "../../logger.js";
-import { joinGraphs } from "../GraphStuff/graphCalculations.js";
+import { getDifferenceGraph, joinGraphs } from "../GraphStuff/graphCalculations.js";
 import { applyTheme, defaultColorSchemes, lightTheme } from "./appearance.js";
 import { addGraphFileDB, addGraphFileIfNotExistsDB, fromAllGetGraphNameDB, getGraphDB, removeGraphFileByNameDB } from "./dbGraphs.js";
 import { addMappingFileDB, fromAllGetMappingNameDB, getMappingDB, removeMappingFileByNameDB } from "./dbMappings.js";
-import { parseAnnotationMappingFile, parseColorSchemeFile, parseGraphFile } from "./parseFiles.js";
+import { getFileNameWithoutExtension, parseAnnotationMappingFile, parseColorSchemeFile, parseGraphFile } from "./parseFiles.js";
 
 export async function selectGraph(filename, setGraphData) {
   const { graph, file } = await getGraphDB(filename);
@@ -41,6 +41,11 @@ export function removeColorScheme(colorSchemes, setColorSchemes, colorSchemeName
 }
 
 export async function addNewGraphFile(file, uploadedGraphFileNames, setGraphData, takeAbs, minCorrForEdge, minCompSizeForNode) {
+  if (uploadedGraphFileNames.some((name) => getFileNameWithoutExtension(name) === getFileNameWithoutExtension(file.name))) {
+    log.warn("Graph with this name already exists");
+    throw new Error("Graph with this name already exists");
+  }
+
   const graphFile = await parseGraphFile(file, takeAbs, minCorrForEdge, minCompSizeForNode);
   addGraphFileDB(graphFile);
   setGraphData("uploadedGraphFileNames", [...(uploadedGraphFileNames || []), file.name]);

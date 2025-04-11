@@ -634,7 +634,7 @@ ul {
 }
 
 .heading-label {
-  color: var(--text-secondary);
+  color: var(--text-primary);
   padding-top: 0.5rem;
   font-size: 1.15rem;
   width: 100%;
@@ -643,7 +643,7 @@ ul {
 }
 
 .heading-label-no-pad {
-  color: var(--text-secondary);
+  color: var(--text-primary);
   font-size: 1.15rem;
   width: 100%;
   display: block;
@@ -1040,7 +1040,7 @@ input[type="radio"]:checked:after {
 }
 
 .error-overlay {
-  z-index: 5;
+  z-index: 100;
   display: flex;
   justify-content: center;
   align-items: center;

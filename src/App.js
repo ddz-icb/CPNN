@@ -7,6 +7,7 @@ import { Sidebar } from "./components/GUI/sidebar.js";
 import { HeaderBar } from "./components/GUI/headerBar.js";
 import {
   applyNodeMapping,
+  getDifferenceGraph,
   getIdsHavePhosphosites,
   getLinkAttribsToColorIndices,
   getNodeAttribsToColorIndices,
@@ -17,6 +18,7 @@ import {
   addNewAnnotationMappingFile,
   addNewColorScheme,
   addNewGraphFile,
+  createDifferenceGraph,
   deleteAnnotationMapping,
   deleteGraphFile,
   loadAnnotationMappings,
@@ -35,6 +37,7 @@ import { useGraphData, useSettings } from "./states.js";
 import { Erorr } from "./components/Other/error.js";
 import { defaultColorSchemes } from "./components/Other/appearance.js";
 import { getFileNameWithoutExtension } from "./components/Other/parseFiles.js";
+import { getGraphDB } from "./components/Other/dbGraphs.js";
 
 function App() {
   const { settings, setSettings } = useSettings(); // includes physics, filter and appearance settings
@@ -79,11 +82,6 @@ function App() {
   const handleNewGraphFile = async (event, takeAbs, minCorrForEdge, minCompSizeForNode) => {
     const file = event.target.files[0];
     if (!event || !event.target || !file) return;
-    if (graphData.uploadedGraphFileNames.some((name) => getFileNameWithoutExtension(name) === getFileNameWithoutExtension(file.name))) {
-      log.warn("Graph with this name already exists");
-      setError("Graph with this name already exists");
-      return;
-    }
     log.info("Adding new graph file");
 
     addNewGraphFile(file, graphData.uploadedGraphFileNames, setGraphData, takeAbs, minCorrForEdge, minCompSizeForNode)
@@ -223,6 +221,39 @@ function App() {
     }
   };
 
+  async function handleCreateDifferenceGraph(selectedGraphName1, selectedGraphName2, graphData, setGraphData) {
+    if (!selectedGraphName1 || !selectedGraphName2) {
+      setError("Please select two graphs");
+      return;
+    }
+    if (selectedGraphName1 === selectedGraphName2) {
+      setError("Please select two different graphs");
+      return;
+    }
+    log.info("Creating difference graph with following graphs:", selectedGraphName1, selectedGraphName2);
+
+    let obj1 = await getGraphDB(selectedGraphName1);
+    let obj2 = await getGraphDB(selectedGraphName2);
+
+    const diffGraph = getDifferenceGraph(obj1.graph, obj2.graph);
+    const diffGraphName = "DifferenceGraph" + ".json";
+
+    const file = new File([JSON.stringify(diffGraph)], diffGraphName, {
+      type: "application/json",
+    });
+
+    const takeAbs = true;
+    const minCorrForEdge = 0;
+    const minCompSizeForNode = 0;
+
+    addNewGraphFile(file, graphData.uploadedGraphFileNames, setGraphData, takeAbs, minCorrForEdge, minCompSizeForNode)
+      .then(() => {})
+      .catch((error) => {
+        setError(`${error.message}`);
+        log.error("Error adding graph file:", error);
+      });
+  }
+
   // initates reset //
   const simulationReset = () => {
     if (!graphData.activeGraphFileNames) return;
@@ -334,6 +365,7 @@ function App() {
         handleNewGraphFile={handleNewGraphFile}
         handleNewColorScheme={handleNewColorScheme}
         handleDeleteColorScheme={handleDeleteColorScheme}
+        handleCreateDifferenceGraph={handleCreateDifferenceGraph}
         colorSchemes={colorSchemes}
         resetPhysics={resetPhysics}
         resetFilters={resetFilters}

@@ -195,7 +195,7 @@ export function filterByLinkAttribs(graph, filterRequest) {
           }
 
           if (meetsTerm === false) {
-            // doens't meet all terms
+            // doensn't meet all terms
             return {
               ...link,
               attribs: [],
@@ -233,7 +233,7 @@ export function filterByNodeAttribs(graph, filterRequest) {
           }
 
           if (meetsTerm === false) {
-            // doens't meet all terms
+            // doensn't meet all terms
             return {
               ...node,
               groups: [],
@@ -344,4 +344,70 @@ export function getNodeIdName(nodeId) {
 
 export function getNodeLabelOffsetY(nodeId) {
   return -25;
+}
+
+export function getDifferenceGraph(graph1, graph2) {
+  const nodeMap = new Map();
+
+  graph1.nodes.forEach((node) => {
+    nodeMap.set(node.id, { ...node, groups: new Set(node.groups) });
+  });
+
+  graph2.nodes.forEach((node) => {
+    if (nodeMap.has(node.id)) {
+      const existing = nodeMap.get(node.id);
+      node.groups.forEach((g) => existing.groups.add(g));
+    } else {
+      nodeMap.set(node.id, { ...node, groups: new Set(node.groups) });
+    }
+  });
+
+  const nodes = Array.from(nodeMap.values()).map((node) => ({
+    ...node,
+    groups: Array.from(node.groups),
+  }));
+
+  const getKey = (link) => {
+    const src = link.source.id || link.source;
+    const tgt = link.target.id || link.target;
+    return [src, tgt].sort().join("-");
+  };
+
+  const linkMap = new Map();
+
+  graph1.links.forEach((link) => {
+    const key = getKey(link);
+    const val = link.weights[0];
+    linkMap.set(key, {
+      source: link.source,
+      target: link.target,
+      weights: [val],
+      attribs: ["difference"],
+    });
+  });
+
+  graph2.links.forEach((link) => {
+    const key = getKey(link);
+    const val2 = link.weights[0];
+    if (linkMap.has(key)) {
+      const link1 = linkMap.get(key);
+      const diff = Math.abs(link1.weights[0] - val2);
+      linkMap.set(key, {
+        source: link1.source,
+        target: link1.target,
+        weights: [diff],
+        attribs: ["difference"],
+      });
+    } else {
+      linkMap.set(key, {
+        source: link.source,
+        target: link.target,
+        weights: [val2],
+        attribs: ["difference"],
+      });
+    }
+  });
+
+  const links = Array.from(linkMap.values());
+  return { nodes, links };
 }

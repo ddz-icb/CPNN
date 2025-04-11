@@ -32,12 +32,17 @@ export function DataSidebar({
   handleAnnotationMappingSelect,
   handleDeleteAnnotationMapping,
   handleNewGraphFile,
+  handleCreateDifferenceGraph,
 }) {
   const { graphData, setGraphData } = useGraphData();
 
   return (
     <>
-      <TopDataButtons handleNewGraphFile={handleNewGraphFile} handleNewAnnotationMapping={handleNewAnnotationMapping} />
+      <TopDataButtons
+        handleNewGraphFile={handleNewGraphFile}
+        handleNewAnnotationMapping={handleNewAnnotationMapping}
+        handleCreateDifferenceGraph={handleCreateDifferenceGraph}
+      />
       <ActiveFiles activeGraphFileNames={graphData.activeGraphFileNames} handleRemoveActiveGraphFile={handleRemoveActiveGraphFile} />
       <UploadedFiles
         uploadedGraphFileNames={graphData.uploadedGraphFileNames}
@@ -216,13 +221,27 @@ function ActiveAnnotationMapping({ activeAnnotationMapping, handleRemoveActiveAn
   );
 }
 
-export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping }) {
+export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping, handleCreateDifferenceGraph }) {
   const annotationMappingRef = useRef(null);
   const graphFileRef = useRef(null);
 
   const [graphPopUpActive, setGraphPopUpActive] = useState(false);
   const [mappingPopUpActive, setMappingPopUpActive] = useState(false);
   const [differencePopUpActive, setDifferencePopUpActive] = useState(false);
+  const { graphData, setGraphData } = useGraphData();
+  const uploadedGraphFileNames = graphData.uploadedGraphFileNames || [];
+  const uploadedGraphFileNamesNoExample = uploadedGraphFileNames.filter((name) => name !== exampleGraphJson.name);
+
+  const [selectedGraphName1, setSelectedGraph1] = useState("");
+  const [selectedGraphName2, setSelectedGraph2] = useState("");
+
+  const handleGraph1Change = (event) => {
+    setSelectedGraph1(event.target.value);
+  };
+
+  const handleGraph2Change = (event) => {
+    setSelectedGraph2(event.target.value);
+  };
 
   const [takeAbs, setTakeAbs] = useState(false);
 
@@ -338,12 +357,12 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
           tooltipId={"upload-mapping-tooltip"}
         />
       </div>
-      {/* <SidebarButtonRect
+      <SidebarButtonRect
         onClick={() => setDifferencePopUpActive(!differencePopUpActive)}
         text={"Create Difference Graph"}
         tooltip={"Create graph resembling the difference between two graphs"}
         tooltipId={"difference-graph-tooltip"}
-      /> */}
+      />
       <PopUp
         heading={"Uploading Your Pathway Mapping"}
         description={
@@ -456,13 +475,51 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
         heading={"Create Difference Graph"}
         description={
           <div className="popup-block color-text-primary">
-            Generates a graph that visualizes the differences between two uploaded graphs. The edge weights of the resulting graph represent the
-            difference between the corresponding edge weights of the original graphs.{" "}
+            Generates a graph that visualizes the differences between the two selected graphs below. The edge weights of the resulting graph represent
+            the absolute difference between the corresponding edge weights of the original graphs.
+            <br></br>
+            <br></br>
           </div>
         }
         isOpen={differencePopUpActive}
         setIsOpen={setDifferencePopUpActive}
-      ></PopUp>
+      >
+        <div className="popup-block">
+          <label className="label-no-pad">Graph A</label>
+          <select className="popup-button-rect" value={selectedGraphName1} onChange={handleGraph1Change}>
+            <option value="">Please Choose</option>
+            {uploadedGraphFileNamesNoExample
+              .filter((name) => name !== selectedGraphName2)
+              .map((name, index) => (
+                <option key={index} value={name}>
+                  {name}
+                </option>
+              ))}
+          </select>
+        </div>
+        <div className="popup-block">
+          <label className="label-no-pad">Graph B</label>
+          <select className="popup-button-rect" value={selectedGraphName2} onChange={handleGraph2Change}>
+            <option value="">Please Choose</option>
+            {uploadedGraphFileNamesNoExample
+              .filter((name) => name !== selectedGraphName1)
+              .map((name, index) => (
+                <option key={index} value={name}>
+                  {name}
+                </option>
+              ))}
+          </select>
+        </div>
+        <div className="popup-block justify-right">
+          <PopupButtonRect
+            onClick={() => {
+              handleCreateDifferenceGraph(selectedGraphName1, selectedGraphName2, graphData, setGraphData);
+              setDifferencePopUpActive(false);
+            }}
+            text={"Create Difference Graph"}
+          />
+        </div>
+      </PopUp>
     </>
   );
 }

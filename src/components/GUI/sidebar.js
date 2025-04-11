@@ -23,6 +23,7 @@ export function Sidebar({
   handleNewGraphFile,
   handleNewColorScheme,
   handleDeleteColorScheme,
+  handleCreateDifferenceGraph,
   colorSchemes,
   resetPhysics,
   resetFilters,
@@ -58,6 +59,7 @@ export function Sidebar({
           handleAnnotationMappingSelect={handleAnnotationMappingSelect}
           handleDeleteAnnotationMapping={handleDeleteAnnotationMapping}
           handleNewGraphFile={handleNewGraphFile}
+          handleCreateDifferenceGraph={handleCreateDifferenceGraph}
         />
       </Navbar>
     );
