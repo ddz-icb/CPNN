@@ -377,21 +377,21 @@ export function getDifferenceGraph(graph1, graph2) {
 
   graph1.links.forEach((link) => {
     const key = getKey(link);
-    const val = link.weights[0];
+    const maxVal = Math.max(...link.weights);
     linkMap.set(key, {
       source: link.source,
       target: link.target,
-      weights: [val],
+      weights: [maxVal],
       attribs: ["difference"],
     });
   });
 
   graph2.links.forEach((link) => {
     const key = getKey(link);
-    const val2 = link.weights[0];
+    const maxVal2 = Math.max(...link.weights);
     if (linkMap.has(key)) {
       const link1 = linkMap.get(key);
-      const diff = Math.abs(link1.weights[0] - val2);
+      const diff = link1.weights[0] - maxVal2;
       linkMap.set(key, {
         source: link1.source,
         target: link1.target,
@@ -402,7 +402,7 @@ export function getDifferenceGraph(graph1, graph2) {
       linkMap.set(key, {
         source: link.source,
         target: link.target,
-        weights: [val2],
+        weights: [maxVal2],
         attribs: ["difference"],
       });
     }

@@ -219,7 +219,7 @@ export function PopUpSwitchBlock({ text, value, onChange }) {
   return (
     <>
       <div className="popup-block">
-        <label className="label">{text}</label>
+        <label className="label-no-pad">{text}</label>
         <label className="switch">
           <input type="checkbox" checked={value} onChange={onChange} className="checkbox-input" />
           <span className="slider round"></span>
@@ -340,11 +340,9 @@ export function SidebarCodeEditorBlock({ text, onClick, compilerError, defaultVa
 
 export function PopUpTextFieldInline({ textInfront, textInside }) {
   return (
-    <div className="inline">
-      <label className="label-no-pad pad-top-1">{textInfront}</label>
-      <div className={"popup-block"}>
-        <div className="popup-text-field pad-left-025 pad-right-025">{textInside}</div>
-      </div>
+    <div className="popup-block">
+      <label className="label-no-pad">{textInfront}</label>
+      <div className="popup-text-field pad-left-025 pad-right-025">{textInside}</div>
     </div>
   );
 }

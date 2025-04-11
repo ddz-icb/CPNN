@@ -1295,7 +1295,6 @@ input[type="radio"]:checked:after {
 
 .inline {
   display: inline-flex;
-  align-items: center;
 }
 
 .no-wrap {
@@ -1416,6 +1415,18 @@ input[type="radio"]:checked:after {
 .justify-right {
   display: flex;
   justify-content: flex-end;
+}
+
+.flex-end {
+  justify-content: flex-end;
+}
+
+.width-100-percent {
+  width: 100%;
+}
+
+.align-center {
+  align-items: center;
 }
 
 .dropdown-sidebar {

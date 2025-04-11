@@ -14,6 +14,7 @@ import {
   PopUpSliderBlock,
   PopUpFieldBlock,
   PopUp,
+  PopUpTextFieldInline,
 } from "./sidebar.js";
 import log from "../../logger.js";
 import { useGraphData } from "../../states.js";
@@ -474,16 +475,26 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
       <PopUp
         heading={"Create Difference Graph"}
         description={
-          <div className="popup-block color-text-primary">
+          <div>
             Generates a graph that visualizes the differences between the two selected graphs below. The edge weights of the resulting graph represent
-            the absolute difference between the corresponding edge weights of the original graphs.
-            <br></br>
+            the difference between the corresponding edge weights of the original graphs. You have the option to substract Graph B from Graph A, or
+            take the absolute value of their difference. If a link is a multilink, it's maximum weight will be chosen as the value for the
+            calculation.
             <br></br>
           </div>
         }
         isOpen={differencePopUpActive}
         setIsOpen={setDifferencePopUpActive}
       >
+        <PopUpSwitchBlock
+          text={"Take absolute value of the difference ( | Graph A - Graph B | )"}
+          value={takeAbs}
+          onChange={() => {
+            setTakeAbs(!takeAbs);
+          }}
+        />
+        <div className="popup-block"></div>
+        <div className="popup-block"></div>
         <div className="popup-block">
           <label className="label-no-pad">Graph A</label>
           <select className="popup-button-rect" value={selectedGraphName1} onChange={handleGraph1Change}>
@@ -513,7 +524,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
         <div className="popup-block justify-right">
           <PopupButtonRect
             onClick={() => {
-              handleCreateDifferenceGraph(selectedGraphName1, selectedGraphName2, graphData, setGraphData);
+              handleCreateDifferenceGraph(selectedGraphName1, selectedGraphName2, graphData, setGraphData, takeAbs);
               setDifferencePopUpActive(false);
             }}
             text={"Create Difference Graph"}

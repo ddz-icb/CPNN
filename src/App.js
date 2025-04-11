@@ -221,7 +221,7 @@ function App() {
     }
   };
 
-  async function handleCreateDifferenceGraph(selectedGraphName1, selectedGraphName2, graphData, setGraphData) {
+  async function handleCreateDifferenceGraph(selectedGraphName1, selectedGraphName2, graphData, setGraphData, takeAbs) {
     if (!selectedGraphName1 || !selectedGraphName2) {
       setError("Please select two graphs");
       return;
@@ -242,7 +242,6 @@ function App() {
       type: "application/json",
     });
 
-    const takeAbs = true;
     const minCorrForEdge = 0;
     const minCompSizeForNode = 0;
 
