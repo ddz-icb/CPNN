@@ -12,7 +12,8 @@ export function Tooltips({}) {
 
   return (
     <>
-      {tooltipSettings.isClickTooltipActive && <ClickTooltip mapping={graphData.activeAnnotationMapping} />}
+      {/* {tooltipSettings.isClickTooltipActive && <ClickTooltip mapping={graphData.activeAnnotationMapping} />} */}
+      <ClickTooltip mapping={graphData.activeAnnotationMapping} />
       {!tooltipSettings.isClickTooltipActive && tooltipSettings.isHoverTooltipActive && <HoverTooltip />}
     </>
   );
@@ -50,6 +51,7 @@ export function ClickTooltip({ mapping }) {
         const protIdNoIsoform = entries[0].split("_")[0].split("-")[0];
         if (!protIdNoIsoform) {
           log.info("No protein ID found");
+          setProtIdNoIsoform("");
           return;
         }
         setProtIdNoIsoform(protIdNoIsoform);
@@ -57,6 +59,7 @@ export function ClickTooltip({ mapping }) {
         const gene = entries[0].split("_")[1];
         if (!gene) {
           log.info("No gene found");
+          setGene("");
           return;
         }
         setGene(gene);
@@ -83,6 +86,7 @@ export function ClickTooltip({ mapping }) {
         const fullName = extractFullName(responseUniprot.data);
         if (!fullName) {
           log.info("No full name extracted");
+          setFullName("");
           return;
         }
         setFullName(fullName);
@@ -90,6 +94,7 @@ export function ClickTooltip({ mapping }) {
         const description = extractDescription(responseUniprot.data);
         if (!description) {
           log.info("No description extracted");
+          setDescription("");
           return;
         }
         setDescription(description);
@@ -97,6 +102,7 @@ export function ClickTooltip({ mapping }) {
         const pdbId = extractPdbId(responseUniprot.data);
         if (!pdbId) {
           log.info("No PDB ID extracted");
+          setPdbId(null);
           return;
         }
         setPdbId(pdbId);
@@ -112,7 +118,7 @@ export function ClickTooltip({ mapping }) {
       }
     };
 
-    if (tooltipSettings.clickTooltipData.node) {
+    if (tooltipSettings.clickTooltipData?.node) {
       fetchData();
     }
   }, [tooltipSettings.clickTooltipData]);
@@ -122,28 +128,38 @@ export function ClickTooltip({ mapping }) {
     const initViewer = async () => {
       log.info("init 3dmol viewer");
       try {
-        if (!responsePdb || !responsePdb.data) return;
         const config = {
           backgroundColor: settings.appearance.theme.name === "light" ? "0xffffff" : "0x2a2e35",
         };
-        if (!viewerRef || !viewerRef.current) return; // need this check as the await from axios may take a while -> viewerRef.current has a different state
+        if (
+          !viewerRef ||
+          !viewerRef.current || // need this check as the await from axios may take a while -> viewerRef.current has a different state
+          viewerRef.current.clientWidth === 0 ||
+          viewerRef.current.clientHeight === 0
+        ) {
+          return;
+        }
         const viewer = $3Dmol.createViewer(viewerRef.current, config);
-
-        viewer.addModel(responsePdb.data, "pdb");
-        viewer.setStyle({}, { cartoon: { color: "spectrum" } });
-        viewer.zoomTo();
-        viewer.render();
-
         setViewer(viewer);
       } catch (error) {
         log.error(error);
       }
     };
 
-    if (responsePdb && viewerRef) {
+    if (viewerRef && viewerRef.current && !viewer) {
       initViewer();
     }
-  }, [responsePdb]);
+  }, [viewerRef.current]);
+
+  useEffect(() => {
+    if (!viewer || !responsePdb || !tooltipSettings.isClickTooltipActive) return;
+    log.info("Adding model to 3dmol viewer");
+
+    viewer.addModel(responsePdb.data, "pdb");
+    viewer.setStyle({}, { cartoon: { color: "spectrum" } });
+    viewer.zoomTo();
+    viewer.render();
+  }, [viewer, responsePdb, tooltipSettings.isClickTooltipActive]);
 
   useEffect(() => {
     if (!viewer) return;
@@ -160,6 +176,7 @@ export function ClickTooltip({ mapping }) {
     setFullName("");
     setDescription("");
     setPdbId("");
+    setResponsePdb(null);
 
     if (tooltipSettings.isClickTooltipActive) {
       let x = `${tooltipSettings.clickTooltipData.x + 15}px`;
@@ -195,11 +212,14 @@ export function ClickTooltip({ mapping }) {
   }, [tooltipSettings.isClickTooltipActive, tooltipSettings.clickTooltipData]);
 
   const closeTooltip = () => {
+    if (viewer) {
+      viewer.clear();
+    }
     setTooltipSettings("isClickTooltipActive", false);
   };
 
   let groupContent = [];
-  if (mapping && mapping.groupMapping && tooltipSettings.clickTooltipData.nodeGroups[0]) {
+  if (mapping && mapping.groupMapping && tooltipSettings.clickTooltipData?.nodeGroups[0]) {
     tooltipSettings.clickTooltipData.nodeGroups.forEach((group) => {
       const groupName = mapping.groupMapping[group]?.name;
       const reactomeId = mapping.groupMapping[group]?.reactomeId;
@@ -215,7 +235,7 @@ export function ClickTooltip({ mapping }) {
       }
     });
   } else {
-    tooltipSettings.clickTooltipData.nodeGroups.forEach((group) => {
+    tooltipSettings.clickTooltipData?.nodeGroups?.forEach((group) => {
       groupContent.push(group);
     });
   }
@@ -243,7 +263,14 @@ export function ClickTooltip({ mapping }) {
   }
 
   return (
-    <div className="tooltip tooltip-click" style={{ ...style, opacity: 0.95 }}>
+    <div
+      className="tooltip tooltip-click"
+      style={{
+        ...style,
+        opacity: tooltipSettings.isClickTooltipActive ? 0.95 : 0,
+        visibility: tooltipSettings.isClickTooltipActive ? "visible" : "hidden",
+      }}
+    >
       <div className="tooltip-content">
         <div className="tooltip-header">
           <p>{gene}</p>
@@ -277,7 +304,11 @@ export function ClickTooltip({ mapping }) {
             </>
           )}
         </div>
-        {responsePdb && <div className="pdb-viewer" ref={viewerRef}></div>}
+        <div
+          className="pdb-viewer"
+          ref={viewerRef}
+          style={responsePdb ? {} : { position: "absolute", left: "-9999px", width: "1px", height: "1px", overflow: "hidden" }}
+        ></div>
         <div className="tooltip-footer">
           {fullName && (
             <a className="tooltip-footer-item" href={`https://www.uniprot.org/uniprotkb/${protIdNoIsoform}/`} target="_blank" rel="noreferrer">
