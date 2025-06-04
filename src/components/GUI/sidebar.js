@@ -142,7 +142,7 @@ export function SidebarSliderBlock({
     <>
       <div className="inline">
         <label className="label pad-left-1">{text}</label>
-        <span className="tooltip-button pad-left-05 pad-top-05" onClick={() => setInfoIsOpen(true)}>
+        <span className="tooltip-button pad-left-05 pad-top-11" onClick={() => setInfoIsOpen(true)}>
           <InfoIcon />
         </span>
       </div>
@@ -201,7 +201,7 @@ export function SidebarSwitchBlock({ text, value, onChange, infoHeading, infoDes
       <div className="sidebar-block">
         <div className="inline">
           <label className="label">{text}</label>
-          <span className="tooltip-button pad-left-05 pad-top-05" onClick={() => setInfoIsOpen(true)}>
+          <span className="tooltip-button pad-left-05 pad-top-11" onClick={() => setInfoIsOpen(true)}>
             <InfoIcon />
           </span>
         </div>
@@ -243,7 +243,7 @@ export function SidebarFieldBlock({ text, min, max, step, value, onChange, onBlu
       <div className="sidebar-block">
         <div className="inline">
           <label className="label">{text}</label>
-          <span className="tooltip-button pad-left-05 pad-top-05" onClick={() => setInfoIsOpen(true)}>
+          <span className="tooltip-button pad-left-05 pad-top-11" onClick={() => setInfoIsOpen(true)}>
             <InfoIcon />
           </span>
         </div>
@@ -322,7 +322,7 @@ export function SidebarCodeEditorBlock({ text, onClick, compilerError, defaultVa
     <>
       <div className="inline">
         <label className="label pad-left-1">{text}</label>
-        <span className="tooltip-button pad-left-05 pad-top-05" onClick={() => setInfoIsOpen(true)}>
+        <span className="tooltip-button pad-left-05 pad-top-11" onClick={() => setInfoIsOpen(true)}>
           <InfoIcon />
         </span>
       </div>

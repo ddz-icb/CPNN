@@ -1249,6 +1249,10 @@ input[type="radio"]:checked:after {
   padding-top: 1rem;
 }
 
+.pad-top-11 {
+  padding-top: 1.1rem;
+}
+
 .pad-left-1 {
   padding-left: 1rem;
 }
