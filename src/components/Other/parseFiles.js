@@ -1,5 +1,6 @@
 import log from "../../logger.js";
 import Papa from "papaparse";
+import * as math from "mathjs";
 import { filterByThreshold, filterMinCompSize, filterNodesExist } from "../GraphStuff/graphCalculations.js";
 import { expectedPhysicTypes } from "../../states.js";
 
@@ -27,9 +28,20 @@ export function parseGraph(name, content, takeAbs, minCorrForEdge, minCompSizeFo
   if (fileExtension === "json") {
     graph = JSON.parse(content);
   } else if (fileExtension === "csv" || fileExtension === "tsv") {
-    const fileData = parseGraphCSVorTSV(content);
+    var fileData = parseGraphCSVorTSV(content);
+
+    fileData.header = fileData.header.map((value) => (typeof value === "string" ? value : String(value)));
 
     if (!fileData) return null;
+
+    // if data is raw, convert to matrix
+    if (!isSymmMatrix(content)) {
+      const takeSpearmanCoefficient = false;
+      log.info("Converting data into symmetrical matrix. Used correlation coefficient:", takeSpearmanCoefficient ? "Spearman" : "Pearson");
+      fileData = { header: fileData.firstColumn, data: convertToCorrMatrix(fileData.data, takeSpearmanCoefficient) };
+    }
+
+    console.log("YOYOYOYO???", fileData);
 
     const linkAttribMatch = name.match(/dataset(\w+)/);
     const linkAttrib = linkAttribMatch ? linkAttribMatch[1] : name;
@@ -48,7 +60,7 @@ export function parseGraph(name, content, takeAbs, minCorrForEdge, minCompSizeFo
         graph.links.push({
           source: fileData.header[i],
           target: fileData.header[j],
-          weights: [fileData.data[i][j]],
+          weights: [fileData.data[i][j] || 0],
           attribs: [linkAttrib],
         });
       }
@@ -91,18 +103,16 @@ function parseGraphCSVorTSV(content) {
 
   if (!fileData.data || fileData.data.length === 0) return null;
 
-  let updatedData = fileData.data.map((row) => {
-    let newRow = Object.assign({}, row);
-    delete newRow[Object.keys(newRow)[0]];
-    return Object.values(newRow);
-  });
+  let firstColumn = fileData.data.map((row) => row[0]);
+
+  let updatedData = fileData.data.map((row) => row.slice(1));
 
   return {
     header: updatedData[0],
     data: updatedData.slice(1),
+    firstColumn: firstColumn.slice(1),
   };
 }
-
 function verifyGraph(graph) {
   if (!graph || typeof graph !== "object") {
     throw new Error("Error while parsing the graph file. It does not have the right format.");
@@ -151,6 +161,103 @@ function verifyGraph(graph) {
       }
     }
   }
+}
+
+function isSymmMatrix(content) {
+  let fileData = Papa.parse(content, {
+    header: false,
+    dynamicTyping: true,
+    skipEmptyLines: true,
+    delimiter: "",
+  });
+
+  const firstColumn = fileData.data.map((row) => row[0]);
+  const firstRow = fileData.data[0];
+
+  if (firstColumn.length !== firstRow.length) return false;
+  for (let i = 0; i < firstColumn.length; i++) {
+    if (firstColumn[i] !== firstRow[i]) return false;
+  }
+  return true;
+}
+
+const rankData = (arr) => {
+  if (arr.length === 0) return;
+
+  const indexedArr = arr.map((value, index) => ({ value, originalIndex: index }));
+
+  indexedArr.sort((a, b) => a.value - b.value);
+
+  const ranks = new Array(arr.length);
+  let currentRank = 1;
+
+  for (let i = 0; i < indexedArr.length; ) {
+    let j = i;
+    while (j < indexedArr.length && indexedArr[j].value === indexedArr[i].value) {
+      j++;
+    }
+
+    const count = j - i;
+    const sumOfRanks = ((currentRank + (currentRank + count - 1)) * count) / 2;
+    const averageRank = sumOfRanks / count;
+
+    for (let k = i; k < j; k++) {
+      ranks[indexedArr[k].originalIndex] = averageRank;
+    }
+
+    currentRank += count;
+    i = j;
+  }
+  return ranks;
+};
+
+function convertToCorrMatrix(fileData, takeSpearmanCoefficient) {
+  if (!Array.isArray(fileData) || fileData.length === 0 || !Array.isArray(fileData) || fileData.length === 0) {
+    log.error("Input fileData must be a non-empty array of arrays.");
+    return;
+  }
+
+  const numFeatures = fileData.length;
+  const correlationMatrix = math.zeros(numFeatures, numFeatures).toArray();
+
+  for (let i = 0; i < numFeatures; i++) {
+    for (let j = i; j < numFeatures; j++) {
+      let series1 = fileData[i];
+      let series2 = fileData[j];
+
+      const filteredPairs = series1
+        .map((val, idx) => ({ x: val, y: series2[idx] }))
+        .filter((pair) => typeof pair.x === "number" && !isNaN(pair.x) && typeof pair.y === "number" && !isNaN(pair.y));
+
+      if (filteredPairs.length < 2) {
+        correlationMatrix[i][j] = 0;
+        correlationMatrix[j][i] = 0;
+        continue;
+      }
+
+      let cleanSeries1 = filteredPairs.map((pair) => pair.x);
+      let cleanSeries2 = filteredPairs.map((pair) => pair.y);
+
+      if (takeSpearmanCoefficient) {
+        cleanSeries1 = rankData(cleanSeries1);
+        cleanSeries2 = rankData(cleanSeries2);
+      }
+
+      let correlationValue;
+      try {
+        correlationValue = math.corr(cleanSeries1, cleanSeries2);
+      } catch (e) {
+        correlationValue = 0;
+      }
+
+      const roundedCorrelation = math.round(correlationValue, 2);
+
+      correlationMatrix[i][j] = roundedCorrelation;
+      correlationMatrix[j][i] = roundedCorrelation;
+    }
+  }
+
+  return correlationMatrix;
 }
 
 export async function parseColorSchemeFile(file) {

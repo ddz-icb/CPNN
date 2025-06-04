@@ -22,6 +22,7 @@ import { exampleGraphJson } from "../../demodata/exampleGraphJSON.js";
 import { downloadCsvFile, downloadObjectAsFile } from "../GraphStuff/download.js";
 import { exampleGraphCsv } from "../../demodata/exampleGraphCSV.js";
 import { exampleMappingCsv } from "../../demodata/exampleMappingCSV.js";
+import { exampleGraphRaw } from "../../demodata/exampleGraphRawTSV.js";
 
 export function DataSidebar({
   handleRemoveActiveGraphFile,
@@ -410,6 +411,29 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
         isOpen={graphPopUpActive}
         setIsOpen={setGraphPopUpActive}
       >
+        <div className="popup-block">
+          <PopupButtonRect
+            className="no-pad-top"
+            text={"JSON Example Graph"}
+            onClick={() => {
+              downloadObjectAsFile(exampleGraphJson.content, exampleGraphJson.name);
+            }}
+          />
+          <PopupButtonRect
+            className="no-pad-top"
+            text={"Matrix Example Graph"}
+            onClick={() => {
+              downloadCsvFile(exampleGraphCsv.content, exampleGraphCsv.name);
+            }}
+          />
+          <PopupButtonRect
+            className="no-pad-top"
+            text={"Raw Data Example Graph"}
+            onClick={() => {
+              downloadCsvFile(exampleGraphRaw.content, exampleGraphRaw.name);
+            }}
+          />
+        </div>
         <PopUpSwitchBlock
           text={"Include negative correlations by taking the absolute value"}
           value={takeAbs}
@@ -447,30 +471,18 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
         <PopUpTextField textInfront={"Node ID format:"} textInside={nodeIdFormat} />
         <div className="popup-block"></div>
         <PopUpDoubleTextField textInfront={"Node ID examples:"} textInside1={nodeIdExample1} textInside2={nodeIdExample2} />
-        <div className="popup-block">
+        <div className="popup-block flex-end">
           <PopupButtonRect
-            text={"Download JSON Example Graph"}
-            onClick={() => {
-              downloadObjectAsFile(exampleGraphJson.content, exampleGraphJson.name);
-            }}
-          />
-          <PopupButtonRect
-            text={"Download CSV Example Graph"}
-            onClick={() => {
-              downloadCsvFile(exampleGraphCsv.content, exampleGraphCsv.name);
+            text={"Upload Own Graph File"}
+            onClick={handleGraphUploadClick}
+            linkRef={graphFileRef}
+            onChange={(event) => {
+              handleNewGraphFile(event, takeAbs, minCorrForEdge, minCompSizeForNode);
+              event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
+              setGraphPopUpActive(false);
             }}
           />
         </div>
-        <PopupButtonRect
-          text={"Upload Own Graph File"}
-          onClick={handleGraphUploadClick}
-          linkRef={graphFileRef}
-          onChange={(event) => {
-            handleNewGraphFile(event, takeAbs, minCorrForEdge, minCompSizeForNode);
-            event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
-            setGraphPopUpActive(false);
-          }}
-        />
       </PopUp>
       <PopUp
         heading={"Create Difference Graph"}

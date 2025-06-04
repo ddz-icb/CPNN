@@ -303,9 +303,9 @@ export function SidebarButtonRect({ onClick, onChange, linkRef, tooltip, tooltip
   );
 }
 
-export function PopupButtonRect({ onClick, onChange, linkRef, tooltip, tooltipId, text }) {
+export function PopupButtonRect({ className, onClick, onChange, linkRef, tooltip, tooltipId, text }) {
   return (
-    <div className="popup-tooltip-wrapper justify-right pad-top-1">
+    <div className={`popup-tooltip-wrapper justify-right pad-top-1 ${className}`}>
       <button className="popup-button-rect" data-tooltip-id={tooltipId} data-tooltip-content={tooltip} onClick={onClick}>
         <span className="popup-button-rect-text">{text}</span>
         <input type="file" style={{ display: "none" }} onChange={onChange} ref={linkRef} />
