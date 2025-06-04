@@ -4,14 +4,14 @@ import * as math from "mathjs";
 import { filterByThreshold, filterMinCompSize, filterNodesExist } from "../GraphStuff/graphCalculations.js";
 import { expectedPhysicTypes } from "../../states.js";
 
-export async function parseGraphFile(file, takeAbs, minCorrForEdge, minCompSizeForNode) {
+export async function parseGraphFile(file, takeAbs, minCorrForEdge, minCompSizeForNode, takeSpearmanCoefficient) {
   if (!file) {
     throw new Error(`No file found with the name ${file}.`);
   }
 
   try {
     const fileContent = await parseFileAsText(file);
-    const graph = parseGraph(file.name, fileContent, takeAbs, minCorrForEdge, minCompSizeForNode);
+    const graph = parseGraph(file.name, fileContent, takeAbs, minCorrForEdge, minCompSizeForNode, takeSpearmanCoefficient);
     verifyGraph(graph);
 
     return { name: file.name, content: JSON.stringify(graph) };
@@ -20,7 +20,7 @@ export async function parseGraphFile(file, takeAbs, minCorrForEdge, minCompSizeF
   }
 }
 
-export function parseGraph(name, content, takeAbs, minCorrForEdge, minCompSizeForNode) {
+export function parseGraph(name, content, takeAbs, minCorrForEdge, minCompSizeForNode, takeSpearmanCoefficient) {
   const fileExtension = name.split(".").pop();
 
   let graph = null;
@@ -36,12 +36,9 @@ export function parseGraph(name, content, takeAbs, minCorrForEdge, minCompSizeFo
 
     // if data is raw, convert to matrix
     if (!isSymmMatrix(content)) {
-      const takeSpearmanCoefficient = false;
       log.info("Converting data into symmetrical matrix. Used correlation coefficient:", takeSpearmanCoefficient ? "Spearman" : "Pearson");
       fileData = { header: fileData.firstColumn, data: convertToCorrMatrix(fileData.data, takeSpearmanCoefficient) };
     }
-
-    console.log("YOYOYOYO???", fileData);
 
     const linkAttribMatch = name.match(/dataset(\w+)/);
     const linkAttrib = linkAttribMatch ? linkAttribMatch[1] : name;
@@ -60,7 +57,7 @@ export function parseGraph(name, content, takeAbs, minCorrForEdge, minCompSizeFo
         graph.links.push({
           source: fileData.header[i],
           target: fileData.header[j],
-          weights: [fileData.data[i][j] || 0],
+          weights: [fileData.data[i][j]],
           attribs: [linkAttrib],
         });
       }
@@ -82,6 +79,19 @@ export function parseGraph(name, content, takeAbs, minCorrForEdge, minCompSizeFo
       link.weights = link.weights.map((weight) => (weight < 0 ? 0 : weight));
     });
   }
+
+  graph.links = graph.links
+    .map((link) => {
+      const filteredWeights = link.weights.filter((weight) => weight !== 0);
+      const filteredAttribs = link.attribs.filter((_, index) => link.weights[index] !== 0);
+
+      return {
+        ...link,
+        weights: filteredWeights,
+        attribs: filteredAttribs,
+      };
+    })
+    .filter((link) => link.weights.length > 0);
 
   graph.nodes.sort((a, b) => a.id.localeCompare(b.id));
   graph.links.sort((a, b) => {

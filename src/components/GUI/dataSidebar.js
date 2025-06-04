@@ -246,6 +246,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
   };
 
   const [takeAbs, setTakeAbs] = useState(false);
+  const [takeSpearmanCoefficient, setTakeSpearmanCoefficient] = useState(false);
 
   const [minCorrForEdge, setMinCorrForEdge] = useState(0);
   const [minCorrForEdgeText, setMinCorrForEdgeText] = useState(0);
@@ -406,7 +407,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
       <PopUp
         heading={"Upload Graph"}
         description={
-          "You can upload your graphs in JSON, CSV or TSV format. CSV and TSV files must be structured as a symmetric matrix, while JSON contains a list of nodes and links. You can download the example graphs below to take a closer look at the required format."
+          "You can upload your graphs in JSON, CSV or TSV format. CSV and TSV files must be either structured as a symmetric matrix or raw table data, while JSON contains a list of nodes and links. You can download the example graphs below to take a closer look at the required format. When uploading raw table data, the correlation matrix will be internally calculated and used. As for the calculation of this correlation, either the pearson or the spearman correlation coefficient can be selected below."
         }
         isOpen={graphPopUpActive}
         setIsOpen={setGraphPopUpActive}
@@ -435,12 +436,20 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
           />
         </div>
         <PopUpSwitchBlock
+          text={"Calculate spearman correlation"}
+          value={takeSpearmanCoefficient}
+          onChange={() => {
+            setTakeSpearmanCoefficient(!takeSpearmanCoefficient);
+          }}
+        />
+        <PopUpSwitchBlock
           text={"Include negative correlations by taking the absolute value"}
           value={takeAbs}
           onChange={() => {
             setTakeAbs(!takeAbs);
           }}
         />
+        <div className="popup-block"></div>
         <PopUpSliderBlock
           text={<>Minimum component correlation value to be interpreted as an edge</>}
           min={0}
@@ -477,7 +486,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
             onClick={handleGraphUploadClick}
             linkRef={graphFileRef}
             onChange={(event) => {
-              handleNewGraphFile(event, takeAbs, minCorrForEdge, minCompSizeForNode);
+              handleNewGraphFile(event, takeAbs, minCorrForEdge, minCompSizeForNode, takeSpearmanCoefficient);
               event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
               setGraphPopUpActive(false);
             }}
