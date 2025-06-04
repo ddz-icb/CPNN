@@ -403,7 +403,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
         </div>
       </PopUp>
       <PopUp
-        heading={"Set Color Scheme"}
+        heading={"Upload Graph"}
         description={
           "You can upload your graphs in JSON, CSV or TSV format. CSV and TSV files must be structured as a symmetric matrix, while JSON contains a list of nodes and links. You can download the example graphs below to take a closer look at the required format."
         }

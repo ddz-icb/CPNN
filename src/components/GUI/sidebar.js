@@ -347,6 +347,15 @@ export function PopUpTextFieldInline({ textInfront, textInside }) {
   );
 }
 
+export function PopUpTextFieldCompact({ textInfront, textInside }) {
+  return (
+    <>
+      <label className="label-no-pad">{textInfront}</label>
+      <div className="popup-text-field pad-left-025 pad-right-025 margin-bottom-025">{textInside}</div>
+    </>
+  );
+}
+
 export function PopUpTextField({ textInfront, textInside }) {
   return (
     <div>

@@ -1325,6 +1325,10 @@ input[type="radio"]:checked:after {
   margin-right: 1rem;
 }
 
+.margin-bottom-025 {
+  margin-bottom: -0.25rem;
+}
+
 .margin-left-1 {
   margin-left: 1rem;
 }
