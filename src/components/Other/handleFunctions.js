@@ -47,14 +47,15 @@ export async function addNewGraphFile(
   takeAbs,
   minCorrForEdge,
   minCompSizeForNode,
-  takeSpearmanCoefficient
+  takeSpearmanCoefficient,
+  mergeSameProtein
 ) {
   if (uploadedGraphFileNames.some((name) => getFileNameWithoutExtension(name) === getFileNameWithoutExtension(file.name))) {
     log.warn("Graph with this name already exists");
     throw new Error("Graph with this name already exists");
   }
 
-  const graphFile = await parseGraphFile(file, takeAbs, minCorrForEdge, minCompSizeForNode, takeSpearmanCoefficient);
+  const graphFile = await parseGraphFile(file, takeAbs, minCorrForEdge, minCompSizeForNode, takeSpearmanCoefficient, mergeSameProtein);
   addGraphFileDB(graphFile);
   setGraphData("uploadedGraphFileNames", [...(uploadedGraphFileNames || []), file.name]);
 }

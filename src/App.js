@@ -80,12 +80,21 @@ function App() {
   };
 
   // adds new graph file //
-  const handleNewGraphFile = async (event, takeAbs, minCorrForEdge, minCompSizeForNode, takeSpearmanCoefficient) => {
+  const handleNewGraphFile = async (event, takeAbs, minCorrForEdge, minCompSizeForNode, takeSpearmanCoefficient, mergeSameProtein) => {
     const file = event.target.files[0];
     if (!event || !event.target || !file) return;
     log.info("Adding new graph file");
 
-    addNewGraphFile(file, graphData.uploadedGraphFileNames, setGraphData, takeAbs, minCorrForEdge, minCompSizeForNode, takeSpearmanCoefficient)
+    addNewGraphFile(
+      file,
+      graphData.uploadedGraphFileNames,
+      setGraphData,
+      takeAbs,
+      minCorrForEdge,
+      minCompSizeForNode,
+      takeSpearmanCoefficient,
+      mergeSameProtein
+    )
       .then(() => {})
       .catch((error) => {
         setError(`${error.message}`);

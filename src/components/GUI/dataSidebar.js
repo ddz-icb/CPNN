@@ -246,6 +246,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
   };
 
   const [takeAbs, setTakeAbs] = useState(false);
+  const [mergeSameProtein, setMergeSameProtein] = useState(false);
   const [takeSpearmanCoefficient, setTakeSpearmanCoefficient] = useState(false);
 
   const [minCorrForEdge, setMinCorrForEdge] = useState(0);
@@ -449,6 +450,13 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
             setTakeAbs(!takeAbs);
           }}
         />
+        <PopUpSwitchBlock
+          text={"Merge nodes of the same Protein to one"}
+          value={mergeSameProtein}
+          onChange={() => {
+            setMergeSameProtein(!mergeSameProtein);
+          }}
+        />
         <div className="popup-block"></div>
         <PopUpSliderBlock
           text={<>Minimum component correlation value to be interpreted as an edge</>}
@@ -486,7 +494,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
             onClick={handleGraphUploadClick}
             linkRef={graphFileRef}
             onChange={(event) => {
-              handleNewGraphFile(event, takeAbs, minCorrForEdge, minCompSizeForNode, takeSpearmanCoefficient);
+              handleNewGraphFile(event, takeAbs, minCorrForEdge, minCompSizeForNode, takeSpearmanCoefficient, mergeSameProtein);
               event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
               setGraphPopUpActive(false);
             }}
