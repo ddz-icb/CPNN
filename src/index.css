@@ -1122,6 +1122,22 @@ input[type="radio"]:checked:after {
   pointer-events: auto;
 }
 
+.popup-container-wide {
+  display: block;
+  position: fixed;
+  padding: 10px;
+  min-width: 700px;
+  min-height: 50px;
+  max-width: 700px;
+  max-height: 800px;
+  background: var(--tooltip-background-color);
+  color: var(--tooltip-text-color);
+  border-radius: var(--border-radius);
+  box-shadow: 0 0px 1.5px 0 var(--box-shadow-color);
+  border: var(--border-size-tooltip) solid var(--border-tooltip-color);
+  pointer-events: auto;
+}
+
 .popup-block {
   width: 100%;
   display: flex;

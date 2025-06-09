@@ -408,7 +408,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
       <PopUp
         heading={"Upload Graph"}
         description={
-          "You can upload your graphs in JSON, CSV or TSV format. CSV and TSV files must be either structured as a symmetric matrix or raw table data, while JSON contains a list of nodes and links. You can download the example graphs below to take a closer look at the required format. When uploading raw table data, the correlation matrix will be internally calculated and used. As for the calculation of this correlation, either the pearson or the spearman correlation coefficient can be selected below."
+          "You can upload your graphs in JSON, CSV or TSV format. CSV and TSV files must be either structured as a symmetric matrix or raw table data, while JSON contains a list of nodes and links. You can download the example graphs below to take a closer look at the required format. When raw table data is uploaded, a correlation matrix will be automatically computed."
         }
         isOpen={graphPopUpActive}
         setIsOpen={setGraphPopUpActive}
@@ -442,6 +442,10 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
           onChange={() => {
             setTakeSpearmanCoefficient(!takeSpearmanCoefficient);
           }}
+          infoHeading={"Use spearman correlation"}
+          infoDescription={
+            "This option applies exclusively when raw table data is uploaded. If enabled, the raw table data will be converted to a correlation matrix using the spearman correlation coefficient. By default the pearson correlation coefficient will be applied."
+          }
         />
         <PopUpSwitchBlock
           text={"Include negative correlations by taking the absolute value"}
@@ -449,6 +453,10 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
           onChange={() => {
             setTakeAbs(!takeAbs);
           }}
+          infoHeading={"Include negative correlations"}
+          infoDescription={
+            "Negative correlations or link weights are ignored by default and not displayed. Enabling this option will use the absolute value of the correlation instead."
+          }
         />
         <PopUpSwitchBlock
           text={"Merge nodes of the same Protein to one"}
@@ -456,10 +464,12 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
           onChange={() => {
             setMergeSameProtein(!mergeSameProtein);
           }}
+          infoHeading={"Merge Proteins"}
+          infoDescription={"Nodes with the same UniprotID and Name will be merged into a single node."}
         />
         <div className="popup-block"></div>
         <PopUpSliderBlock
-          text={<>Minimum component correlation value to be interpreted as an edge</>}
+          text={"Minimum link correlation"}
           min={0}
           max={1}
           stepSlider={0.05}
@@ -469,23 +479,34 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
           onChangeSlider={handleMinCorrSliderChange}
           onChangeField={handleMinCorrFieldChange}
           onChangeBlur={handleMinCorrFieldBlur}
+          infoHeading={"Minimum link correlation"}
+          infoDescription={
+            "Minimum (absolute) correlation value or link weight required for display as a link. Increasing this value can significantly improve performance."
+          }
         />
         <PopUpFieldBlock
-          text={<>Minimum component size to be loaded for above minimum component correlation</>}
+          text={"Minimum component size"}
           min={1}
           step={1}
           value={minCompSizeForNodeText}
           onChange={handleMinComponentFieldChange}
           onBlur={handleMinComponentFieldBlur}
+          infoHeading={"Minimum component/cluster size"}
+          infoDescription={
+            "Based on the specified minimum link correlation above, set the minimum component/cluster size required for a node to be included in the graph. Increasing this can significantly improve performance."
+          }
         />
         <PopUpSwitchBlock
-          text={"Node IDs contain phosphosites"}
+          text={"Include phosphosites"}
           value={containsSites}
           onChange={() => {
             setContainsSites(!containsSites);
           }}
+          infoHeading={"Include phosphosites"}
+          infoDescription={"Allows to include phosphosite details for the nodes, which must be incorporated into the node ID as shown below."}
         />
-        <PopUpTextField textInfront={"Node ID format:"} textInside={nodeIdFormat} />
+        <div className="popup-block"></div>
+        <PopUpTextField textInfront={"Your Node ID format:"} textInside={nodeIdFormat} />
         <div className="popup-block"></div>
         <PopUpDoubleTextField textInfront={"Node ID examples:"} textInside1={nodeIdExample1} textInside2={nodeIdExample2} />
         <div className="popup-block flex-end">

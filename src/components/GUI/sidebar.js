@@ -165,7 +165,22 @@ export function SidebarSliderBlock({
   );
 }
 
-export function PopUpSliderBlock({ text, value, valueText, onChangeSlider, onChangeField, onChangeBlur, min, max, stepSlider, stepField }) {
+export function PopUpSliderBlock({
+  text,
+  value,
+  valueText,
+  onChangeSlider,
+  onChangeField,
+  onChangeBlur,
+  min,
+  max,
+  stepSlider,
+  stepField,
+  infoHeading,
+  infoDescription,
+}) {
+  const [infoIsOpen, setInfoIsOpen] = useState(false);
+
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       event.target.blur();
@@ -174,7 +189,12 @@ export function PopUpSliderBlock({ text, value, valueText, onChangeSlider, onCha
 
   return (
     <>
-      <label className="label">{text}</label>
+      <div className="inline">
+        <label className="label">{text}</label>
+        <span className="tooltip-button pad-left-05 pad-top-11" onClick={() => setInfoIsOpen(true)}>
+          <InfoIcon />
+        </span>
+      </div>
       <div className="popup-block pad-bottom-05">
         <input className="sidebar-slider" type="range" min={min} max={max} step={stepSlider} value={value} onChange={onChangeSlider}></input>
         <input
@@ -189,6 +209,7 @@ export function PopUpSliderBlock({ text, value, valueText, onChangeSlider, onCha
           onBlur={onChangeBlur}
         />
       </div>
+      <PopUp heading={infoHeading} description={infoDescription} isOpen={infoIsOpen} setIsOpen={setInfoIsOpen} widePopUp={true} />
     </>
   );
 }
@@ -215,16 +236,24 @@ export function SidebarSwitchBlock({ text, value, onChange, infoHeading, infoDes
   );
 }
 
-export function PopUpSwitchBlock({ text, value, onChange }) {
+export function PopUpSwitchBlock({ text, value, onChange, infoHeading, infoDescription }) {
+  const [infoIsOpen, setInfoIsOpen] = useState(false);
+
   return (
     <>
       <div className="popup-block">
-        <label className="label-no-pad">{text}</label>
+        <div className="inline">
+          <label className="label">{text}</label>
+          <span className="tooltip-button pad-left-05 pad-top-11" onClick={() => setInfoIsOpen(true)}>
+            <InfoIcon />
+          </span>
+        </div>
         <label className="switch">
           <input type="checkbox" checked={value} onChange={onChange} className="checkbox-input" />
           <span className="slider round"></span>
         </label>
       </div>
+      <PopUp heading={infoHeading} description={infoDescription} isOpen={infoIsOpen} setIsOpen={setInfoIsOpen} widePopUp={true} />
     </>
   );
 }
@@ -264,7 +293,9 @@ export function SidebarFieldBlock({ text, min, max, step, value, onChange, onBlu
   );
 }
 
-export function PopUpFieldBlock({ text, min, max, step, value, onChange, onBlur }) {
+export function PopUpFieldBlock({ text, min, max, step, value, onChange, onBlur, infoHeading, infoDescription }) {
+  const [infoIsOpen, setInfoIsOpen] = useState(false);
+
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       event.target.blur();
@@ -274,7 +305,12 @@ export function PopUpFieldBlock({ text, min, max, step, value, onChange, onBlur 
   return (
     <>
       <div className="popup-block">
-        <label className="label">{text}</label>
+        <div className="inline">
+          <label className="label">{text}</label>
+          <span className="tooltip-button pad-left-05 pad-top-11" onClick={() => setInfoIsOpen(true)}>
+            <InfoIcon />
+          </span>
+        </div>
         <input
           className="input-field"
           type="number"
@@ -287,6 +323,7 @@ export function PopUpFieldBlock({ text, min, max, step, value, onChange, onBlur 
           onBlur={onBlur}
         ></input>
       </div>
+      <PopUp heading={infoHeading} description={infoDescription} isOpen={infoIsOpen} setIsOpen={setInfoIsOpen} widePopUp={true} />
     </>
   );
 }
@@ -401,11 +438,13 @@ export function SidebarDropdownItem({ onClick, onChange, linkRef, tooltip, toolt
   );
 }
 
-export function PopUp({ heading, description, children, isOpen, setIsOpen }) {
+export function PopUp({ heading, description, children, isOpen, setIsOpen, widePopUp }) {
+  const popUpContainer = widePopUp ? "popup-container-wide" : "popup-container";
+
   return (
     isOpen && (
       <div className="popup-overlay">
-        <div className="popup-container">
+        <div className={popUpContainer}>
           <div className="popup-header pad-bottom-1">
             <p>{heading}</p>
             <span className="tooltip-button" onClick={() => setIsOpen(false)}>
