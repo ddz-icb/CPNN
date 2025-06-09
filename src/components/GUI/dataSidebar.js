@@ -361,12 +361,12 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
           tooltipId={"upload-mapping-tooltip"}
         />
       </div>
-      <SidebarButtonRect
+      {/* <SidebarButtonRect NEXTTTT
         onClick={() => setDifferencePopUpActive(!differencePopUpActive)}
         text={"Create Difference Graph"}
         tooltip={"Create graph resembling the difference between two graphs"}
         tooltipId={"difference-graph-tooltip"}
-      />
+      /> */}
       <PopUp
         heading={"Uploading Your Pathway Mapping"}
         description={
