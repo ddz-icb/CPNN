@@ -45,6 +45,7 @@ export function parseGraph(name, content, takeAbs, minCorrForEdge, minCompSizeFo
 
     // if data is raw, convert to matrix
     if (!isSymmMatrix(content)) {
+      // HERE
       log.info("Converting data into symmetrical matrix. Used correlation coefficient:", takeSpearmanCoefficient ? "Spearman" : "Pearson");
       fileData = { header: fileData.firstColumn, data: convertToCorrMatrix(fileData.data, takeSpearmanCoefficient) };
     }
@@ -103,6 +104,7 @@ export function parseGraph(name, content, takeAbs, minCorrForEdge, minCompSizeFo
     .filter((link) => link.weights.length > 0);
 
   if (mergeSameProtein) {
+    // HERE
     mergeSameProteins(graph);
   }
 

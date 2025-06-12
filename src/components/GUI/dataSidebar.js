@@ -459,13 +459,15 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
           }
         />
         <PopUpSwitchBlock
-          text={"Merge nodes of the same Protein to one"}
+          text={"Merge nodes of the same protein to one"}
           value={mergeSameProtein}
           onChange={() => {
             setMergeSameProtein(!mergeSameProtein);
           }}
           infoHeading={"Merge Proteins"}
-          infoDescription={"Nodes with the same UniprotID and Name will be merged into a single node."}
+          infoDescription={
+            "Nodes with the same UniprotID and Name will be merged into a single node, along with their respective links. When multiple links to the same node are merged, the maximum absolute weight is used as the new link weight. Enabling this setting can significantly enhance performance by reducing the graph size."
+          }
         />
         <div className="popup-block"></div>
         <PopUpSliderBlock
