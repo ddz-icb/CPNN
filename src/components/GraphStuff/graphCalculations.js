@@ -225,12 +225,22 @@ export function filterByNodeAttribs(graph, filterRequest) {
         for (const andTerm of filterRequest) {
           let meetsTerm = false;
 
-          for (const element of andTerm) {
-            node.groups.forEach((group, i) => {
-              if (group.toString().toLowerCase().includes(element.toString().toLowerCase())) {
+          for (let i = 0; i < andTerm.length; i++) {
+            const element = andTerm[i];
+
+            if (element === "not") {
+              const nextElement = andTerm[i + 1];
+              if (!node.groups.some((group) => group.toString().toLowerCase().includes(nextElement.toString().toLowerCase()))) {
                 meetsTerm = true;
               }
-            });
+              i++;
+            } else {
+              node.groups.forEach((group) => {
+                if (group.toString().toLowerCase().includes(element.toString().toLowerCase())) {
+                  meetsTerm = true;
+                }
+              });
+            }
           }
 
           if (meetsTerm === false) {

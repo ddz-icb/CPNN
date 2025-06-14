@@ -16,8 +16,6 @@ export function parseAttributesFilter(input) {
 
   const tokens = input.match(/"[^"]*"|\(|\)|[^\s()"]+/g).map((token) => (token.startsWith('"') ? token : token.replace(/"/g, "")));
 
-  console.log("TOKEN", tokens);
-
   if (tokens[tokens.length - 1] === "") {
     tokens.pop();
   }
