@@ -186,13 +186,23 @@ export function filterByLinkAttribs(graph, filterRequest) {
         for (const andTerm of filterRequest) {
           let meetsTerm = false;
 
-          for (const element of andTerm) {
-            link.attribs.forEach((attrib, i) => {
-              if (attrib.toString().toLowerCase().includes(element.toString().toLowerCase())) {
-                newLinks[i] = 1;
+          for (let i = 0; i < andTerm.length; i++) {
+            const element = andTerm[i];
+
+            if (element === "not") {
+              const nextElement = andTerm[i + 1];
+              if (!link.attribs.some((attrib) => attrib.toString().toLowerCase().includes(nextElement.toString().toLowerCase()))) {
                 meetsTerm = true;
               }
-            });
+              i++;
+            } else {
+              link.attribs.forEach((attrib, i) => {
+                if (attrib.toString().toLowerCase().includes(element.toString().toLowerCase())) {
+                  newLinks[i] = 1;
+                  meetsTerm = true;
+                }
+              });
+            }
           }
 
           if (meetsTerm === false) {
