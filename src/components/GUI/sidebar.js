@@ -369,7 +369,7 @@ export function SidebarCodeEditorBlock({ text, onClick, compilerError, defaultVa
         </div>
         <SidebarButtonRect onClick={onClick} text="Run" />
       </div>
-      <span className={`warning ${compilerError ? "pad-bottom-1" : ""}`}>{compilerError}</span>
+      <span className={`pad-left-1 warning ${compilerError ? "pad-bottom-1" : ""}`}>{compilerError}</span>
       <PopUp heading={infoHeading} description={infoDescription} isOpen={infoIsOpen} setIsOpen={setInfoIsOpen} />
     </>
   );

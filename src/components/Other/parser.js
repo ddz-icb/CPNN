@@ -1,39 +1,39 @@
 import log from "../../logger.js";
 
+const MATCH_ATTRIBUTE = /^.+$/; // Matches any non-empty string
+const MATCH_OPEN_PAREN = /^\($/; // Matches '('
+const MATCH_CLOSE_PAREN = /^\)$/; // Matches ')'
+const MATCH_NOT = /^not$/; // Matches the word "not"
+const MATCH_AND = /^and$/; // Matches the word "and"
+const MATCH_OR = /^or$/; // Matches the word "or"
+
 export function parseAttributesFilter(input) {
   // return errormessage beginning with "Error:" if not valid.
   // retrun true if empty
   // otherwise return parsed value
   if (input === "") return true;
-  log.info("Parsing attributes filter", input);
+  log.info("Parsing attributes filter:\n", input);
 
-  const tokens = input.match(/"[^"]*"|\(|\)|\S+/g).map((token) => token.replace(/"/g, ""));
+  const tokens = input.match(/"[^"]*"|\(|\)|[^\s()"]+/g).map((token) => (token.startsWith('"') ? token : token.replace(/"/g, "")));
 
-  for (let i = 0; i < tokens.length; i++) {
-    if (tokens[i] === "(" && tokens[i + 1]) {
-      tokens[i + 1] = "(" + tokens[i + 1];
-      tokens.splice(i, 1);
-    }
-    if (tokens[i] === ")" && tokens[i - 1]) {
-      tokens[i - 1] = tokens[i - 1] + ")";
-      tokens.splice(i, 1);
-    }
-  }
+  console.log("TOKEN", tokens);
 
   if (tokens[tokens.length - 1] === "") {
     tokens.pop();
   }
 
   const stateFunctions = {
-    state0: firstTerm,
+    state0: newTermConjunction,
     state1: conjunction,
-    state2: finishedTerm,
-    state3: inTerm,
-    state4: newTerm,
+    state2: notTermConjunction,
+    state3: newTermDisjunction,
+    state4: disjunction,
+    state5: notTermDisjunction,
+    state6: start,
   };
-  const endStates = new Set(["state0", "state2"]);
+  const endStates = new Set(["state6", "state1"]);
 
-  let currentState = "state0";
+  let currentState = "state6";
 
   let processedFilterRequest = [];
 
@@ -47,79 +47,108 @@ export function parseAttributesFilter(input) {
   if (!endStates.has(currentState)) {
     return "Error: the received statement is not complete";
   }
+
+  console.log("PROCESSED REQUESTF", processedFilterRequest);
+
   return processedFilterRequest;
 }
 
-function firstTerm(processedFilterRequest, token) {
-  log.info("firstTermState with token: ", token);
+function start(processedFilterRequest, token) {
+  log.info("startState with token: ", token);
 
-  if (/^\(.+$/.test(token)) {
-    const string = token.slice(1);
-    processedFilterRequest.push([string]);
-
-    return "state1";
-  } else if (/^.+$/.test(token)) {
-    processedFilterRequest.push([token]);
-
+  if (MATCH_OPEN_PAREN.test(token)) {
+    processedFilterRequest.push([]);
+    return "state3";
+  } else if (MATCH_NOT.test(token)) {
     return "state2";
+  } else if (MATCH_ATTRIBUTE.test(token)) {
+    processedFilterRequest.push([token]);
+    return "state1";
   } else {
-    return `Error: Expected 'string' or '(string' but got: '${token}'`;
+    return `Error: Expected string or 'not' or '(' but got: '${token}'`;
+  }
+}
+
+function newTermConjunction(processedFilterRequest, token) {
+  log.info("newTermConjunctionState with token: ", token);
+
+  if (MATCH_OPEN_PAREN.test(token)) {
+    processedFilterRequest.push([]);
+    return "state3";
+  } else if (MATCH_NOT.test(token)) {
+    return "state2";
+  } else if (MATCH_ATTRIBUTE.test(token)) {
+    processedFilterRequest.push([token]);
+    return "state1";
+  } else {
+    return `Error: Expected string or 'not' or '(' but got: '${token}'`;
   }
 }
 
 function conjunction(processedFilterRequest, token) {
   log.info("conjunctionState with token: ", token);
 
-  if (/^or$/.test(token)) {
-    return "state3";
-  } else {
-    return `Error: Expected 'or' but got: '${token}'`;
-  }
-}
-
-function finishedTerm(processedFilterRequest, token) {
-  log.info("finishedTermState with token: ", token);
-
-  if (/^and$/.test(token)) {
-    return "state4";
+  if (MATCH_AND.test(token)) {
+    return "state0";
   } else {
     return `Error: Expected 'and' but got: '${token}'`;
   }
 }
 
-function inTerm(processedFilterRequest, token) {
-  log.info("inTermState with token: ", token);
+function notTermConjunction(processedFilterRequest, token) {
+  log.info("notTermConjunctionState with token: ", token);
 
-  if (/^[^\)]+$/.test(token)) {
-    let lastElement = processedFilterRequest[processedFilterRequest.length - 1];
-    lastElement.push(token);
-
+  if (MATCH_ATTRIBUTE.test(token)) {
+    processedFilterRequest.push(["not", token]);
     return "state1";
-  } else if (/^[^\)]+\)$/.test(token)) {
-    let stringWithoutParenthesis = token.slice(0, -1);
-
-    let lastElement = processedFilterRequest[processedFilterRequest.length - 1];
-    lastElement.push(stringWithoutParenthesis);
-
-    return "state2";
   } else {
-    return `Error: Expected 'string' or 'string)' but got: '${token}'`;
+    return `Error: Expected string but got: '${token}'`;
   }
 }
 
-function newTerm(processedFilterRequest, token) {
-  log.info("newTermState with token: ", token);
+function newTermDisjunction(processedFilterRequest, token) {
+  log.info("newTermDisjunctionState with token: ", token);
 
-  if (/^\(.+$/.test(token)) {
-    const string = token.slice(1);
-    processedFilterRequest.push([string]);
-
-    return "state1";
-  } else if (/^.+$/.test(token)) {
-    processedFilterRequest.push([token]);
-
-    return "state2";
+  if (MATCH_NOT.test(token)) {
+    return "state5";
+  } else if (MATCH_ATTRIBUTE.test(token)) {
+    let previousElement = processedFilterRequest[processedFilterRequest.length - 1];
+    if (previousElement) {
+      previousElement.push(token);
+    } else {
+      return `Error: Expected string or 'not' but got: '${token}'`;
+    }
+    return "state4";
   } else {
-    return `Error: Expected '(string' or 'string' but got: '${token}'`;
+    return `Error: Expected string or 'not' but got: '${token}'`;
+  }
+}
+
+function disjunction(processedFilterRequest, token) {
+  log.info("disjunctionState with token: ", token);
+
+  if (MATCH_OR.test(token)) {
+    return "state3";
+  } else if (MATCH_CLOSE_PAREN) {
+    return "state1";
+  } else {
+    return `Error: Expected 'or' or ')' but got: '${token}'`;
+  }
+}
+
+function notTermDisjunction(processedFilterRequest, token) {
+  log.info("notTermDisjunctionState with token: ", token);
+
+  if (MATCH_ATTRIBUTE.test(token)) {
+    let previousElement = processedFilterRequest[processedFilterRequest.length - 1];
+    if (previousElement) {
+      previousElement.push("not");
+      previousElement.push(token);
+    } else {
+      return `Error: Expected string but got: '${token}'`;
+    }
+    return "state4";
+  } else {
+    return `Error: Expected string but got: '${token}'`;
   }
 }
