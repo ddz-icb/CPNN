@@ -1,7 +1,7 @@
 import log from "../../logger.js";
 import Papa from "papaparse";
 import UnionFind from "union-find";
-import * as math from "mathjs";
+import axios from "axios";
 import {
   filterByThreshold,
   filterMinCompSize,
@@ -20,7 +20,8 @@ export async function parseGraphFile(file, takeAbs, minCorrForEdge, minCompSizeF
 
   try {
     const fileContent = await parseFileAsText(file);
-    const graph = parseGraph(file.name, fileContent, takeAbs, minCorrForEdge, minCompSizeForNode, takeSpearmanCoefficient, mergeSameProtein);
+    console.log("halloooo!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    const graph = await parseGraph(file.name, fileContent, takeAbs, minCorrForEdge, minCompSizeForNode, takeSpearmanCoefficient, mergeSameProtein);
     verifyGraph(graph);
 
     return { name: file.name, content: JSON.stringify(graph) };
@@ -29,7 +30,7 @@ export async function parseGraphFile(file, takeAbs, minCorrForEdge, minCompSizeF
   }
 }
 
-export function parseGraph(name, content, takeAbs, minCorrForEdge, minCompSizeForNode, takeSpearmanCoefficient, mergeSameProtein) {
+export async function parseGraph(name, content, takeAbs, minCorrForEdge, minCompSizeForNode, takeSpearmanCoefficient, mergeSameProtein) {
   const fileExtension = name.split(".").pop();
 
   let graph = null;
@@ -45,9 +46,8 @@ export function parseGraph(name, content, takeAbs, minCorrForEdge, minCompSizeFo
 
     // if data is raw, convert to matrix
     if (!isSymmMatrix(content)) {
-      // HERE
       log.info("Converting data into symmetrical matrix. Used correlation coefficient:", takeSpearmanCoefficient ? "Spearman" : "Pearson");
-      fileData = { header: fileData.firstColumn, data: convertToCorrMatrix(fileData.data, takeSpearmanCoefficient) };
+      fileData = { header: fileData.firstColumn, data: await convertToCorrMatrix(fileData.data, takeSpearmanCoefficient) };
     }
 
     const linkAttribMatch = name.match(/dataset(\w+)/);
@@ -104,7 +104,6 @@ export function parseGraph(name, content, takeAbs, minCorrForEdge, minCompSizeFo
     .filter((link) => link.weights.length > 0);
 
   if (mergeSameProtein) {
-    // HERE
     mergeSameProteins(graph);
   }
 
@@ -322,83 +321,31 @@ function isSymmMatrix(content) {
   return true;
 }
 
-const rankData = (arr) => {
-  if (arr.length === 0) return;
+async function convertToCorrMatrix(data, takeSpearmanCoefficient) {
+  const method = takeSpearmanCoefficient ? "spearman" : "pearson";
 
-  const indexedArr = arr.map((value, index) => ({ value, originalIndex: index }));
+  try {
+    const formData = new FormData();
 
-  indexedArr.sort((a, b) => a.value - b.value);
+    const jsonString = JSON.stringify(data);
+    const blob = new Blob([jsonString], { type: "application/json" });
 
-  const ranks = new Array(arr.length);
-  let currentRank = 1;
+    formData.append("file", blob);
+    formData.append("method", method);
 
-  for (let i = 0; i < indexedArr.length; ) {
-    let j = i;
-    while (j < indexedArr.length && indexedArr[j].value === indexedArr[i].value) {
-      j++;
-    }
+    const response = await axios.post("http://localhost:3001/correlationMatrix", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
 
-    const count = j - i;
-    const sumOfRanks = ((currentRank + (currentRank + count - 1)) * count) / 2;
-    const averageRank = sumOfRanks / count;
+    const corrMatrix = response.data;
 
-    for (let k = i; k < j; k++) {
-      ranks[indexedArr[k].originalIndex] = averageRank;
-    }
+    console.log("Server Response:", corrMatrix);
 
-    currentRank += count;
-    i = j;
+    return corrMatrix;
+  } catch (error) {
+    console.error("Error fetching correlation matrix:", error.message);
+    throw error;
   }
-  return ranks;
-};
-
-function convertToCorrMatrix(fileData, takeSpearmanCoefficient) {
-  if (!Array.isArray(fileData) || fileData.length === 0 || !Array.isArray(fileData) || fileData.length === 0) {
-    log.error("Input fileData must be a non-empty array of arrays.");
-    return;
-  }
-
-  const numFeatures = fileData.length;
-  const correlationMatrix = math.zeros(numFeatures, numFeatures).toArray();
-
-  for (let i = 0; i < numFeatures; i++) {
-    for (let j = i; j < numFeatures; j++) {
-      let series1 = fileData[i];
-      let series2 = fileData[j];
-
-      const filteredPairs = series1
-        .map((val, idx) => ({ x: val, y: series2[idx] }))
-        .filter((pair) => typeof pair.x === "number" && !isNaN(pair.x) && typeof pair.y === "number" && !isNaN(pair.y));
-
-      if (filteredPairs.length < 2) {
-        correlationMatrix[i][j] = 0;
-        correlationMatrix[j][i] = 0;
-        continue;
-      }
-
-      let cleanSeries1 = filteredPairs.map((pair) => pair.x);
-      let cleanSeries2 = filteredPairs.map((pair) => pair.y);
-
-      if (takeSpearmanCoefficient) {
-        cleanSeries1 = rankData(cleanSeries1);
-        cleanSeries2 = rankData(cleanSeries2);
-      }
-
-      let correlationValue;
-      try {
-        correlationValue = math.corr(cleanSeries1, cleanSeries2);
-      } catch (e) {
-        correlationValue = 0;
-      }
-
-      const roundedCorrelation = math.round(correlationValue, 2);
-
-      correlationMatrix[i][j] = roundedCorrelation;
-      correlationMatrix[j][i] = roundedCorrelation;
-    }
-  }
-
-  return correlationMatrix;
 }
 
 export async function parseColorSchemeFile(file) {
