@@ -46,8 +46,6 @@ export function parseGroupsFilter(input) {
     return "Error: the received statement is not complete";
   }
 
-  console.log("PROCESSED REQUESTF", processedFilterRequest);
-
   return processedFilterRequest;
 }
 

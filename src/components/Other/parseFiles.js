@@ -20,7 +20,6 @@ export async function parseGraphFile(file, takeAbs, minCorrForEdge, minCompSizeF
 
   try {
     const fileContent = await parseFileAsText(file);
-    console.log("halloooo!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     const graph = await parseGraph(file.name, fileContent, takeAbs, minCorrForEdge, minCompSizeForNode, takeSpearmanCoefficient, mergeSameProtein);
     verifyGraph(graph);
 
@@ -338,8 +337,6 @@ async function convertToCorrMatrix(data, takeSpearmanCoefficient) {
     });
 
     const corrMatrix = response.data;
-
-    console.log("Server Response:", corrMatrix);
 
     return corrMatrix;
   } catch (error) {
