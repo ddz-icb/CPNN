@@ -280,7 +280,7 @@ export function SettingControl({ simulation, app, redraw }) {
 
     simulation.on("tick.redraw", () => redraw(graphData.graph));
     redraw(graphData.graph);
-  }, [settings.appearance.linkColorScheme]);
+  }, [settings.appearance.linkColorScheme, settings.appearance.linkAttribsToColorIndices]);
 
   // enable or disable link force //
   useEffect(() => {

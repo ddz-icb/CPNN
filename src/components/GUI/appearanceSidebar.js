@@ -20,7 +20,10 @@ export function AppearanceSidebar({ handleNewColorScheme, handleDeleteColorSchem
       <ActiveNodeColorScheme />
       <ActiveLinkColorScheme />
       <UploadedColorSchemes colorSchemes={colorSchemes} handleDeleteColorScheme={handleDeleteColorScheme} />
-      <NodeColorMapping />
+      <div className="pad-left-1 pad-right-1 color-mapping-select-table">
+        <NodeColorMapping />
+        <LinkColorMapping />
+      </div>
     </>
   );
 }
@@ -47,7 +50,6 @@ export function AppearanceSettings({}) {
 
 export function TopAppearanceButtons({ handleNewColorScheme }) {
   const [colorSchemePopUpActive, setColorSchemePopUpActive] = useState(false);
-
   const colorSchemeRef = useRef(null);
 
   let content = null;
@@ -279,9 +281,9 @@ function NodeColorMapping({}) {
   };
 
   return (
-    <>
-      <span className="heading-label-no-pad pad-left-1 pad-bottom-05">Node Color Mapping</span>
-      <div className="sidebar-block">
+    <div>
+      <span className="heading-label-no-pad pad-bottom-05">Node Color Mapping</span>
+      <div className="sidebar-block-no-pad">
         <div className="colormapping-selector">
           {Object.entries(settings.appearance.nodeColorScheme.colorScheme).map(([colorIndex, color]) => (
             <Fragment key={colorIndex}>
@@ -311,6 +313,75 @@ function NodeColorMapping({}) {
           ))}
         </div>
       </div>
-    </>
+    </div>
+  );
+}
+
+function LinkColorMapping({}) {
+  const { settings, setSettings } = useSettings();
+
+  const handleAttributeChange = (colorIndex, newAttribute) => {
+    const updatedMapping = { ...settings.appearance.linkAttribsToColorIndices };
+
+    const oldAttribute = Object.keys(updatedMapping).find((key) => updatedMapping[key] === colorIndex);
+
+    const previousColorIndex = updatedMapping[newAttribute];
+
+    updatedMapping[newAttribute] = colorIndex;
+
+    if (oldAttribute) {
+      if (previousColorIndex !== undefined) {
+        updatedMapping[oldAttribute] = previousColorIndex;
+      } else {
+        const usedColors = Object.values(updatedMapping);
+        const firstAvailableColor = Object.keys(settings.appearance.linkColorScheme.colorScheme).find(
+          (index) => !usedColors.includes(parseInt(index, 10))
+        );
+
+        if (firstAvailableColor !== undefined) {
+          updatedMapping[oldAttribute] = parseInt(firstAvailableColor, 10);
+        } else {
+          delete updatedMapping[oldAttribute];
+        }
+      }
+    }
+
+    setSettings("appearance.linkAttribsToColorIndices", updatedMapping);
+  };
+
+  return (
+    <div>
+      <span className="heading-label-no-pad pad-bottom-05">Link Color Mapping</span>
+      <div className="sidebar-block-no-pad">
+        <div className="colormapping-selector">
+          {Object.entries(settings.appearance.linkColorScheme.colorScheme).map(([colorIndex, color]) => (
+            <Fragment key={colorIndex}>
+              <div
+                className="color-square colorscheme-item"
+                style={{
+                  backgroundColor: color,
+                }}
+              ></div>
+              <select
+                className="popup-button-rect-small"
+                value={
+                  Object.keys(settings.appearance.linkAttribsToColorIndices).find(
+                    (key) => settings.appearance.linkAttribsToColorIndices[key] === parseInt(colorIndex, 10)
+                  ) || ""
+                }
+                onChange={(event) => handleAttributeChange(parseInt(colorIndex, 10), event.target.value)}
+              >
+                <option value="">None</option>
+                {Object.keys(settings.appearance.linkAttribsToColorIndices || {}).map((attribute) => (
+                  <option key={attribute} value={attribute}>
+                    {attribute}
+                  </option>
+                ))}
+              </select>
+            </Fragment>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }
