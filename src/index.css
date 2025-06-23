@@ -581,6 +581,14 @@ ul {
   box-sizing: border-box;
 }
 
+.editor-sidebar-block {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 1rem 1rem 1rem;
+  box-sizing: border-box;
+}
+
 .sidebar-button {
   cursor: pointer;
   width: var(--button-size-sidebar);
@@ -679,6 +687,7 @@ ul {
 .cm-s-default.CodeMirror-focused,
 .cm-s-material.CodeMirror-focused {
   border: 1px solid var(--border-input-field-sidebar-focus) !important;
+  min-height: 200px;
 }
 
 .cm-s-material.CodeMirror {

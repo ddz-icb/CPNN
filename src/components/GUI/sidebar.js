@@ -363,7 +363,7 @@ export function SidebarCodeEditorBlock({ text, onClick, compilerError, defaultVa
           <InfoIcon />
         </span>
       </div>
-      <div className={`sidebar-block ${compilerError ? "no-pad-bottom" : ""}`}>
+      <div className={`editor-sidebar-block ${compilerError ? "no-pad-bottom" : ""}`}>
         <div className="custom-editor">
           <textarea ref={textareaRef} defaultValue={defaultValue}></textarea>
         </div>
