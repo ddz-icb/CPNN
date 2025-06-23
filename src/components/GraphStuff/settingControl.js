@@ -259,15 +259,6 @@ export function SettingControl({ simulation, app, redraw }) {
     }
   }, [settings.download.graphWithLegendPdf]);
 
-  // switch colors upon changing theme //
-  useEffect(() => {
-    if (!graphData.circles) return;
-    log.info("Switching colors");
-
-    changeCircleBorderColor(graphData.circles, settings.appearance.theme.circleBorderColor);
-    changeNodeLabelColor(graphData.nodeLabels, settings.appearance.theme.textColor);
-  }, [settings.appearance.theme]);
-
   // switch node color scheme
   useEffect(() => {
     if (!graphData.circles) return;
@@ -280,7 +271,7 @@ export function SettingControl({ simulation, app, redraw }) {
       settings.appearance.nodeColorScheme.colorScheme,
       settings.appearance.nodeAttribsToColorIndices
     );
-  }, [settings.appearance.nodeColorScheme]);
+  }, [settings.appearance.nodeColorScheme, settings.appearance.nodeAttribsToColorIndices]);
 
   // switch link color scheme
   useEffect(() => {

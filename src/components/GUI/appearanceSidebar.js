@@ -1,9 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, Fragment } from "react";
 import { ReactComponent as TrashIcon } from "../../icons/trash.svg";
-import { ReactComponent as PlusIcon } from "../../icons/plus.svg";
 import { PopUp, PopupButtonRect, PopUpTextField, SidebarButtonRect, SidebarSwitchBlock } from "./sidebar.js";
-import { ReactComponent as LinesVertical } from "../../icons/lines-vertical.svg";
-import { ReactComponent as CircleHollow } from "../../icons/circle-hollow.svg";
 import { ReactComponent as XIcon } from "../../icons/x.svg";
 import { colorSchemeCsv } from "../../demodata/exampleColorSchemeCSV.js";
 import { downloadCsvFile } from "../GraphStuff/download.js";
@@ -23,6 +20,7 @@ export function AppearanceSidebar({ handleNewColorScheme, handleDeleteColorSchem
       <ActiveNodeColorScheme />
       <ActiveLinkColorScheme />
       <UploadedColorSchemes colorSchemes={colorSchemes} handleDeleteColorScheme={handleDeleteColorScheme} />
+      <NodeColorMapping />
     </>
   );
 }
@@ -240,6 +238,79 @@ function ActiveLinkColorScheme({}) {
           </tbody>
         </table>
       </>
+    </>
+  );
+}
+
+function NodeColorMapping({}) {
+  const { settings, setSettings } = useSettings();
+
+  const handleAttributeChange = (colorIndex, newAttribute) => {
+    const updatedMapping = { ...settings.appearance.nodeAttribsToColorIndices };
+
+    // old attribute mapped to selected color
+    const oldAttribute = Object.keys(updatedMapping).find((key) => updatedMapping[key] === colorIndex);
+
+    // color previously assigned to new attribute
+    const previousColorIndex = updatedMapping[newAttribute];
+
+    updatedMapping[newAttribute] = colorIndex;
+
+    if (oldAttribute) {
+      if (previousColorIndex !== undefined) {
+        // assign old attribute to previous color
+        updatedMapping[oldAttribute] = previousColorIndex;
+      } else {
+        // first available color without an attribute
+        const usedColors = Object.values(updatedMapping);
+        const firstAvailableColor = Object.keys(settings.appearance.nodeColorScheme.colorScheme).find(
+          (index) => !usedColors.includes(parseInt(index, 10))
+        );
+
+        if (firstAvailableColor !== undefined) {
+          updatedMapping[oldAttribute] = parseInt(firstAvailableColor, 10);
+        } else {
+          delete updatedMapping[oldAttribute];
+        }
+      }
+    }
+
+    setSettings("appearance.nodeAttribsToColorIndices", updatedMapping);
+  };
+
+  return (
+    <>
+      <span className="heading-label-no-pad pad-left-1 pad-bottom-05">Node Color Mapping</span>
+      <div className="sidebar-block">
+        <div className="colormapping-selector">
+          {Object.entries(settings.appearance.nodeColorScheme.colorScheme).map(([colorIndex, color]) => (
+            <Fragment key={colorIndex}>
+              <div
+                className="color-square colorscheme-item"
+                style={{
+                  backgroundColor: color,
+                }}
+              ></div>
+              <select
+                className="popup-button-rect-small"
+                value={
+                  Object.keys(settings.appearance.nodeAttribsToColorIndices).find(
+                    (key) => settings.appearance.nodeAttribsToColorIndices[key] === parseInt(colorIndex, 10)
+                  ) || ""
+                }
+                onChange={(event) => handleAttributeChange(parseInt(colorIndex, 10), event.target.value)}
+              >
+                <option value="">None</option>
+                {Object.keys(settings.appearance.nodeAttribsToColorIndices || {}).map((attribute) => (
+                  <option key={attribute} value={attribute}>
+                    {attribute}
+                  </option>
+                ))}
+              </select>
+            </Fragment>
+          ))}
+        </div>
+      </div>
     </>
   );
 }

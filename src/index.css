@@ -1181,6 +1181,24 @@ input[type="radio"]:checked:after {
   transition: var(--transition-speed);
 }
 
+.popup-button-rect-small {
+  min-width: 3.5rem;
+  max-width: 10rem;
+  height: 1rem;
+  color: var(--sidebar-button-color);
+  background-color: var(--bg-button-sidebar);
+  font-size: 0.8rem;
+  display: inline-block;
+  border: 1px solid var(--border-button-sidebar);
+  cursor: pointer;
+}
+
+.popup-button-rect:hover {
+  background-color: var(--bg-button-sidebar-hover);
+  border: 1px solid var(--border-button-sidebar-hover);
+  transition: var(--transition-speed);
+}
+
 .popup-tooltip-wrapper .popup-tooltip {
   border-radius: var(--border-radius);
   color: var(--tooltip-sidebar-text);
@@ -1240,6 +1258,7 @@ input[type="radio"]:checked:after {
   width: 30px;
   height: 15px;
   margin-right: 0.75rem;
+  border: 1px solid var(--border-button-sidebar);
 }
 
 .colorscheme-item {
@@ -1303,6 +1322,10 @@ input[type="radio"]:checked:after {
 
 .pad-bottom-05 {
   padding-bottom: 0.5rem;
+}
+
+.pad-bottom-02 {
+  padding-bottom: 0.2rem;
 }
 
 .pad-top-025 {
@@ -1483,4 +1506,11 @@ input[type="radio"]:checked:after {
 
 .warning {
   color: var(--error-color);
+}
+
+.colormapping-selector {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 5px;
+  align-items: center;
 }
