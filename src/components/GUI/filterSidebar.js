@@ -256,9 +256,10 @@ export function FilterSidebar({ resetFilters }) {
               You can filter the links by formulating a query. These queries must follow the Conjunctive Normal Form (CNF), meaning that conditions
               grouped with <PopUpTextFieldCompact textInside={"or"} /> (e.g., <PopUpTextFieldCompact textInside={"(A or B)"} /> ) are combined using{" "}
               <PopUpTextFieldCompact textInside={"and"} />. To address one (or multiple) attributes, parts of the attribute name can be used (e.g.{" "}
-              <PopUpTextFieldCompact textInside={"lean"} /> ) includes all attributes that contain the word "lean". If the attribute consists of more
+              <PopUpTextFieldCompact textInside={"lean"} /> includes all attributes that contain the word "lean"). If the attribute consists of more
               than one word, quotation marks can be used (e.g. <PopUpTextFieldCompact textInside={'"lean group"'} /> ). To forbid an attribute from
-              occuring the <PopUpTextFieldCompact textInside={"not"} /> operator can be applied
+              occuring the <PopUpTextFieldCompact textInside={"not"} /> operator can be applied. To address multiple attributes simultaneously, you
+              can group them as a set, for example: <PopUpTextFieldCompact textInside={"{lean, obese, t2d}"} />
             </p>
             <p>
               For example, with the link attributes <PopUpTextFieldCompact textInside={"lean group"} />,{" "}
@@ -266,8 +267,9 @@ export function FilterSidebar({ resetFilters }) {
               be:
             </p>
             <PopUpTextFieldCompact textInside={"t2d"} /> <PopUpTextFieldCompact textInside={"not lean"} />{" "}
-            <PopUpTextFieldCompact textInside={'"t2d group" and lean'} /> <PopUpTextFieldCompact textInside={"(obese or lean)"} />{" "}
-            <PopUpTextFieldCompact textInside={"(obese or lean) and t2d"} /> <PopUpTextFieldCompact textInside={"(not t2d or not obese) and lean"} />
+            <PopUpTextFieldCompact textInside={"not {lean, obese}"} /> <PopUpTextFieldCompact textInside={'"t2d group" and lean'} />{" "}
+            <PopUpTextFieldCompact textInside={"(obese or lean)"} /> <PopUpTextFieldCompact textInside={"(obese or lean) and t2d"} />{" "}
+            <PopUpTextFieldCompact textInside={"(not t2d or not obese) and lean"} />
           </div>
         }
       />
@@ -284,9 +286,11 @@ export function FilterSidebar({ resetFilters }) {
               You can filter the nodes by formulating a query. These queries must follow the Conjunctive Normal Form (CNF), meaning that conditions
               grouped with <PopUpTextFieldCompact textInside={"or"} /> (e.g., <PopUpTextFieldCompact textInside={"(A or B)"} /> ) are combined using{" "}
               <PopUpTextFieldCompact textInside={"and"} />. To address one (or multiple) attributes, parts of the attribute name can be used (e.g.{" "}
-              <PopUpTextFieldCompact textInside={"signaling"} /> ) includes all attributes that contain the word "signaling". If the attribute
-              consists of more than one word, quotation marks can be used (e.g. <PopUpTextFieldCompact textInside={'"mRNA splicing"'} /> ). To forbid
-              an attribute from occuring the <PopUpTextFieldCompact textInside={"not"} /> operator can be applied
+              <PopUpTextFieldCompact textInside={"signaling"} /> includes all attributes that contain the word "signaling"). If the attribute consists
+              of more than one word, quotation marks can be used (e.g. <PopUpTextFieldCompact textInside={'"mRNA splicing"'} /> ). To forbid an
+              attribute from occuring the <PopUpTextFieldCompact textInside={"not"} /> operator can be applied. To address multiple attributes
+              simultaneously, you can group them as a set, for example:{" "}
+              <PopUpTextFieldCompact textInside={'{mRNA splicing, signaling, "glucose metabolism"}'} />
             </p>
             <p>
               For example, with the link attributes <PopUpTextFieldCompact textInside={"mRNA splicing"} />,{" "}
@@ -294,7 +298,8 @@ export function FilterSidebar({ resetFilters }) {
               <PopUpTextFieldCompact textInside={"MTOR signaling"} />, some valid queries could be:
             </p>
             <PopUpTextFieldCompact textInside={"signaling"} /> <PopUpTextFieldCompact textInside={"not signaling"} />{" "}
-            <PopUpTextFieldCompact textInside={'signaling and "mRNA splicing"'} /> <PopUpTextFieldCompact textInside={"(metabolism or signaling)"} />{" "}
+            <PopUpTextFieldCompact textInside={"not {MTOR, VEGF, mRNA}"} /> <PopUpTextFieldCompact textInside={'signaling and "mRNA splicing"'} />{" "}
+            <PopUpTextFieldCompact textInside={"(metabolism or signaling)"} />{" "}
             <PopUpTextFieldCompact textInside={'("mRNA splicing" or VEGF) and ("glucose metabolism" or MTOR)'} />
             <PopUpTextFieldCompact textInside={'(not "mRNA splicing" or not VEGF)'} />
           </div>
