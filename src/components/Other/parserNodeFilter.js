@@ -6,15 +6,18 @@ const MATCH_CLOSE_PAREN = /^\)$/; // Matches ')'
 const MATCH_NOT = /^not$/; // Matches the word "not"
 const MATCH_AND = /^and$/; // Matches the word "and"
 const MATCH_OR = /^or$/; // Matches the word "or"
+const MATCH_OPEN_CURLY = /^\{$/; // Matches '{'
+const MATCH_CLOSE_CURLY = /^\}$/; // Matches '}'
+const MATCH_COMMA = /^,$/; // Matches ','
 
 export function parseGroupsFilter(input) {
   // return errormessage beginning with "Error:" if not valid.
   // retrun true if empty
   // otherwise return parsed value
   if (input === "") return true;
-  log.info("Parsing attributes filter:\n", input);
+  log.info("Parsing groups filter:\n", input);
 
-  const tokens = input.match(/"[^"]*"|\(|\)|[^\s()"]+/g).map((token) => (token.startsWith('"') ? token : token.replace(/"/g, "")));
+  const tokens = input.match(/"[^"]*"|\(|\)|{|}|,|[^\s(){}",]+/g).map((token) => (token.startsWith('"') ? token : token.replace(/"/g, "")));
 
   if (tokens[tokens.length - 1] === "") {
     tokens.pop();
@@ -28,6 +31,10 @@ export function parseGroupsFilter(input) {
     state4: disjunction,
     state5: notTermDisjunction,
     state6: start,
+    state7: curlyCommaConjunction,
+    state8: newTermCurlyConjunction,
+    state9: curlyCommaDisjunction,
+    state10: newTermCurlyDisjunction,
   };
   const endStates = new Set(["state6", "state1"]);
 
@@ -57,6 +64,9 @@ function start(processedFilterRequest, token) {
     return "state3";
   } else if (MATCH_NOT.test(token)) {
     return "state2";
+  } else if (MATCH_OPEN_CURLY.test(token)) {
+    processedFilterRequest.push([new Set()]);
+    return "state8";
   } else if (MATCH_ATTRIBUTE.test(token)) {
     processedFilterRequest.push([token]);
     return "state1";
@@ -94,7 +104,10 @@ function conjunction(processedFilterRequest, token) {
 function notTermConjunction(processedFilterRequest, token) {
   log.info("notTermConjunctionState with token: ", token);
 
-  if (MATCH_ATTRIBUTE.test(token)) {
+  if (MATCH_OPEN_CURLY.test(token)) {
+    processedFilterRequest.push(["not", new Set()]);
+    return "state8";
+  } else if (MATCH_ATTRIBUTE.test(token)) {
     processedFilterRequest.push(["not", token]);
     return "state1";
   } else {
@@ -105,7 +118,13 @@ function notTermConjunction(processedFilterRequest, token) {
 function newTermDisjunction(processedFilterRequest, token) {
   log.info("newTermDisjunctionState with token: ", token);
 
-  if (MATCH_NOT.test(token)) {
+  if (MATCH_OPEN_CURLY.test(token)) {
+    let previousElement = processedFilterRequest[processedFilterRequest.length - 1];
+    if (previousElement) {
+      previousElement.push(new Set());
+    }
+    return "state10";
+  } else if (MATCH_NOT.test(token)) {
     return "state5";
   } else if (MATCH_ATTRIBUTE.test(token)) {
     let previousElement = processedFilterRequest[processedFilterRequest.length - 1];
@@ -135,7 +154,14 @@ function disjunction(processedFilterRequest, token) {
 function notTermDisjunction(processedFilterRequest, token) {
   log.info("notTermDisjunctionState with token: ", token);
 
-  if (MATCH_ATTRIBUTE.test(token)) {
+  if (MATCH_OPEN_CURLY.test(token)) {
+    let previousElement = processedFilterRequest[processedFilterRequest.length - 1];
+    if (previousElement) {
+      previousElement.push("not");
+      previousElement.push(new Set());
+    }
+    return "state10";
+  } else if (MATCH_ATTRIBUTE.test(token)) {
     let previousElement = processedFilterRequest[processedFilterRequest.length - 1];
     if (previousElement) {
       previousElement.push("not");
@@ -144,6 +170,76 @@ function notTermDisjunction(processedFilterRequest, token) {
       return `Error: Expected string but got: '${token}'`;
     }
     return "state4";
+  } else {
+    return `Error: Expected string but got: '${token}'`;
+  }
+}
+
+function curlyCommaConjunction(processedFilterRequest, token) {
+  log.info("curlyCommaConjunctionState with token: ", token);
+
+  if (MATCH_CLOSE_CURLY.test(token)) {
+    return "state1";
+  } else if (MATCH_COMMA.test(token)) {
+    return "state8";
+  } else {
+    return `Error: Expected ',' or '}' but got: '${token}'`;
+  }
+}
+
+function newTermCurlyConjunction(processedFilterRequest, token) {
+  log.info("newTermCurlyConjunctionState with token: ", token);
+
+  let lastEntry = processedFilterRequest[processedFilterRequest.length - 1];
+  let currentSet;
+
+  if (Array.isArray(lastEntry) && lastEntry.length > 0) {
+    currentSet = lastEntry[lastEntry.length - 1];
+    if (!(currentSet instanceof Set)) {
+      return `Error: Expected a Set object for curly term but got: '${token}'`;
+    }
+  } else {
+    return `Error: Invalid state for curly term. Expected an array containing a Set. Got: '${token}'`;
+  }
+
+  if (MATCH_ATTRIBUTE.test(token)) {
+    currentSet.add(token);
+    return "state7";
+  } else {
+    return `Error: Expected string but got: '${token}'`;
+  }
+}
+
+function curlyCommaDisjunction(processedFilterRequest, token) {
+  log.info("curlyCommaDisjunctionState with token: ", token);
+
+  if (MATCH_CLOSE_CURLY.test(token)) {
+    return "state4";
+  } else if (MATCH_COMMA.test(token)) {
+    return "state10";
+  } else {
+    return `Error: Expected ',' or '}' but got: '${token}'`;
+  }
+}
+
+function newTermCurlyDisjunction(processedFilterRequest, token) {
+  log.info("newTermCurlyDisjunctionState with token: ", token);
+
+  let lastEntry = processedFilterRequest[processedFilterRequest.length - 1];
+  let currentSet;
+
+  if (Array.isArray(lastEntry) && lastEntry.length > 0) {
+    currentSet = lastEntry[lastEntry.length - 1];
+    if (!(currentSet instanceof Set)) {
+      return `Error: Expected a Set object for curly term but got: '${token}'`;
+    }
+  } else {
+    return `Error: Invalid state for curly term. Expected an array containing a Set. Got: '${token}'`;
+  }
+
+  if (MATCH_ATTRIBUTE.test(token)) {
+    currentSet.add(token);
+    return "state9";
   } else {
     return `Error: Expected string but got: '${token}'`;
   }
