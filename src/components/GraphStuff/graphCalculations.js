@@ -180,9 +180,6 @@ export function filterByLinkAttribs(graph, filterRequest) {
     ...graph,
     links: graph.links
       .map((link) => {
-        // if value at position = 1, the link will be drawn if meetsAll = true
-        let newLinks = new Array(link.attribs.length).fill(0);
-
         for (const andTerm of filterRequest) {
           let meetsTerm = false;
 
@@ -191,17 +188,33 @@ export function filterByLinkAttribs(graph, filterRequest) {
 
             if (element === "not") {
               const nextElement = andTerm[i + 1];
-              if (!link.attribs.some((attrib) => attrib.toString().toLowerCase().includes(nextElement.toString().toLowerCase()))) {
+
+              if (nextElement instanceof Set) {
+                for (const e of nextElement) {
+                  if (!link.attribs.some((attrib) => attrib.toString().toLowerCase().includes(e.toString().toLowerCase()))) {
+                    meetsTerm = true;
+                  }
+                }
+              } else if (!link.attribs.some((attrib) => attrib.toString().toLowerCase().includes(nextElement.toString().toLowerCase()))) {
                 meetsTerm = true;
               }
               i++;
             } else {
-              link.attribs.forEach((attrib, i) => {
-                if (attrib.toString().toLowerCase().includes(element.toString().toLowerCase())) {
-                  newLinks[i] = 1;
-                  meetsTerm = true;
+              if (element instanceof Set) {
+                let allTrue = true;
+                for (const e of element) {
+                  if (!link.attribs.some((attrib) => attrib.toString().toLowerCase().includes(e.toString().toLowerCase()))) {
+                    allTrue = false;
+                  }
                 }
-              });
+                if (allTrue) meetsTerm = true;
+              } else {
+                link.attribs.forEach((attrib, i) => {
+                  if (attrib.toString().toLowerCase().includes(element.toString().toLowerCase())) {
+                    meetsTerm = true;
+                  }
+                });
+              }
             }
           }
 
