@@ -253,16 +253,33 @@ export function filterByNodeAttribs(graph, filterRequest) {
 
             if (element === "not") {
               const nextElement = andTerm[i + 1];
-              if (!node.groups.some((group) => group.toString().toLowerCase().includes(nextElement.toString().toLowerCase()))) {
+
+              if (nextElement instanceof Set) {
+                for (const e of nextElement) {
+                  if (!node.groups.some((group) => group.toString().toLowerCase().includes(e.toString().toLowerCase()))) {
+                    meetsTerm = true;
+                  }
+                }
+              } else if (!node.groups.some((group) => group.toString().toLowerCase().includes(nextElement.toString().toLowerCase()))) {
                 meetsTerm = true;
               }
               i++;
             } else {
-              node.groups.forEach((group) => {
-                if (group.toString().toLowerCase().includes(element.toString().toLowerCase())) {
-                  meetsTerm = true;
+              if (element instanceof Set) {
+                let allTrue = true;
+                for (const e of element) {
+                  if (!node.groups.some((group) => group.toString().toLowerCase().includes(e.toString().toLowerCase()))) {
+                    allTrue = false;
+                  }
                 }
-              });
+                if (allTrue) meetsTerm = true;
+              } else {
+                node.groups.forEach((group) => {
+                  if (group.toString().toLowerCase().includes(element.toString().toLowerCase())) {
+                    meetsTerm = true;
+                  }
+                });
+              }
             }
           }
 
