@@ -186,37 +186,50 @@ export function filterByLinkAttribs(graph, filterRequest) {
           for (let i = 0; i < andTerm.length; i++) {
             const element = andTerm[i];
 
-            if (element === "")
-              if (element === "not") {
-                const nextElement = andTerm[i + 1];
+            if (element === "<") {
+              const nextElement = andTerm[i + 1];
 
-                if (nextElement instanceof Set) {
-                  for (const e of nextElement) {
-                    if (!link.attribs.some((attrib) => attrib.toString().toLowerCase().includes(e.toString().toLowerCase()))) {
-                      meetsTerm = true;
-                    }
-                  }
-                } else if (!link.attribs.some((attrib) => attrib.toString().toLowerCase().includes(nextElement.toString().toLowerCase()))) {
-                  meetsTerm = true;
-                }
-                i++;
-              } else {
-                if (element instanceof Set) {
-                  let allTrue = true;
-                  for (const e of element) {
-                    if (!link.attribs.some((attrib) => attrib.toString().toLowerCase().includes(e.toString().toLowerCase()))) {
-                      allTrue = false;
-                    }
-                  }
-                  if (allTrue) meetsTerm = true;
-                } else {
-                  link.attribs.forEach((attrib, i) => {
-                    if (attrib.toString().toLowerCase().includes(element.toString().toLowerCase())) {
-                      meetsTerm = true;
-                    }
-                  });
-                }
+              if (link.attribs.length < nextElement) {
+                meetsTerm = true;
               }
+              i++;
+            } else if (element === ">") {
+              const nextElement = andTerm[i + 1];
+
+              if (link.attribs.length > nextElement) {
+                meetsTerm = true;
+              }
+              i++;
+            } else if (element === "not") {
+              const nextElement = andTerm[i + 1];
+
+              if (nextElement instanceof Set) {
+                for (const e of nextElement) {
+                  if (!link.attribs.some((attrib) => attrib.toString().toLowerCase().includes(e.toString().toLowerCase()))) {
+                    meetsTerm = true;
+                  }
+                }
+              } else if (!link.attribs.some((attrib) => attrib.toString().toLowerCase().includes(nextElement.toString().toLowerCase()))) {
+                meetsTerm = true;
+              }
+              i++;
+            } else {
+              if (element instanceof Set) {
+                let allTrue = true;
+                for (const e of element) {
+                  if (!link.attribs.some((attrib) => attrib.toString().toLowerCase().includes(e.toString().toLowerCase()))) {
+                    allTrue = false;
+                  }
+                }
+                if (allTrue) meetsTerm = true;
+              } else {
+                link.attribs.forEach((attrib, i) => {
+                  if (attrib.toString().toLowerCase().includes(element.toString().toLowerCase())) {
+                    meetsTerm = true;
+                  }
+                });
+              }
+            }
           }
 
           if (meetsTerm === false) {
@@ -252,7 +265,21 @@ export function filterByNodeAttribs(graph, filterRequest) {
           for (let i = 0; i < andTerm.length; i++) {
             const element = andTerm[i];
 
-            if (element === "not") {
+            if (element === "<") {
+              const nextElement = andTerm[i + 1];
+
+              if (node.groups.length < nextElement) {
+                meetsTerm = true;
+              }
+              i++;
+            } else if (element === ">") {
+              const nextElement = andTerm[i + 1];
+
+              if (node.groups.length > nextElement) {
+                meetsTerm = true;
+              }
+              i++;
+            } else if (element === "not") {
               const nextElement = andTerm[i + 1];
 
               if (nextElement instanceof Set) {
