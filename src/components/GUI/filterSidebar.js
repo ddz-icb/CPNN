@@ -259,7 +259,8 @@ export function FilterSidebar({ resetFilters }) {
               <PopUpTextFieldCompact textInside={"lean"} /> includes all attributes that contain the word "lean"). If the attribute consists of more
               than one word, quotation marks can be used (e.g. <PopUpTextFieldCompact textInside={'"lean group"'} /> ). To forbid an attribute from
               occuring the <PopUpTextFieldCompact textInside={"not"} /> operator can be applied. To address multiple attributes simultaneously, you
-              can group them as a set, for example: <PopUpTextFieldCompact textInside={"{lean, obese, t2d}"} />
+              can group them as a set, for example: <PopUpTextFieldCompact textInside={"{lean, obese, t2d}"} />. To restrict the number of links, you
+              can use the &gt; or &lt; operator (e.g., <PopUpTextFieldCompact textInside={"> 2"} /> filters for multilinks of size at least 3).
             </p>
             <p>
               For example, with the link attributes <PopUpTextFieldCompact textInside={"lean group"} />,{" "}
@@ -267,9 +268,9 @@ export function FilterSidebar({ resetFilters }) {
               be:
             </p>
             <PopUpTextFieldCompact textInside={"t2d"} /> <PopUpTextFieldCompact textInside={"not lean"} />{" "}
-            <PopUpTextFieldCompact textInside={"not {lean, obese}"} /> <PopUpTextFieldCompact textInside={'"t2d group" and lean'} />{" "}
-            <PopUpTextFieldCompact textInside={"(obese or lean)"} /> <PopUpTextFieldCompact textInside={"(obese or lean) and t2d"} />{" "}
-            <PopUpTextFieldCompact textInside={"(not t2d or not obese) and lean"} />
+            <PopUpTextFieldCompact textInside={"> 2"} /> <PopUpTextFieldCompact textInside={"not {lean, obese}"} />{" "}
+            <PopUpTextFieldCompact textInside={'"t2d group" and lean'} /> <PopUpTextFieldCompact textInside={"(obese or lean) and > 1"} />{" "}
+            <PopUpTextFieldCompact textInside={"(obese or lean) and t2d"} /> <PopUpTextFieldCompact textInside={"(not t2d or not obese) and lean"} />
           </div>
         }
       />
@@ -290,7 +291,9 @@ export function FilterSidebar({ resetFilters }) {
               of more than one word, quotation marks can be used (e.g. <PopUpTextFieldCompact textInside={'"mRNA splicing"'} /> ). To forbid an
               attribute from occuring the <PopUpTextFieldCompact textInside={"not"} /> operator can be applied. To address multiple attributes
               simultaneously, you can group them as a set, for example:{" "}
-              <PopUpTextFieldCompact textInside={'{mRNA splicing, signaling, "glucose metabolism"}'} />
+              <PopUpTextFieldCompact textInside={'{mRNA splicing, signaling, "glucose metabolism"}'} />. To restrict the number of attributes of a
+              node, you can use the &gt; or &lt; operator (e.g., <PopUpTextFieldCompact textInside={"> 2"} /> filters for nodes with at least 3
+              attributes).
             </p>
             <p>
               For example, with the link attributes <PopUpTextFieldCompact textInside={"mRNA splicing"} />,{" "}
@@ -298,8 +301,9 @@ export function FilterSidebar({ resetFilters }) {
               <PopUpTextFieldCompact textInside={"MTOR signaling"} />, some valid queries could be:
             </p>
             <PopUpTextFieldCompact textInside={"signaling"} /> <PopUpTextFieldCompact textInside={"not signaling"} />{" "}
-            <PopUpTextFieldCompact textInside={"not {MTOR, VEGF, mRNA}"} /> <PopUpTextFieldCompact textInside={'signaling and "mRNA splicing"'} />{" "}
-            <PopUpTextFieldCompact textInside={"(metabolism or signaling)"} />{" "}
+            <PopUpTextFieldCompact textInside={"> 2"} /> <PopUpTextFieldCompact textInside={"not {MTOR, VEGF, mRNA}"} />{" "}
+            <PopUpTextFieldCompact textInside={'signaling and "mRNA splicing"'} />{" "}
+            <PopUpTextFieldCompact textInside={"(metabolism or signaling) and > 1"} />{" "}
             <PopUpTextFieldCompact textInside={'("mRNA splicing" or VEGF) and ("glucose metabolism" or MTOR)'} />
             <PopUpTextFieldCompact textInside={'(not "mRNA splicing" or not VEGF)'} />
           </div>
