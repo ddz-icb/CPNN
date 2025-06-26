@@ -1,6 +1,6 @@
 import log from "../../logger.js";
 
-const MATCH_ATTRIBUTE = /^.+$/; // Matches any non-empty string
+const MATCH_ATTRIBUTE = /^(?!\{|}|not|and|or|<|>|\(|\)|,).*$/; // Matches non-empty string excluding specified tokens
 const MATCH_OPEN_PAREN = /^\($/; // Matches '('
 const MATCH_CLOSE_PAREN = /^\)$/; // Matches ')'
 const MATCH_NOT = /^not$/; // Matches the word "not"
@@ -9,15 +9,17 @@ const MATCH_OR = /^or$/; // Matches the word "or"
 const MATCH_OPEN_CURLY = /^\{$/; // Matches '{'
 const MATCH_CLOSE_CURLY = /^\}$/; // Matches '}'
 const MATCH_COMMA = /^,$/; // Matches ','
+const MATCH_SMALLERGREATER = /^<|>$/; // Matches '<' or '>'
+const MATCH_NUMBER = /^\d+$/; // Matches positive integers
 
 export function parseGroupsFilter(input) {
   // return errormessage beginning with "Error:" if not valid.
   // retrun true if empty
   // otherwise return parsed value
   if (input === "") return true;
-  log.info("Parsing groups filter:\n", input);
+  log.info("Parsing attributes filter:\n", input);
 
-  const tokens = input.match(/"[^"]*"|\(|\)|{|}|,|[^\s(){}",]+/g).map((token) => (token.startsWith('"') ? token : token.replace(/"/g, "")));
+  const tokens = input.match(/"[^"]*"|<|>|,|\(|\)|{|}|[^\s()<>{},"]+/g).map((token) => (token.startsWith('"') ? token : token.replace(/"/g, "")));
 
   if (tokens[tokens.length - 1] === "") {
     tokens.pop();
@@ -35,6 +37,8 @@ export function parseGroupsFilter(input) {
     state8: newTermCurlyConjunction,
     state9: curlyCommaDisjunction,
     state10: newTermCurlyDisjunction,
+    state11: smallerGreaterTermConjunction,
+    state12: smallerGreaterTermDisjunction,
   };
   const endStates = new Set(["state6", "state1"]);
 
@@ -49,6 +53,9 @@ export function parseGroupsFilter(input) {
     currentState = stateFunctions[currentState](processedFilterRequest, token);
   }
 
+  if (!(currentState in stateFunctions)) {
+    return currentState;
+  }
   if (!endStates.has(currentState)) {
     return "Error: the received statement is not complete";
   }
@@ -62,6 +69,9 @@ function start(processedFilterRequest, token) {
   if (MATCH_OPEN_PAREN.test(token)) {
     processedFilterRequest.push([]);
     return "state3";
+  } else if (MATCH_SMALLERGREATER.test(token)) {
+    processedFilterRequest.push([token]);
+    return "state11";
   } else if (MATCH_NOT.test(token)) {
     return "state2";
   } else if (MATCH_OPEN_CURLY.test(token)) {
@@ -71,7 +81,7 @@ function start(processedFilterRequest, token) {
     processedFilterRequest.push([token]);
     return "state1";
   } else {
-    return `Error: Expected string or 'not' or '(' but got: '${token}'`;
+    return `Error: Expected attribute or 'not' or '(' or '<' or '>' but got: '${token}'`;
   }
 }
 
@@ -81,13 +91,16 @@ function newTermConjunction(processedFilterRequest, token) {
   if (MATCH_OPEN_PAREN.test(token)) {
     processedFilterRequest.push([]);
     return "state3";
+  } else if (MATCH_SMALLERGREATER.test(token)) {
+    processedFilterRequest.push([token]);
+    return "state11";
   } else if (MATCH_NOT.test(token)) {
     return "state2";
   } else if (MATCH_ATTRIBUTE.test(token)) {
     processedFilterRequest.push([token]);
     return "state1";
   } else {
-    return `Error: Expected string or 'not' or '(' but got: '${token}'`;
+    return `Error: Expected attribute or 'not' or '(' or '<' or '>' but got: '${token}'`;
   }
 }
 
@@ -111,7 +124,7 @@ function notTermConjunction(processedFilterRequest, token) {
     processedFilterRequest.push(["not", token]);
     return "state1";
   } else {
-    return `Error: Expected string but got: '${token}'`;
+    return `Error: Expected attribute or '{' but got: '${token}'`;
   }
 }
 
@@ -120,22 +133,20 @@ function newTermDisjunction(processedFilterRequest, token) {
 
   if (MATCH_OPEN_CURLY.test(token)) {
     let previousElement = processedFilterRequest[processedFilterRequest.length - 1];
-    if (previousElement) {
-      previousElement.push(new Set());
-    }
+    previousElement.push(new Set());
     return "state10";
+  } else if (MATCH_SMALLERGREATER.test(token)) {
+    let previousElement = processedFilterRequest[processedFilterRequest.length - 1];
+    previousElement.push(token);
+    return "state12";
   } else if (MATCH_NOT.test(token)) {
     return "state5";
   } else if (MATCH_ATTRIBUTE.test(token)) {
     let previousElement = processedFilterRequest[processedFilterRequest.length - 1];
-    if (previousElement) {
-      previousElement.push(token);
-    } else {
-      return `Error: Expected string or 'not' but got: '${token}'`;
-    }
+    previousElement.push(token);
     return "state4";
   } else {
-    return `Error: Expected string or 'not' but got: '${token}'`;
+    return `Error: Expected attribute or 'not' or '<' or '>' but got: '${token}'`;
   }
 }
 
@@ -156,22 +167,16 @@ function notTermDisjunction(processedFilterRequest, token) {
 
   if (MATCH_OPEN_CURLY.test(token)) {
     let previousElement = processedFilterRequest[processedFilterRequest.length - 1];
-    if (previousElement) {
-      previousElement.push("not");
-      previousElement.push(new Set());
-    }
+    previousElement.push("not");
+    previousElement.push(new Set());
     return "state10";
   } else if (MATCH_ATTRIBUTE.test(token)) {
     let previousElement = processedFilterRequest[processedFilterRequest.length - 1];
-    if (previousElement) {
-      previousElement.push("not");
-      previousElement.push(token);
-    } else {
-      return `Error: Expected string but got: '${token}'`;
-    }
+    previousElement.push("not");
+    previousElement.push(token);
     return "state4";
   } else {
-    return `Error: Expected string but got: '${token}'`;
+    return `Error: Expected attribute but got: '${token}'`;
   }
 }
 
@@ -206,7 +211,7 @@ function newTermCurlyConjunction(processedFilterRequest, token) {
     currentSet.add(token);
     return "state7";
   } else {
-    return `Error: Expected string but got: '${token}'`;
+    return `Error: Expected attribute but got: '${token}'`;
   }
 }
 
@@ -241,6 +246,30 @@ function newTermCurlyDisjunction(processedFilterRequest, token) {
     currentSet.add(token);
     return "state9";
   } else {
-    return `Error: Expected string but got: '${token}'`;
+    return `Error: Expected attribute but got: '${token}'`;
+  }
+}
+
+function smallerGreaterTermConjunction(processedFilterRequest, token) {
+  log.info("smallerGreaterTermConjunctionState with token: ", token);
+
+  if (MATCH_NUMBER.test(token)) {
+    let previousElement = processedFilterRequest[processedFilterRequest.length - 1];
+    previousElement.push(token);
+    return "state1";
+  } else {
+    return `Error: Expected number but got: '${token}'`;
+  }
+}
+
+function smallerGreaterTermDisjunction(processedFilterRequest, token) {
+  log.info("smallerGreaterTermDisjunctionState with token: ", token);
+
+  if (MATCH_NUMBER.test(token)) {
+    let previousElement = processedFilterRequest[processedFilterRequest.length - 1];
+    previousElement.push(token);
+    return "state4";
+  } else {
+    return `Error: Expected number but got: '${token}'`;
   }
 }

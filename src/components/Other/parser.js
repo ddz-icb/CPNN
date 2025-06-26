@@ -10,6 +10,7 @@ const MATCH_OPEN_CURLY = /^\{$/; // Matches '{'
 const MATCH_CLOSE_CURLY = /^\}$/; // Matches '}'
 const MATCH_COMMA = /^,$/; // Matches ','
 const MATCH_SMALLERGREATER = /^<|>$/; // Matches '<' or '>'
+const MATCH_NUMBER = /^\d+$/; // Matches positive integers
 
 export function parseAttributesFilter(input) {
   // return errormessage beginning with "Error:" if not valid.
@@ -52,6 +53,9 @@ export function parseAttributesFilter(input) {
     currentState = stateFunctions[currentState](processedFilterRequest, token);
   }
 
+  if (!(currentState in stateFunctions)) {
+    return currentState;
+  }
   if (!endStates.has(currentState)) {
     return "Error: the received statement is not complete";
   }
@@ -129,25 +133,17 @@ function newTermDisjunction(processedFilterRequest, token) {
 
   if (MATCH_OPEN_CURLY.test(token)) {
     let previousElement = processedFilterRequest[processedFilterRequest.length - 1];
-    if (previousElement) {
-      previousElement.push(new Set());
-    }
+    previousElement.push(new Set());
     return "state10";
   } else if (MATCH_SMALLERGREATER.test(token)) {
     let previousElement = processedFilterRequest[processedFilterRequest.length - 1];
-    if (previousElement) {
-      previousElement.push(token);
-    }
+    previousElement.push(token);
     return "state12";
   } else if (MATCH_NOT.test(token)) {
     return "state5";
   } else if (MATCH_ATTRIBUTE.test(token)) {
     let previousElement = processedFilterRequest[processedFilterRequest.length - 1];
-    if (previousElement) {
-      previousElement.push(token);
-    } else {
-      return `Error: Expected attribute or 'not' but got: '${token}'`;
-    }
+    previousElement.push(token);
     return "state4";
   } else {
     return `Error: Expected attribute or 'not' or '<' or '>' but got: '${token}'`;
@@ -171,19 +167,13 @@ function notTermDisjunction(processedFilterRequest, token) {
 
   if (MATCH_OPEN_CURLY.test(token)) {
     let previousElement = processedFilterRequest[processedFilterRequest.length - 1];
-    if (previousElement) {
-      previousElement.push("not");
-      previousElement.push(new Set());
-    }
+    previousElement.push("not");
+    previousElement.push(new Set());
     return "state10";
   } else if (MATCH_ATTRIBUTE.test(token)) {
     let previousElement = processedFilterRequest[processedFilterRequest.length - 1];
-    if (previousElement) {
-      previousElement.push("not");
-      previousElement.push(token);
-    } else {
-      return `Error: Expected attribute but got: '${token}'`;
-    }
+    previousElement.push("not");
+    previousElement.push(token);
     return "state4";
   } else {
     return `Error: Expected attribute but got: '${token}'`;
@@ -263,31 +253,23 @@ function newTermCurlyDisjunction(processedFilterRequest, token) {
 function smallerGreaterTermConjunction(processedFilterRequest, token) {
   log.info("smallerGreaterTermConjunctionState with token: ", token);
 
-  if (MATCH_ATTRIBUTE.test(token)) {
+  if (MATCH_NUMBER.test(token)) {
     let previousElement = processedFilterRequest[processedFilterRequest.length - 1];
-    if (previousElement) {
-      previousElement.push(token);
-    } else {
-      return `INTERNAL Error: previousElement array not found: '${token}'`;
-    }
+    previousElement.push(token);
     return "state1";
   } else {
-    return `Error: Expected attribute but got: '${token}'`;
+    return `Error: Expected number but got: '${token}'`;
   }
 }
 
 function smallerGreaterTermDisjunction(processedFilterRequest, token) {
   log.info("smallerGreaterTermDisjunctionState with token: ", token);
 
-  if (MATCH_ATTRIBUTE.test(token)) {
+  if (MATCH_NUMBER.test(token)) {
     let previousElement = processedFilterRequest[processedFilterRequest.length - 1];
-    if (previousElement) {
-      previousElement.push(token);
-    } else {
-      return `INTERNAL Error: previousElement array not found: '${token}'`;
-    }
+    previousElement.push(token);
     return "state4";
   } else {
-    return `Error: Expected attribute but got: '${token}'`;
+    return `Error: Expected number but got: '${token}'`;
   }
 }
