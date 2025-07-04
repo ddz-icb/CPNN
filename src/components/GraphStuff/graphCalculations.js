@@ -186,10 +186,31 @@ export function filterByLinkAttribs(graph, filterRequest) {
           for (let i = 0; i < andTerm.length; i++) {
             const element = andTerm[i];
 
-            if (element === "<") {
+            if (element === "=") {
+              const nextElement = andTerm[i + 1];
+
+              if (link.attribs.length == nextElement) {
+                meetsTerm = true;
+              }
+              i++;
+            } else if (element === "<") {
               const nextElement = andTerm[i + 1];
 
               if (link.attribs.length < nextElement) {
+                meetsTerm = true;
+              }
+              i++;
+            } else if (element === "<=") {
+              const nextElement = andTerm[i + 1];
+
+              if (link.attribs.length <= nextElement) {
+                meetsTerm = true;
+              }
+              i++;
+            } else if (element === ">=") {
+              const nextElement = andTerm[i + 1];
+
+              if (link.attribs.length >= nextElement) {
                 meetsTerm = true;
               }
               i++;
@@ -265,10 +286,31 @@ export function filterByNodeAttribs(graph, filterRequest) {
           for (let i = 0; i < andTerm.length; i++) {
             const element = andTerm[i];
 
-            if (element === "<") {
+            if (element === "=") {
+              const nextElement = andTerm[i + 1];
+
+              if (node.groups.length == nextElement) {
+                meetsTerm = true;
+              }
+              i++;
+            } else if (element === "<") {
               const nextElement = andTerm[i + 1];
 
               if (node.groups.length < nextElement) {
+                meetsTerm = true;
+              }
+              i++;
+            } else if (element === "<=") {
+              const nextElement = andTerm[i + 1];
+
+              if (node.groups.length <= nextElement) {
+                meetsTerm = true;
+              }
+              i++;
+            } else if (element === ">=") {
+              const nextElement = andTerm[i + 1];
+
+              if (node.groups.length >= nextElement) {
                 meetsTerm = true;
               }
               i++;
