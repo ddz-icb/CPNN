@@ -49,8 +49,7 @@ export async function parseGraph(name, content, takeAbs, minCorrForEdge, minComp
       fileData = { header: fileData.firstColumn, data: await convertToCorrMatrix(fileData.data, takeSpearmanCoefficient) };
     }
 
-    const linkAttribMatch = name.match(/dataset(\w+)/);
-    const linkAttrib = linkAttribMatch ? linkAttribMatch[1] : name;
+    const linkAttrib = name.split(".")[0];
 
     graph = { nodes: [], links: [] };
 
