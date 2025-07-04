@@ -6,7 +6,7 @@ CodeMirror.defineSimpleMode("customMode", {
     { regex: /(or|and|not)/, token: "number" },
     { regex: /[(){}]+/, token: "meta" },
     { regex: /,/, token: "meta" },
-    { regex: /[<>]/, token: "number" },
+    { regex: /[<>=]/, token: "number" },
     { regex: /[^()\s{},]+/, token: "def" },
   ],
 });

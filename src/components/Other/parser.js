@@ -9,7 +9,7 @@ const MATCH_OR = /^or$/; // Matches the word "or"
 const MATCH_OPEN_CURLY = /^\{$/; // Matches '{'
 const MATCH_CLOSE_CURLY = /^\}$/; // Matches '}'
 const MATCH_COMMA = /^,$/; // Matches ','
-const MATCH_SMALLERGREATER = /^<|>$/; // Matches '<' or '>'
+const MATCH_SMALLERGREATER = /^(<=|>=|<|>|=)$/; // Matches '<', '>', '=', '<=', '>='
 const MATCH_NUMBER = /^\d+$/; // Matches positive integers
 
 export function parseAttributesFilter(input) {
@@ -19,11 +19,10 @@ export function parseAttributesFilter(input) {
   if (input === "") return true;
   log.info("Parsing attributes filter:\n", input);
 
-  const tokens = input.match(/"[^"]*"|<|>|,|\(|\)|{|}|[^\s()<>{},"]+/g).map((token) => (token.startsWith('"') ? token : token.replace(/"/g, "")));
-
-  if (tokens[tokens.length - 1] === "") {
-    tokens.pop();
-  }
+  const cleanedInput = input.replace(/[“”„‟]/g, '"');
+  const tokens = cleanedInput
+    .match(/"[^"]*"|<=|>=|=|<|>|,|\(|\)|{|}|[^\s()<>{},="]+/g)
+    .map((token) => (token.startsWith('"') ? token.slice(1, -1) : token));
 
   const stateFunctions = {
     state0: newTermConjunction,
