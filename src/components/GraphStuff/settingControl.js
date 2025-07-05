@@ -384,12 +384,13 @@ export function SettingControl({ simulation, app, redraw }) {
 
   // change node repulsion strength //
   useEffect(() => {
-    if (!simulation) return;
+    if (!simulation || settings.physics.nodeCollision == null) return;
+    log.info("Changing node collision strength", settings.physics.nodeCollision);
+
     if (settings.physics.nodeCollision == false) {
       simulation.force("collision", null);
       return;
     }
-    log.info("Changing node collision strength", settings.physics.nodeCollision);
 
     simulation.force(
       "collision",
