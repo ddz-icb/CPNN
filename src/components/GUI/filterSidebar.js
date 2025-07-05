@@ -252,7 +252,7 @@ export function FilterSidebar({ resetFilters }) {
         infoHeading={"Filtering Links by Attributes"}
         infoDescription={
           <div>
-            <p className="margin-0">
+            <div className="margin-0">
               You can filter the links by formulating a query. These queries must follow the Conjunctive Normal Form (CNF), meaning that conditions
               grouped with <PopUpTextFieldCompact textInside={"or"} /> (e.g., <PopUpTextFieldCompact textInside={"(A or B)"} /> ) are combined using{" "}
               <PopUpTextFieldCompact textInside={"and"} />. To address one (or multiple) attributes, parts of the attribute name can be used (e.g.{" "}
@@ -263,12 +263,14 @@ export function FilterSidebar({ resetFilters }) {
               can use the <PopUpTextFieldCompact textInside={">"} />, <PopUpTextFieldCompact textInside={">="} />,{" "}
               <PopUpTextFieldCompact textInside={"<"} />, <PopUpTextFieldCompact textInside={"<="} /> or <PopUpTextFieldCompact textInside={"="} />{" "}
               operators (e.g., <PopUpTextFieldCompact textInside={">= 2"} /> filters for multilinks of size at least 2).
-            </p>
-            <p>
+            </div>
+            <div className="pad-top-1" />
+            <div>
               For example, with the link attributes <PopUpTextFieldCompact textInside={"lean group"} />,{" "}
               <PopUpTextFieldCompact textInside={"obese group"} />, and <PopUpTextFieldCompact textInside={"t2d group"} />, some valid queries could
               be:
-            </p>
+            </div>
+            <div className="pad-top-05" />
             <PopUpTextFieldCompact textInside={"t2d"} /> <PopUpTextFieldCompact textInside={"not lean"} />{" "}
             <PopUpTextFieldCompact textInside={"> 2"} /> <PopUpTextFieldCompact textInside={"not {lean, obese}"} />{" "}
             <PopUpTextFieldCompact textInside={'"t2d group" and lean'} /> <PopUpTextFieldCompact textInside={"(obese or lean) and >= 2"} />{" "}
@@ -285,7 +287,7 @@ export function FilterSidebar({ resetFilters }) {
         infoHeading={"Filter Nodes by Attributes"}
         infoDescription={
           <div>
-            <p className="margin-0">
+            <div className="margin-0">
               You can filter the nodes by formulating a query. These queries must follow the Conjunctive Normal Form (CNF), meaning that conditions
               grouped with <PopUpTextFieldCompact textInside={"or"} /> (e.g., <PopUpTextFieldCompact textInside={"(A or B)"} /> ) are combined using{" "}
               <PopUpTextFieldCompact textInside={"and"} />. To address one (or multiple) attributes, parts of the attribute name can be used (e.g.{" "}
@@ -297,12 +299,14 @@ export function FilterSidebar({ resetFilters }) {
               node, you can use the <PopUpTextFieldCompact textInside={">"} />, <PopUpTextFieldCompact textInside={">="} />,{" "}
               <PopUpTextFieldCompact textInside={"<"} />, <PopUpTextFieldCompact textInside={"<="} /> or <PopUpTextFieldCompact textInside={"="} />{" "}
               operators (e.g., <PopUpTextFieldCompact textInside={">= 2"} /> filters for nodes with at least 2 attributes).
-            </p>
-            <p>
+            </div>
+            <div className="pad-top-1" />
+            <div>
               For example, with the link attributes <PopUpTextFieldCompact textInside={"mRNA splicing"} />,{" "}
               <PopUpTextFieldCompact textInside={"glucose metabolism"} />, <PopUpTextFieldCompact textInside={"VEGF signaling"} /> and{" "}
               <PopUpTextFieldCompact textInside={"MTOR signaling"} />, some valid queries could be:
-            </p>
+            </div>
+            <div className="pad-top-05" />
             <PopUpTextFieldCompact textInside={"signaling"} /> <PopUpTextFieldCompact textInside={"not signaling"} />{" "}
             <PopUpTextFieldCompact textInside={"> 2"} /> <PopUpTextFieldCompact textInside={"not {MTOR, VEGF, mRNA}"} />{" "}
             <PopUpTextFieldCompact textInside={'signaling and "mRNA splicing"'} />{" "}
