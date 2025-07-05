@@ -78,7 +78,9 @@
   "overrides": {
     "react-codemirror2": {
       "react": "^19.1.0"
-    }
+    },
+    "minimist": "1.2.8",
+    "@babel/traverse": "7.28.0"
   },
   "eslintConfig": {
     "extends": [
