@@ -496,7 +496,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
           onBlur={handleMinComponentFieldBlur}
           infoHeading={"Minimum component/cluster size"}
           infoDescription={
-            "Based on the specified minimum link correlation above, set the minimum component/cluster size required for a node to be included in the graph. Increasing this can significantly improve performance."
+            "Based on the specified minimum link correlation above, set the minimum component/cluster size required for a node to be included in the graph. Increasing this value can significantly improve performance."
           }
         />
         <PopUpSwitchBlock
