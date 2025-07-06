@@ -460,7 +460,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
           }
         />
         <PopUpSwitchBlock
-          text={"Merge nodes of the same protein to one"}
+          text={"Merge nodes of same protein"}
           value={mergeSameProtein}
           onChange={() => {
             setMergeSameProtein(!mergeSameProtein);

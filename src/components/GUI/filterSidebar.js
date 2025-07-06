@@ -36,6 +36,7 @@ export function FilterSidebar({ resetFilters }) {
 
   const handleResetFilters = () => {
     resetFilters();
+    setSettings("filter.mergeProteins", false);
     setCompilerErrorLinkFilter(null);
     setCompilerErrorNodeFilter(null);
   };
@@ -229,13 +230,11 @@ export function FilterSidebar({ resetFilters }) {
       </div>
       <SidebarSwitchBlock
         text={"Merge Proteins"}
-        value={settings.physics.mergeProteins}
+        value={settings.filter.mergeProteins}
         onChange={handleMergeProteins}
-        infoHeading={"AYAYAPYYPPAPA"}
+        infoHeading={"Merge nodes of same protein"}
         infoDescription={
-          <div>
-            <p className="margin-0">yaYAPYAPYPAAYP</p>
-          </div>
+          "Nodes with the same UniprotID and Name will be merged into a single node, along with their respective links. When multiple links to the same node are merged, the maximum absolute weight is used as the new link weight. Enabling this setting can significantly enhance performance by reducing the graph size."
         }
       />
       <SidebarSliderBlock
@@ -254,7 +253,8 @@ export function FilterSidebar({ resetFilters }) {
           <div>
             <p className="margin-0">
               You can filter the links by adjusting their threshold. Links will only be drawn, if their link weight is larger or equal to the set
-              threshold. For example, if the weight of a link is 0.75 and the threshold is set to 0.8, the link will not be drawn.
+              threshold. For example, if the weight of a link is 0.75 and the threshold is set to 0.8, the link will not be drawn. Increasing this
+              value can significantly enhance performance by reducing the graph size.
             </p>
           </div>
         }
@@ -344,7 +344,7 @@ export function FilterSidebar({ resetFilters }) {
           <div>
             <p className="margin-0">
               You can filter the components/clusters by setting a minimum size. If a given component is smaller than the applied threshold, the whole
-              component will not be drawn.
+              component will not be drawn. Increasing this value can significantly enhance performance by reducing the graph size.
             </p>
           </div>
         }
@@ -361,7 +361,8 @@ export function FilterSidebar({ resetFilters }) {
           <div>
             <p className="margin-0">
               You can filter the components/clusters based on their density. The density is measured as the average amount of neighbors per node. If a
-              given component has a smaller density than the applied threshold, the component will not be drawn.
+              given component has a smaller density than the applied threshold, the component will not be drawn. Increasing this value can
+              significantly enhance performance by reducing the graph size.
             </p>
           </div>
         }
