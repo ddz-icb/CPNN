@@ -10,6 +10,7 @@ import {
   linkForceInit,
   linkLengthInit,
   linkThresholdInit,
+  mergeProteinsInit,
   minCompSizeInit,
   nodeFilterInit,
   nodeFilterTextInit,
@@ -40,7 +41,7 @@ export const resetPhysicsSettings = (setSettings) => {
   });
 };
 
-export const resetFilterSettings = (setSettings) => {
+export const resetFilterSettings = (setSettings, settings) => {
   setSettings("filter", {
     linkThreshold: linkThresholdInit,
     linkFilter: linkFilterInit,
@@ -52,5 +53,6 @@ export const resetFilterSettings = (setSettings) => {
     minCompSizeText: minCompSizeInit,
     compDensity: compDensityInit,
     compDensityText: compDensityInit,
+    mergeProteins: settings.filter.mergeProteins,
   });
 };

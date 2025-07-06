@@ -12,6 +12,8 @@ import {
   getLinkAttribsToColorIndices,
   getLinkWeightMinMax,
   getNodeAttribsToColorIndices,
+  joinGraphs,
+  mergeSameProteins,
 } from "./components/GraphStuff/graphCalculations.js";
 import { resetFilterSettings, resetPhysicsSettings } from "./components/Other/reset.js";
 import {
@@ -55,9 +57,9 @@ function App() {
     log.info("Replacing graph");
 
     try {
+      simulationReset();
       selectGraph(filename, setGraphData);
       setGraphData("graphIsPreprocessed", false);
-      simulationReset();
     } catch (error) {
       setError("Error loading graph");
       log.error("Error loading graph:", error);
@@ -70,9 +72,9 @@ function App() {
     log.info("Replacing annotation mapping");
 
     try {
-      selectMapping(mappingName, setGraphData);
-      setGraphData("graphIsPreprocessed", false);
       simulationReset();
+      setGraphData("graphIsPreprocessed", false);
+      selectMapping(mappingName, setGraphData);
     } catch (error) {
       setError("Mapping is already the current mapping");
       log.error("Mapping is already the current mapping");
@@ -206,9 +208,9 @@ function App() {
     if (!filename) return;
     log.info("removing graph file with name:", filename);
 
-    removeActiveGraphFile(filename, graphData.activeGraphFileNames, setGraphData);
-    setGraphData("graphIsPreprocessed", false);
     simulationReset();
+    setGraphData("graphIsPreprocessed", false);
+    removeActiveGraphFile(filename, graphData.activeGraphFileNames, setGraphData);
   };
 
   const handleAddActiveGraphFile = (filename) => {
@@ -221,9 +223,9 @@ function App() {
     log.info("Adding file with name: ", filename);
 
     try {
-      addActiveGraphFile(filename, graphData.activeGraphFileNames, setGraphData, graphData.originGraph);
-      setGraphData("graphIsPreprocessed", false);
       simulationReset();
+      setGraphData("graphIsPreprocessed", false);
+      addActiveGraphFile(filename, graphData.activeGraphFileNames, setGraphData, graphData.originGraph);
     } catch (error) {
       setError("Error loading graph");
       log.error("Error loading graph:", error);
@@ -281,7 +283,7 @@ function App() {
   };
 
   const resetFilters = () => {
-    resetFilterSettings(setSettings);
+    resetFilterSettings(setSettings, settings);
   };
 
   // select example graph on startup
@@ -340,6 +342,37 @@ function App() {
 
     storeColorSchemes(colorSchemes);
   }, [colorSchemes]);
+
+  useEffect(() => {
+    async function mergedGraph(graphData) {
+      const { graph, file } = await getGraphDB(graphData.activeGraphFileNames[0]);
+
+      let combinedGraph = graph;
+      for (let i = 1; i < graphData.activeGraphFileNames.length; i++) {
+        let { graph, file } = await getGraphDB(graphData.activeGraphFileNames[i]);
+        combinedGraph = joinGraphs(combinedGraph, graph);
+      }
+
+      if (settings.filter.mergeProteins) {
+        combinedGraph = mergeSameProteins(combinedGraph);
+      }
+
+      setGraphData("originGraph", combinedGraph);
+      setGraphData("activeGraphFileNames", graphData.activeGraphFileNames);
+    }
+
+    if (settings.filter.mergeProteins == null || !graphData.activeGraphFileNames || !graphData.activeGraphFileNames[0]) return;
+    log.info("Merging Proteins: ", settings.filter.mergeProteins);
+
+    try {
+      simulationReset();
+      setGraphData("graphIsPreprocessed", false);
+      mergedGraph(graphData);
+    } catch (error) {
+      setError("Error loading graph");
+      log.error("Error loading graph:", error);
+    }
+  }, [settings.filter.mergeProteins]);
 
   // forwards graph to forceGraph component //
   useEffect(() => {

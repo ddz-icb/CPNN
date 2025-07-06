@@ -10,6 +10,7 @@ import {
   getPhosphositesProtIdEntry,
   getProtIdAndNameEntry,
   getProtIdsWithIsoform,
+  mergeSameProteins,
 } from "../GraphStuff/graphCalculations.js";
 import { expectedPhysicTypes } from "../../states.js";
 
@@ -102,7 +103,7 @@ export async function parseGraph(name, content, takeAbs, minCorrForEdge, minComp
     .filter((link) => link.weights.length > 0);
 
   if (mergeSameProtein) {
-    mergeSameProteins(graph);
+    graph = mergeSameProteins(graph);
   }
 
   graph.nodes.sort((a, b) => a.id.localeCompare(b.id));
@@ -113,122 +114,6 @@ export async function parseGraph(name, content, takeAbs, minCorrForEdge, minComp
   });
 
   return graph;
-}
-
-function mergeSameProteins(graph) {
-  const protIdToNodeMap = new Map();
-
-  // map protIds onto nodes containg this protId
-  graph.nodes.forEach((node) => {
-    const protIds = getProtIdsWithIsoform(node.id);
-    protIds.forEach((protId) => {
-      if (!protIdToNodeMap.has(protId)) {
-        protIdToNodeMap.set(protId, []);
-      }
-      protIdToNodeMap.get(protId).push(node.id);
-    });
-  });
-
-  const unionFind = new UnionFind(graph.nodes.length);
-  const nodeIndexMap = new Map(graph.nodes.map((node, index) => [node.id, index]));
-
-  // merge nodes that share the same protId
-  protIdToNodeMap.forEach((nodeIds) => {
-    for (let i = 1; i < nodeIds.length; i++) {
-      const index1 = nodeIndexMap.get(nodeIds[0]);
-      const index2 = nodeIndexMap.get(nodeIds[i]);
-      unionFind.link(index1, index2);
-    }
-  });
-
-  // iterate through all nodes to group them by their union-find parent
-  const mergedNodes = new Map();
-  const groupsMap = new Map();
-  graph.nodes.forEach((node) => {
-    const parentIndex = unionFind.find(nodeIndexMap.get(node.id));
-    if (!groupsMap.has(parentIndex)) {
-      groupsMap.set(parentIndex, []);
-    }
-    groupsMap.get(parentIndex).push(node.id);
-  });
-
-  // Create merged nodes from grouped nodes
-  groupsMap.forEach((group, parentIndex) => {
-    const protIdToPhosphositesMap = new Map();
-
-    group.forEach((nodeId) => {
-      const node = graph.nodes.find((n) => n.id === nodeId);
-      const entries = getIdsSeperateEntries(node.id);
-      entries.forEach((entry) => {
-        const protIdName = getProtIdAndNameEntry(entry);
-        const phosphosites = getPhosphositesProtIdEntry(entry);
-
-        if (!protIdToPhosphositesMap.has(protIdName)) {
-          protIdToPhosphositesMap.set(protIdName, new Set());
-        }
-        phosphosites.forEach((site) => protIdToPhosphositesMap.get(protIdName).add(site));
-      });
-    });
-
-    // create new id of node
-    const newId = Array.from(protIdToPhosphositesMap.entries())
-      .map(([protIdName, phosphoSet]) => {
-        const phosphoArray = Array.from(phosphoSet);
-        if (phosphoArray.length > 0) {
-          return `${protIdName}_${phosphoArray.join(", ")}`;
-        }
-        return protIdName;
-      })
-      .join("; ");
-
-    mergedNodes.set(parentIndex, {
-      id: newId,
-      groups: new Set(group.flatMap((nodeId) => graph.nodes.find((n) => n.id === nodeId)?.groups || [])),
-    });
-  });
-
-  graph.nodes = Array.from(mergedNodes.values()).map((node) => ({
-    id: node.id,
-    groups: Array.from(node.groups),
-  }));
-
-  const newLinks = [];
-  graph.links.forEach((link) => {
-    const sourceParentIndex = unionFind.find(nodeIndexMap.get(link.source));
-    const targetParentIndex = unionFind.find(nodeIndexMap.get(link.target));
-
-    const sourceMergedId = mergedNodes.get(sourceParentIndex).id;
-    const targetMergedId = mergedNodes.get(targetParentIndex).id;
-
-    // delete links to same merged node
-    if (sourceMergedId && targetMergedId && sourceMergedId !== targetMergedId) {
-      const existingLink = newLinks.find(
-        (l) => (l.source === sourceMergedId && l.target === targetMergedId) || (l.source === targetMergedId && l.target === sourceMergedId)
-      );
-
-      if (existingLink) {
-        // merge weights and attributes
-        link.attribs.forEach((attrib, idx) => {
-          const existingAttribIndex = existingLink.attribs.indexOf(attrib);
-          if (existingAttribIndex !== -1) {
-            existingLink.weights[existingAttribIndex] = Math.max(Math.abs(existingLink.weights[existingAttribIndex], link.weights[idx]));
-          } else {
-            existingLink.attribs.push(attrib);
-            existingLink.weights.push(link.weights[idx]);
-          }
-        });
-      } else {
-        newLinks.push({
-          source: sourceMergedId,
-          target: targetMergedId,
-          weights: [...link.weights],
-          attribs: [...link.attribs],
-        });
-      }
-    }
-  });
-
-  graph.links = newLinks;
 }
 
 function parseGraphCSVorTSV(content) {

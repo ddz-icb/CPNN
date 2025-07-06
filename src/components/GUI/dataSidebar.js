@@ -17,7 +17,7 @@ import {
   PopUpTextFieldInline,
 } from "./sidebar.js";
 import log from "../../logger.js";
-import { useGraphData } from "../../states.js";
+import { useGraphData, useSettings } from "../../states.js";
 import { exampleGraphJson } from "../../demodata/exampleGraphJSON.js";
 import { downloadCsvFile, downloadObjectAsFile } from "../GraphStuff/download.js";
 import { exampleGraphCsv } from "../../demodata/exampleGraphCSV.js";
@@ -67,6 +67,7 @@ export function DataSidebar({
 
 function UploadedFiles({ uploadedGraphFileNames, handleSelectGraph, handleDeleteGraphFile, handleAddFile }) {
   let uploadedGraphFileNamesNoExample = uploadedGraphFileNames?.filter((name) => name !== exampleGraphJson.name);
+  const { settings, setSettings } = useSettings();
 
   return (
     <>

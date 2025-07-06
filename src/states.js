@@ -19,6 +19,7 @@ import {
   yStrengthInit,
   nodeCollisionInit,
   compDensityInit,
+  mergeProteinsInit,
 } from "./components/GraphStuff/graphInitValues.js";
 import { linkColorSchemeInit, nodeColorSchemeInit, themeInit } from "./components/Other/appearance.js";
 
@@ -77,6 +78,7 @@ export const useSettings = create((set) => ({
       minCompSizeText: minCompSizeInit,
       compDensity: compDensityInit,
       compDensityText: compDensityInit,
+      mergeProteins: mergeProteinsInit,
     },
     appearance: {
       theme: themeInit,

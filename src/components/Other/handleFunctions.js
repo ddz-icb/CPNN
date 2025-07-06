@@ -1,6 +1,6 @@
 import { exampleGraphJson } from "../../demodata/exampleGraphJSON.js";
 import log from "../../logger.js";
-import { getDifferenceGraph, joinGraphs } from "../GraphStuff/graphCalculations.js";
+import { getDifferenceGraph, joinGraphs, mergeSameProteins } from "../GraphStuff/graphCalculations.js";
 import { applyTheme, defaultColorSchemes, lightTheme } from "./appearance.js";
 import { addGraphFileDB, addGraphFileIfNotExistsDB, fromAllGetGraphNameDB, getGraphDB, removeGraphFileByNameDB } from "./dbGraphs.js";
 import { addMappingFileDB, fromAllGetMappingNameDB, getMappingDB, removeMappingFileByNameDB } from "./dbMappings.js";
@@ -47,15 +47,14 @@ export async function addNewGraphFile(
   takeAbs,
   minCorrForEdge,
   minCompSizeForNode,
-  takeSpearmanCoefficient,
-  mergeSameProtein
+  takeSpearmanCoefficient
 ) {
   if (uploadedGraphFileNames.some((name) => getFileNameWithoutExtension(name) === getFileNameWithoutExtension(file.name))) {
     log.warn("Graph with this name already exists");
     throw new Error("Graph with this name already exists");
   }
 
-  const graphFile = await parseGraphFile(file, takeAbs, minCorrForEdge, minCompSizeForNode, takeSpearmanCoefficient, mergeSameProtein);
+  const graphFile = await parseGraphFile(file, takeAbs, minCorrForEdge, minCompSizeForNode, takeSpearmanCoefficient);
   addGraphFileDB(graphFile);
   setGraphData("uploadedGraphFileNames", [...(uploadedGraphFileNames || []), file.name]);
 }

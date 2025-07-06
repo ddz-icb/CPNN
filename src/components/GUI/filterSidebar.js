@@ -17,6 +17,7 @@ import {
   SidebarCodeEditorBlock,
   SidebarFieldBlock,
   SidebarSliderBlock,
+  SidebarSwitchBlock,
 } from "./sidebar.js";
 import { useGraphData, useSettings } from "../../states.js";
 
@@ -37,6 +38,10 @@ export function FilterSidebar({ resetFilters }) {
     resetFilters();
     setCompilerErrorLinkFilter(null);
     setCompilerErrorNodeFilter(null);
+  };
+
+  const handleMergeProteins = () => {
+    setSettings("filter.mergeProteins", !settings.filter.mergeProteins);
   };
 
   const handleLinkThresholdSliderChange = (event) => {
@@ -222,6 +227,17 @@ export function FilterSidebar({ resetFilters }) {
       <div className="inline pad-top-1 pad-bottom-1">
         <SidebarButtonRect text={"Reset Filters"} onClick={handleResetFilters} />
       </div>
+      <SidebarSwitchBlock
+        text={"Merge Proteins"}
+        value={settings.physics.mergeProteins}
+        onChange={handleMergeProteins}
+        infoHeading={"AYAYAPYYPPAPA"}
+        infoDescription={
+          <div>
+            <p className="margin-0">yaYAPYAPYPAAYP</p>
+          </div>
+        }
+      />
       <SidebarSliderBlock
         text={"Link Weight Threshold"}
         min={Math.floor(graphData.linkWeightMin / 0.05) * 0.05}
