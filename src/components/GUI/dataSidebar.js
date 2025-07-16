@@ -409,7 +409,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
       <PopUp
         heading={"Upload Graph"}
         description={
-          "You can upload your graphs in JSON, CSV or TSV format. CSV and TSV files must be either structured as a symmetric matrix or raw table data, while JSON contains a list of nodes and links. You can download the example graphs below to take a closer look at the required format. When raw table data is uploaded, a correlation matrix will be automatically computed."
+          "You can upload your graphs in JSON, CSV or TSV format. CSV and TSV files must be either structured as a symmetric matrix or raw table data, while JSON contains a list of nodes and links. You can download the example graphs below to take a closer look at the required format. When raw table data is uploaded, a correlation matrix will be automatically computed. For this computation all NaN values will be ignored."
         }
         isOpen={graphPopUpActive}
         setIsOpen={setGraphPopUpActive}
