@@ -11,6 +11,8 @@ try:
 
     df = pd.DataFrame(data).apply(pd.to_numeric, errors="coerce")
 
+    df = df.dropna(axis=0, how="all")
+
     corr_matrix = df.T.corr(method=method).round(2)
 
     print(corr_matrix.to_json())
