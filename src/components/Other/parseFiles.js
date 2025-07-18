@@ -47,7 +47,15 @@ export async function parseGraph(name, content, takeAbs, minCorrForEdge, minComp
     // if data is raw, convert to matrix
     if (!isSymmMatrix(content)) {
       log.info("Converting data into symmetrical matrix. Used correlation coefficient:", takeSpearmanCoefficient ? "Spearman" : "Pearson");
-      fileData = { header: fileData.firstColumn, data: await convertToCorrMatrix(fileData.data, takeSpearmanCoefficient) };
+
+      // add fileData.firstColumn as the first column of fileData.data; up until this point fileData.data is only numbers
+      fileData.data = fileData.data.map((row, index) => {
+        return [fileData.firstColumn[index], ...row];
+      });
+
+      const corrMatrix = await convertToCorrMatrix(fileData.data, takeSpearmanCoefficient);
+
+      fileData = { header: corrMatrix.index, data: corrMatrix.data };
     }
 
     const linkAttrib = name.split(".")[0];
@@ -61,7 +69,7 @@ export async function parseGraph(name, content, takeAbs, minCorrForEdge, minComp
       });
     }
 
-    for (let i = 1; i < fileData.header.length; i++) {
+    for (let i = 0; i < fileData.header.length; i++) {
       for (let j = 0; j < i; j++) {
         graph.links.push({
           source: fileData.header[i],

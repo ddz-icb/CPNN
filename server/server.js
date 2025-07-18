@@ -38,10 +38,9 @@ app.post("/correlationMatrix", upload.single("file"), (req, res) => {
     const pythonEnvPath = path.resolve(__dirname, "cpnn/bin/python");
     const python = spawn(pythonEnvPath, [pythonScriptPath, method]);
 
-    let result = "";
-    python.stdout.on("data", (chunk) => {
-      result += chunk.toString();
-    });
+    res.setHeader("Content-Type", "application/json");
+
+    python.stdout.pipe(res);
 
     python.stderr.on("data", (err) => {
       log.error("Python Error:", err.toString());
@@ -49,16 +48,16 @@ app.post("/correlationMatrix", upload.single("file"), (req, res) => {
 
     python.on("close", (code) => {
       if (code !== 0) {
-        res.status(500).send("Error: Python script failed");
+        log.error(`Python script exited with code ${code}`);
       } else {
-        res.json(JSON.parse(result));
+        log.info("Python script finished successfully.");
       }
     });
 
     python.stdin.write(data);
     python.stdin.end();
   } catch (error) {
-    res.status(500).send("Error: calculating correlation matrix");
+    res.status(500).send("Error: Could not start correlation matrix calculation");
     log.error(error.message);
   }
 });
