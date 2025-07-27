@@ -256,6 +256,9 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
   const [minCompSizeForNode, setMinCompSizeForNode] = useState(2);
   const [minCompSizeForNodeText, setMinCompSizeForNodeText] = useState(2);
 
+  const [maxCompSizeForNode, setMaxCompSizeForNode] = useState("");
+  const [maxCompSizeForNodeText, setMaxCompSizeForNodeText] = useState("");
+
   const [containsSites, setContainsSites] = useState(false);
 
   const [nodeIdFormat, setNodeIdFormat] = useState("");
@@ -327,6 +330,32 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
       event.target.innerText = intValue;
       setMinCompSizeForNode(intValue);
       setMinCompSizeForNodeText(intValue);
+    }
+  };
+
+  const handleMaxComponentFieldChange = (event) => {
+    const value = event.target.value;
+    const intValue = parseInt(value, 10);
+
+    if (value === "") {
+      setMaxCompSizeForNodeText("");
+    } else if (!isNaN(intValue)) {
+      setMaxCompSizeForNodeText(intValue);
+    }
+  };
+
+  const handleMaxComponentFieldBlur = (event) => {
+    const value = event.target.value;
+    const intValue = parseInt(value, 10);
+
+    if (value === "") {
+      event.target.innerText = "";
+      setMaxCompSizeForNode("");
+      setMaxCompSizeForNodeText("");
+    } else if (!isNaN(intValue) && intValue >= 1) {
+      event.target.innerText = intValue;
+      setMaxCompSizeForNode(intValue);
+      setMaxCompSizeForNodeText(intValue);
     }
   };
 
@@ -499,6 +528,18 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
             "Based on the specified minimum link correlation above, set the minimum component/cluster size required for a node to be included in the graph. Increasing this value can significantly improve performance."
           }
         />
+        <PopUpFieldBlock
+          text={"Maximum component size"}
+          min={1}
+          step={1}
+          value={maxCompSizeForNodeText}
+          onChange={handleMaxComponentFieldChange}
+          onBlur={handleMaxComponentFieldBlur}
+          infoHeading={"Maximum component/cluster size"}
+          infoDescription={
+            "Based on the specified minimum link correlation above, set the maximum component/cluster size required for a node to be included in the graph. Decreasing this value can significantly improve performance."
+          }
+        />
         <PopUpSwitchBlock
           text={"Include phosphosites"}
           value={containsSites}
@@ -518,7 +559,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
             onClick={handleGraphUploadClick}
             linkRef={graphFileRef}
             onChange={(event) => {
-              handleNewGraphFile(event, takeAbs, minCorrForEdge, minCompSizeForNode, takeSpearmanCoefficient, mergeSameProtein);
+              handleNewGraphFile(event, takeAbs, minCorrForEdge, minCompSizeForNode, maxCompSizeForNode, takeSpearmanCoefficient, mergeSameProtein);
               event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
               setGraphPopUpActive(false);
             }}

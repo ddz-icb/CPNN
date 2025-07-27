@@ -20,6 +20,7 @@ import {
   filterByLinkAttribs,
   filterByThreshold,
   filterMinCompSize,
+  filterMaxCompSize,
   filterByNodeAttribs,
   filterNodesExist,
   returnAdjacentData,
@@ -63,6 +64,8 @@ export function SettingControl({ simulation, app, redraw }) {
       settings.filter.linkFilter,
       "\n    Mininum component size: ",
       settings.filter.minCompSize,
+      "\n    Maximum component size: ",
+      settings.filter.maxCompSize,
       "\n    Groups: ",
       settings.filter.nodeFilter,
       "\n    Comp Density: ",
@@ -85,6 +88,7 @@ export function SettingControl({ simulation, app, redraw }) {
     filteredGraph = filterNodesExist(filteredGraph);
 
     filteredGraph = filterMinCompSize(filteredGraph, settings.filter.minCompSize);
+    filteredGraph = filterMaxCompSize(filteredGraph, settings.filter.maxCompSize);
     filteredGraph = filterNodesExist(filteredGraph);
 
     filterActiveNodesForPixi(graphData.circles, graphData.nodeLabels, settings.appearance.showNodeLabels, filteredGraph, graphData.nodeMap);
@@ -95,6 +99,7 @@ export function SettingControl({ simulation, app, redraw }) {
     settings.filter.linkFilter,
     settings.filter.nodeFilter,
     settings.filter.minCompSize,
+    settings.filter.maxCompSize,
     settings.filter.compDensity,
     graphData.originGraph,
     graphData.circles,
@@ -356,7 +361,7 @@ export function SettingControl({ simulation, app, redraw }) {
     const [componentArray, componentSizeArray] = returnComponentData(graphData.graph);
 
     // this value can be increased to slightly increase performance
-    const threshold = settings.filter.minCompSize > 3 ? settings.filter.minCompSize : 3;
+    const threshold = settings.filter.minCompSize > 2 ? settings.filter.minCompSize : 2;
 
     simulation.force("component", componentForce(componentArray, componentSizeArray, threshold).strength(settings.physics.componentStrength));
     simulation.alpha(1).restart();

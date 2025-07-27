@@ -82,7 +82,15 @@ function App() {
   };
 
   // adds new graph file //
-  const handleNewGraphFile = async (event, takeAbs, minCorrForEdge, minCompSizeForNode, takeSpearmanCoefficient, mergeSameProtein) => {
+  const handleNewGraphFile = async (
+    event,
+    takeAbs,
+    minCorrForEdge,
+    minCompSizeForNode,
+    maxCompSizeForNode,
+    takeSpearmanCoefficient,
+    mergeSameProtein
+  ) => {
     const file = event.target.files[0];
     if (!event || !event.target || !file) return;
     log.info("Adding new graph file");
@@ -94,6 +102,7 @@ function App() {
       takeAbs,
       minCorrForEdge,
       minCompSizeForNode,
+      maxCompSizeForNode,
       takeSpearmanCoefficient,
       mergeSameProtein
     )
@@ -256,9 +265,19 @@ function App() {
 
     const minCorrForEdge = 0;
     const minCompSizeForNode = 0;
+    const maxCompSizeForNode = "";
     const takeSpearmanCoefficient = false;
 
-    addNewGraphFile(file, graphData.uploadedGraphFileNames, setGraphData, takeAbs, minCorrForEdge, minCompSizeForNode, takeSpearmanCoefficient)
+    addNewGraphFile(
+      file,
+      graphData.uploadedGraphFileNames,
+      setGraphData,
+      takeAbs,
+      minCorrForEdge,
+      minCompSizeForNode,
+      maxCompSizeForNode,
+      takeSpearmanCoefficient
+    )
       .then(() => {})
       .catch((error) => {
         setError(`${error.message}`);
@@ -385,6 +404,8 @@ function App() {
     const { minWeight, maxWeight } = getLinkWeightMinMax(newGraph);
     setGraphData("linkWeightMin", minWeight);
     setGraphData("linkWeightMax", maxWeight);
+
+    // set max comp size = amount of nodes
 
     const nodeAttribsToColorIndices = getNodeAttribsToColorIndices(newGraph);
     setSettings("appearance.nodeAttribsToColorIndices", nodeAttribsToColorIndices);

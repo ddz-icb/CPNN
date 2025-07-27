@@ -172,6 +172,19 @@ export function filterMinCompSize(graph, minCompSize) {
   return graph;
 }
 
+export function filterMaxCompSize(graph, maxCompSize) {
+  if (maxCompSize == "") return graph;
+
+  const [componentArray, componentSizeArray] = returnComponentData(graph, graph.nodes);
+
+  graph = {
+    ...graph,
+    nodes: graph.nodes.filter((node) => componentSizeArray[componentArray[node.id]] <= maxCompSize),
+  };
+
+  return graph;
+}
+
 export function filterByLinkAttribs(graph, filterRequest) {
   // linkAttribs is true if the filterRequest was empty
   if (filterRequest === true) return graph;

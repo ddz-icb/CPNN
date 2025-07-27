@@ -20,6 +20,7 @@ import {
   nodeCollisionInit,
   compDensityInit,
   mergeProteinsInit,
+  maxCompSizeInit,
 } from "./components/GraphStuff/graphInitValues.js";
 import { linkColorSchemeInit, nodeColorSchemeInit, themeInit } from "./components/Other/appearance.js";
 
@@ -76,6 +77,8 @@ export const useSettings = create((set) => ({
       nodeFilterText: nodeFilterTextInit,
       minCompSize: minCompSizeInit,
       minCompSizeText: minCompSizeInit,
+      maxCompSize: maxCompSizeInit,
+      maxCompSizeText: maxCompSizeInit,
       compDensity: compDensityInit,
       compDensityText: compDensityInit,
       mergeProteins: mergeProteinsInit,

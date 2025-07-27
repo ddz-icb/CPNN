@@ -20,6 +20,7 @@ import {
   SidebarSwitchBlock,
 } from "./sidebar.js";
 import { useGraphData, useSettings } from "../../states.js";
+import { maxCompSizeInit } from "../GraphStuff/graphInitValues.js";
 
 export function FilterSidebar({ resetFilters }) {
   const { settings, setSettings } = useSettings();
@@ -99,6 +100,34 @@ export function FilterSidebar({ resetFilters }) {
       event.target.innerText = intValue;
       setSettings("filter.minCompSizeText", intValue);
       setSettings("filter.minCompSize", intValue);
+    }
+  };
+
+  const handleMaxComponentFieldChange = (event) => {
+    const value = event.target.value;
+
+    // is int value
+    if (/^\d+$/.test(value)) {
+      const intValue = parseInt(value, 10);
+      setSettings("filter.maxCompSizeText", intValue);
+    } else {
+      setSettings("filter.maxCompSizeText", maxCompSizeInit);
+    }
+  };
+
+  const handleMaxComponentFieldBlur = (event) => {
+    const value = event.target.value;
+
+    // is int value
+    if (/^\d+$/.test(value)) {
+      const intValue = parseInt(value, 10);
+      event.target.innerText = intValue;
+      setSettings("filter.maxCompSizeText", intValue);
+      setSettings("filter.maxCompSize", intValue);
+    } else {
+      event.target.innerText = maxCompSizeInit;
+      setSettings("filter.maxCompSizeText", maxCompSizeInit);
+      setSettings("filter.maxCompSize", maxCompSizeInit);
     }
   };
 
@@ -188,7 +217,7 @@ export function FilterSidebar({ resetFilters }) {
     if (nodeFilterTextAreaRef.current) {
       nodeFilterEditorRef.current = CodeMirror.fromTextArea(nodeFilterTextAreaRef.current, {
         mode: "customMode",
-        theme: settings.appearance.theme.mame === "light" ? "default" : "material",
+        theme: settings.appearance.theme.name === "light" ? "default" : "material",
         linewrapping: false,
         bracketMatching: true,
         scrollbarStyle: "null",
@@ -333,18 +362,35 @@ export function FilterSidebar({ resetFilters }) {
         }
       />
       <SidebarFieldBlock
-        text={"Component Size"}
+        text={"Min Component Size"}
         min={1}
         step={1}
         value={settings.filter.minCompSizeText}
         onChange={handleMinComponentFieldChange}
         onBlur={handleMinComponentFieldBlur}
-        infoHeading={"Filter Nodes by Attributes"}
+        infoHeading={"Filter by Component Size"}
         infoDescription={
           <div>
             <p className="margin-0">
               You can filter the components/clusters by setting a minimum size. If a given component is smaller than the applied threshold, the whole
               component will not be drawn. Increasing this value can significantly enhance performance by reducing the graph size.
+            </p>
+          </div>
+        }
+      />
+      <SidebarFieldBlock
+        text={"Max Component Size"}
+        min={1}
+        step={1}
+        value={settings.filter.maxCompSizeText}
+        onChange={handleMaxComponentFieldChange}
+        onBlur={handleMaxComponentFieldBlur}
+        infoHeading={"Filter by Component Size"}
+        infoDescription={
+          <div>
+            <p className="margin-0">
+              You can filter the components/clusters by setting a maximum size. If a given component is greater than the applied threshold, the whole
+              component will not be drawn. Decreasing this value can significantly enhance performance by reducing the graph size.
             </p>
           </div>
         }

@@ -4,6 +4,7 @@ import UnionFind from "union-find";
 import axios from "axios";
 import {
   filterByThreshold,
+  filterMaxCompSize,
   filterMinCompSize,
   filterNodesExist,
   getIdsSeperateEntries,
@@ -14,14 +15,31 @@ import {
 } from "../GraphStuff/graphCalculations.js";
 import { expectedPhysicTypes } from "../../states.js";
 
-export async function parseGraphFile(file, takeAbs, minCorrForEdge, minCompSizeForNode, takeSpearmanCoefficient, mergeSameProtein) {
+export async function parseGraphFile(
+  file,
+  takeAbs,
+  minCorrForEdge,
+  minCompSizeForNode,
+  maxCompSizeForNode,
+  takeSpearmanCoefficient,
+  mergeSameProtein
+) {
   if (!file) {
     throw new Error(`No file found with the name ${file}.`);
   }
 
   try {
     const fileContent = await parseFileAsText(file);
-    const graph = await parseGraph(file.name, fileContent, takeAbs, minCorrForEdge, minCompSizeForNode, takeSpearmanCoefficient, mergeSameProtein);
+    const graph = await parseGraph(
+      file.name,
+      fileContent,
+      takeAbs,
+      minCorrForEdge,
+      minCompSizeForNode,
+      maxCompSizeForNode,
+      takeSpearmanCoefficient,
+      mergeSameProtein
+    );
     verifyGraph(graph);
 
     return { name: file.name, content: JSON.stringify(graph) };
@@ -30,7 +48,16 @@ export async function parseGraphFile(file, takeAbs, minCorrForEdge, minCompSizeF
   }
 }
 
-export async function parseGraph(name, content, takeAbs, minCorrForEdge, minCompSizeForNode, takeSpearmanCoefficient, mergeSameProtein) {
+export async function parseGraph(
+  name,
+  content,
+  takeAbs,
+  minCorrForEdge,
+  minCompSizeForNode,
+  maxCompSizeForNode,
+  takeSpearmanCoefficient,
+  mergeSameProtein
+) {
   const fileExtension = name.split(".").pop();
 
   let graph = null;
@@ -85,6 +112,7 @@ export async function parseGraph(name, content, takeAbs, minCorrForEdge, minComp
 
   graph = filterByThreshold(graph, minCorrForEdge);
   graph = filterMinCompSize(graph, minCompSizeForNode);
+  graph = filterMaxCompSize(graph, maxCompSizeForNode);
   graph = filterNodesExist(graph);
 
   if (takeAbs) {

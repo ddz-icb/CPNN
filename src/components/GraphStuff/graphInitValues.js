@@ -1,5 +1,6 @@
 export const linkThresholdInit = 0.7;
 export const minCompSizeInit = 2;
+export const maxCompSizeInit = ""; // typically int but can be empty if no maxSize
 export const linkFilterInit = true;
 export const nodeFilterInit = true;
 export const linkFilterTextInit = "";
