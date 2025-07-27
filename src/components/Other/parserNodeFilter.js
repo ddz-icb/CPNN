@@ -95,6 +95,9 @@ function newTermConjunction(processedFilterRequest, token) {
     return "state11";
   } else if (MATCH_NOT.test(token)) {
     return "state2";
+  } else if (MATCH_OPEN_CURLY.test(token)) {
+    processedFilterRequest.push([new Set()]);
+    return "state8";
   } else if (MATCH_ATTRIBUTE.test(token)) {
     processedFilterRequest.push([token]);
     return "state1";
