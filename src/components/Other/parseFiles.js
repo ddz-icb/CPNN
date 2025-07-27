@@ -254,26 +254,29 @@ function isValidRawTableData(content) {
   const columnCount = rows[0].length;
   if (columnCount < 2) return false;
 
-  if (!rows.every((row) => row.length === columnCount)) return false;
+  if (!rows.every((row) => row.length === columnCount)) {
+    log.error("row length varies");
+    return false;
+  }
 
   const [headerRow, ...dataRows] = rows;
 
-  if (typeof headerRow[0] !== "string" || headerRow[0].trim() === "") return false;
+  if (typeof headerRow[0] !== "string" || headerRow[0].trim() === "") {
+    return false;
+  }
 
   for (let i = 1; i < headerRow.length; i++) {
-    if (typeof headerRow[i] !== "string" || headerRow[i].trim() === "") return false;
+    if (typeof headerRow[i] !== "string" || headerRow[i].trim() === "") {
+      log.error("incorrect header row");
+      return false;
+    }
   }
 
   for (const row of dataRows) {
     const [rowName, ...values] = row;
-    if (typeof rowName !== "string" || rowName.trim() === "") return false;
-
-    for (const val of values) {
-      if (val === null || val === "" || typeof val === "number" || Number.isNaN(val)) {
-        continue;
-      } else {
-        return false;
-      }
+    if (typeof rowName !== "string" || rowName.trim() === "") {
+      log.error("incorrect first column");
+      return false;
     }
   }
 
