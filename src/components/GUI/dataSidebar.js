@@ -362,7 +362,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
           tooltipId={"upload-mapping-tooltip"}
         />
       </div>
-      {/* <SidebarButtonRect NEXTTTT
+      {/* <SidebarButtonRect
         onClick={() => setDifferencePopUpActive(!differencePopUpActive)}
         text={"Create Difference Graph"}
         tooltip={"Create graph resembling the difference between two graphs"}

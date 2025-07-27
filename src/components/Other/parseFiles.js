@@ -39,13 +39,13 @@ export async function parseGraph(name, content, takeAbs, minCorrForEdge, minComp
     graph = JSON.parse(content);
   } else if (fileExtension === "csv" || fileExtension === "tsv") {
     var fileData = parseGraphCSVorTSV(content);
+    if (!fileData || !fileData.header) return null;
 
     fileData.header = fileData.header.map((value) => (typeof value === "string" ? value : String(value)));
 
-    if (!fileData) return null;
-
     // if data is raw, convert to matrix
     if (!isSymmMatrix(content)) {
+      if (!isValidRawTableData(content)) return null;
       log.info("Converting data into symmetrical matrix. Used correlation coefficient:", takeSpearmanCoefficient ? "Spearman" : "Pearson");
 
       // add fileData.firstColumn as the first column of fileData.data; up until this point fileData.data is only numbers
@@ -212,6 +212,46 @@ function isSymmMatrix(content) {
   return true;
 }
 
+function isValidRawTableData(content) {
+  const fileData = Papa.parse(content, {
+    header: false,
+    dynamicTyping: true,
+    skipEmptyLines: true,
+  });
+
+  const rows = fileData.data;
+
+  if (rows.length < 2) return false;
+
+  const columnCount = rows[0].length;
+  if (columnCount < 2) return false;
+
+  if (!rows.every((row) => row.length === columnCount)) return false;
+
+  const [headerRow, ...dataRows] = rows;
+
+  if (typeof headerRow[0] !== "string" || headerRow[0].trim() === "") return false;
+
+  for (let i = 1; i < headerRow.length; i++) {
+    if (typeof headerRow[i] !== "string" || headerRow[i].trim() === "") return false;
+  }
+
+  for (const row of dataRows) {
+    const [rowName, ...values] = row;
+    if (typeof rowName !== "string" || rowName.trim() === "") return false;
+
+    for (const val of values) {
+      if (val === null || val === "" || typeof val === "number" || Number.isNaN(val)) {
+        continue;
+      } else {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
 async function convertToCorrMatrix(data, takeSpearmanCoefficient) {
   const method = takeSpearmanCoefficient ? "spearman" : "pearson";
 
@@ -224,8 +264,8 @@ async function convertToCorrMatrix(data, takeSpearmanCoefficient) {
     formData.append("file", blob);
     formData.append("method", method);
 
-    // const response = await axios.post("http://localhost:3001/correlationMatrix", formData, {
-    const response = await axios.post("https://cpnn.ddz.de/api/correlationMatrix", formData, {
+    const response = await axios.post("http://localhost:3001/correlationMatrix", formData, {
+      // const response = await axios.post("https://cpnn.ddz.de/api/correlationMatrix", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
 
