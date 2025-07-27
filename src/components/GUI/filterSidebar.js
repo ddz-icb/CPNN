@@ -105,10 +105,9 @@ export function FilterSidebar({ resetFilters }) {
 
   const handleMaxComponentFieldChange = (event) => {
     const value = event.target.value;
+    const intValue = parseInt(value, 10);
 
-    // is int value
-    if (/^\d+$/.test(value)) {
-      const intValue = parseInt(value, 10);
+    if (!isNaN(intValue) && intValue >= 1) {
       setSettings("filter.maxCompSizeText", intValue);
     } else {
       setSettings("filter.maxCompSizeText", maxCompSizeInit);
@@ -117,10 +116,9 @@ export function FilterSidebar({ resetFilters }) {
 
   const handleMaxComponentFieldBlur = (event) => {
     const value = event.target.value;
+    const intValue = parseInt(value, 10);
 
-    // is int value
-    if (/^\d+$/.test(value)) {
-      const intValue = parseInt(value, 10);
+    if (!isNaN(intValue) && intValue >= 1) {
       event.target.innerText = intValue;
       setSettings("filter.maxCompSizeText", intValue);
       setSettings("filter.maxCompSize", intValue);
