@@ -19,7 +19,6 @@ import {
   yStrengthInit,
   nodeCollisionInit,
   compDensityInit,
-  mergeProteinsInit,
   maxCompSizeInit,
   minNeighborhoodSizeInit,
   communityForceStrengthInit,
@@ -86,7 +85,6 @@ export const useSettings = create((set) => ({
       maxCompSizeText: maxCompSizeInit,
       compDensity: compDensityInit,
       compDensityText: compDensityInit,
-      mergeProteins: mergeProteinsInit,
       minNeighborhoodSize: minNeighborhoodSizeInit,
       minNeighborhoodSizeText: minNeighborhoodSizeInit,
     },
@@ -145,6 +143,7 @@ export const useGraphData = create((set) => ({
     linkWeightMin: null, // minimum link weight value of the entire graph
     linkWeightMax: null, // maximum link weight value of the entire graph
 
+    mergeProteins: false,
     nodeMap: null, // mapping from nodes to circles and nodelabels; structure: {node, circle, nodeLabel}
     circles: null, // PIXI containers for drawing the nodes
     nodeLabels: null, // PIXI container for drawing node labels

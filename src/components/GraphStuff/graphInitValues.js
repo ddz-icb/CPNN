@@ -16,7 +16,6 @@ export const nodeRepulsionStrengthInit = 1;
 export const nodeCollisionInit = true;
 export const circleLayoutInit = false;
 export const compDensityInit = 1;
-export const mergeProteinsInit = false;
 export const communityForceStrengthInit = 0;
 
 export const checkBorderInit = false;

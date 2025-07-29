@@ -37,13 +37,13 @@ export function FilterSidebar({ resetFilters }) {
 
   const handleResetFilters = () => {
     resetFilters();
-    setSettings("filter.mergeProteins", false);
+    setGraphData("mergeProteins", false);
     setCompilerErrorLinkFilter(null);
     setCompilerErrorNodeFilter(null);
   };
 
   const handleMergeProteins = () => {
-    setSettings("filter.mergeProteins", !settings.filter.mergeProteins);
+    setGraphData("mergeProteins", !graphData.mergeProteins);
   };
 
   const handleLinkThresholdSliderChange = (event) => {
@@ -283,7 +283,7 @@ export function FilterSidebar({ resetFilters }) {
       </div>
       <SidebarSwitchBlock
         text={"Merge Proteins"}
-        value={settings.filter.mergeProteins}
+        value={graphData.mergeProteins}
         onChange={handleMergeProteins}
         infoHeading={"Merge nodes of same protein"}
         infoDescription={

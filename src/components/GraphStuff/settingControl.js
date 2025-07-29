@@ -46,6 +46,18 @@ export function SettingControl({ simulation, app, redraw }) {
 
   // filter nodes and links //
   useEffect(() => {
+    console.log(
+      settings.filter.linkThreshold,
+      settings.filter.linkFilter,
+      settings.filter.nodeFilter,
+      settings.filter.minCompSize,
+      settings.filter.maxCompSize,
+      settings.filter.compDensity,
+      settings.filter.minNeighborhoodSize,
+      graphData.originGraph,
+      graphData.circles
+    );
+
     if (
       !graphData.graph ||
       !graphData.originGraph ||
@@ -63,8 +75,10 @@ export function SettingControl({ simulation, app, redraw }) {
     log.info(
       "Filtering nodes and links.\n    Threshold:  ",
       settings.filter.linkThreshold,
-      "\n    Attributes: ",
+      "\n    Link Attributes: ",
       settings.filter.linkFilter,
+      "\n    Node Attributes: ",
+      settings.filter.nodeFilter,
       "\n    Mininum component size: ",
       settings.filter.minCompSize,
       "\n    Maximum component size: ",

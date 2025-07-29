@@ -15,7 +15,7 @@ import {
   joinGraphs,
   mergeSameProteins,
 } from "./components/GraphStuff/graphCalculations.js";
-import { resetFilterSettings, resetPhysicsSettings } from "./components/Other/reset.js";
+import { resetFilterSettings, resetFilterSettingsSoft, resetPhysicsSettings } from "./components/Other/reset.js";
 import {
   addActiveGraphFile,
   addNewAnnotationMappingFile,
@@ -60,6 +60,12 @@ function App() {
       simulationReset();
       selectGraph(filename, setGraphData);
       setGraphData("graphIsPreprocessed", false);
+      setGraphData("mergeProteins", false);
+      setGraphData("", {
+        ...graphData,
+        graphIsPreprocessed: false,
+        mergeProteins: false,
+      });
     } catch (error) {
       setError("Error loading graph");
       log.error("Error loading graph:", error);
@@ -302,7 +308,7 @@ function App() {
   };
 
   const resetFilters = () => {
-    resetFilterSettings(setSettings, settings);
+    resetFilterSettings(setSettings, settings.filter);
   };
 
   // select example graph on startup
@@ -372,7 +378,7 @@ function App() {
         combinedGraph = joinGraphs(combinedGraph, graph);
       }
 
-      if (settings.filter.mergeProteins) {
+      if (graphData.mergeProteins) {
         combinedGraph = mergeSameProteins(combinedGraph);
       }
 
@@ -380,8 +386,10 @@ function App() {
       setGraphData("activeGraphFileNames", graphData.activeGraphFileNames);
     }
 
-    if (settings.filter.mergeProteins == null || !graphData.activeGraphFileNames || !graphData.activeGraphFileNames[0]) return;
-    log.info("Merging Proteins: ", settings.filter.mergeProteins);
+    if (graphData.mergeProteins == null || !graphData.graphIsPreprocessed || !graphData.activeGraphFileNames || !graphData.activeGraphFileNames[0])
+      return;
+
+    log.info("Merging Proteins: ", graphData.mergeProteins);
 
     try {
       simulationReset();
@@ -391,7 +399,7 @@ function App() {
       setError("Error loading graph");
       log.error("Error loading graph:", error);
     }
-  }, [settings.filter.mergeProteins]);
+  }, [graphData.mergeProteins]);
 
   // forwards graph to forceGraph component //
   useEffect(() => {

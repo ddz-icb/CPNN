@@ -599,8 +599,6 @@ export function getLinkWeightMinMax(graph) {
 
 export function mergeSameProteins(graph) {
   const protIdToNodeMap = new Map();
-
-  // map protIds onto nodes containg this protId
   graph.nodes.forEach((node) => {
     const protIds = getProtIdsWithIsoform(node.id);
     protIds.forEach((protId) => {
@@ -611,20 +609,20 @@ export function mergeSameProteins(graph) {
     });
   });
 
-  const unionFind = new UnionFind(graph.nodes.length);
   const nodeIndexMap = new Map(graph.nodes.map((node, index) => [node.id, index]));
+  const unionFind = new UnionFind(graph.nodes.length);
 
-  // merge nodes that share the same protId
   protIdToNodeMap.forEach((nodeIds) => {
     for (let i = 1; i < nodeIds.length; i++) {
       const index1 = nodeIndexMap.get(nodeIds[0]);
       const index2 = nodeIndexMap.get(nodeIds[i]);
-      unionFind.link(index1, index2);
+      if (index1 !== undefined && index2 !== undefined) {
+        unionFind.link(index1, index2);
+      }
     }
   });
+  const nodeIdToNodeObjectMap = new Map(graph.nodes.map((node) => [node.id, node]));
 
-  // iterate through all nodes to group them by their union-find parent
-  const mergedNodes = new Map();
   const groupsMap = new Map();
   graph.nodes.forEach((node) => {
     const parentIndex = unionFind.find(nodeIndexMap.get(node.id));
@@ -634,12 +632,17 @@ export function mergeSameProteins(graph) {
     groupsMap.get(parentIndex).push(node.id);
   });
 
-  // Create merged nodes from grouped nodes
-  groupsMap.forEach((group, parentIndex) => {
+  const parentIndexToMergedNode = new Map();
+  groupsMap.forEach((groupNodeIds, parentIndex) => {
     const protIdToPhosphositesMap = new Map();
+    const combinedGroups = new Set();
 
-    group.forEach((nodeId) => {
-      const node = graph.nodes.find((n) => n.id === nodeId);
+    groupNodeIds.forEach((nodeId) => {
+      const node = nodeIdToNodeObjectMap.get(nodeId);
+      if (!node) return;
+
+      node.groups.forEach((g) => combinedGroups.add(g));
+
       const entries = getIdsSeperateEntries(node.id);
       entries.forEach((entry) => {
         const protIdName = getProtIdAndNameEntry(entry);
@@ -652,65 +655,65 @@ export function mergeSameProteins(graph) {
       });
     });
 
-    // create new id of node
     const newId = Array.from(protIdToPhosphositesMap.entries())
       .map(([protIdName, phosphoSet]) => {
         const phosphoArray = Array.from(phosphoSet);
-        if (phosphoArray.length > 0) {
-          return `${protIdName}_${phosphoArray.join(", ")}`;
-        }
-        return protIdName;
+        return phosphoArray.length > 0 ? `${protIdName}_${phosphoArray.join(", ")}` : protIdName;
       })
       .join("; ");
 
-    mergedNodes.set(parentIndex, {
+    parentIndexToMergedNode.set(parentIndex, {
       id: newId,
-      groups: new Set(group.flatMap((nodeId) => graph.nodes.find((n) => n.id === nodeId)?.groups || [])),
+      groups: Array.from(combinedGroups),
     });
   });
 
-  graph.nodes = Array.from(mergedNodes.values()).map((node) => ({
-    id: node.id,
-    groups: Array.from(node.groups),
-  }));
+  graph.nodes = Array.from(parentIndexToMergedNode.values());
 
-  const newLinks = [];
+  const mergedLinksMap = new Map();
+
   graph.links.forEach((link) => {
     const sourceParentIndex = unionFind.find(nodeIndexMap.get(link.source));
     const targetParentIndex = unionFind.find(nodeIndexMap.get(link.target));
 
-    const sourceMergedId = mergedNodes.get(sourceParentIndex).id;
-    const targetMergedId = mergedNodes.get(targetParentIndex).id;
+    const sourceMergedNode = parentIndexToMergedNode.get(sourceParentIndex);
+    const targetMergedNode = parentIndexToMergedNode.get(targetParentIndex);
 
-    // delete links to same merged node
-    if (sourceMergedId && targetMergedId && sourceMergedId !== targetMergedId) {
-      const existingLink = newLinks.find(
-        (l) => (l.source === sourceMergedId && l.target === targetMergedId) || (l.source === targetMergedId && l.target === sourceMergedId)
-      );
+    if (!sourceMergedNode || !targetMergedNode || sourceMergedNode.id === targetMergedNode.id) {
+      return;
+    }
 
-      if (existingLink) {
-        // merge weights and attributes
-        link.attribs.forEach((attrib, idx) => {
-          const existingAttribIndex = existingLink.attribs.indexOf(attrib);
-          if (existingAttribIndex !== -1) {
-            existingLink.weights[existingAttribIndex] = Math.max(Math.abs(existingLink.weights[existingAttribIndex], link.weights[idx]));
-          } else {
-            existingLink.attribs.push(attrib);
-            existingLink.weights.push(link.weights[idx]);
-          }
-        });
-      } else {
-        newLinks.push({
-          source: sourceMergedId,
-          target: targetMergedId,
-          weights: [...link.weights],
-          attribs: [...link.attribs],
-        });
-      }
+    const sourceMergedId = sourceMergedNode.id;
+    const targetMergedId = targetMergedNode.id;
+
+    const key = sourceMergedId < targetMergedId ? `${sourceMergedId}---${targetMergedId}` : `${targetMergedId}---${sourceMergedId}`;
+
+    const existingLink = mergedLinksMap.get(key);
+
+    if (existingLink) {
+      link.attribs.forEach((attrib, idx) => {
+        const existingAttribIndex = existingLink.attribs.indexOf(attrib);
+        if (existingAttribIndex !== -1) {
+          const currentWeight = existingLink.weights[existingAttribIndex];
+          const newWeight = link.weights[idx];
+          existingLink.weights[existingAttribIndex] = Math.max(Math.abs(currentWeight), Math.abs(newWeight));
+        } else {
+          existingLink.attribs.push(attrib);
+          existingLink.weights.push(link.weights[idx]);
+        }
+      });
+    } else {
+      // Kante ist neu: Füge sie zur Map hinzu
+      mergedLinksMap.set(key, {
+        source: sourceMergedId,
+        target: targetMergedId,
+        weights: [...link.weights],
+        attribs: [...link.attribs],
+      });
     }
   });
 
-  graph.links = newLinks;
+  graph.links = Array.from(mergedLinksMap.values());
 
   return graph;
 }
