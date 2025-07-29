@@ -20,7 +20,7 @@ import {
   SidebarSwitchBlock,
 } from "./sidebar.js";
 import { useGraphData, useSettings } from "../../states.js";
-import { maxCompSizeInit } from "../GraphStuff/graphInitValues.js";
+import { maxCompSizeInit, minNeighborhoodSizeInit } from "../GraphStuff/graphInitValues.js";
 
 export function FilterSidebar({ resetFilters }) {
   const { settings, setSettings } = useSettings();
@@ -126,6 +126,32 @@ export function FilterSidebar({ resetFilters }) {
       event.target.innerText = maxCompSizeInit;
       setSettings("filter.maxCompSizeText", maxCompSizeInit);
       setSettings("filter.maxCompSize", maxCompSizeInit);
+    }
+  };
+
+  const handleMinNeighborhoodFieldChange = (event) => {
+    const value = event.target.value;
+    const intValue = parseInt(value, 10);
+
+    if (!isNaN(intValue) && intValue >= 0) {
+      setSettings("filter.minNeighborhoodSizeText", intValue);
+    } else {
+      setSettings("filter.minNeighborhoodSizeText", "");
+    }
+  };
+
+  const handleMinNeighborhoodFieldBlur = (event) => {
+    const value = event.target.value;
+    const intValue = parseInt(value, 10);
+
+    if (!isNaN(intValue) && intValue >= 0) {
+      event.target.innerText = intValue;
+      setSettings("filter.minNeighborhoodSizeText", intValue);
+      setSettings("filter.minNeighborhoodSize", intValue);
+    } else {
+      event.target.innerText = minNeighborhoodSizeInit;
+      setSettings("filter.minNeighborhoodSizeText", minNeighborhoodSizeInit);
+      setSettings("filter.minNeighborhoodSize", minNeighborhoodSizeInit);
     }
   };
 
@@ -389,6 +415,23 @@ export function FilterSidebar({ resetFilters }) {
             <p className="margin-0">
               You can filter the components/clusters by setting a maximum size. If a given component is greater than the applied threshold, the whole
               component will not be drawn. Decreasing this value can significantly enhance performance by reducing the graph size.
+            </p>
+          </div>
+        }
+      />
+      <SidebarFieldBlock
+        text={"Min Neighborhood Size"}
+        min={1}
+        step={1}
+        value={settings.filter.minNeighborhoodSizeText}
+        onChange={handleMinNeighborhoodFieldChange}
+        onBlur={handleMinNeighborhoodFieldBlur}
+        infoHeading={"Filter by Neighborhood Size"}
+        infoDescription={
+          <div>
+            <p className="margin-0">
+              You can filter the graph by setting a minimum neighborhood size. If a given node has less neighbors than the applied threshold, the node
+              will not be drawn. Increasing this value can significantly enhance performance by reducing the graph size.
             </p>
           </div>
         }

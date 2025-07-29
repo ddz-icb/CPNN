@@ -13,6 +13,7 @@ import {
   maxCompSizeInit,
   mergeProteinsInit,
   minCompSizeInit,
+  minNeighborhoodSizeInit,
   nodeFilterInit,
   nodeFilterTextInit,
   nodeRepulsionStrengthInit,
@@ -56,6 +57,8 @@ export const resetFilterSettings = (setSettings, settings) => {
     linkThresholdText: linkThresholdInit,
     compDensity: compDensityInit,
     compDensityText: compDensityInit,
+    minNeighborhoodSize: minNeighborhoodSizeInit,
+    minNeighborhoodSizeText: minNeighborhoodSizeInit,
     mergeProteins: settings.filter.mergeProteins,
   });
 };

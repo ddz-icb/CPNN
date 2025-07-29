@@ -150,6 +150,17 @@ export function filterCompDensity(graph, compDensity) {
   };
 }
 
+export function filterMinNeighborhood(graph, minNeighborhoodSize) {
+  if (minNeighborhoodSize <= 0) return graph;
+
+  const adjacentMap = returnAdjacentData(graph);
+
+  return {
+    ...graph,
+    nodes: graph.nodes.filter((node) => adjacentMap.get(node.id) >= minNeighborhoodSize),
+  };
+}
+
 export function filterNodesExist(graph) {
   const nodeSet = new Set(graph.nodes.map((node) => node.id));
 

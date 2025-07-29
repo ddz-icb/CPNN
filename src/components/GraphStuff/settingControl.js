@@ -26,6 +26,7 @@ import {
   returnAdjacentData,
   returnComponentData,
   filterCompDensity,
+  filterMinNeighborhood,
 } from "./graphCalculations.js";
 import {
   accuracyBarnesHut,
@@ -66,6 +67,8 @@ export function SettingControl({ simulation, app, redraw }) {
       settings.filter.minCompSize,
       "\n    Maximum component size: ",
       settings.filter.maxCompSize,
+      "\n    Minimum neighborhood size: ",
+      settings.filter.minNeighborhoodSize,
       "\n    Groups: ",
       settings.filter.nodeFilter,
       "\n    Comp Density: ",
@@ -85,6 +88,7 @@ export function SettingControl({ simulation, app, redraw }) {
     filteredGraph = filterByLinkAttribs(filteredGraph, settings.filter.linkFilter);
 
     filteredGraph = filterCompDensity(filteredGraph, settings.filter.compDensity);
+    filteredGraph = filterMinNeighborhood(filteredGraph, settings.filter.minNeighborhoodSize);
     filteredGraph = filterNodesExist(filteredGraph);
 
     filteredGraph = filterMinCompSize(filteredGraph, settings.filter.minCompSize);
@@ -101,6 +105,7 @@ export function SettingControl({ simulation, app, redraw }) {
     settings.filter.minCompSize,
     settings.filter.maxCompSize,
     settings.filter.compDensity,
+    settings.filter.minNeighborhoodSize,
     graphData.originGraph,
     graphData.circles,
   ]);

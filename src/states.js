@@ -21,6 +21,7 @@ import {
   compDensityInit,
   mergeProteinsInit,
   maxCompSizeInit,
+  minNeighborhoodSizeInit,
 } from "./components/GraphStuff/graphInitValues.js";
 import { linkColorSchemeInit, nodeColorSchemeInit, themeInit } from "./components/Other/appearance.js";
 
@@ -82,6 +83,8 @@ export const useSettings = create((set) => ({
       compDensity: compDensityInit,
       compDensityText: compDensityInit,
       mergeProteins: mergeProteinsInit,
+      minNeighborhoodSize: minNeighborhoodSizeInit,
+      minNeighborhoodSizeText: minNeighborhoodSizeInit,
     },
     appearance: {
       theme: themeInit,
