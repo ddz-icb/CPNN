@@ -5,6 +5,7 @@ export const linkFilterInit = true;
 export const nodeFilterInit = true;
 export const linkFilterTextInit = "";
 export const nodeFilterTextInit = "";
+export const minNeighborhoodSizeInit = 0;
 
 export const linkForceInit = true;
 export const linkLengthInit = 70;
@@ -16,7 +17,7 @@ export const nodeCollisionInit = true;
 export const circleLayoutInit = false;
 export const compDensityInit = 1;
 export const mergeProteinsInit = false;
-export const minNeighborhoodSizeInit = 0;
+export const communityForceStrengthInit = 0;
 
 export const checkBorderInit = false;
 export const borderWidthInit = 200;

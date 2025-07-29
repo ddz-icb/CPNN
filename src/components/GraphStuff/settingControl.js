@@ -27,12 +27,14 @@ import {
   returnComponentData,
   filterCompDensity,
   filterMinNeighborhood,
+  communityDetectionLouvain,
 } from "./graphCalculations.js";
 import {
   accuracyBarnesHut,
   applyPhysics,
   borderCheck,
   circularLayout,
+  communityForce,
   componentForce,
   maxDistanceChargeForce,
   nodeRepulsionMultiplier,
@@ -458,4 +460,22 @@ export function SettingControl({ simulation, app, redraw }) {
     simulation.force("circleLayout", circularLayout(componentArray, adjacentCountMap, minCircleSize));
     simulation.alpha(1).restart();
   }, [settings.physics.circleLayout]);
+
+  // enable community force
+  useEffect(() => {
+    if (!simulation) return;
+
+    if (settings.physics.communityForceStrength == 0) {
+      simulation.force("communityForce", null);
+      simulation.alpha(1).restart();
+      return;
+    }
+
+    log.info("Changing community force", settings.physics.communityForceStrength);
+
+    const communityMap = communityDetectionLouvain(graphData.graph);
+
+    simulation.force("communityForce", communityForce(communityMap).strength(settings.physics.communityForceStrength));
+    simulation.alpha(1).restart();
+  }, [settings.physics.communityForceStrength]);
 }

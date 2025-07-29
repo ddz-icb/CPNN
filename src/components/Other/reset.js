@@ -3,6 +3,7 @@ import {
   borderWidthInit,
   checkBorderInit,
   circleLayoutInit,
+  communityForceStrengthInit,
   compDensityInit,
   componentStrengthInit,
   linkFilterInit,
@@ -27,6 +28,7 @@ export const resetPhysicsSettings = (setSettings) => {
     xStrength: xStrengthInit,
     yStrength: yStrengthInit,
     componentStrength: componentStrengthInit,
+    componentStrengthText: componentStrengthInit,
     nodeRepulsionStrength: nodeRepulsionStrengthInit,
     linkForce: linkForceInit,
     linkLength: linkLengthInit,
@@ -38,8 +40,9 @@ export const resetPhysicsSettings = (setSettings) => {
     borderWidthText: borderWidthInit,
     xStrengthText: xStrengthInit,
     yStrengthText: yStrengthInit,
-    componentStrengthText: componentStrengthInit,
     nodeRepulsionStrengthText: nodeRepulsionStrengthInit,
+    communityForceStrength: communityForceStrengthInit,
+    communityForceStrengthText: communityForceStrengthInit,
   });
 };
 

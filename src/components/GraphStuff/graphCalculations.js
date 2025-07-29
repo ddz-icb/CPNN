@@ -1,6 +1,8 @@
 import UnionFind from "union-find";
 import log from "../../logger.js";
 import { max } from "lodash";
+import Graph from "graphology";
+import louvain from "graphology-communities-louvain";
 
 export function joinGraphs(graph, newGraph) {
   const nodeMap = new Map(graph.nodes.map((node) => [node.id, { ...node }]));
@@ -711,4 +713,31 @@ export function mergeSameProteins(graph) {
   graph.links = newLinks;
 
   return graph;
+}
+
+export function communityDetectionLouvain(graph) {
+  const newGraph = new Graph();
+
+  graph.nodes.forEach((node) => {
+    newGraph.addNode(node.id);
+  });
+
+  graph.links.forEach((link) => {
+    const sourceId = link.source.id || link.source;
+    const targetId = link.target.id || link.target;
+
+    if (newGraph.hasNode(sourceId) && newGraph.hasNode(targetId) && !newGraph.hasEdge(sourceId, targetId)) {
+      const weight = link.weights && link.weights.length > 0 ? Math.max(...link.weights) : 1.0;
+      newGraph.addUndirectedEdge(sourceId, targetId, { weight });
+    }
+  });
+
+  louvain.assign(newGraph);
+
+  const communityMap = new Map();
+  newGraph.forEachNode((nodeId, attributes) => {
+    communityMap.set(nodeId, attributes.community);
+  });
+
+  return communityMap;
 }

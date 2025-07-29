@@ -295,8 +295,8 @@ async function convertToCorrMatrix(data, takeSpearmanCoefficient) {
     formData.append("file", blob);
     formData.append("method", method);
 
-    // const response = await axios.post("http://localhost:3001/correlationMatrix", formData, {
-    const response = await axios.post("https://cpnn.ddz.de/api/correlationMatrix", formData, {
+    const response = await axios.post("http://localhost:3001/correlationMatrix", formData, {
+      // const response = await axios.post("https://cpnn.ddz.de/api/correlationMatrix", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
 

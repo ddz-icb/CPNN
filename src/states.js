@@ -22,6 +22,7 @@ import {
   mergeProteinsInit,
   maxCompSizeInit,
   minNeighborhoodSizeInit,
+  communityForceStrengthInit,
 } from "./components/GraphStuff/graphInitValues.js";
 import { linkColorSchemeInit, nodeColorSchemeInit, themeInit } from "./components/Other/appearance.js";
 
@@ -45,6 +46,7 @@ export const expectedPhysicTypes = {
   borderWidth: "number",
   borderHeight: "number",
   gravityAdvanced: "boolean",
+  communityForceStrength: "number",
 };
 
 export const useSettings = create((set) => ({
@@ -68,6 +70,8 @@ export const useSettings = create((set) => ({
       yStrengthText: yStrengthInit,
       componentStrengthText: componentStrengthInit,
       nodeRepulsionStrengthText: nodeRepulsionStrengthInit,
+      communityForceStrength: communityForceStrengthInit,
+      communityForceStrengthText: communityForceStrengthInit,
     },
     filter: {
       linkThreshold: linkThresholdInit,

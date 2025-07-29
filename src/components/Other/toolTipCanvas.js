@@ -77,8 +77,8 @@ export function ClickTooltip({ mapping }) {
           setIsoforms(isoforms);
         }
 
-        // const responseUniprot = await axios.get(`http://localhost:3001/uniprot/${protIdNoIsoform}`);
-        const responseUniprot = await axios.get(`https://cpnn.ddz.de/api/uniprot/${protIdNoIsoform}`);
+        const responseUniprot = await axios.get(`http://localhost:3001/uniprot/${protIdNoIsoform}`);
+        // const responseUniprot = await axios.get(`https://cpnn.ddz.de/api/uniprot/${protIdNoIsoform}`);
         if (!responseUniprot || !responseUniprot.data) {
           log.info("No response from Uniprot");
           return;

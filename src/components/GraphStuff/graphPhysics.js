@@ -239,6 +239,79 @@ export function circularLayout(componentArray, adjacentCountMap, minCircleSize) 
   return force;
 }
 
+export function communityForce(communityMap) {
+  let nodes;
+  let strength = 0.1; // can be changed by user
+  const baseStrength = 0.3;
+
+  function calculateCentroid(communityNodes) {
+    let x = 0;
+    let y = 0;
+    if (communityNodes.length === 0) {
+      return { x: 0, y: 0, size: 0 };
+    }
+    communityNodes.forEach((node) => {
+      x += node.x;
+      y += node.y;
+    });
+    return {
+      x: x / communityNodes.length,
+      y: y / communityNodes.length,
+      size: communityNodes.length,
+    };
+  }
+
+  function force(alpha) {
+    const communityGroups = new Map();
+    nodes.forEach((node) => {
+      const communityId = communityMap.get(node.id);
+      if (communityId === undefined) return;
+
+      if (!communityGroups.has(communityId)) {
+        communityGroups.set(communityId, []);
+      }
+      communityGroups.get(communityId).push(node);
+    });
+
+    const centroids = new Map();
+    communityGroups.forEach((nodesInCommunity, communityId) => {
+      centroids.set(communityId, calculateCentroid(nodesInCommunity));
+    });
+
+    nodes.forEach((node) => {
+      const nodeCommunityId = communityMap.get(node.id);
+      if (nodeCommunityId === undefined) return;
+
+      centroids.forEach((centroid, centroidCommunityId) => {
+        if (nodeCommunityId !== centroidCommunityId) {
+          const dx = centroid.x - node.x;
+          const dy = centroid.y - node.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance > 0) {
+            const forceMagnitude = (strength * baseStrength * alpha * Math.sqrt(centroid.size)) / distance;
+
+            node.vx -= dx * forceMagnitude;
+            node.vy -= dy * forceMagnitude;
+          }
+        }
+      });
+    });
+  }
+
+  force.initialize = function (_) {
+    nodes = _;
+  };
+
+  force.strength = function (_) {
+    if (typeof _ === "undefined") return strength;
+    strength = _;
+    return force;
+  };
+
+  return force;
+}
+
 export function applyPhysics(physics, setSettings) {
   if (physics.circleLayout !== undefined) setSettings("physics.circleLayout", physics.circleLayout);
   if (physics.xStrength !== undefined) {
@@ -270,5 +343,9 @@ export function applyPhysics(physics, setSettings) {
   if (physics.borderHeight !== undefined) {
     setSettings("physics.borderHeight", physics.borderHeight);
     setSettings("physics.borderHeightText", physics.borderHeight);
+  }
+  if (physics.communityForceStrength !== undefined) {
+    setSettings("physics.communityForceStrength", physics.communityForceStrength);
+    setSettings("physics.communityForceStrengthText", physics.communityForceStrength);
   }
 }

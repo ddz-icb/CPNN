@@ -95,7 +95,7 @@ export function PhysicsSidebar({ resetPhysics }) {
   const handleComponentStrengthField = (event) => {
     const value = event.target.value;
 
-    if (value === "" || (value >= -1 && value <= 1)) {
+    if (value === "" || value >= 0) {
       setSettings("physics.componentStrengthText", value);
     }
   };
@@ -106,9 +106,35 @@ export function PhysicsSidebar({ resetPhysics }) {
     if (value === "") {
       setSettings("physics.componentStrength", 0);
       setSettings("physics.componentStrengthText", 0);
-    } else if (value >= -1 && value <= 1) {
+    } else if (value >= 0) {
       setSettings("physics.componentStrength", value);
       setSettings("physics.componentStrengthText", value);
+    }
+  };
+
+  const handleCommunityForceSlider = (event) => {
+    const value = event.target.value;
+    setSettings("physics.communityForceStrength", value);
+    setSettings("physics.communityForceStrengthText", value);
+  };
+
+  const handleCommunityForceField = (event) => {
+    const value = event.target.value;
+
+    if (value === "" || value >= 0) {
+      setSettings("physics.communityForceStrengthText", value);
+    }
+  };
+
+  const handleCommunityForceFieldBlur = (event) => {
+    let value = event.target.value;
+
+    if (value === "") {
+      setSettings("physics.communityForceStrength", 0);
+      setSettings("physics.communityForceStrengthText", 0);
+    } else if (value >= 0) {
+      setSettings("physics.communityForceStrength", value);
+      setSettings("physics.communityForceStrengthText", value);
     }
   };
 
@@ -124,7 +150,7 @@ export function PhysicsSidebar({ resetPhysics }) {
   const handleGravityField = (event) => {
     const value = event.target.value;
 
-    if (value === "" || (value >= -1 && value <= 1)) {
+    if (value === "" || value >= 0) {
       setSettings("physics.xStrengthText", value);
       setSettings("physics.yStrengthText", value);
     }
@@ -139,7 +165,7 @@ export function PhysicsSidebar({ resetPhysics }) {
 
       setSettings("physics.xStrengthText", 0);
       setSettings("physics.yStrengthText", 0);
-    } else if (value >= -1 && value <= 1) {
+    } else if (value >= 0) {
       setSettings("physics.xStrength", value);
       setSettings("physics.yStrength", value);
 
@@ -239,12 +265,33 @@ export function PhysicsSidebar({ resetPhysics }) {
         onChangeSlider={handleComponentStrengthSlider}
         onChangeField={handleComponentStrengthField}
         onChangeBlur={handleComponentStrengthFieldBlur}
-        infoHeading={"Adjusting the Component Strength"}
+        infoHeading={"Adjusting the Component Force Strength"}
         infoDescription={
           <div>
             <p className="margin-0">
-              The component force can be used to separate components/clusters from one another. The components separate further with an increasing
-              force.
+              The component force can be used to separate components from one another. The components separate further with an increasing force.
+            </p>
+          </div>
+        }
+      />
+      <SidebarSliderBlock
+        text={"Community Force"}
+        min={0}
+        max={10}
+        stepSlider={0.1}
+        stepField={0.05}
+        value={settings.physics.communityForceStrength}
+        valueText={settings.physics.communityForceStrengthText}
+        onChangeSlider={handleCommunityForceSlider}
+        onChangeField={handleCommunityForceField}
+        onChangeBlur={handleCommunityForceFieldBlur}
+        infoHeading={"Adjusting the Community Force Strength"}
+        infoDescription={
+          <div>
+            <p className="margin-0">
+              The community force helps to separate distinct communities from one another. A community is defined as a dense cluster of nodes, meaning
+              that even nodes within the same connected component can be pulled apart if they belong to different communities. As the force increases,
+              the separation between communities becomes more pronounced. The communities are built using the Louvain method for community detection.
             </p>
           </div>
         }

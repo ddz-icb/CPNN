@@ -32,6 +32,8 @@
     "express": "^4.21.2",
     "file-url": "^4.0.0",
     "fontawesome": "^5.6.3",
+    "graphology": "^0.26.0",
+    "graphology-communities-louvain": "^2.0.2",
     "jeezy": "^1.13.1",
     "jspdf": "^3.0.1",
     "jstat": "^1.9.6",
