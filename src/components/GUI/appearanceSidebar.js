@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, Fragment } from "react";
 import { ReactComponent as TrashIcon } from "../../icons/trash.svg";
 import {
+  NewSidebarSliderBlock,
   PopUp,
   PopupButtonRect,
   PopUpTextField,
@@ -14,6 +15,8 @@ import { downloadCsvFile } from "../GraphStuff/download.js";
 import { Tooltip } from "react-tooltip";
 import { useAppearance, useSettings } from "../../states.js";
 import log from "../../logger.js";
+import { linkWidthDescription } from "./descriptions/appearanceDescriptions.js";
+import { linkWidthInit } from "../initValues/appearanceInitValues.js";
 
 export function AppearanceSidebar({ handleNewColorScheme, handleDeleteColorScheme, colorSchemes }) {
   return (
@@ -51,23 +54,19 @@ export function AppearanceSettings({}) {
         infoHeading={"Enabling Node Labels"}
         infoDescription={"Shows the name of each node above itself in the graph."}
       />
-      {/* <SidebarSliderBlock
-        text={"Link width"}
+      <NewSidebarSliderBlock
+        value={appearance.linkWidth}
+        valueText={appearance.linkWidthText}
+        setValue={(value) => setAppearance("linkWidth", value)}
+        setValueText={(value) => setAppearance("linkWidthText", value)}
+        fallbackValue={linkWidthInit}
         min={0.1}
         max={10}
-        stepSlider={0.1}
-        stepField={0.1}
-        value={appearance.linkWidth}
-        valueText={appearance.linkWidth}
-        valuePath={"appearance.linkWidth"}
-        valueTextPath={"appearance.linkWidthText"}
+        step={0.1}
+        text={"Link width"}
         infoHeading={"Link Width"}
-        infoDescription={
-          <div>
-            <p className="margin-0">Adjust the width of the link. Thinner links can lead to a clearer overview.</p>
-          </div>
-        }
-      /> */}
+        infoDescription={linkWidthDescription}
+      />
     </>
   );
 }

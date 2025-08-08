@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ReactComponent as InfoIcon } from "../../../icons/info.svg";
 import { ReactComponent as XIcon } from "../../../icons/x.svg";
 import { Tooltip } from "react-tooltip";
+import { handleFieldBlur, handleFieldChange, handleSliderChange } from "../../Other/handlers.js";
 
 export function SidebarSliderBlock({
   text,
@@ -45,6 +46,62 @@ export function SidebarSliderBlock({
           onChange={onChangeField}
           onKeyDown={handleKeyDown}
           onBlur={onChangeBlur}
+        />
+      </div>
+      <PopUp heading={infoHeading} description={infoDescription} isOpen={infoIsOpen} setIsOpen={setInfoIsOpen} />
+    </>
+  );
+}
+
+export function NewSidebarSliderBlock({
+  value,
+  valueText,
+  setValue,
+  setValueText,
+  fallbackValue,
+  min,
+  max,
+  step,
+  text,
+  infoHeading,
+  infoDescription,
+}) {
+  const [infoIsOpen, setInfoIsOpen] = useState(false);
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      event.target.blur();
+    }
+  };
+
+  return (
+    <>
+      <div className="inline">
+        <label className="label pad-left-1">{text}</label>
+        <span className="tooltip-button pad-left-05 pad-top-11" onClick={() => setInfoIsOpen(true)}>
+          <InfoIcon />
+        </span>
+      </div>
+      <div className="sidebar-block pad-bottom-15">
+        <input
+          className="sidebar-slider"
+          type="range"
+          min={min}
+          max={max}
+          step={step}
+          value={value}
+          onChange={(event) => handleSliderChange(event, setValue, setValueText, min, max)}
+        ></input>
+        <input
+          className="input-field"
+          type="number"
+          min={min}
+          max={max}
+          step={step}
+          value={valueText}
+          onChange={(event) => handleFieldChange(event, setValueText, min, max)}
+          onKeyDown={handleKeyDown}
+          onBlur={(event) => handleFieldBlur(event, setValue, setValueText, min, max, fallbackValue)}
         />
       </div>
       <PopUp heading={infoHeading} description={infoDescription} isOpen={infoIsOpen} setIsOpen={setInfoIsOpen} />
