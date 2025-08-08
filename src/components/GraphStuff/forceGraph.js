@@ -68,7 +68,8 @@ export function ForceGraph({ reset, setReset, setError }) {
         height,
         antialias: !0,
         resolution: window.devicePixelRatio || 2,
-        backgroundAlpha: 0, // makes the canvas fully transparent
+        backgroundAlpha: 0,
+        autoDensity: true,
       });
 
       app.canvas.style.position = "absolute";
@@ -216,11 +217,11 @@ export function ForceGraph({ reset, setReset, setError }) {
   // resize the canvas on window resize //
   useEffect(() => {
     if (app) {
-      window.addEventListener("resize", () => handleResize(window, app));
+      window.addEventListener("resize", () => handleResize(containerRef, app));
     }
 
     return () => {
-      window.removeEventListener("resize", () => handleResize(window, app));
+      window.removeEventListener("resize", () => handleResize(containerRef, app));
     };
   }, [app]);
 

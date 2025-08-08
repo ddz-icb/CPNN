@@ -4,9 +4,11 @@ import * as d3 from "d3";
 /* RESIZE CANVAS ON RESIZE */
 
 // throttle the resize interval for better performance
-export const handleResize = throttle((window, app) => {
-  if (app && app.renderer) {
-    app.renderer.resize(window.innerWidth, window.innerHeight);
+export const handleResize = throttle((containerRef, app) => {
+  if (app && app.renderer && containerRef && containerRef.current) {
+    const width = containerRef.current.clientWidth;
+    const height = containerRef.current.clientHeight;
+    app.renderer.resize(width, height);
   }
 }, 250);
 

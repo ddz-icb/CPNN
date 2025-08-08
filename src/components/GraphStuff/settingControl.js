@@ -46,18 +46,6 @@ export function SettingControl({ simulation, app, redraw }) {
 
   // filter nodes and links //
   useEffect(() => {
-    console.log(
-      settings.filter.linkThreshold,
-      settings.filter.linkFilter,
-      settings.filter.nodeFilter,
-      settings.filter.minCompSize,
-      settings.filter.maxCompSize,
-      settings.filter.compDensity,
-      settings.filter.minNeighborhoodSize,
-      graphData.originGraph,
-      graphData.circles
-    );
-
     if (
       !graphData.graph ||
       !graphData.originGraph ||
