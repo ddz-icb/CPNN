@@ -20,7 +20,7 @@
   --bg-primary: #23232e;
   --bg-secondary: #131318;
   --bg-canvas: #12181b;
-  --transition-speed: 300ms;
+  --transition-speed: 50ms;
   --icon-color: #4878a5;
   /* --icon-color: #387af4; */
   /* --icon-color: #3c00ff; */
@@ -241,7 +241,7 @@ ul {
   position: fixed;
   background-color: var(--bg-primary);
   border-right: var(--border-size-border) solid var(--border-color);
-  transition: width 200ms ease;
+  transition: all 150ms ease;
   overflow-y: auto;
 }
 
@@ -257,11 +257,6 @@ ul {
   flex-direction: column;
   align-items: flex-start;
   height: 100%;
-}
-
-/* animation for navbar item text when hovering over navbar */
-.link-text {
-  animation: slideIn 300ms forwards;
 }
 
 /* item in navbar */
@@ -283,7 +278,7 @@ ul {
 .nav-link {
   display: flex;
   align-items: center;
-  height: 5rem;
+  height: 4rem;
   color: var(--text-primary);
   text-decoration: none;
 }
@@ -314,6 +309,7 @@ ul {
   position: flex;
   opacity: 0;
   transform: translateX(-100%);
+  animation: slideIn var(--transition-speed) forwards;
 }
 
 /* svg of navbar item */
@@ -334,7 +330,7 @@ ul {
 .logo {
   margin-left: 1rem;
   text-align: center;
-  width: 100%;
+  height: 4rem;
 }
 
 /* for the Back Button on the sidebar */

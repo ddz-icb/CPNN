@@ -31,9 +31,7 @@ export function MainSidebar({ handleNavItemClick }) {
 function Logo({ onClick }) {
   return (
     <li className="logo-container" onClick={onClick}>
-      <div className="nav-link">
-        <img src="./logos/ddz_logo_en.png" className="logo" />
-      </div>
+      <img src="./logos/ddz_logo_en.png" className="logo" />
     </li>
   );
 }
