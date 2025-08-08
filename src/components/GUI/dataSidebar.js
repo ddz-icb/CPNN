@@ -29,7 +29,7 @@ import {
   spearmanCoefficientDescription,
   takeAbsDescription,
 } from "./descriptions/dataDescriptions.js";
-import { mergeProteinsDescription, minCompSizeDescription } from "./descriptions/filterDescriptions.js";
+import { mergeProteinsDescription } from "./descriptions/filterDescriptions.js";
 
 export function DataSidebar({
   handleRemoveActiveGraphFile,
@@ -43,7 +43,7 @@ export function DataSidebar({
   handleNewGraphFile,
   handleCreateDifferenceGraph,
 }) {
-  const { graphData, setGraphData } = useGraphData();
+  const { graphData } = useGraphData();
 
   return (
     <>
@@ -280,89 +280,6 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
 
   const handleUploadMappingClick = () => {
     annotationMappingRef.current.click();
-  };
-
-  const handleMinCorrSliderChange = (event) => {
-    const value = event.target.value;
-
-    if (value >= 0 && value <= 1) {
-      setMinCorrForEdge(value);
-      setMinCorrForEdgeText(value);
-    }
-  };
-
-  const handleMinCorrFieldChange = (event) => {
-    const value = event.target.value;
-
-    if (value >= 0 && value <= 1) {
-      setMinCorrForEdgeText(value);
-    }
-  };
-
-  const handleMinCorrFieldBlur = (event) => {
-    let value = event.target.value;
-
-    if (value === "") {
-      event.target.innerText = 0;
-      setMinCorrForEdge(0);
-      setMinCorrForEdgeText(0);
-    } else if (value >= 0 && value <= 1) {
-      event.target.innerText = value;
-      setMinCorrForEdge(value);
-      setMinCorrForEdgeText(value);
-    }
-  };
-
-  const handleMinComponentFieldChange = (event) => {
-    const value = event.target.value;
-    const intValue = parseInt(value, 10);
-
-    if (value === "") {
-      setMinCompSizeText("");
-    } else if (!isNaN(intValue)) {
-      setMinCompSizeText(intValue);
-    }
-  };
-
-  const handleMinComponentFieldBlur = (event) => {
-    const value = event.target.value;
-    const intValue = parseInt(value, 10);
-
-    if (value === "") {
-      event.target.innerText = 1;
-      setMinCompSize(1);
-      setMinCompSizeText(1);
-    } else if (!isNaN(intValue) && intValue >= 0) {
-      event.target.innerText = intValue;
-      setMinCompSize(intValue);
-      setMinCompSizeText(intValue);
-    }
-  };
-
-  const handleMaxComponentFieldChange = (event) => {
-    const value = event.target.value;
-    const intValue = parseInt(value, 10);
-
-    if (value === "") {
-      setMaxCompSizeText("");
-    } else if (!isNaN(intValue)) {
-      setMaxCompSizeText(intValue);
-    }
-  };
-
-  const handleMaxComponentFieldBlur = (event) => {
-    const value = event.target.value;
-    const intValue = parseInt(value, 10);
-
-    if (value === "") {
-      event.target.innerText = "";
-      setMaxCompSize("");
-      setMaxCompSizeText("");
-    } else if (!isNaN(intValue) && intValue >= 1) {
-      event.target.innerText = intValue;
-      setMaxCompSize(intValue);
-      setMaxCompSizeText(intValue);
-    }
   };
 
   useEffect(() => {
