@@ -48,22 +48,7 @@ export function SidebarSliderBlock({ value, valueText, setValue, setValueText, f
   );
 }
 
-// NEXT: udpate these blocks as well just like above
-
-export function PopUpSliderBlock({
-  text,
-  value,
-  valueText,
-  onChangeSlider,
-  onChangeField,
-  onChangeBlur,
-  min,
-  max,
-  stepSlider,
-  stepField,
-  infoHeading,
-  infoDescription,
-}) {
+export function NewPopUpSliderBlock({ value, valueText, setValue, setValueText, fallbackValue, min, max, step, text, infoHeading, infoDescription }) {
   const [infoIsOpen, setInfoIsOpen] = useState(false);
 
   const handleKeyDown = (event) => {
@@ -81,17 +66,25 @@ export function PopUpSliderBlock({
         </span>
       </div>
       <div className="popup-block pad-bottom-05">
-        <input className="sidebar-slider" type="range" min={min} max={max} step={stepSlider} value={value} onChange={onChangeSlider}></input>
+        <input
+          className="sidebar-slider"
+          type="range"
+          min={min}
+          max={max}
+          step={step}
+          value={value}
+          onChange={(event) => handleSliderChange(event, setValue, setValueText, min, max)}
+        ></input>
         <input
           className="input-field"
           type="number"
           min={min}
           max={max}
-          step={stepField}
+          step={step}
           value={valueText}
-          onChange={onChangeField}
+          onChange={(event) => handleFieldChange(event, setValueText, min, max)}
           onKeyDown={handleKeyDown}
-          onBlur={onChangeBlur}
+          onBlur={(event) => handleFieldBlur(event, setValue, setValueText, min, max, fallbackValue)}
         />
       </div>
       <PopUp heading={infoHeading} description={infoDescription} isOpen={infoIsOpen} setIsOpen={setInfoIsOpen} widePopUp={true} />

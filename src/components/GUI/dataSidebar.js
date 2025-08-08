@@ -13,6 +13,7 @@ import {
   PopUpSliderBlock,
   PopUpFieldBlock,
   PopUp,
+  NewPopUpSliderBlock,
 } from "./reusableComponents/sidebarComponents.js";
 import log from "../../logger.js";
 import { useGraphData } from "../../states.js";
@@ -21,6 +22,7 @@ import { downloadCsvFile, downloadObjectAsFile } from "../GraphStuff/download.js
 import { exampleGraphCsv } from "../../demodata/exampleGraphCSV.js";
 import { exampleMappingCsv } from "../../demodata/exampleMappingCSV.js";
 import { exampleGraphRaw } from "../../demodata/exampleGraphRawTSV.js";
+import { minCorrForEdgeDescription } from "./descriptions/dataDescriptions.js";
 
 export function DataSidebar({
   handleRemoveActiveGraphFile,
@@ -497,21 +499,18 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
           }
         />
         <div className="popup-block"></div>
-        <PopUpSliderBlock
-          text={"Minimum link correlation"}
-          min={0}
-          max={1}
-          stepSlider={0.05}
-          stepField={0.01}
+        <NewPopUpSliderBlock
           value={minCorrForEdge}
           valueText={minCorrForEdgeText}
-          onChangeSlider={handleMinCorrSliderChange}
-          onChangeField={handleMinCorrFieldChange}
-          onChangeBlur={handleMinCorrFieldBlur}
+          setValue={(value) => setMinCorrForEdge(value)}
+          setValueText={(value) => setMinCorrForEdgeText(value)}
+          fallbackValue={0}
+          min={0}
+          max={1}
+          step={0.05}
+          text={"Minimum link correlation"}
           infoHeading={"Minimum link correlation"}
-          infoDescription={
-            "Minimum (absolute) correlation value or link weight required for display as a link. Increasing this value can significantly improve performance."
-          }
+          infoDescription={minCorrForEdgeDescription}
         />
         <PopUpFieldBlock
           text={"Minimum component size"}

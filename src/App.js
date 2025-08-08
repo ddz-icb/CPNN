@@ -41,10 +41,10 @@ import { getFileNameWithoutExtension } from "./components/Other/parseFiles.js";
 import { getGraphDB } from "./components/Other/dbGraphs.js";
 import { downloadInit } from "./components/initValues/downloadInitValues.js";
 import { physicsInit } from "./components/initValues/physicsInitValues.js";
-import { filterInit } from "./components/initValues/filterInitValues.js";
+import { filterInit, linkThresholdInit } from "./components/initValues/filterInitValues.js";
 
 function App() {
-  const { setAllFilter } = useFilter();
+  const { setFilter, setAllFilter } = useFilter();
   const { setAllPhysics } = usePhysics();
   const { appearance, setAppearance } = useAppearance();
   const { download, setDownload } = useDownload();
@@ -400,6 +400,12 @@ function App() {
 
     const { minWeight, maxWeight } = getLinkWeightMinMax(newGraph);
     setGraphData("linkWeightMin", minWeight);
+
+    if (minWeight > linkThresholdInit) {
+      setFilter("linkThreshold", minWeight);
+      setFilter("linkThresholdText", minWeight);
+    }
+
     setGraphData("linkWeightMax", maxWeight);
 
     // set max comp size = amount of nodes
