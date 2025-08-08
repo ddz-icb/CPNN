@@ -312,39 +312,39 @@ export function communityForce(communityMap) {
   return force;
 }
 
-export function applyPhysics(physics, setSettings) {
-  if (physics.circleLayout !== undefined) setSettings("physics.circleLayout", physics.circleLayout);
+export function applyPhysics(physics, setPhysics) {
+  if (physics.circleLayout !== undefined) setPhysics("circleLayout", physics.circleLayout);
   if (physics.xStrength !== undefined) {
-    setSettings("physics.xStrength", physics.xStrength);
-    setSettings("physics.xStrengthText", physics.xStrength);
+    setPhysics("xStrength", physics.xStrength);
+    setPhysics("xStrengthText", physics.xStrength);
   }
   if (physics.yStrength !== undefined) {
-    setSettings("physics.yStrength", physics.yStrength);
-    setSettings("physics.yStrengthText", physics.yStrength);
+    setPhysics("yStrength", physics.yStrength);
+    setPhysics("yStrengthText", physics.yStrength);
   }
   if (physics.componentStrength !== undefined) {
-    setSettings("physics.componentStrength", physics.componentStrength);
-    setSettings("physics.componentStrengthText", physics.componentStrength);
+    setPhysics("componentStrength", physics.componentStrength);
+    setPhysics("componentStrengthText", physics.componentStrength);
   }
   if (physics.nodeRepulsionStrength !== undefined) {
-    setSettings("physics.nodeRepulsionStrength", physics.nodeRepulsionStrength);
-    setSettings("physics.nodeRepulsionStrengthText", physics.nodeRepulsionStrength);
+    setPhysics("nodeRepulsionStrength", physics.nodeRepulsionStrength);
+    setPhysics("nodeRepulsionStrengthText", physics.nodeRepulsionStrength);
   }
-  if (physics.linkForce !== undefined) setSettings("physics.linkForce", physics.linkForce);
+  if (physics.linkForce !== undefined) setPhysics("linkForce", physics.linkForce);
   if (physics.linkLength !== undefined) {
-    setSettings("physics.linkLength", physics.linkLength);
+    setPhysics("linkLength", physics.linkLength);
   }
-  if (physics.checkBorder !== undefined) setSettings("physics.checkBorder", physics.checkBorder);
+  if (physics.checkBorder !== undefined) setPhysics("checkBorder", physics.checkBorder);
   if (physics.borderWidth !== undefined) {
-    setSettings("physics.borderWidth", physics.borderWidth);
-    setSettings("physics.borderWidthText", physics.borderWidth);
+    setPhysics("borderWidth", physics.borderWidth);
+    setPhysics("borderWidthText", physics.borderWidth);
   }
   if (physics.borderHeight !== undefined) {
-    setSettings("physics.borderHeight", physics.borderHeight);
-    setSettings("physics.borderHeightText", physics.borderHeight);
+    setPhysics("borderHeight", physics.borderHeight);
+    setPhysics("borderHeightText", physics.borderHeight);
   }
   if (physics.communityForceStrength !== undefined) {
-    setSettings("physics.communityForceStrength", physics.communityForceStrength);
-    setSettings("physics.communityForceStrengthText", physics.communityForceStrength);
+    setPhysics("communityForceStrength", physics.communityForceStrength);
+    setPhysics("communityForceStrengthText", physics.communityForceStrength);
   }
 }

@@ -73,6 +73,36 @@ export const useFilter = create((set) => ({
     }),
 }));
 
+export const usePhysics = create((set) => ({
+  physics: {
+    circleLayout: circleLayoutInit,
+    xStrength: xStrengthInit,
+    yStrength: yStrengthInit,
+    componentStrength: componentStrengthInit,
+    nodeRepulsionStrength: nodeRepulsionStrengthInit,
+    nodeCollision: nodeCollisionInit,
+    linkForce: linkForceInit,
+    linkLength: linkLengthInit,
+    checkBorder: checkBorderInit,
+    borderWidth: borderWidthInit,
+    borderHeight: borderHeightInit,
+    borderHeightText: borderHeightInit,
+    borderWidthText: borderWidthInit,
+    xStrengthText: xStrengthInit,
+    yStrengthText: yStrengthInit,
+    componentStrengthText: componentStrengthInit,
+    nodeRepulsionStrengthText: nodeRepulsionStrengthInit,
+    communityForceStrength: communityForceStrengthInit,
+    communityForceStrengthText: communityForceStrengthInit,
+  },
+  setPhysics: (path, value) =>
+    set((state) => {
+      const updatedPhysics = { ...state.physics };
+      setNestedValue(updatedPhysics, path, value);
+      return { physics: updatedPhysics };
+    }),
+}));
+
 export const useSettings = create((set) => ({
   settings: {
     physics: {

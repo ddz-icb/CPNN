@@ -6,9 +6,10 @@ import { handleResize, initDragAndZoom } from "../Other/interactiveCanvas.js";
 import { initTooltips, Tooltips } from "../Other/toolTipCanvas.js";
 import { radius, drawCircle, drawLine, getTextStyle } from "../Other/draw.js";
 import { getSimulation } from "./graphPhysics.js";
-import { useGraphData, useSettings, useTooltipSettings } from "../../states.js";
+import { useGraphData, usePhysics, useSettings, useTooltipSettings } from "../../states.js";
 import { SettingControl } from "./settingControl.js";
 import { getNodeIdName, getNodeLabelOffsetY } from "./graphCalculations.js";
+import { linkLengthInit, nodeRepulsionStrengthInit, xStrengthInit, yStrengthInit } from "./graphInitValues.js";
 
 export function ForceGraph({ reset, setReset, setError }) {
   const { settings, setSettings } = useSettings();
@@ -166,10 +167,10 @@ export function ForceGraph({ reset, setReset, setError }) {
     const newSimulation = getSimulation(
       settings.container.width,
       settings.container.height,
-      settings.physics.linkLength,
-      settings.physics.xStrength,
-      settings.physics.yStrength,
-      settings.physics.nodeRepulsionStrength
+      linkLengthInit,
+      xStrengthInit,
+      yStrengthInit,
+      nodeRepulsionStrengthInit
     );
     initDragAndZoom(app, newSimulation, radius, setTooltipSettings, settings.container.width, settings.container.height);
 
