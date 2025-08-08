@@ -45,9 +45,9 @@ export const resetPhysicsSettings = (setSettings) => {
   });
 };
 
-export const resetFilterSettings = (setSettings, currentFilters) => {
-  setSettings("filter", {
-    ...currentFilters,
+export const resetFilterSettings = (setFilter, currentFilter) => {
+  setFilter({
+    ...currentFilter,
     linkThreshold: linkThresholdInit,
     linkFilter: linkFilterInit,
     linkFilterText: linkFilterTextInit,

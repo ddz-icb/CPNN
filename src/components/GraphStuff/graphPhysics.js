@@ -333,7 +333,6 @@ export function applyPhysics(physics, setSettings) {
   if (physics.linkForce !== undefined) setSettings("physics.linkForce", physics.linkForce);
   if (physics.linkLength !== undefined) {
     setSettings("physics.linkLength", physics.linkLength);
-    setSettings("physics.linkLengthText", physics.linkLength);
   }
   if (physics.checkBorder !== undefined) setSettings("physics.checkBorder", physics.checkBorder);
   if (physics.borderWidth !== undefined) {

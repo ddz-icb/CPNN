@@ -35,14 +35,15 @@ import {
   storeColorSchemes,
   storeTheme,
 } from "./components/Other/applicationFunctions.js";
-import { useGraphData, useSettings } from "./states.js";
+import { useFilter, useGraphData, useSettings } from "./states.js";
 import { Erorr } from "./components/Other/error.js";
 import { colorSchemesInit } from "./components/Other/appearance.js";
 import { getFileNameWithoutExtension } from "./components/Other/parseFiles.js";
 import { getGraphDB } from "./components/Other/dbGraphs.js";
 
 function App() {
-  const { settings, setSettings } = useSettings(); // includes physics, filter and appearance settings
+  const { settings, setSettings } = useSettings();
+  const { filter, setFilter } = useFilter();
   const { graphData, setGraphData } = useGraphData(); // includes all data concerning the graph
 
   const [reset, setReset] = useState(false); // true indicates that the simulation (in forceGraph.js) has to be reloaded
@@ -307,7 +308,7 @@ function App() {
   };
 
   const resetFilters = () => {
-    resetFilterSettings(setSettings, settings.filter);
+    resetFilterSettings(setFilter, filter);
   };
 
   // select example graph on startup

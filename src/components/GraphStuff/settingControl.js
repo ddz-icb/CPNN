@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useGraphData, useSettings } from "../../states.js";
+import { useFilter, useGraphData, useSettings } from "../../states.js";
 import log from "../../logger.js";
 import * as d3 from "d3";
 
@@ -42,6 +42,7 @@ import {
 
 export function SettingControl({ simulation, app, redraw }) {
   const { settings, setSettings } = useSettings();
+  const { filter, setFilter } = useFilter();
   const { graphData, setGraphData } = useGraphData();
 
   // filter nodes and links //
@@ -62,21 +63,21 @@ export function SettingControl({ simulation, app, redraw }) {
 
     log.info(
       "Filtering nodes and links.\n    Threshold:  ",
-      settings.filter.linkThreshold,
+      filter.linkThreshold,
       "\n    Link Attributes: ",
-      settings.filter.linkFilter,
+      filter.linkFilter,
       "\n    Node Attributes: ",
-      settings.filter.nodeFilter,
+      filter.nodeFilter,
       "\n    Mininum component size: ",
-      settings.filter.minCompSize,
+      filter.minCompSize,
       "\n    Maximum component size: ",
-      settings.filter.maxCompSize,
+      filter.maxCompSize,
       "\n    Minimum neighborhood size: ",
-      settings.filter.minNeighborhoodSize,
+      filter.minNeighborhoodSize,
       "\n    Groups: ",
-      settings.filter.nodeFilter,
+      filter.nodeFilter,
       "\n    Comp Density: ",
-      settings.filter.compDensity
+      filter.compDensity
     );
 
     let filteredGraph = {
@@ -85,31 +86,31 @@ export function SettingControl({ simulation, app, redraw }) {
       links: graphData.originGraph.links,
     };
 
-    filteredGraph = filterByNodeAttribs(filteredGraph, settings.filter.nodeFilter);
+    filteredGraph = filterByNodeAttribs(filteredGraph, filter.nodeFilter);
     filteredGraph = filterNodesExist(filteredGraph);
 
-    filteredGraph = filterByThreshold(filteredGraph, settings.filter.linkThreshold);
-    filteredGraph = filterByLinkAttribs(filteredGraph, settings.filter.linkFilter);
+    filteredGraph = filterByThreshold(filteredGraph, filter.linkThreshold);
+    filteredGraph = filterByLinkAttribs(filteredGraph, filter.linkFilter);
 
-    filteredGraph = filterCompDensity(filteredGraph, settings.filter.compDensity);
-    filteredGraph = filterMinNeighborhood(filteredGraph, settings.filter.minNeighborhoodSize);
+    filteredGraph = filterCompDensity(filteredGraph, filter.compDensity);
+    filteredGraph = filterMinNeighborhood(filteredGraph, filter.minNeighborhoodSize);
     filteredGraph = filterNodesExist(filteredGraph);
 
-    filteredGraph = filterMinCompSize(filteredGraph, settings.filter.minCompSize);
-    filteredGraph = filterMaxCompSize(filteredGraph, settings.filter.maxCompSize);
+    filteredGraph = filterMinCompSize(filteredGraph, filter.minCompSize);
+    filteredGraph = filterMaxCompSize(filteredGraph, filter.maxCompSize);
     filteredGraph = filterNodesExist(filteredGraph);
 
     filterActiveNodesForPixi(graphData.circles, graphData.nodeLabels, settings.appearance.showNodeLabels, filteredGraph, graphData.nodeMap);
     setGraphData("filteredAfterStart", true);
     setGraphData("graph", filteredGraph);
   }, [
-    settings.filter.linkThreshold,
-    settings.filter.linkFilter,
-    settings.filter.nodeFilter,
-    settings.filter.minCompSize,
-    settings.filter.maxCompSize,
-    settings.filter.compDensity,
-    settings.filter.minNeighborhoodSize,
+    filter.linkThreshold,
+    filter.linkFilter,
+    filter.nodeFilter,
+    filter.minCompSize,
+    filter.maxCompSize,
+    filter.compDensity,
+    filter.minNeighborhoodSize,
     graphData.originGraph,
     graphData.circles,
   ]);
@@ -370,7 +371,7 @@ export function SettingControl({ simulation, app, redraw }) {
     const [componentArray, componentSizeArray] = returnComponentData(graphData.graph);
 
     // this value can be increased to slightly increase performance
-    const threshold = settings.filter.minCompSize > 2 ? settings.filter.minCompSize : 2;
+    const threshold = filter.minCompSize > 2 ? filter.minCompSize : 2;
 
     simulation.force("component", componentForce(componentArray, componentSizeArray, threshold).strength(settings.physics.componentStrength));
     simulation.alpha(1).restart();

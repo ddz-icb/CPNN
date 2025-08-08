@@ -48,6 +48,31 @@ export const expectedPhysicTypes = {
   communityForceStrength: "number",
 };
 
+export const useFilter = create((set) => ({
+  filter: {
+    linkThreshold: linkThresholdInit,
+    linkThresholdText: linkThresholdInit,
+    linkFilter: linkFilterInit,
+    linkFilterText: linkFilterTextInit,
+    nodeFilter: nodeFilterInit,
+    nodeFilterText: nodeFilterTextInit,
+    minCompSize: minCompSizeInit,
+    minCompSizeText: minCompSizeInit,
+    maxCompSize: maxCompSizeInit,
+    maxCompSizeText: maxCompSizeInit,
+    compDensity: compDensityInit,
+    compDensityText: compDensityInit,
+    minNeighborhoodSize: minNeighborhoodSizeInit,
+    minNeighborhoodSizeText: minNeighborhoodSizeInit,
+  },
+  setFilter: (path, value) =>
+    set((state) => {
+      const updatedFilter = { ...state.filter };
+      setNestedValue(updatedFilter, path, value);
+      return { filter: updatedFilter };
+    }),
+}));
+
 export const useSettings = create((set) => ({
   settings: {
     physics: {
@@ -62,7 +87,6 @@ export const useSettings = create((set) => ({
       checkBorder: checkBorderInit,
       borderWidth: borderWidthInit,
       borderHeight: borderHeightInit,
-      linkLengthText: linkLengthInit,
       borderHeightText: borderHeightInit,
       borderWidthText: borderWidthInit,
       xStrengthText: xStrengthInit,
@@ -71,22 +95,6 @@ export const useSettings = create((set) => ({
       nodeRepulsionStrengthText: nodeRepulsionStrengthInit,
       communityForceStrength: communityForceStrengthInit,
       communityForceStrengthText: communityForceStrengthInit,
-    },
-    filter: {
-      linkThreshold: linkThresholdInit,
-      linkThresholdText: linkThresholdInit,
-      linkFilter: linkFilterInit,
-      linkFilterText: linkFilterTextInit,
-      nodeFilter: nodeFilterInit,
-      nodeFilterText: nodeFilterTextInit,
-      minCompSize: minCompSizeInit,
-      minCompSizeText: minCompSizeInit,
-      maxCompSize: maxCompSizeInit,
-      maxCompSizeText: maxCompSizeInit,
-      compDensity: compDensityInit,
-      compDensityText: compDensityInit,
-      minNeighborhoodSize: minNeighborhoodSizeInit,
-      minNeighborhoodSizeText: minNeighborhoodSizeInit,
     },
     appearance: {
       theme: themeInit,

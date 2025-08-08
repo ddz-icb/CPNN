@@ -19,11 +19,12 @@ import {
   SidebarSliderBlock,
   SidebarSwitchBlock,
 } from "./reusableComponents/sidebarComponents.js";
-import { useGraphData, useSettings } from "../../states.js";
+import { useFilter, useGraphData, useSettings } from "../../states.js";
 import { maxCompSizeInit, minNeighborhoodSizeInit } from "../GraphStuff/graphInitValues.js";
 
 export function FilterSidebar({ resetFilters }) {
   const { settings, setSettings } = useSettings();
+  const { filter, setFilter } = useFilter();
   const { graphData, setGraphData } = useGraphData();
 
   const linkFilterEditorRef = useRef(null);
@@ -50,8 +51,8 @@ export function FilterSidebar({ resetFilters }) {
     const value = event.target.value;
 
     if (value >= 0 && value <= 1) {
-      setSettings("filter.linkThresholdText", value);
-      setSettings("filter.linkThreshold", value);
+      setFilter("linkThresholdText", value);
+      setFilter("linkThreshold", value);
     }
   };
 
@@ -59,7 +60,7 @@ export function FilterSidebar({ resetFilters }) {
     const value = event.target.value;
 
     if (value >= 0 && value <= 1) {
-      setSettings("filter.linkThresholdText", value);
+      setFilter("linkThresholdText", value);
     }
   };
 
@@ -68,12 +69,12 @@ export function FilterSidebar({ resetFilters }) {
 
     if (value === "") {
       event.target.innerText = 0;
-      setSettings("filter.linkThresholdText", 0);
-      setSettings("filter.linkThreshold", 0);
+      setFilter("linkThresholdText", 0);
+      setFilter("linkThreshold", 0);
     } else if (value >= 0 && value <= 1) {
       event.target.innerText = value;
-      setSettings("filter.linkThresholdText", value);
-      setSettings("filter.linkThreshold", value);
+      setFilter("linkThresholdText", value);
+      setFilter("linkThreshold", value);
     }
   };
 
@@ -82,9 +83,9 @@ export function FilterSidebar({ resetFilters }) {
     const intValue = parseInt(value, 10);
 
     if (value === "") {
-      setSettings("filter.minCompSizeText", "");
+      setFilter("minCompSizeText", "");
     } else if (!isNaN(intValue)) {
-      setSettings("filter.minCompSizeText", intValue);
+      setFilter("minCompSizeText", intValue);
     }
   };
 
@@ -94,12 +95,12 @@ export function FilterSidebar({ resetFilters }) {
 
     if (value === "") {
       event.target.innerText = 1;
-      setSettings("filter.minCompSizeText", 1);
-      setSettings("filter.minCompSize", 1);
+      setFilter("minCompSizeText", 1);
+      setFilter("minCompSize", 1);
     } else if (!isNaN(intValue) && intValue >= 0) {
       event.target.innerText = intValue;
-      setSettings("filter.minCompSizeText", intValue);
-      setSettings("filter.minCompSize", intValue);
+      setFilter("minCompSizeText", intValue);
+      setFilter("minCompSize", intValue);
     }
   };
 
@@ -108,9 +109,9 @@ export function FilterSidebar({ resetFilters }) {
     const intValue = parseInt(value, 10);
 
     if (!isNaN(intValue) && intValue >= 1) {
-      setSettings("filter.maxCompSizeText", intValue);
+      setFilter("maxCompSizeText", intValue);
     } else {
-      setSettings("filter.maxCompSizeText", maxCompSizeInit);
+      setFilter("maxCompSizeText", maxCompSizeInit);
     }
   };
 
@@ -120,12 +121,12 @@ export function FilterSidebar({ resetFilters }) {
 
     if (!isNaN(intValue) && intValue >= 1) {
       event.target.innerText = intValue;
-      setSettings("filter.maxCompSizeText", intValue);
-      setSettings("filter.maxCompSize", intValue);
+      setFilter("maxCompSizeText", intValue);
+      setFilter("maxCompSize", intValue);
     } else {
       event.target.innerText = maxCompSizeInit;
-      setSettings("filter.maxCompSizeText", maxCompSizeInit);
-      setSettings("filter.maxCompSize", maxCompSizeInit);
+      setFilter("maxCompSizeText", maxCompSizeInit);
+      setFilter("maxCompSize", maxCompSizeInit);
     }
   };
 
@@ -134,9 +135,9 @@ export function FilterSidebar({ resetFilters }) {
     const intValue = parseInt(value, 10);
 
     if (!isNaN(intValue) && intValue >= 0) {
-      setSettings("filter.minNeighborhoodSizeText", intValue);
+      setFilter("minNeighborhoodSizeText", intValue);
     } else {
-      setSettings("filter.minNeighborhoodSizeText", "");
+      setFilter("minNeighborhoodSizeText", "");
     }
   };
 
@@ -146,12 +147,12 @@ export function FilterSidebar({ resetFilters }) {
 
     if (!isNaN(intValue) && intValue >= 0) {
       event.target.innerText = intValue;
-      setSettings("filter.minNeighborhoodSizeText", intValue);
-      setSettings("filter.minNeighborhoodSize", intValue);
+      setFilter("minNeighborhoodSizeText", intValue);
+      setFilter("minNeighborhoodSize", intValue);
     } else {
       event.target.innerText = minNeighborhoodSizeInit;
-      setSettings("filter.minNeighborhoodSizeText", minNeighborhoodSizeInit);
-      setSettings("filter.minNeighborhoodSize", minNeighborhoodSizeInit);
+      setFilter("minNeighborhoodSizeText", minNeighborhoodSizeInit);
+      setFilter("minNeighborhoodSize", minNeighborhoodSizeInit);
     }
   };
 
@@ -160,9 +161,9 @@ export function FilterSidebar({ resetFilters }) {
     const floatValue = parseFloat(value);
 
     if (value === "") {
-      setSettings("filter.compDensityText", "");
+      setFilter("compDensityText", "");
     } else if (!isNaN(floatValue)) {
-      setSettings("filter.compDensityText", floatValue);
+      setFilter("compDensityText", floatValue);
     }
   };
 
@@ -172,29 +173,29 @@ export function FilterSidebar({ resetFilters }) {
 
     if (value === "") {
       event.target.innerText = 1;
-      setSettings("filter.compDensityText", 1);
-      setSettings("filter.compDensity", 1);
+      setFilter("compDensityText", 1);
+      setFilter("compDensity", 1);
     } else if (!isNaN(floatValue) && floatValue >= 0) {
       event.target.innerText = floatValue;
-      setSettings("filter.compDensityText", floatValue);
-      setSettings("filter.compDensity", floatValue);
+      setFilter("compDensityText", floatValue);
+      setFilter("compDensity", floatValue);
     }
   };
 
   const handleLinkAttribsChange = (editor) => {
     const value = editor.getValue();
 
-    setSettings("filter.linkFilterText", value);
+    setFilter("linkFilterText", value);
   };
 
   const handleNodeFilterChange = (editor) => {
     const value = editor.getValue();
 
-    setSettings("filter.nodeFilterText", value);
+    setFilter("nodeFilterText", value);
   };
 
   const runCodeButtonFilterAttribs = (event) => {
-    const value = settings.filter.linkFilterText;
+    const value = filter.linkFilterText;
 
     const parsedValue = parseAttributesFilter(value);
     if (String(parsedValue).split(" ")[0] === "Error:") {
@@ -202,13 +203,13 @@ export function FilterSidebar({ resetFilters }) {
       log.error("invalid input on attribs filter");
     } else {
       setCompilerErrorLinkFilter(null);
-      setSettings("filter.linkFilterText", value);
-      setSettings("filter.linkFilter", parsedValue);
+      setFilter("linkFilterText", value);
+      setFilter("linkFilter", parsedValue);
     }
   };
 
   const runCodeButtonFilterGroups = (event) => {
-    const value = settings.filter.nodeFilterText;
+    const value = filter.nodeFilterText;
 
     const parsedValue = parseGroupsFilter(value);
     if (String(parsedValue).split(" ")[0] === "Error:") {
@@ -216,8 +217,8 @@ export function FilterSidebar({ resetFilters }) {
       log.error("invalid input on attribs filter");
     } else {
       setCompilerErrorNodeFilter(null);
-      setSettings("filter.nodeFilterText", value);
-      setSettings("filter.nodeFilter", parsedValue);
+      setFilter("nodeFilterText", value);
+      setFilter("nodeFilter", parsedValue);
     }
   };
 
@@ -255,19 +256,19 @@ export function FilterSidebar({ resetFilters }) {
     if (!nodeFilterEditorRef.current) return;
 
     const currentValue = nodeFilterEditorRef.current.getValue();
-    if (currentValue !== settings.filter.nodeFilterText) {
-      nodeFilterEditorRef.current.setValue(settings.filter.nodeFilterText);
+    if (currentValue !== filter.nodeFilterText) {
+      nodeFilterEditorRef.current.setValue(filter.nodeFilterText);
     }
-  }, [settings.filter.nodeFilterText]);
+  }, [filter.nodeFilterText]);
 
   useEffect(() => {
     if (!linkFilterEditorRef.current) return;
 
     const currentValue = linkFilterEditorRef.current.getValue();
-    if (currentValue !== settings.filter.linkFilterText) {
-      linkFilterEditorRef.current.setValue(settings.filter.linkFilterText);
+    if (currentValue !== filter.linkFilterText) {
+      linkFilterEditorRef.current.setValue(filter.linkFilterText);
     }
-  }, [settings.filter.linkFilterText]);
+  }, [filter.linkFilterText]);
 
   useEffect(() => {
     log.info("changing code editor theme");
@@ -296,8 +297,8 @@ export function FilterSidebar({ resetFilters }) {
         max={Math.ceil(graphData.linkWeightMax / 0.05) * 0.05}
         stepSlider={0.05}
         stepField={0.01}
-        value={settings.filter.linkThreshold}
-        valueText={settings.filter.linkThresholdText}
+        value={filter.linkThreshold}
+        valueText={filter.linkThresholdText}
         onChangeSlider={handleLinkThresholdSliderChange}
         onChangeField={handleLinkThresholdFieldChange}
         onChangeBlur={handleLinkThresholdFieldBlur}
@@ -317,7 +318,7 @@ export function FilterSidebar({ resetFilters }) {
         textareaRef={linkFilterTextAreaRef}
         compilerError={compilerErrorLinkFilter}
         onClick={runCodeButtonFilterAttribs}
-        defaultValue={settings.filter.linkFilterText}
+        defaultValue={filter.linkFilterText}
         infoHeading={"Filtering Links by Attributes"}
         infoDescription={
           <div>
@@ -352,7 +353,7 @@ export function FilterSidebar({ resetFilters }) {
         textareaRef={nodeFilterTextAreaRef}
         compilerError={compilerErrorNodeFilter}
         onClick={runCodeButtonFilterGroups}
-        defaultValue={settings.filter.nodeFilterText}
+        defaultValue={filter.nodeFilterText}
         infoHeading={"Filter Nodes by Attributes"}
         infoDescription={
           <div>
@@ -389,7 +390,7 @@ export function FilterSidebar({ resetFilters }) {
         text={"Min Component Size"}
         min={1}
         step={1}
-        value={settings.filter.minCompSizeText}
+        value={filter.minCompSizeText}
         onChange={handleMinComponentFieldChange}
         onBlur={handleMinComponentFieldBlur}
         infoHeading={"Filter by Component Size"}
@@ -406,7 +407,7 @@ export function FilterSidebar({ resetFilters }) {
         text={"Max Component Size"}
         min={1}
         step={1}
-        value={settings.filter.maxCompSizeText}
+        value={filter.maxCompSizeText}
         onChange={handleMaxComponentFieldChange}
         onBlur={handleMaxComponentFieldBlur}
         infoHeading={"Filter by Component Size"}
@@ -423,7 +424,7 @@ export function FilterSidebar({ resetFilters }) {
         text={"Min Neighborhood Size"}
         min={1}
         step={1}
-        value={settings.filter.minNeighborhoodSizeText}
+        value={filter.minNeighborhoodSizeText}
         onChange={handleMinNeighborhoodFieldChange}
         onBlur={handleMinNeighborhoodFieldBlur}
         infoHeading={"Filter by Neighborhood Size"}
@@ -440,7 +441,7 @@ export function FilterSidebar({ resetFilters }) {
         text={"Component Density"}
         min={0}
         step={1}
-        value={settings.filter.compDensityText}
+        value={filter.compDensityText}
         onChange={handleCompDensityFieldChange}
         onBlur={handleCompDensityFieldBlur}
         infoHeading={"Filter by Component Density"}
