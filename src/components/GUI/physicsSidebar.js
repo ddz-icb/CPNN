@@ -10,6 +10,10 @@ import {
   linkLengthDescription,
   nodeRepulsionStrengthDescription,
   gravityDescription,
+  checkBorderDescription,
+  circleLayoutDescription,
+  nodeCollisionDescription,
+  linkForceDescription,
 } from "./descriptions/physicsDescriptions.js";
 
 export function PhysicsSidebar({}) {
@@ -37,19 +41,11 @@ export function PhysicsSidebar({}) {
         <SidebarButtonRect text={"Set Phyiscs to Default"} onClick={() => setAllPhysics(physicsInit)} />
       </div>
       <SidebarSwitchBlock
-        text={"Circular Layout"}
         value={physics.circleLayout}
-        onChange={handleCircleLayout}
+        onChange={() => setPhysics("circleLayout", !physics.circleLayout)}
+        text={"Circular Layout"}
         infoHeading={"Enabling Circular layout"}
-        infoDescription={
-          <div>
-            <p className="margin-0">
-              Components/Clusters can be displayed in a circular layout, with the nodes arranged clockwise in descending order based on the number of
-              adjacent nodes. <br />
-              Activating this force automatically disables the link force, as they're incompatible.
-            </p>
-          </div>
-        }
+        infoDescription={circleLayoutDescription}
       />
       <SidebarSliderBlock
         value={physics.xStrength}
@@ -112,26 +108,16 @@ export function PhysicsSidebar({}) {
       <SidebarSwitchBlock
         text={"Node Collision"}
         value={physics.nodeCollision}
-        onChange={handleNodeCollision}
+        onChange={() => setPhysics("nodeCollision", !physics.nodeCollision)}
         infoHeading={"Enabling the Node Collision Force"}
-        infoDescription={
-          <div>
-            <p className="margin-0">The node collision force kicks nodes apart from each other upon impact.</p>
-          </div>
-        }
+        infoDescription={nodeCollisionDescription}
       />
       <SidebarSwitchBlock
         text={"Link Force"}
         value={physics.linkForce}
-        onChange={handleLinkForce}
+        onChange={() => setPhysics("linkForce", !physics.linkForce)}
         infoHeading={"Enabling the Link Force"}
-        infoDescription={
-          <div>
-            <p className="margin-0">
-              The link force treats links as a rubber band. If the link is stretched past it's length, the link will try to contract itself.
-            </p>
-          </div>
-        }
+        infoDescription={linkForceDescription}
       />
       {physics.linkForce && (
         <SidebarSliderBlock
@@ -149,15 +135,11 @@ export function PhysicsSidebar({}) {
         />
       )}
       <SidebarSwitchBlock
-        text={"Border Force"}
         value={physics.checkBorder}
-        onChange={handleCheckBorder}
+        onChange={() => setPhysics("checkBorder", !physics.checkBorder)}
+        text={"Border Force"}
         infoHeading={"Enabling the Border Force"}
-        infoDescription={
-          <div>
-            <p className="margin-0">The border force can be used to contain the graph within an adjustable rectangle.</p>
-          </div>
-        }
+        infoDescription={checkBorderDescription}
       />
       {physics.checkBorder && (
         <>

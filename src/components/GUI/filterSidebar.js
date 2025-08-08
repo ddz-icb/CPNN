@@ -19,9 +19,8 @@ import {
   SidebarSwitchBlock,
 } from "./reusableComponents/sidebarComponents.js";
 import { useAppearance, useFilter, useGraphData } from "../../states.js";
-import { filterInit, linkThresholdInit, maxCompSizeInit, minNeighborhoodSizeInit } from "../initValues/filterInitValues.js";
-import { compDensityInit } from "../initValues/physicsInitValues.js";
-import { linkThresholdDescription } from "./descriptions/filterDescriptions.js";
+import { filterInit, linkThresholdInit, maxCompSizeInit, minNeighborhoodSizeInit, compDensityInit } from "../initValues/filterInitValues.js";
+import { linkThresholdDescription, mergeProteinsDescription } from "./descriptions/filterDescriptions.js";
 
 export function FilterSidebar({}) {
   const { filter, setFilter, setAllFilter } = useFilter();
@@ -42,10 +41,6 @@ export function FilterSidebar({}) {
     setGraphData("mergeProteins", false);
     setCompilerErrorLinkFilter(null);
     setCompilerErrorNodeFilter(null);
-  };
-
-  const handleMergeProteins = () => {
-    setGraphData("mergeProteins", !graphData.mergeProteins);
   };
 
   const handleMinComponentFieldChange = (event) => {
@@ -253,13 +248,11 @@ export function FilterSidebar({}) {
         <SidebarButtonRect text={"Reset Filters"} onClick={handleResetFilters} />
       </div>
       <SidebarSwitchBlock
-        text={"Merge Proteins"}
         value={graphData.mergeProteins}
-        onChange={handleMergeProteins}
+        onChange={() => setGraphData("mergeProteins", !graphData.mergeProteins)}
+        text={"Merge Proteins"}
         infoHeading={"Merge nodes of same protein"}
-        infoDescription={
-          "Nodes with the same UniprotID and Name will be merged into a single node, along with their respective links. When multiple links to the same node are merged, the maximum absolute weight is used as the new link weight. Enabling this setting can significantly enhance performance by reducing the graph size."
-        }
+        infoDescription={mergeProteinsDescription}
       />
       <SidebarSliderBlock
         value={filter.linkThreshold}

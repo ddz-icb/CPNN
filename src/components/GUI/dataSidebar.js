@@ -13,7 +13,6 @@ import {
   PopUpSliderBlock,
   PopUpFieldBlock,
   PopUp,
-  NewPopUpSliderBlock,
 } from "./reusableComponents/sidebarComponents.js";
 import log from "../../logger.js";
 import { useGraphData } from "../../states.js";
@@ -499,7 +498,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
           }
         />
         <div className="popup-block"></div>
-        <NewPopUpSliderBlock
+        <PopUpSliderBlock
           value={minCorrForEdge}
           valueText={minCorrForEdgeText}
           setValue={(value) => setMinCorrForEdge(value)}

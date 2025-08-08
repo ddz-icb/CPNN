@@ -14,7 +14,7 @@ import { downloadCsvFile } from "../GraphStuff/download.js";
 import { Tooltip } from "react-tooltip";
 import { useAppearance } from "../../states.js";
 import log from "../../logger.js";
-import { linkWidthDescription } from "./descriptions/appearanceDescriptions.js";
+import { linkWidthDescription, nodeLabelDescription } from "./descriptions/appearanceDescriptions.js";
 import { linkWidthInit } from "../initValues/appearanceInitValues.js";
 
 export function AppearanceSidebar({ handleNewColorScheme, handleDeleteColorScheme, colorSchemes }) {
@@ -40,18 +40,14 @@ export function AppearanceSidebar({ handleNewColorScheme, handleDeleteColorSchem
 export function AppearanceSettings({}) {
   const { appearance, setAppearance } = useAppearance();
 
-  const handleShowNodeLabels = () => {
-    setAppearance("showNodeLabels", !appearance.showNodeLabels);
-  };
-
   return (
     <>
       <SidebarSwitchBlock
-        text={"Node Labels"}
         value={appearance.showNodeLabels}
-        onChange={handleShowNodeLabels}
+        onChange={() => setAppearance("showNodeLabels", !appearance.showNodeLabels)}
+        text={"Node Labels"}
         infoHeading={"Enabling Node Labels"}
-        infoDescription={"Shows the name of each node above itself in the graph."}
+        infoDescription={nodeLabelDescription}
       />
       <SidebarSliderBlock
         value={appearance.linkWidth}

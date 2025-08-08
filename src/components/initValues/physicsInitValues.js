@@ -6,7 +6,6 @@ export const componentStrengthInit = 0;
 export const nodeRepulsionStrengthInit = 1;
 export const nodeCollisionInit = true;
 export const circleLayoutInit = false;
-export const compDensityInit = 1;
 export const communityForceStrengthInit = 0;
 
 export const checkBorderInit = false;

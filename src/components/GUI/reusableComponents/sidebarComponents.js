@@ -48,7 +48,7 @@ export function SidebarSliderBlock({ value, valueText, setValue, setValueText, f
   );
 }
 
-export function NewPopUpSliderBlock({ value, valueText, setValue, setValueText, fallbackValue, min, max, step, text, infoHeading, infoDescription }) {
+export function PopUpSliderBlock({ value, valueText, setValue, setValueText, fallbackValue, min, max, step, text, infoHeading, infoDescription }) {
   const [infoIsOpen, setInfoIsOpen] = useState(false);
 
   const handleKeyDown = (event) => {
@@ -92,7 +92,7 @@ export function NewPopUpSliderBlock({ value, valueText, setValue, setValueText, 
   );
 }
 
-export function SidebarSwitchBlock({ text, value, onChange, infoHeading, infoDescription }) {
+export function SidebarSwitchBlock({ value, onChange, text, infoHeading, infoDescription }) {
   const [infoIsOpen, setInfoIsOpen] = useState(false);
 
   return (

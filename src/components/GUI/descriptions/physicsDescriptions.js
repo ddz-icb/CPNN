@@ -49,3 +49,33 @@ export const borderWidthDescription = (
     <p className="margin-0">The border height determines the horizontal size of the border rectangle.</p>
   </div>
 );
+
+export const checkBorderDescription = (
+  <div>
+    <p className="margin-0">The border force can be used to contain the graph within an adjustable rectangle.</p>
+  </div>
+);
+
+export const circleLayoutDescription = (
+  <div>
+    <p className="margin-0">
+      Components/Clusters can be displayed in a circular layout, with the nodes arranged clockwise in descending order based on the number of adjacent
+      nodes. <br />
+      Activating this force automatically disables the link force, as they're incompatible.
+    </p>
+  </div>
+);
+
+export const nodeCollisionDescription = (
+  <div>
+    <p className="margin-0">The node collision force kicks nodes apart from each other upon impact.</p>
+  </div>
+);
+
+export const linkForceDescription = (
+  <div>
+    <p className="margin-0">
+      The link force treats links as a rubber band. If the link is stretched past it's length, the link will try to contract itself.
+    </p>
+  </div>
+);
