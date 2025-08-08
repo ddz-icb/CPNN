@@ -61,7 +61,7 @@ export function AppearanceSettings({}) {
         setValueText={(value) => setAppearance("linkWidthText", value)}
         fallbackValue={linkWidthInit}
         min={0.1}
-        max={10}
+        max={5}
         step={0.1}
         text={"Link width"}
         infoHeading={"Link Width"}

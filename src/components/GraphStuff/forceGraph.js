@@ -217,7 +217,7 @@ export function ForceGraph({ reset, setReset, setError }) {
     graphData.lines.clear();
 
     for (const link of graph.links) {
-      drawLine(graphData.lines, link, appearance.linkColorScheme.colorScheme, appearance.linkAttribsToColorIndices);
+      drawLine(graphData.lines, link, appearance.linkWidth, appearance.linkColorScheme.colorScheme, appearance.linkAttribsToColorIndices);
     }
 
     if (appearance.showNodeLabels) {

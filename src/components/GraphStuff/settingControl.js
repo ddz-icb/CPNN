@@ -183,6 +183,7 @@ export function SettingControl({ simulation, app, redraw }) {
       downloadAsSVG(
         document,
         graphData.graph,
+        appearance.linkWidth,
         appearance.linkColorScheme,
         appearance.linkAttribsToColorIndices,
         themeInit.circleBorderColor,
@@ -201,6 +202,7 @@ export function SettingControl({ simulation, app, redraw }) {
 
       downloadAsPDF(
         graphData.graph,
+        appearance.linkWidth,
         appearance.linkColorScheme,
         appearance.linkAttribsToColorIndices,
         themeInit.circleBorderColor,
@@ -252,12 +254,21 @@ export function SettingControl({ simulation, app, redraw }) {
 
   // switch link color scheme
   useEffect(() => {
-    if (!graphData.circles) return;
+    if (!simulation || !graphData.lines) return;
     log.info("Changing link color scheme");
 
     simulation.on("tick.redraw", () => redraw(graphData.graph));
     redraw(graphData.graph);
   }, [appearance.linkColorScheme, appearance.linkAttribsToColorIndices]);
+
+  // change link width
+  useEffect(() => {
+    if (!simulation || !graphData.lines) return;
+    log.info("Changing link width", physics.communityForceStrength);
+
+    simulation.on("tick.redraw", () => redraw(graphData.graph));
+    redraw(graphData.graph);
+  }, [appearance.linkWidth]);
 
   // enable or disable link force //
   useEffect(() => {

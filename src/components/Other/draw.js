@@ -5,7 +5,6 @@ import { useSettings } from "../../states.js";
 import { linkWidthInit } from "../initValues/appearanceInitValues.js";
 
 export const radius = 8;
-export const linkWidth = linkWidthInit;
 export const color = d3.scaleOrdinal(d3.schemeCategory10);
 export const fallbackColor = "#777777";
 
@@ -87,7 +86,7 @@ export function changeNodeColors(circles, nodeMap, circleBorderColor, colorSchem
   }
 }
 
-export function drawLine(lines, link, colorScheme, linkAttribsToColorIndices) {
+export function drawLine(lines, link, linkWidth, colorScheme, linkAttribsToColorIndices) {
   if (link.attribs.length === 1) {
     lines
       .moveTo(link.source.x, link.source.y)
@@ -118,7 +117,7 @@ export function drawLine(lines, link, colorScheme, linkAttribsToColorIndices) {
   }
 }
 
-export function drawLineCanvas(ctx, link, colorScheme, attribToColorIndex) {
+export function drawLineCanvas(ctx, link, linkWidth, colorScheme, attribToColorIndex) {
   ctx.lineWidth = linkWidth;
 
   if (link.attribs.length === 1) {

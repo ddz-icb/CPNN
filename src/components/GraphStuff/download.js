@@ -19,6 +19,7 @@ function triggerDownload(blob, filename) {
 function createGraphSvgElement(
   graph,
   nodeMap,
+  linkWidth,
   linkColorScheme,
   linkAttribsToColorIndices,
   circleBorderColor,
@@ -55,7 +56,7 @@ function createGraphSvgElement(
   svgElement.setAttribute("height", height);
 
   for (const link of graph.links) {
-    drawLineCanvas(ctx, link, linkColorScheme.colorScheme, linkAttribsToColorIndices);
+    drawLineCanvas(ctx, link, linkWidth, linkColorScheme.colorScheme, linkAttribsToColorIndices);
   }
 
   for (const node of graph.nodes) {
@@ -185,6 +186,7 @@ export function downloadAsPNG(app, document) {
 export function downloadAsSVG(
   document,
   graph,
+  linkWidth,
   linkColorScheme,
   linkAttribsToColorIndices,
   circleBorderColor,
@@ -196,6 +198,7 @@ export function downloadAsSVG(
   const { svgElement } = createGraphSvgElement(
     graph,
     nodeMap,
+    linkWidth,
     linkColorScheme,
     linkAttribsToColorIndices,
     circleBorderColor,
@@ -210,6 +213,7 @@ export function downloadAsSVG(
 
 export function downloadAsPDF(
   graph,
+  linkWidth,
   linkColorScheme,
   linkAttribsToColorIndices,
   circleBorderColor,
@@ -221,6 +225,7 @@ export function downloadAsPDF(
   const { svgElement, width, height } = createGraphSvgElement(
     graph,
     nodeMap,
+    linkWidth,
     linkColorScheme,
     linkAttribsToColorIndices,
     circleBorderColor,
