@@ -22,7 +22,7 @@ import {
 import { useAppearance, useFilter, useGraphData } from "../../states.js";
 import { filterInit, linkThresholdInit, maxCompSizeInit, minNeighborhoodSizeInit } from "../initValues/filterInitValues.js";
 import { compDensityInit } from "../initValues/physicsInitValues.js";
-import { linkThresholdDescription } from "./descriptions/appearanceDescriptions.js";
+import { linkThresholdDescription } from "./descriptions/filterDescriptions.js";
 
 export function FilterSidebar({}) {
   const { filter, setFilter, setAllFilter } = useFilter();

@@ -9,8 +9,8 @@ import {
   componentStrengthDescription,
   linkLengthDescription,
   nodeRepulsionStrengthDescription,
-  xStrengthDescription,
-} from "./descriptions/appearanceDescriptions.js";
+  gravityDescription,
+} from "./descriptions/physicsDescriptions.js";
 
 export function PhysicsSidebar({}) {
   const { physics, setPhysics, setAllPhysics } = usePhysics();
@@ -261,7 +261,7 @@ export function PhysicsSidebar({}) {
         step={0.05}
         text={"Gravitational Force"}
         infoHeading={"Adjusting the Gravity"}
-        infoDescription={xStrengthDescription}
+        infoDescription={gravityDescription}
       />
       <SidebarSliderBlock
         value={physics.componentStrength}
