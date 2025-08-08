@@ -112,14 +112,6 @@ export function HeaderBarExport({ activeMenu, handleActiveMenuClick }) {
             }}
             icon={<PdfIcon />}
           />
-          <Item
-            text={"Export Graph with Legend as PDF"}
-            onClick={() => {
-              handleDownloadGraphWithLegendPdfClick();
-              handleActiveMenuClick("Export");
-            }}
-            icon={<PdfIcon />}
-          />
         </div>
       </>
     );

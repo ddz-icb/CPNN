@@ -236,25 +236,6 @@ export function SettingControl({ simulation, app, redraw }) {
     changeNodeLabelColor(graphData.nodeLabels, appearance.theme.textColor);
   }, [appearance.theme]);
 
-  // download graph and legend as pdf //
-  useEffect(() => {
-    if (download.graphWithLegendPdf != null && graphData.graph) {
-      log.info("Downloading legend as PDF");
-
-      downloadGraphWithLegendPdf(
-        graphData.graph,
-        appearance.linkColorScheme,
-        appearance.linkAttribsToColorIndices,
-        themeInit.circleBorderColor,
-        themeInit.textColor,
-        appearance.nodeColorScheme,
-        appearance.nodeAttribsToColorIndices,
-        graphData.nodeMap,
-        graphData.activeAnnotationMapping
-      );
-    }
-  }, [download.graphWithLegendPdf]);
-
   // switch node color scheme
   useEffect(() => {
     if (!graphData.circles) return;

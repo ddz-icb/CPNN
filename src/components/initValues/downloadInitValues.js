@@ -6,5 +6,4 @@ export const downloadInit = {
   svg: null,
   pdf: null,
   legendPdf: null,
-  graphWithLegendPdf: null,
 };
