@@ -7,12 +7,12 @@ import { useEffect, useRef, useState } from "react";
 import {
   PopupButtonRect,
   PopUpDoubleTextField,
-  PopUpSwitchBlock,
   PopUpTextField,
   SidebarButtonRect,
   PopUpSliderBlock,
   PopUpFieldBlock,
   PopUp,
+  PopUpSwitchBlock,
 } from "./reusableComponents/sidebarComponents.js";
 import log from "../../logger.js";
 import { useGraphData } from "../../states.js";
@@ -21,7 +21,13 @@ import { downloadCsvFile, downloadObjectAsFile } from "../GraphStuff/download.js
 import { exampleGraphCsv } from "../../demodata/exampleGraphCSV.js";
 import { exampleMappingCsv } from "../../demodata/exampleMappingCSV.js";
 import { exampleGraphRaw } from "../../demodata/exampleGraphRawTSV.js";
-import { minCorrForEdgeDescription } from "./descriptions/dataDescriptions.js";
+import {
+  containsSitesDescription,
+  minCorrForEdgeDescription,
+  spearmanCoefficientDescription,
+  takeAbsDescription,
+} from "./descriptions/dataDescriptions.js";
+import { mergeProteinsDescription } from "./descriptions/filterDescriptions.js";
 
 export function DataSidebar({
   handleRemoveActiveGraphFile,
@@ -246,7 +252,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
 
   const [takeAbs, setTakeAbs] = useState(false);
   const [mergeSameProtein, setMergeSameProtein] = useState(false);
-  const [takeSpearmanCoefficient, setTakeSpearmanCoefficient] = useState(false);
+  const [spearmanCoefficient, setSpearmanCoefficient] = useState(false);
 
   const [minCorrForEdge, setMinCorrForEdge] = useState(0);
   const [minCorrForEdgeText, setMinCorrForEdgeText] = useState(0);
@@ -465,37 +471,25 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
           />
         </div>
         <PopUpSwitchBlock
+          value={spearmanCoefficient}
+          onChange={() => setSpearmanCoefficient(!spearmanCoefficient)}
           text={"Calculate spearman correlation"}
-          value={takeSpearmanCoefficient}
-          onChange={() => {
-            setTakeSpearmanCoefficient(!takeSpearmanCoefficient);
-          }}
           infoHeading={"Use spearman correlation"}
-          infoDescription={
-            "This option applies exclusively when raw table data is uploaded. If enabled, the raw table data will be converted to a correlation matrix using the spearman correlation coefficient. By default the pearson correlation coefficient will be applied."
-          }
+          infoDescription={spearmanCoefficientDescription}
         />
         <PopUpSwitchBlock
-          text={"Include negative correlations by taking the absolute value"}
           value={takeAbs}
-          onChange={() => {
-            setTakeAbs(!takeAbs);
-          }}
+          onChange={() => setTakeAbs(!takeAbs)}
+          text={"Include negative correlations by taking the absolute value"}
           infoHeading={"Include negative correlations"}
-          infoDescription={
-            "Negative correlations or link weights are ignored by default and not displayed. Enabling this option will use the absolute value of the correlation instead."
-          }
+          infoDescription={takeAbsDescription}
         />
         <PopUpSwitchBlock
-          text={"Merge nodes of same protein"}
           value={mergeSameProtein}
-          onChange={() => {
-            setMergeSameProtein(!mergeSameProtein);
-          }}
+          onChange={() => setMergeSameProtein(!mergeSameProtein)}
+          text={"Merge nodes of same protein"}
           infoHeading={"Merge Proteins"}
-          infoDescription={
-            "Nodes with the same UniprotID and Name will be merged into a single node, along with their respective links. When multiple links to the same node are merged, the maximum absolute weight is used as the new link weight. Enabling this setting can significantly enhance performance by reducing the graph size."
-          }
+          infoDescription={mergeProteinsDescription}
         />
         <div className="popup-block"></div>
         <PopUpSliderBlock
@@ -536,13 +530,11 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
           }
         />
         <PopUpSwitchBlock
-          text={"Include phosphosites"}
           value={containsSites}
-          onChange={() => {
-            setContainsSites(!containsSites);
-          }}
+          onChange={() => setContainsSites(!containsSites)}
+          text={"Include phosphosites"}
           infoHeading={"Include phosphosites"}
-          infoDescription={"Allows to include phosphosite details for the nodes, which must be incorporated into the node ID as shown below."}
+          infoDescription={containsSitesDescription}
         />
         <div className="popup-block"></div>
         <PopUpTextField textInfront={"Your Node ID format:"} textInside={nodeIdFormat} />
@@ -554,7 +546,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
             onClick={handleGraphUploadClick}
             linkRef={graphFileRef}
             onChange={(event) => {
-              handleNewGraphFile(event, takeAbs, minCorrForEdge, minCompSizeForNode, maxCompSizeForNode, takeSpearmanCoefficient, mergeSameProtein);
+              handleNewGraphFile(event, takeAbs, minCorrForEdge, minCompSizeForNode, maxCompSizeForNode, spearmanCoefficient, mergeSameProtein);
               event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
               setGraphPopUpActive(false);
             }}
@@ -576,11 +568,11 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
         setIsOpen={setDifferencePopUpActive}
       >
         <PopUpSwitchBlock
-          text={"Take absolute value of the difference ( | Graph A - Graph B | )"}
           value={takeAbs}
-          onChange={() => {
-            setTakeAbs(!takeAbs);
-          }}
+          text={"absolute link value"}
+          onChange={() => setTakeAbs(!takeAbs)}
+          infoHeading={"Take absolute link value"}
+          infoDescription={takeAbsDescription}
         />
         <div className="popup-block"></div>
         <div className="popup-block"></div>

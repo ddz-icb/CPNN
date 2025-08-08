@@ -113,9 +113,9 @@ export function PhysicsSidebar({}) {
         infoDescription={nodeCollisionDescription}
       />
       <SidebarSwitchBlock
-        text={"Link Force"}
         value={physics.linkForce}
         onChange={() => setPhysics("linkForce", !physics.linkForce)}
+        text={"Link Force"}
         infoHeading={"Enabling the Link Force"}
         infoDescription={linkForceDescription}
       />

@@ -114,7 +114,7 @@ export function SidebarSwitchBlock({ value, onChange, text, infoHeading, infoDes
   );
 }
 
-export function PopUpSwitchBlock({ text, value, onChange, infoHeading, infoDescription }) {
+export function PopUpSwitchBlock({ value, onChange, text, infoHeading, infoDescription }) {
   const [infoIsOpen, setInfoIsOpen] = useState(false);
 
   return (
