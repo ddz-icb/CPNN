@@ -122,6 +122,26 @@ export const useAppearance = create((set) => ({
     }),
 }));
 
+export const useDownload = create((set) => ({
+  download: {
+    // on state change: indicates graph should be downloaded
+    json: null,
+    jsonWithCoordinates: null,
+    jsonWithCoordinatesPhysics: null,
+    png: null,
+    svg: null,
+    pdf: null,
+    legendPdf: null,
+    graphWithLegendPdf: null,
+  },
+  setDownload: (path, value) =>
+    set((state) => {
+      const updatedSettings = { ...state.download };
+      setNestedValue(updatedSettings, path, value);
+      return { download: updatedSettings };
+    }),
+}));
+
 export const useSettings = create((set) => ({
   settings: {
     download: {

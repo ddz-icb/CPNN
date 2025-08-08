@@ -4,45 +4,44 @@ import { ReactComponent as FileWaveform } from "../../icons/fileWaveform.svg";
 import { ReactComponent as FileImage } from "../../icons/fileImage.svg";
 import { ReactComponent as DownloadIcon } from "../../icons/download.svg";
 import { ReactComponent as XIcon } from "../../icons/x.svg";
-import React from "react";
 
 import { Button, Item } from "./headerBar.js";
-import { useSettings } from "../../states.js";
+import { useDownload } from "../../states.js";
 
 export function HeaderBarExport({ activeMenu, handleActiveMenuClick }) {
-  const { settings, setSettings } = useSettings();
+  const { download, setDownload } = useDownload();
   let content = null;
 
   const handleDownloadJsonClick = () => {
-    setSettings("download.json", !settings.download.json);
+    setDownload("json", !download.json);
   };
 
   const handleDownloadJsonWithCoordinatesClick = () => {
-    setSettings("download.jsonWithCoordinates", !settings.download.jsonWithCoordinates);
+    setDownload("jsonWithCoordinates", !download.jsonWithCoordinates);
   };
 
   const handleDownloadJsonWithCoordinatesPhysicsClick = () => {
-    setSettings("download.jsonWithCoordinatesPhysics", !settings.download.jsonWithCoordinates);
+    setDownload("jsonWithCoordinatesPhysics", !download.jsonWithCoordinates);
   };
 
   const handleDownloadPngClick = () => {
-    setSettings("download.png", !settings.download.png);
+    setDownload("png", !download.png);
   };
 
   const handleDownloadSvgClick = () => {
-    setSettings("download.svg", !settings.download.svg);
+    setDownload("svg", !download.svg);
   };
 
   const handleDownloadPdfClick = () => {
-    setSettings("download.pdf", !settings.download.pdf);
+    setDownload("pdf", !download.pdf);
   };
 
   const handleDownloadLegendPdfClick = () => {
-    setSettings("download.legendPdf", !settings.download.legendPdf);
+    setDownload("legendPdf", !download.legendPdf);
   };
 
   const handleDownloadGraphWithLegendPdfClick = () => {
-    setSettings("download.graphWithLegendPdf", !settings.download.graphWithLegendPdf);
+    setDownload("graphWithLegendPdf", !download.graphWithLegendPdf);
   };
 
   if (activeMenu !== "Export") {

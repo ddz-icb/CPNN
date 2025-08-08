@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useAppearance, useFilter, useGraphData, usePhysics, useSettings } from "../../states.js";
+import { useAppearance, useDownload, useFilter, useGraphData, usePhysics, useSettings } from "../../states.js";
 import log from "../../logger.js";
 import * as d3 from "d3";
 
@@ -44,6 +44,7 @@ export function SettingControl({ simulation, app, redraw }) {
   const { settings, setSettings } = useSettings();
   const { physics, setPhysics } = usePhysics();
   const { filter, setFilter } = useFilter();
+  const { download, setDownload } = useDownload();
   const { appearance, setAppearance } = useAppearance();
   const { graphData, setGraphData } = useGraphData();
 
@@ -146,7 +147,7 @@ export function SettingControl({ simulation, app, redraw }) {
 
   // download graph data as json //
   useEffect(() => {
-    if (settings.download.json != null && graphData.graph) {
+    if (download.json != null && graphData.graph) {
       try {
         log.info("Downloading graph as JSON");
         downloadGraphJson(graphData.graph, "Graph.json");
@@ -154,11 +155,11 @@ export function SettingControl({ simulation, app, redraw }) {
         log.error("Error downloading the graph as JSON:", error);
       }
     }
-  }, [settings.download.json]);
+  }, [download.json]);
 
   // download graph data as json with coordinates //
   useEffect(() => {
-    if (settings.download.jsonWithCoordinates != null && graphData.graph) {
+    if (download.jsonWithCoordinates != null && graphData.graph) {
       try {
         log.info("Downloading graph as JSON with coordinates");
         downloadGraphJsonWithCoordinates(graphData.graph, "Graph.json", graphData.nodeMap);
@@ -166,11 +167,11 @@ export function SettingControl({ simulation, app, redraw }) {
         log.error("Error downloading the graph as JSON with coordinates:", error);
       }
     }
-  }, [settings.download.jsonWithCoordinates]);
+  }, [download.jsonWithCoordinates]);
 
   // download graph data as json with coordinates and physics //
   useEffect(() => {
-    if (settings.download.jsonWithCoordinatesPhysics != null && graphData.graph) {
+    if (download.jsonWithCoordinatesPhysics != null && graphData.graph) {
       try {
         log.info("Downloading graph as JSON with coordinates and physics");
         downloadGraphJsonWithCoordinatesPhysics(graphData.graph, "Graph.json", graphData.nodeMap, physics);
@@ -178,11 +179,11 @@ export function SettingControl({ simulation, app, redraw }) {
         log.error("Error downloading the graph as JSON with coordinates:", error);
       }
     }
-  }, [settings.download.jsonWithCoordinatesPhysics]);
+  }, [download.jsonWithCoordinatesPhysics]);
 
   // download graph as png //
   useEffect(() => {
-    if (settings.download.png != null && graphData.graph) {
+    if (download.png != null && graphData.graph) {
       log.info("Downloading graph as PNG");
 
       changeCircleBorderColor(graphData.circles, lightTheme.circleBorderColor);
@@ -193,11 +194,11 @@ export function SettingControl({ simulation, app, redraw }) {
       changeCircleBorderColor(graphData.circles, appearance.theme.circleBorderColor);
       changeNodeLabelColor(graphData.nodeLabels, appearance.theme.textColor);
     }
-  }, [settings.download.png]);
+  }, [download.png]);
 
   // download graph as svg //
   useEffect(() => {
-    if (settings.download.svg != null && graphData.graph) {
+    if (download.svg != null && graphData.graph) {
       log.info("Downloading graph as SVG");
 
       downloadAsSVG(
@@ -212,11 +213,11 @@ export function SettingControl({ simulation, app, redraw }) {
         graphData.nodeMap
       );
     }
-  }, [settings.download.svg]);
+  }, [download.svg]);
 
   // download graph as pdf //
   useEffect(() => {
-    if (settings.download.pdf != null && graphData.graph) {
+    if (download.pdf != null && graphData.graph) {
       log.info("Downloading graph as PDF");
 
       downloadAsPDF(
@@ -230,11 +231,11 @@ export function SettingControl({ simulation, app, redraw }) {
         graphData.nodeMap
       );
     }
-  }, [settings.download.pdf]);
+  }, [download.pdf]);
 
   // download legend as pdf //
   useEffect(() => {
-    if (settings.download.legendPdf != null && graphData.graph) {
+    if (download.legendPdf != null && graphData.graph) {
       log.info("Downloading legend as PDF");
 
       downloadLegendPdf(
@@ -246,7 +247,7 @@ export function SettingControl({ simulation, app, redraw }) {
         graphData.activeAnnotationMapping
       );
     }
-  }, [settings.download.legendPdf]);
+  }, [download.legendPdf]);
 
   // switch colors upon changing theme //
   useEffect(() => {
@@ -259,7 +260,7 @@ export function SettingControl({ simulation, app, redraw }) {
 
   // download graph and legend as pdf //
   useEffect(() => {
-    if (settings.download.graphWithLegendPdf != null && graphData.graph) {
+    if (download.graphWithLegendPdf != null && graphData.graph) {
       log.info("Downloading legend as PDF");
 
       downloadGraphWithLegendPdf(
@@ -274,7 +275,7 @@ export function SettingControl({ simulation, app, redraw }) {
         graphData.activeAnnotationMapping
       );
     }
-  }, [settings.download.graphWithLegendPdf]);
+  }, [download.graphWithLegendPdf]);
 
   // switch node color scheme
   useEffect(() => {
