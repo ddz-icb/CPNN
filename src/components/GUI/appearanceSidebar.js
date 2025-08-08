@@ -1,12 +1,11 @@
 import { useEffect, useRef, useState, Fragment } from "react";
 import { ReactComponent as TrashIcon } from "../../icons/trash.svg";
 import {
-  NewSidebarSliderBlock,
+  SidebarSliderBlock,
   PopUp,
   PopupButtonRect,
   PopUpTextField,
   SidebarButtonRect,
-  SidebarSliderBlock,
   SidebarSwitchBlock,
 } from "./reusableComponents/sidebarComponents.js";
 import { ReactComponent as XIcon } from "../../icons/x.svg";
@@ -54,7 +53,7 @@ export function AppearanceSettings({}) {
         infoHeading={"Enabling Node Labels"}
         infoDescription={"Shows the name of each node above itself in the graph."}
       />
-      <NewSidebarSliderBlock
+      <SidebarSliderBlock
         value={appearance.linkWidth}
         valueText={appearance.linkWidthText}
         setValue={(value) => setAppearance("linkWidth", value)}

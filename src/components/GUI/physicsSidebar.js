@@ -1,7 +1,16 @@
-import { SidebarButtonRect, SidebarSliderBlock, SidebarSwitchBlock } from "./reusableComponents/sidebarComponents.js";
+import { SidebarSliderBlock, SidebarButtonRect, SidebarSwitchBlock } from "./reusableComponents/sidebarComponents.js";
 
 import { usePhysics } from "../../states.js";
-import { physicsInit } from "../initValues/physicsInitValues.js";
+import { communityForceStrengthInit, componentStrengthInit, physicsInit, xStrengthInit } from "../initValues/physicsInitValues.js";
+import {
+  borderHeightDescription,
+  borderWidthDescription,
+  communityForceStrengthDescription,
+  componentStrengthDescription,
+  linkLengthDescription,
+  nodeRepulsionStrengthDescription,
+  xStrengthDescription,
+} from "./descriptions/appearanceDescriptions.js";
 
 export function PhysicsSidebar({}) {
   const { physics, setPhysics, setAllPhysics } = usePhysics();
@@ -236,87 +245,62 @@ export function PhysicsSidebar({}) {
         }
       />
       <SidebarSliderBlock
-        text={"Gravitational Force"}
-        min={0}
-        max={1}
-        stepSlider={0.05}
-        stepField={0.01}
         value={physics.xStrength}
         valueText={physics.xStrengthText}
-        onChangeSlider={handleGravitySlider}
-        onChangeField={handleGravityField}
-        onChangeBlur={handleGravityFieldBlur}
+        setValue={(value) => {
+          setPhysics("xStrength", value);
+          setPhysics("yStrength", value);
+        }}
+        setValueText={(value) => {
+          setPhysics("xStrengthText", value);
+          setPhysics("yStrengthText", value);
+        }}
+        fallbackValue={xStrengthInit}
+        min={0}
+        max={1}
+        step={0.05}
+        text={"Gravitational Force"}
         infoHeading={"Adjusting the Gravity"}
-        infoDescription={
-          <div>
-            <p className="margin-0">
-              With an active gravitational force, nodes are pulled towards the center of the network. The strength of this force can be adjusted.
-            </p>
-          </div>
-        }
+        infoDescription={xStrengthDescription}
       />
       <SidebarSliderBlock
-        text={"Component Force"}
-        min={0}
-        max={10}
-        stepSlider={0.1}
-        stepField={0.05}
         value={physics.componentStrength}
         valueText={physics.componentStrengthText}
-        onChangeSlider={handleComponentStrengthSlider}
-        onChangeField={handleComponentStrengthField}
-        onChangeBlur={handleComponentStrengthFieldBlur}
-        infoHeading={"Adjusting the Component Force Strength"}
-        infoDescription={
-          <div>
-            <p className="margin-0">
-              The component force can be used to separate components from one another. The components separate further with an increasing force.
-            </p>
-          </div>
-        }
-      />
-      <SidebarSliderBlock
-        text={"Community Force"}
+        setValue={(value) => setPhysics("componentStrength", value)}
+        setValueText={(value) => setPhysics("componentStrengthText", value)}
+        fallbackValue={componentStrengthInit}
         min={0}
         max={10}
-        stepSlider={0.1}
-        stepField={0.05}
+        step={0.1}
+        text={"Component Force"}
+        infoHeading={"Adjusting the Component Force Strength"}
+        infoDescription={componentStrengthDescription}
+      />
+      <SidebarSliderBlock
         value={physics.communityForceStrength}
         valueText={physics.communityForceStrengthText}
-        onChangeSlider={handleCommunityForceSlider}
-        onChangeField={handleCommunityForceField}
-        onChangeBlur={handleCommunityForceFieldBlur}
-        infoHeading={"Adjusting the Community Force Strength"}
-        infoDescription={
-          <div>
-            <p className="margin-0">
-              The community force helps to separate distinct communities from one another. A community is defined as a dense cluster of nodes, meaning
-              that even nodes within the same connected component can be pulled apart if they belong to different communities. As the force increases,
-              the separation between communities becomes more pronounced. The communities are built using the Louvain method for community detection.
-            </p>
-          </div>
-        }
-      />
-      <SidebarSliderBlock
-        text={"Node Repulsion Force"}
+        setValue={(value) => setPhysics("communityForceStrength", value)}
+        setValueText={(value) => setPhysics("communityForceStrengthText", value)}
+        fallbackValue={communityForceStrengthInit}
         min={0}
         max={10}
-        stepSlider={1}
-        stepField={0.5}
+        step={0.1}
+        text={"Community Force"}
+        infoHeading={"Adjusting the Community Force Strength"}
+        infoDescription={communityForceStrengthDescription}
+      />
+      <SidebarSliderBlock
         value={physics.nodeRepulsionStrength}
         valueText={physics.nodeRepulsionStrengthText}
-        onChangeSlider={handleNodeRepulsionStrengthSlider}
-        onChangeField={handleNodeRepulsionStrengthField}
-        onChangeBlur={handleNodeRepulsionStrengthFieldBlur}
+        setValue={(value) => setPhysics("nodeRepulsionStrength", value)}
+        setValueText={(value) => setPhysics("nodeRepulsionStrengthText", value)}
+        fallbackValue={communityForceStrengthInit}
+        min={0}
+        max={10}
+        step={1}
+        text={"Node Repulsion Force"}
         infoHeading={"Adjusting the Node Repulsion Strength"}
-        infoDescription={
-          <div>
-            <p className="margin-0">
-              The node repulsion force is used to maintain a certain distance between nodes. The distance increases with a higher node repulsion
-              force.
-            </p>
-          </div>
-        }
+        infoDescription={nodeRepulsionStrengthDescription}
       />
       <SidebarSwitchBlock
         text={"Node Collision"}
@@ -344,22 +328,17 @@ export function PhysicsSidebar({}) {
       />
       {physics.linkForce && (
         <SidebarSliderBlock
-          text={"Link Length"}
-          min={0}
-          max={300}
-          stepSlider={10}
-          stepField={5}
           value={physics.linkLength}
           valueText={physics.linkLengthText}
-          onChangeSlider={handleLinkLengthSlider}
-          onChangeField={handleLinkLengthField}
-          onChangeBlur={handleLinkLengthFieldBlur}
+          setValue={(value) => setPhysics("linkLength", value)}
+          setValueText={(value) => setPhysics("linkLengthText", value)}
+          fallbackValue={communityForceStrengthInit}
+          min={0}
+          max={300}
+          step={10}
+          text={"Link Length"}
           infoHeading={"Adjusting the Link Length"}
-          infoDescription={
-            <div>
-              <p className="margin-0">This setting can be used to set the default length of the links.</p>
-            </div>
-          }
+          infoDescription={linkLengthDescription}
         />
       )}
       <SidebarSwitchBlock
@@ -376,40 +355,30 @@ export function PhysicsSidebar({}) {
       {physics.checkBorder && (
         <>
           <SidebarSliderBlock
-            text={"Border Height"}
-            min={25}
-            max={5000}
-            stepSlider={5}
-            stepField={5}
             value={physics.borderHeight}
             valueText={physics.borderHeightText}
-            onChangeSlider={handleBorderHeightSlider}
-            onChangeField={handleBorderHeightField}
-            onChangeBlur={handleBorderHeightFieldBlur}
-            infoHeading={"Adjusting the Border Height"}
-            infoDescription={
-              <div>
-                <p className="margin-0">The border height determines the vertical size of the border rectangle.</p>
-              </div>
-            }
-          />
-          <SidebarSliderBlock
-            text={"Border Width"}
+            setValue={(value) => setPhysics("borderHeight", value)}
+            setValueText={(value) => setPhysics("borderHeightText", value)}
+            fallbackValue={communityForceStrengthInit}
             min={25}
             max={5000}
-            stepSlider={5}
-            stepField={5}
+            step={5}
+            text={"Border Height"}
+            infoHeading={"Adjusting the Border Height"}
+            infoDescription={borderHeightDescription}
+          />
+          <SidebarSliderBlock
             value={physics.borderWidth}
             valueText={physics.borderWidthText}
-            onChangeSlider={handleBorderWidthFieldSlider}
-            onChangeField={handleBorderWidthField}
-            onChangeBlur={handleBorderWidthFieldBlur}
+            setValue={(value) => setPhysics("borderWidth", value)}
+            setValueText={(value) => setPhysics("borderWidthText", value)}
+            fallbackValue={communityForceStrengthInit}
+            min={25}
+            max={5000}
+            step={5}
+            text={"Border Width"}
             infoHeading={"Adjusting the Border Width"}
-            infoDescription={
-              <div>
-                <p className="margin-0">The border height determines the horizontal size of the border rectangle.</p>
-              </div>
-            }
+            infoDescription={borderWidthDescription}
           />
         </>
       )}

@@ -58,8 +58,12 @@ export const manyColors = {
 
 export const nodeColorSchemeInit = manyColors;
 export const linkColorSchemeInit = ibmAntiBlindness;
-export const colorSchemesInit = [ibmAntiBlindness, okabe_ItoAntiBlindness, manyColors];
+export const linkAttribsToColorIndicesInit = null;
+export const nodeAttribsToColorIndices = null;
+export const showNodeLabelsInit = true;
 export const linkWidthInit = 2;
+
+export const colorSchemesInit = [ibmAntiBlindness, okabe_ItoAntiBlindness, manyColors];
 
 export const appearanceInit = {
   theme: themeInit,

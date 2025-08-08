@@ -4,68 +4,7 @@ import { ReactComponent as XIcon } from "../../../icons/x.svg";
 import { Tooltip } from "react-tooltip";
 import { handleFieldBlur, handleFieldChange, handleSliderChange } from "../../Other/handlers.js";
 
-export function SidebarSliderBlock({
-  text,
-  value,
-  valueText,
-  onChangeSlider,
-  onChangeField,
-  onChangeBlur,
-  min,
-  max,
-  stepSlider,
-  stepField,
-  infoHeading,
-  infoDescription,
-}) {
-  const [infoIsOpen, setInfoIsOpen] = useState(false);
-
-  const handleKeyDown = (event) => {
-    if (event.key === "Enter") {
-      event.target.blur();
-    }
-  };
-
-  return (
-    <>
-      <div className="inline">
-        <label className="label pad-left-1">{text}</label>
-        <span className="tooltip-button pad-left-05 pad-top-11" onClick={() => setInfoIsOpen(true)}>
-          <InfoIcon />
-        </span>
-      </div>
-      <div className="sidebar-block pad-bottom-15">
-        <input className="sidebar-slider" type="range" min={min} max={max} step={stepSlider} value={value} onChange={onChangeSlider}></input>
-        <input
-          className="input-field"
-          type="number"
-          min={min}
-          max={max}
-          step={stepField}
-          value={valueText}
-          onChange={onChangeField}
-          onKeyDown={handleKeyDown}
-          onBlur={onChangeBlur}
-        />
-      </div>
-      <PopUp heading={infoHeading} description={infoDescription} isOpen={infoIsOpen} setIsOpen={setInfoIsOpen} />
-    </>
-  );
-}
-
-export function NewSidebarSliderBlock({
-  value,
-  valueText,
-  setValue,
-  setValueText,
-  fallbackValue,
-  min,
-  max,
-  step,
-  text,
-  infoHeading,
-  infoDescription,
-}) {
+export function SidebarSliderBlock({ value, valueText, setValue, setValueText, fallbackValue, min, max, step, text, infoHeading, infoDescription }) {
   const [infoIsOpen, setInfoIsOpen] = useState(false);
 
   const handleKeyDown = (event) => {
@@ -108,6 +47,8 @@ export function NewSidebarSliderBlock({
     </>
   );
 }
+
+// NEXT: udpate these blocks as well just like above
 
 export function PopUpSliderBlock({
   text,

@@ -11,17 +11,18 @@ import { parseAttributesFilter } from "../Other/parser.js";
 import { parseGroupsFilter } from "../Other/parserNodeFilter.js";
 
 import {
+  SidebarSliderBlock,
   PopUpTextField,
   PopUpTextFieldCompact,
   SidebarButtonRect,
   SidebarCodeEditorBlock,
   SidebarFieldBlock,
-  SidebarSliderBlock,
   SidebarSwitchBlock,
 } from "./reusableComponents/sidebarComponents.js";
 import { useAppearance, useFilter, useGraphData } from "../../states.js";
-import { filterInit, maxCompSizeInit, minNeighborhoodSizeInit } from "../initValues/filterInitValues.js";
+import { filterInit, linkThresholdInit, maxCompSizeInit, minNeighborhoodSizeInit } from "../initValues/filterInitValues.js";
 import { compDensityInit } from "../initValues/physicsInitValues.js";
+import { linkThresholdDescription } from "./descriptions/appearanceDescriptions.js";
 
 export function FilterSidebar({}) {
   const { filter, setFilter, setAllFilter } = useFilter();
@@ -293,26 +294,17 @@ export function FilterSidebar({}) {
         }
       />
       <SidebarSliderBlock
-        text={"Link Weight Threshold"}
-        min={Math.floor(graphData.linkWeightMin / 0.05) * 0.05}
-        max={Math.ceil(graphData.linkWeightMax / 0.05) * 0.05}
-        stepSlider={0.05}
-        stepField={0.01}
         value={filter.linkThreshold}
         valueText={filter.linkThresholdText}
-        onChangeSlider={handleLinkThresholdSliderChange}
-        onChangeField={handleLinkThresholdFieldChange}
-        onChangeBlur={handleLinkThresholdFieldBlur}
+        setValue={(value) => setFilter("linkThreshold", value)}
+        setValueText={(value) => setFilter("linkThresholdText", value)}
+        fallbackValue={linkThresholdInit}
+        min={Math.floor(graphData.linkWeightMin / 0.05) * 0.05}
+        max={Math.ceil(graphData.linkWeightMax / 0.05) * 0.05}
+        step={0.05}
+        text={"Link Weight Threshold"}
         infoHeading={"Filtering Links by Threshold"}
-        infoDescription={
-          <div>
-            <p className="margin-0">
-              You can filter the links by adjusting their threshold. Links will only be drawn, if their link weight is larger or equal to the set
-              threshold. For example, if the weight of a link is 0.75 and the threshold is set to 0.8, the link will not be drawn. Increasing this
-              value can significantly enhance performance by reducing the graph size.
-            </p>
-          </div>
-        }
+        infoDescription={linkThresholdDescription}
       />
       <SidebarCodeEditorBlock
         text={"Filter Links by Attributes"}
