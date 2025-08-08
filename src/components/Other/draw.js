@@ -2,9 +2,10 @@ import log from "../../logger.js";
 import * as d3 from "d3";
 import * as PIXI from "pixi.js";
 import { useSettings } from "../../states.js";
+import { linkWidthInit } from "./appearance.js";
 
 export const radius = 8;
-export const linkWidth = 2;
+export const linkWidth = linkWidthInit;
 export const color = d3.scaleOrdinal(d3.schemeCategory10);
 export const fallbackColor = "#777777";
 

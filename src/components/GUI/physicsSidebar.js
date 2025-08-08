@@ -1,4 +1,4 @@
-import { SidebarButtonRect, SidebarSliderBlock, SidebarSwitchBlock } from "./sidebar.js";
+import { SidebarButtonRect, SidebarSliderBlock, SidebarSwitchBlock } from "./reusableComponents/sidebarComponents.js";
 
 import { useSettings } from "../../states.js";
 

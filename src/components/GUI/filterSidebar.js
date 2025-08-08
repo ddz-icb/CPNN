@@ -18,7 +18,7 @@ import {
   SidebarFieldBlock,
   SidebarSliderBlock,
   SidebarSwitchBlock,
-} from "./sidebar.js";
+} from "./reusableComponents/sidebarComponents.js";
 import { useGraphData, useSettings } from "../../states.js";
 import { maxCompSizeInit, minNeighborhoodSizeInit } from "../GraphStuff/graphInitValues.js";
 

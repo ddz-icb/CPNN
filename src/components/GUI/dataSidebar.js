@@ -14,8 +14,7 @@ import {
   PopUpSliderBlock,
   PopUpFieldBlock,
   PopUp,
-  PopUpTextFieldInline,
-} from "./sidebar.js";
+} from "./reusableComponents/sidebarComponents.js";
 import log from "../../logger.js";
 import { useGraphData, useSettings } from "../../states.js";
 import { exampleGraphJson } from "../../demodata/exampleGraphJSON.js";

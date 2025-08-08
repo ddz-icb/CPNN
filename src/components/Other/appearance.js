@@ -58,5 +58,5 @@ export const manyColors = {
 
 export const nodeColorSchemeInit = manyColors;
 export const linkColorSchemeInit = ibmAntiBlindness;
-
-export const defaultColorSchemes = [ibmAntiBlindness, okabe_ItoAntiBlindness, manyColors];
+export const colorSchemesInit = [ibmAntiBlindness, okabe_ItoAntiBlindness, manyColors];
+export const linkWidthInit = 2;

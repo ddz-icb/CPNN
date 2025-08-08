@@ -23,7 +23,7 @@ import {
   minNeighborhoodSizeInit,
   communityForceStrengthInit,
 } from "./components/GraphStuff/graphInitValues.js";
-import { linkColorSchemeInit, nodeColorSchemeInit, themeInit } from "./components/Other/appearance.js";
+import { linkColorSchemeInit, linkWidthInit, nodeColorSchemeInit, themeInit } from "./components/Other/appearance.js";
 
 const setNestedValue = (obj, path, value) => {
   const keys = path.split(".");
@@ -95,6 +95,8 @@ export const useSettings = create((set) => ({
       showNodeLabels: true,
       linkAttribsToColorIndices: null,
       nodeAttribsToColorIndices: null,
+      linkWidth: linkWidthInit,
+      linkWidthText: linkWidthInit,
     },
     download: {
       // on state change: indicates graph should be downloaded

@@ -1,7 +1,7 @@
 import { exampleGraphJson } from "../../demodata/exampleGraphJSON.js";
 import log from "../../logger.js";
-import { getDifferenceGraph, joinGraphs, mergeSameProteins } from "../GraphStuff/graphCalculations.js";
-import { applyTheme, defaultColorSchemes, lightTheme } from "./appearance.js";
+import { joinGraphs } from "../GraphStuff/graphCalculations.js";
+import { applyTheme, colorSchemesInit, lightTheme } from "./appearance.js";
 import { addGraphFileDB, addGraphFileIfNotExistsDB, fromAllGetGraphNameDB, getGraphDB, removeGraphFileByNameDB } from "./dbGraphs.js";
 import { addMappingFileDB, fromAllGetMappingNameDB, getMappingDB, removeMappingFileByNameDB } from "./dbMappings.js";
 import { getFileNameWithoutExtension, parseAnnotationMappingFile, parseColorSchemeFile, parseGraphFile } from "./parseFiles.js";
@@ -26,7 +26,7 @@ export function removeColorScheme(colorSchemes, setColorSchemes, colorSchemeName
   let updatedColorSchemes = colorSchemes?.filter((colorScheme) => colorScheme.name !== colorSchemeName);
 
   if (updatedColorSchemes.length === 0) {
-    updatedColorSchemes = defaultColorSchemes;
+    updatedColorSchemes = colorSchemesInit;
   }
 
   if (nodeColorScheme.name === colorSchemeName) {
@@ -170,7 +170,7 @@ export async function loadAnnotationMappings(setGraphData) {
 export function loadColorSchemes(setColorSchemes) {
   let storedSchemes = JSON.parse(localStorage.getItem("colorSchemes")) || [];
   if (storedSchemes.length === 0) {
-    storedSchemes = defaultColorSchemes;
+    storedSchemes = colorSchemesInit;
   }
   setColorSchemes(storedSchemes);
 }

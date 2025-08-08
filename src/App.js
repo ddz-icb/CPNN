@@ -1,6 +1,6 @@
 import "./index.css";
 import log from "./logger.js";
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 import { ForceGraph } from "./components/GraphStuff/forceGraph.js";
 import { Sidebar } from "./components/GUI/sidebar.js";
@@ -15,13 +15,12 @@ import {
   joinGraphs,
   mergeSameProteins,
 } from "./components/GraphStuff/graphCalculations.js";
-import { resetFilterSettings, resetFilterSettingsSoft, resetPhysicsSettings } from "./components/Other/reset.js";
+import { resetFilterSettings, resetPhysicsSettings } from "./components/Other/reset.js";
 import {
   addActiveGraphFile,
   addNewAnnotationMappingFile,
   addNewColorScheme,
   addNewGraphFile,
-  createDifferenceGraph,
   deleteAnnotationMapping,
   deleteGraphFile,
   loadAnnotationMappings,
@@ -35,10 +34,10 @@ import {
   setInitGraph,
   storeColorSchemes,
   storeTheme,
-} from "./components/Other/handleFunctions.js";
+} from "./components/Other/applicationFunctions.js";
 import { useGraphData, useSettings } from "./states.js";
 import { Erorr } from "./components/Other/error.js";
-import { defaultColorSchemes } from "./components/Other/appearance.js";
+import { colorSchemesInit } from "./components/Other/appearance.js";
 import { getFileNameWithoutExtension } from "./components/Other/parseFiles.js";
 import { getGraphDB } from "./components/Other/dbGraphs.js";
 
@@ -142,7 +141,7 @@ function App() {
 
   const handleDeleteColorScheme = (colorSchemeName) => {
     if (!colorSchemeName) return;
-    if (defaultColorSchemes.some((scheme) => scheme.name === colorSchemeName)) {
+    if (colorSchemesInit.some((scheme) => scheme.name === colorSchemeName)) {
       log.warn("Cannot remove default color schemes");
       setError("Cannot remove default color schemes");
       return;

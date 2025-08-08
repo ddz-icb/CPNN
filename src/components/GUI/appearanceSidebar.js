@@ -1,6 +1,13 @@
 import { useEffect, useRef, useState, Fragment } from "react";
 import { ReactComponent as TrashIcon } from "../../icons/trash.svg";
-import { PopUp, PopupButtonRect, PopUpTextField, SidebarButtonRect, SidebarSwitchBlock } from "./sidebar.js";
+import {
+  PopUp,
+  PopupButtonRect,
+  PopUpTextField,
+  SidebarButtonRect,
+  SidebarSliderBlock,
+  SidebarSwitchBlock,
+} from "./reusableComponents/sidebarComponents.js";
 import { ReactComponent as XIcon } from "../../icons/x.svg";
 import { colorSchemeCsv } from "../../demodata/exampleColorSchemeCSV.js";
 import { downloadCsvFile } from "../GraphStuff/download.js";
@@ -44,6 +51,23 @@ export function AppearanceSettings({}) {
         infoHeading={"Enabling Node Labels"}
         infoDescription={"Shows the name of each node above itself in the graph."}
       />
+      {/* <SidebarSliderBlock
+        text={"Link width"}
+        min={0.1}
+        max={10}
+        stepSlider={0.1}
+        stepField={0.1}
+        value={settings.appearance.linkWidth}
+        valueText={settings.appearance.linkWidth}
+        valuePath={"settings.appearance.linkWidth"}
+        valueTextPath={"settings.appearance.linkWidthText"}
+        infoHeading={"Link Width"}
+        infoDescription={
+          <div>
+            <p className="margin-0">Adjust the width of the link. Thinner links can lead to a clearer overview.</p>
+          </div>
+        }
+      /> */}
     </>
   );
 }
