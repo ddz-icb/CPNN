@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, Fragment } from "react";
+import { useRef, useState, Fragment } from "react";
 import { ReactComponent as TrashIcon } from "../../icons/trash.svg";
 import {
   SidebarSliderBlock,
@@ -145,7 +145,7 @@ export function TopAppearanceButtons({ handleNewColorScheme }) {
 }
 
 function UploadedColorSchemes({ colorSchemes, handleDeleteColorScheme }) {
-  const { appearance, setAppearance } = useAppearance();
+  const { setAppearance } = useAppearance();
 
   const [selectSchemePopUp, setSelectSchemePopUp] = useState(false);
   const [selectedScheme, setSelectedScheme] = useState(null);
@@ -207,7 +207,7 @@ function UploadedColorSchemes({ colorSchemes, handleDeleteColorScheme }) {
 }
 
 function ActiveNodeColorScheme({}) {
-  const { appearance, setAppearance } = useAppearance();
+  const { appearance } = useAppearance();
 
   return (
     <>
@@ -237,7 +237,7 @@ function ActiveNodeColorScheme({}) {
 }
 
 function ActiveLinkColorScheme({}) {
-  const { appearance, setAppearance } = useAppearance();
+  const { appearance } = useAppearance();
 
   return (
     <>

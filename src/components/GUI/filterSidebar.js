@@ -12,7 +12,6 @@ import { parseGroupsFilter } from "../Other/parserNodeFilter.js";
 
 import {
   SidebarSliderBlock,
-  PopUpTextField,
   PopUpTextFieldCompact,
   SidebarButtonRect,
   SidebarCodeEditorBlock,
@@ -26,7 +25,7 @@ import { linkThresholdDescription } from "./descriptions/filterDescriptions.js";
 
 export function FilterSidebar({}) {
   const { filter, setFilter, setAllFilter } = useFilter();
-  const { appearance, setAppearance } = useAppearance();
+  const { appearance } = useAppearance();
   const { graphData, setGraphData } = useGraphData();
 
   const linkFilterEditorRef = useRef(null);
@@ -47,37 +46,6 @@ export function FilterSidebar({}) {
 
   const handleMergeProteins = () => {
     setGraphData("mergeProteins", !graphData.mergeProteins);
-  };
-
-  const handleLinkThresholdSliderChange = (event) => {
-    const value = event.target.value;
-
-    if (value >= 0 && value <= 1) {
-      setFilter("linkThresholdText", value);
-      setFilter("linkThreshold", value);
-    }
-  };
-
-  const handleLinkThresholdFieldChange = (event) => {
-    const value = event.target.value;
-
-    if (value >= 0 && value <= 1) {
-      setFilter("linkThresholdText", value);
-    }
-  };
-
-  const handleLinkThresholdFieldBlur = (event) => {
-    let value = event.target.value;
-
-    if (value === "") {
-      event.target.innerText = 0;
-      setFilter("linkThresholdText", 0);
-      setFilter("linkThreshold", 0);
-    } else if (value >= 0 && value <= 1) {
-      event.target.innerText = value;
-      setFilter("linkThresholdText", value);
-      setFilter("linkThreshold", value);
-    }
   };
 
   const handleMinComponentFieldChange = (event) => {
