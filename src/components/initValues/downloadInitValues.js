@@ -1,8 +1,7 @@
 export const downloadInit = {
   // on state change: indicates graph should be downloaded
   json: null,
-  jsonWithCoordinates: null,
-  jsonWithCoordinatesPhysics: null,
+  jsonCoordsPhysics: null,
   png: null,
   svg: null,
   pdf: null,

@@ -16,12 +16,8 @@ export function HeaderBarExport({ activeMenu, handleActiveMenuClick }) {
     setDownload("json", !download.json);
   };
 
-  const handleDownloadJsonWithCoordinatesClick = () => {
-    setDownload("jsonWithCoordinates", !download.jsonWithCoordinates);
-  };
-
-  const handleDownloadJsonWithCoordinatesPhysicsClick = () => {
-    setDownload("jsonWithCoordinatesPhysics", !download.jsonWithCoordinates);
+  const handleDownloadJsonCoordsPhysics = () => {
+    setDownload("jsonCoordsPhysics", !download.jsonCoordsPhysics);
   };
 
   const handleDownloadPngClick = () => {
@@ -76,17 +72,9 @@ export function HeaderBarExport({ activeMenu, handleActiveMenuClick }) {
             icon={<FileLines />}
           />
           <Item
-            text={"Export Graph with coordinates as JSON"}
+            text={"Export Graph with settings as JSON"}
             onClick={() => {
-              handleDownloadJsonWithCoordinatesClick();
-              handleActiveMenuClick("Export");
-            }}
-            icon={<FileLines />}
-          />
-          <Item
-            text={"Export Graph with coordinates and physics as JSON"}
-            onClick={() => {
-              handleDownloadJsonWithCoordinatesPhysicsClick();
+              handleDownloadJsonCoordsPhysics();
               handleActiveMenuClick("Export");
             }}
             icon={<PdfIcon />}

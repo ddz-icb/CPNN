@@ -3,16 +3,7 @@ import { useAppearance, useContainer, useDownload, useFilter, useGraphData, useP
 import log from "../../logger.js";
 import * as d3 from "d3";
 
-import {
-  downloadAsPDF,
-  downloadAsPNG,
-  downloadAsSVG,
-  downloadGraphJson,
-  downloadGraphWithLegendPdf,
-  downloadLegendPdf,
-  downloadGraphJsonWithCoordinates,
-  downloadGraphJsonWithCoordinatesPhysics,
-} from "./download.js";
+import { downloadAsPDF, downloadAsPNG, downloadAsSVG, downloadGraphJson, downloadGraphWithLegendPdf, downloadLegendPdf } from "./download.js";
 import { changeCircleBorderColor, changeNodeColors, changeNodeLabelColor, radius } from "../Other/draw.js";
 import { lightTheme, themeInit } from "../initValues/appearanceInitValues.js";
 import {
@@ -157,29 +148,17 @@ export function SettingControl({ simulation, app, redraw }) {
     }
   }, [download.json]);
 
-  // download graph data as json with coordinates //
-  useEffect(() => {
-    if (download.jsonWithCoordinates != null && graphData.graph) {
-      try {
-        log.info("Downloading graph as JSON with coordinates");
-        downloadGraphJsonWithCoordinates(graphData.graph, "Graph.json", graphData.nodeMap);
-      } catch (error) {
-        log.error("Error downloading the graph as JSON with coordinates:", error);
-      }
-    }
-  }, [download.jsonWithCoordinates]);
-
   // download graph data as json with coordinates and physics //
   useEffect(() => {
-    if (download.jsonWithCoordinatesPhysics != null && graphData.graph) {
+    if (download.jsonCoordsPhysics != null && graphData.graph) {
       try {
         log.info("Downloading graph as JSON with coordinates and physics");
-        downloadGraphJsonWithCoordinatesPhysics(graphData.graph, "Graph.json", graphData.nodeMap, physics);
+        downloadGraphJson(graphData.graph, "Graph.json", graphData.nodeMap, physics);
       } catch (error) {
         log.error("Error downloading the graph as JSON with coordinates:", error);
       }
     }
-  }, [download.jsonWithCoordinatesPhysics]);
+  }, [download.jsonCoordsPhysics]);
 
   // download graph as png //
   useEffect(() => {
@@ -239,7 +218,6 @@ export function SettingControl({ simulation, app, redraw }) {
       log.info("Downloading legend as PDF");
 
       downloadLegendPdf(
-        graphData.graph,
         appearance.linkColorScheme,
         appearance.linkAttribsToColorIndices,
         appearance.nodeColorScheme,
