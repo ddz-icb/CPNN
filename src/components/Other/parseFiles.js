@@ -1,18 +1,8 @@
 import log from "../../logger.js";
 import Papa from "papaparse";
 import axios from "axios";
-import {
-  filterByThreshold,
-  filterMaxCompSize,
-  filterMinCompSize,
-  filterNodesExist,
-  getIdsSeperateEntries,
-  getPhosphositesProtIdEntry,
-  getProtIdAndNameEntry,
-  getProtIdsWithIsoform,
-  mergeSameProteins,
-} from "../GraphStuff/graphCalculations.js";
-import { expectedPhysicTypes } from "../../states.js";
+import { filterByThreshold, filterMaxCompSize, filterMinCompSize, filterNodesExist, mergeSameProteins } from "../GraphStuff/graphCalculations.js";
+import { expectedPhysicTypes } from "../initValues/physicsInitValues.js";
 
 export async function parseGraphFile(
   file,
