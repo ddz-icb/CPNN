@@ -227,7 +227,7 @@ export function FilterSidebar({ resetFilters }) {
     if (linkFilterTextAreaRef.current) {
       linkFilterEditorRef.current = CodeMirror.fromTextArea(linkFilterTextAreaRef.current, {
         mode: "customMode",
-        theme: settings.appearance.theme.name === "light" ? "default" : "material",
+        theme: appearance.theme.name === "light" ? "default" : "material",
         linewrapping: false,
         bracketMatching: true,
         scrollbarStyle: "null",
@@ -242,7 +242,7 @@ export function FilterSidebar({ resetFilters }) {
     if (nodeFilterTextAreaRef.current) {
       nodeFilterEditorRef.current = CodeMirror.fromTextArea(nodeFilterTextAreaRef.current, {
         mode: "customMode",
-        theme: settings.appearance.theme.name === "light" ? "default" : "material",
+        theme: appearance.theme.name === "light" ? "default" : "material",
         linewrapping: false,
         bracketMatching: true,
         scrollbarStyle: "null",
@@ -273,9 +273,9 @@ export function FilterSidebar({ resetFilters }) {
   useEffect(() => {
     log.info("changing code editor theme");
 
-    nodeFilterEditorRef.current.setOption("theme", settings.appearance.theme.name === "light" ? "default" : "material");
-    linkFilterEditorRef.current.setOption("theme", settings.appearance.theme.name === "light" ? "default" : "material");
-  }, [settings.appearance.theme]);
+    nodeFilterEditorRef.current.setOption("theme", appearance.theme.name === "light" ? "default" : "material");
+    linkFilterEditorRef.current.setOption("theme", appearance.theme.name === "light" ? "default" : "material");
+  }, [appearance.theme]);
 
   return (
     <>

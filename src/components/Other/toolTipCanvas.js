@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { ReactComponent as XIcon } from "../../icons/x.svg";
 import { extractDescription, extractFullName, extractPdbId } from "../RegexExtract/extract.js";
 import * as $3Dmol from "3dmol/build/3Dmol.js";
-import { useGraphData, useSettings, useTooltipSettings } from "../../states.js";
+import { useAppearance, useGraphData, useSettings, useTooltipSettings } from "../../states.js";
 
 export function Tooltips({}) {
   const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
@@ -21,6 +21,7 @@ export function Tooltips({}) {
 
 export function ClickTooltip({ mapping }) {
   const { settings, setSettings } = useSettings();
+  const { appearance, setAppearance } = useAppearance();
 
   const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
 
@@ -130,7 +131,7 @@ export function ClickTooltip({ mapping }) {
       log.info("init 3dmol viewer");
       try {
         const config = {
-          backgroundColor: settings.appearance.theme.name === "light" ? "0xffffff" : "0x2a2e35",
+          backgroundColor: appearance.theme.name === "light" ? "0xffffff" : "0x2a2e35",
         };
         if (
           !viewerRef ||
@@ -165,9 +166,9 @@ export function ClickTooltip({ mapping }) {
   useEffect(() => {
     if (!viewer) return;
 
-    const backgroundColor = settings.appearance.theme.name === "light" ? "0xffffff" : "0x2a2e35";
+    const backgroundColor = appearance.theme.name === "light" ? "0xffffff" : "0x2a2e35";
     viewer.setBackgroundColor(backgroundColor);
-  }, [settings.appearance.theme]);
+  }, [appearance.theme]);
 
   useEffect(() => {
     if (viewer) {

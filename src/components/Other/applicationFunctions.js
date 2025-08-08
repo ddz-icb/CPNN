@@ -125,7 +125,7 @@ export async function loadGraphFileNames(setGraphData) {
   setGraphData("uploadedGraphFileNames", filenames);
 }
 
-export function loadTheme(setSettings) {
+export function loadTheme(setAppearance) {
   let storedTheme = localStorage.getItem("theme");
 
   log.info("Stored Theme:", storedTheme);
@@ -143,7 +143,7 @@ export function loadTheme(setSettings) {
     localStorage.setItem("theme", JSON.stringify(lightTheme));
   }
   applyTheme(document, storedTheme);
-  setSettings("appearance.theme", storedTheme);
+  setAppearance("theme", storedTheme);
 }
 
 export function storeTheme(theme) {

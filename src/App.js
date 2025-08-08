@@ -35,7 +35,7 @@ import {
   storeColorSchemes,
   storeTheme,
 } from "./components/Other/applicationFunctions.js";
-import { useFilter, useGraphData, useSettings } from "./states.js";
+import { useAppearance, useFilter, useGraphData, usePhysics, useSettings } from "./states.js";
 import { Erorr } from "./components/Other/error.js";
 import { colorSchemesInit } from "./components/Other/appearance.js";
 import { getFileNameWithoutExtension } from "./components/Other/parseFiles.js";
@@ -44,6 +44,8 @@ import { getGraphDB } from "./components/Other/dbGraphs.js";
 function App() {
   const { settings, setSettings } = useSettings();
   const { filter, setFilter } = useFilter();
+  const { physics, setPhysics } = usePhysics();
+  const { appearance, setAppearance } = useAppearance();
   const { graphData, setGraphData } = useGraphData(); // includes all data concerning the graph
 
   const [reset, setReset] = useState(false); // true indicates that the simulation (in forceGraph.js) has to be reloaded
@@ -147,21 +149,14 @@ function App() {
       setError("Cannot remove default color schemes");
       return;
     }
-    if (settings.appearance.nodeColorScheme.name == colorSchemeName || settings.appearance.linkColorScheme.name == colorSchemeName) {
+    if (appearance.nodeColorScheme.name == colorSchemeName || appearance.linkColorScheme.name == colorSchemeName) {
       log.warn("Cannot remove selected color scheme as it's still active");
       setError("Cannot remove selected color scheme as it's still active");
       return;
     }
     log.info("Deleting color schemes with name", colorSchemeName);
 
-    removeColorScheme(
-      colorSchemes,
-      setColorSchemes,
-      colorSchemeName,
-      settings.appearance.nodeColorScheme,
-      settings.appearance.linkColorScheme,
-      setSettings
-    );
+    removeColorScheme(colorSchemes, setColorSchemes, colorSchemeName, appearance.nodeColorScheme, appearance.linkColorScheme, setSettings);
   };
 
   // processes new annotation mapping
@@ -304,11 +299,11 @@ function App() {
   };
 
   const resetPhysics = () => {
-    resetPhysicsSettings(setSettings);
+    resetPhysicsSettings(physics, setPhysics);
   };
 
   const resetFilters = () => {
-    resetFilterSettings(setFilter, filter);
+    resetFilterSettings(filter, setFilter);
   };
 
   // select example graph on startup
@@ -332,16 +327,16 @@ function App() {
   // load current theme
   useEffect(() => {
     log.info("Loading Theme");
-    loadTheme(setSettings);
+    loadTheme(setAppearance);
   }, []);
 
   // store current theme //
   useEffect(() => {
-    if (!settings.appearance.theme) return;
+    if (!appearance.theme) return;
     log.info("Storing current theme if needed");
 
-    storeTheme(settings.appearance.theme);
-  }, [settings.appearance.theme]);
+    storeTheme(appearance.theme);
+  }, [appearance.theme]);
 
   // init uploadedMappingFileNames
   useEffect(() => {
@@ -416,10 +411,10 @@ function App() {
     // set max comp size = amount of nodes
 
     const nodeAttribsToColorIndices = getNodeAttribsToColorIndices(newGraph);
-    setSettings("appearance.nodeAttribsToColorIndices", nodeAttribsToColorIndices);
+    setAppearance("nodeAttribsToColorIndices", nodeAttribsToColorIndices);
 
     const linkAttribsToColorIndices = getLinkAttribsToColorIndices(newGraph);
-    setSettings("appearance.linkAttribsToColorIndices", linkAttribsToColorIndices);
+    setAppearance("linkAttribsToColorIndices", linkAttribsToColorIndices);
 
     setGraphData("originGraph", newGraph);
     setGraphData("graph", newGraph);
@@ -427,7 +422,7 @@ function App() {
   }, [graphData.originGraph, graphData.activeGraphFileNames, graphData.activeAnnotationMapping]);
 
   return (
-    <div className={settings.appearance.theme.name}>
+    <div className={appearance.theme.name}>
       <HeaderBar />
       <Sidebar
         handleSelectGraph={handleSelectGraph}

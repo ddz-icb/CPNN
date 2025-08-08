@@ -103,39 +103,27 @@ export const usePhysics = create((set) => ({
     }),
 }));
 
+export const useAppearance = create((set) => ({
+  appearance: {
+    theme: themeInit,
+    nodeColorScheme: nodeColorSchemeInit,
+    linkColorScheme: linkColorSchemeInit,
+    showNodeLabels: true,
+    linkAttribsToColorIndices: null,
+    nodeAttribsToColorIndices: null,
+    linkWidth: linkWidthInit,
+    linkWidthText: linkWidthInit,
+  },
+  setAppearance: (path, value) =>
+    set((state) => {
+      const updatedAppearance = { ...state.appearance };
+      setNestedValue(updatedAppearance, path, value);
+      return { appearance: updatedAppearance };
+    }),
+}));
+
 export const useSettings = create((set) => ({
   settings: {
-    physics: {
-      circleLayout: circleLayoutInit,
-      xStrength: xStrengthInit,
-      yStrength: yStrengthInit,
-      componentStrength: componentStrengthInit,
-      nodeRepulsionStrength: nodeRepulsionStrengthInit,
-      nodeCollision: nodeCollisionInit,
-      linkForce: linkForceInit,
-      linkLength: linkLengthInit,
-      checkBorder: checkBorderInit,
-      borderWidth: borderWidthInit,
-      borderHeight: borderHeightInit,
-      borderHeightText: borderHeightInit,
-      borderWidthText: borderWidthInit,
-      xStrengthText: xStrengthInit,
-      yStrengthText: yStrengthInit,
-      componentStrengthText: componentStrengthInit,
-      nodeRepulsionStrengthText: nodeRepulsionStrengthInit,
-      communityForceStrength: communityForceStrengthInit,
-      communityForceStrengthText: communityForceStrengthInit,
-    },
-    appearance: {
-      theme: themeInit,
-      nodeColorScheme: nodeColorSchemeInit,
-      linkColorScheme: linkColorSchemeInit,
-      showNodeLabels: true,
-      linkAttribsToColorIndices: null,
-      nodeAttribsToColorIndices: null,
-      linkWidth: linkWidthInit,
-      linkWidthText: linkWidthInit,
-    },
     download: {
       // on state change: indicates graph should be downloaded
       json: null,

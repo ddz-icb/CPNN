@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useFilter, useGraphData, usePhysics, useSettings } from "../../states.js";
+import { useAppearance, useFilter, useGraphData, usePhysics, useSettings } from "../../states.js";
 import log from "../../logger.js";
 import * as d3 from "d3";
 
@@ -44,6 +44,7 @@ export function SettingControl({ simulation, app, redraw }) {
   const { settings, setSettings } = useSettings();
   const { physics, setPhysics } = usePhysics();
   const { filter, setFilter } = useFilter();
+  const { appearance, setAppearance } = useAppearance();
   const { graphData, setGraphData } = useGraphData();
 
   // filter nodes and links //
@@ -101,7 +102,7 @@ export function SettingControl({ simulation, app, redraw }) {
     filteredGraph = filterMaxCompSize(filteredGraph, filter.maxCompSize);
     filteredGraph = filterNodesExist(filteredGraph);
 
-    filterActiveNodesForPixi(graphData.circles, graphData.nodeLabels, settings.appearance.showNodeLabels, filteredGraph, graphData.nodeMap);
+    filterActiveNodesForPixi(graphData.circles, graphData.nodeLabels, appearance.showNodeLabels, filteredGraph, graphData.nodeMap);
     setGraphData("filteredAfterStart", true);
     setGraphData("graph", filteredGraph);
   }, [
@@ -129,7 +130,7 @@ export function SettingControl({ simulation, app, redraw }) {
     if (!graphData.circles || !app) return;
     log.info("Enabling/Disabling node labels");
 
-    if (settings.appearance.showNodeLabels == true) {
+    if (appearance.showNodeLabels == true) {
       graphData.graph.nodes.forEach((n) => {
         const { nodeLabel } = graphData.nodeMap[n.id];
         nodeLabel.visible = true;
@@ -141,7 +142,7 @@ export function SettingControl({ simulation, app, redraw }) {
       simulation.on("tick.redraw", () => redraw(graphData.graph));
       redraw(graphData.graph);
     }
-  }, [settings.appearance.showNodeLabels]);
+  }, [appearance.showNodeLabels]);
 
   // download graph data as json //
   useEffect(() => {
@@ -189,8 +190,8 @@ export function SettingControl({ simulation, app, redraw }) {
 
       downloadAsPNG(app, document);
 
-      changeCircleBorderColor(graphData.circles, settings.appearance.theme.circleBorderColor);
-      changeNodeLabelColor(graphData.nodeLabels, settings.appearance.theme.textColor);
+      changeCircleBorderColor(graphData.circles, appearance.theme.circleBorderColor);
+      changeNodeLabelColor(graphData.nodeLabels, appearance.theme.textColor);
     }
   }, [settings.download.png]);
 
@@ -202,12 +203,12 @@ export function SettingControl({ simulation, app, redraw }) {
       downloadAsSVG(
         document,
         graphData.graph,
-        settings.appearance.linkColorScheme,
-        settings.appearance.linkAttribsToColorIndices,
+        appearance.linkColorScheme,
+        appearance.linkAttribsToColorIndices,
         themeInit.circleBorderColor,
         themeInit.textColor,
-        settings.appearance.nodeColorScheme,
-        settings.appearance.nodeAttribsToColorIndices,
+        appearance.nodeColorScheme,
+        appearance.nodeAttribsToColorIndices,
         graphData.nodeMap
       );
     }
@@ -220,12 +221,12 @@ export function SettingControl({ simulation, app, redraw }) {
 
       downloadAsPDF(
         graphData.graph,
-        settings.appearance.linkColorScheme,
-        settings.appearance.linkAttribsToColorIndices,
+        appearance.linkColorScheme,
+        appearance.linkAttribsToColorIndices,
         themeInit.circleBorderColor,
         themeInit.textColor,
-        settings.appearance.nodeColorScheme,
-        settings.appearance.nodeAttribsToColorIndices,
+        appearance.nodeColorScheme,
+        appearance.nodeAttribsToColorIndices,
         graphData.nodeMap
       );
     }
@@ -238,10 +239,10 @@ export function SettingControl({ simulation, app, redraw }) {
 
       downloadLegendPdf(
         graphData.graph,
-        settings.appearance.linkColorScheme,
-        settings.appearance.linkAttribsToColorIndices,
-        settings.appearance.nodeColorScheme,
-        settings.appearance.nodeAttribsToColorIndices,
+        appearance.linkColorScheme,
+        appearance.linkAttribsToColorIndices,
+        appearance.nodeColorScheme,
+        appearance.nodeAttribsToColorIndices,
         graphData.activeAnnotationMapping
       );
     }
@@ -252,9 +253,9 @@ export function SettingControl({ simulation, app, redraw }) {
     if (!graphData.circles) return;
     log.info("Switching colors");
 
-    changeCircleBorderColor(graphData.circles, settings.appearance.theme.circleBorderColor);
-    changeNodeLabelColor(graphData.nodeLabels, settings.appearance.theme.textColor);
-  }, [settings.appearance.theme]);
+    changeCircleBorderColor(graphData.circles, appearance.theme.circleBorderColor);
+    changeNodeLabelColor(graphData.nodeLabels, appearance.theme.textColor);
+  }, [appearance.theme]);
 
   // download graph and legend as pdf //
   useEffect(() => {
@@ -263,12 +264,12 @@ export function SettingControl({ simulation, app, redraw }) {
 
       downloadGraphWithLegendPdf(
         graphData.graph,
-        settings.appearance.linkColorScheme,
-        settings.appearance.linkAttribsToColorIndices,
+        appearance.linkColorScheme,
+        appearance.linkAttribsToColorIndices,
         themeInit.circleBorderColor,
         themeInit.textColor,
-        settings.appearance.nodeColorScheme,
-        settings.appearance.nodeAttribsToColorIndices,
+        appearance.nodeColorScheme,
+        appearance.nodeAttribsToColorIndices,
         graphData.nodeMap,
         graphData.activeAnnotationMapping
       );
@@ -283,11 +284,11 @@ export function SettingControl({ simulation, app, redraw }) {
     changeNodeColors(
       graphData.circles,
       graphData.nodeMap,
-      settings.appearance.theme.circleBorderColor,
-      settings.appearance.nodeColorScheme.colorScheme,
-      settings.appearance.nodeAttribsToColorIndices
+      appearance.theme.circleBorderColor,
+      appearance.nodeColorScheme.colorScheme,
+      appearance.nodeAttribsToColorIndices
     );
-  }, [settings.appearance.nodeColorScheme, settings.appearance.nodeAttribsToColorIndices]);
+  }, [appearance.nodeColorScheme, appearance.nodeAttribsToColorIndices]);
 
   // switch link color scheme
   useEffect(() => {
@@ -296,7 +297,7 @@ export function SettingControl({ simulation, app, redraw }) {
 
     simulation.on("tick.redraw", () => redraw(graphData.graph));
     redraw(graphData.graph);
-  }, [settings.appearance.linkColorScheme, settings.appearance.linkAttribsToColorIndices]);
+  }, [appearance.linkColorScheme, appearance.linkAttribsToColorIndices]);
 
   // enable or disable link force //
   useEffect(() => {

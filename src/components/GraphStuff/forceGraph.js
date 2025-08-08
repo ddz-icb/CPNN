@@ -6,13 +6,14 @@ import { handleResize, initDragAndZoom } from "../Other/interactiveCanvas.js";
 import { initTooltips, Tooltips } from "../Other/toolTipCanvas.js";
 import { radius, drawCircle, drawLine, getTextStyle } from "../Other/draw.js";
 import { getSimulation } from "./graphPhysics.js";
-import { useGraphData, usePhysics, useSettings, useTooltipSettings } from "../../states.js";
+import { useAppearance, useGraphData, usePhysics, useSettings, useTooltipSettings } from "../../states.js";
 import { SettingControl } from "./settingControl.js";
 import { getNodeIdName, getNodeLabelOffsetY } from "./graphCalculations.js";
 import { linkLengthInit, nodeRepulsionStrengthInit, xStrengthInit, yStrengthInit } from "./graphInitValues.js";
 
 export function ForceGraph({ reset, setReset, setError }) {
   const { settings, setSettings } = useSettings();
+  const { appearance, setAppearance } = useAppearance();
   const { graphData, setGraphData } = useGraphData();
   const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
 
@@ -95,8 +96,8 @@ export function ForceGraph({ reset, setReset, setError }) {
       !graphData.graph ||
       !settings.container.width ||
       !settings.container.height ||
-      !settings.appearance.theme ||
-      !settings.appearance.nodeColorScheme
+      !appearance.theme ||
+      !appearance.nodeColorScheme
     )
       return;
     log.info("Setting stage");
@@ -115,9 +116,9 @@ export function ForceGraph({ reset, setReset, setError }) {
       circle = drawCircle(
         circle,
         node,
-        settings.appearance.theme.circleBorderColor,
-        settings.appearance.nodeColorScheme.colorScheme,
-        settings.appearance.nodeAttribsToColorIndices
+        appearance.theme.circleBorderColor,
+        appearance.nodeColorScheme.colorScheme,
+        appearance.nodeAttribsToColorIndices
       );
       circle.id = node.id;
       circle.interactive = true;
@@ -138,7 +139,7 @@ export function ForceGraph({ reset, setReset, setError }) {
         },
       });
 
-      nodeLabel.style = getTextStyle(settings.appearance.theme.textColor);
+      nodeLabel.style = getTextStyle(appearance.theme.textColor);
       nodeLabel.x = circle.x;
       nodeLabel.y = circle.y + getNodeLabelOffsetY(node.id);
       nodeLabel.pivot.x = nodeLabel.width / 2;
@@ -231,10 +232,10 @@ export function ForceGraph({ reset, setReset, setError }) {
     graphData.lines.clear();
 
     for (const link of graph.links) {
-      drawLine(graphData.lines, link, settings.appearance.linkColorScheme.colorScheme, settings.appearance.linkAttribsToColorIndices);
+      drawLine(graphData.lines, link, appearance.linkColorScheme.colorScheme, appearance.linkAttribsToColorIndices);
     }
 
-    if (settings.appearance.showNodeLabels) {
+    if (appearance.showNodeLabels) {
       graph.nodes.forEach((n) => {
         const { node, circle, nodeLabel } = graphData.nodeMap[n.id];
         nodeLabel.x = circle.x;
