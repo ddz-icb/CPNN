@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useAppearance, useContainer, useDownload, useFilter, useGraphData, usePhysics, useSettings } from "../../states.js";
+import { useAppearance, useContainer, useDownload, useFilter, useGraphData, usePhysics } from "../../states.js";
 import log from "../../logger.js";
 import * as d3 from "d3";
 

@@ -1,6 +1,6 @@
 import { SidebarButtonRect, SidebarSliderBlock, SidebarSwitchBlock } from "./reusableComponents/sidebarComponents.js";
 
-import { usePhysics, useSettings } from "../../states.js";
+import { usePhysics } from "../../states.js";
 import { physicsInit } from "../initValues/physicsInitValues.js";
 
 export function PhysicsSidebar({}) {

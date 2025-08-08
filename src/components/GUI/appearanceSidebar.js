@@ -13,7 +13,7 @@ import { ReactComponent as XIcon } from "../../icons/x.svg";
 import { colorSchemeCsv } from "../../demodata/exampleColorSchemeCSV.js";
 import { downloadCsvFile } from "../GraphStuff/download.js";
 import { Tooltip } from "react-tooltip";
-import { useAppearance, useSettings } from "../../states.js";
+import { useAppearance } from "../../states.js";
 import log from "../../logger.js";
 import { linkWidthDescription } from "./descriptions/appearanceDescriptions.js";
 import { linkWidthInit } from "../initValues/appearanceInitValues.js";

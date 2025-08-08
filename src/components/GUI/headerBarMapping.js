@@ -1,6 +1,6 @@
 import { ReactComponent as EyeIcon } from "../../icons/eye.svg";
 import { ReactComponent as XIcon } from "../../icons/x.svg";
-import { useAppearance, useGraphData, useSettings } from "../../states.js";
+import { useAppearance, useGraphData } from "../../states.js";
 
 import { fallbackColor, getColor } from "../Other/draw.js";
 
