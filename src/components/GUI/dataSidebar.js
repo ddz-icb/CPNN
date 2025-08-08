@@ -23,11 +23,13 @@ import { exampleMappingCsv } from "../../demodata/exampleMappingCSV.js";
 import { exampleGraphRaw } from "../../demodata/exampleGraphRawTSV.js";
 import {
   containsSitesDescription,
+  maxCompSizeDescriptionUpload,
+  minCompSizeDescriptionUpload,
   minCorrForEdgeDescription,
   spearmanCoefficientDescription,
   takeAbsDescription,
 } from "./descriptions/dataDescriptions.js";
-import { mergeProteinsDescription } from "./descriptions/filterDescriptions.js";
+import { mergeProteinsDescription, minCompSizeDescription } from "./descriptions/filterDescriptions.js";
 
 export function DataSidebar({
   handleRemoveActiveGraphFile,
@@ -257,11 +259,11 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
   const [minCorrForEdge, setMinCorrForEdge] = useState(0);
   const [minCorrForEdgeText, setMinCorrForEdgeText] = useState(0);
 
-  const [minCompSizeForNode, setMinCompSizeForNode] = useState(2);
-  const [minCompSizeForNodeText, setMinCompSizeForNodeText] = useState(2);
+  const [minCompSizeForNode, setMinCompSize] = useState(2);
+  const [minCompSizeText, setMinCompSizeText] = useState(2);
 
-  const [maxCompSizeForNode, setMaxCompSizeForNode] = useState("");
-  const [maxCompSizeForNodeText, setMaxCompSizeForNodeText] = useState("");
+  const [maxCompSizeForNode, setMaxCompSize] = useState("");
+  const [maxCompSizeText, setMaxCompSizeText] = useState("");
 
   const [containsSites, setContainsSites] = useState(false);
 
@@ -316,9 +318,9 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
     const intValue = parseInt(value, 10);
 
     if (value === "") {
-      setMinCompSizeForNodeText("");
+      setMinCompSizeText("");
     } else if (!isNaN(intValue)) {
-      setMinCompSizeForNodeText(intValue);
+      setMinCompSizeText(intValue);
     }
   };
 
@@ -328,12 +330,12 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
 
     if (value === "") {
       event.target.innerText = 1;
-      setMinCompSizeForNode(1);
-      setMinCompSizeForNodeText(1);
+      setMinCompSize(1);
+      setMinCompSizeText(1);
     } else if (!isNaN(intValue) && intValue >= 0) {
       event.target.innerText = intValue;
-      setMinCompSizeForNode(intValue);
-      setMinCompSizeForNodeText(intValue);
+      setMinCompSize(intValue);
+      setMinCompSizeText(intValue);
     }
   };
 
@@ -342,9 +344,9 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
     const intValue = parseInt(value, 10);
 
     if (value === "") {
-      setMaxCompSizeForNodeText("");
+      setMaxCompSizeText("");
     } else if (!isNaN(intValue)) {
-      setMaxCompSizeForNodeText(intValue);
+      setMaxCompSizeText(intValue);
     }
   };
 
@@ -354,12 +356,12 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
 
     if (value === "") {
       event.target.innerText = "";
-      setMaxCompSizeForNode("");
-      setMaxCompSizeForNodeText("");
+      setMaxCompSize("");
+      setMaxCompSizeText("");
     } else if (!isNaN(intValue) && intValue >= 1) {
       event.target.innerText = intValue;
-      setMaxCompSizeForNode(intValue);
-      setMaxCompSizeForNodeText(intValue);
+      setMaxCompSize(intValue);
+      setMaxCompSizeText(intValue);
     }
   };
 
@@ -506,28 +508,26 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
           infoDescription={minCorrForEdgeDescription}
         />
         <PopUpFieldBlock
-          text={"Minimum component size"}
+          valueText={minCompSizeText}
+          setValue={(value) => setMinCompSize(value)}
+          setValueText={(value) => setMinCompSizeText(value)}
+          fallbackValue={1}
           min={1}
           step={1}
-          value={minCompSizeForNodeText}
-          onChange={handleMinComponentFieldChange}
-          onBlur={handleMinComponentFieldBlur}
+          text={"Minimum component size"}
           infoHeading={"Minimum component/cluster size"}
-          infoDescription={
-            "Based on the specified minimum link correlation above, set the minimum component/cluster size required for a node to be included in the graph. Increasing this value can significantly improve performance."
-          }
+          infoDescription={minCompSizeDescriptionUpload}
         />
         <PopUpFieldBlock
-          text={"Maximum component size"}
+          valueText={maxCompSizeText}
+          setValue={(value) => setMaxCompSize(value)}
+          setValueText={(value) => setMaxCompSizeText(value)}
+          fallbackValue={""}
           min={1}
           step={1}
-          value={maxCompSizeForNodeText}
-          onChange={handleMaxComponentFieldChange}
-          onBlur={handleMaxComponentFieldBlur}
+          text={"Maximum component size"}
           infoHeading={"Maximum component/cluster size"}
-          infoDescription={
-            "Based on the specified minimum link correlation above, set the maximum component/cluster size required for a node to be included in the graph. Decreasing this value can significantly improve performance."
-          }
+          infoDescription={maxCompSizeDescriptionUpload}
         />
         <PopUpSwitchBlock
           value={containsSites}

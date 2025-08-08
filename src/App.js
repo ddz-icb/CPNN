@@ -399,14 +399,17 @@ function App() {
     newGraph = applyNodeMapping(newGraph, graphData.activeAnnotationMapping);
 
     const { minWeight, maxWeight } = getLinkWeightMinMax(newGraph);
-    setGraphData("linkWeightMin", minWeight);
+    if (minWeight != Infinity) {
+      setGraphData("linkWeightMin", minWeight);
+    }
+    if (maxWeight != -Infinity) {
+      setGraphData("linkWeightMax", maxWeight);
+    }
 
-    if (minWeight > linkThresholdInit) {
+    if (minWeight != Infinity && minWeight > linkThresholdInit) {
       setFilter("linkThreshold", minWeight);
       setFilter("linkThresholdText", minWeight);
     }
-
-    setGraphData("linkWeightMax", maxWeight);
 
     // set max comp size = amount of nodes
 

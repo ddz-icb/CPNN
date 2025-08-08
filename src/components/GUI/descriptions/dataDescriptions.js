@@ -30,3 +30,20 @@ export const spearmanCoefficientDescription = (
     </p>
   </div>
 );
+
+export const minCompSizeDescriptionUpload = (
+  <div>
+    <p>
+      Based on the specified minimum link correlation above, set the minimum component/cluster size required for a node to be included in the graph.
+      Increasing this value can significantly improve performance.
+    </p>
+  </div>
+);
+export const maxCompSizeDescriptionUpload = (
+  <div>
+    <p>
+      "Based on the specified minimum link correlation above, set the maximum component/cluster size required for a node to be included in the graph.
+      Decreasing this value can significantly improve performance."{" "}
+    </p>
+  </div>
+);

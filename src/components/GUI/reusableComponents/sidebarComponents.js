@@ -171,7 +171,7 @@ export function SidebarFieldBlock({ valueText, setValue, setValueText, fallbackV
   );
 }
 
-export function PopUpFieldBlock({ text, min, max, step, value, onChange, onBlur, infoHeading, infoDescription }) {
+export function PopUpFieldBlock({ valueText, setValue, setValueText, fallbackValue, min, max, step, text, infoHeading, infoDescription }) {
   const [infoIsOpen, setInfoIsOpen] = useState(false);
 
   const handleKeyDown = (event) => {
@@ -192,13 +192,13 @@ export function PopUpFieldBlock({ text, min, max, step, value, onChange, onBlur,
         <input
           className="input-field"
           type="number"
+          value={valueText}
           min={min}
           max={max}
           step={step}
-          onChange={onChange}
           onKeyDown={handleKeyDown}
-          value={value}
-          onBlur={onBlur}
+          onChange={(event) => handleFieldChange(event, setValueText, min, max)}
+          onBlur={(event) => handleFieldBlur(event, setValue, setValueText, min, max, fallbackValue)}
         ></input>
       </div>
       <PopUp heading={infoHeading} description={infoDescription} isOpen={infoIsOpen} setIsOpen={setInfoIsOpen} widePopUp={true} />
