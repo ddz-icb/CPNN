@@ -19,8 +19,22 @@ import {
   SidebarSwitchBlock,
 } from "./reusableComponents/sidebarComponents.js";
 import { useAppearance, useFilter, useGraphData } from "../../states.js";
-import { filterInit, linkThresholdInit, maxCompSizeInit, minNeighborhoodSizeInit, compDensityInit } from "../initValues/filterInitValues.js";
-import { linkThresholdDescription, mergeProteinsDescription } from "./descriptions/filterDescriptions.js";
+import {
+  filterInit,
+  linkThresholdInit,
+  maxCompSizeInit,
+  minNeighborhoodSizeInit,
+  compDensityInit,
+  minCompSizeInit,
+} from "../initValues/filterInitValues.js";
+import {
+  compDensityDescription,
+  linkThresholdDescription,
+  maxCompSizeDescription,
+  mergeProteinsDescription,
+  minCompSizeDescription,
+  minNeighborhoodSizeDescription,
+} from "./descriptions/filterDescriptions.js";
 
 export function FilterSidebar({}) {
   const { filter, setFilter, setAllFilter } = useFilter();
@@ -249,7 +263,7 @@ export function FilterSidebar({}) {
       </div>
       <SidebarSwitchBlock
         value={graphData.mergeProteins}
-        onChange={() => setGraphData("mergeProteins", !graphData.mergeProteins)}
+        setValue={() => setGraphData("mergeProteins", !graphData.mergeProteins)}
         text={"Merge Proteins"}
         infoHeading={"Merge nodes of same protein"}
         infoDescription={mergeProteinsDescription}
@@ -341,73 +355,48 @@ export function FilterSidebar({}) {
         }
       />
       <SidebarFieldBlock
+        valueText={filter.minCompSizeText}
+        setValue={(value) => setFilter("minCompSize", value)}
+        setValueText={(value) => setFilter("minCompSizeText", value)}
+        fallbackValue={minCompSizeInit}
+        min={1}
+        step={1}
         text={"Min Component Size"}
-        min={1}
-        step={1}
-        value={filter.minCompSizeText}
-        onChange={handleMinComponentFieldChange}
-        onBlur={handleMinComponentFieldBlur}
         infoHeading={"Filter by Component Size"}
-        infoDescription={
-          <div>
-            <p className="margin-0">
-              You can filter the components/clusters by setting a minimum size. If a given component is smaller than the applied threshold, the whole
-              component will not be drawn. Increasing this value can significantly enhance performance by reducing the graph size.
-            </p>
-          </div>
-        }
+        infoDescription={minCompSizeDescription}
       />
       <SidebarFieldBlock
+        valueText={filter.maxCompSizeText}
+        setValue={(value) => setFilter("maxCompSize", value)}
+        setValueText={(value) => setFilter("maxCompSizeText", value)}
+        fallbackValue={maxCompSizeInit}
+        min={1}
+        step={1}
         text={"Max Component Size"}
-        min={1}
-        step={1}
-        value={filter.maxCompSizeText}
-        onChange={handleMaxComponentFieldChange}
-        onBlur={handleMaxComponentFieldBlur}
         infoHeading={"Filter by Component Size"}
-        infoDescription={
-          <div>
-            <p className="margin-0">
-              You can filter the components/clusters by setting a maximum size. If a given component is greater than the applied threshold, the whole
-              component will not be drawn. Decreasing this value can significantly enhance performance by reducing the graph size.
-            </p>
-          </div>
-        }
+        infoDescription={maxCompSizeDescription}
       />
       <SidebarFieldBlock
-        text={"Min Neighborhood Size"}
+        valueText={filter.minNeighborhoodSizeText}
+        setValue={(value) => setFilter("minNeighborhoodSize", value)}
+        setValueText={(value) => setFilter("minNeighborhoodSizeText", value)}
+        fallbackValue={minNeighborhoodSizeInit}
         min={1}
         step={1}
-        value={filter.minNeighborhoodSizeText}
-        onChange={handleMinNeighborhoodFieldChange}
-        onBlur={handleMinNeighborhoodFieldBlur}
+        text={"Min Neighborhood Size"}
         infoHeading={"Filter by Neighborhood Size"}
-        infoDescription={
-          <div>
-            <p className="margin-0">
-              You can filter the graph by setting a minimum neighborhood size. If a given node has less neighbors than the applied threshold, the node
-              will not be drawn. Increasing this value can significantly enhance performance by reducing the graph size.
-            </p>
-          </div>
-        }
+        infoDescription={minNeighborhoodSizeDescription}
       />
       <SidebarFieldBlock
-        text={"Component Density"}
+        valueText={filter.compDensityText}
+        setValue={(value) => setFilter("compDensity", value)}
+        setValueText={(value) => setFilter("compDensityText", value)}
+        fallbackValue={compDensityInit}
         min={0}
         step={1}
-        value={filter.compDensityText}
-        onChange={handleCompDensityFieldChange}
-        onBlur={handleCompDensityFieldBlur}
+        text={"Component Density"}
         infoHeading={"Filter by Component Density"}
-        infoDescription={
-          <div>
-            <p className="margin-0">
-              You can filter the components/clusters based on their density. The density is measured as the average amount of neighbors per node. If a
-              given component has a smaller density than the applied threshold, the component will not be drawn. Increasing this value can
-              significantly enhance performance by reducing the graph size.
-            </p>
-          </div>
-        }
+        infoDescription={compDensityDescription}
       />
     </>
   );

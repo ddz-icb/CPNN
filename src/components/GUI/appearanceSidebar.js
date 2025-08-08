@@ -44,7 +44,7 @@ export function AppearanceSettings({}) {
     <>
       <SidebarSwitchBlock
         value={appearance.showNodeLabels}
-        onChange={() => setAppearance("showNodeLabels", !appearance.showNodeLabels)}
+        setValue={() => setAppearance("showNodeLabels", !appearance.showNodeLabels)}
         text={"Node Labels"}
         infoHeading={"Enabling Node Labels"}
         infoDescription={nodeLabelDescription}

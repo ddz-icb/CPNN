@@ -1,4 +1,4 @@
-export const handleSliderChange = (event, setValue, setValueText, min = 0, max = 1) => {
+export const handleSliderChange = (event, setValue, setValueText, min = 0, max = Infinity) => {
   const value = event.target.value;
 
   if (value >= min && value <= max) {
@@ -7,15 +7,17 @@ export const handleSliderChange = (event, setValue, setValueText, min = 0, max =
   }
 };
 
-export const handleFieldChange = (event, setValueText, min = 0, max = 1) => {
+export const handleFieldChange = (event, setValueText, min = 0, max = Infinity) => {
   const value = event.target.value;
 
-  if (value >= min && value <= max) {
+  if (value == "") {
+    setValueText("");
+  } else if (value >= min && value <= max) {
     setValueText(value);
   }
 };
 
-export const handleFieldBlur = (event, setValue, setValueText, min = 0, max = 1, fallbackValue) => {
+export const handleFieldBlur = (event, setValue, setValueText, min = 0, max = Infinity, fallbackValue) => {
   let value = event.target.value;
 
   if (value === "") {

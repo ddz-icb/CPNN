@@ -472,21 +472,21 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
         </div>
         <PopUpSwitchBlock
           value={spearmanCoefficient}
-          onChange={() => setSpearmanCoefficient(!spearmanCoefficient)}
+          setValue={() => setSpearmanCoefficient(!spearmanCoefficient)}
           text={"Calculate spearman correlation"}
           infoHeading={"Use spearman correlation"}
           infoDescription={spearmanCoefficientDescription}
         />
         <PopUpSwitchBlock
           value={takeAbs}
-          onChange={() => setTakeAbs(!takeAbs)}
+          setValue={() => setTakeAbs(!takeAbs)}
           text={"Include negative correlations by taking the absolute value"}
           infoHeading={"Include negative correlations"}
           infoDescription={takeAbsDescription}
         />
         <PopUpSwitchBlock
           value={mergeSameProtein}
-          onChange={() => setMergeSameProtein(!mergeSameProtein)}
+          setValue={() => setMergeSameProtein(!mergeSameProtein)}
           text={"Merge nodes of same protein"}
           infoHeading={"Merge Proteins"}
           infoDescription={mergeProteinsDescription}
@@ -531,7 +531,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
         />
         <PopUpSwitchBlock
           value={containsSites}
-          onChange={() => setContainsSites(!containsSites)}
+          setValue={() => setContainsSites(!containsSites)}
           text={"Include phosphosites"}
           infoHeading={"Include phosphosites"}
           infoDescription={containsSitesDescription}
@@ -569,8 +569,8 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
       >
         <PopUpSwitchBlock
           value={takeAbs}
+          setValue={() => setTakeAbs(!takeAbs)}
           text={"absolute link value"}
-          onChange={() => setTakeAbs(!takeAbs)}
           infoHeading={"Take absolute link value"}
           infoDescription={takeAbsDescription}
         />

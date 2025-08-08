@@ -42,7 +42,7 @@ export function PhysicsSidebar({}) {
       </div>
       <SidebarSwitchBlock
         value={physics.circleLayout}
-        onChange={() => setPhysics("circleLayout", !physics.circleLayout)}
+        setValue={() => setPhysics("circleLayout", !physics.circleLayout)}
         text={"Circular Layout"}
         infoHeading={"Enabling Circular layout"}
         infoDescription={circleLayoutDescription}
@@ -106,15 +106,15 @@ export function PhysicsSidebar({}) {
         infoDescription={nodeRepulsionStrengthDescription}
       />
       <SidebarSwitchBlock
-        text={"Node Collision"}
         value={physics.nodeCollision}
-        onChange={() => setPhysics("nodeCollision", !physics.nodeCollision)}
+        setValue={() => setPhysics("nodeCollision", !physics.nodeCollision)}
+        text={"Node Collision"}
         infoHeading={"Enabling the Node Collision Force"}
         infoDescription={nodeCollisionDescription}
       />
       <SidebarSwitchBlock
         value={physics.linkForce}
-        onChange={() => setPhysics("linkForce", !physics.linkForce)}
+        setValue={() => setPhysics("linkForce", !physics.linkForce)}
         text={"Link Force"}
         infoHeading={"Enabling the Link Force"}
         infoDescription={linkForceDescription}
@@ -136,7 +136,7 @@ export function PhysicsSidebar({}) {
       )}
       <SidebarSwitchBlock
         value={physics.checkBorder}
-        onChange={() => setPhysics("checkBorder", !physics.checkBorder)}
+        setValue={() => setPhysics("checkBorder", !physics.checkBorder)}
         text={"Border Force"}
         infoHeading={"Enabling the Border Force"}
         infoDescription={checkBorderDescription}

@@ -92,7 +92,7 @@ export function PopUpSliderBlock({ value, valueText, setValue, setValueText, fal
   );
 }
 
-export function SidebarSwitchBlock({ value, onChange, text, infoHeading, infoDescription }) {
+export function SidebarSwitchBlock({ value, setValue, text, infoHeading, infoDescription }) {
   const [infoIsOpen, setInfoIsOpen] = useState(false);
 
   return (
@@ -105,7 +105,7 @@ export function SidebarSwitchBlock({ value, onChange, text, infoHeading, infoDes
           </span>
         </div>
         <label className="switch">
-          <input type="checkbox" checked={value} onChange={onChange} className="checkbox-input" />
+          <input type="checkbox" checked={value} onChange={setValue} className="checkbox-input" />
           <span className="slider round"></span>
         </label>
       </div>
@@ -114,7 +114,7 @@ export function SidebarSwitchBlock({ value, onChange, text, infoHeading, infoDes
   );
 }
 
-export function PopUpSwitchBlock({ value, onChange, text, infoHeading, infoDescription }) {
+export function PopUpSwitchBlock({ value, setValue, text, infoHeading, infoDescription }) {
   const [infoIsOpen, setInfoIsOpen] = useState(false);
 
   return (
@@ -127,7 +127,7 @@ export function PopUpSwitchBlock({ value, onChange, text, infoHeading, infoDescr
           </span>
         </div>
         <label className="switch">
-          <input type="checkbox" checked={value} onChange={onChange} className="checkbox-input" />
+          <input type="checkbox" checked={value} onChange={setValue} className="checkbox-input" />
           <span className="slider round"></span>
         </label>
       </div>
@@ -136,7 +136,7 @@ export function PopUpSwitchBlock({ value, onChange, text, infoHeading, infoDescr
   );
 }
 
-export function SidebarFieldBlock({ text, min, max, step, value, onChange, onBlur, infoHeading, infoDescription }) {
+export function SidebarFieldBlock({ valueText, setValue, setValueText, fallbackValue, min, max, step, text, infoHeading, infoDescription }) {
   const [infoIsOpen, setInfoIsOpen] = useState(false);
 
   const handleKeyDown = (event) => {
@@ -157,13 +157,13 @@ export function SidebarFieldBlock({ text, min, max, step, value, onChange, onBlu
         <input
           className="input-field"
           type="number"
+          value={valueText}
           min={min}
           max={max}
           step={step}
-          onChange={onChange}
+          onChange={(event) => handleFieldChange(event, setValueText, min, max)}
           onKeyDown={handleKeyDown}
-          value={value}
-          onBlur={onBlur}
+          onBlur={(event) => handleFieldBlur(event, setValue, setValueText, min, max, fallbackValue)}
         ></input>
       </div>
       <PopUp heading={infoHeading} description={infoDescription} isOpen={infoIsOpen} setIsOpen={setInfoIsOpen} />
