@@ -1,7 +1,7 @@
 import { exampleGraphJson } from "../../demodata/exampleGraphJSON.js";
 import log from "../../logger.js";
 import { joinGraphs } from "../GraphStuff/graphCalculations.js";
-import { applyTheme, colorSchemesInit, lightTheme } from "./appearance.js";
+import { applyTheme, colorSchemesInit, lightTheme } from "../initValues/appearanceInitValues.js";
 import { addGraphFileDB, addGraphFileIfNotExistsDB, fromAllGetGraphNameDB, getGraphDB, removeGraphFileByNameDB } from "./dbGraphs.js";
 import { addMappingFileDB, fromAllGetMappingNameDB, getMappingDB, removeMappingFileByNameDB } from "./dbMappings.js";
 import { getFileNameWithoutExtension, parseAnnotationMappingFile, parseColorSchemeFile, parseGraphFile } from "./parseFiles.js";
@@ -22,7 +22,7 @@ export async function selectMapping(mappingName, setGraphData) {
   log.info("Mapping Loaded Successfully:", mapping);
 }
 
-export function removeColorScheme(colorSchemes, setColorSchemes, colorSchemeName, nodeColorScheme, linkColorScheme, setSettings) {
+export function removeColorScheme(colorSchemes, setColorSchemes, colorSchemeName, nodeColorScheme, linkColorScheme, setAppearance) {
   let updatedColorSchemes = colorSchemes?.filter((colorScheme) => colorScheme.name !== colorSchemeName);
 
   if (updatedColorSchemes.length === 0) {
@@ -30,11 +30,11 @@ export function removeColorScheme(colorSchemes, setColorSchemes, colorSchemeName
   }
 
   if (nodeColorScheme.name === colorSchemeName) {
-    setSettings("nodeColorScheme", updatedColorSchemes[0]);
+    setAppearance("nodeColorScheme", updatedColorSchemes[0]);
   }
 
   if (linkColorScheme.name === colorSchemeName) {
-    setSettings("linkColorScheme", updatedColorSchemes[0]);
+    setAppearance("linkColorScheme", updatedColorSchemes[0]);
   }
 
   setColorSchemes(updatedColorSchemes);

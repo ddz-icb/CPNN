@@ -1,9 +1,10 @@
 import { SidebarButtonRect, SidebarSliderBlock, SidebarSwitchBlock } from "./reusableComponents/sidebarComponents.js";
 
 import { usePhysics, useSettings } from "../../states.js";
+import { physicsInit } from "../initValues/physicsInitValues.js";
 
-export function PhysicsSidebar({ resetPhysics }) {
-  const { physics, setPhysics } = usePhysics();
+export function PhysicsSidebar({}) {
+  const { physics, setPhysics, setAllPhysics } = usePhysics();
 
   const handleLinkLengthSlider = (event) => {
     const value = event.target.value;
@@ -217,7 +218,7 @@ export function PhysicsSidebar({ resetPhysics }) {
   return (
     <>
       <div className="inline pad-top-05 pad-bottom-05">
-        <SidebarButtonRect text={"Set Phyiscs to Default"} onClick={resetPhysics} />
+        <SidebarButtonRect text={"Set Phyiscs to Default"} onClick={() => setAllPhysics(physicsInit)} />
       </div>
       <SidebarSwitchBlock
         text={"Circular Layout"}

@@ -1,0 +1,17 @@
+export const graphDataInit = {
+  graph: null,
+  originGraph: null,
+  linkWeightMin: null,
+  linkWeightMax: null,
+  mergeProteins: false,
+  nodeMap: null,
+  circles: null,
+  nodeLabels: null,
+  lines: null,
+  filteredAfterStart: false,
+  graphIsPreprocessed: false,
+  activeGraphFileNames: null,
+  uploadedGraphFileNames: null,
+  activeAnnotationMapping: null,
+  uploadedAnnotationMappingNames: null,
+};

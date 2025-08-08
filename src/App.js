@@ -15,7 +15,6 @@ import {
   joinGraphs,
   mergeSameProteins,
 } from "./components/GraphStuff/graphCalculations.js";
-import { resetFilterSettings, resetPhysicsSettings } from "./components/Other/reset.js";
 import {
   addActiveGraphFile,
   addNewAnnotationMappingFile,
@@ -35,17 +34,20 @@ import {
   storeColorSchemes,
   storeTheme,
 } from "./components/Other/applicationFunctions.js";
-import { useAppearance, useFilter, useGraphData, usePhysics, useSettings } from "./states.js";
+import { useAppearance, useDownload, useFilter, useGraphData, usePhysics } from "./states.js";
 import { Erorr } from "./components/Other/error.js";
-import { colorSchemesInit } from "./components/Other/appearance.js";
+import { colorSchemesInit } from "./components/initValues/appearanceInitValues.js";
 import { getFileNameWithoutExtension } from "./components/Other/parseFiles.js";
 import { getGraphDB } from "./components/Other/dbGraphs.js";
+import { downloadInit } from "./components/initValues/downloadInitValues.js";
+import { physicsInit } from "./components/initValues/physicsInitValues.js";
+import { filterInit } from "./components/initValues/filterInitValues.js";
 
 function App() {
-  const { settings, setSettings } = useSettings();
-  const { filter, setFilter } = useFilter();
-  const { physics, setPhysics } = usePhysics();
+  const { setAllFilter } = useFilter();
+  const { setAllPhysics } = usePhysics();
   const { appearance, setAppearance } = useAppearance();
+  const { download, setDownload } = useDownload();
   const { graphData, setGraphData } = useGraphData(); // includes all data concerning the graph
 
   const [reset, setReset] = useState(false); // true indicates that the simulation (in forceGraph.js) has to be reloaded
@@ -156,7 +158,7 @@ function App() {
     }
     log.info("Deleting color schemes with name", colorSchemeName);
 
-    removeColorScheme(colorSchemes, setColorSchemes, colorSchemeName, appearance.nodeColorScheme, appearance.linkColorScheme, setSettings);
+    removeColorScheme(colorSchemes, setColorSchemes, colorSchemeName, appearance.nodeColorScheme, appearance.linkColorScheme, setAppearance);
   };
 
   // processes new annotation mapping
@@ -291,19 +293,11 @@ function App() {
     if (!graphData.activeGraphFileNames) return;
     log.info("Handle Simulation Reset");
 
-    resetFilters();
-    resetPhysics();
-    setSettings("download", { json: null, png: null, svg: null });
+    setAllFilter(filterInit);
+    setAllPhysics(physicsInit);
+    setDownload(downloadInit);
     setError(null);
     setReset(true);
-  };
-
-  const resetPhysics = () => {
-    resetPhysicsSettings(physics, setPhysics);
-  };
-
-  const resetFilters = () => {
-    resetFilterSettings(filter, setFilter);
   };
 
   // select example graph on startup
@@ -438,8 +432,6 @@ function App() {
         handleDeleteColorScheme={handleDeleteColorScheme}
         handleCreateDifferenceGraph={handleCreateDifferenceGraph}
         colorSchemes={colorSchemes}
-        resetPhysics={resetPhysics}
-        resetFilters={resetFilters}
       />
       <main>
         {error && <Erorr error={error} setError={setError} />}

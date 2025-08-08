@@ -6,15 +6,15 @@ import { handleResize, initDragAndZoom } from "../Other/interactiveCanvas.js";
 import { initTooltips, Tooltips } from "../Other/toolTipCanvas.js";
 import { radius, drawCircle, drawLine, getTextStyle } from "../Other/draw.js";
 import { getSimulation } from "./graphPhysics.js";
-import { useAppearance, useGraphData, usePhysics, useSettings, useTooltipSettings } from "../../states.js";
+import { useAppearance, useContainer, useGraphData, useTooltipSettings } from "../../states.js";
 import { SettingControl } from "./settingControl.js";
 import { getNodeIdName, getNodeLabelOffsetY } from "./graphCalculations.js";
-import { linkLengthInit, nodeRepulsionStrengthInit, xStrengthInit, yStrengthInit } from "./graphInitValues.js";
+import { linkLengthInit, nodeRepulsionStrengthInit, xStrengthInit, yStrengthInit } from "../initValues/physicsInitValues.js";
 
 export function ForceGraph({ reset, setReset, setError }) {
-  const { settings, setSettings } = useSettings();
   const { appearance, setAppearance } = useAppearance();
   const { graphData, setGraphData } = useGraphData();
+  const { container, setContainer } = useContainer();
   const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
 
   const containerRef = useRef(null);
@@ -60,8 +60,8 @@ export function ForceGraph({ reset, setReset, setError }) {
     const height = containerRect.height;
     const width = containerRect.width;
 
-    setSettings("container.height", height);
-    setSettings("container.width", width);
+    setContainer("height", height);
+    setContainer("width", width);
 
     const initPIXI = async () => {
       const app = new PIXI.Application();
@@ -90,15 +90,7 @@ export function ForceGraph({ reset, setReset, setError }) {
 
   // set stage //
   useEffect(() => {
-    if (
-      graphData.circles ||
-      !app ||
-      !graphData.graph ||
-      !settings.container.width ||
-      !settings.container.height ||
-      !appearance.theme ||
-      !appearance.nodeColorScheme
-    )
+    if (graphData.circles || !app || !graphData.graph || !container.width || !container.height || !appearance.theme || !appearance.nodeColorScheme)
       return;
     log.info("Setting stage");
 
@@ -123,8 +115,8 @@ export function ForceGraph({ reset, setReset, setError }) {
       circle.id = node.id;
       circle.interactive = true;
       circle.buttonMode = true;
-      circle.x = node.x || settings.container.width / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
-      circle.y = node.y || settings.container.height / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
+      circle.x = node.x || container.width / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
+      circle.y = node.y || container.height / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
       initTooltips(circle, node, setTooltipSettings);
       newCircles.addChild(circle);
 
@@ -165,15 +157,8 @@ export function ForceGraph({ reset, setReset, setError }) {
     }
     log.info("Init simulation");
 
-    const newSimulation = getSimulation(
-      settings.container.width,
-      settings.container.height,
-      linkLengthInit,
-      xStrengthInit,
-      yStrengthInit,
-      nodeRepulsionStrengthInit
-    );
-    initDragAndZoom(app, newSimulation, radius, setTooltipSettings, settings.container.width, settings.container.height);
+    const newSimulation = getSimulation(container.width, container.height, linkLengthInit, xStrengthInit, yStrengthInit, nodeRepulsionStrengthInit);
+    initDragAndZoom(app, newSimulation, radius, setTooltipSettings, container.width, container.height);
 
     setSimulation(newSimulation);
   }, [app, graphData.graph]);

@@ -2,7 +2,7 @@ import log from "../../logger.js";
 import * as d3 from "d3";
 import * as PIXI from "pixi.js";
 import { useSettings } from "../../states.js";
-import { linkWidthInit } from "./appearance.js";
+import { linkWidthInit } from "../initValues/appearanceInitValues.js";
 
 export const radius = 8;
 export const linkWidth = linkWidthInit;

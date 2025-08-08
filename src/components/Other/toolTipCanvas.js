@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { ReactComponent as XIcon } from "../../icons/x.svg";
 import { extractDescription, extractFullName, extractPdbId } from "../RegexExtract/extract.js";
 import * as $3Dmol from "3dmol/build/3Dmol.js";
-import { useAppearance, useGraphData, useSettings, useTooltipSettings } from "../../states.js";
+import { useAppearance, useContainer, useGraphData, useTooltipSettings } from "../../states.js";
 
 export function Tooltips({}) {
   const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
@@ -20,8 +20,8 @@ export function Tooltips({}) {
 }
 
 export function ClickTooltip({ mapping }) {
-  const { settings, setSettings } = useSettings();
   const { appearance, setAppearance } = useAppearance();
+  const { container, setContainer } = useContainer();
 
   const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
 
@@ -185,20 +185,20 @@ export function ClickTooltip({ mapping }) {
       let x2 = `${tooltipSettings.clickTooltipData.x - 15}px`;
       let y = `${tooltipSettings.clickTooltipData.y}px`;
 
-      if (tooltipSettings.clickTooltipData.y > settings.container.height / 2) {
+      if (tooltipSettings.clickTooltipData.y > container.height / 2) {
         setStyle({
           left: x,
           top: y,
           transform: "translateY(-100%)",
         });
-        if (tooltipSettings.clickTooltipData.x > (2 * settings.container.width) / 3) {
+        if (tooltipSettings.clickTooltipData.x > (2 * container.width) / 3) {
           setStyle({
             left: x2,
             top: y,
             transform: "translateX(-100%) translateY(-100%)",
           });
         }
-      } else if (tooltipSettings.clickTooltipData.x > (2 * settings.container.width) / 3) {
+      } else if (tooltipSettings.clickTooltipData.x > (2 * container.width) / 3) {
         setStyle({
           left: x2,
           top: y,

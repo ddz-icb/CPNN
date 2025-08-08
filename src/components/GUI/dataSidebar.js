@@ -1,7 +1,6 @@
 import { ReactComponent as DeleteIcon } from "../../icons/delete.svg";
 import { ReactComponent as TrashIcon } from "../../icons/trash.svg";
 import { ReactComponent as PlusIcon } from "../../icons/plus.svg";
-import { ReactComponent as XIcon } from "../../icons/x.svg";
 import { Tooltip } from "react-tooltip";
 import { useEffect, useRef, useState } from "react";
 
@@ -16,7 +15,7 @@ import {
   PopUp,
 } from "./reusableComponents/sidebarComponents.js";
 import log from "../../logger.js";
-import { useGraphData, useSettings } from "../../states.js";
+import { useGraphData } from "../../states.js";
 import { exampleGraphJson } from "../../demodata/exampleGraphJSON.js";
 import { downloadCsvFile, downloadObjectAsFile } from "../GraphStuff/download.js";
 import { exampleGraphCsv } from "../../demodata/exampleGraphCSV.js";
@@ -66,7 +65,6 @@ export function DataSidebar({
 
 function UploadedFiles({ uploadedGraphFileNames, handleSelectGraph, handleDeleteGraphFile, handleAddFile }) {
   let uploadedGraphFileNamesNoExample = uploadedGraphFileNames?.filter((name) => name !== exampleGraphJson.name);
-  const { settings, setSettings } = useSettings();
 
   return (
     <>

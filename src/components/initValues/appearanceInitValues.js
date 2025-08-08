@@ -60,3 +60,14 @@ export const nodeColorSchemeInit = manyColors;
 export const linkColorSchemeInit = ibmAntiBlindness;
 export const colorSchemesInit = [ibmAntiBlindness, okabe_ItoAntiBlindness, manyColors];
 export const linkWidthInit = 2;
+
+export const appearanceInit = {
+  theme: themeInit,
+  nodeColorScheme: nodeColorSchemeInit,
+  linkColorScheme: linkColorSchemeInit,
+  showNodeLabels: true,
+  linkAttribsToColorIndices: null,
+  nodeAttribsToColorIndices: null,
+  linkWidth: linkWidthInit,
+  linkWidthText: linkWidthInit,
+};

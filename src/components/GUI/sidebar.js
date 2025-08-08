@@ -22,8 +22,6 @@ export function Sidebar({
   handleDeleteColorScheme,
   handleCreateDifferenceGraph,
   colorSchemes,
-  resetPhysics,
-  resetFilters,
 }) {
   const [activeNavItem, setActiveNavItem] = useState("Main");
 
@@ -64,14 +62,14 @@ export function Sidebar({
     content = (
       <Navbar>
         <Back activeNavItem={activeNavItem} icon={<BackArrowIcon />} onClick={() => handleNavItemClick("Main")} />
-        <FilterSidebar resetFilters={resetFilters} />
+        <FilterSidebar />
       </Navbar>
     );
   } else if (activeNavItem === "Physics") {
     content = (
       <Navbar>
         <Back activeNavItem={activeNavItem} icon={<BackArrowIcon />} onClick={() => handleNavItemClick("Main")} />
-        <PhysicsSidebar resetPhysics={resetPhysics} />
+        <PhysicsSidebar />
       </Navbar>
     );
   } else if (activeNavItem === "Appearance") {

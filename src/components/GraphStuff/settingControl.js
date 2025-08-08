@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useAppearance, useDownload, useFilter, useGraphData, usePhysics, useSettings } from "../../states.js";
+import { useAppearance, useContainer, useDownload, useFilter, useGraphData, usePhysics, useSettings } from "../../states.js";
 import log from "../../logger.js";
 import * as d3 from "d3";
 
@@ -14,7 +14,7 @@ import {
   downloadGraphJsonWithCoordinatesPhysics,
 } from "./download.js";
 import { changeCircleBorderColor, changeNodeColors, changeNodeLabelColor, radius } from "../Other/draw.js";
-import { lightTheme, themeInit } from "../Other/appearance.js";
+import { lightTheme, themeInit } from "../initValues/appearanceInitValues.js";
 import {
   filterActiveNodesForPixi,
   filterByLinkAttribs,
@@ -41,11 +41,11 @@ import {
 } from "./graphPhysics.js";
 
 export function SettingControl({ simulation, app, redraw }) {
-  const { settings, setSettings } = useSettings();
   const { physics, setPhysics } = usePhysics();
   const { filter, setFilter } = useFilter();
   const { download, setDownload } = useDownload();
   const { appearance, setAppearance } = useAppearance();
+  const { container, setContainer } = useContainer();
   const { graphData, setGraphData } = useGraphData();
 
   // filter nodes and links //
@@ -123,7 +123,7 @@ export function SettingControl({ simulation, app, redraw }) {
     const physics = graphData.graph.physics;
     log.info("applying physics settings", physics);
 
-    applyPhysics(physics, setSettings);
+    applyPhysics(physics, setPhysics);
   }, [graphData.graph?.physics]);
 
   // enable/disable node labels
@@ -343,9 +343,9 @@ export function SettingControl({ simulation, app, redraw }) {
     }
     log.info("Changing horizontal gravity", physics.xStrength);
 
-    simulation.force("x", d3.forceX(settings.container.width / 2).strength(physics.xStrength));
+    simulation.force("x", d3.forceX(container.width / 2).strength(physics.xStrength));
     simulation.alpha(1).restart();
-  }, [physics.xStrength, settings.container.width, settings.container.height]);
+  }, [physics.xStrength, container.width, container.height]);
 
   // change Y Strength //
   useEffect(() => {
@@ -357,9 +357,9 @@ export function SettingControl({ simulation, app, redraw }) {
     }
     log.info("Changing vertical gravity", physics.yStrength);
 
-    simulation.force("y", d3.forceY(settings.container.height / 2).strength(physics.yStrength));
+    simulation.force("y", d3.forceY(container.height / 2).strength(physics.yStrength));
     simulation.alpha(1).restart();
-  }, [physics.yStrength, settings.container.width, settings.container.height]);
+  }, [physics.yStrength, container.width, container.height]);
 
   // change component Strength //
   useEffect(() => {
@@ -419,17 +419,17 @@ export function SettingControl({ simulation, app, redraw }) {
 
   // change graph border //
   useEffect(() => {
-    if (!simulation || !settings.container.width || !settings.container.height) return;
+    if (!simulation || !container.width || !container.height) return;
 
     if (!physics.checkBorder) {
       log.info("Disabling graph border");
       simulation.force("border", null);
     } else {
       log.info("Setting graph border");
-      simulation.force("border", borderCheck(radius, physics.borderHeight, physics.borderWidth, settings.container.width, settings.container.height));
+      simulation.force("border", borderCheck(radius, physics.borderHeight, physics.borderWidth, container.width, container.height));
     }
     simulation.alpha(1).restart();
-  }, [physics.checkBorder, physics.borderHeight, physics.borderWidth, settings.container.width, settings.container.height]);
+  }, [physics.checkBorder, physics.borderHeight, physics.borderWidth, container.width, container.height]);
 
   // enable circular layout
   useEffect(() => {

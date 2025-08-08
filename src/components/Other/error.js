@@ -1,9 +1,6 @@
 import { ReactComponent as XIcon } from "../../icons/x.svg";
-import { useSettings } from "../../states.js";
 
 export function Erorr({ error, setError }) {
-  const { settings, setSettings } = useSettings();
-
   const closeError = () => {
     setError(null);
   };

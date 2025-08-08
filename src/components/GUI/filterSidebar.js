@@ -19,12 +19,13 @@ import {
   SidebarSliderBlock,
   SidebarSwitchBlock,
 } from "./reusableComponents/sidebarComponents.js";
-import { useFilter, useGraphData, useSettings } from "../../states.js";
-import { maxCompSizeInit, minNeighborhoodSizeInit } from "../GraphStuff/graphInitValues.js";
+import { useAppearance, useFilter, useGraphData } from "../../states.js";
+import { filterInit, maxCompSizeInit, minNeighborhoodSizeInit } from "../initValues/filterInitValues.js";
+import { compDensityInit } from "../initValues/physicsInitValues.js";
 
-export function FilterSidebar({ resetFilters }) {
-  const { settings, setSettings } = useSettings();
-  const { filter, setFilter } = useFilter();
+export function FilterSidebar({}) {
+  const { filter, setFilter, setAllFilter } = useFilter();
+  const { appearance, setAppearance } = useAppearance();
   const { graphData, setGraphData } = useGraphData();
 
   const linkFilterEditorRef = useRef(null);
@@ -37,7 +38,7 @@ export function FilterSidebar({ resetFilters }) {
   const [compilerErrorNodeFilter, setCompilerErrorNodeFilter] = useState(null);
 
   const handleResetFilters = () => {
-    resetFilters();
+    setAllFilter(filterInit);
     setGraphData("mergeProteins", false);
     setCompilerErrorLinkFilter(null);
     setCompilerErrorNodeFilter(null);
@@ -173,8 +174,8 @@ export function FilterSidebar({ resetFilters }) {
 
     if (value === "") {
       event.target.innerText = 1;
-      setFilter("compDensityText", 1);
-      setFilter("compDensity", 1);
+      setFilter("compDensityText", compDensityInit);
+      setFilter("compDensity", compDensityInit);
     } else if (!isNaN(floatValue) && floatValue >= 0) {
       event.target.innerText = floatValue;
       setFilter("compDensityText", floatValue);
