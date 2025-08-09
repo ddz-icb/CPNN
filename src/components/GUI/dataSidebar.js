@@ -5,14 +5,14 @@ import { Tooltip } from "react-tooltip";
 import { useEffect, useRef, useState } from "react";
 
 import {
-  PopupButtonRect,
   PopUpDoubleTextField,
   PopUpTextField,
-  SidebarButtonRect,
   PopUpSliderBlock,
   PopUpFieldBlock,
   PopUp,
   PopUpSwitchBlock,
+  SidebarButtonRect,
+  PopupButtonRect,
 } from "./reusableComponents/sidebarComponents.js";
 import log from "../../logger.js";
 import { useGraphData } from "../../states.js";
@@ -274,14 +274,6 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
   const annotationMappingFormat = "Uniprot-ID, Pathway Name, Reactome-ID";
   const annotationMappingExample = "O60306,mRNA Splicing,R-HSA-72172";
 
-  const handleGraphUploadClick = () => {
-    graphFileRef.current.click();
-  };
-
-  const handleUploadMappingClick = () => {
-    annotationMappingRef.current.click();
-  };
-
   useEffect(() => {
     let id = "UniprotID";
     let name = "Name";
@@ -342,13 +334,11 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
         <div className="popup-block">
           <PopupButtonRect
             text={"Download Example Pathway Mapping"}
-            onClick={() => {
-              downloadCsvFile(exampleMappingCsv.content, exampleMappingCsv.name);
-            }}
+            onClick={() => downloadCsvFile(exampleMappingCsv.content, exampleMappingCsv.name)}
           />
           <PopupButtonRect
             text={"Upload Own Pathway Mapping"}
-            onClick={handleUploadMappingClick}
+            onClick={() => annotationMappingRef.current.click()}
             linkRef={annotationMappingRef}
             onChange={(event) => {
               handleNewAnnotationMapping(event);
@@ -368,25 +358,19 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
       >
         <div className="popup-block">
           <PopupButtonRect
-            className="no-pad-top"
             text={"JSON Example Graph"}
-            onClick={() => {
-              downloadObjectAsFile(exampleGraphJson.content, exampleGraphJson.name);
-            }}
+            onClick={() => downloadObjectAsFile(exampleGraphJson.content, exampleGraphJson.name)}
+            className="no-pad-top"
           />
           <PopupButtonRect
-            className="no-pad-top"
             text={"Matrix Example Graph"}
-            onClick={() => {
-              downloadCsvFile(exampleGraphCsv.content, exampleGraphCsv.name);
-            }}
+            onClick={() => downloadCsvFile(exampleGraphCsv.content, exampleGraphCsv.name)}
+            className="no-pad-top"
           />
           <PopupButtonRect
-            className="no-pad-top"
             text={"Raw Data Example Graph"}
-            onClick={() => {
-              downloadCsvFile(exampleGraphRaw.content, exampleGraphRaw.name);
-            }}
+            onClick={() => downloadCsvFile(exampleGraphRaw.content, exampleGraphRaw.name)}
+            className="no-pad-top"
           />
         </div>
         <PopUpSwitchBlock
@@ -460,7 +444,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
         <div className="popup-block flex-end">
           <PopupButtonRect
             text={"Upload Own Graph File"}
-            onClick={handleGraphUploadClick}
+            onClick={() => graphFileRef.current.click()}
             linkRef={graphFileRef}
             onChange={(event) => {
               handleNewGraphFile(event, takeAbs, minCorrForEdge, minCompSizeForNode, maxCompSizeForNode, spearmanCoefficient, mergeSameProtein);

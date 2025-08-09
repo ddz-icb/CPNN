@@ -206,8 +206,6 @@ export function PopUpFieldBlock({ valueText, setValue, setValueText, fallbackVal
   );
 }
 
-// NEXT: keep on reforming - rename onChange... get rid of handler Functions
-
 export function SidebarButtonRect({ onClick, onChange, linkRef, tooltip, tooltipId, text }) {
   return (
     <div className="sidebar-tooltip-wrapper">
@@ -220,7 +218,7 @@ export function SidebarButtonRect({ onClick, onChange, linkRef, tooltip, tooltip
   );
 }
 
-export function PopupButtonRect({ className, onClick, onChange, linkRef, tooltip, tooltipId, text }) {
+export function PopupButtonRect({ onClick, onChange, linkRef, tooltip, tooltipId, text, className }) {
   return (
     <div className={`popup-tooltip-wrapper justify-right pad-top-1 ${className}`}>
       <button className="popup-button-rect" data-tooltip-id={tooltipId} data-tooltip-content={tooltip} onClick={onClick}>

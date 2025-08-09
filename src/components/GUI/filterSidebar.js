@@ -13,10 +13,10 @@ import { parseGroupsFilter } from "../Other/parserNodeFilter.js";
 import {
   SidebarSliderBlock,
   PopUpTextFieldCompact,
-  SidebarButtonRect,
   SidebarCodeEditorBlock,
   SidebarFieldBlock,
   SidebarSwitchBlock,
+  SidebarButtonRect,
 } from "./reusableComponents/sidebarComponents.js";
 import { useAppearance, useFilter, useGraphData } from "../../states.js";
 import {

@@ -1,4 +1,4 @@
-import { SidebarSliderBlock, SidebarButtonRect, SidebarSwitchBlock } from "./reusableComponents/sidebarComponents.js";
+import { SidebarSliderBlock, SidebarSwitchBlock, SidebarButtonRect } from "./reusableComponents/sidebarComponents.js";
 
 import { usePhysics } from "../../states.js";
 import { communityForceStrengthInit, componentStrengthInit, physicsInit, xStrengthInit } from "../initValues/physicsInitValues.js";
@@ -18,22 +18,6 @@ import {
 
 export function PhysicsSidebar({}) {
   const { physics, setPhysics, setAllPhysics } = usePhysics();
-
-  const handleCheckBorder = () => {
-    setPhysics("checkBorder", !physics.checkBorder);
-  };
-
-  const handleLinkForce = () => {
-    setPhysics("linkForce", !physics.linkForce);
-  };
-
-  const handleNodeCollision = () => {
-    setPhysics("nodeCollision", !physics.nodeCollision);
-  };
-
-  const handleCircleLayout = () => {
-    setPhysics("circleLayout", !physics.circleLayout);
-  };
 
   return (
     <>

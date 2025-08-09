@@ -3,10 +3,10 @@ import { ReactComponent as TrashIcon } from "../../icons/trash.svg";
 import {
   SidebarSliderBlock,
   PopUp,
-  PopupButtonRect,
   PopUpTextField,
-  SidebarButtonRect,
   SidebarSwitchBlock,
+  SidebarButtonRect,
+  PopupButtonRect,
 } from "./reusableComponents/sidebarComponents.js";
 import { ReactComponent as XIcon } from "../../icons/x.svg";
 import { colorSchemeCsv } from "../../demodata/exampleColorSchemeCSV.js";
@@ -72,19 +72,11 @@ export function TopAppearanceButtons({ handleNewColorScheme }) {
 
   let content = null;
 
-  const handleUploadSchemeClick = () => {
-    colorSchemeRef.current.click();
-  };
-
-  const handleColorSchemePopUp = () => {
-    setColorSchemePopUpActive(!colorSchemePopUpActive);
-  };
-
   return (
     <>
       <div className="sidebar-button">
         <SidebarButtonRect
-          onClick={handleColorSchemePopUp}
+          onClick={() => setColorSchemePopUpActive(!colorSchemePopUpActive)}
           text={"Upload Color Schemes"}
           tooltip={"Upload your Color Scheme as a CSV or TSV File"}
           tooltipId={"upload-graph-tooltip"}
@@ -115,15 +107,10 @@ export function TopAppearanceButtons({ handleNewColorScheme }) {
             <div className="popup-block" />
             <PopUpTextField textInfront={"Color Scheme example:"} textInside={"#e69f00,#56b4e9,#009e73"} />
             <div className="popup-block">
-              <PopupButtonRect
-                text={"Download Example Color Scheme"}
-                onClick={() => {
-                  downloadCsvFile(colorSchemeCsv.content, colorSchemeCsv.name);
-                }}
-              />
+              <PopupButtonRect text={"Download Example Color Scheme"} onClick={() => downloadCsvFile(colorSchemeCsv.content, colorSchemeCsv.name)} />
               <PopupButtonRect
                 text={"Upload Own Color Scheme"}
-                onClick={handleUploadSchemeClick}
+                onClick={() => colorSchemeRef.current.click()}
                 linkRef={colorSchemeRef}
                 onChange={(event) => {
                   handleNewColorScheme(event);
