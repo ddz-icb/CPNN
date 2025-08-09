@@ -14,7 +14,7 @@ import {
   circleLayoutDescription,
   nodeCollisionDescription,
   linkForceDescription,
-} from "../descriptions/physicsDescriptions.js";
+} from "./descriptions/physicsDescriptions.js";
 
 export function PhysicsSidebar({}) {
   const { physics, setPhysics, setAllPhysics } = usePhysics();

@@ -1,6 +1,6 @@
-import "../../index.css";
+import "../../../index.css";
 import { useState } from "react";
-import { ReactComponent as BackArrowIcon } from "../../icons/backArrow.svg";
+import { ReactComponent as BackArrowIcon } from "../../../icons/backArrow.svg";
 
 import { FilterSidebar } from "./filterSidebar.js";
 import { PhysicsSidebar } from "./physicsSidebar.js";

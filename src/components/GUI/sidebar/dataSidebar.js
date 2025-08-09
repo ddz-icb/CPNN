@@ -1,7 +1,6 @@
-import { ReactComponent as DeleteIcon } from "../../icons/delete.svg";
-import { ReactComponent as TrashIcon } from "../../icons/trash.svg";
-import { ReactComponent as PlusIcon } from "../../icons/plus.svg";
-import { Tooltip } from "react-tooltip";
+import { ReactComponent as DeleteIcon } from "../../../icons/delete.svg";
+import { ReactComponent as TrashIcon } from "../../../icons/trash.svg";
+import { ReactComponent as PlusIcon } from "../../../icons/plus.svg";
 import { useEffect, useRef, useState } from "react";
 
 import {
@@ -30,8 +29,8 @@ import {
   takeAbsDescription,
   uploadGraphDescription,
   uploadPathwayMappingDescription,
-} from "../descriptions/dataDescriptions.js";
-import { mergeProteinsDescription } from "../descriptions/filterDescriptions.js";
+} from "./descriptions/dataDescriptions.js";
+import { mergeProteinsDescription } from "./descriptions/filterDescriptions.js";
 
 export function DataSidebar({
   handleRemoveActiveGraphFile,

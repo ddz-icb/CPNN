@@ -1,9 +1,9 @@
-import { ReactComponent as FileLines } from "../../icons/fileLines.svg";
-import { ReactComponent as PdfIcon } from "../../icons/pdf.svg";
-import { ReactComponent as FileWaveform } from "../../icons/fileWaveform.svg";
-import { ReactComponent as FileImage } from "../../icons/fileImage.svg";
-import { ReactComponent as DownloadIcon } from "../../icons/download.svg";
-import { ReactComponent as XIcon } from "../../icons/x.svg";
+import { ReactComponent as FileLines } from "../../../icons/fileLines.svg";
+import { ReactComponent as PdfIcon } from "../../../icons/pdf.svg";
+import { ReactComponent as FileWaveform } from "../../../icons/fileWaveform.svg";
+import { ReactComponent as FileImage } from "../../../icons/fileImage.svg";
+import { ReactComponent as DownloadIcon } from "../../../icons/download.svg";
+import { ReactComponent as XIcon } from "../../../icons/x.svg";
 
 import { useDownload } from "../../../states.js";
 import { Button, Item } from "../reusableComponents/headerBarComponents.js";

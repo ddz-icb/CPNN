@@ -1,4 +1,4 @@
-import "../../index.css";
+import "../../../index.css";
 import log from "../../../logger.js";
 import { useEffect, useState, useRef } from "react";
 import CodeMirror from "codemirror";
@@ -35,7 +35,7 @@ import {
   minCompSizeDescription,
   minNeighborhoodSizeDescription,
   nodeFilterDescription,
-} from "../descriptions/filterDescriptions.js";
+} from "./descriptions/filterDescriptions.js";
 import { handleEditorChange, runCodeEditor } from "../../Other/handlers.js";
 
 export function FilterSidebar() {

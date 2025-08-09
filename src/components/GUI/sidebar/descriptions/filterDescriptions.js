@@ -1,4 +1,4 @@
-import { PopUpTextField } from "../reusableComponents/sidebarComponents.js";
+import { PopUpTextField } from "../../reusableComponents/sidebarComponents.js";
 
 export const linkThresholdDescription = (
   <div>

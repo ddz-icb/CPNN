@@ -3,8 +3,8 @@ import log from "./logger.js";
 import { useState, useEffect } from "react";
 
 import { ForceGraph } from "./components/GraphStuff/forceGraph.js";
-import { Sidebar } from "./components/GUI/sidebar.js";
-import { HeaderBar } from "./components/GUI/headerBar.js";
+import { Sidebar } from "./components/GUI/sidebar/sidebar.js";
+import { HeaderBar } from "./components/GUI/headerbar/headerBar.js";
 import {
   applyNodeMapping,
   getDifferenceGraph,

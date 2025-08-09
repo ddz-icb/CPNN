@@ -1,5 +1,5 @@
 import { useRef, useState, Fragment } from "react";
-import { ReactComponent as TrashIcon } from "../../icons/trash.svg";
+import { ReactComponent as TrashIcon } from "../../../icons/trash.svg";
 import {
   SidebarSliderBlock,
   PopUpTextFieldInline,
@@ -19,7 +19,7 @@ import {
   nodeLabelDescription,
   setColorSchemeDescription,
   uploadColorSchemeDescription,
-} from "../descriptions/appearanceDescriptions.js";
+} from "./descriptions/appearanceDescriptions.js";
 import { linkWidthInit } from "../../initValues/appearanceInitValues.js";
 
 export function AppearanceSidebar({ handleNewColorScheme, handleDeleteColorScheme, colorSchemes }) {
