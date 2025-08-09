@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { Tooltip } from "react-tooltip";
+import { useState } from "react";
 
 import { Mapping } from "./headerBarMapping.js";
 import { HeaderBarExport } from "./headerBarExport.js";

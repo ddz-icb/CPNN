@@ -6,8 +6,8 @@ import { fallbackColor, getColor } from "../Other/draw.js";
 import { Button } from "./reusableComponents/headerBarComponents.js";
 
 export function Mapping({ activeMenu, handleActiveMenuClick }) {
-  const { appearance, setAppearance } = useAppearance();
-  const { graphData, setGraphData } = useGraphData();
+  const { appearance } = useAppearance();
+  const { graphData } = useGraphData();
 
   let content = null;
 
