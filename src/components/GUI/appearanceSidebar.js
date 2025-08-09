@@ -76,23 +76,19 @@ export function TopAppearanceButtons({ handleNewColorScheme }) {
 
   return (
     <>
-      <div className="sidebar-button">
-        <SidebarButtonRect
-          onClick={() => setColorSchemePopUpActive(!colorSchemePopUpActive)}
-          text={"Upload Color Schemes"}
-          tooltip={"Upload your Color Scheme as a CSV or TSV File"}
-          tooltipId={"upload-graph-tooltip"}
-        />
-      </div>
+      <SidebarButtonRect
+        onClick={() => setColorSchemePopUpActive(!colorSchemePopUpActive)}
+        text={"Upload Color Schemes"}
+        tooltip={"Upload your Color Scheme as a CSV or TSV File"}
+        tooltipId={"upload-graph-tooltip"}
+      />
       <PopUp
         heading={"Uploading Your Color Scheme"}
         description={uploadColorSchemeDescription}
         isOpen={colorSchemePopUpActive}
         setIsOpen={setColorSchemePopUpActive}
       >
-        <div className="popup-block color-text-primary"></div>
         <PopUpTextFieldInline textInfront={"Color Scheme format:"} textInside={"Color1, Color2, Color3, ..."} />
-        <div className="popup-block" />
         <PopUpTextFieldInline textInfront={"Color Scheme example:"} textInside={"#e69f00,#56b4e9,#009e73"} />
         <div className="popup-block">
           <PopupButtonRect text={"Download Example Color Scheme"} onClick={() => downloadCsvFile(colorSchemeCsv.content, colorSchemeCsv.name)} />

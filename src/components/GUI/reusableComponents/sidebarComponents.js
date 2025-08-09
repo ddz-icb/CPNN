@@ -21,7 +21,7 @@ export function SidebarSliderBlock({ value, valueText, setValue, setValueText, f
           <InfoIcon />
         </span>
       </div>
-      <div className="sidebar-block pad-bottom-15">
+      <div className="sidebar-block">
         <input
           className="sidebar-slider"
           type="range"
@@ -264,12 +264,12 @@ export function PopUpTextField({ textInfront, textInside }) {
 
 export function PopUpTextFieldInline({ textInfront, textInside }) {
   return (
-    <div>
-      <label className="label-no-pad pad-top-1">{textInfront}</label>
-      <div className={"popup-block"}>
+    <>
+      <div className={"popup-block pad-top-05 pad-bottom-05"}>
+        <label className="label-no-pad">{textInfront}</label>
         <div className="popup-text-field pad-left-025 pad-right-025">{textInside}</div>
       </div>
-    </div>
+    </>
   );
 }
 

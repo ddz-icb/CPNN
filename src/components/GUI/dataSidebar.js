@@ -299,7 +299,6 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
         setIsOpen={setMappingPopUpActive}
       >
         <PopUpTextFieldInline textInfront={"Pathway Mapping format:"} textInside={annotationMappingFormat} />
-        <div className="popup-block" />
         <PopUpTextFieldInline textInfront={"Pathway Mapping example:"} textInside={annotationMappingExample} />
         <div className="popup-block">
           <PopupButtonRect
@@ -400,9 +399,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
           infoHeading={"Include phosphosites"}
           infoDescription={containsSitesDescription}
         />
-        <div className="popup-block"></div>
         <PopUpTextFieldInline textInfront={"Your Node ID format:"} textInside={nodeIdFormat} />
-        <div className="popup-block"></div>
         <PopUpTextFieldInline textInfront={"Node ID examples:"} textInside={nodeIdExample1} />
         <PopUpTextFieldInline textInside={nodeIdExample2} />
         <div className="popup-block flex-end">
