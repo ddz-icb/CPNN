@@ -2,9 +2,9 @@ import "./index.css";
 import log from "./logger.js";
 import { useState, useEffect } from "react";
 
-import { ForceGraph } from "./components/GraphStuff/forceGraph.js";
-import { Sidebar } from "./components/GUI/sidebar/sidebar.js";
-import { HeaderBar } from "./components/GUI/headerbar/headerBar.js";
+import { ForceGraph } from "./components/graph_domain/forceGraph.js";
+import { Sidebar } from "./components/gui/sidebar/sidebar.js";
+import { HeaderBar } from "./components/gui/headerbar/headerBar.js";
 import {
   applyNodeMapping,
   getDifferenceGraph,
@@ -14,7 +14,7 @@ import {
   getNodeAttribsToColorIndices,
   joinGraphs,
   mergeSameProteins,
-} from "./components/GraphStuff/graphCalculations.js";
+} from "./components/graph_domain/graphCalculations.js";
 import {
   addActiveGraphFile,
   addNewAnnotationMappingFile,
@@ -33,15 +33,15 @@ import {
   setInitGraph,
   storeColorSchemes,
   storeTheme,
-} from "./components/Other/applicationFunctions.js";
+} from "./components/other/applicationFunctions.js";
 import { useAppearance, useDownload, useFilter, useGraphData, usePhysics } from "./states.js";
-import { Erorr } from "./components/Other/error.js";
-import { colorSchemesInit } from "./components/initValues/appearanceInitValues.js";
-import { getFileNameWithoutExtension } from "./components/Other/parseFiles.js";
-import { getGraphDB } from "./components/Other/dbGraphs.js";
-import { downloadInit } from "./components/initValues/downloadInitValues.js";
-import { physicsInit } from "./components/initValues/physicsInitValues.js";
-import { filterInit, linkThresholdInit } from "./components/initValues/filterInitValues.js";
+import { Erorr } from "./components/other/error.js";
+import { colorSchemesInit } from "./components/init_values/appearanceInitValues.js";
+import { getFileNameWithoutExtension } from "./components/other/parseFiles.js";
+import { getGraphDB } from "./components/other/dbGraphs.js";
+import { downloadInit } from "./components/init_values/downloadInitValues.js";
+import { physicsInit } from "./components/init_values/physicsInitValues.js";
+import { filterInit, linkThresholdInit } from "./components/init_values/filterInitValues.js";
 
 function App() {
   const { setFilter, setAllFilter } = useFilter();

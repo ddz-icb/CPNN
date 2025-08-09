@@ -12,11 +12,11 @@ import {
   PopupButtonRect,
   PopUp,
   TableList,
-} from "../reusableComponents/sidebarComponents.js";
+} from "../reusable_components/sidebarComponents.js";
 import log from "../../../logger.js";
 import { useGraphData } from "../../../states.js";
 import { exampleGraphJson } from "../../../demodata/exampleGraphJSON.js";
-import { downloadCsvFile, downloadObjectAsFile } from "../../GraphStuff/download.js";
+import { downloadCsvFile, downloadObjectAsFile } from "../../graph_domain/download.js";
 import { exampleGraphCsv } from "../../../demodata/exampleGraphCSV.js";
 import { exampleMappingCsv } from "../../../demodata/exampleMappingCSV.js";
 import { exampleGraphRaw } from "../../../demodata/exampleGraphRawTSV.js";

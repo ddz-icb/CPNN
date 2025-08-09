@@ -1,7 +1,7 @@
 import { exampleGraphJson } from "../../demodata/exampleGraphJSON.js";
 import log from "../../logger.js";
-import { joinGraphs } from "../GraphStuff/graphCalculations.js";
-import { applyTheme, colorSchemesInit, lightTheme } from "../initValues/appearanceInitValues.js";
+import { joinGraphs } from "../graph_domain/graphCalculations.js";
+import { applyTheme, colorSchemesInit, lightTheme } from "../init_values/appearanceInitValues.js";
 import { addGraphFileDB, addGraphFileIfNotExistsDB, fromAllGetGraphNameDB, getGraphDB, removeGraphFileByNameDB } from "./dbGraphs.js";
 import { addMappingFileDB, fromAllGetMappingNameDB, getMappingDB, removeMappingFileByNameDB } from "./dbMappings.js";
 import { getFileNameWithoutExtension, parseAnnotationMappingFile, parseColorSchemeFile, parseGraphFile } from "./parseFiles.js";

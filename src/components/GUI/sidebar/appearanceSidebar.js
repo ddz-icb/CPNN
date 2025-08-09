@@ -9,9 +9,9 @@ import {
   PopUp,
   TableList,
   ColorMappingSelect,
-} from "../reusableComponents/sidebarComponents.js";
+} from "../reusable_components/sidebarComponents.js";
 import { colorSchemeCsv } from "../../../demodata/exampleColorSchemeCSV.js";
-import { downloadCsvFile } from "../../GraphStuff/download.js";
+import { downloadCsvFile } from "../../graph_domain/download.js";
 import { useAppearance } from "../../../states.js";
 import log from "../../../logger.js";
 import {
@@ -20,7 +20,7 @@ import {
   setColorSchemeDescription,
   uploadColorSchemeDescription,
 } from "./descriptions/appearanceDescriptions.js";
-import { linkWidthInit } from "../../initValues/appearanceInitValues.js";
+import { linkWidthInit } from "../../init_values/appearanceInitValues.js";
 
 export function AppearanceSidebar({ handleNewColorScheme, handleDeleteColorScheme, colorSchemes }) {
   return (

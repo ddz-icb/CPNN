@@ -4,8 +4,8 @@ import log from "../../logger.js";
 import * as d3 from "d3";
 
 import { downloadAsPDF, downloadAsPNG, downloadAsSVG, downloadGraphJson, downloadGraphWithLegendPdf, downloadLegendPdf } from "./download.js";
-import { changeCircleBorderColor, changeNodeColors, changeNodeLabelColor, radius } from "../Other/draw.js";
-import { lightTheme, themeInit } from "../initValues/appearanceInitValues.js";
+import { changeCircleBorderColor, changeNodeColors, changeNodeLabelColor, radius } from "../other/draw.js";
+import { lightTheme, themeInit } from "../init_values/appearanceInitValues.js";
 import {
   filterActiveNodesForPixi,
   filterByLinkAttribs,

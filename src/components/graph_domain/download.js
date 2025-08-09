@@ -2,7 +2,7 @@ import log from "../../logger.js";
 import canvasToSvg from "canvas-to-svg";
 import { jsPDF } from "jspdf";
 import { svg2pdf } from "svg2pdf.js";
-import { drawCircleCanvas, drawLineCanvas } from "../Other/draw.js";
+import { drawCircleCanvas, drawLineCanvas } from "../other/draw.js";
 
 function triggerDownload(blob, filename) {
   log.info(`Downloading ${filename}`);

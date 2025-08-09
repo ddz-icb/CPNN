@@ -2,8 +2,8 @@ import { ReactComponent as EyeIcon } from "../../../icons/eye.svg";
 import { ReactComponent as XIcon } from "../../../icons/x.svg";
 import { useAppearance, useGraphData } from "../../../states.js";
 
-import { fallbackColor, getColor } from "../../Other/draw.js";
-import { Button } from "../reusableComponents/headerBarComponents.js";
+import { fallbackColor, getColor } from "../../other/draw.js";
+import { Button } from "../reusable_components/headerBarComponents.js";
 
 export function Mapping({ activeMenu, handleActiveMenuClick }) {
   const { appearance } = useAppearance();

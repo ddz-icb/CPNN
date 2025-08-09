@@ -2,14 +2,14 @@ import "../../index.css";
 import log from "../../logger.js";
 import * as PIXI from "pixi.js";
 import { useRef, useEffect, useState } from "react";
-import { handleResize, initDragAndZoom } from "../Other/interactiveCanvas.js";
-import { initTooltips, Tooltips } from "../Other/toolTipCanvas.js";
-import { radius, drawCircle, drawLine, getTextStyle } from "../Other/draw.js";
+import { handleResize, initDragAndZoom } from "../other/interactiveCanvas.js";
+import { initTooltips, Tooltips } from "../other/toolTipCanvas.js";
+import { radius, drawCircle, drawLine, getTextStyle } from "../other/draw.js";
 import { getSimulation } from "./graphPhysics.js";
 import { useAppearance, useContainer, useGraphData, useTooltipSettings } from "../../states.js";
 import { SettingControl } from "./settingControl.js";
 import { getNodeIdName, getNodeLabelOffsetY } from "./graphCalculations.js";
-import { linkLengthInit, nodeRepulsionStrengthInit, xStrengthInit, yStrengthInit } from "../initValues/physicsInitValues.js";
+import { linkLengthInit, nodeRepulsionStrengthInit, xStrengthInit, yStrengthInit } from "../init_values/physicsInitValues.js";
 
 export function ForceGraph({ reset, setReset, setError }) {
   const { appearance, setAppearance } = useAppearance();

@@ -1,7 +1,7 @@
-import { SidebarSliderBlock, SidebarSwitchBlock, SidebarButtonRect } from "../reusableComponents/sidebarComponents.js";
+import { SidebarSliderBlock, SidebarSwitchBlock, SidebarButtonRect } from "../reusable_components/sidebarComponents.js";
 
 import { usePhysics } from "../../../states.js";
-import { communityForceStrengthInit, componentStrengthInit, physicsInit, xStrengthInit } from "../../initValues/physicsInitValues.js";
+import { communityForceStrengthInit, componentStrengthInit, physicsInit, xStrengthInit } from "../../init_values/physicsInitValues.js";
 import {
   borderHeightDescription,
   borderWidthDescription,

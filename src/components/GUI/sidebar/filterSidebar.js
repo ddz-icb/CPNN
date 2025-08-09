@@ -5,10 +5,10 @@ import CodeMirror from "codemirror";
 import "codemirror/lib/codemirror.css";
 import "codemirror/addon/mode/simple.js";
 import "codemirror/theme/material.css";
-import "../../Other/syntaxHighlighting.js";
+import "../../other/syntaxHighlighting.js";
 
-import { parseAttributesFilter as parseLinkAttribsFilter } from "../../Other/parser.js";
-import { parseGroupsFilter as parseNodeAttribsFilter } from "../../Other/parserNodeFilter.js";
+import { parseAttributesFilter as parseLinkAttribsFilter } from "../../other/parser.js";
+import { parseGroupsFilter as parseNodeAttribsFilter } from "../../other/parserNodeFilter.js";
 
 import {
   SidebarSliderBlock,
@@ -16,7 +16,7 @@ import {
   SidebarSwitchBlock,
   SidebarButtonRect,
   SidebarCodeEditorBlock,
-} from "../reusableComponents/sidebarComponents.js";
+} from "../reusable_components/sidebarComponents.js";
 import { useAppearance, useFilter, useGraphData } from "../../../states.js";
 import {
   filterInit,
@@ -25,7 +25,7 @@ import {
   minNeighborhoodSizeInit,
   compDensityInit,
   minCompSizeInit,
-} from "../../initValues/filterInitValues.js";
+} from "../../init_values/filterInitValues.js";
 import {
   compDensityDescription,
   linkFilterDescription,
@@ -36,7 +36,7 @@ import {
   minNeighborhoodSizeDescription,
   nodeFilterDescription,
 } from "./descriptions/filterDescriptions.js";
-import { handleEditorChange, runCodeEditor } from "../../Other/handlers.js";
+import { handleEditorChange, runCodeEditor } from "../../other/handlers.js";
 
 export function FilterSidebar() {
   const { filter, setFilter, setAllFilter } = useFilter();
