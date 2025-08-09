@@ -12,11 +12,10 @@ import { parseGroupsFilter } from "../Other/parserNodeFilter.js";
 
 import {
   SidebarSliderBlock,
-  PopUpTextFieldCompact,
-  SidebarCodeEditorBlock,
   SidebarFieldBlock,
   SidebarSwitchBlock,
   SidebarButtonRect,
+  SidebarCodeEditorBlock,
 } from "./reusableComponents/sidebarComponents.js";
 import { useAppearance, useFilter, useGraphData } from "../../states.js";
 import {
@@ -29,11 +28,13 @@ import {
 } from "../initValues/filterInitValues.js";
 import {
   compDensityDescription,
+  linkFilterDescription,
   linkThresholdDescription,
   maxCompSizeDescription,
   mergeProteinsDescription,
   minCompSizeDescription,
   minNeighborhoodSizeDescription,
+  nodeFilterDescription,
 } from "./descriptions/filterDescriptions.js";
 
 export function FilterSidebar({}) {
@@ -184,33 +185,7 @@ export function FilterSidebar({}) {
         onClick={runCodeButtonFilterAttribs}
         defaultValue={filter.linkFilterText}
         infoHeading={"Filtering Links by Attributes"}
-        infoDescription={
-          <div>
-            <div className="margin-0">
-              You can filter the links by formulating a query. These queries must follow the Conjunctive Normal Form (CNF), meaning that conditions
-              grouped with <PopUpTextFieldCompact textInside={"or"} /> (e.g., <PopUpTextFieldCompact textInside={"(A or B)"} /> ) are combined using{" "}
-              <PopUpTextFieldCompact textInside={"and"} />. To address one (or multiple) attributes, parts of the attribute name can be used (e.g.{" "}
-              <PopUpTextFieldCompact textInside={"lean"} /> includes all attributes that contain the word "lean"). If the attribute consists of more
-              than one word, quotation marks can be used (e.g. <PopUpTextFieldCompact textInside={'"lean group"'} /> ). To forbid an attribute from
-              occuring the <PopUpTextFieldCompact textInside={"not"} /> operator can be applied. To address multiple attributes simultaneously, you
-              can group them as a set, for example: <PopUpTextFieldCompact textInside={"{lean, obese, t2d}"} />. To restrict the number of links, you
-              can use the <PopUpTextFieldCompact textInside={">"} />, <PopUpTextFieldCompact textInside={">="} />,{" "}
-              <PopUpTextFieldCompact textInside={"<"} />, <PopUpTextFieldCompact textInside={"<="} /> or <PopUpTextFieldCompact textInside={"="} />{" "}
-              operators (e.g., <PopUpTextFieldCompact textInside={">= 2"} /> filters for multilinks of size at least 2).
-            </div>
-            <div className="pad-top-1" />
-            <div>
-              For example, with the link attributes <PopUpTextFieldCompact textInside={"lean group"} />,{" "}
-              <PopUpTextFieldCompact textInside={"obese group"} />, and <PopUpTextFieldCompact textInside={"t2d group"} />, some valid queries could
-              be:
-            </div>
-            <div className="pad-top-05" />
-            <PopUpTextFieldCompact textInside={"t2d"} /> <PopUpTextFieldCompact textInside={"not lean"} />{" "}
-            <PopUpTextFieldCompact textInside={"> 2"} /> <PopUpTextFieldCompact textInside={"not {lean, obese}"} />{" "}
-            <PopUpTextFieldCompact textInside={'"t2d group" and lean'} /> <PopUpTextFieldCompact textInside={"(obese or lean) and >= 2"} />{" "}
-            <PopUpTextFieldCompact textInside={"(obese or lean) and t2d"} /> <PopUpTextFieldCompact textInside={"(not t2d or not obese) and lean"} />
-          </div>
-        }
+        infoDescription={linkFilterDescription}
       />
       <SidebarCodeEditorBlock
         text={"Filter Nodes by Attributes"}
@@ -219,36 +194,7 @@ export function FilterSidebar({}) {
         onClick={runCodeButtonFilterGroups}
         defaultValue={filter.nodeFilterText}
         infoHeading={"Filter Nodes by Attributes"}
-        infoDescription={
-          <div>
-            <div className="margin-0">
-              You can filter the nodes by formulating a query. These queries must follow the Conjunctive Normal Form (CNF), meaning that conditions
-              grouped with <PopUpTextFieldCompact textInside={"or"} /> (e.g., <PopUpTextFieldCompact textInside={"(A or B)"} /> ) are combined using{" "}
-              <PopUpTextFieldCompact textInside={"and"} />. To address one (or multiple) attributes, parts of the attribute name can be used (e.g.{" "}
-              <PopUpTextFieldCompact textInside={"signaling"} /> includes all attributes that contain the word "signaling"). If the attribute consists
-              of more than one word, quotation marks can be used (e.g. <PopUpTextFieldCompact textInside={'"mRNA splicing"'} /> ). To forbid an
-              attribute from occuring the <PopUpTextFieldCompact textInside={"not"} /> operator can be applied. To address multiple attributes
-              simultaneously, you can group them as a set, for example:{" "}
-              <PopUpTextFieldCompact textInside={'{mRNA splicing, signaling, "glucose metabolism"}'} />. To restrict the number of attributes of a
-              node, you can use the <PopUpTextFieldCompact textInside={">"} />, <PopUpTextFieldCompact textInside={">="} />,{" "}
-              <PopUpTextFieldCompact textInside={"<"} />, <PopUpTextFieldCompact textInside={"<="} /> or <PopUpTextFieldCompact textInside={"="} />{" "}
-              operators (e.g., <PopUpTextFieldCompact textInside={">= 2"} /> filters for nodes with at least 2 attributes).
-            </div>
-            <div className="pad-top-1" />
-            <div>
-              For example, with the link attributes <PopUpTextFieldCompact textInside={"mRNA splicing"} />,{" "}
-              <PopUpTextFieldCompact textInside={"glucose metabolism"} />, <PopUpTextFieldCompact textInside={"VEGF signaling"} /> and{" "}
-              <PopUpTextFieldCompact textInside={"MTOR signaling"} />, some valid queries could be:
-            </div>
-            <div className="pad-top-05" />
-            <PopUpTextFieldCompact textInside={"signaling"} /> <PopUpTextFieldCompact textInside={"not signaling"} />{" "}
-            <PopUpTextFieldCompact textInside={"> 2"} /> <PopUpTextFieldCompact textInside={"not {MTOR, VEGF, mRNA}"} />{" "}
-            <PopUpTextFieldCompact textInside={'signaling and "mRNA splicing"'} />{" "}
-            <PopUpTextFieldCompact textInside={"(metabolism or signaling) and >= 2"} />{" "}
-            <PopUpTextFieldCompact textInside={'("mRNA splicing" or VEGF) and ("glucose metabolism" or MTOR)'} />
-            <PopUpTextFieldCompact textInside={'(not "mRNA splicing" or not VEGF)'} />
-          </div>
-        }
+        infoDescription={nodeFilterDescription}
       />
       <SidebarFieldBlock
         valueText={filter.minCompSizeText}
