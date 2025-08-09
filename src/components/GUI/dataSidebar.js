@@ -237,7 +237,6 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
 
   const [graphPopUpActive, setGraphPopUpActive] = useState(false);
   const [mappingPopUpActive, setMappingPopUpActive] = useState(false);
-  const { graphData, setGraphData } = useGraphData();
 
   const [takeAbs, setTakeAbs] = useState(false);
   const [mergeSameProtein, setMergeSameProtein] = useState(false);

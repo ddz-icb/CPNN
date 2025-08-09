@@ -7,8 +7,8 @@ import "codemirror/addon/mode/simple.js";
 import "codemirror/theme/material.css";
 import "../Other/syntaxHighlighting.js";
 
-import { parseAttributesFilter } from "../Other/parser.js";
-import { parseGroupsFilter } from "../Other/parserNodeFilter.js";
+import { parseAttributesFilter as parseLinkAttribsFilter } from "../Other/parser.js";
+import { parseGroupsFilter as parseNodeAttribsFilter } from "../Other/parserNodeFilter.js";
 
 import {
   SidebarSliderBlock,
@@ -36,6 +36,7 @@ import {
   minNeighborhoodSizeDescription,
   nodeFilterDescription,
 } from "./descriptions/filterDescriptions.js";
+import { handleEditorChange, runCodeEditor } from "../Other/handlers.js";
 
 export function FilterSidebar({}) {
   const { filter, setFilter, setAllFilter } = useFilter();
@@ -58,46 +59,6 @@ export function FilterSidebar({}) {
     setCompilerErrorNodeFilter(null);
   };
 
-  const handleLinkAttribsChange = (editor) => {
-    const value = editor.getValue();
-
-    setFilter("linkFilterText", value);
-  };
-
-  const handleNodeFilterChange = (editor) => {
-    const value = editor.getValue();
-
-    setFilter("nodeFilterText", value);
-  };
-
-  const runCodeButtonFilterAttribs = (event) => {
-    const value = filter.linkFilterText;
-
-    const parsedValue = parseAttributesFilter(value);
-    if (String(parsedValue).split(" ")[0] === "Error:") {
-      setCompilerErrorLinkFilter(parsedValue);
-      log.error("invalid input on attribs filter");
-    } else {
-      setCompilerErrorLinkFilter(null);
-      setFilter("linkFilterText", value);
-      setFilter("linkFilter", parsedValue);
-    }
-  };
-
-  const runCodeButtonFilterGroups = (event) => {
-    const value = filter.nodeFilterText;
-
-    const parsedValue = parseGroupsFilter(value);
-    if (String(parsedValue).split(" ")[0] === "Error:") {
-      setCompilerErrorNodeFilter(parsedValue);
-      log.error("invalid input on attribs filter");
-    } else {
-      setCompilerErrorNodeFilter(null);
-      setFilter("nodeFilterText", value);
-      setFilter("nodeFilter", parsedValue);
-    }
-  };
-
   // initialize link attribs filter editor //
   useEffect(() => {
     if (linkFilterTextAreaRef.current) {
@@ -109,7 +70,7 @@ export function FilterSidebar({}) {
         scrollbarStyle: "null",
       });
       linkFilterEditorRef.current.setSize("100%", "100%");
-      linkFilterEditorRef.current.on("change", (editor) => handleLinkAttribsChange(editor));
+      linkFilterEditorRef.current.on("change", (editor) => handleEditorChange(editor, (value) => setFilter("linkFilterText", value)));
     }
   }, []);
 
@@ -124,7 +85,7 @@ export function FilterSidebar({}) {
         scrollbarStyle: "null",
       });
       nodeFilterEditorRef.current.setSize("100%", "100%");
-      nodeFilterEditorRef.current.on("change", (editor) => handleNodeFilterChange(editor));
+      nodeFilterEditorRef.current.on("change", (editor) => handleEditorChange(editor, (value) => setFilter("nodeFilterText", value)));
     }
   }, []);
 
@@ -182,7 +143,15 @@ export function FilterSidebar({}) {
         text={"Filter Links by Attributes"}
         textareaRef={linkFilterTextAreaRef}
         compilerError={compilerErrorLinkFilter}
-        onClick={runCodeButtonFilterAttribs}
+        onClick={() =>
+          runCodeEditor(
+            filter.linkFilterText,
+            (value) => setFilter("linkFilter", value),
+            (value) => setFilter("linkFilterText", value),
+            parseLinkAttribsFilter,
+            setCompilerErrorLinkFilter
+          )
+        }
         defaultValue={filter.linkFilterText}
         infoHeading={"Filtering Links by Attributes"}
         infoDescription={linkFilterDescription}
@@ -191,7 +160,15 @@ export function FilterSidebar({}) {
         text={"Filter Nodes by Attributes"}
         textareaRef={nodeFilterTextAreaRef}
         compilerError={compilerErrorNodeFilter}
-        onClick={runCodeButtonFilterGroups}
+        onClick={() =>
+          runCodeEditor(
+            filter.nodeFilterText,
+            (value) => setFilter("nodeFilter", value),
+            (value) => setFilter("nodeFilterText", value),
+            parseNodeAttribsFilter,
+            setCompilerErrorNodeFilter
+          )
+        }
         defaultValue={filter.nodeFilterText}
         infoHeading={"Filter Nodes by Attributes"}
         infoDescription={nodeFilterDescription}

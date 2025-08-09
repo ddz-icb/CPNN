@@ -1,3 +1,5 @@
+import log from "../../logger.js";
+
 export const handleSliderChange = (event, setValue, setValueText, min = 0, max = Infinity) => {
   const value = event.target.value;
 
@@ -27,5 +29,22 @@ export const handleFieldBlur = (event, setValue, setValueText, min = 0, max = In
     event.target.innerText = value;
     setValue(value);
     setValueText(value);
+  }
+};
+
+export const handleEditorChange = (editor, setValueText) => {
+  setValueText(editor.getValue());
+};
+
+export const runCodeEditor = (valueText, setValue, setValueText, parse, setCompilerError) => {
+  const parsedValue = parse(valueText);
+
+  if (String(parsedValue).split(" ")[0] === "Error:") {
+    setCompilerError(parsedValue);
+    log.error("Invalid input:", parsedValue);
+  } else {
+    setCompilerError(null);
+    setValueText(valueText);
+    setValue(parsedValue);
   }
 };

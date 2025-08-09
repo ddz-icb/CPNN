@@ -8,7 +8,6 @@ import {
   PopupButtonRect,
   PopUp,
 } from "./reusableComponents/sidebarComponents.js";
-import { ReactComponent as XIcon } from "../../icons/x.svg";
 import { colorSchemeCsv } from "../../demodata/exampleColorSchemeCSV.js";
 import { downloadCsvFile } from "../GraphStuff/download.js";
 import { Tooltip } from "react-tooltip";
@@ -42,7 +41,7 @@ export function AppearanceSidebar({ handleNewColorScheme, handleDeleteColorSchem
   );
 }
 
-export function AppearanceSettings({}) {
+export function AppearanceSettings() {
   const { appearance, setAppearance } = useAppearance();
 
   return (
@@ -170,7 +169,7 @@ function UploadedColorSchemes({ colorSchemes, handleDeleteColorScheme }) {
   );
 }
 
-function ActiveNodeColorScheme({}) {
+function ActiveNodeColorScheme() {
   const { appearance } = useAppearance();
 
   return (
@@ -200,7 +199,7 @@ function ActiveNodeColorScheme({}) {
   );
 }
 
-function ActiveLinkColorScheme({}) {
+function ActiveLinkColorScheme() {
   const { appearance } = useAppearance();
 
   return (
@@ -230,7 +229,7 @@ function ActiveLinkColorScheme({}) {
   );
 }
 
-function NodeColorMapping({}) {
+function NodeColorMapping() {
   const { appearance, setAppearance } = useAppearance();
 
   const handleAttributeChange = (colorIndex, newAttribute) => {
@@ -301,7 +300,7 @@ function NodeColorMapping({}) {
   );
 }
 
-function LinkColorMapping({}) {
+function LinkColorMapping() {
   const { appearance, setAppearance } = useAppearance();
 
   const handleAttributeChange = (colorIndex, newAttribute) => {
