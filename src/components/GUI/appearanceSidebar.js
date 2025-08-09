@@ -125,9 +125,9 @@ function UploadedColorSchemes({ colorSchemes, handleDeleteColorScheme }) {
           setSelectedScheme(colorScheme);
           setSelectSchemePopUp(true);
         }}
+        itemTooltipContent={(item) => "Replace Node/Link Color Scheme"}
         ActionIcon={TrashIcon}
         onActionIconClick={(colorScheme) => handleDeleteColorScheme(colorScheme)}
-        itemTooltipContent={(item) => "Replace Node/Link Color Scheme"}
         actionIconTooltipContent={(item) => "Delete Color Scheme"}
       />
       <PopUp heading={"Set Color Scheme"} description={setColorSchemeDescription} isOpen={selectSchemePopUp} setIsOpen={setSelectSchemePopUp}>

@@ -12,6 +12,7 @@ import {
   SidebarButtonRect,
   PopupButtonRect,
   PopUp,
+  TableList,
 } from "./reusableComponents/sidebarComponents.js";
 import log from "../../logger.js";
 import { useGraphData } from "../../states.js";
@@ -78,49 +79,18 @@ function UploadedFiles({ uploadedGraphFileNames, handleSelectGraph, handleDelete
 
   return (
     <>
-      <div className="center-parent-container">
-        <span className="heading-label">Uploaded Graphs</span>
-      </div>
-      <table className="recent-item-table">
-        <tbody>
-          {uploadedGraphFileNamesNoExample?.map((filename, index) => (
-            <tr key={index} className="recent-item-entry recent-item-entry-highlight">
-              <td className="recent-item-text sidebar-tooltip-wrapper" onClick={() => handleSelectGraph(filename)}>
-                <div data-tooltip-id={`replace-tooltip-${index}`} data-tooltip-content="Replace Active Graphs" className="pad-left-025">
-                  {filename}
-                </div>
-                <Tooltip id={`replace-tooltip-${index}`} place="top" effect="solid" className="sidebar-tooltip" />
-              </td>
-              <td className="recent-item-logo sidebar-tooltip-wrapper">
-                <PlusIcon
-                  data-tooltip-id={`add-tooltip-${index}`}
-                  data-tooltip-content="Add Graph to Currently Active Graphs"
-                  onClick={() => handleAddFile(filename)}
-                />
-                <Tooltip id={`add-tooltip-${index}`} place="top" effect="solid" className="sidebar-tooltip" />
-              </td>
-              <td className="recent-item-logo sidebar-tooltip-wrapper">
-                <TrashIcon
-                  data-tooltip-id={`delete-tooltip-${index}`}
-                  data-tooltip-content="Delete Graph"
-                  onClick={() => handleDeleteGraphFile(filename)}
-                />
-                <Tooltip id={`delete-tooltip-${index}`} place="top" effect="solid" className="sidebar-tooltip" />
-              </td>
-            </tr>
-          ))}
-          {(!uploadedGraphFileNamesNoExample || uploadedGraphFileNamesNoExample.length === 0) && (
-            <tr className="recent-item-entry">
-              <td className="recent-item-text sidebar-tooltip-wrapper" onClick={() => handleSelectGraph(exampleGraphJson.name)}>
-                <div data-tooltip-id={`replace-tooltip-example`} data-tooltip-content="Replace Active Graphs" className="pad-left-025">
-                  {exampleGraphJson.name}
-                </div>
-                <Tooltip id={`replace-tooltip-example`} place="top" effect="solid" className="sidebar-tooltip" />
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+      <TableList
+        heading={"Uploaded Graphs"}
+        data={uploadedGraphFileNamesNoExample}
+        onItemClick={(filename) => handleSelectGraph(filename)}
+        itemTooltipContent={(item) => "Replace Active Graphs"}
+        ActionIcon={PlusIcon}
+        onActionIconClick={(filename) => handleAddFile(filename)}
+        actionIconTooltipContent={(item) => "Add Graph to Currently Active Graphs"}
+        ActionIcon2={TrashIcon}
+        onActionIcon2Click={(filename) => handleDeleteGraphFile(filename)}
+        actionIcon2TooltipContent={(item) => "Delete Graph"}
+      />
     </>
   );
 }

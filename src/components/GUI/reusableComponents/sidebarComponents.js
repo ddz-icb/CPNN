@@ -294,7 +294,19 @@ export function PopUp({ heading, description, children, isOpen, setIsOpen, wideP
   );
 }
 
-export function TableList({ heading, data, displayKey, onItemClick, ActionIcon, onActionIconClick, itemTooltipContent, actionIconTooltipContent }) {
+export function TableList({
+  heading,
+  data,
+  displayKey,
+  onItemClick,
+  ActionIcon,
+  onActionIconClick,
+  itemTooltipContent,
+  actionIconTooltipContent,
+  ActionIcon2,
+  onActionIcon2Click,
+  actionIcon2TooltipContent,
+}) {
   return (
     <>
       <span className="heading-label">{heading}</span>
@@ -302,21 +314,30 @@ export function TableList({ heading, data, displayKey, onItemClick, ActionIcon, 
         <tbody>
           {data && data.length > 0 ? (
             data.map((item, index) => (
-              <tr key={`row-${item[displayKey]}-${index}`} className="recent-item-entry recent-item-entry-highlight">
+              <tr key={`row-${item}-${index}`} className="recent-item-entry recent-item-entry-highlight">
                 <td
                   className="recent-item-text"
                   onClick={() => onItemClick(item)}
-                  data-tooltip-id={`item-tooltip-${item[displayKey]}-${index}`}
+                  data-tooltip-id={`item-tooltip-${item}-${index}`}
                   data-tooltip-content={itemTooltipContent(item)}
                 >
-                  <span className="pad-left-025">{item[displayKey]}</span>
+                  <span className="pad-left-025">{displayKey ? item[displayKey] : item}</span>
                 </td>
                 {ActionIcon && (
                   <td className="recent-item-logo">
                     <ActionIcon
                       onClick={() => onActionIconClick && onActionIconClick(item)}
-                      data-tooltip-id={`action-tooltip-${item[displayKey]}-${index}`}
+                      data-tooltip-id={`action-tooltip-${item}-${index}`}
                       data-tooltip-content={actionIconTooltipContent(item)}
+                    />
+                  </td>
+                )}
+                {ActionIcon2 && (
+                  <td className="recent-item-logo">
+                    <ActionIcon2
+                      onClick={() => onActionIcon2Click && onActionIcon2Click(item)}
+                      data-tooltip-id={`action-tooltip-2-${item}-${index}`}
+                      data-tooltip-content={actionIcon2TooltipContent(item)}
                     />
                   </td>
                 )}
@@ -336,8 +357,8 @@ export function TableList({ heading, data, displayKey, onItemClick, ActionIcon, 
         data.length > 0 &&
         itemTooltipContent &&
         data.map((item, index) => (
-          <div key={`item-tooltip-wrapper-${item[displayKey]}-${index}`} className="sidebar-tooltip-wrapper">
-            <Tooltip key={`item-tooltip-${item[displayKey]}-${index}`} id={`item-tooltip-${item[displayKey]}-${index}`} className="sidebar-tooltip" />
+          <div key={`item-tooltip-wrapper-${item}-${index}`} className="sidebar-tooltip-wrapper">
+            <Tooltip key={`item-tooltip-${item}-${index}`} id={`item-tooltip-${item}-${index}`} className="sidebar-tooltip" />
           </div>
         ))}
 
@@ -345,12 +366,17 @@ export function TableList({ heading, data, displayKey, onItemClick, ActionIcon, 
         data.length > 0 &&
         actionIconTooltipContent &&
         data.map((item, index) => (
-          <div key={`action-tooltip-wrapper-${item[displayKey]}-${index}`} className="sidebar-tooltip-wrapper">
-            <Tooltip
-              key={`action-tooltip-${item[displayKey]}-${index}`}
-              id={`action-tooltip-${item[displayKey]}-${index}`}
-              className="sidebar-tooltip"
-            />
+          <div key={`action-tooltip-wrapper-${item}-${index}`} className="sidebar-tooltip-wrapper">
+            <Tooltip key={`action-tooltip-${item}-${index}`} id={`action-tooltip-${item}-${index}`} className="sidebar-tooltip" />
+          </div>
+        ))}
+
+      {data &&
+        data.length > 0 &&
+        actionIcon2TooltipContent &&
+        data.map((item, index) => (
+          <div key={`action-tooltip-2-wrapper-${item}-${index}`} className="sidebar-tooltip-wrapper">
+            <Tooltip key={`action-tooltip-2-${item}-${index}`} id={`action-tooltip-2-${item}-${index}`} className="sidebar-tooltip" />
           </div>
         ))}
     </>
