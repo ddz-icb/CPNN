@@ -13,14 +13,14 @@ import {
   PopupButtonRect,
   PopUp,
   TableList,
-} from "./reusableComponents/sidebarComponents.js";
-import log from "../../logger.js";
-import { useGraphData } from "../../states.js";
-import { exampleGraphJson } from "../../demodata/exampleGraphJSON.js";
-import { downloadCsvFile, downloadObjectAsFile } from "../GraphStuff/download.js";
-import { exampleGraphCsv } from "../../demodata/exampleGraphCSV.js";
-import { exampleMappingCsv } from "../../demodata/exampleMappingCSV.js";
-import { exampleGraphRaw } from "../../demodata/exampleGraphRawTSV.js";
+} from "../reusableComponents/sidebarComponents.js";
+import log from "../../../logger.js";
+import { useGraphData } from "../../../states.js";
+import { exampleGraphJson } from "../../../demodata/exampleGraphJSON.js";
+import { downloadCsvFile, downloadObjectAsFile } from "../../GraphStuff/download.js";
+import { exampleGraphCsv } from "../../../demodata/exampleGraphCSV.js";
+import { exampleMappingCsv } from "../../../demodata/exampleMappingCSV.js";
+import { exampleGraphRaw } from "../../../demodata/exampleGraphRawTSV.js";
 import {
   containsSitesDescription,
   maxCompSizeDescriptionUpload,
@@ -30,8 +30,8 @@ import {
   takeAbsDescription,
   uploadGraphDescription,
   uploadPathwayMappingDescription,
-} from "./descriptions/dataDescriptions.js";
-import { mergeProteinsDescription } from "./descriptions/filterDescriptions.js";
+} from "../descriptions/dataDescriptions.js";
+import { mergeProteinsDescription } from "../descriptions/filterDescriptions.js";
 
 export function DataSidebar({
   handleRemoveActiveGraphFile,

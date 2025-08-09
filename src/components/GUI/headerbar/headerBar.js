@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Mapping } from "./headerBarMapping.js";
 import { HeaderBarExport } from "./headerBarExport.js";
 
-export function HeaderBar({}) {
+export function HeaderBar() {
   const [activeMenu, setActiveMenu] = useState("None");
 
   const handleActiveMenuClick = (item) => {
