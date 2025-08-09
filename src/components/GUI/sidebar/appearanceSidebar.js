@@ -22,18 +22,18 @@ import {
 } from "./descriptions/appearanceDescriptions.js";
 import { linkWidthInit } from "../../init_values/appearanceInitValues.js";
 
-export function AppearanceSidebar({ handleNewColorScheme, handleDeleteColorScheme, colorSchemes }) {
+export function AppearanceSidebar({ handleNewColorScheme, handleDeleteColorScheme, handleSelectLinkColorScheme, handleSelectNodeColorScheme }) {
   return (
     <>
       <AppearanceSettings />
-      <TopAppearanceButtons
-        handleNewColorScheme={handleNewColorScheme}
-        colorSchemes={colorSchemes}
-        handleDeleteColorScheme={handleDeleteColorScheme}
-      />
+      <TopAppearanceButtons handleNewColorScheme={handleNewColorScheme} handleDeleteColorScheme={handleDeleteColorScheme} />
       <ActiveNodeColorScheme />
       <ActiveLinkColorScheme />
-      <UploadedColorSchemes colorSchemes={colorSchemes} handleDeleteColorScheme={handleDeleteColorScheme} />
+      <UploadedColorSchemes
+        handleDeleteColorScheme={handleDeleteColorScheme}
+        handleSelectLinkColorScheme={handleSelectLinkColorScheme}
+        handleSelectNodeColorScheme={handleSelectNodeColorScheme}
+      />
       <div className="pad-left-1 pad-right-1 color-mapping-select-table">
         <NodeColorMapping />
         <LinkColorMapping />
@@ -109,31 +109,30 @@ export function TopAppearanceButtons({ handleNewColorScheme }) {
   );
 }
 
-function UploadedColorSchemes({ colorSchemes, handleDeleteColorScheme }) {
-  const { setAppearance } = useAppearance();
+function UploadedColorSchemes({ handleDeleteColorScheme, handleSelectLinkColorScheme, handleSelectNodeColorScheme }) {
+  const { appearance, setAppearance } = useAppearance();
 
-  const [selectSchemePopUp, setSelectSchemePopUp] = useState(false);
-  const [selectedScheme, setSelectedScheme] = useState(null);
+  const [selectColorSchemePopUp, setSelectSchemePopUp] = useState(false);
+  const [selectedColorSchemeName, setSelectedScheme] = useState(null);
 
   return (
     <>
       <TableList
-        heading={"Upload Color Schemes"}
-        data={colorSchemes}
-        displayKey={"name"}
-        onItemClick={(colorScheme) => {
-          setSelectedScheme(colorScheme);
+        heading={"Uploaded Color Schemes"}
+        data={appearance.uploadedColorSchemeNames}
+        onItemClick={(colorSchemeName) => {
+          setSelectedScheme(colorSchemeName);
           setSelectSchemePopUp(true);
         }}
         itemTooltipContent={() => "Replace Node/Link Color Scheme"}
         ActionIcon={TrashIcon}
-        onActionIconClick={(colorScheme) => handleDeleteColorScheme(colorScheme)}
+        onActionIconClick={(colorSchemeName) => handleDeleteColorScheme(colorSchemeName)}
         actionIconTooltipContent={() => "Delete Color Scheme"}
       />
-      <PopUp heading={"Set Color Scheme"} description={setColorSchemeDescription} isOpen={selectSchemePopUp} setIsOpen={setSelectSchemePopUp}>
+      <PopUp heading={"Set Color Scheme"} description={setColorSchemeDescription} isOpen={selectColorSchemePopUp} setIsOpen={setSelectSchemePopUp}>
         <div className="popup-block">
-          <PopupButtonRect onClick={() => setAppearance("nodeColorScheme", selectedScheme)} text={"Set for Nodes"} />
-          <PopupButtonRect onClick={() => setAppearance("linkColorScheme", selectedScheme)} text={"Set for Links"} />
+          <PopupButtonRect onClick={() => handleSelectNodeColorScheme(selectedColorSchemeName)} text={"Set for Nodes"} />
+          <PopupButtonRect onClick={() => handleSelectLinkColorScheme(selectedColorSchemeName)} text={"Set for Links"} />
         </div>
       </PopUp>
     </>

@@ -21,24 +21,26 @@ import {
   addNewColorScheme,
   addNewGraphFile,
   deleteAnnotationMapping,
+  deleteColorScheme,
   deleteGraphFile,
   loadAnnotationMappings,
-  loadColorSchemes,
+  loadColorSchemeNames,
   loadGraphFileNames,
   loadTheme,
   removeActiveGraphFile,
-  removeColorScheme,
   selectGraph,
+  selectLinkColorScheme,
   selectMapping,
+  selectNodeColorScheme,
+  setInitColorSchemes,
   setInitGraph,
-  storeColorSchemes,
   storeTheme,
-} from "./components/other/applicationFunctions.js";
+} from "./components/application/applicationFunctions.js";
 import { useAppearance, useDownload, useFilter, useGraphData, usePhysics } from "./states.js";
 import { Erorr } from "./components/other/error.js";
-import { colorSchemesInit } from "./components/init_values/appearanceInitValues.js";
+import { defaultColorSchemes } from "./components/init_values/appearanceInitValues.js";
 import { getFileNameWithoutExtension } from "./components/other/parseFiles.js";
-import { getGraphDB } from "./components/other/dbGraphs.js";
+import { getGraphDB } from "./components/database/dbGraphs.js";
 import { downloadInit } from "./components/init_values/downloadInitValues.js";
 import { physicsInit } from "./components/init_values/physicsInitValues.js";
 import { filterInit, linkThresholdInit } from "./components/init_values/filterInitValues.js";
@@ -52,8 +54,6 @@ function App() {
 
   const [reset, setReset] = useState(false); // true indicates that the simulation (in forceGraph.js) has to be reloaded
   const [error, setError] = useState(null); // error gets printed on screen
-
-  const [colorSchemes, setColorSchemes] = useState(null); // all color schemes in local storage
 
   // sets corresponding graph after file selection
   const handleSelectGraph = (filename) => {
@@ -123,20 +123,42 @@ function App() {
       });
   };
 
+  const handleSelectLinkColorScheme = (colorSchemeName) => {
+    if (!colorSchemeName) return;
+    log.info("Replacing link color scheme");
+
+    try {
+      selectLinkColorScheme(colorSchemeName, setAppearance);
+    } catch (error) {
+      setError("Color scheme is already the current link color scheme");
+      log.error("Color scheme is already the current link color scheme");
+    }
+  };
+
+  const handleSelectNodeColorScheme = (colorSchemeName) => {
+    if (!colorSchemeName) return;
+    log.info("Replacing node color scheme");
+
+    try {
+      selectNodeColorScheme(colorSchemeName, setAppearance);
+    } catch (error) {
+      setError("Color scheme is already the current node color scheme");
+      log.error("Color scheme is already the current node color scheme");
+    }
+  };
+
   // adds new color scheme
   const handleNewColorScheme = async (event) => {
-    if (!event || !event.target || !event.target.files[0]) return;
-    log.info("Adding new color scheme", colorSchemes);
-
     const file = event.target.files[0];
-
-    if (colorSchemes.some((scheme) => getFileNameWithoutExtension(scheme.name) === getFileNameWithoutExtension(file.name))) {
-      log.warn("Mapping with this name already exists");
-      setError("Mapping with this name already exists");
+    if (!event || !event.target || !file) return;
+    if (appearance.uploadedColorSchemeNames.some((name) => getFileNameWithoutExtension(name) === getFileNameWithoutExtension(file.name))) {
+      log.warn("Color scheme with this name already exists");
+      setError("Color scheme with this name already exists");
       return;
     }
+    log.info("Adding new color scheme");
 
-    addNewColorScheme(file, setColorSchemes)
+    addNewColorScheme(file, appearance.uploadedColorSchemeNames, setAppearance)
       .then(() => {})
       .catch((error) => {
         setError(`${error.message}`);
@@ -146,19 +168,19 @@ function App() {
 
   const handleDeleteColorScheme = (colorSchemeName) => {
     if (!colorSchemeName) return;
-    if (colorSchemesInit.some((scheme) => scheme.name === colorSchemeName)) {
+    if (defaultColorSchemes.some((scheme) => scheme.name === colorSchemeName)) {
       log.warn("Cannot remove default color schemes");
       setError("Cannot remove default color schemes");
       return;
     }
-    if (appearance.nodeColorScheme.name == colorSchemeName || appearance.linkColorScheme.name == colorSchemeName) {
+    if (appearance.nodeColorScheme?.name == colorSchemeName || appearance.linkColorScheme?.name == colorSchemeName) {
       log.warn("Cannot remove selected color scheme as it's still active");
       setError("Cannot remove selected color scheme as it's still active");
       return;
     }
     log.info("Deleting color schemes with name", colorSchemeName);
 
-    removeColorScheme(colorSchemes, setColorSchemes, colorSchemeName, appearance.nodeColorScheme, appearance.linkColorScheme, setAppearance);
+    deleteColorScheme(appearance.uploadedColorSchemeNames, colorSchemeName, setAppearance);
   };
 
   // processes new annotation mapping
@@ -307,14 +329,20 @@ function App() {
     setGraphData("graphIsPreprocessed", false);
   }, []);
 
+  // select default color schemes on startup
+  useEffect(() => {
+    log.info("Setting init color schemes");
+    setInitColorSchemes(appearance, setAppearance);
+  }, []);
+
   // init uploadedGraphFileNames
   useEffect(() => {
     log.info("Loading uploaded graph files");
     try {
       loadGraphFileNames(setGraphData);
     } catch (error) {
-      setError("Error loading graph files form database");
-      log.error("Error loading graph files form database");
+      setError("Error loading graph files from database");
+      log.error("Error loading graph files from database");
     }
   }, []);
 
@@ -343,19 +371,16 @@ function App() {
     }
   }, []);
 
-  // load uploaded color schemes //
+  // init uploadedColorSchemeNames //
   useEffect(() => {
-    log.info("Loading color schemes");
-    loadColorSchemes(setColorSchemes);
+    log.info("Loading uploaded color schemes");
+    try {
+      loadColorSchemeNames(setAppearance);
+    } catch (error) {
+      setError("Error loading color schemes files from database");
+      log.error("Error loading color schemes files from database");
+    }
   }, []);
-
-  // storing uploaded color schemes
-  useEffect(() => {
-    if (!colorSchemes) return;
-    log.info("Storing uploaded color schemes");
-
-    storeColorSchemes(colorSchemes);
-  }, [colorSchemes]);
 
   useEffect(() => {
     async function mergedGraph(graphData) {
@@ -440,7 +465,8 @@ function App() {
         handleNewColorScheme={handleNewColorScheme}
         handleDeleteColorScheme={handleDeleteColorScheme}
         handleCreateDifferenceGraph={handleCreateDifferenceGraph}
-        colorSchemes={colorSchemes}
+        handleSelectLinkColorScheme={handleSelectLinkColorScheme}
+        handleSelectNodeColorScheme={handleSelectNodeColorScheme}
       />
       <main>
         {error && <Erorr error={error} setError={setError} />}

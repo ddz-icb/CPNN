@@ -19,22 +19,22 @@ export const themeInit = lightTheme;
 export function applyTheme(document, theme) {
   document.body.className = theme;
 
-  const rootStyles = getComputedStyle(document.body);
+  getComputedStyle(document.body);
 }
 
 export const ibmAntiBlindness = {
   name: "IBM (5 colors, barrier-free)",
-  colorScheme: ["#648fff", "#ffb000", "#dc267f", "#fe6100", "#785ef0"],
+  content: ["#648fff", "#ffb000", "#dc267f", "#fe6100", "#785ef0"],
 };
 
 export const okabe_ItoAntiBlindness = {
   name: "Okabe (7 colors, barrier-free)",
-  colorScheme: ["#e69f00", "#56b4e9", "#009e73", "#f0e442", "#0072b2", "#d55e00", "#cc79a7"],
+  content: ["#e69f00", "#56b4e9", "#009e73", "#f0e442", "#0072b2", "#d55e00", "#cc79a7"],
 };
 
 export const manyColors = {
   name: "Many Colors (18 colors)",
-  colorScheme: [
+  content: [
     "#e6194b",
     "#3cb44b",
     "#ffdd03",
@@ -56,22 +56,26 @@ export const manyColors = {
   ],
 };
 
-export const nodeColorSchemeInit = manyColors;
-export const linkColorSchemeInit = ibmAntiBlindness;
+export const ibmAntiBlindnessJson = { name: "IBM (5 colors, barrier-free)", content: JSON.stringify(ibmAntiBlindness) };
+export const okabe_ItoAntiBlindnessJson = { name: "Okabe (7 colors, barrier-free)", content: JSON.stringify(okabe_ItoAntiBlindness) };
+export const manyColorsJson = { name: "Many Colors (18 colors)", content: JSON.stringify(manyColors) };
+
 export const linkAttribsToColorIndicesInit = null;
 export const nodeAttribsToColorIndices = null;
 export const showNodeLabelsInit = true;
 export const linkWidthInit = 2;
 
-export const colorSchemesInit = [ibmAntiBlindness, okabe_ItoAntiBlindness, manyColors];
+export const defaultColorSchemes = [ibmAntiBlindness, okabe_ItoAntiBlindness, manyColors];
+export const defaultColorSchemeNames = defaultColorSchemes.map((c) => c.name);
 
 export const appearanceInit = {
   theme: themeInit,
-  nodeColorScheme: nodeColorSchemeInit,
-  linkColorScheme: linkColorSchemeInit,
   showNodeLabels: true,
   linkAttribsToColorIndices: null,
   nodeAttribsToColorIndices: null,
   linkWidth: linkWidthInit,
   linkWidthText: linkWidthInit,
+  uploadedColorSchemeNames: defaultColorSchemeNames,
+  nodeColorScheme: null,
+  linkColorScheme: null,
 };

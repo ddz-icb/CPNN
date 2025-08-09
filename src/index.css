@@ -436,7 +436,11 @@ ul {
   cursor: pointer;
 }
 
-.item-table-text:hover {
+.item-table-text-hoverable {
+  cursor: pointer;
+}
+
+.item-table-text-hoverable:hover {
   color: var(--table-item-hover);
 }
 

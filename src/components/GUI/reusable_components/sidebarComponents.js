@@ -317,8 +317,8 @@ export function TableList({
             data.map((item, index) => (
               <tr key={`row-${item}-${index}`} className="item-table-entry item-table-entry-highlight">
                 <td
-                  className="item-table-text"
-                  onClick={() => onItemClick(item)}
+                  className={onItemClick ? "item-table-text-hoverable" : "item-table-text"}
+                  onClick={() => onItemClick && onItemClick(item)}
                   {...(itemTooltipContent && {
                     "data-tooltip-id": `item-tooltip-${item}-${index}`,
                     "data-tooltip-content": itemTooltipContent(item),
@@ -405,7 +405,7 @@ export function ColorMappingSelect({ heading, colorScheme, attribsToColorIndices
         updatedMapping[oldAttribute] = previousColorIndex;
       } else {
         const usedColors = Object.values(updatedMapping);
-        const firstAvailableColor = Object.keys(colorScheme.colorScheme).find((index) => !usedColors.includes(parseInt(index, 10)));
+        const firstAvailableColor = Object.keys(colorScheme.content).find((index) => !usedColors.includes(parseInt(index, 10)));
 
         if (firstAvailableColor !== undefined) {
           updatedMapping[oldAttribute] = parseInt(firstAvailableColor, 10);
@@ -418,12 +418,14 @@ export function ColorMappingSelect({ heading, colorScheme, attribsToColorIndices
     setMapping(updatedMapping);
   };
 
+  console.log("colorscheme", colorScheme);
+
   return (
     <div>
       <span className="heading-label-no-pad pad-bottom-05">{heading}</span>
       <div className="sidebar-block-no-pad">
         <div className="colormapping-selector">
-          {Object.entries(colorScheme.colorScheme).map(([colorIndex, color]) => (
+          {Object.entries(colorScheme.content).map(([colorIndex, color]) => (
             <Fragment key={colorIndex}>
               <div
                 className="color-square colorscheme-item"

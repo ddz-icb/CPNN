@@ -56,12 +56,12 @@ function createGraphSvgElement(
   svgElement.setAttribute("height", height);
 
   for (const link of graph.links) {
-    drawLineCanvas(ctx, link, linkWidth, linkColorScheme.colorScheme, linkAttribsToColorIndices);
+    drawLineCanvas(ctx, link, linkWidth, linkColorScheme.content, linkAttribsToColorIndices);
   }
 
   for (const node of graph.nodes) {
     const { circle, nodeLabel } = nodeMap[node.id];
-    drawCircleCanvas(ctx, node, circle, circleBorderColor, nodeColorScheme.colorScheme, nodeAttribsToColorIndices);
+    drawCircleCanvas(ctx, node, circle, circleBorderColor, nodeColorScheme.content, nodeAttribsToColorIndices);
     if (nodeLabel?.visible) {
       ctx.font = `${nodeLabel._fontSize || 12}px sans-serif`;
       ctx.fillStyle = textColor;
@@ -132,7 +132,7 @@ function drawLegendOnPdf(
 
     for (const key in attribs) {
       if (Object.hasOwnProperty.call(attribs, key)) {
-        const color = colorScheme.colorScheme[attribs[key]];
+        const color = colorScheme.content[attribs[key]];
         const label = isNode ? activeAnnotationMapping?.groupMapping?.[key]?.name || key : key;
 
         pdf.setFillColor(color);

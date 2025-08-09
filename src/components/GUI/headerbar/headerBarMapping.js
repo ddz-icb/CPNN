@@ -27,14 +27,14 @@ export function Mapping({ activeMenu, handleActiveMenuClick }) {
     for (const key in appearance.nodeAttribsToColorIndices) {
       if (
         appearance.nodeAttribsToColorIndices.hasOwnProperty(key) &&
-        getColor(appearance.nodeAttribsToColorIndices[key], appearance.nodeColorScheme.colorScheme) !== fallbackColor
+        getColor(appearance.nodeAttribsToColorIndices[key], appearance.nodeColorScheme.content) !== fallbackColor
       ) {
         nodeContent.push(
           <div key={key} className="colorscheme-container">
             <div
               className="color-square colorscheme-item"
               style={{
-                backgroundColor: getColor(appearance.nodeAttribsToColorIndices[key], appearance.nodeColorScheme.colorScheme),
+                backgroundColor: getColor(appearance.nodeAttribsToColorIndices[key], appearance.nodeColorScheme.content),
               }}
             ></div>
             {graphData.activeAnnotationMapping &&
@@ -64,14 +64,14 @@ export function Mapping({ activeMenu, handleActiveMenuClick }) {
     for (const key in appearance.linkAttribsToColorIndices) {
       if (
         appearance.linkAttribsToColorIndices.hasOwnProperty(key) &&
-        getColor(appearance.linkAttribsToColorIndices[key], appearance.linkColorScheme.colorScheme) !== fallbackColor
+        getColor(appearance.linkAttribsToColorIndices[key], appearance.linkColorScheme.content) !== fallbackColor
       ) {
         linkContent.push(
           <div key={key} className="colorscheme-container">
             <div
               className="color-square colorscheme-item"
               style={{
-                backgroundColor: getColor(appearance.linkAttribsToColorIndices[key], appearance.linkColorScheme.colorScheme),
+                backgroundColor: getColor(appearance.linkAttribsToColorIndices[key], appearance.linkColorScheme.content),
               }}
             ></div>
             <span className="colorscheme-item">{key}</span>

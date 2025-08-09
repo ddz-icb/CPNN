@@ -247,7 +247,7 @@ export function SettingControl({ simulation, app, redraw }) {
       graphData.circles,
       graphData.nodeMap,
       appearance.theme.circleBorderColor,
-      appearance.nodeColorScheme.colorScheme,
+      appearance.nodeColorScheme.content,
       appearance.nodeAttribsToColorIndices
     );
   }, [appearance.nodeColorScheme, appearance.nodeAttribsToColorIndices]);

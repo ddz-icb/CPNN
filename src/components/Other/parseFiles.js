@@ -308,17 +308,17 @@ export async function parseColorSchemeFile(file) {
 
   try {
     const fileContent = await parseFileAsText(file);
-    const colorScheme = parseColorScheme(fileContent);
+    const colorScheme = parseColorScheme(fileContent, file.name);
     verifyColorScheme(colorScheme);
 
-    return colorScheme;
+    return { name: file.name, content: JSON.stringify(colorScheme) };
   } catch (error) {
     log.error(error.message);
     throw new Error(`${error.message}`);
   }
 }
 
-export function parseColorScheme(content) {
+export function parseColorScheme(content, filename) {
   let fileData = Papa.parse(content, {
     skipEmptyLines: true,
   });
@@ -329,16 +329,19 @@ export function parseColorScheme(content) {
     return acc.concat(validColors);
   }, []);
 
-  return colorData;
+  return {
+    name: filename,
+    content: colorData,
+  };
 }
 
 function verifyColorScheme(colorScheme) {
-  if (!Array.isArray(colorScheme)) {
+  if (!Array.isArray(colorScheme.content)) {
     throw new Error("The color scheme must be a list.");
   }
 
   const hexColorRegex = /^#[0-9A-Fa-f]{6}$/;
-  colorScheme.forEach((color, index) => {
+  colorScheme.content.forEach((color, index) => {
     if (typeof color !== "string" || !hexColorRegex.test(color)) {
       throw new Error(`Invalid hex-color at index ${index}: ${color}`);
     }
@@ -356,7 +359,6 @@ export async function parseAnnotationMappingFile(file) {
   try {
     const fileContent = await parseFileAsText(file);
     const mapping = parseAnnotationMapping(fileContent, file.name);
-    log.info("LALALALLA", mapping);
     verifyAnnotationMapping(mapping);
     return { name: file.name, content: JSON.stringify(mapping) };
   } catch (error) {

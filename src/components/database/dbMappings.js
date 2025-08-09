@@ -23,7 +23,10 @@ export async function addMappingFileDB(file) {
 export async function addMappingFileIfNotExistsDB(file) {
   try {
     const mapping = await getByMappingNameDB(file.name);
-    if (mapping) return;
+    if (mapping) {
+      log.info("Mapping already exists");
+      return;
+    }
 
     const id = await db.uploadedFiles.add({
       name: file.name,
