@@ -83,13 +83,13 @@ function UploadedFiles({ uploadedGraphFileNames, handleSelectGraph, handleDelete
         heading={"Uploaded Graphs"}
         data={uploadedGraphFileNamesNoExample}
         onItemClick={(filename) => handleSelectGraph(filename)}
-        itemTooltipContent={(item) => "Replace Active Graphs"}
+        itemTooltipContent={() => "Replace Active Graphs"}
         ActionIcon={PlusIcon}
         onActionIconClick={(filename) => handleAddFile(filename)}
-        actionIconTooltipContent={(item) => "Add Graph to Currently Active Graphs"}
+        actionIconTooltipContent={() => "Add Graph to Currently Active Graphs"}
         ActionIcon2={TrashIcon}
         onActionIcon2Click={(filename) => handleDeleteGraphFile(filename)}
-        actionIcon2TooltipContent={(item) => "Delete Graph"}
+        actionIcon2TooltipContent={() => "Delete Graph"}
       />
     </>
   );
@@ -124,44 +124,15 @@ function ActiveFiles({ activeGraphFileNames, handleRemoveActiveGraphFile }) {
 
 function UploadedMappings({ uploadedAnnotationMappingNames, handleAnnotationMappingSelect, handleDeleteAnnotationMapping }) {
   return (
-    <>
-      <>
-        <span className="heading-label">Uploaded Pathway Mappings</span>
-        <table className="recent-item-table">
-          <tbody>
-            {uploadedAnnotationMappingNames && (
-              <>
-                {uploadedAnnotationMappingNames?.map((mappingName, index) => (
-                  <tr key={index} className="recent-item-entry recent-item-entry-highlight">
-                    <td className="recent-item-text sidebar-tooltip-wrapper" onClick={() => handleAnnotationMappingSelect(mappingName)}>
-                      <div data-tooltip-id={`replace-mapping-tooltip-${index}`} data-tooltip-content="Replace Active Pathway Mapping">
-                        <span className="pad-left-025">{mappingName}</span>
-                      </div>
-                      <Tooltip id={`replace-mapping-tooltip-${index}`} place="top" effect="solid" className="sidebar-tooltip" />
-                    </td>
-                    <td className="recent-item-logo sidebar-tooltip-wrapper">
-                      <TrashIcon
-                        data-tooltip-id={`delete-mapping-tooltip-${index}`}
-                        data-tooltip-content="Delete Annotation Mapping"
-                        onClick={() => handleDeleteAnnotationMapping(mappingName)}
-                      />
-                      <Tooltip id={`delete-mapping-tooltip-${index}`} place="top" effect="solid" className="sidebar-tooltip" />
-                    </td>
-                  </tr>
-                ))}
-              </>
-            )}
-            {(!uploadedAnnotationMappingNames || uploadedAnnotationMappingNames.length === 0) && (
-              <tr className="recent-item-entry">
-                <td>
-                  <span className="pad-left-025">None</span>
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </>
-    </>
+    <TableList
+      heading={"Uploaded Pathway Mappings"}
+      data={uploadedAnnotationMappingNames}
+      onItemClick={(mappingName) => handleAnnotationMappingSelect(mappingName)}
+      itemTooltipContent={() => "Replace Active Pathway Mapping"}
+      ActionIcon={TrashIcon}
+      onActionIconClick={(mappingName) => handleDeleteAnnotationMapping(mappingName)}
+      actionIconTooltipContent={() => "Delete Annotation Mapping"}
+    />
   );
 }
 
