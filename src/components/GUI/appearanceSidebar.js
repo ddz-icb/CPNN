@@ -14,7 +14,12 @@ import { downloadCsvFile } from "../GraphStuff/download.js";
 import { Tooltip } from "react-tooltip";
 import { useAppearance } from "../../states.js";
 import log from "../../logger.js";
-import { linkWidthDescription, nodeLabelDescription, setColorSchemeDescription } from "./descriptions/appearanceDescriptions.js";
+import {
+  linkWidthDescription,
+  nodeLabelDescription,
+  setColorSchemeDescription,
+  uploadColorSchemeDescription,
+} from "./descriptions/appearanceDescriptions.js";
 import { linkWidthInit } from "../initValues/appearanceInitValues.js";
 
 export function AppearanceSidebar({ handleNewColorScheme, handleDeleteColorScheme, colorSchemes }) {
@@ -70,8 +75,6 @@ export function TopAppearanceButtons({ handleNewColorScheme }) {
   const [colorSchemePopUpActive, setColorSchemePopUpActive] = useState(false);
   const colorSchemeRef = useRef(null);
 
-  let content = null;
-
   return (
     <>
       <div className="sidebar-button">
@@ -82,47 +85,30 @@ export function TopAppearanceButtons({ handleNewColorScheme }) {
           tooltipId={"upload-graph-tooltip"}
         />
       </div>
-      {colorSchemePopUpActive && (
-        <div className="popup-overlay">
-          <div className="popup-container">
-            <div className="popup-header pad-bottom-1">
-              <p className="popup-header-text">Uploading Your Color Scheme</p>
-              <span
-                className="tooltip-button popup-header-button"
-                onClick={() => {
-                  setColorSchemePopUpActive(false);
-                }}
-              >
-                <XIcon />
-              </span>
-            </div>
-            <div className="popup-block color-text-primary">
-              A color scheme can determine the colors given to both links and nodes. It furthermore determines the order in which the colors are
-              distributed.
-              <br></br>
-              <br></br>
-              Color schemes can be uploaded as either CSV or TSV files. The colors should be listed using the HEX-format.
-            </div>
-            <PopUpTextFieldInline textInfront={"Color Scheme format:"} textInside={"Color1, Color2, Color3, ..."} />
-            <div className="popup-block" />
-            <PopUpTextFieldInline textInfront={"Color Scheme example:"} textInside={"#e69f00,#56b4e9,#009e73"} />
-            <div className="popup-block">
-              <PopupButtonRect text={"Download Example Color Scheme"} onClick={() => downloadCsvFile(colorSchemeCsv.content, colorSchemeCsv.name)} />
-              <PopupButtonRect
-                text={"Upload Own Color Scheme"}
-                onClick={() => colorSchemeRef.current.click()}
-                linkRef={colorSchemeRef}
-                onChange={(event) => {
-                  handleNewColorScheme(event);
-                  event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
-                  setColorSchemePopUpActive(false);
-                }}
-              />
-            </div>
-          </div>
+      <PopUp
+        heading={"Uploading Your Color Scheme"}
+        description={uploadColorSchemeDescription}
+        isOpen={colorSchemePopUpActive}
+        setIsOpen={setColorSchemePopUpActive}
+      >
+        <div className="popup-block color-text-primary"></div>
+        <PopUpTextFieldInline textInfront={"Color Scheme format:"} textInside={"Color1, Color2, Color3, ..."} />
+        <div className="popup-block" />
+        <PopUpTextFieldInline textInfront={"Color Scheme example:"} textInside={"#e69f00,#56b4e9,#009e73"} />
+        <div className="popup-block">
+          <PopupButtonRect text={"Download Example Color Scheme"} onClick={() => downloadCsvFile(colorSchemeCsv.content, colorSchemeCsv.name)} />
+          <PopupButtonRect
+            text={"Upload Own Color Scheme"}
+            onClick={() => colorSchemeRef.current.click()}
+            linkRef={colorSchemeRef}
+            onChange={(event) => {
+              handleNewColorScheme(event);
+              event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
+              setColorSchemePopUpActive(false);
+            }}
+          />
         </div>
-      )}
-      {content}
+      </PopUp>
     </>
   );
 }
