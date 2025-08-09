@@ -5,7 +5,7 @@ import { ReactComponent as BackArrowIcon } from "../../../icons/backArrow.svg";
 import { FilterSidebar } from "./filterSidebar.js";
 import { PhysicsSidebar } from "./physicsSidebar.js";
 import { DataSidebar } from "./dataSidebar.js";
-import { MainSidebar } from "./mainSidebar.js";
+import { MainSidebar } from "./selectionSidebar.js";
 import { AppearanceSidebar } from "./appearanceSidebar.js";
 
 export function Sidebar(props) {
