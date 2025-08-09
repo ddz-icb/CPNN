@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { ReactComponent as InfoIcon } from "../../../icons/info.svg";
 import { ReactComponent as XIcon } from "../../../icons/x.svg";
 import { Tooltip } from "react-tooltip";
@@ -387,5 +387,66 @@ export function TableList({
           </div>
         ))}
     </>
+  );
+}
+
+export function ColorMappingSelect({ heading, colorScheme, attribsToColorIndices, setMapping }) {
+  const handleColorChange = (colorIndex, newAttribute) => {
+    const updatedMapping = { ...attribsToColorIndices };
+
+    const oldAttribute = Object.keys(updatedMapping).find((key) => updatedMapping[key] === colorIndex);
+
+    const previousColorIndex = updatedMapping[newAttribute];
+
+    updatedMapping[newAttribute] = colorIndex;
+
+    if (oldAttribute) {
+      if (previousColorIndex !== undefined) {
+        updatedMapping[oldAttribute] = previousColorIndex;
+      } else {
+        const usedColors = Object.values(updatedMapping);
+        const firstAvailableColor = Object.keys(colorScheme.colorScheme).find((index) => !usedColors.includes(parseInt(index, 10)));
+
+        if (firstAvailableColor !== undefined) {
+          updatedMapping[oldAttribute] = parseInt(firstAvailableColor, 10);
+        } else {
+          delete updatedMapping[oldAttribute];
+        }
+      }
+    }
+
+    setMapping(updatedMapping);
+  };
+
+  return (
+    <div>
+      <span className="heading-label-no-pad pad-bottom-05">{heading}</span>
+      <div className="sidebar-block-no-pad">
+        <div className="colormapping-selector">
+          {Object.entries(colorScheme.colorScheme).map(([colorIndex, color]) => (
+            <Fragment key={colorIndex}>
+              <div
+                className="color-square colorscheme-item"
+                style={{
+                  backgroundColor: color,
+                }}
+              ></div>
+              <select
+                className="popup-button-rect-small"
+                value={Object.keys(attribsToColorIndices).find((key) => attribsToColorIndices[key] === parseInt(colorIndex, 10)) || ""}
+                onChange={(event) => handleColorChange(parseInt(colorIndex, 10), event.target.value)}
+              >
+                <option value="">None</option>
+                {Object.keys(attribsToColorIndices || {}).map((attribute) => (
+                  <option key={attribute} value={attribute}>
+                    {attribute}
+                  </option>
+                ))}
+              </select>
+            </Fragment>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }
