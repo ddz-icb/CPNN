@@ -143,29 +143,12 @@ function ActiveNodeColorScheme() {
   const { appearance } = useAppearance();
 
   return (
-    <>
-      <>
-        <span className="heading-label">Active Node Color Scheme</span>
-        <table className="dark-item-table">
-          <tbody>
-            {appearance.nodeColorScheme && (
-              <tr className="item-table-entry">
-                <td>
-                  <span className="pad-left-025">{appearance.nodeColorScheme.name}</span>
-                </td>
-              </tr>
-            )}
-            {!appearance.nodeColorScheme && (
-              <tr className="item-table-entry">
-                <td>
-                  <span className="pad-left-025">None</span>
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </>
-    </>
+    <TableList
+      heading={"Active Node Color Scheme"}
+      data={appearance.nodeColorScheme ? [appearance.nodeColorScheme] : []}
+      displayKey={"name"}
+      dark={true}
+    />
   );
 }
 
@@ -173,29 +156,12 @@ function ActiveLinkColorScheme() {
   const { appearance } = useAppearance();
 
   return (
-    <>
-      <>
-        <span className="heading-label">Active Link Color Scheme</span>
-        <table className="dark-item-table">
-          <tbody>
-            {appearance.linkColorScheme && (
-              <tr className="item-table-entry">
-                <td>
-                  <span className="pad-left-025">{appearance.linkColorScheme.name}</span>
-                </td>
-              </tr>
-            )}
-            {!appearance.linkColorScheme && (
-              <tr className="item-table-entry">
-                <td>
-                  <span className="pad-left-025">None</span>
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </>
-    </>
+    <TableList
+      heading={"Active Link Color Scheme"}
+      data={appearance.linkColorScheme ? [appearance.linkColorScheme] : []}
+      displayKey={"name"}
+      dark={true}
+    />
   );
 }
 
