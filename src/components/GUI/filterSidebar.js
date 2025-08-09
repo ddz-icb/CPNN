@@ -38,7 +38,7 @@ import {
 } from "./descriptions/filterDescriptions.js";
 import { handleEditorChange, runCodeEditor } from "../Other/handlers.js";
 
-export function FilterSidebar({}) {
+export function FilterSidebar() {
   const { filter, setFilter, setAllFilter } = useFilter();
   const { appearance } = useAppearance();
   const { graphData, setGraphData } = useGraphData();

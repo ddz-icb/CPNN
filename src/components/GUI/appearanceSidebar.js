@@ -7,6 +7,7 @@ import {
   SidebarButtonRect,
   PopupButtonRect,
   PopUp,
+  TableList,
 } from "./reusableComponents/sidebarComponents.js";
 import { colorSchemeCsv } from "../../demodata/exampleColorSchemeCSV.js";
 import { downloadCsvFile } from "../GraphStuff/download.js";
@@ -116,45 +117,19 @@ function UploadedColorSchemes({ colorSchemes, handleDeleteColorScheme }) {
 
   return (
     <>
-      <span className="heading-label">Uploaded Color Schemes</span>
-      <table className="recent-item-table">
-        <tbody>
-          {colorSchemes && (
-            <>
-              {colorSchemes?.map((colorScheme, index) => (
-                <tr key={index} className="recent-item-entry recent-item-entry-highlight">
-                  <td
-                    onClick={() => {
-                      setSelectedScheme(colorScheme);
-                      setSelectSchemePopUp(true);
-                    }}
-                  >
-                    <div data-tooltip-id={`change-color-scheme${index}`} data-tooltip-content="Replace Node/Link Color Scheme">
-                      <span className="pad-left-025">{colorScheme.name}</span>
-                    </div>
-                    <Tooltip id={`change-color-scheme${index}`} place="top" effect="solid" className="sidebar-tooltip" />
-                  </td>
-                  <td className="recent-item-logo sidebar-tooltip-wrapper">
-                    <TrashIcon
-                      data-tooltip-id={`delete-mapping-tooltip-${index}`}
-                      data-tooltip-content="Delete Color Scheme"
-                      onClick={() => handleDeleteColorScheme(colorScheme.name)}
-                    />
-                    <Tooltip id={`delete-mapping-tooltip-${index}`} place="top" effect="solid" className="sidebar-tooltip" />
-                  </td>
-                </tr>
-              ))}
-            </>
-          )}
-          {(!colorSchemes || colorSchemes.length === 0) && (
-            <tr className="recent-item-entry">
-              <td>
-                <span className="pad-left-025">None</span>
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+      <TableList
+        heading={"Upload Color Schemes"}
+        data={colorSchemes}
+        displayKey={"name"}
+        onItemClick={(colorScheme) => {
+          setSelectedScheme(colorScheme);
+          setSelectSchemePopUp(true);
+        }}
+        ActionIcon={TrashIcon}
+        onActionIconClick={(colorScheme) => handleDeleteColorScheme(colorScheme)}
+        itemTooltipContent={(item) => "Replace Node/Link Color Scheme"}
+        actionIconTooltipContent={(item) => "Delete Color Scheme"}
+      />
       <PopUp heading={"Set Color Scheme"} description={setColorSchemeDescription} isOpen={selectSchemePopUp} setIsOpen={setSelectSchemePopUp}>
         <div className="popup-block">
           <PopupButtonRect onClick={() => setAppearance("nodeColorScheme", selectedScheme)} text={"Set for Nodes"} />

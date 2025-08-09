@@ -293,3 +293,66 @@ export function PopUp({ heading, description, children, isOpen, setIsOpen, wideP
     )
   );
 }
+
+export function TableList({ heading, data, displayKey, onItemClick, ActionIcon, onActionIconClick, itemTooltipContent, actionIconTooltipContent }) {
+  return (
+    <>
+      <span className="heading-label">{heading}</span>
+      <table className="recent-item-table">
+        <tbody>
+          {data && data.length > 0 ? (
+            data.map((item, index) => (
+              <tr key={`row-${item[displayKey]}-${index}`} className="recent-item-entry recent-item-entry-highlight">
+                <td
+                  className="recent-item-text"
+                  onClick={() => onItemClick(item)}
+                  data-tooltip-id={`item-tooltip-${item[displayKey]}-${index}`}
+                  data-tooltip-content={itemTooltipContent(item)}
+                >
+                  <span className="pad-left-025">{item[displayKey]}</span>
+                </td>
+                {ActionIcon && (
+                  <td className="recent-item-logo">
+                    <ActionIcon
+                      onClick={() => onActionIconClick && onActionIconClick(item)}
+                      data-tooltip-id={`action-tooltip-${item[displayKey]}-${index}`}
+                      data-tooltip-content={actionIconTooltipContent(item)}
+                    />
+                  </td>
+                )}
+              </tr>
+            ))
+          ) : (
+            <tr className="recent-item-entry">
+              <td>
+                <span className="pad-left-025">None</span>
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+
+      {data &&
+        data.length > 0 &&
+        itemTooltipContent &&
+        data.map((item, index) => (
+          <div key={`item-tooltip-wrapper-${item[displayKey]}-${index}`} className="sidebar-tooltip-wrapper">
+            <Tooltip key={`item-tooltip-${item[displayKey]}-${index}`} id={`item-tooltip-${item[displayKey]}-${index}`} className="sidebar-tooltip" />
+          </div>
+        ))}
+
+      {data &&
+        data.length > 0 &&
+        actionIconTooltipContent &&
+        data.map((item, index) => (
+          <div key={`action-tooltip-wrapper-${item[displayKey]}-${index}`} className="sidebar-tooltip-wrapper">
+            <Tooltip
+              key={`action-tooltip-${item[displayKey]}-${index}`}
+              id={`action-tooltip-${item[displayKey]}-${index}`}
+              className="sidebar-tooltip"
+            />
+          </div>
+        ))}
+    </>
+  );
+}
