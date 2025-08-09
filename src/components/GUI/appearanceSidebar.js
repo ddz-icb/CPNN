@@ -11,7 +11,6 @@ import {
 } from "./reusableComponents/sidebarComponents.js";
 import { colorSchemeCsv } from "../../demodata/exampleColorSchemeCSV.js";
 import { downloadCsvFile } from "../GraphStuff/download.js";
-import { Tooltip } from "react-tooltip";
 import { useAppearance } from "../../states.js";
 import log from "../../logger.js";
 import {
@@ -147,17 +146,17 @@ function ActiveNodeColorScheme() {
     <>
       <>
         <span className="heading-label">Active Node Color Scheme</span>
-        <table className="active-item-table">
+        <table className="dark-item-table">
           <tbody>
             {appearance.nodeColorScheme && (
-              <tr className="recent-item-entry">
+              <tr className="item-table-entry">
                 <td>
                   <span className="pad-left-025">{appearance.nodeColorScheme.name}</span>
                 </td>
               </tr>
             )}
             {!appearance.nodeColorScheme && (
-              <tr className="recent-item-entry">
+              <tr className="item-table-entry">
                 <td>
                   <span className="pad-left-025">None</span>
                 </td>
@@ -177,17 +176,17 @@ function ActiveLinkColorScheme() {
     <>
       <>
         <span className="heading-label">Active Link Color Scheme</span>
-        <table className="active-item-table">
+        <table className="dark-item-table">
           <tbody>
             {appearance.linkColorScheme && (
-              <tr className="recent-item-entry">
+              <tr className="item-table-entry">
                 <td>
                   <span className="pad-left-025">{appearance.linkColorScheme.name}</span>
                 </td>
               </tr>
             )}
             {!appearance.linkColorScheme && (
-              <tr className="recent-item-entry">
+              <tr className="item-table-entry">
                 <td>
                   <span className="pad-left-025">None</span>
                 </td>

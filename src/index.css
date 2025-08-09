@@ -147,7 +147,7 @@ ul {
   --back-icon-color-hover: var(--color18);
   --bg-switch: var(--color13);
   --nav-link-hover-color: white;
-  --active-item-table-color: white;
+  --dark-item-table-color: white;
   --bg-logo: var(--bg-secondary);
   --icon-color-tertiary: white;
   --dropdown-item-color: white;
@@ -197,7 +197,7 @@ ul {
   --back-icon-color-hover: var(--color26);
   --bg-switch: var(--bg-secondary);
   --nav-link-hover-color: var(--color30);
-  --active-item-table-color: var(--text-secondary);
+  --dark-item-table-color: var(--text-secondary);
   --bg-logo: var(--bg-secondary);
   --icon-color-tertiary: var(--color26);
   --dropdown-item-color: white;
@@ -371,7 +371,7 @@ ul {
 
 /* this is for the Active Files section */
 /* (also uses the Recent Files section below)*/
-.active-item-table {
+.dark-item-table {
   width: calc(100% - 2rem);
   border-collapse: collapse;
   margin-left: 1rem;
@@ -380,22 +380,22 @@ ul {
   margin-top: 0.2rem;
 }
 
-.active-item-table .recent-item-logo:hover svg {
+.dark-item-table .item-table-logo:hover svg {
   transition: var(--transition-speed);
   fill: var(--icon-color-tertiary);
 }
 
-.active-item-table td {
+.dark-item-table td {
   border: 1px solid var(--border-table);
   background-color: var(--bg-secondary);
-  color: var(--active-item-table-color);
+  color: var(--dark-item-table-color);
   padding: 0.1rem;
   text-align: left;
   display: table-cell;
 }
 
 /* this is for the Recent Files section */
-.recent-item-table {
+.item-table {
   width: calc(100% - 2rem);
   border-collapse: collapse;
   margin-left: 1rem;
@@ -404,20 +404,20 @@ ul {
   margin-top: 0.2rem;
 }
 
-.recent-item-table th,
-.recent-item-table td {
+.item-table th,
+.item-table td {
   border: 1px solid var(--border-table);
   padding: 0.1rem;
   text-align: left;
   display: table-cell;
 }
 
-.recent-item-table th {
+.item-table th {
   background-color: var(--bg-secondary);
   color: var(--header-text);
 }
 
-.recent-item-entry {
+.item-table-entry {
   color: var(--text-primary);
   height: 1.7rem;
 }
@@ -427,21 +427,21 @@ ul {
   height: 2rem;
 }
 
-.recent-item-entry-highlight:hover {
+.item-table-entry-highlight:hover {
   background-color: var(--bg-table-item-hover);
   transition: var(--transition-speed);
 }
 
-.recent-item-text {
+.item-table-text {
   cursor: pointer;
 }
 
-.recent-item-text:hover {
+.item-table-text:hover {
   color: var(--table-item-hover);
 }
 
 /* sollte eig table-item-logo heißen */
-.recent-item-logo {
+.item-table-logo {
   display: block;
   margin: auto;
   fill: var(--icon-color);
@@ -463,12 +463,12 @@ ul {
   cursor: pointer;
 }
 
-.recent-item-logo:hover svg {
+.item-table-logo:hover svg {
   transition: var(--transition-speed);
   fill: var(--icon-color-secondary);
 }
 
-.recent-item-logo svg {
+.item-table-logo svg {
   display: block;
   margin: auto;
   width: 1.25rem;
@@ -476,7 +476,7 @@ ul {
   cursor: pointer;
 }
 
-.recent-item-logo.saturated-logo svg {
+.item-table-logo.saturated-logo svg {
   filter: grayscale(0%) opacity(1);
   fill: var(--icon-color);
 }

@@ -306,45 +306,52 @@ export function TableList({
   ActionIcon2,
   onActionIcon2Click,
   actionIcon2TooltipContent,
+  dark,
 }) {
   return (
     <>
       <span className="heading-label">{heading}</span>
-      <table className="recent-item-table">
+      <table className={dark ? "dark-item-table" : "item-table"}>
         <tbody>
           {data && data.length > 0 ? (
             data.map((item, index) => (
-              <tr key={`row-${item}-${index}`} className="recent-item-entry recent-item-entry-highlight">
+              <tr key={`row-${item}-${index}`} className="item-table-entry item-table-entry-highlight">
                 <td
-                  className="recent-item-text"
+                  className="item-table-text"
                   onClick={() => onItemClick(item)}
-                  data-tooltip-id={`item-tooltip-${item}-${index}`}
-                  data-tooltip-content={itemTooltipContent(item)}
+                  {...(itemTooltipContent && {
+                    "data-tooltip-id": `item-tooltip-${item}-${index}`,
+                    "data-tooltip-content": itemTooltipContent(item),
+                  })}
                 >
                   <span className="pad-left-025">{displayKey ? item[displayKey] : item}</span>
                 </td>
                 {ActionIcon && (
-                  <td className="recent-item-logo">
+                  <td className="item-table-logo">
                     <ActionIcon
                       onClick={() => onActionIconClick && onActionIconClick(item)}
-                      data-tooltip-id={`action-tooltip-${item}-${index}`}
-                      data-tooltip-content={actionIconTooltipContent(item)}
+                      {...(actionIconTooltipContent && {
+                        "data-tooltip-id": `action-tooltip-${item}-${index}`,
+                        "data-tooltip-content": actionIconTooltipContent(item),
+                      })}
                     />
                   </td>
                 )}
                 {ActionIcon2 && (
-                  <td className="recent-item-logo">
+                  <td className="item-table-logo">
                     <ActionIcon2
                       onClick={() => onActionIcon2Click && onActionIcon2Click(item)}
-                      data-tooltip-id={`action-tooltip-2-${item}-${index}`}
-                      data-tooltip-content={actionIcon2TooltipContent(item)}
+                      {...(actionIcon2TooltipContent && {
+                        "data-tooltip-id": `action-tooltip-2-${item}-${index}`,
+                        "data-tooltip-content": actionIcon2TooltipContent(item),
+                      })}
                     />
                   </td>
                 )}
               </tr>
             ))
           ) : (
-            <tr className="recent-item-entry">
+            <tr className="item-table-entry">
               <td>
                 <span className="pad-left-025">None</span>
               </td>

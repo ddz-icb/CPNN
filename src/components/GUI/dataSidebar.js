@@ -25,7 +25,7 @@ import {
   containsSitesDescription,
   maxCompSizeDescriptionUpload,
   minCompSizeDescriptionUpload,
-  minCorrForEdgeDescription,
+  minCorrForEdgeDescription as minLinkCorrDescription,
   spearmanCoefficientDescription,
   takeAbsDescription,
   uploadGraphDescription,
@@ -54,8 +54,8 @@ export function DataSidebar({
         handleNewAnnotationMapping={handleNewAnnotationMapping}
         handleCreateDifferenceGraph={handleCreateDifferenceGraph}
       />
-      <ActiveFiles activeGraphFileNames={graphData.activeGraphFileNames} handleRemoveActiveGraphFile={handleRemoveActiveGraphFile} />
-      <UploadedFiles
+      <ActiveGraphFiles activeGraphFileNames={graphData.activeGraphFileNames} handleRemoveActiveGraphFile={handleRemoveActiveGraphFile} />
+      <UploadedGraphFiles
         uploadedGraphFileNames={graphData.uploadedGraphFileNames}
         handleSelectGraph={handleSelectGraph}
         handleDeleteGraphFile={handleDeleteGraphFile}
@@ -74,7 +74,7 @@ export function DataSidebar({
   );
 }
 
-function UploadedFiles({ uploadedGraphFileNames, handleSelectGraph, handleDeleteGraphFile, handleAddFile }) {
+function UploadedGraphFiles({ uploadedGraphFileNames, handleSelectGraph, handleDeleteGraphFile, handleAddFile }) {
   let uploadedGraphFileNamesNoExample = uploadedGraphFileNames?.filter((name) => name !== exampleGraphJson.name);
 
   return (
@@ -95,30 +95,16 @@ function UploadedFiles({ uploadedGraphFileNames, handleSelectGraph, handleDelete
   );
 }
 
-function ActiveFiles({ activeGraphFileNames, handleRemoveActiveGraphFile }) {
+function ActiveGraphFiles({ activeGraphFileNames, handleRemoveActiveGraphFile }) {
   return (
-    <>
-      <span className="heading-label">Currently Active Graphs</span>
-      <table className="active-item-table">
-        <tbody>
-          {activeGraphFileNames?.map((filename, index) => (
-            <tr key={index} className="recent-item-entry">
-              <td>
-                <span className="pad-left-025">{filename}</span>
-              </td>
-              <td className="recent-item-logo sidebar-tooltip-wrapper">
-                <DeleteIcon
-                  data-tooltip-id={`remove-tooltip-${index}`}
-                  data-tooltip-content="Remove Graph"
-                  onClick={() => handleRemoveActiveGraphFile(filename)}
-                />
-                <Tooltip id={`remove-tooltip-${index}`} place="top" effect="solid" className="sidebar-tooltip" />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </>
+    <TableList
+      heading={"Currently Active Graphs"}
+      data={activeGraphFileNames}
+      ActionIcon={DeleteIcon}
+      onActionIconClick={(filename) => handleRemoveActiveGraphFile(filename)}
+      actionIconTooltipContent={() => "Remove Graph"}
+      dark={true}
+    />
   );
 }
 
@@ -138,41 +124,19 @@ function UploadedMappings({ uploadedAnnotationMappingNames, handleAnnotationMapp
 
 function ActiveAnnotationMapping({ activeAnnotationMapping, handleRemoveActiveAnnotationMapping }) {
   return (
-    <>
-      <>
-        <span className="heading-label">Currently Active Pathway Mapping</span>
-        <table className="active-item-table">
-          <tbody>
-            {activeAnnotationMapping && (
-              <tr className="recent-item-entry">
-                <td>
-                  <span className="pad-left-025">{activeAnnotationMapping.name}</span>
-                </td>
-                <td className="recent-item-logo sidebar-tooltip-wrapper">
-                  <DeleteIcon
-                    data-tooltip-id={`delete-active-mapping-tooltip`}
-                    data-tooltip-content="Remove mapping"
-                    onClick={() => handleRemoveActiveAnnotationMapping()}
-                  />
-                  <Tooltip id={`delete-active-mapping-tooltip`} place="top" effect="solid" className="sidebar-tooltip" />
-                </td>
-              </tr>
-            )}
-            {!activeAnnotationMapping && (
-              <tr className="recent-item-entry">
-                <td>
-                  <span className="pad-left-025">None</span>
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </>
-    </>
+    <TableList
+      heading={"Currently Active Pathway Mapping"}
+      data={activeAnnotationMapping ? [activeAnnotationMapping] : []}
+      displayKey={"name"}
+      ActionIcon={DeleteIcon}
+      onActionIconClick={() => handleRemoveActiveAnnotationMapping()}
+      actionIconTooltipContent={() => "Deselect pathway mapping"}
+      dark={true}
+    />
   );
 }
 
-export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping, handleCreateDifferenceGraph }) {
+export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping }) {
   const annotationMappingRef = useRef(null);
   const graphFileRef = useRef(null);
 
@@ -183,8 +147,8 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
   const [mergeSameProtein, setMergeSameProtein] = useState(false);
   const [spearmanCoefficient, setSpearmanCoefficient] = useState(false);
 
-  const [minCorrForEdge, setMinCorrForEdge] = useState(0);
-  const [minCorrForEdgeText, setMinCorrForEdgeText] = useState(0);
+  const [minLinkCorr, setMinLinkCorr] = useState(0);
+  const [minLinkCorrText, setMinLinkCorrText] = useState(0);
 
   const [minCompSizeForNode, setMinCompSize] = useState(2);
   const [minCompSizeText, setMinCompSizeText] = useState(2);
@@ -299,17 +263,17 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
         />
         <div className="popup-block"></div>
         <PopUpSliderBlock
-          value={minCorrForEdge}
-          valueText={minCorrForEdgeText}
-          setValue={(value) => setMinCorrForEdge(value)}
-          setValueText={(value) => setMinCorrForEdgeText(value)}
+          value={minLinkCorr}
+          valueText={minLinkCorrText}
+          setValue={(value) => setMinLinkCorr(value)}
+          setValueText={(value) => setMinLinkCorrText(value)}
           fallbackValue={0}
           min={0}
           max={1}
           step={0.05}
           text={"Minimum link correlation"}
           infoHeading={"Minimum link correlation"}
-          infoDescription={minCorrForEdgeDescription}
+          infoDescription={minLinkCorrDescription}
         />
         <PopUpFieldBlock
           valueText={minCompSizeText}
@@ -349,7 +313,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
             onClick={() => graphFileRef.current.click()}
             linkRef={graphFileRef}
             onChange={(event) => {
-              handleNewGraphFile(event, takeAbs, minCorrForEdge, minCompSizeForNode, maxCompSizeForNode, spearmanCoefficient, mergeSameProtein);
+              handleNewGraphFile(event, takeAbs, minLinkCorr, minCompSizeForNode, maxCompSizeForNode, spearmanCoefficient, mergeSameProtein);
               event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
               setGraphPopUpActive(false);
             }}
