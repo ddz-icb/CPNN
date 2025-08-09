@@ -5,8 +5,8 @@ import { ReactComponent as FileImage } from "../../icons/fileImage.svg";
 import { ReactComponent as DownloadIcon } from "../../icons/download.svg";
 import { ReactComponent as XIcon } from "../../icons/x.svg";
 
-import { Button, Item } from "./headerBar.js";
 import { useDownload } from "../../states.js";
+import { Button, Item } from "./reusableComponents/headerBarComponents.js";
 
 export function HeaderBarExport({ activeMenu, handleActiveMenuClick }) {
   const { download, setDownload } = useDownload();

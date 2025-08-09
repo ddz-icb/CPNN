@@ -3,8 +3,7 @@ import { ReactComponent as XIcon } from "../../icons/x.svg";
 import { useAppearance, useGraphData } from "../../states.js";
 
 import { fallbackColor, getColor } from "../Other/draw.js";
-
-import { Button } from "./headerBar.js";
+import { Button } from "./reusableComponents/headerBarComponents.js";
 
 export function Mapping({ activeMenu, handleActiveMenuClick }) {
   const { appearance, setAppearance } = useAppearance();
