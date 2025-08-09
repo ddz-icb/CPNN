@@ -8,7 +8,6 @@ import { HeaderBar } from "./components/gui/headerbar/headerBar.js";
 import {
   applyNodeMapping,
   getDifferenceGraph,
-  getIdsHavePhosphosites,
   getLinkAttribsToColorIndices,
   getLinkWeightMinMax,
   getNodeAttribsToColorIndices,
@@ -50,7 +49,7 @@ function App() {
   const { setAllPhysics } = usePhysics();
   const { appearance, setAppearance } = useAppearance();
   const { download, setDownload } = useDownload();
-  const { graphData, setGraphData } = useGraphData(); // includes all data concerning the graph
+  const { graphData, setGraphData } = useGraphData();
 
   const [reset, setReset] = useState(false); // true indicates that the simulation (in forceGraph.js) has to be reloaded
   const [error, setError] = useState(null); // error gets printed on screen

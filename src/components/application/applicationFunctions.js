@@ -134,6 +134,7 @@ export async function setInitColorSchemes(appearance, setAppearance) {
 
   setAppearance("linkColorScheme", ibmAntiBlindness);
   setAppearance("nodeColorScheme", manyColors);
+  setAppearance("uploadedColorSchemeNames", [...new Set([...(appearance.uploadedColorSchemeNames || []), ...defaultColorSchemeNames])]);
 
   if (!appearance.uploadedColorSchemeNames) {
     setAppearance("uploadedColorSchemeNames", defaultColorSchemeNames);
@@ -142,6 +143,8 @@ export async function setInitColorSchemes(appearance, setAppearance) {
 
 export async function loadColorSchemeNames(setAppearance) {
   const filenames = await fromAllGetColorSchemeNameDB();
+  if (filenames.length === 0) return;
+
   setAppearance("uploadedColorSchemeNames", filenames);
 }
 

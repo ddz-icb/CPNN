@@ -102,8 +102,6 @@ export async function getColorSchemeDB(filename) {
   const file = await getByColorSchemeNameDB(filename);
   if (!file || !file.content) throw new Error(`No file found with the name ${filename}.`);
 
-  console.log("FILE", file);
-
   const colorScheme = JSON.parse(file.content);
   if (!colorScheme) throw new Error("File format not recognized");
   return { colorScheme, file };

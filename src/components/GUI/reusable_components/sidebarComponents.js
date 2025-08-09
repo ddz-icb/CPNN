@@ -418,8 +418,6 @@ export function ColorMappingSelect({ heading, colorScheme, attribsToColorIndices
     setMapping(updatedMapping);
   };
 
-  console.log("colorscheme", colorScheme);
-
   return (
     <div>
       <span className="heading-label-no-pad pad-bottom-05">{heading}</span>
