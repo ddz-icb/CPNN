@@ -2,7 +2,7 @@ import log from "../../logger.js";
 import axios from "axios";
 import { useState, useEffect, useRef } from "react";
 import { ReactComponent as XIcon } from "../../icons/x.svg";
-import { extractDescription, extractFullName, extractPdbId } from "../regex/extract.js";
+import { extractDescription, extractFullName, extractPdbId } from "./regex/extract.js";
 import * as $3Dmol from "3dmol/build/3Dmol.js";
 import { useAppearance, useContainer, useGraphData, useTooltipSettings } from "../../states.js";
 
