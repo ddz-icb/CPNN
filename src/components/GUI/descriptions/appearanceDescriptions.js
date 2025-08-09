@@ -9,3 +9,9 @@ export const nodeLabelDescription = (
     <p>Shows the name of each node above itself in the graph.</p>
   </div>
 );
+
+export const setColorSchemeDescription = (
+  <div>
+    <p>Select what the color scheme should be applied to</p>
+  </div>
+);

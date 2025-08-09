@@ -253,16 +253,7 @@ export function SidebarCodeEditorBlock({ text, onClick, compilerError, defaultVa
   );
 }
 
-export function PopUpTextFieldInline({ textInfront, textInside }) {
-  return (
-    <div className="popup-block">
-      <label className="label-no-pad">{textInfront}</label>
-      <div className="popup-text-field pad-left-025 pad-right-025">{textInside}</div>
-    </div>
-  );
-}
-
-export function PopUpTextFieldCompact({ textInfront, textInside }) {
+export function PopUpTextField({ textInfront, textInside }) {
   return (
     <>
       <label className="label-no-pad">{textInfront}</label>
@@ -271,47 +262,13 @@ export function PopUpTextFieldCompact({ textInfront, textInside }) {
   );
 }
 
-export function PopUpTextField({ textInfront, textInside }) {
+export function PopUpTextFieldInline({ textInfront, textInside }) {
   return (
     <div>
       <label className="label-no-pad pad-top-1">{textInfront}</label>
       <div className={"popup-block"}>
         <div className="popup-text-field pad-left-025 pad-right-025">{textInside}</div>
       </div>
-    </div>
-  );
-}
-
-export function PopUpDoubleTextField({ textInfront, textInside1, textInside2 }) {
-  return (
-    <>
-      <label className="label-no-pad pad-top-1">{textInfront}</label>
-      <div className={"popup-block"}>
-        <div className="popup-text-field pad-left-025 pad-right-025">{textInside1}</div>
-      </div>
-      <div className={"popup-block"}>
-        <div className="popup-text-field pad-left-025 pad-right-025">{textInside2}</div>
-      </div>
-    </>
-  );
-}
-
-export function SidebarDropdownItem({ onClick, onChange, linkRef, tooltip, tooltipId, text, children }) {
-  return (
-    <div className="sidebar-tooltip-wrapper">
-      <li className="sidebar-dropdown-item pad-top-05 pad-bottom-05 pad-left-05" data-tooltip-id={tooltipId} data-tooltip-content={tooltip}>
-        <a
-          className="dropdown-link"
-          onClick={() => {
-            onClick();
-          }}
-        >
-          <span className="dropdown-text pad-right-05">{text}</span>
-        </a>
-        <input type="file" style={{ display: "none" }} onChange={onChange} ref={linkRef} />
-        <Tooltip id={tooltipId} place="top" effect="solid" className="sidebar-tooltip" />
-        {children}
-      </li>
     </div>
   );
 }

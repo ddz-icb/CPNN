@@ -47,3 +47,25 @@ export const maxCompSizeDescriptionUpload = (
     </p>
   </div>
 );
+
+export const uploadPathwayMappingDescription = (
+  <div className="popup-block color-text-primary">
+    Uploading pathway mappings can provide additional context to classify nodes, determining their color. By doing so, nodes −such as peptides− are
+    associated with one or more pathways. Nodes belonging to the same pathway will then be colored accordingly.
+    <br />
+    <br />
+    Pathway mappings can be uploaded in CSV or TSV format. These mappings must contain a "UniProt-ID" and a "Pathway Name" column. If supplied with a
+    "Reactome-ID" column, links to reactome.org with the corresponding pathway will be embedded, when klicking on nodes. To better understand the
+    required format, you can download the example mapping below.
+  </div>
+);
+
+export const uploadGraphDescription = (
+  <div>
+    <p>
+      You can upload your graphs in JSON, CSV or TSV format. CSV and TSV files must be either structured as a symmetric matrix or raw table data,
+      while JSON contains a list of nodes and links. You can download the example graphs below to take a closer look at the required format. When raw
+      table data is uploaded, a correlation matrix will be automatically computed. For this computation all NaN values will be ignored.
+    </p>
+  </div>
+);

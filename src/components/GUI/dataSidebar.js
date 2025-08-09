@@ -5,14 +5,13 @@ import { Tooltip } from "react-tooltip";
 import { useEffect, useRef, useState } from "react";
 
 import {
-  PopUpDoubleTextField,
-  PopUpTextField,
+  PopUpTextFieldInline,
   PopUpSliderBlock,
   PopUpFieldBlock,
-  PopUp,
   PopUpSwitchBlock,
   SidebarButtonRect,
   PopupButtonRect,
+  PopUp,
 } from "./reusableComponents/sidebarComponents.js";
 import log from "../../logger.js";
 import { useGraphData } from "../../states.js";
@@ -28,6 +27,8 @@ import {
   minCorrForEdgeDescription,
   spearmanCoefficientDescription,
   takeAbsDescription,
+  uploadGraphDescription,
+  uploadPathwayMappingDescription,
 } from "./descriptions/dataDescriptions.js";
 import { mergeProteinsDescription } from "./descriptions/filterDescriptions.js";
 
@@ -236,21 +237,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
 
   const [graphPopUpActive, setGraphPopUpActive] = useState(false);
   const [mappingPopUpActive, setMappingPopUpActive] = useState(false);
-  const [differencePopUpActive, setDifferencePopUpActive] = useState(false);
   const { graphData, setGraphData } = useGraphData();
-  const uploadedGraphFileNames = graphData.uploadedGraphFileNames || [];
-  const uploadedGraphFileNamesNoExample = uploadedGraphFileNames.filter((name) => name !== exampleGraphJson.name);
-
-  const [selectedGraphName1, setSelectedGraph1] = useState("");
-  const [selectedGraphName2, setSelectedGraph2] = useState("");
-
-  const handleGraph1Change = (event) => {
-    setSelectedGraph1(event.target.value);
-  };
-
-  const handleGraph2Change = (event) => {
-    setSelectedGraph2(event.target.value);
-  };
 
   const [takeAbs, setTakeAbs] = useState(false);
   const [mergeSameProtein, setMergeSameProtein] = useState(false);
@@ -306,31 +293,15 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
           tooltipId={"upload-mapping-tooltip"}
         />
       </div>
-      {/* <SidebarButtonRect
-        onClick={() => setDifferencePopUpActive(!differencePopUpActive)}
-        text={"Create Difference Graph"}
-        tooltip={"Create graph resembling the difference between two graphs"}
-        tooltipId={"difference-graph-tooltip"}
-      /> */}
       <PopUp
         heading={"Uploading Your Pathway Mapping"}
-        description={
-          <div className="popup-block color-text-primary">
-            Uploading pathway mappings can provide additional context to classify nodes, determining their color. By doing so, nodes −such as
-            peptides− are associated with one or more pathways. Nodes belonging to the same pathway will then be colored accordingly.
-            <br />
-            <br />
-            Pathway mappings can be uploaded in CSV or TSV format. These mappings must contain a "UniProt-ID" and a "Pathway Name" column. If supplied
-            with a "Reactome-ID" column, links to reactome.org with the corresponding pathway will be embedded, when klicking on nodes. To better
-            understand the required format, you can download the example mapping below.
-          </div>
-        }
+        description={uploadPathwayMappingDescription}
         isOpen={mappingPopUpActive}
         setIsOpen={setMappingPopUpActive}
       >
-        <PopUpTextField textInfront={"Pathway Mapping format:"} textInside={annotationMappingFormat} />
+        <PopUpTextFieldInline textInfront={"Pathway Mapping format:"} textInside={annotationMappingFormat} />
         <div className="popup-block" />
-        <PopUpTextField textInfront={"Pathway Mapping example:"} textInside={annotationMappingExample} />
+        <PopUpTextFieldInline textInfront={"Pathway Mapping example:"} textInside={annotationMappingExample} />
         <div className="popup-block">
           <PopupButtonRect
             text={"Download Example Pathway Mapping"}
@@ -348,14 +319,7 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
           />
         </div>
       </PopUp>
-      <PopUp
-        heading={"Upload Graph"}
-        description={
-          "You can upload your graphs in JSON, CSV or TSV format. CSV and TSV files must be either structured as a symmetric matrix or raw table data, while JSON contains a list of nodes and links. You can download the example graphs below to take a closer look at the required format. When raw table data is uploaded, a correlation matrix will be automatically computed. For this computation all NaN values will be ignored."
-        }
-        isOpen={graphPopUpActive}
-        setIsOpen={setGraphPopUpActive}
-      >
+      <PopUp heading={"Upload Graph"} description={uploadGraphDescription} isOpen={graphPopUpActive} setIsOpen={setGraphPopUpActive}>
         <div className="popup-block">
           <PopupButtonRect
             text={"JSON Example Graph"}
@@ -438,9 +402,10 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
           infoDescription={containsSitesDescription}
         />
         <div className="popup-block"></div>
-        <PopUpTextField textInfront={"Your Node ID format:"} textInside={nodeIdFormat} />
+        <PopUpTextFieldInline textInfront={"Your Node ID format:"} textInside={nodeIdFormat} />
         <div className="popup-block"></div>
-        <PopUpDoubleTextField textInfront={"Node ID examples:"} textInside1={nodeIdExample1} textInside2={nodeIdExample2} />
+        <PopUpTextFieldInline textInfront={"Node ID examples:"} textInside={nodeIdExample1} />
+        <PopUpTextFieldInline textInside={nodeIdExample2} />
         <div className="popup-block flex-end">
           <PopupButtonRect
             text={"Upload Own Graph File"}
@@ -451,65 +416,6 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping,
               event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
               setGraphPopUpActive(false);
             }}
-          />
-        </div>
-      </PopUp>
-      <PopUp
-        heading={"Create Difference Graph"}
-        description={
-          <div>
-            Generates a graph that visualizes the differences between the two selected graphs below. The edge weights of the resulting graph represent
-            the difference between the corresponding edge weights of the original graphs. You have the option to substract Graph B from Graph A, or
-            take the absolute value of their difference. If a link is a multilink, it's maximum weight will be chosen as the value for the
-            calculation.
-            <br></br>
-          </div>
-        }
-        isOpen={differencePopUpActive}
-        setIsOpen={setDifferencePopUpActive}
-      >
-        <PopUpSwitchBlock
-          value={takeAbs}
-          setValue={() => setTakeAbs(!takeAbs)}
-          text={"absolute link value"}
-          infoHeading={"Take absolute link value"}
-          infoDescription={takeAbsDescription}
-        />
-        <div className="popup-block"></div>
-        <div className="popup-block"></div>
-        <div className="popup-block">
-          <label className="label-no-pad">Graph A</label>
-          <select className="popup-button-rect" value={selectedGraphName1} onChange={handleGraph1Change}>
-            <option value="">Please Choose</option>
-            {uploadedGraphFileNamesNoExample
-              .filter((name) => name !== selectedGraphName2)
-              .map((name, index) => (
-                <option key={index} value={name}>
-                  {name}
-                </option>
-              ))}
-          </select>
-        </div>
-        <div className="popup-block">
-          <label className="label-no-pad">Graph B</label>
-          <select className="popup-button-rect" value={selectedGraphName2} onChange={handleGraph2Change}>
-            <option value="">Please Choose</option>
-            {uploadedGraphFileNamesNoExample
-              .filter((name) => name !== selectedGraphName1)
-              .map((name, index) => (
-                <option key={index} value={name}>
-                  {name}
-                </option>
-              ))}
-          </select>
-        </div>
-        <div className="popup-block justify-right">
-          <PopupButtonRect
-            onClick={() => {
-              handleCreateDifferenceGraph(selectedGraphName1, selectedGraphName2, graphData, setGraphData, takeAbs);
-              setDifferencePopUpActive(false);
-            }}
-            text={"Create Difference Graph"}
           />
         </div>
       </PopUp>
