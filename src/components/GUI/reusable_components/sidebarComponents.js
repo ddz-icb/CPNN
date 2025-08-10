@@ -423,28 +423,33 @@ export function ColorMappingSelect({ heading, colorScheme, attribsToColorIndices
       <span className="heading-label-no-pad pad-bottom-05">{heading}</span>
       <div className="sidebar-block-no-pad">
         <div className="colormapping-selector">
-          {Object.entries(colorScheme.content).map(([colorIndex, color]) => (
-            <Fragment key={colorIndex}>
-              <div
-                className="color-square colorscheme-item"
-                style={{
-                  backgroundColor: color,
-                }}
-              ></div>
-              <select
-                className="popup-button-rect-small"
-                value={Object.keys(attribsToColorIndices).find((key) => attribsToColorIndices[key] === parseInt(colorIndex, 10)) || ""}
-                onChange={(event) => handleColorChange(parseInt(colorIndex, 10), event.target.value)}
-              >
-                <option value="">None</option>
-                {Object.keys(attribsToColorIndices || {}).map((attribute) => (
-                  <option key={attribute} value={attribute}>
-                    {attribute}
-                  </option>
-                ))}
-              </select>
-            </Fragment>
-          ))}
+          {Object.entries(colorScheme.content).map(([colorIndex, color]) => {
+            const currentAttribute = Object.keys(attribsToColorIndices).find((key) => attribsToColorIndices[key] === parseInt(colorIndex, 10));
+
+            return (
+              <Fragment key={colorIndex}>
+                <div
+                  className="color-square colorscheme-item"
+                  style={{
+                    backgroundColor: color,
+                  }}
+                ></div>
+                <select
+                  className="popup-button-rect-small"
+                  value={currentAttribute || ""}
+                  onChange={(event) => handleColorChange(parseInt(colorIndex, 10), event.target.value)}
+                >
+                  {!currentAttribute && <option value="">None</option>}
+
+                  {Object.keys(attribsToColorIndices || {}).map((attribute) => (
+                    <option key={attribute} value={attribute}>
+                      {attribute}
+                    </option>
+                  ))}
+                </select>
+              </Fragment>
+            );
+          })}
         </div>
       </div>
     </div>
