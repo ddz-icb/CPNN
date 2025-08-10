@@ -15,11 +15,11 @@ import {
 } from "../reusable_components/sidebarComponents.js";
 import log from "../../../logger.js";
 import { useGraphData } from "../../../states.js";
-import { exampleGraphJson } from "../../../demodata/exampleGraphJSON.js";
+import { exampleGraphJson } from "../../assets/exampleGraphJSON.js";
 import { downloadCsvFile, downloadObjectAsFile } from "../../application_service/download.js";
-import { exampleGraphCsv } from "../../../demodata/exampleGraphCSV.js";
-import { exampleMappingCsv } from "../../../demodata/exampleMappingCSV.js";
-import { exampleGraphRaw } from "../../../demodata/exampleGraphRawTSV.js";
+import { exampleGraphCsv } from "../../assets/exampleGraphCSV.js";
+import { exampleMappingCsv } from "../../assets/exampleMappingCSV.js";
+import { exampleGraphRaw } from "../../assets/exampleGraphRawTSV.js";
 import {
   containsSitesDescription,
   maxCompSizeDescriptionUpload,

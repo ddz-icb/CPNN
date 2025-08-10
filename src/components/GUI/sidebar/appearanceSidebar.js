@@ -10,7 +10,7 @@ import {
   TableList,
   ColorMappingSelect,
 } from "../reusable_components/sidebarComponents.js";
-import { colorSchemeCsv } from "../../../demodata/exampleColorSchemeCSV.js";
+import { colorSchemeCsv } from "../../assets/exampleColorSchemeCSV.js";
 import { downloadCsvFile } from "../../application_service/download.js";
 import { useAppearance } from "../../../states.js";
 import log from "../../../logger.js";

@@ -1,4 +1,4 @@
-import { exampleGraphJson } from "../../demodata/exampleGraphJSON.js";
+import { exampleGraphJson } from "../assets/exampleGraphJSON.js";
 import log from "../../logger.js";
 import Dexie from "dexie";
 
