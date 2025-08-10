@@ -100,11 +100,6 @@ function App() {
       selectGraph(filename, setGraphData);
       setGraphData("graphIsPreprocessed", false);
       setGraphData("mergeProteins", false);
-      setGraphData("", {
-        ...graphData,
-        graphIsPreprocessed: false,
-        mergeProteins: false,
-      });
     } catch (error) {
       setError("Error loading graph");
       log.error("Error loading graph:", error);
@@ -276,6 +271,7 @@ function App() {
     deleteColorScheme(appearance.uploadedColorSchemeNames, colorSchemeName, setAppearance);
   };
 
+  // INIT STUFF
   //////////////////////////////////////////////
   //////////////////////////////////////////////
 
@@ -293,7 +289,7 @@ function App() {
 
   // select example graph on startup
   useEffect(() => {
-    log.info("Setting init graph data");
+    log.info("Setting init graph");
     setInitGraph(setGraphData);
     setGraphData("graphIsPreprocessed", false);
   }, []);
@@ -306,18 +302,18 @@ function App() {
 
   // init uploadedGraphFileNames
   useEffect(() => {
-    log.info("Loading uploaded graph files");
+    log.info("Loading uploaded graphs");
     try {
       loadGraphFileNames(setGraphData);
     } catch (error) {
-      setError("Error loading graph files from database");
-      log.error("Error loading graph files from database");
+      setError("Error loading graphs from database");
+      log.error("Error loading graphs from database");
     }
   }, []);
 
   // load current theme
   useEffect(() => {
-    log.info("Loading Theme");
+    log.info("Loading selected theme");
     loadTheme(setAppearance);
   }, []);
 
@@ -331,12 +327,12 @@ function App() {
 
   // init uploadedMappingFileNames
   useEffect(() => {
-    log.info("Loading uploaded mapping files");
+    log.info("Loading uploaded mappings");
     try {
       loadMappings(setGraphData);
     } catch (error) {
-      setError("Error loading mapping files form database");
-      log.error("Error loading mapping files form database");
+      setError("Error loading mappings form database");
+      log.error("Error loading mappings form database");
     }
   }, []);
 
@@ -346,11 +342,12 @@ function App() {
     try {
       loadColorSchemeNames(setAppearance);
     } catch (error) {
-      setError("Error loading color schemes files from database");
-      log.error("Error loading color schemes files from database");
+      setError("Error loading color schemes from database");
+      log.error("Error loading color schemes from database");
     }
   }, []);
 
+  // merge Proteins function initiation (THIS SHOULD DEFINETLY NOT BE HERE)
   useEffect(() => {
     async function mergedGraph(graphData) {
       const { graph, file } = await getGraphDB(graphData.activeGraphFileNames[0]);
