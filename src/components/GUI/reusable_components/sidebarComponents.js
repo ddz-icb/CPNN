@@ -2,7 +2,7 @@ import { Fragment, useState } from "react";
 import { ReactComponent as InfoIcon } from "../../../icons/info.svg";
 import { ReactComponent as XIcon } from "../../../icons/x.svg";
 import { Tooltip } from "react-tooltip";
-import { handleFieldBlur, handleFieldChange, handleSliderChange } from "../../other/handlers.js";
+import { handleFieldBlur, handleFieldChange, handleSliderChange } from "../handlers/buttonHandlerFunctions.js";
 
 export function SidebarSliderBlock({ value, valueText, setValue, setValueText, fallbackValue, min, max, step, text, infoHeading, infoDescription }) {
   const [infoIsOpen, setInfoIsOpen] = useState(false);

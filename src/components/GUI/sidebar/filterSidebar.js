@@ -36,7 +36,7 @@ import {
   minNeighborhoodSizeDescription,
   nodeFilterDescription,
 } from "./descriptions/filterDescriptions.js";
-import { handleEditorChange, runCodeEditor } from "../../other/handlers.js";
+import { handleEditorChange, runCodeEditor } from "../handlers/buttonHandlerFunctions.js";
 
 export function FilterSidebar() {
   const { filter, setFilter, setAllFilter } = useFilter();

@@ -21,7 +21,7 @@ import {
   removeActiveGraphFile,
   selectGraph,
   setInitGraph,
-} from "./components/domain_service/graphFileFunctions.js";
+} from "./components/domain_service/graphService.js";
 import {
   addNewColorScheme as createColorScheme,
   deleteColorScheme,
@@ -29,7 +29,7 @@ import {
   selectLinkColorScheme,
   selectNodeColorScheme,
   setInitColorSchemes,
-} from "./components/domain_service/colorSchemeFileFunctions.js";
+} from "./components/domain_service/colorSchemeService.js";
 
 import { useAppearance, useDownload, useFilter, useGraphData, usePhysics } from "./states.js";
 import { Erorr } from "./components/other/error.js";
@@ -44,8 +44,8 @@ import {
   deleteMapping as deleteMapping,
   loadMappings,
   selectMapping,
-} from "./components/domain_service/mappingFileFunctions.js";
-import { loadTheme, storeTheme } from "./components/domain_service/themeFileFunctions.js";
+} from "./components/domain_service/mappingService.js";
+import { loadTheme, storeTheme } from "./components/domain_service/themeService.js";
 
 function App() {
   const { setFilter, setAllFilter } = useFilter();
