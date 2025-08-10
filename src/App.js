@@ -15,8 +15,8 @@ import {
   mergeSameProteins,
 } from "./components/application_service/graphCalculations.js";
 import {
-  addActiveGraphFile,
-  addNewGraphFile,
+  addActiveGraphFile as addActiveGraph,
+  addNewGraphFile as CreateGraph,
   deleteGraphFile,
   loadGraphFileNames,
   removeActiveGraphFile,
@@ -24,7 +24,7 @@ import {
   setInitGraph,
 } from "./components/domain_service/graphFileFunctions.js";
 import {
-  addNewColorScheme,
+  addNewColorScheme as createColorScheme,
   deleteColorScheme,
   loadColorSchemeNames,
   selectLinkColorScheme,
@@ -41,8 +41,8 @@ import { downloadInit } from "./components/config/downloadInitValues.js";
 import { physicsInit } from "./components/config/physicsInitValues.js";
 import { filterInit, linkThresholdInit } from "./components/config/filterInitValues.js";
 import {
-  addNewAnnotationMappingFile,
-  deleteAnnotationMapping,
+  addNewAnnotationMappingFile as createMapping,
+  deleteAnnotationMapping as deleteMapping,
   loadAnnotationMappings,
   selectMapping,
 } from "./components/domain_service/mappingFileFunctions.js";
@@ -58,7 +58,40 @@ function App() {
   const [reset, setReset] = useState(false); // true indicates that the simulation (in forceGraph.js) has to be reloaded
   const [error, setError] = useState(null); // error gets printed on screen
 
-  // sets corresponding graph after file selection
+  // GRAPH
+  ////////
+
+  const handleCreateGraph = async (
+    event,
+    takeAbs,
+    minCorrForEdge,
+    minCompSizeForNode,
+    maxCompSizeForNode,
+    takeSpearmanCoefficient,
+    mergeSameProtein
+  ) => {
+    const file = event.target.files[0];
+    if (!event || !event.target || !file) return;
+    log.info("Adding new graph file");
+
+    CreateGraph(
+      file,
+      graphData.uploadedGraphFileNames,
+      setGraphData,
+      takeAbs,
+      minCorrForEdge,
+      minCompSizeForNode,
+      maxCompSizeForNode,
+      takeSpearmanCoefficient,
+      mergeSameProtein
+    )
+      .then(() => {})
+      .catch((error) => {
+        setError(`${error.message}`);
+        log.error("Error adding graph file:", error);
+      });
+  };
+
   const handleSelectGraph = (filename) => {
     if (!filename) return;
     log.info("Replacing graph");
@@ -79,8 +112,54 @@ function App() {
     }
   };
 
+  const handleAddActiveGraph = (filename) => {
+    if (!filename) return;
+    if (graphData.activeGraphFileNames.some((name) => name === filename)) {
+      setError("Graph already active");
+      log.error("Graph already active");
+      return;
+    }
+    log.info("Adding file with name: ", filename);
+
+    try {
+      simulationReset();
+      setGraphData("graphIsPreprocessed", false);
+      addActiveGraph(filename, graphData.activeGraphFileNames, setGraphData, graphData.originGraph);
+    } catch (error) {
+      setError("Error loading graph");
+      log.error("Error loading graph:", error);
+      return;
+    }
+  };
+
+  // removes graph file from currently active files //
+  const handleRemoveActiveGraph = (filename) => {
+    if (!filename) return;
+    log.info("removing graph file with name:", filename);
+
+    simulationReset();
+    setGraphData("graphIsPreprocessed", false);
+    removeActiveGraphFile(filename, graphData.activeGraphFileNames, setGraphData);
+  };
+
+  // deletes uploaded files with filename //
+  const handleDeleteGraph = (filename) => {
+    if (!filename) return;
+    if (graphData?.activeGraphFileNames?.includes(filename)) {
+      log.warn("Cannot remove selected graph as it's still active");
+      setError("Cannot remove selected graph as it's still active");
+      return;
+    }
+    log.info("Deleting files with name", filename);
+
+    deleteGraphFile(graphData.uploadedGraphFileNames, filename, setGraphData);
+  };
+
+  // MAPPING
+  //////////
+
   // sets corresponding mapping after selection
-  const handleSelectAnnotationMapping = (mappingName) => {
+  const handleSelectMapping = (mappingName) => {
     if (!mappingName) return;
     log.info("Replacing annotation mapping");
 
@@ -94,37 +173,49 @@ function App() {
     }
   };
 
-  // adds new graph file //
-  const handleNewGraphFile = async (
-    event,
-    takeAbs,
-    minCorrForEdge,
-    minCompSizeForNode,
-    maxCompSizeForNode,
-    takeSpearmanCoefficient,
-    mergeSameProtein
-  ) => {
+  // processes new annotation mapping
+  const handleCreateMapping = (event) => {
     const file = event.target.files[0];
     if (!event || !event.target || !file) return;
-    log.info("Adding new graph file");
+    if (graphData.uploadedAnnotationMappingNames.some((name) => getFileNameWithoutExtension(name) === getFileNameWithoutExtension(file.name))) {
+      log.warn("Mapping with this name already exists");
+      setError("Mapping with this name already exists");
+      return;
+    }
+    log.info("Adding new mapping file");
 
-    addNewGraphFile(
-      file,
-      graphData.uploadedGraphFileNames,
-      setGraphData,
-      takeAbs,
-      minCorrForEdge,
-      minCompSizeForNode,
-      maxCompSizeForNode,
-      takeSpearmanCoefficient,
-      mergeSameProtein
-    )
+    createMapping(file, graphData.uploadedAnnotationMappingNames, setGraphData)
       .then(() => {})
       .catch((error) => {
         setError(`${error.message}`);
-        log.error("Error adding graph file:", error);
+        log.error("Error adding mapping file:", error);
       });
   };
+
+  // disables currently active annotation mapping
+  const handleRemoveActiveMapping = () => {
+    log.info("Removing currently active annotation mapping");
+
+    setGraphData("activeAnnotationMapping", null);
+    setGraphData("graphIsPreprocessed", false);
+    simulationReset();
+  };
+
+  // deletes annotation mapping files
+  const handleDeleteMapping = (mappingName) => {
+    if (!mappingName) return;
+    if (graphData?.activeAnnotationMapping?.name == mappingName) {
+      log.warn("Cannot remove selected mapping as it's still active");
+      setError("Cannot remove selected mapping as it's still active");
+      return;
+    }
+    log.info("Deleting mapping with name", mappingName);
+
+    deleteMapping(graphData.uploadedAnnotationMappingNames, mappingName, setGraphData);
+  };
+
+  // COLOR SCHEME
+  ///////////////
 
   const handleSelectLinkColorScheme = (colorSchemeName) => {
     if (!colorSchemeName) return;
@@ -151,7 +242,7 @@ function App() {
   };
 
   // adds new color scheme
-  const handleNewColorScheme = async (event) => {
+  const handleCreateColorScheme = async (event) => {
     const file = event.target.files[0];
     if (!event || !event.target || !file) return;
     if (appearance.uploadedColorSchemeNames.some((name) => getFileNameWithoutExtension(name) === getFileNameWithoutExtension(file.name))) {
@@ -161,7 +252,7 @@ function App() {
     }
     log.info("Adding new color scheme");
 
-    addNewColorScheme(file, appearance.uploadedColorSchemeNames, setAppearance)
+    createColorScheme(file, appearance.uploadedColorSchemeNames, setAppearance)
       .then(() => {})
       .catch((error) => {
         setError(`${error.message}`);
@@ -186,132 +277,8 @@ function App() {
     deleteColorScheme(appearance.uploadedColorSchemeNames, colorSchemeName, setAppearance);
   };
 
-  // processes new annotation mapping
-  const handleNewAnnotationMapping = (event) => {
-    const file = event.target.files[0];
-    if (!event || !event.target || !file) return;
-    if (graphData.uploadedAnnotationMappingNames.some((name) => getFileNameWithoutExtension(name) === getFileNameWithoutExtension(file.name))) {
-      log.warn("Mapping with this name already exists");
-      setError("Mapping with this name already exists");
-      return;
-    }
-    log.info("Adding new mapping file");
-
-    addNewAnnotationMappingFile(file, graphData.uploadedAnnotationMappingNames, setGraphData)
-      .then(() => {})
-      .catch((error) => {
-        setError(`${error.message}`);
-        log.error("Error adding mapping file:", error);
-      });
-  };
-
-  // disables currently active annotation mapping
-  const handleRemoveActiveAnnotationMapping = () => {
-    log.info("Removing currently active annotation mapping");
-
-    setGraphData("activeAnnotationMapping", null);
-    setGraphData("graphIsPreprocessed", false);
-    simulationReset();
-  };
-
-  // deletes annotation mapping files
-  const handleDeleteAnnotationMapping = (mappingName) => {
-    if (!mappingName) return;
-    if (graphData?.activeAnnotationMapping?.name == mappingName) {
-      log.warn("Cannot remove selected mapping as it's still active");
-      setError("Cannot remove selected mapping as it's still active");
-      return;
-    }
-    log.info("Deleting mapping with name", mappingName);
-
-    deleteAnnotationMapping(graphData.uploadedAnnotationMappingNames, mappingName, setGraphData);
-  };
-
-  // deletes uploaded files with filename //
-  const handleDeleteGraphFile = (filename) => {
-    if (!filename) return;
-    if (graphData?.activeGraphFileNames?.includes(filename)) {
-      log.warn("Cannot remove selected graph as it's still active");
-      setError("Cannot remove selected graph as it's still active");
-      return;
-    }
-    log.info("Deleting files with name", filename);
-
-    deleteGraphFile(graphData.uploadedGraphFileNames, filename, setGraphData);
-  };
-
-  // removes graph file from currently active files //
-  const handleRemoveActiveGraphFile = (filename) => {
-    if (!filename) return;
-    log.info("removing graph file with name:", filename);
-
-    simulationReset();
-    setGraphData("graphIsPreprocessed", false);
-    removeActiveGraphFile(filename, graphData.activeGraphFileNames, setGraphData);
-  };
-
-  const handleAddActiveGraphFile = (filename) => {
-    if (!filename) return;
-    if (graphData.activeGraphFileNames.some((name) => name === filename)) {
-      setError("Graph already active");
-      log.error("Graph already active");
-      return;
-    }
-    log.info("Adding file with name: ", filename);
-
-    try {
-      simulationReset();
-      setGraphData("graphIsPreprocessed", false);
-      addActiveGraphFile(filename, graphData.activeGraphFileNames, setGraphData, graphData.originGraph);
-    } catch (error) {
-      setError("Error loading graph");
-      log.error("Error loading graph:", error);
-      return;
-    }
-  };
-
-  async function handleCreateDifferenceGraph(selectedGraphName1, selectedGraphName2, graphData, setGraphData, takeAbs) {
-    if (!selectedGraphName1 || !selectedGraphName2) {
-      setError("Please select two graphs");
-      return;
-    }
-    if (selectedGraphName1 === selectedGraphName2) {
-      setError("Please select two different graphs");
-      return;
-    }
-    log.info("Creating difference graph with following graphs:", selectedGraphName1, selectedGraphName2);
-
-    let obj1 = await getGraphDB(selectedGraphName1);
-    let obj2 = await getGraphDB(selectedGraphName2);
-
-    const diffGraph = getDifferenceGraph(obj1.graph, obj2.graph);
-    const diffGraphName = "DifferenceGraph" + ".json";
-
-    const file = new File([JSON.stringify(diffGraph)], diffGraphName, {
-      type: "application/json",
-    });
-
-    const minCorrForEdge = 0;
-    const minCompSizeForNode = 0;
-    const maxCompSizeForNode = "";
-    const takeSpearmanCoefficient = false;
-
-    addNewGraphFile(
-      file,
-      graphData.uploadedGraphFileNames,
-      setGraphData,
-      takeAbs,
-      minCorrForEdge,
-      minCompSizeForNode,
-      maxCompSizeForNode,
-      takeSpearmanCoefficient
-    )
-      .then(() => {})
-      .catch((error) => {
-        setError(`${error.message}`);
-        log.error("Error adding graph file:", error);
-      });
-  }
+  //////////////////////////////////////////////
+  //////////////////////////////////////////////
 
   // initates reset //
   const simulationReset = () => {
@@ -457,17 +424,16 @@ function App() {
       <HeaderBar />
       <Sidebar
         handleSelectGraph={handleSelectGraph}
-        handleDeleteGraphFile={handleDeleteGraphFile}
-        handleRemoveActiveGraphFile={handleRemoveActiveGraphFile}
-        handleAddFile={handleAddActiveGraphFile}
-        handleNewAnnotationMapping={handleNewAnnotationMapping}
-        handleRemoveActiveAnnotationMapping={handleRemoveActiveAnnotationMapping}
-        handleAnnotationMappingSelect={handleSelectAnnotationMapping}
-        handleDeleteAnnotationMapping={handleDeleteAnnotationMapping}
-        handleNewGraphFile={handleNewGraphFile}
-        handleNewColorScheme={handleNewColorScheme}
+        handleDeleteGraphFile={handleDeleteGraph}
+        handleRemoveActiveGraphFile={handleRemoveActiveGraph}
+        handleAddFile={handleAddActiveGraph}
+        handleNewAnnotationMapping={handleCreateMapping}
+        handleRemoveActiveAnnotationMapping={handleRemoveActiveMapping}
+        handleAnnotationMappingSelect={handleSelectMapping}
+        handleDeleteAnnotationMapping={handleDeleteMapping}
+        handleNewGraphFile={handleCreateGraph}
+        handleNewColorScheme={handleCreateColorScheme}
         handleDeleteColorScheme={handleDeleteColorScheme}
-        handleCreateDifferenceGraph={handleCreateDifferenceGraph}
         handleSelectLinkColorScheme={handleSelectLinkColorScheme}
         handleSelectNodeColorScheme={handleSelectNodeColorScheme}
       />

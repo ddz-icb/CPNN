@@ -42,17 +42,12 @@ export function DataSidebar({
   handleAnnotationMappingSelect,
   handleDeleteAnnotationMapping,
   handleNewGraphFile,
-  handleCreateDifferenceGraph,
 }) {
   const { graphData } = useGraphData();
 
   return (
     <>
-      <TopDataButtons
-        handleNewGraphFile={handleNewGraphFile}
-        handleNewAnnotationMapping={handleNewAnnotationMapping}
-        handleCreateDifferenceGraph={handleCreateDifferenceGraph}
-      />
+      <TopDataButtons handleNewGraphFile={handleNewGraphFile} handleNewAnnotationMapping={handleNewAnnotationMapping} />
       <ActiveGraphFiles activeGraphFileNames={graphData.activeGraphFileNames} handleRemoveActiveGraphFile={handleRemoveActiveGraphFile} />
       <UploadedGraphFiles
         uploadedGraphFileNames={graphData.uploadedGraphFileNames}
