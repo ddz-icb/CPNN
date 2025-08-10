@@ -4,7 +4,7 @@ import { ReactComponent as MoonIcon } from "../../../icons/moon.svg";
 import { ReactComponent as MagnetIcon } from "../../../icons/magnet.svg";
 import { ReactComponent as FilterIcon } from "../../../icons/filter.svg";
 import { ReactComponent as PaletteIcon } from "../../../icons/colorPalette.svg";
-import { darkTheme, lightTheme } from "../../init_values/appearanceInitValues.js";
+import { darkTheme, lightTheme } from "../../config/appearanceInitValues.js";
 import { useAppearance } from "../../../states.js";
 
 export function MainSidebar({ handleNavItemClick }) {

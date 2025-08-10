@@ -5,7 +5,7 @@ import * as d3 from "d3";
 
 import { downloadAsPDF, downloadAsPNG, downloadAsSVG, downloadGraphJson, downloadGraphWithLegendPdf, downloadLegendPdf } from "./download.js";
 import { changeCircleBorderColor, changeNodeColors, changeNodeLabelColor, radius } from "../other/draw.js";
-import { lightTheme, themeInit } from "../init_values/appearanceInitValues.js";
+import { lightTheme, themeInit } from "../config/appearanceInitValues.js";
 import {
   filterActiveNodesForPixi,
   filterByLinkAttribs,

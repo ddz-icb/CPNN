@@ -1,12 +1,12 @@
 import { create } from "zustand";
 
-import { appearanceInit } from "./components/init_values/appearanceInitValues.js";
-import { downloadInit } from "./components/init_values/downloadInitValues.js";
-import { physicsInit } from "./components/init_values/physicsInitValues.js";
-import { filterInit } from "./components/init_values/filterInitValues.js";
-import { graphDataInit } from "./components/init_values/graphDataInitValues.js";
-import { tooltipInit } from "./components/init_values/tooltipInitValues.js";
-import { containerInit } from "./components/init_values/containerInitValues.js";
+import { appearanceInit } from "./components/config/appearanceInitValues.js";
+import { downloadInit } from "./components/config/downloadInitValues.js";
+import { physicsInit } from "./components/config/physicsInitValues.js";
+import { filterInit } from "./components/config/filterInitValues.js";
+import { graphDataInit } from "./components/config/graphDataInitValues.js";
+import { tooltipInit } from "./components/config/tooltipInitValues.js";
+import { containerInit } from "./components/config/containerInitValues.js";
 
 export const useFilter = create((set) => ({
   filter: filterInit,

@@ -9,7 +9,7 @@ import { getSimulation } from "./graphPhysics.js";
 import { useAppearance, useContainer, useGraphData, useTooltipSettings } from "../../states.js";
 import { SettingControl } from "./settingControl.js";
 import { getNodeIdName, getNodeLabelOffsetY } from "./graphCalculations.js";
-import { linkLengthInit, nodeRepulsionStrengthInit, xStrengthInit, yStrengthInit } from "../init_values/physicsInitValues.js";
+import { linkLengthInit, nodeRepulsionStrengthInit, xStrengthInit, yStrengthInit } from "../config/physicsInitValues.js";
 
 export function ForceGraph({ reset, setReset, setError }) {
   const { appearance, setAppearance } = useAppearance();

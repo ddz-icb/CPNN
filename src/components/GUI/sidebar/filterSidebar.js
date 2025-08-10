@@ -25,7 +25,7 @@ import {
   minNeighborhoodSizeInit,
   compDensityInit,
   minCompSizeInit,
-} from "../../init_values/filterInitValues.js";
+} from "../../config/filterInitValues.js";
 import {
   compDensityDescription,
   linkFilterDescription,

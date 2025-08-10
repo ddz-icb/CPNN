@@ -11,7 +11,7 @@ import {
   ColorMappingSelect,
 } from "../reusable_components/sidebarComponents.js";
 import { colorSchemeCsv } from "../../../demodata/exampleColorSchemeCSV.js";
-import { downloadCsvFile } from "../../graph_domain/download.js";
+import { downloadCsvFile } from "../../application_service/download.js";
 import { useAppearance } from "../../../states.js";
 import log from "../../../logger.js";
 import {
@@ -20,7 +20,7 @@ import {
   setColorSchemeDescription,
   uploadColorSchemeDescription,
 } from "./descriptions/appearanceDescriptions.js";
-import { linkWidthInit } from "../../init_values/appearanceInitValues.js";
+import { linkWidthInit } from "../../config/appearanceInitValues.js";
 
 export function AppearanceSidebar({ handleNewColorScheme, handleDeleteColorScheme, handleSelectLinkColorScheme, handleSelectNodeColorScheme }) {
   return (

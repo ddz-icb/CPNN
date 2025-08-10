@@ -2,7 +2,7 @@ import "./index.css";
 import log from "./logger.js";
 import { useState, useEffect } from "react";
 
-import { ForceGraph } from "./components/graph_domain/forceGraph.js";
+import { ForceGraph } from "./components/application_service/forceGraph.js";
 import { Sidebar } from "./components/gui/sidebar/sidebar.js";
 import { HeaderBar } from "./components/gui/headerbar/headerBar.js";
 import {
@@ -13,36 +13,40 @@ import {
   getNodeAttribsToColorIndices,
   joinGraphs,
   mergeSameProteins,
-} from "./components/graph_domain/graphCalculations.js";
+} from "./components/application_service/graphCalculations.js";
 import {
   addActiveGraphFile,
-  addNewAnnotationMappingFile,
-  addNewColorScheme,
   addNewGraphFile,
-  deleteAnnotationMapping,
-  deleteColorScheme,
   deleteGraphFile,
-  loadAnnotationMappings,
-  loadColorSchemeNames,
   loadGraphFileNames,
-  loadTheme,
   removeActiveGraphFile,
   selectGraph,
+  setInitGraph,
+} from "./components/domain_service/graphFileFunctions.js";
+import {
+  addNewColorScheme,
+  deleteColorScheme,
+  loadColorSchemeNames,
   selectLinkColorScheme,
-  selectMapping,
   selectNodeColorScheme,
   setInitColorSchemes,
-  setInitGraph,
-  storeTheme,
-} from "./components/application/applicationFunctions.js";
+} from "./components/domain_service/colorSchemeFileFunctions.js";
+
 import { useAppearance, useDownload, useFilter, useGraphData, usePhysics } from "./states.js";
 import { Erorr } from "./components/other/error.js";
-import { defaultColorSchemes } from "./components/init_values/appearanceInitValues.js";
+import { defaultColorSchemes } from "./components/config/appearanceInitValues.js";
 import { getFileNameWithoutExtension } from "./components/other/parseFiles.js";
-import { getGraphDB } from "./components/database/dbGraphs.js";
-import { downloadInit } from "./components/init_values/downloadInitValues.js";
-import { physicsInit } from "./components/init_values/physicsInitValues.js";
-import { filterInit, linkThresholdInit } from "./components/init_values/filterInitValues.js";
+import { getGraphDB } from "./components/repository/repoGraphs.js";
+import { downloadInit } from "./components/config/downloadInitValues.js";
+import { physicsInit } from "./components/config/physicsInitValues.js";
+import { filterInit, linkThresholdInit } from "./components/config/filterInitValues.js";
+import {
+  addNewAnnotationMappingFile,
+  deleteAnnotationMapping,
+  loadAnnotationMappings,
+  selectMapping,
+} from "./components/domain_service/mappingFileFunctions.js";
+import { loadTheme, storeTheme } from "./components/domain_service/themeFileFunctions.js";
 
 function App() {
   const { setFilter, setAllFilter } = useFilter();

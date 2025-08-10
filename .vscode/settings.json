@@ -1,0 +1,6 @@
+{
+  "material-icon-theme.folders.associations": {
+    "application_service": "app",
+    "domain_service": "core"
+  }
+}
