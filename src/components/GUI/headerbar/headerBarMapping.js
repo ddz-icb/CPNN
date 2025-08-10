@@ -37,10 +37,8 @@ export function Mapping({ activeMenu, handleActiveMenuClick }) {
                 backgroundColor: getColor(appearance.nodeAttribsToColorIndices[key], appearance.nodeColorScheme.content),
               }}
             ></div>
-            {graphData.activeAnnotationMapping &&
-            graphData.activeAnnotationMapping.groupMapping &&
-            graphData.activeAnnotationMapping.groupMapping.hasOwnProperty(key) ? (
-              <span className="colorscheme-item">{graphData.activeAnnotationMapping.groupMapping[key].name}</span>
+            {graphData.activeMapping && graphData.activeMapping.groupMapping && graphData.activeMapping.groupMapping.hasOwnProperty(key) ? (
+              <span className="colorscheme-item">{graphData.activeMapping.groupMapping[key].name}</span>
             ) : (
               <span className="colorscheme-item">{key}</span>
             )}

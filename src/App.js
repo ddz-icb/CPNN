@@ -7,7 +7,6 @@ import { Sidebar } from "./components/gui/sidebar/sidebar.js";
 import { HeaderBar } from "./components/gui/headerbar/headerBar.js";
 import {
   applyNodeMapping,
-  getDifferenceGraph,
   getLinkAttribsToColorIndices,
   getLinkWeightMinMax,
   getNodeAttribsToColorIndices,
@@ -41,9 +40,9 @@ import { downloadInit } from "./components/config/downloadInitValues.js";
 import { physicsInit } from "./components/config/physicsInitValues.js";
 import { filterInit, linkThresholdInit } from "./components/config/filterInitValues.js";
 import {
-  addNewAnnotationMappingFile as createMapping,
-  deleteAnnotationMapping as deleteMapping,
-  loadAnnotationMappings,
+  addNewMappingFile as createMapping,
+  deleteMapping as deleteMapping,
+  loadMappings,
   selectMapping,
 } from "./components/domain_service/mappingFileFunctions.js";
 import { loadTheme, storeTheme } from "./components/domain_service/themeFileFunctions.js";
@@ -177,14 +176,14 @@ function App() {
   const handleCreateMapping = (event) => {
     const file = event.target.files[0];
     if (!event || !event.target || !file) return;
-    if (graphData.uploadedAnnotationMappingNames.some((name) => getFileNameWithoutExtension(name) === getFileNameWithoutExtension(file.name))) {
+    if (graphData.uploadedMappingNames.some((name) => getFileNameWithoutExtension(name) === getFileNameWithoutExtension(file.name))) {
       log.warn("Mapping with this name already exists");
       setError("Mapping with this name already exists");
       return;
     }
     log.info("Adding new mapping file");
 
-    createMapping(file, graphData.uploadedAnnotationMappingNames, setGraphData)
+    createMapping(file, graphData.uploadedMappingNames, setGraphData)
       .then(() => {})
       .catch((error) => {
         setError(`${error.message}`);
@@ -196,7 +195,7 @@ function App() {
   const handleRemoveActiveMapping = () => {
     log.info("Removing currently active annotation mapping");
 
-    setGraphData("activeAnnotationMapping", null);
+    setGraphData("activeMapping", null);
     setGraphData("graphIsPreprocessed", false);
     simulationReset();
   };
@@ -204,14 +203,14 @@ function App() {
   // deletes annotation mapping files
   const handleDeleteMapping = (mappingName) => {
     if (!mappingName) return;
-    if (graphData?.activeAnnotationMapping?.name == mappingName) {
+    if (graphData?.activeMapping?.name == mappingName) {
       log.warn("Cannot remove selected mapping as it's still active");
       setError("Cannot remove selected mapping as it's still active");
       return;
     }
     log.info("Deleting mapping with name", mappingName);
 
-    deleteMapping(graphData.uploadedAnnotationMappingNames, mappingName, setGraphData);
+    deleteMapping(graphData.uploadedMappingNames, mappingName, setGraphData);
   };
 
   // COLOR SCHEME
@@ -334,7 +333,7 @@ function App() {
   useEffect(() => {
     log.info("Loading uploaded mapping files");
     try {
-      loadAnnotationMappings(setGraphData);
+      loadMappings(setGraphData);
     } catch (error) {
       setError("Error loading mapping files form database");
       log.error("Error loading mapping files form database");
@@ -391,7 +390,7 @@ function App() {
     log.info("Modifying graph and forwarding it to the simulation component");
 
     let newGraph = structuredClone(graphData.originGraph);
-    newGraph = applyNodeMapping(newGraph, graphData.activeAnnotationMapping);
+    newGraph = applyNodeMapping(newGraph, graphData.activeMapping);
 
     const { minWeight, maxWeight } = getLinkWeightMinMax(newGraph);
     if (minWeight != Infinity) {
@@ -417,7 +416,7 @@ function App() {
     setGraphData("originGraph", newGraph);
     setGraphData("graph", newGraph);
     setGraphData("graphIsPreprocessed", true);
-  }, [graphData.originGraph, graphData.activeGraphFileNames, graphData.activeAnnotationMapping]);
+  }, [graphData.originGraph, graphData.activeGraphFileNames, graphData.activeMapping]);
 
   return (
     <div className={appearance.theme.name}>
@@ -427,10 +426,10 @@ function App() {
         handleDeleteGraphFile={handleDeleteGraph}
         handleRemoveActiveGraphFile={handleRemoveActiveGraph}
         handleAddFile={handleAddActiveGraph}
-        handleNewAnnotationMapping={handleCreateMapping}
-        handleRemoveActiveAnnotationMapping={handleRemoveActiveMapping}
-        handleAnnotationMappingSelect={handleSelectMapping}
-        handleDeleteAnnotationMapping={handleDeleteMapping}
+        handleNewMapping={handleCreateMapping}
+        handleRemoveActiveMapping={handleRemoveActiveMapping}
+        handleMappingSelect={handleSelectMapping}
+        handleDeleteMapping={handleDeleteMapping}
         handleNewGraphFile={handleCreateGraph}
         handleNewColorScheme={handleCreateColorScheme}
         handleDeleteColorScheme={handleDeleteColorScheme}

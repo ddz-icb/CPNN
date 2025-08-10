@@ -12,6 +12,6 @@ export const graphDataInit = {
   graphIsPreprocessed: false,
   activeGraphFileNames: null,
   uploadedGraphFileNames: null,
-  activeAnnotationMapping: null,
-  uploadedAnnotationMappingNames: null,
+  activeMapping: null,
+  uploadedMappingNames: null,
 };

@@ -37,17 +37,17 @@ export function DataSidebar({
   handleSelectGraph,
   handleDeleteGraphFile,
   handleAddFile,
-  handleNewAnnotationMapping,
-  handleRemoveActiveAnnotationMapping,
-  handleAnnotationMappingSelect,
-  handleDeleteAnnotationMapping,
+  handleNewMapping,
+  handleRemoveActiveMapping,
+  handleMappingSelect,
+  handleDeleteMapping,
   handleNewGraphFile,
 }) {
   const { graphData } = useGraphData();
 
   return (
     <>
-      <TopDataButtons handleNewGraphFile={handleNewGraphFile} handleNewAnnotationMapping={handleNewAnnotationMapping} />
+      <TopDataButtons handleNewGraphFile={handleNewGraphFile} handleNewMapping={handleNewMapping} />
       <ActiveGraphFiles activeGraphFileNames={graphData.activeGraphFileNames} handleRemoveActiveGraphFile={handleRemoveActiveGraphFile} />
       <UploadedGraphFiles
         uploadedGraphFileNames={graphData.uploadedGraphFileNames}
@@ -55,14 +55,11 @@ export function DataSidebar({
         handleDeleteGraphFile={handleDeleteGraphFile}
         handleAddFile={handleAddFile}
       />
-      <ActiveAnnotationMapping
-        activeAnnotationMapping={graphData.activeAnnotationMapping}
-        handleRemoveActiveAnnotationMapping={handleRemoveActiveAnnotationMapping}
-      />
+      <ActiveMapping activeMapping={graphData.activeMapping} handleRemoveActiveMapping={handleRemoveActiveMapping} />
       <UploadedMappings
-        uploadedAnnotationMappingNames={graphData.uploadedAnnotationMappingNames}
-        handleAnnotationMappingSelect={handleAnnotationMappingSelect}
-        handleDeleteAnnotationMapping={handleDeleteAnnotationMapping}
+        uploadedMappingNames={graphData.uploadedMappingNames}
+        handleMappingSelect={handleMappingSelect}
+        handleDeleteMapping={handleDeleteMapping}
       />
     </>
   );
@@ -102,36 +99,36 @@ function ActiveGraphFiles({ activeGraphFileNames, handleRemoveActiveGraphFile })
   );
 }
 
-function UploadedMappings({ uploadedAnnotationMappingNames, handleAnnotationMappingSelect, handleDeleteAnnotationMapping }) {
+function UploadedMappings({ uploadedMappingNames, handleMappingSelect, handleDeleteMapping }) {
   return (
     <TableList
       heading={"Uploaded Pathway Mappings"}
-      data={uploadedAnnotationMappingNames}
-      onItemClick={(mappingName) => handleAnnotationMappingSelect(mappingName)}
+      data={uploadedMappingNames}
+      onItemClick={(mappingName) => handleMappingSelect(mappingName)}
       itemTooltipContent={() => "Replace Active Pathway Mapping"}
       ActionIcon={TrashIcon}
-      onActionIconClick={(mappingName) => handleDeleteAnnotationMapping(mappingName)}
+      onActionIconClick={(mappingName) => handleDeleteMapping(mappingName)}
       actionIconTooltipContent={() => "Delete Annotation Mapping"}
     />
   );
 }
 
-function ActiveAnnotationMapping({ activeAnnotationMapping, handleRemoveActiveAnnotationMapping }) {
+function ActiveMapping({ activeMapping, handleRemoveActiveMapping }) {
   return (
     <TableList
       heading={"Currently Active Pathway Mapping"}
-      data={activeAnnotationMapping ? [activeAnnotationMapping] : []}
+      data={activeMapping ? [activeMapping] : []}
       displayKey={"name"}
       ActionIcon={DeleteIcon}
-      onActionIconClick={() => handleRemoveActiveAnnotationMapping()}
+      onActionIconClick={() => handleRemoveActiveMapping()}
       actionIconTooltipContent={() => "Deselect pathway mapping"}
       dark={true}
     />
   );
 }
 
-export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping }) {
-  const annotationMappingRef = useRef(null);
+export function TopDataButtons({ handleNewGraphFile, handleNewMapping }) {
+  const mappingRef = useRef(null);
   const graphFileRef = useRef(null);
 
   const [graphPopUpActive, setGraphPopUpActive] = useState(false);
@@ -156,8 +153,8 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
   const [nodeIdExample1, setNodeIdExample1] = useState("");
   const [nodeIdExample2, setNodeIdExample2] = useState("");
 
-  const annotationMappingFormat = "Uniprot-ID, Pathway Name, Reactome-ID";
-  const annotationMappingExample = "O60306,mRNA Splicing,R-HSA-72172";
+  const mappingFormat = "Uniprot-ID, Pathway Name, Reactome-ID";
+  const mappingExample = "O60306,mRNA Splicing,R-HSA-72172";
 
   useEffect(() => {
     let id = "UniprotID";
@@ -197,8 +194,8 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
         isOpen={mappingPopUpActive}
         setIsOpen={setMappingPopUpActive}
       >
-        <PopUpTextFieldInline textInfront={"Pathway Mapping format:"} textInside={annotationMappingFormat} />
-        <PopUpTextFieldInline textInfront={"Pathway Mapping example:"} textInside={annotationMappingExample} />
+        <PopUpTextFieldInline textInfront={"Pathway Mapping format:"} textInside={mappingFormat} />
+        <PopUpTextFieldInline textInfront={"Pathway Mapping example:"} textInside={mappingExample} />
         <div className="popup-block">
           <PopupButtonRect
             text={"Download Example Pathway Mapping"}
@@ -206,10 +203,10 @@ export function TopDataButtons({ handleNewGraphFile, handleNewAnnotationMapping 
           />
           <PopupButtonRect
             text={"Upload Own Pathway Mapping"}
-            onClick={() => annotationMappingRef.current.click()}
-            linkRef={annotationMappingRef}
+            onClick={() => mappingRef.current.click()}
+            linkRef={mappingRef}
             onChange={(event) => {
-              handleNewAnnotationMapping(event);
+              handleNewMapping(event);
               event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
               setMappingPopUpActive(false);
             }}

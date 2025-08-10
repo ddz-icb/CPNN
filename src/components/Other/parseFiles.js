@@ -354,7 +354,7 @@ function verifyColorScheme(colorScheme) {
   });
 }
 
-export async function parseAnnotationMappingFile(file) {
+export async function parseMappingFile(file) {
   if (!file) {
     throw new Error(`No file found with the name ${file}.`);
   }
@@ -364,15 +364,15 @@ export async function parseAnnotationMappingFile(file) {
 
   try {
     const fileContent = await parseFileAsText(file);
-    const mapping = parseAnnotationMapping(fileContent, file.name);
-    verifyAnnotationMapping(mapping);
+    const mapping = parseMapping(fileContent, file.name);
+    verifyMapping(mapping);
     return { name: file.name, content: JSON.stringify(mapping) };
   } catch (error) {
     throw new Error(`${error.message}`);
   }
 }
 
-export function parseAnnotationMapping(content, filename) {
+export function parseMapping(content, filename) {
   try {
     let fileData = Papa.parse(content, {
       header: true,
@@ -420,7 +420,7 @@ export function parseAnnotationMapping(content, filename) {
   }
 }
 
-function verifyAnnotationMapping(mapping) {
+function verifyMapping(mapping) {
   if (!mapping || typeof mapping !== "object") {
     throw new Error("Error while parsing the mapping file. It does not have the right format.");
   }

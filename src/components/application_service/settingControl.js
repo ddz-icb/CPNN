@@ -224,7 +224,7 @@ export function SettingControl({ simulation, app, redraw }) {
         appearance.linkAttribsToColorIndices,
         appearance.nodeColorScheme,
         appearance.nodeAttribsToColorIndices,
-        graphData.activeAnnotationMapping
+        graphData.activeMapping
       );
     }
   }, [download.legendPdf]);

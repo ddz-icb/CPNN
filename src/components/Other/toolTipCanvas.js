@@ -12,8 +12,8 @@ export function Tooltips({}) {
 
   return (
     <>
-      {/* {tooltipSettings.isClickTooltipActive && <ClickTooltip mapping={graphData.activeAnnotationMapping} />} */}
-      <ClickTooltip mapping={graphData.activeAnnotationMapping} />
+      {/* {tooltipSettings.isClickTooltipActive && <ClickTooltip mapping={graphData.activeMapping} />} */}
+      <ClickTooltip mapping={graphData.activeMapping} />
       {!tooltipSettings.isClickTooltipActive && tooltipSettings.isHoverTooltipActive && <HoverTooltip />}
     </>
   );

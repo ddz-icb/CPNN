@@ -81,7 +81,7 @@ function drawLegendOnPdf(
   nodeAttribsToColorIndices,
   linkColorScheme,
   linkAttribsToColorIndices,
-  activeAnnotationMapping
+  activeMapping
 ) {
   const padding = 15;
   const rectSize = 10;
@@ -98,7 +98,7 @@ function drawLegendOnPdf(
   [nodeAttribsToColorIndices, linkAttribsToColorIndices].forEach((attribs, index) => {
     for (const key in attribs) {
       if (Object.hasOwnProperty.call(attribs, key)) {
-        const label = index === 0 ? activeAnnotationMapping?.groupMapping?.[key]?.name || key : key;
+        const label = index === 0 ? activeMapping?.groupMapping?.[key]?.name || key : key;
         maxTextWidth = Math.max(maxTextWidth, tempPdf.getTextWidth(label));
       }
     }
@@ -133,7 +133,7 @@ function drawLegendOnPdf(
     for (const key in attribs) {
       if (Object.hasOwnProperty.call(attribs, key)) {
         const color = colorScheme.content[attribs[key]];
-        const label = isNode ? activeAnnotationMapping?.groupMapping?.[key]?.name || key : key;
+        const label = isNode ? activeMapping?.groupMapping?.[key]?.name || key : key;
 
         pdf.setFillColor(color);
         pdf.rect(offsetX + padding, yPos, rectSize, rectSize, "F");
@@ -271,7 +271,7 @@ export function downloadCsvFile(csvContent, fileName) {
   triggerDownload(blob, fileName.endsWith(".csv") ? fileName : `${fileName}.csv`);
 }
 
-export function downloadLegendPdf(linkColorScheme, linkAttribsToColorIndices, nodeColorScheme, nodeAttribsToColorIndices, activeAnnotationMapping) {
+export function downloadLegendPdf(linkColorScheme, linkAttribsToColorIndices, nodeColorScheme, nodeAttribsToColorIndices, activeMapping) {
   const tempPdf = new jsPDF();
   const { legendWidth, legendHeight } = drawLegendOnPdf(
     tempPdf,
@@ -281,7 +281,7 @@ export function downloadLegendPdf(linkColorScheme, linkAttribsToColorIndices, no
     nodeAttribsToColorIndices,
     linkColorScheme,
     linkAttribsToColorIndices,
-    activeAnnotationMapping
+    activeMapping
   );
 
   const pdf = new jsPDF({
@@ -290,6 +290,6 @@ export function downloadLegendPdf(linkColorScheme, linkAttribsToColorIndices, no
     format: [legendWidth, legendHeight],
   });
 
-  drawLegendOnPdf(pdf, 0, 0, nodeColorScheme, nodeAttribsToColorIndices, linkColorScheme, linkAttribsToColorIndices, activeAnnotationMapping);
+  drawLegendOnPdf(pdf, 0, 0, nodeColorScheme, nodeAttribsToColorIndices, linkColorScheme, linkAttribsToColorIndices, activeMapping);
   pdf.save("Graph_Legend.pdf");
 }
