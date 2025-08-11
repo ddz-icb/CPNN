@@ -12,34 +12,6 @@ export function HeaderBarExport({ activeMenu, handleActiveMenuClick }) {
   const { download, setDownload } = useDownload();
   let content = null;
 
-  const handleDownloadJsonClick = () => {
-    setDownload("json", !download.json);
-  };
-
-  const handleDownloadJsonCoordsPhysics = () => {
-    setDownload("jsonCoordsPhysics", !download.jsonCoordsPhysics);
-  };
-
-  const handleDownloadPngClick = () => {
-    setDownload("png", !download.png);
-  };
-
-  const handleDownloadSvgClick = () => {
-    setDownload("svg", !download.svg);
-  };
-
-  const handleDownloadPdfClick = () => {
-    setDownload("pdf", !download.pdf);
-  };
-
-  const handleDownloadLegendPdfClick = () => {
-    setDownload("legendPdf", !download.legendPdf);
-  };
-
-  const handleDownloadGraphWithLegendPdfClick = () => {
-    setDownload("graphWithLegendPdf", !download.graphWithLegendPdf);
-  };
-
   if (activeMenu !== "Export") {
     content = (
       <Button
@@ -66,7 +38,7 @@ export function HeaderBarExport({ activeMenu, handleActiveMenuClick }) {
           <Item
             text={"Export Graph as JSON"}
             onClick={() => {
-              handleDownloadJsonClick();
+              setDownload("json", !download.json);
               handleActiveMenuClick("Export");
             }}
             icon={<FileLines />}
@@ -74,7 +46,7 @@ export function HeaderBarExport({ activeMenu, handleActiveMenuClick }) {
           <Item
             text={"Export Graph with settings as JSON"}
             onClick={() => {
-              handleDownloadJsonCoordsPhysics();
+              setDownload("jsonCoordsPhysics", !download.jsonCoordsPhysics);
               handleActiveMenuClick("Export");
             }}
             icon={<PdfIcon />}
@@ -83,7 +55,7 @@ export function HeaderBarExport({ activeMenu, handleActiveMenuClick }) {
           <Item
             text={"Export Graph as PNG"}
             onClick={() => {
-              handleDownloadPngClick();
+              setDownload("png", !download.png);
               handleActiveMenuClick("Export");
             }}
             icon={<FileImage />}
@@ -91,7 +63,7 @@ export function HeaderBarExport({ activeMenu, handleActiveMenuClick }) {
           <Item
             text={"Export Graph as SVG"}
             onClick={() => {
-              handleDownloadSvgClick();
+              setDownload("svg", !download.svg);
               handleActiveMenuClick("Export");
             }}
             icon={<FileWaveform />}
@@ -99,7 +71,7 @@ export function HeaderBarExport({ activeMenu, handleActiveMenuClick }) {
           <Item
             text={"Export Graph as PDF"}
             onClick={() => {
-              handleDownloadPdfClick();
+              setDownload("pdf", !download.pdf);
               handleActiveMenuClick("Export");
             }}
             icon={<PdfIcon />}
@@ -107,7 +79,7 @@ export function HeaderBarExport({ activeMenu, handleActiveMenuClick }) {
           <Item
             text={"Export Legend as PDF"}
             onClick={() => {
-              handleDownloadLegendPdfClick();
+              setDownload("legendPdf", !download.legendPdf);
               handleActiveMenuClick("Export");
             }}
             icon={<PdfIcon />}

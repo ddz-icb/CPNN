@@ -8,31 +8,31 @@ export async function setInitGraph(setGraphData) {
   const graph = JSON.parse(exampleGraphJson.content);
   addGraphFileIfNotExistsDB(exampleGraphJson);
   setGraphData("originGraph", graph);
-  setGraphData("activeGraphFileNames", [exampleGraphJson.name]);
+  setGraphData("activeGraphNames", [exampleGraphJson.name]);
 }
 
-export async function loadGraphFileNames(setGraphData) {
+export async function loadGraphNames(setGraphData) {
   const filenames = await fromAllGetGraphNameDB();
-  setGraphData("uploadedGraphFileNames", filenames);
+  setGraphData("uploadedGraphNames", filenames);
 }
 
 export async function selectGraph(filename, setGraphData) {
   const { graph, file } = await getGraphDB(filename);
 
   setGraphData("originGraph", graph);
-  setGraphData("activeGraphFileNames", [file.name]);
+  setGraphData("activeGraphNames", [file.name]);
   log.info("Graph Loaded Successfully:", graph);
 }
 
-export async function addActiveGraphFile(filename, activeGraphFileNames, setGraphData, oldGraph) {
+export async function addActiveGraph(filename, activeGraphNames, setGraphData, oldGraph) {
   const { graph, file } = await getGraphDB(filename);
   const combinedGraph = joinGraphs(oldGraph, graph);
   setGraphData("originGraph", combinedGraph);
-  setGraphData("activeGraphFileNames", [...activeGraphFileNames, filename]);
+  setGraphData("activeGraphNames", [...activeGraphNames, filename]);
 }
 
-export async function removeActiveGraphFile(filename, activeGraphFileNames, setGraphData) {
-  let stillActiveFileNames = activeGraphFileNames?.filter((name) => name !== filename);
+export async function removeActiveGraph(filename, activeGraphNames, setGraphData) {
+  let stillActiveFileNames = activeGraphNames?.filter((name) => name !== filename);
   if (stillActiveFileNames.length === 0) stillActiveFileNames = [exampleGraphJson.name];
   try {
     let { graph, file } = await getGraphDB(stillActiveFileNames[0]);
@@ -42,7 +42,7 @@ export async function removeActiveGraphFile(filename, activeGraphFileNames, setG
       combinedGraph = joinGraphs(combinedGraph, graph);
     }
     setGraphData("originGraph", combinedGraph);
-    setGraphData("activeGraphFileNames", stillActiveFileNames);
+    setGraphData("activeGraphNames", stillActiveFileNames);
   } catch (error) {
     log.error("the graph file doesn't exist. This shouldn't be possible");
     return;
@@ -51,7 +51,7 @@ export async function removeActiveGraphFile(filename, activeGraphFileNames, setG
 
 export async function createGraph(
   file,
-  uploadedGraphFileNames,
+  uploadedGraphNames,
   setGraphData,
   takeAbs,
   minCorrForEdge,
@@ -59,18 +59,18 @@ export async function createGraph(
   maxCompSizeForNode,
   takeSpearmanCoefficient
 ) {
-  if (uploadedGraphFileNames.some((name) => getFileNameWithoutExtension(name) === getFileNameWithoutExtension(file.name))) {
+  if (uploadedGraphNames.some((name) => getFileNameWithoutExtension(name) === getFileNameWithoutExtension(file.name))) {
     log.warn("Graph with this name already exists");
     throw new Error("Graph with this name already exists");
   }
 
   const graphFile = await parseGraphFile(file, takeAbs, minCorrForEdge, minCompSizeForNode, maxCompSizeForNode, takeSpearmanCoefficient);
   addGraphFileDB(graphFile);
-  setGraphData("uploadedGraphFileNames", [...(uploadedGraphFileNames || []), file.name]);
+  setGraphData("uploadedGraphNames", [...(uploadedGraphNames || []), file.name]);
 }
 
-export async function deleteGraphFile(uploadedGraphFileNames, filename, setGraphData) {
-  const updatedGraphFileNames = uploadedGraphFileNames?.filter((name) => name !== filename);
-  setGraphData("uploadedGraphFileNames", updatedGraphFileNames);
+export async function deleteGraph(uploadedGraphNames, filename, setGraphData) {
+  const updatedGraphFileNames = uploadedGraphNames?.filter((name) => name !== filename);
+  setGraphData("uploadedGraphNames", updatedGraphFileNames);
   removeGraphFileByNameDB(filename);
 }

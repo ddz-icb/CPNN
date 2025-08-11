@@ -14,16 +14,16 @@ import {
   mergeSameProteins,
 } from "./components/application_service/graphCalculations.js";
 import {
-  addActiveGraphFile as addActiveGraph,
+  addActiveGraph,
   createGraph,
-  deleteGraphFile as deleteGraph,
-  loadGraphFileNames as loadGraphNames,
-  removeActiveGraphFile as removeActiveGraph,
+  deleteGraph,
+  loadGraphNames,
+  removeActiveGraph,
   selectGraph,
   setInitGraph,
 } from "./components/domain_service/graphService.js";
 import {
-  addNewColorScheme as createColorScheme,
+  createColorScheme,
   deleteColorScheme,
   loadColorSchemeNames,
   selectLinkColorScheme,
@@ -75,7 +75,7 @@ function App() {
 
     createGraph(
       file,
-      graphData.uploadedGraphFileNames,
+      graphData.uploadedGraphNames,
       setGraphData,
       takeAbs,
       minCorrForEdge,
@@ -108,7 +108,7 @@ function App() {
 
   const handleAddActiveGraph = (filename) => {
     if (!filename) return;
-    if (graphData.activeGraphFileNames.some((name) => name === filename)) {
+    if (graphData.activeGraphNames.some((name) => name === filename)) {
       setError("Graph already active");
       log.error("Graph already active");
       return;
@@ -118,7 +118,7 @@ function App() {
     try {
       simulationReset();
       setGraphData("graphIsPreprocessed", false);
-      addActiveGraph(filename, graphData.activeGraphFileNames, setGraphData, graphData.originGraph);
+      addActiveGraph(filename, graphData.activeGraphNames, setGraphData, graphData.originGraph);
     } catch (error) {
       setError("Error loading graph");
       log.error("Error loading graph:", error);
@@ -133,20 +133,20 @@ function App() {
 
     simulationReset();
     setGraphData("graphIsPreprocessed", false);
-    removeActiveGraph(filename, graphData.activeGraphFileNames, setGraphData);
+    removeActiveGraph(filename, graphData.activeGraphNames, setGraphData);
   };
 
   // deletes uploaded files with filename //
   const handleDeleteGraph = (filename) => {
     if (!filename) return;
-    if (graphData?.activeGraphFileNames?.includes(filename)) {
+    if (graphData?.activeGraphNames?.includes(filename)) {
       log.warn("Cannot remove selected graph as it's still active");
       setError("Cannot remove selected graph as it's still active");
       return;
     }
     log.info("Deleting files with name", filename);
 
-    deleteGraph(graphData.uploadedGraphFileNames, filename, setGraphData);
+    deleteGraph(graphData.uploadedGraphNames, filename, setGraphData);
   };
 
   // MAPPING
@@ -277,7 +277,7 @@ function App() {
 
   // initates reset //
   const simulationReset = () => {
-    if (!graphData.activeGraphFileNames) return;
+    if (!graphData.activeGraphNames) return;
     log.info("Handle Simulation Reset");
 
     setAllFilter(filterInit);
@@ -300,7 +300,7 @@ function App() {
     setInitColorSchemes(appearance, setAppearance);
   }, []);
 
-  // init uploadedGraphFileNames
+  // init uploadedGraphNames
   useEffect(() => {
     log.info("Loading uploaded graphs");
     try {
@@ -350,11 +350,11 @@ function App() {
   // merge Proteins function initiation (THIS SHOULD DEFINETLY NOT BE HERE)
   useEffect(() => {
     async function mergedGraph(graphData) {
-      const { graph, file } = await getGraphDB(graphData.activeGraphFileNames[0]);
+      const { graph, file } = await getGraphDB(graphData.activeGraphNames[0]);
 
       let combinedGraph = graph;
-      for (let i = 1; i < graphData.activeGraphFileNames.length; i++) {
-        let { graph, file } = await getGraphDB(graphData.activeGraphFileNames[i]);
+      for (let i = 1; i < graphData.activeGraphNames.length; i++) {
+        let { graph, file } = await getGraphDB(graphData.activeGraphNames[i]);
         combinedGraph = joinGraphs(combinedGraph, graph);
       }
 
@@ -363,11 +363,10 @@ function App() {
       }
 
       setGraphData("originGraph", combinedGraph);
-      setGraphData("activeGraphFileNames", graphData.activeGraphFileNames);
+      setGraphData("activeGraphNames", graphData.activeGraphNames);
     }
 
-    if (graphData.mergeProteins == null || !graphData.graphIsPreprocessed || !graphData.activeGraphFileNames || !graphData.activeGraphFileNames[0])
-      return;
+    if (graphData.mergeProteins == null || !graphData.graphIsPreprocessed || !graphData.activeGraphNames || !graphData.activeGraphNames[0]) return;
 
     log.info("Merging Proteins: ", graphData.mergeProteins);
 
@@ -383,7 +382,7 @@ function App() {
 
   // forwards graph to forceGraph component //
   useEffect(() => {
-    if (!graphData.originGraph || !graphData.activeGraphFileNames || graphData.graphIsPreprocessed) return;
+    if (!graphData.originGraph || !graphData.activeGraphNames || graphData.graphIsPreprocessed) return;
     log.info("Modifying graph and forwarding it to the simulation component");
 
     let newGraph = structuredClone(graphData.originGraph);
@@ -413,7 +412,7 @@ function App() {
     setGraphData("originGraph", newGraph);
     setGraphData("graph", newGraph);
     setGraphData("graphIsPreprocessed", true);
-  }, [graphData.originGraph, graphData.activeGraphFileNames, graphData.activeMapping]);
+  }, [graphData.originGraph, graphData.activeGraphNames, graphData.activeMapping]);
 
   return (
     <div className={appearance.theme.name}>

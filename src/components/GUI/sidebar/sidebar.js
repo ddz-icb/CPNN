@@ -5,26 +5,28 @@ import { ReactComponent as BackArrowIcon } from "../../../icons/backArrow.svg";
 import { FilterSidebar } from "./filterSidebar.js";
 import { PhysicsSidebar } from "./physicsSidebar.js";
 import { DataSidebar } from "./dataSidebar.js";
-import { MainSidebar } from "./selectionSidebar.js";
+import { SelectionSidebar } from "./selectionSidebar.js";
 import { AppearanceSidebar } from "./appearanceSidebar.js";
+import { DownloadSidebar } from "./downloadSidebar.js";
 
 export function Sidebar(props) {
-  const [activeNavItem, setActiveNavItem] = useState("Main");
+  const [activeNavItem, setActiveNavItem] = useState("Selection");
 
   const sidebarComponents = {
-    Main: <MainSidebar handleNavItemClick={(item) => setActiveNavItem(item)} />,
+    Selection: <SelectionSidebar handleNavItemClick={(item) => setActiveNavItem(item)} />,
     Data: <DataSidebar {...props} />,
     Filter: <FilterSidebar />,
     Physics: <PhysicsSidebar />,
     Appearance: <AppearanceSidebar {...props} />,
+    Download: <DownloadSidebar />,
   };
 
   const currentSidebar = sidebarComponents[activeNavItem];
-  const isMain = activeNavItem === "Main";
+  const isSelection = activeNavItem === "Selection";
 
   return (
-    <Navbar short={isMain}>
-      {!isMain && <Back activeNavItem={activeNavItem} onClick={() => setActiveNavItem("Main")} />}
+    <Navbar short={isSelection}>
+      {!isSelection && <Back activeNavItem={activeNavItem} onClick={() => setActiveNavItem("Selection")} />}
       {currentSidebar}
     </Navbar>
   );

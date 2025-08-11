@@ -43,16 +43,7 @@ export async function parseGraphFile(
   }
 }
 
-export async function parseGraph(
-  name,
-  content,
-  takeAbs,
-  minCorrForEdge,
-  minCompSizeForNode,
-  maxCompSizeForNode,
-  takeSpearmanCoefficient,
-  mergeSameProtein
-) {
+async function parseGraph(name, content, takeAbs, minCorrForEdge, minCompSizeForNode, maxCompSizeForNode, takeSpearmanCoefficient, mergeSameProtein) {
   const fileExtension = name.split(".").pop();
 
   let graph = null;

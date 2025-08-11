@@ -10,8 +10,8 @@ export const graphDataInit = {
   lines: null,
   filteredAfterStart: false,
   graphIsPreprocessed: false,
-  activeGraphFileNames: null,
-  uploadedGraphFileNames: null,
+  activeGraphNames: null,
+  uploadedGraphNames: null,
   activeMapping: null,
   uploadedMappingNames: null,
 };

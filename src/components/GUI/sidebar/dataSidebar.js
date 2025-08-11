@@ -48,9 +48,9 @@ export function DataSidebar({
   return (
     <>
       <TopDataButtons handleNewGraphFile={handleNewGraphFile} handleNewMapping={handleNewMapping} />
-      <ActiveGraphFiles activeGraphFileNames={graphData.activeGraphFileNames} handleRemoveActiveGraphFile={handleRemoveActiveGraphFile} />
+      <ActiveGraphFiles activeGraphNames={graphData.activeGraphNames} handleRemoveActiveGraphFile={handleRemoveActiveGraphFile} />
       <UploadedGraphFiles
-        uploadedGraphFileNames={graphData.uploadedGraphFileNames}
+        uploadedGraphNames={graphData.uploadedGraphNames}
         handleSelectGraph={handleSelectGraph}
         handleDeleteGraphFile={handleDeleteGraphFile}
         handleAddFile={handleAddFile}
@@ -65,14 +65,14 @@ export function DataSidebar({
   );
 }
 
-function UploadedGraphFiles({ uploadedGraphFileNames, handleSelectGraph, handleDeleteGraphFile, handleAddFile }) {
-  let uploadedGraphFileNamesNoExample = uploadedGraphFileNames?.filter((name) => name !== exampleGraphJson.name);
+function UploadedGraphFiles({ uploadedGraphNames, handleSelectGraph, handleDeleteGraphFile, handleAddFile }) {
+  let uploadedGraphNamesNoExample = uploadedGraphNames?.filter((name) => name !== exampleGraphJson.name);
 
   return (
     <>
       <TableList
         heading={"Uploaded Graphs"}
-        data={uploadedGraphFileNamesNoExample}
+        data={uploadedGraphNamesNoExample}
         onItemClick={(filename) => handleSelectGraph(filename)}
         itemTooltipContent={() => "Replace Active Graphs"}
         ActionIcon={PlusIcon}
@@ -86,11 +86,11 @@ function UploadedGraphFiles({ uploadedGraphFileNames, handleSelectGraph, handleD
   );
 }
 
-function ActiveGraphFiles({ activeGraphFileNames, handleRemoveActiveGraphFile }) {
+function ActiveGraphFiles({ activeGraphNames, handleRemoveActiveGraphFile }) {
   return (
     <TableList
       heading={"Currently Active Graphs"}
-      data={activeGraphFileNames}
+      data={activeGraphNames}
       ActionIcon={DeleteIcon}
       onActionIconClick={(filename) => handleRemoveActiveGraphFile(filename)}
       actionIconTooltipContent={() => "Remove Graph"}

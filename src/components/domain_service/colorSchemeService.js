@@ -51,7 +51,7 @@ export async function selectNodeColorScheme(colorSchemeName, setAppearance) {
   log.info("Node color scheme Loaded Successfully:", colorScheme);
 }
 
-export async function addNewColorScheme(file, uploadedColorSchemeNames, setAppearance) {
+export async function createColorScheme(file, uploadedColorSchemeNames, setAppearance) {
   if (uploadedColorSchemeNames.some((name) => getFileNameWithoutExtension(name) === getFileNameWithoutExtension(file.name))) {
     log.warn("Color scheme with this name already exists");
     throw new Error("Color scheme with this name already exists");
