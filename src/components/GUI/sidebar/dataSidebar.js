@@ -3,15 +3,7 @@ import { ReactComponent as TrashIcon } from "../../../icons/trash.svg";
 import { ReactComponent as PlusIcon } from "../../../icons/plus.svg";
 import { useEffect, useRef, useState } from "react";
 
-import {
-  PopUpTextFieldInline,
-  TableList,
-  ButtonPopUp,
-  SwitchBlock,
-  SliderBlock,
-  FieldBlock,
-  Button,
-} from "../reusable_components/sidebarComponents.js";
+import { TableList, ButtonPopUp, SwitchBlock, SliderBlock, FieldBlock, Button, PopUpTextField } from "../reusable_components/sidebarComponents.js";
 import log from "../../../logger.js";
 import { useGraphData } from "../../../states.js";
 import { exampleGraphJson } from "../../assets/exampleGraphJSON.js";
@@ -274,9 +266,9 @@ function UploadGraph({ handleCreateGraph }) {
         infoHeading={"Include phosphosites"}
         infoDescription={containsSitesDescription}
       />
-      <PopUpTextFieldInline textInfront={"Your Node ID format:"} textInside={nodeIdFormat} />
-      <PopUpTextFieldInline textInfront={"Node ID examples:"} textInside={nodeIdExample1} />
-      <PopUpTextFieldInline textInside={nodeIdExample2} />
+      <PopUpTextField inline={true} textInfront={"Your Node ID format:"} textInside={nodeIdFormat} />
+      <PopUpTextField inline={true} textInfront={"Node ID examples:"} textInside={nodeIdExample1} />
+      <PopUpTextField inline={true} textInside={nodeIdExample2} />
       <div className="popup-block flex-end">
         <Button
           variant="popup"
@@ -307,8 +299,8 @@ function UploadMapping({ handleCreateMapping }) {
       heading={"Uploading Your Pathway Mapping"}
       description={uploadPathwayMappingDescription}
     >
-      <PopUpTextFieldInline textInfront={"Pathway Mapping format:"} textInside={mappingFormat} />
-      <PopUpTextFieldInline textInfront={"Pathway Mapping example:"} textInside={mappingExample} />
+      <PopUpTextField inline={true} textInfront={"Pathway Mapping format:"} textInside={mappingFormat} />
+      <PopUpTextField inline={true} textInfront={"Pathway Mapping example:"} textInside={mappingExample} />
       <div className="popup-block">
         <Button
           variant="popup"

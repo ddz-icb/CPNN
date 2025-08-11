@@ -1165,7 +1165,7 @@ input[type="radio"]:checked:after {
   box-sizing: border-box;
 }
 
-.popup-text-field {
+.text-field {
   font-size: 1rem;
   display: inline-block;
   border: 1px solid var(--border-input-field-sidebar-focus);

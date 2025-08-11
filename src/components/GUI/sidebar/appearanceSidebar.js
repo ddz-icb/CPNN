@@ -1,6 +1,6 @@
 import { useRef, useState, Fragment } from "react";
 import { ReactComponent as TrashIcon } from "../../../icons/trash.svg";
-import { PopUpTextFieldInline, SwitchBlock, PopUp, TableList, SliderBlock, Button } from "../reusable_components/sidebarComponents.js";
+import { SwitchBlock, PopUp, TableList, SliderBlock, Button, PopUpTextField } from "../reusable_components/sidebarComponents.js";
 import { colorSchemeCsv } from "../../assets/exampleColorSchemeCSV.js";
 import { downloadCsvFile } from "../../application_service/download.js";
 import { useAppearance } from "../../../states.js";
@@ -77,8 +77,8 @@ export function UploadColorScheme({ handleNewColorScheme }) {
         isOpen={colorSchemePopUpActive}
         setIsOpen={setColorSchemePopUpActive}
       >
-        <PopUpTextFieldInline textInfront={"Color Scheme format:"} textInside={"Color1, Color2, Color3, ..."} />
-        <PopUpTextFieldInline textInfront={"Color Scheme example:"} textInside={"#e69f00,#56b4e9,#009e73"} />
+        <PopUpTextField inline={true} textInfront={"Color Scheme format:"} textInside={"Color1, Color2, Color3, ..."} />
+        <PopUpTextField inline={true} textInfront={"Color Scheme example:"} textInside={"#e69f00,#56b4e9,#009e73"} />
         <div className="popup-block">
           <Button
             variant="popup"

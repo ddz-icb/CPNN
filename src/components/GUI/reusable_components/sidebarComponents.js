@@ -33,47 +33,6 @@ export function SliderBlock({ variant = "sidebar", value, setValue, setValueText
   );
 }
 
-export function PopUpSliderBlock({ value, valueText, setValue, setValueText, fallbackValue, min, max, step, text, infoHeading, infoDescription }) {
-  const handleKeyDown = (event) => {
-    if (event.key === "Enter") {
-      event.target.blur();
-    }
-  };
-
-  return (
-    <>
-      <div className="inline">
-        <label className="label">{text}</label>
-        <span className="tooltip-button pad-left-05 pad-top-11">
-          <InfoButtonPopUp heading={infoHeading} description={infoDescription} widePopUp={true} />
-        </span>
-      </div>
-      <div className="popup-block pad-bottom-05">
-        <input
-          className="sidebar-slider"
-          type="range"
-          min={min}
-          max={max}
-          step={step}
-          value={value}
-          onChange={(event) => handleSliderChange(event, setValue, setValueText, min, max)}
-        ></input>
-        <input
-          className="input-field"
-          type="number"
-          min={min}
-          max={max}
-          step={step}
-          value={valueText}
-          onChange={(event) => handleFieldChange(event, setValueText, min, max)}
-          onKeyDown={handleKeyDown}
-          onBlur={(event) => handleFieldBlur(event, setValue, setValueText, min, max, fallbackValue)}
-        />
-      </div>
-    </>
-  );
-}
-
 export function SwitchBlock({ variant = "sidebar", value, setValue, text, infoHeading, infoDescription }) {
   const isPopup = variant === "popup";
   const wrapperClassName = isPopup ? "popup-block" : "sidebar-block";
@@ -149,24 +108,24 @@ export function CodeEditorBlock({ text, onClick, compilerError, defaultValue, te
   );
 }
 
-export function PopUpTextField({ textInfront, textInside }) {
-  return (
-    <>
-      <label className="label-no-pad">{textInfront}</label>
-      <div className="popup-text-field pad-left-025 pad-right-025 margin-bottom-025">{textInside}</div>
-    </>
-  );
-}
-
-export function PopUpTextFieldInline({ textInfront, textInside }) {
-  return (
-    <>
-      <div className={"popup-block pad-top-05 pad-bottom-05"}>
+export function PopUpTextField({ textInfront, textInside, inline }) {
+  if (inline) {
+    return (
+      <>
+        <div className={"popup-block pad-top-05 pad-bottom-05"}>
+          <label className="label-no-pad">{textInfront}</label>
+          <div className="text-field pad-left-025 pad-right-025">{textInside}</div>
+        </div>
+      </>
+    );
+  } else {
+    return (
+      <>
         <label className="label-no-pad">{textInfront}</label>
-        <div className="popup-text-field pad-left-025 pad-right-025">{textInside}</div>
-      </div>
-    </>
-  );
+        <div className="text-field pad-left-025 pad-right-025 margin-bottom-025">{textInside}</div>
+      </>
+    );
+  }
 }
 
 export function PopUp({ heading, description, isOpen, setIsOpen, widePopUp, children }) {
