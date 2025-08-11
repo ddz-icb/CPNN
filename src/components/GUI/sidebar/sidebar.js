@@ -27,7 +27,7 @@ export function Sidebar(props) {
   return (
     <Navbar short={isSelection}>
       {!isSelection && <BackBar activeNavItem={activeNavItem} onClick={() => setActiveNavItem("Selection")} />}
-      {currentSidebar}
+      <div className="pad-bottom-1">{currentSidebar}</div>
     </Navbar>
   );
 }

@@ -1550,3 +1550,7 @@ input[type="radio"]:checked:after {
   grid-template-columns: 1fr 1fr;
   width: 100%;
 }
+
+.a {
+  padding-bottom: 1rem;
+}
