@@ -1,4 +1,4 @@
-import { SidebarSliderBlock, SidebarSwitchBlock, SidebarButtonRect } from "../reusable_components/sidebarComponents.js";
+import { Button, SliderBlock, SwitchBlock } from "../reusable_components/sidebarComponents.js";
 
 import { usePhysics } from "../../../states.js";
 import { communityForceStrengthInit, componentStrengthInit, physicsInit, xStrengthInit } from "../../config/physicsInitValues.js";
@@ -22,16 +22,16 @@ export function PhysicsSidebar({}) {
   return (
     <>
       <div className="inline pad-top-05 pad-bottom-05">
-        <SidebarButtonRect text={"Set Phyiscs to Default"} onClick={() => setAllPhysics(physicsInit)} />
+        <Button text={"Set Phyiscs to Default"} onClick={() => setAllPhysics(physicsInit)} />
       </div>
-      <SidebarSwitchBlock
+      <SwitchBlock
         value={physics.circleLayout}
         setValue={() => setPhysics("circleLayout", !physics.circleLayout)}
         text={"Circular Layout"}
         infoHeading={"Enabling Circular layout"}
         infoDescription={circleLayoutDescription}
       />
-      <SidebarSliderBlock
+      <SliderBlock
         value={physics.xStrength}
         valueText={physics.xStrengthText}
         setValue={(value) => {
@@ -50,7 +50,7 @@ export function PhysicsSidebar({}) {
         infoHeading={"Adjusting the Gravity"}
         infoDescription={gravityDescription}
       />
-      <SidebarSliderBlock
+      <SliderBlock
         value={physics.componentStrength}
         valueText={physics.componentStrengthText}
         setValue={(value) => setPhysics("componentStrength", value)}
@@ -63,7 +63,7 @@ export function PhysicsSidebar({}) {
         infoHeading={"Adjusting the Component Force Strength"}
         infoDescription={componentStrengthDescription}
       />
-      <SidebarSliderBlock
+      <SliderBlock
         value={physics.communityForceStrength}
         valueText={physics.communityForceStrengthText}
         setValue={(value) => setPhysics("communityForceStrength", value)}
@@ -76,7 +76,7 @@ export function PhysicsSidebar({}) {
         infoHeading={"Adjusting the Community Force Strength"}
         infoDescription={communityForceStrengthDescription}
       />
-      <SidebarSliderBlock
+      <SliderBlock
         value={physics.nodeRepulsionStrength}
         valueText={physics.nodeRepulsionStrengthText}
         setValue={(value) => setPhysics("nodeRepulsionStrength", value)}
@@ -89,14 +89,14 @@ export function PhysicsSidebar({}) {
         infoHeading={"Adjusting the Node Repulsion Strength"}
         infoDescription={nodeRepulsionStrengthDescription}
       />
-      <SidebarSwitchBlock
+      <SwitchBlock
         value={physics.nodeCollision}
         setValue={() => setPhysics("nodeCollision", !physics.nodeCollision)}
         text={"Node Collision"}
         infoHeading={"Enabling the Node Collision Force"}
         infoDescription={nodeCollisionDescription}
       />
-      <SidebarSwitchBlock
+      <SwitchBlock
         value={physics.linkForce}
         setValue={() => setPhysics("linkForce", !physics.linkForce)}
         text={"Link Force"}
@@ -104,7 +104,7 @@ export function PhysicsSidebar({}) {
         infoDescription={linkForceDescription}
       />
       {physics.linkForce && (
-        <SidebarSliderBlock
+        <SliderBlock
           value={physics.linkLength}
           valueText={physics.linkLengthText}
           setValue={(value) => setPhysics("linkLength", value)}
@@ -118,7 +118,7 @@ export function PhysicsSidebar({}) {
           infoDescription={linkLengthDescription}
         />
       )}
-      <SidebarSwitchBlock
+      <SwitchBlock
         value={physics.checkBorder}
         setValue={() => setPhysics("checkBorder", !physics.checkBorder)}
         text={"Border Force"}
@@ -127,7 +127,7 @@ export function PhysicsSidebar({}) {
       />
       {physics.checkBorder && (
         <>
-          <SidebarSliderBlock
+          <SliderBlock
             value={physics.borderHeight}
             valueText={physics.borderHeightText}
             setValue={(value) => setPhysics("borderHeight", value)}
@@ -140,7 +140,7 @@ export function PhysicsSidebar({}) {
             infoHeading={"Adjusting the Border Height"}
             infoDescription={borderHeightDescription}
           />
-          <SidebarSliderBlock
+          <SliderBlock
             value={physics.borderWidth}
             valueText={physics.borderWidthText}
             setValue={(value) => setPhysics("borderWidth", value)}

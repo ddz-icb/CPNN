@@ -5,14 +5,12 @@ import { useEffect, useRef, useState } from "react";
 
 import {
   PopUpTextFieldInline,
-  PopUpSliderBlock,
-  PopUpFieldBlock,
-  PopUpSwitchBlock,
-  SidebarButtonRect,
-  PopupButtonRect,
-  PopUp,
   TableList,
-  SidebarButtonPopUp,
+  ButtonPopUp,
+  SwitchBlock,
+  SliderBlock,
+  FieldBlock,
+  Button,
 } from "../reusable_components/sidebarComponents.js";
 import log from "../../../logger.js";
 import { useGraphData } from "../../../states.js";
@@ -178,7 +176,7 @@ function UploadGraph({ handleCreateGraph }) {
   }, [containsSites]);
 
   return (
-    <SidebarButtonPopUp
+    <ButtonPopUp
       buttonText={"Upload Graph"}
       tooltip={"Upload Graph as CSV, TSV or JSON File"}
       tooltipId={"upload-graph-tooltip"}
@@ -186,37 +184,43 @@ function UploadGraph({ handleCreateGraph }) {
       description={uploadGraphDescription}
     >
       <div className="popup-block">
-        <PopupButtonRect
+        <Button
+          variant="popup"
           text={"JSON Example Graph"}
           onClick={() => downloadObjectAsFile(exampleGraphJson.content, exampleGraphJson.name)}
           className="no-pad-top"
         />
-        <PopupButtonRect
+        <Button
+          variant="popup"
           text={"Matrix Example Graph"}
           onClick={() => downloadCsvFile(exampleGraphCsv.content, exampleGraphCsv.name)}
           className="no-pad-top"
         />
-        <PopupButtonRect
+        <Button
+          variant="popup"
           text={"Raw Data Example Graph"}
           onClick={() => downloadCsvFile(exampleGraphRaw.content, exampleGraphRaw.name)}
           className="no-pad-top"
         />
       </div>
-      <PopUpSwitchBlock
+      <SwitchBlock
+        variant="popup"
         value={spearmanCoefficient}
         setValue={() => setSpearmanCoefficient(!spearmanCoefficient)}
         text={"Calculate spearman correlation"}
         infoHeading={"Use spearman correlation"}
         infoDescription={spearmanCoefficientDescription}
       />
-      <PopUpSwitchBlock
+      <SwitchBlock
+        variant="popup"
         value={takeAbs}
         setValue={() => setTakeAbs(!takeAbs)}
         text={"Include negative correlations by taking the absolute value"}
         infoHeading={"Include negative correlations"}
         infoDescription={takeAbsDescription}
       />
-      <PopUpSwitchBlock
+      <SwitchBlock
+        variant="popup"
         value={mergeSameProtein}
         setValue={() => setMergeSameProtein(!mergeSameProtein)}
         text={"Merge nodes of same protein"}
@@ -224,7 +228,8 @@ function UploadGraph({ handleCreateGraph }) {
         infoDescription={mergeProteinsDescription}
       />
       <div className="popup-block"></div>
-      <PopUpSliderBlock
+      <SliderBlock
+        variant="popup"
         value={minLinkCorr}
         valueText={minLinkCorrText}
         setValue={(value) => setMinLinkCorr(value)}
@@ -237,7 +242,8 @@ function UploadGraph({ handleCreateGraph }) {
         infoHeading={"Minimum link correlation"}
         infoDescription={minLinkCorrDescription}
       />
-      <PopUpFieldBlock
+      <FieldBlock
+        variant="popup"
         valueText={minCompSizeText}
         setValue={(value) => setMinCompSize(value)}
         setValueText={(value) => setMinCompSizeText(value)}
@@ -248,7 +254,8 @@ function UploadGraph({ handleCreateGraph }) {
         infoHeading={"Minimum component/cluster size"}
         infoDescription={minCompSizeDescriptionUpload}
       />
-      <PopUpFieldBlock
+      <FieldBlock
+        variant="popup"
         valueText={maxCompSizeText}
         setValue={(value) => setMaxCompSize(value)}
         setValueText={(value) => setMaxCompSizeText(value)}
@@ -259,7 +266,8 @@ function UploadGraph({ handleCreateGraph }) {
         infoHeading={"Maximum component/cluster size"}
         infoDescription={maxCompSizeDescriptionUpload}
       />
-      <PopUpSwitchBlock
+      <SwitchBlock
+        variant="popup"
         value={containsSites}
         setValue={() => setContainsSites(!containsSites)}
         text={"Include phosphosites"}
@@ -270,7 +278,8 @@ function UploadGraph({ handleCreateGraph }) {
       <PopUpTextFieldInline textInfront={"Node ID examples:"} textInside={nodeIdExample1} />
       <PopUpTextFieldInline textInside={nodeIdExample2} />
       <div className="popup-block flex-end">
-        <PopupButtonRect
+        <Button
+          variant="popup"
           text={"Upload Own Graph File"}
           onClick={() => graphFileRef.current.click()}
           linkRef={graphFileRef}
@@ -280,7 +289,7 @@ function UploadGraph({ handleCreateGraph }) {
           }}
         />
       </div>
-    </SidebarButtonPopUp>
+    </ButtonPopUp>
   );
 }
 
@@ -291,7 +300,7 @@ function UploadMapping({ handleCreateMapping }) {
   const mappingExample = "O60306,mRNA Splicing,R-HSA-72172";
 
   return (
-    <SidebarButtonPopUp
+    <ButtonPopUp
       buttonText={"Upload Pathway Mappings"}
       tooltip={"Upload Pathway Annotation Mappings as a TSV or CSV File"}
       tooltipId={"upload-mapping-tooltip"}
@@ -301,11 +310,13 @@ function UploadMapping({ handleCreateMapping }) {
       <PopUpTextFieldInline textInfront={"Pathway Mapping format:"} textInside={mappingFormat} />
       <PopUpTextFieldInline textInfront={"Pathway Mapping example:"} textInside={mappingExample} />
       <div className="popup-block">
-        <PopupButtonRect
+        <Button
+          variant="popup"
           text={"Download Example Pathway Mapping"}
           onClick={() => downloadCsvFile(exampleMappingCsv.content, exampleMappingCsv.name)}
         />
-        <PopupButtonRect
+        <Button
+          variant="popup"
           text={"Upload Own Pathway Mapping"}
           onClick={() => mappingRef.current.click()}
           linkRef={mappingRef}
@@ -315,6 +326,6 @@ function UploadMapping({ handleCreateMapping }) {
           }}
         />
       </div>
-    </SidebarButtonPopUp>
+    </ButtonPopUp>
   );
 }

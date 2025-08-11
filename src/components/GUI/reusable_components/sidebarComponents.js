@@ -1,25 +1,23 @@
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import { ReactComponent as InfoCircleIcon } from "../../../icons/infoCircle.svg";
 import { ReactComponent as XIcon } from "../../../icons/x.svg";
 import { Tooltip } from "react-tooltip";
 import { handleFieldBlur, handleFieldChange, handleSliderChange } from "../handlers/buttonHandlerFunctions.js";
 
-export function SidebarSliderBlock({ value, valueText, setValue, setValueText, fallbackValue, min, max, step, text, infoHeading, infoDescription }) {
-  const handleKeyDown = (event) => {
-    if (event.key === "Enter") {
-      event.target.blur();
-    }
-  };
+export function SliderBlock({ variant = "sidebar", value, setValue, setValueText, min, max, step, text, infoHeading, infoDescription, ...props }) {
+  const isPopup = variant === "popup";
+  const wrapperClassName = isPopup ? "popup-block pad-bottom-05" : "sidebar-block";
+  const labelClassName = isPopup ? "label" : "label pad-left-1";
 
   return (
     <>
       <div className="inline">
-        <label className="label pad-left-1">{text}</label>
+        <label className={labelClassName}>{text}</label>
         <span className="tooltip-button pad-left-05 pad-top-11">
-          <InfoButtonPopUp heading={infoHeading} description={infoDescription} />
+          <InfoButtonPopUp heading={infoHeading} description={infoDescription} widePopUp={isPopup} />
         </span>
       </div>
-      <div className="sidebar-block">
+      <div className={wrapperClassName}>
         <input
           className="sidebar-slider"
           type="range"
@@ -28,18 +26,8 @@ export function SidebarSliderBlock({ value, valueText, setValue, setValueText, f
           step={step}
           value={value}
           onChange={(event) => handleSliderChange(event, setValue, setValueText, min, max)}
-        ></input>
-        <input
-          className="input-field"
-          type="number"
-          min={min}
-          max={max}
-          step={step}
-          value={valueText}
-          onChange={(event) => handleFieldChange(event, setValueText, min, max)}
-          onKeyDown={handleKeyDown}
-          onBlur={(event) => handleFieldBlur(event, setValue, setValueText, min, max, fallbackValue)}
         />
+        <NumericInput setValue={setValue} setValueText={setValueText} min={min} max={max} step={step} {...props} />
       </div>
     </>
   );
@@ -86,133 +74,62 @@ export function PopUpSliderBlock({ value, valueText, setValue, setValueText, fal
   );
 }
 
-export function SidebarSwitchBlock({ value, setValue, text, infoHeading, infoDescription }) {
+export function SwitchBlock({ variant = "sidebar", value, setValue, text, infoHeading, infoDescription }) {
+  const isPopup = variant === "popup";
+  const wrapperClassName = isPopup ? "popup-block" : "sidebar-block";
+
   return (
-    <>
-      <div className="sidebar-block">
-        <div className="inline">
-          <label className="label">{text}</label>
-          <span className="tooltip-button pad-left-05 pad-top-11">
-            <InfoButtonPopUp heading={infoHeading} description={infoDescription} />
-          </span>
-        </div>
-        <label className="switch">
-          <input type="checkbox" checked={value} onChange={setValue} className="checkbox-input" />
-          <span className="slider round"></span>
-        </label>
+    <div className={wrapperClassName}>
+      <div className="inline">
+        <label className="label">{text}</label>
+        <span className="tooltip-button pad-left-05 pad-top-11">
+          <InfoButtonPopUp heading={infoHeading} description={infoDescription} widePopUp={isPopup} />
+        </span>
       </div>
-    </>
-  );
-}
-
-export function PopUpSwitchBlock({ value, setValue, text, infoHeading, infoDescription }) {
-  return (
-    <>
-      <div className="popup-block">
-        <div className="inline">
-          <label className="label">{text}</label>
-          <span className="tooltip-button pad-left-05 pad-top-11">
-            <InfoButtonPopUp heading={infoHeading} description={infoDescription} widePopUp={true} />
-          </span>
-        </div>
-        <label className="switch">
-          <input type="checkbox" checked={value} onChange={setValue} className="checkbox-input" />
-          <span className="slider round"></span>
-        </label>
-      </div>
-    </>
-  );
-}
-
-export function SidebarFieldBlock({ valueText, setValue, setValueText, fallbackValue, min, max, step, text, infoHeading, infoDescription }) {
-  const handleKeyDown = (event) => {
-    if (event.key === "Enter") {
-      event.target.blur();
-    }
-  };
-
-  return (
-    <>
-      <div className="sidebar-block">
-        <div className="inline">
-          <label className="label">{text}</label>
-          <span className="tooltip-button pad-left-05 pad-top-11">
-            <InfoButtonPopUp heading={infoHeading} description={infoDescription} />
-          </span>
-        </div>
-        <input
-          className="input-field"
-          type="number"
-          value={valueText}
-          min={min}
-          max={max}
-          step={step}
-          onChange={(event) => handleFieldChange(event, setValueText, min, max)}
-          onKeyDown={handleKeyDown}
-          onBlur={(event) => handleFieldBlur(event, setValue, setValueText, min, max, fallbackValue)}
-        ></input>
-      </div>
-    </>
-  );
-}
-
-export function PopUpFieldBlock({ valueText, setValue, setValueText, fallbackValue, min, max, step, text, infoHeading, infoDescription }) {
-  const handleKeyDown = (event) => {
-    if (event.key === "Enter") {
-      event.target.blur();
-    }
-  };
-
-  return (
-    <>
-      <div className="popup-block">
-        <div className="inline">
-          <label className="label">{text}</label>
-          <span className="tooltip-button pad-left-05 pad-top-11">
-            <InfoButtonPopUp heading={infoHeading} description={infoDescription} widePopUp={true} />
-          </span>
-        </div>
-        <input
-          className="input-field"
-          type="number"
-          value={valueText}
-          min={min}
-          max={max}
-          step={step}
-          onKeyDown={handleKeyDown}
-          onChange={(event) => handleFieldChange(event, setValueText, min, max)}
-          onBlur={(event) => handleFieldBlur(event, setValue, setValueText, min, max, fallbackValue)}
-        ></input>
-      </div>
-    </>
-  );
-}
-
-export function SidebarButtonRect({ onClick, onChange, linkRef, tooltip, tooltipId, text }) {
-  return (
-    <div className="sidebar-tooltip-wrapper">
-      <button className="sidebar-button-rect" data-tooltip-id={tooltipId} data-tooltip-content={tooltip} onClick={onClick}>
-        <span className="sidebar-button-rect-text">{text}</span>
-        <input type="file" style={{ display: "none" }} onChange={onChange} ref={linkRef} />
-      </button>
-      <Tooltip id={tooltipId} place="top" effect="solid" className="sidebar-tooltip" />
+      <label className="switch">
+        <input type="checkbox" checked={value} onChange={setValue} className="checkbox-input" />
+        <span className="slider round"></span>
+      </label>
     </div>
   );
 }
 
-export function PopupButtonRect({ onClick, onChange, linkRef, tooltip, tooltipId, text, className }) {
+export function FieldBlock({ variant = "sidebar", text, infoHeading, infoDescription, ...props }) {
+  const isPopup = variant === "popup";
+  const wrapperClassName = isPopup ? "popup-block" : "sidebar-block";
+
   return (
-    <div className={`popup-tooltip-wrapper justify-right pad-top-1 ${className}`}>
-      <button className="popup-button-rect" data-tooltip-id={tooltipId} data-tooltip-content={tooltip} onClick={onClick}>
-        <span className="popup-button-rect-text">{text}</span>
-        <input type="file" style={{ display: "none" }} onChange={onChange} ref={linkRef} />
-      </button>
-      <Tooltip id={tooltipId} place="top" effect="solid" className="popup-tooltip" />
+    <div className={wrapperClassName}>
+      <div className="inline">
+        <label className="label">{text}</label>
+        <span className="tooltip-button pad-left-05 pad-top-11">
+          <InfoButtonPopUp heading={infoHeading} description={infoDescription} widePopUp={isPopup} />
+        </span>
+      </div>
+      <NumericInput {...props} />
     </div>
   );
 }
 
-export function SidebarCodeEditorBlock({ text, onClick, compilerError, defaultValue, textareaRef, infoHeading, infoDescription }) {
+export function Button({ variant = "sidebar", onClick, onChange, linkRef, tooltip, tooltipId, text, className }) {
+  const isPopup = variant === "popup";
+
+  const wrapperClass = isPopup ? `popup-tooltip-wrapper justify-right pad-top-1 ${className || ""}` : "sidebar-tooltip-wrapper";
+  const buttonClass = isPopup ? "popup-button-rect" : "sidebar-button-rect";
+  const textClass = isPopup ? "popup-button-rect-text" : "sidebar-button-rect-text";
+  const tooltipClass = isPopup ? "popup-tooltip" : "sidebar-tooltip";
+
+  return (
+    <div className={wrapperClass}>
+      <button className={buttonClass} data-tooltip-id={tooltipId} data-tooltip-content={tooltip} onClick={onClick}>
+        <span className={textClass}>{text}</span>
+        <input type="file" style={{ display: "none" }} onChange={onChange} ref={linkRef} />
+      </button>
+      <Tooltip id={tooltipId} place="top" effect="solid" className={tooltipClass} />
+    </div>
+  );
+}
+export function CodeEditorBlock({ text, onClick, compilerError, defaultValue, textareaRef, infoHeading, infoDescription }) {
   return (
     <>
       <div className="inline">
@@ -225,7 +142,7 @@ export function SidebarCodeEditorBlock({ text, onClick, compilerError, defaultVa
         <div className="custom-editor">
           <textarea ref={textareaRef} defaultValue={defaultValue}></textarea>
         </div>
-        <SidebarButtonRect onClick={onClick} text="Run" />
+        <Button onClick={onClick} text="Run" />
       </div>
       <span className={`pad-left-1 warning ${compilerError ? "pad-bottom-1" : ""}`}>{compilerError}</span>
     </>
@@ -273,12 +190,12 @@ export function PopUp({ heading, description, isOpen, setIsOpen, widePopUp, chil
   );
 }
 
-export function SidebarButtonPopUp({ buttonText, tooltip, tooltipId, heading, description, widePopUp, children }) {
+export function ButtonPopUp({ buttonText, tooltip, tooltipId, heading, description, widePopUp, children }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
-      <SidebarButtonRect onClick={() => setIsOpen(!isOpen)} tooltip={tooltip} tooltipId={tooltipId} text={buttonText} />
+      <Button onClick={() => setIsOpen(!isOpen)} tooltip={tooltip} tooltipId={tooltipId} text={buttonText} />
       {isOpen && (
         <PopUp heading={heading} description={description} children={children} isOpen={isOpen} setIsOpen={setIsOpen} widePopUp={widePopUp} />
       )}
@@ -392,5 +309,27 @@ export function TableList({
           </div>
         ))}
     </>
+  );
+}
+
+function NumericInput({ valueText, setValue, setValueText, fallbackValue, min, max, step }) {
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      event.target.blur();
+    }
+  };
+
+  return (
+    <input
+      className="input-field"
+      type="number"
+      min={min}
+      max={max}
+      step={step}
+      value={valueText}
+      onChange={(event) => handleFieldChange(event, setValueText, min, max)}
+      onKeyDown={handleKeyDown}
+      onBlur={(event) => handleFieldBlur(event, setValue, setValueText, min, max, fallbackValue)}
+    />
   );
 }

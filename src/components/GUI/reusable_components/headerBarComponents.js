@@ -1,6 +1,6 @@
 import { Tooltip } from "react-tooltip";
 
-export function Button({ icon, onClick, innerClass, children, tooltip, tooltipId }) {
+export function HeaderButton({ icon, onClick, innerClass, children, tooltip, tooltipId }) {
   return (
     <>
       <div className="sidebar-tooltip-wrapper">

@@ -10,13 +10,7 @@ import "../../other/syntaxHighlighting.js";
 import { parseAttributesFilter as parseLinkAttribsFilter } from "../../other/parser.js";
 import { parseGroupsFilter as parseNodeAttribsFilter } from "../../other/parserNodeFilter.js";
 
-import {
-  SidebarSliderBlock,
-  SidebarFieldBlock,
-  SidebarSwitchBlock,
-  SidebarButtonRect,
-  SidebarCodeEditorBlock,
-} from "../reusable_components/sidebarComponents.js";
+import { Button, CodeEditorBlock, FieldBlock, SliderBlock, SwitchBlock } from "../reusable_components/sidebarComponents.js";
 import { useAppearance, useFilter, useGraphData } from "../../../states.js";
 import {
   filterInit,
@@ -117,16 +111,16 @@ export function FilterSidebar() {
   return (
     <>
       <div className="inline pad-top-05 pad-bottom-05">
-        <SidebarButtonRect text={"Reset Filters"} onClick={handleResetFilters} />
+        <Button text={"Reset Filters"} onClick={handleResetFilters} />
       </div>
-      <SidebarSwitchBlock
+      <SwitchBlock
         value={graphData.mergeProteins}
         setValue={() => setGraphData("mergeProteins", !graphData.mergeProteins)}
         text={"Merge Proteins"}
         infoHeading={"Merge nodes of same protein"}
         infoDescription={mergeProteinsDescription}
       />
-      <SidebarSliderBlock
+      <SliderBlock
         value={filter.linkThreshold}
         valueText={filter.linkThresholdText}
         setValue={(value) => setFilter("linkThreshold", value)}
@@ -139,7 +133,7 @@ export function FilterSidebar() {
         infoHeading={"Filtering Links by Threshold"}
         infoDescription={linkThresholdDescription}
       />
-      <SidebarCodeEditorBlock
+      <CodeEditorBlock
         text={"Filter Links by Attributes"}
         textareaRef={linkFilterTextAreaRef}
         compilerError={compilerErrorLinkFilter}
@@ -156,7 +150,7 @@ export function FilterSidebar() {
         infoHeading={"Filtering Links by Attributes"}
         infoDescription={linkFilterDescription}
       />
-      <SidebarCodeEditorBlock
+      <CodeEditorBlock
         text={"Filter Nodes by Attributes"}
         textareaRef={nodeFilterTextAreaRef}
         compilerError={compilerErrorNodeFilter}
@@ -173,7 +167,7 @@ export function FilterSidebar() {
         infoHeading={"Filter Nodes by Attributes"}
         infoDescription={nodeFilterDescription}
       />
-      <SidebarFieldBlock
+      <FieldBlock
         valueText={filter.minCompSizeText}
         setValue={(value) => setFilter("minCompSize", value)}
         setValueText={(value) => setFilter("minCompSizeText", value)}
@@ -184,7 +178,7 @@ export function FilterSidebar() {
         infoHeading={"Filter by Component Size"}
         infoDescription={minCompSizeDescription}
       />
-      <SidebarFieldBlock
+      <FieldBlock
         valueText={filter.maxCompSizeText}
         setValue={(value) => setFilter("maxCompSize", value)}
         setValueText={(value) => setFilter("maxCompSizeText", value)}
@@ -195,7 +189,7 @@ export function FilterSidebar() {
         infoHeading={"Filter by Component Size"}
         infoDescription={maxCompSizeDescription}
       />
-      <SidebarFieldBlock
+      <FieldBlock
         valueText={filter.minNeighborhoodSizeText}
         setValue={(value) => setFilter("minNeighborhoodSize", value)}
         setValueText={(value) => setFilter("minNeighborhoodSizeText", value)}
@@ -206,7 +200,7 @@ export function FilterSidebar() {
         infoHeading={"Filter by Neighborhood Size"}
         infoDescription={minNeighborhoodSizeDescription}
       />
-      <SidebarFieldBlock
+      <FieldBlock
         valueText={filter.compDensityText}
         setValue={(value) => setFilter("compDensity", value)}
         setValueText={(value) => setFilter("compDensityText", value)}

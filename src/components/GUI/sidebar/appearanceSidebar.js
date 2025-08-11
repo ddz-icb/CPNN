@@ -1,14 +1,6 @@
 import { useRef, useState, Fragment } from "react";
 import { ReactComponent as TrashIcon } from "../../../icons/trash.svg";
-import {
-  SidebarSliderBlock,
-  PopUpTextFieldInline,
-  SidebarSwitchBlock,
-  SidebarButtonRect,
-  PopupButtonRect,
-  PopUp,
-  TableList,
-} from "../reusable_components/sidebarComponents.js";
+import { PopUpTextFieldInline, SwitchBlock, PopUp, TableList, SliderBlock, Button } from "../reusable_components/sidebarComponents.js";
 import { colorSchemeCsv } from "../../assets/exampleColorSchemeCSV.js";
 import { downloadCsvFile } from "../../application_service/download.js";
 import { useAppearance } from "../../../states.js";
@@ -43,14 +35,14 @@ export function AppearanceSettings() {
 
   return (
     <>
-      <SidebarSwitchBlock
+      <SwitchBlock
         value={appearance.showNodeLabels}
         setValue={() => setAppearance("showNodeLabels", !appearance.showNodeLabels)}
         text={"Node Labels"}
         infoHeading={"Enabling Node Labels"}
         infoDescription={nodeLabelDescription}
       />
-      <SidebarSliderBlock
+      <SliderBlock
         value={appearance.linkWidth}
         valueText={appearance.linkWidthText}
         setValue={(value) => setAppearance("linkWidth", value)}
@@ -73,7 +65,7 @@ export function UploadColorScheme({ handleNewColorScheme }) {
 
   return (
     <>
-      <SidebarButtonRect
+      <Button
         onClick={() => setColorSchemePopUpActive(!colorSchemePopUpActive)}
         text={"Upload Color Scheme"}
         tooltip={"Upload your Color Scheme as a CSV or TSV File"}
@@ -88,8 +80,13 @@ export function UploadColorScheme({ handleNewColorScheme }) {
         <PopUpTextFieldInline textInfront={"Color Scheme format:"} textInside={"Color1, Color2, Color3, ..."} />
         <PopUpTextFieldInline textInfront={"Color Scheme example:"} textInside={"#e69f00,#56b4e9,#009e73"} />
         <div className="popup-block">
-          <PopupButtonRect text={"Download Example Color Scheme"} onClick={() => downloadCsvFile(colorSchemeCsv.content, colorSchemeCsv.name)} />
-          <PopupButtonRect
+          <Button
+            variant="popup"
+            text={"Download Example Color Scheme"}
+            onClick={() => downloadCsvFile(colorSchemeCsv.content, colorSchemeCsv.name)}
+          />
+          <Button
+            variant="popup"
             text={"Upload Own Color Scheme"}
             onClick={() => colorSchemeRef.current.click()}
             linkRef={colorSchemeRef}
@@ -153,8 +150,8 @@ function UploadedColorSchemes({ handleDeleteColorScheme, handleSelectLinkColorSc
       />
       <PopUp heading={"Set Color Scheme"} description={setColorSchemeDescription} isOpen={selectColorSchemePopUp} setIsOpen={setSelectSchemePopUp}>
         <div className="popup-block">
-          <PopupButtonRect onClick={() => handleSelectNodeColorScheme(selectedColorSchemeName)} text={"Set for Nodes"} />
-          <PopupButtonRect onClick={() => handleSelectLinkColorScheme(selectedColorSchemeName)} text={"Set for Links"} />
+          <Button variant="popup" onClick={() => handleSelectNodeColorScheme(selectedColorSchemeName)} text={"Set for Nodes"} />
+          <Button variant="popup" onClick={() => handleSelectLinkColorScheme(selectedColorSchemeName)} text={"Set for Links"} />
         </div>
       </PopUp>
     </>
