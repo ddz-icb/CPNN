@@ -1,5 +1,5 @@
 import { Fragment, useState } from "react";
-import { ReactComponent as InfoIcon } from "../../../icons/info.svg";
+import { ReactComponent as InfoCircleIcon } from "../../../icons/infoCircle.svg";
 import { ReactComponent as XIcon } from "../../../icons/x.svg";
 import { Tooltip } from "react-tooltip";
 import { handleFieldBlur, handleFieldChange, handleSliderChange } from "../handlers/buttonHandlerFunctions.js";
@@ -18,7 +18,7 @@ export function SidebarSliderBlock({ value, valueText, setValue, setValueText, f
       <div className="inline">
         <label className="label pad-left-1">{text}</label>
         <span className="tooltip-button pad-left-05 pad-top-11" onClick={() => setInfoIsOpen(true)}>
-          <InfoIcon />
+          <InfoCircleIcon />
         </span>
       </div>
       <div className="sidebar-block">
@@ -62,7 +62,7 @@ export function PopUpSliderBlock({ value, valueText, setValue, setValueText, fal
       <div className="inline">
         <label className="label">{text}</label>
         <span className="tooltip-button pad-left-05 pad-top-11" onClick={() => setInfoIsOpen(true)}>
-          <InfoIcon />
+          <InfoCircleIcon />
         </span>
       </div>
       <div className="popup-block pad-bottom-05">
@@ -101,7 +101,7 @@ export function SidebarSwitchBlock({ value, setValue, text, infoHeading, infoDes
         <div className="inline">
           <label className="label">{text}</label>
           <span className="tooltip-button pad-left-05 pad-top-11" onClick={() => setInfoIsOpen(true)}>
-            <InfoIcon />
+            <InfoCircleIcon />
           </span>
         </div>
         <label className="switch">
@@ -123,7 +123,7 @@ export function PopUpSwitchBlock({ value, setValue, text, infoHeading, infoDescr
         <div className="inline">
           <label className="label">{text}</label>
           <span className="tooltip-button pad-left-05 pad-top-11" onClick={() => setInfoIsOpen(true)}>
-            <InfoIcon />
+            <InfoCircleIcon />
           </span>
         </div>
         <label className="switch">
@@ -151,7 +151,7 @@ export function SidebarFieldBlock({ valueText, setValue, setValueText, fallbackV
         <div className="inline">
           <label className="label">{text}</label>
           <span className="tooltip-button pad-left-05 pad-top-11" onClick={() => setInfoIsOpen(true)}>
-            <InfoIcon />
+            <InfoCircleIcon />
           </span>
         </div>
         <input
@@ -186,7 +186,7 @@ export function PopUpFieldBlock({ valueText, setValue, setValueText, fallbackVal
         <div className="inline">
           <label className="label">{text}</label>
           <span className="tooltip-button pad-left-05 pad-top-11" onClick={() => setInfoIsOpen(true)}>
-            <InfoIcon />
+            <InfoCircleIcon />
           </span>
         </div>
         <input
@@ -238,7 +238,7 @@ export function SidebarCodeEditorBlock({ text, onClick, compilerError, defaultVa
       <div className="inline">
         <label className="label pad-left-1">{text}</label>
         <span className="tooltip-button pad-left-05 pad-top-11" onClick={() => setInfoIsOpen(true)}>
-          <InfoIcon />
+          <InfoCircleIcon />
         </span>
       </div>
       <div className={`editor-sidebar-block ${compilerError ? "no-pad-bottom" : ""}`}>

@@ -1,19 +1,29 @@
 import { useDownload } from "../../../states.js";
+import { ReactComponent as DownloadIcon } from "../../../icons/download.svg";
+import { ReactComponent as InfoIcon } from "../../../icons/infoCircle.svg";
 import { TableList } from "../reusable_components/sidebarComponents.js";
 
 export function ExportSidebar() {
   const { download, setDownload } = useDownload();
 
   const exportData = [
-    { id: "json", text: "Export Graph as JSON", type: "json" },
-    { id: "jsonCoordsPhysics", text: "Export Graph with settings as JSON", type: "jsonCoordsPhysics" },
-    { id: "png", text: "Export Graph as PNG", type: "png" },
-    { id: "svg", text: "Export Graph as SVG", type: "svg" },
-    { id: "pdf", text: "Export Graph as PDF", type: "pdf" },
-    { id: "legendPdf", text: "Export Legend as PDF", type: "legendPdf" },
+    { id: "json", text: "Graph data (JSON File)", type: "json" },
+    { id: "jsonCoordsPhysics", text: "Graph data and settings (JSON file)", type: "jsonCoordsPhysics" },
+    { id: "png", text: "Graph as Picture (PNG File)", type: "png" },
+    { id: "pdf", text: "Graph as Vector Graphic (PDF File)", type: "pdf" },
+    { id: "svg", text: "Graph as Vector Graphic (SVG File)", type: "svg" },
+    { id: "legendPdf", text: "Graph legend (PDF File)", type: "legendPdf" },
   ];
 
   return (
-    <TableList heading="Export Options" data={exportData} displayKey="text" onItemClick={(item) => setDownload(item.type, !download[item.type])} />
+    <TableList
+      heading={"Choose your preferred export"}
+      data={exportData}
+      displayKey={"text"}
+      ActionIcon={DownloadIcon}
+      onActionIconClick={(item) => setDownload(item.type, !download[item.type])}
+      actionIconTooltipContent={() => "Download"}
+      dark={true}
+    />
   );
 }

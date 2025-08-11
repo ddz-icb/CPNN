@@ -1,6 +1,6 @@
 :root {
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 300;
   font-family: "pingFangSC", sans-serif;
 
   --border-radius: 0.15rem;
@@ -366,7 +366,6 @@ ul {
 .back-text {
   font-size: 1.5rem;
   color: var(--sidebar-back-color);
-  font-weight: 300;
 }
 
 /* this is for the Active Files section */
@@ -652,16 +651,17 @@ ul {
 
 .heading-label {
   color: var(--text-primary);
-  padding-top: 0.5rem;
-  font-size: 1.15rem;
+  font-size: 1.25rem;
   width: 100%;
-  padding-left: 1.25rem;
   display: block;
+  padding-top: 0.5rem;
+  padding-left: 1rem;
+  padding-bottom: 0.25rem;
 }
 
 .heading-label-no-pad {
   color: var(--text-primary);
-  font-size: 1.15rem;
+  font-size: 1.25rem;
   width: 100%;
   display: block;
 }
