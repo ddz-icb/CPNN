@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 
 import { ForceGraph } from "./components/application_service/forceGraph.js";
 import { Sidebar } from "./components/gui/sidebar/sidebar.js";
-import { HeaderBar } from "./components/gui/headerbar/headerBar.js";
+import { HeaderBar } from "./components/gui/headerbar/headerbar.js";
 import {
   applyNodeMapping,
   getLinkAttribsToColorIndices,

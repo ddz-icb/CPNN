@@ -1,21 +1,23 @@
 import { useState } from "react";
-
-import { Mapping } from "./headerBarMapping.js";
+import { ReactComponent as EyeIcon } from "../../../icons/eye.svg";
+import { ReactComponent as XIcon } from "../../../icons/x.svg";
+import { Button } from "../reusable_components/headerbarComponents.js";
+import { HeaderbarMapping } from "./headerbarMapping.js";
 
 export function HeaderBar() {
-  const [activeMenu, setActiveMenu] = useState("None");
-
-  const handleActiveMenuClick = (item) => {
-    if (activeMenu === item) {
-      setActiveMenu("None");
-    } else {
-      setActiveMenu(item);
-    }
-  };
+  const [isMappingActive, setIsMappingActive] = useState(false);
 
   return (
-    <div className="top-right-buttons">
-      <Mapping activeMenu={activeMenu} handleActiveMenuClick={handleActiveMenuClick} />
+    <div className="headerbar">
+      <Button
+        className="button"
+        innerClass="icon-button"
+        onClick={() => setIsMappingActive(!isMappingActive)}
+        icon={isMappingActive ? <XIcon /> : <EyeIcon />}
+        tooltip={isMappingActive ? "Close" : "View Mapping"}
+        tooltipId={isMappingActive ? "close-view-mapping-tooltip" : "view-mapping-tooltip"}
+      />
+      {isMappingActive && <HeaderbarMapping />}
     </div>
   );
 }

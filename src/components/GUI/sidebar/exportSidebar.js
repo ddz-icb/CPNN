@@ -1,6 +1,5 @@
 import { useDownload } from "../../../states.js";
 import { ReactComponent as DownloadIcon } from "../../../icons/download.svg";
-import { ReactComponent as InfoIcon } from "../../../icons/infoCircle.svg";
 import { TableList } from "../reusable_components/sidebarComponents.js";
 
 export function ExportSidebar() {
