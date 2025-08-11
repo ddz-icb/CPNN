@@ -34,7 +34,7 @@ export function Sidebar(props) {
 
 function Navbar({ short, children }) {
   return (
-    <nav className={`navbar ${short ? "short" : ""}`}>
+    <nav className={`navbar ${short && "short"}`}>
       <ul className="navbar-nav">{children}</ul>
     </nav>
   );

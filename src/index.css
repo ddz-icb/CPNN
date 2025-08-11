@@ -243,10 +243,15 @@ ul {
   border-right: var(--border-size-border) solid var(--border-color);
   transition: all 150ms ease;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .navbar.short {
   width: 12rem;
+}
+
+.nav-item:last-child {
+  margin-top: auto;
 }
 
 .navbar-nav {
