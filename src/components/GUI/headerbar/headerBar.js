@@ -1,7 +1,6 @@
 import { useState } from "react";
 
 import { Mapping } from "./headerBarMapping.js";
-import { HeaderBarExport } from "./headerBarExport.js";
 
 export function HeaderBar() {
   const [activeMenu, setActiveMenu] = useState("None");
@@ -17,7 +16,6 @@ export function HeaderBar() {
   return (
     <div className="top-right-buttons">
       <Mapping activeMenu={activeMenu} handleActiveMenuClick={handleActiveMenuClick} />
-      <HeaderBarExport activeMenu={activeMenu} handleActiveMenuClick={handleActiveMenuClick} />
     </div>
   );
 }

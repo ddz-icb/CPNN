@@ -19,18 +19,18 @@ export function SelectionSidebar({ handleNavItemClick }) {
 
   return (
     <>
-      <Logo />
+      <LogoBar />
       <NavItem text={"Data"} icon={<DataIcon />} onClick={() => handleNavItemClick("Data")} />
       <NavItem text={"Filter"} icon={<FilterIcon />} onClick={() => handleNavItemClick("Filter")} />
       <NavItem text={"Physics"} icon={<MagnetIcon />} onClick={() => handleNavItemClick("Physics")}></NavItem>
       <NavItem text={"Appearance"} icon={<PaletteIcon />} onClick={() => handleNavItemClick("Appearance")}></NavItem>
-      <NavItem text={"Download"} icon={<DownloadIcon />} onClick={() => handleNavItemClick("Download")} />
+      <NavItem text={"Export"} icon={<DownloadIcon />} onClick={() => handleNavItemClick("Export")} />
       <NavItem text={"Change Theme"} icon={appearance.theme.name === lightTheme.name ? <MoonIcon /> : <SunIcon />} onClick={changeTheme} />
     </>
   );
 }
 
-function Logo({ onClick }) {
+function LogoBar({ onClick }) {
   return (
     <li className="logo-container" onClick={onClick}>
       <img src="./logos/ddz_logo_en.png" className="logo" />

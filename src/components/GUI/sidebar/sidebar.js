@@ -7,7 +7,7 @@ import { PhysicsSidebar } from "./physicsSidebar.js";
 import { DataSidebar } from "./dataSidebar.js";
 import { SelectionSidebar } from "./selectionSidebar.js";
 import { AppearanceSidebar } from "./appearanceSidebar.js";
-import { DownloadSidebar } from "./downloadSidebar.js";
+import { ExportSidebar } from "./exportSidebar.js";
 
 export function Sidebar(props) {
   const [activeNavItem, setActiveNavItem] = useState("Selection");
@@ -18,7 +18,7 @@ export function Sidebar(props) {
     Filter: <FilterSidebar />,
     Physics: <PhysicsSidebar />,
     Appearance: <AppearanceSidebar {...props} />,
-    Download: <DownloadSidebar />,
+    Export: <ExportSidebar />,
   };
 
   const currentSidebar = sidebarComponents[activeNavItem];
@@ -26,7 +26,7 @@ export function Sidebar(props) {
 
   return (
     <Navbar short={isSelection}>
-      {!isSelection && <Back activeNavItem={activeNavItem} onClick={() => setActiveNavItem("Selection")} />}
+      {!isSelection && <BackBar activeNavItem={activeNavItem} onClick={() => setActiveNavItem("Selection")} />}
       {currentSidebar}
     </Navbar>
   );
@@ -40,7 +40,7 @@ function Navbar({ short, children }) {
   );
 }
 
-function Back({ activeNavItem, onClick }) {
+function BackBar({ activeNavItem, onClick }) {
   return (
     <li className="back sidebar-tooltip-wrapper">
       <span data-tooltip-id={`back-tooltip`} data-tooltip-content="Go Back" className="back-icon" onClick={onClick}>
