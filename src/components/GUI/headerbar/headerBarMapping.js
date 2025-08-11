@@ -5,7 +5,7 @@ export function HeaderbarMapping() {
   const { appearance } = useAppearance();
   const { graphData } = useGraphData();
 
-  const renderMapping = (attribsToColorIndices, colorScheme, groupMapping = null) => {
+  const renderMapping = (attribsToColorIndices, colorScheme) => {
     const content = [];
     for (const key in attribsToColorIndices) {
       const color = getColor(attribsToColorIndices[key], colorScheme.content);
@@ -13,7 +13,7 @@ export function HeaderbarMapping() {
         content.push(
           <div key={key} className="colorscheme-container">
             <div className="color-square colorscheme-item" style={{ backgroundColor: color }}></div>
-            <span className="colorscheme-item">{groupMapping && groupMapping.hasOwnProperty(key) ? groupMapping[key].name : key}</span>
+            <span className="colorscheme-item">{key}</span>
           </div>
         );
       }
@@ -27,7 +27,7 @@ export function HeaderbarMapping() {
     return content;
   };
 
-  const nodeMapping = renderMapping(appearance.nodeAttribsToColorIndices, appearance.nodeColorScheme, graphData.activeMapping?.groupMapping);
+  const nodeMapping = renderMapping(appearance.nodeAttribsToColorIndices, appearance.nodeColorScheme);
 
   const linkMapping = renderMapping(appearance.linkAttribsToColorIndices, appearance.linkColorScheme);
 
