@@ -15,10 +15,10 @@ import {
 } from "./components/application_service/graphCalculations.js";
 import {
   addActiveGraphFile as addActiveGraph,
-  addNewGraphFile as CreateGraph,
-  deleteGraphFile,
-  loadGraphFileNames,
-  removeActiveGraphFile,
+  createGraph,
+  deleteGraphFile as deleteGraph,
+  loadGraphFileNames as loadGraphNames,
+  removeActiveGraphFile as removeActiveGraph,
   selectGraph,
   setInitGraph,
 } from "./components/domain_service/graphService.js";
@@ -73,7 +73,7 @@ function App() {
     if (!event || !event.target || !file) return;
     log.info("Adding new graph file");
 
-    CreateGraph(
+    createGraph(
       file,
       graphData.uploadedGraphFileNames,
       setGraphData,
@@ -133,7 +133,7 @@ function App() {
 
     simulationReset();
     setGraphData("graphIsPreprocessed", false);
-    removeActiveGraphFile(filename, graphData.activeGraphFileNames, setGraphData);
+    removeActiveGraph(filename, graphData.activeGraphFileNames, setGraphData);
   };
 
   // deletes uploaded files with filename //
@@ -146,7 +146,7 @@ function App() {
     }
     log.info("Deleting files with name", filename);
 
-    deleteGraphFile(graphData.uploadedGraphFileNames, filename, setGraphData);
+    deleteGraph(graphData.uploadedGraphFileNames, filename, setGraphData);
   };
 
   // MAPPING
@@ -304,7 +304,7 @@ function App() {
   useEffect(() => {
     log.info("Loading uploaded graphs");
     try {
-      loadGraphFileNames(setGraphData);
+      loadGraphNames(setGraphData);
     } catch (error) {
       setError("Error loading graphs from database");
       log.error("Error loading graphs from database");

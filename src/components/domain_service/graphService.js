@@ -49,7 +49,7 @@ export async function removeActiveGraphFile(filename, activeGraphFileNames, setG
   }
 }
 
-export async function addNewGraphFile(
+export async function createGraph(
   file,
   uploadedGraphFileNames,
   setGraphData,
