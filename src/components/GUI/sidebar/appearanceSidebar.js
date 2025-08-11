@@ -1,6 +1,6 @@
 import { useRef, useState, Fragment } from "react";
 import { ReactComponent as TrashIcon } from "../../../icons/trash.svg";
-import { SwitchBlock, PopUp, TableList, SliderBlock, Button, PopUpTextField } from "../reusable_components/sidebarComponents.js";
+import { SwitchBlock, Popup, TableList, SliderBlock, Button, PopupTextField } from "../reusable_components/sidebarComponents.js";
 import { colorSchemeCsv } from "../../assets/exampleColorSchemeCSV.js";
 import { downloadCsvFile } from "../../application_service/download.js";
 import { useAppearance } from "../../../states.js";
@@ -60,25 +60,25 @@ export function AppearanceSettings() {
 }
 
 export function UploadColorScheme({ handleNewColorScheme }) {
-  const [colorSchemePopUpActive, setColorSchemePopUpActive] = useState(false);
+  const [colorSchemePopupActive, setColorSchemePopupActive] = useState(false);
   const colorSchemeRef = useRef(null);
 
   return (
     <>
       <Button
-        onClick={() => setColorSchemePopUpActive(!colorSchemePopUpActive)}
+        onClick={() => setColorSchemePopupActive(!colorSchemePopupActive)}
         text={"Upload Color Scheme"}
         tooltip={"Upload your Color Scheme as a CSV or TSV File"}
         tooltipId={"upload-graph-tooltip"}
       />
-      <PopUp
+      <Popup
         heading={"Uploading Your Color Scheme"}
         description={uploadColorSchemeDescription}
-        isOpen={colorSchemePopUpActive}
-        setIsOpen={setColorSchemePopUpActive}
+        isOpen={colorSchemePopupActive}
+        setIsOpen={setColorSchemePopupActive}
       >
-        <PopUpTextField inline={true} textInfront={"Color Scheme format:"} textInside={"Color1, Color2, Color3, ..."} />
-        <PopUpTextField inline={true} textInfront={"Color Scheme example:"} textInside={"#e69f00,#56b4e9,#009e73"} />
+        <PopupTextField inline={true} textInfront={"Color Scheme format:"} textInside={"Color1, Color2, Color3, ..."} />
+        <PopupTextField inline={true} textInfront={"Color Scheme example:"} textInside={"#e69f00,#56b4e9,#009e73"} />
         <div className="popup-block">
           <Button
             variant="popup"
@@ -93,11 +93,11 @@ export function UploadColorScheme({ handleNewColorScheme }) {
             onChange={(event) => {
               handleNewColorScheme(event);
               event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
-              setColorSchemePopUpActive(false);
+              setColorSchemePopupActive(false);
             }}
           />
         </div>
-      </PopUp>
+      </Popup>
     </>
   );
 }
@@ -131,7 +131,7 @@ function ActiveLinkColorScheme() {
 function UploadedColorSchemes({ handleDeleteColorScheme, handleSelectLinkColorScheme, handleSelectNodeColorScheme }) {
   const { appearance, setAppearance } = useAppearance();
 
-  const [selectColorSchemePopUp, setSelectSchemePopUp] = useState(false);
+  const [selectColorSchemePopup, setSelectSchemePopup] = useState(false);
   const [selectedColorSchemeName, setSelectedScheme] = useState(null);
 
   return (
@@ -141,19 +141,19 @@ function UploadedColorSchemes({ handleDeleteColorScheme, handleSelectLinkColorSc
         data={appearance.uploadedColorSchemeNames}
         onItemClick={(colorSchemeName) => {
           setSelectedScheme(colorSchemeName);
-          setSelectSchemePopUp(true);
+          setSelectSchemePopup(true);
         }}
         itemTooltipContent={() => "Replace Node/Link Color Scheme"}
         ActionIcon={TrashIcon}
         onActionIconClick={(colorSchemeName) => handleDeleteColorScheme(colorSchemeName)}
         actionIconTooltipContent={() => "Delete Color Scheme"}
       />
-      <PopUp heading={"Set Color Scheme"} description={setColorSchemeDescription} isOpen={selectColorSchemePopUp} setIsOpen={setSelectSchemePopUp}>
+      <Popup heading={"Set Color Scheme"} description={setColorSchemeDescription} isOpen={selectColorSchemePopup} setIsOpen={setSelectSchemePopup}>
         <div className="popup-block">
           <Button variant="popup" onClick={() => handleSelectNodeColorScheme(selectedColorSchemeName)} text={"Set for Nodes"} />
           <Button variant="popup" onClick={() => handleSelectLinkColorScheme(selectedColorSchemeName)} text={"Set for Links"} />
         </div>
-      </PopUp>
+      </Popup>
     </>
   );
 }

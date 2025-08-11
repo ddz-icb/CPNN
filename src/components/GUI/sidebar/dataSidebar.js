@@ -3,7 +3,7 @@ import { ReactComponent as TrashIcon } from "../../../icons/trash.svg";
 import { ReactComponent as PlusIcon } from "../../../icons/plus.svg";
 import { useEffect, useRef, useState } from "react";
 
-import { TableList, ButtonPopUp, SwitchBlock, SliderBlock, FieldBlock, Button, PopUpTextField } from "../reusable_components/sidebarComponents.js";
+import { TableList, ButtonPopup, SwitchBlock, SliderBlock, FieldBlock, Button, PopupTextField } from "../reusable_components/sidebarComponents.js";
 import log from "../../../logger.js";
 import { useGraphData } from "../../../states.js";
 import { exampleGraphJson } from "../../assets/exampleGraphJSON.js";
@@ -168,7 +168,7 @@ function UploadGraph({ handleCreateGraph }) {
   }, [containsSites]);
 
   return (
-    <ButtonPopUp
+    <ButtonPopup
       buttonText={"Upload Graph"}
       tooltip={"Upload Graph as CSV, TSV or JSON File"}
       tooltipId={"upload-graph-tooltip"}
@@ -266,9 +266,9 @@ function UploadGraph({ handleCreateGraph }) {
         infoHeading={"Include phosphosites"}
         infoDescription={containsSitesDescription}
       />
-      <PopUpTextField inline={true} textInfront={"Your Node ID format:"} textInside={nodeIdFormat} />
-      <PopUpTextField inline={true} textInfront={"Node ID examples:"} textInside={nodeIdExample1} />
-      <PopUpTextField inline={true} textInside={nodeIdExample2} />
+      <PopupTextField inline={true} textInfront={"Your Node ID format:"} textInside={nodeIdFormat} />
+      <PopupTextField inline={true} textInfront={"Node ID examples:"} textInside={nodeIdExample1} />
+      <PopupTextField inline={true} textInside={nodeIdExample2} />
       <div className="popup-block flex-end">
         <Button
           variant="popup"
@@ -281,7 +281,7 @@ function UploadGraph({ handleCreateGraph }) {
           }}
         />
       </div>
-    </ButtonPopUp>
+    </ButtonPopup>
   );
 }
 
@@ -292,15 +292,15 @@ function UploadMapping({ handleCreateMapping }) {
   const mappingExample = "O60306,mRNA Splicing,R-HSA-72172";
 
   return (
-    <ButtonPopUp
+    <ButtonPopup
       buttonText={"Upload Pathway Mappings"}
       tooltip={"Upload Pathway Annotation Mappings as a TSV or CSV File"}
       tooltipId={"upload-mapping-tooltip"}
       heading={"Uploading Your Pathway Mapping"}
       description={uploadPathwayMappingDescription}
     >
-      <PopUpTextField inline={true} textInfront={"Pathway Mapping format:"} textInside={mappingFormat} />
-      <PopUpTextField inline={true} textInfront={"Pathway Mapping example:"} textInside={mappingExample} />
+      <PopupTextField inline={true} textInfront={"Pathway Mapping format:"} textInside={mappingFormat} />
+      <PopupTextField inline={true} textInfront={"Pathway Mapping example:"} textInside={mappingExample} />
       <div className="popup-block">
         <Button
           variant="popup"
@@ -318,6 +318,6 @@ function UploadMapping({ handleCreateMapping }) {
           }}
         />
       </div>
-    </ButtonPopUp>
+    </ButtonPopup>
   );
 }

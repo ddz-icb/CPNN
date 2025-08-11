@@ -1,4 +1,4 @@
-import { PopUpTextField } from "../../reusable_components/sidebarComponents.js";
+import { PopupTextField } from "../../reusable_components/sidebarComponents.js";
 
 export const linkThresholdDescription = (
   <div>
@@ -61,26 +61,26 @@ export const linkFilterDescription = (
   <div>
     <div className="margin-0">
       You can filter the links by formulating a query. These queries must follow the Conjunctive Normal Form (CNF), meaning that conditions grouped
-      with <PopUpTextField textInside={"or"} /> (e.g., <PopUpTextField textInside={"(A or B)"} /> ) are combined using{" "}
-      <PopUpTextField textInside={"and"} />. To address one (or multiple) attributes, parts of the attribute name can be used (e.g.{" "}
-      <PopUpTextField textInside={"lean"} /> includes all attributes that contain the word "lean"). If the attribute consists of more than one word,
-      quotation marks can be used (e.g. <PopUpTextField textInside={'"lean group"'} /> ). To forbid an attribute from occuring the{" "}
-      <PopUpTextField textInside={"not"} /> operator can be applied. To address multiple attributes simultaneously, you can group them as a set, for
-      example: <PopUpTextField textInside={"{lean, obese, t2d}"} />. To restrict the number of links, you can use the{" "}
-      <PopUpTextField textInside={">"} />, <PopUpTextField textInside={">="} />, <PopUpTextField textInside={"<"} />,{" "}
-      <PopUpTextField textInside={"<="} /> or <PopUpTextField textInside={"="} /> operators (e.g., <PopUpTextField textInside={">= 2"} /> filters for
+      with <PopupTextField textInside={"or"} /> (e.g., <PopupTextField textInside={"(A or B)"} /> ) are combined using{" "}
+      <PopupTextField textInside={"and"} />. To address one (or multiple) attributes, parts of the attribute name can be used (e.g.{" "}
+      <PopupTextField textInside={"lean"} /> includes all attributes that contain the word "lean"). If the attribute consists of more than one word,
+      quotation marks can be used (e.g. <PopupTextField textInside={'"lean group"'} /> ). To forbid an attribute from occuring the{" "}
+      <PopupTextField textInside={"not"} /> operator can be applied. To address multiple attributes simultaneously, you can group them as a set, for
+      example: <PopupTextField textInside={"{lean, obese, t2d}"} />. To restrict the number of links, you can use the{" "}
+      <PopupTextField textInside={">"} />, <PopupTextField textInside={">="} />, <PopupTextField textInside={"<"} />,{" "}
+      <PopupTextField textInside={"<="} /> or <PopupTextField textInside={"="} /> operators (e.g., <PopupTextField textInside={">= 2"} /> filters for
       multilinks of size at least 2).
     </div>
     <div className="pad-top-1" />
     <div>
-      For example, with the link attributes <PopUpTextField textInside={"lean group"} />, <PopUpTextField textInside={"obese group"} />, and{" "}
-      <PopUpTextField textInside={"t2d group"} />, some valid queries could be:
+      For example, with the link attributes <PopupTextField textInside={"lean group"} />, <PopupTextField textInside={"obese group"} />, and{" "}
+      <PopupTextField textInside={"t2d group"} />, some valid queries could be:
     </div>
     <div className="pad-top-05" />
-    <PopUpTextField textInside={"t2d"} /> <PopUpTextField textInside={"not lean"} /> <PopUpTextField textInside={"> 2"} />{" "}
-    <PopUpTextField textInside={"not {lean, obese}"} /> <PopUpTextField textInside={'"t2d group" and lean'} />{" "}
-    <PopUpTextField textInside={"(obese or lean) and >= 2"} /> <PopUpTextField textInside={"(obese or lean) and t2d"} />{" "}
-    <PopUpTextField textInside={"(not t2d or not obese) and lean"} />
+    <PopupTextField textInside={"t2d"} /> <PopupTextField textInside={"not lean"} /> <PopupTextField textInside={"> 2"} />{" "}
+    <PopupTextField textInside={"not {lean, obese}"} /> <PopupTextField textInside={'"t2d group" and lean'} />{" "}
+    <PopupTextField textInside={"(obese or lean) and >= 2"} /> <PopupTextField textInside={"(obese or lean) and t2d"} />{" "}
+    <PopupTextField textInside={"(not t2d or not obese) and lean"} />
   </div>
 );
 
@@ -88,26 +88,26 @@ export const nodeFilterDescription = (
   <div>
     <div className="margin-0">
       You can filter the nodes by formulating a query. These queries must follow the Conjunctive Normal Form (CNF), meaning that conditions grouped
-      with <PopUpTextField textInside={"or"} /> (e.g., <PopUpTextField textInside={"(A or B)"} /> ) are combined using{" "}
-      <PopUpTextField textInside={"and"} />. To address one (or multiple) attributes, parts of the attribute name can be used (e.g.{" "}
-      <PopUpTextField textInside={"signaling"} /> includes all attributes that contain the word "signaling"). If the attribute consists of more than
-      one word, quotation marks can be used (e.g. <PopUpTextField textInside={'"mRNA splicing"'} /> ). To forbid an attribute from occuring the{" "}
-      <PopUpTextField textInside={"not"} /> operator can be applied. To address multiple attributes simultaneously, you can group them as a set, for
-      example: <PopUpTextField textInside={'{mRNA splicing, signaling, "glucose metabolism"}'} />. To restrict the number of attributes of a node, you
-      can use the <PopUpTextField textInside={">"} />, <PopUpTextField textInside={">="} />, <PopUpTextField textInside={"<"} />,{" "}
-      <PopUpTextField textInside={"<="} /> or <PopUpTextField textInside={"="} /> operators (e.g., <PopUpTextField textInside={">= 2"} /> filters for
+      with <PopupTextField textInside={"or"} /> (e.g., <PopupTextField textInside={"(A or B)"} /> ) are combined using{" "}
+      <PopupTextField textInside={"and"} />. To address one (or multiple) attributes, parts of the attribute name can be used (e.g.{" "}
+      <PopupTextField textInside={"signaling"} /> includes all attributes that contain the word "signaling"). If the attribute consists of more than
+      one word, quotation marks can be used (e.g. <PopupTextField textInside={'"mRNA splicing"'} /> ). To forbid an attribute from occuring the{" "}
+      <PopupTextField textInside={"not"} /> operator can be applied. To address multiple attributes simultaneously, you can group them as a set, for
+      example: <PopupTextField textInside={'{mRNA splicing, signaling, "glucose metabolism"}'} />. To restrict the number of attributes of a node, you
+      can use the <PopupTextField textInside={">"} />, <PopupTextField textInside={">="} />, <PopupTextField textInside={"<"} />,{" "}
+      <PopupTextField textInside={"<="} /> or <PopupTextField textInside={"="} /> operators (e.g., <PopupTextField textInside={">= 2"} /> filters for
       nodes with at least 2 attributes).
     </div>
     <div className="pad-top-1" />
     <div>
-      For example, with the link attributes <PopUpTextField textInside={"mRNA splicing"} />, <PopUpTextField textInside={"glucose metabolism"} />,{" "}
-      <PopUpTextField textInside={"VEGF signaling"} /> and <PopUpTextField textInside={"MTOR signaling"} />, some valid queries could be:
+      For example, with the link attributes <PopupTextField textInside={"mRNA splicing"} />, <PopupTextField textInside={"glucose metabolism"} />,{" "}
+      <PopupTextField textInside={"VEGF signaling"} /> and <PopupTextField textInside={"MTOR signaling"} />, some valid queries could be:
     </div>
     <div className="pad-top-05" />
-    <PopUpTextField textInside={"signaling"} /> <PopUpTextField textInside={"not signaling"} /> <PopUpTextField textInside={"> 2"} />{" "}
-    <PopUpTextField textInside={"not {MTOR, VEGF, mRNA}"} /> <PopUpTextField textInside={'signaling and "mRNA splicing"'} />{" "}
-    <PopUpTextField textInside={"(metabolism or signaling) and >= 2"} />{" "}
-    <PopUpTextField textInside={'("mRNA splicing" or VEGF) and ("glucose metabolism" or MTOR)'} />
-    <PopUpTextField textInside={'(not "mRNA splicing" or not VEGF)'} />
+    <PopupTextField textInside={"signaling"} /> <PopupTextField textInside={"not signaling"} /> <PopupTextField textInside={"> 2"} />{" "}
+    <PopupTextField textInside={"not {MTOR, VEGF, mRNA}"} /> <PopupTextField textInside={'signaling and "mRNA splicing"'} />{" "}
+    <PopupTextField textInside={"(metabolism or signaling) and >= 2"} />{" "}
+    <PopupTextField textInside={'("mRNA splicing" or VEGF) and ("glucose metabolism" or MTOR)'} />
+    <PopupTextField textInside={'(not "mRNA splicing" or not VEGF)'} />
   </div>
 );

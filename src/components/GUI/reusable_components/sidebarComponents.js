@@ -14,7 +14,7 @@ export function SliderBlock({ variant = "sidebar", value, setValue, setValueText
       <div className="inline">
         <label className={labelClassName}>{text}</label>
         <span className="tooltip-button pad-left-05 pad-top-11">
-          <InfoButtonPopUp heading={infoHeading} description={infoDescription} widePopUp={isPopup} />
+          <InfoButtonPopup heading={infoHeading} description={infoDescription} widePopup={isPopup} />
         </span>
       </div>
       <div className={wrapperClassName}>
@@ -42,7 +42,7 @@ export function SwitchBlock({ variant = "sidebar", value, setValue, text, infoHe
       <div className="inline">
         <label className="label">{text}</label>
         <span className="tooltip-button pad-left-05 pad-top-11">
-          <InfoButtonPopUp heading={infoHeading} description={infoDescription} widePopUp={isPopup} />
+          <InfoButtonPopup heading={infoHeading} description={infoDescription} widePopup={isPopup} />
         </span>
       </div>
       <label className="switch">
@@ -62,7 +62,7 @@ export function FieldBlock({ variant = "sidebar", text, infoHeading, infoDescrip
       <div className="inline">
         <label className="label">{text}</label>
         <span className="tooltip-button pad-left-05 pad-top-11">
-          <InfoButtonPopUp heading={infoHeading} description={infoDescription} widePopUp={isPopup} />
+          <InfoButtonPopup heading={infoHeading} description={infoDescription} widePopup={isPopup} />
         </span>
       </div>
       <NumericInput {...props} />
@@ -94,7 +94,7 @@ export function CodeEditorBlock({ text, onClick, compilerError, defaultValue, te
       <div className="inline">
         <label className="label pad-left-1">{text}</label>
         <span className="tooltip-button pad-left-05 pad-top-11">
-          <InfoButtonPopUp heading={infoHeading} description={infoDescription} />
+          <InfoButtonPopup heading={infoHeading} description={infoDescription} />
         </span>
       </div>
       <div className={`editor-sidebar-block ${compilerError ? "no-pad-bottom" : ""}`}>
@@ -108,7 +108,7 @@ export function CodeEditorBlock({ text, onClick, compilerError, defaultValue, te
   );
 }
 
-export function PopUpTextField({ textInfront, textInside, inline }) {
+export function PopupTextField({ textInfront, textInside, inline }) {
   if (inline) {
     return (
       <>
@@ -128,13 +128,13 @@ export function PopUpTextField({ textInfront, textInside, inline }) {
   }
 }
 
-export function PopUp({ heading, description, isOpen, setIsOpen, widePopUp, children }) {
-  const popUpContainer = widePopUp ? "popup-container-wide" : "popup-container";
+export function Popup({ heading, description, isOpen, setIsOpen, widePopup, children }) {
+  const popupContainer = widePopup ? "popup-container-wide" : "popup-container";
 
   return (
     isOpen && (
       <div className="popup-overlay">
-        <div className={popUpContainer}>
+        <div className={popupContainer}>
           <div className="popup-header pad-bottom-1">
             <p>{heading}</p>
             <span className="tooltip-button" onClick={() => setIsOpen(false)}>
@@ -149,27 +149,27 @@ export function PopUp({ heading, description, isOpen, setIsOpen, widePopUp, chil
   );
 }
 
-export function ButtonPopUp({ buttonText, tooltip, tooltipId, heading, description, widePopUp, children }) {
+export function ButtonPopup({ buttonText, tooltip, tooltipId, heading, description, widePopup, children }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
       <Button onClick={() => setIsOpen(!isOpen)} tooltip={tooltip} tooltipId={tooltipId} text={buttonText} />
       {isOpen && (
-        <PopUp heading={heading} description={description} children={children} isOpen={isOpen} setIsOpen={setIsOpen} widePopUp={widePopUp} />
+        <Popup heading={heading} description={description} children={children} isOpen={isOpen} setIsOpen={setIsOpen} widePopup={widePopup} />
       )}
     </>
   );
 }
 
-export function InfoButtonPopUp({ heading, description, widePopUp, children }) {
+export function InfoButtonPopup({ heading, description, widePopup, children }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
       <InfoCircleIcon onClick={() => setIsOpen(!isOpen)} />
       {isOpen && (
-        <PopUp heading={heading} description={description} children={children} isOpen={isOpen} setIsOpen={setIsOpen} widePopUp={widePopUp} />
+        <Popup heading={heading} description={description} children={children} isOpen={isOpen} setIsOpen={setIsOpen} widePopup={widePopup} />
       )}
     </>
   );
