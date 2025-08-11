@@ -651,7 +651,7 @@ ul {
 
 .heading-label {
   color: var(--text-primary);
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   width: 100%;
   display: block;
   padding-top: 0.5rem;
@@ -661,7 +661,7 @@ ul {
 
 .heading-label-no-pad {
   color: var(--text-primary);
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   width: 100%;
   display: block;
 }

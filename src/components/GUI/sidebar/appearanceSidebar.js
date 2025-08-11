@@ -26,7 +26,7 @@ export function AppearanceSidebar({ handleNewColorScheme, handleDeleteColorSchem
   return (
     <>
       <AppearanceSettings />
-      <TopAppearanceButtons handleNewColorScheme={handleNewColorScheme} handleDeleteColorScheme={handleDeleteColorScheme} />
+      <UploadColorScheme handleNewColorScheme={handleNewColorScheme} handleDeleteColorScheme={handleDeleteColorScheme} />
       <ActiveNodeColorScheme />
       <ActiveLinkColorScheme />
       <UploadedColorSchemes
@@ -34,10 +34,7 @@ export function AppearanceSidebar({ handleNewColorScheme, handleDeleteColorSchem
         handleSelectLinkColorScheme={handleSelectLinkColorScheme}
         handleSelectNodeColorScheme={handleSelectNodeColorScheme}
       />
-      <div className="pad-left-1 pad-right-1 color-mapping-select-table">
-        <NodeColorMapping />
-        <LinkColorMapping />
-      </div>
+      <ColorSelection />
     </>
   );
 }
@@ -71,7 +68,7 @@ export function AppearanceSettings() {
   );
 }
 
-export function TopAppearanceButtons({ handleNewColorScheme }) {
+export function UploadColorScheme({ handleNewColorScheme }) {
   const [colorSchemePopUpActive, setColorSchemePopUpActive] = useState(false);
   const colorSchemeRef = useRef(null);
 
@@ -79,7 +76,7 @@ export function TopAppearanceButtons({ handleNewColorScheme }) {
     <>
       <SidebarButtonRect
         onClick={() => setColorSchemePopUpActive(!colorSchemePopUpActive)}
-        text={"Upload Color Schemes"}
+        text={"Upload Color Scheme"}
         tooltip={"Upload your Color Scheme as a CSV or TSV File"}
         tooltipId={"upload-graph-tooltip"}
       />
@@ -106,6 +103,32 @@ export function TopAppearanceButtons({ handleNewColorScheme }) {
         </div>
       </PopUp>
     </>
+  );
+}
+
+function ActiveNodeColorScheme() {
+  const { appearance } = useAppearance();
+
+  return (
+    <TableList
+      heading={"Active Node Color Scheme"}
+      data={appearance.nodeColorScheme ? [appearance.nodeColorScheme] : []}
+      displayKey={"name"}
+      dark={true}
+    />
+  );
+}
+
+function ActiveLinkColorScheme() {
+  const { appearance } = useAppearance();
+
+  return (
+    <TableList
+      heading={"Active Link Color Scheme"}
+      data={appearance.linkColorScheme ? [appearance.linkColorScheme] : []}
+      displayKey={"name"}
+      dark={true}
+    />
   );
 }
 
@@ -139,54 +162,23 @@ function UploadedColorSchemes({ handleDeleteColorScheme, handleSelectLinkColorSc
   );
 }
 
-function ActiveNodeColorScheme() {
-  const { appearance } = useAppearance();
-
-  return (
-    <TableList
-      heading={"Active Node Color Scheme"}
-      data={appearance.nodeColorScheme ? [appearance.nodeColorScheme] : []}
-      displayKey={"name"}
-      dark={true}
-    />
-  );
-}
-
-function ActiveLinkColorScheme() {
-  const { appearance } = useAppearance();
-
-  return (
-    <TableList
-      heading={"Active Link Color Scheme"}
-      data={appearance.linkColorScheme ? [appearance.linkColorScheme] : []}
-      displayKey={"name"}
-      dark={true}
-    />
-  );
-}
-
-function NodeColorMapping() {
+function ColorSelection() {
   const { appearance, setAppearance } = useAppearance();
 
   return (
-    <ColorMappingSelect
-      heading={"Node Color Mapping"}
-      colorScheme={appearance.nodeColorScheme}
-      attribsToColorIndices={appearance.nodeAttribsToColorIndices}
-      setMapping={(updatedMapping) => setAppearance("nodeAttribsToColorIndices", updatedMapping)}
-    />
-  );
-}
-
-function LinkColorMapping() {
-  const { appearance, setAppearance } = useAppearance();
-
-  return (
-    <ColorMappingSelect
-      heading={"Link Color Mapping"}
-      colorScheme={appearance.linkColorScheme}
-      attribsToColorIndices={appearance.linkAttribsToColorIndices}
-      setMapping={(updatedMapping) => setAppearance("linkAttribsToColorIndices", updatedMapping)}
-    />
+    <div className="pad-left-1 pad-right-1 color-mapping-select-table">
+      <ColorMappingSelect
+        heading={"Node Color Mapping"}
+        colorScheme={appearance.nodeColorScheme}
+        attribsToColorIndices={appearance.nodeAttribsToColorIndices}
+        setMapping={(updatedMapping) => setAppearance("nodeAttribsToColorIndices", updatedMapping)}
+      />
+      <ColorMappingSelect
+        heading={"Link Color Mapping"}
+        colorScheme={appearance.linkColorScheme}
+        attribsToColorIndices={appearance.linkAttribsToColorIndices}
+        setMapping={(updatedMapping) => setAppearance("linkAttribsToColorIndices", updatedMapping)}
+      />
+    </div>
   );
 }

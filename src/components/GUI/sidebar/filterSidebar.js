@@ -116,7 +116,7 @@ export function FilterSidebar() {
 
   return (
     <>
-      <div className="inline pad-top-1">
+      <div className="inline pad-top-05 pad-bottom-05">
         <SidebarButtonRect text={"Reset Filters"} onClick={handleResetFilters} />
       </div>
       <SidebarSwitchBlock

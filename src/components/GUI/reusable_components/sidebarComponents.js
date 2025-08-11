@@ -5,8 +5,6 @@ import { Tooltip } from "react-tooltip";
 import { handleFieldBlur, handleFieldChange, handleSliderChange } from "../handlers/buttonHandlerFunctions.js";
 
 export function SidebarSliderBlock({ value, valueText, setValue, setValueText, fallbackValue, min, max, step, text, infoHeading, infoDescription }) {
-  const [infoIsOpen, setInfoIsOpen] = useState(false);
-
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       event.target.blur();
@@ -17,8 +15,8 @@ export function SidebarSliderBlock({ value, valueText, setValue, setValueText, f
     <>
       <div className="inline">
         <label className="label pad-left-1">{text}</label>
-        <span className="tooltip-button pad-left-05 pad-top-11" onClick={() => setInfoIsOpen(true)}>
-          <InfoCircleIcon />
+        <span className="tooltip-button pad-left-05 pad-top-11">
+          <InfoButtonPopUp heading={infoHeading} description={infoDescription} />
         </span>
       </div>
       <div className="sidebar-block">
@@ -43,14 +41,11 @@ export function SidebarSliderBlock({ value, valueText, setValue, setValueText, f
           onBlur={(event) => handleFieldBlur(event, setValue, setValueText, min, max, fallbackValue)}
         />
       </div>
-      <PopUp heading={infoHeading} description={infoDescription} isOpen={infoIsOpen} setIsOpen={setInfoIsOpen} />
     </>
   );
 }
 
 export function PopUpSliderBlock({ value, valueText, setValue, setValueText, fallbackValue, min, max, step, text, infoHeading, infoDescription }) {
-  const [infoIsOpen, setInfoIsOpen] = useState(false);
-
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       event.target.blur();
@@ -61,8 +56,8 @@ export function PopUpSliderBlock({ value, valueText, setValue, setValueText, fal
     <>
       <div className="inline">
         <label className="label">{text}</label>
-        <span className="tooltip-button pad-left-05 pad-top-11" onClick={() => setInfoIsOpen(true)}>
-          <InfoCircleIcon />
+        <span className="tooltip-button pad-left-05 pad-top-11">
+          <InfoButtonPopUp heading={infoHeading} description={infoDescription} widePopUp={true} />
         </span>
       </div>
       <div className="popup-block pad-bottom-05">
@@ -87,21 +82,18 @@ export function PopUpSliderBlock({ value, valueText, setValue, setValueText, fal
           onBlur={(event) => handleFieldBlur(event, setValue, setValueText, min, max, fallbackValue)}
         />
       </div>
-      <PopUp heading={infoHeading} description={infoDescription} isOpen={infoIsOpen} setIsOpen={setInfoIsOpen} widePopUp={true} />
     </>
   );
 }
 
 export function SidebarSwitchBlock({ value, setValue, text, infoHeading, infoDescription }) {
-  const [infoIsOpen, setInfoIsOpen] = useState(false);
-
   return (
     <>
       <div className="sidebar-block">
         <div className="inline">
           <label className="label">{text}</label>
-          <span className="tooltip-button pad-left-05 pad-top-11" onClick={() => setInfoIsOpen(true)}>
-            <InfoCircleIcon />
+          <span className="tooltip-button pad-left-05 pad-top-11">
+            <InfoButtonPopUp heading={infoHeading} description={infoDescription} />
           </span>
         </div>
         <label className="switch">
@@ -109,21 +101,18 @@ export function SidebarSwitchBlock({ value, setValue, text, infoHeading, infoDes
           <span className="slider round"></span>
         </label>
       </div>
-      <PopUp heading={infoHeading} description={infoDescription} isOpen={infoIsOpen} setIsOpen={setInfoIsOpen} />
     </>
   );
 }
 
 export function PopUpSwitchBlock({ value, setValue, text, infoHeading, infoDescription }) {
-  const [infoIsOpen, setInfoIsOpen] = useState(false);
-
   return (
     <>
       <div className="popup-block">
         <div className="inline">
           <label className="label">{text}</label>
-          <span className="tooltip-button pad-left-05 pad-top-11" onClick={() => setInfoIsOpen(true)}>
-            <InfoCircleIcon />
+          <span className="tooltip-button pad-left-05 pad-top-11">
+            <InfoButtonPopUp heading={infoHeading} description={infoDescription} widePopUp={true} />
           </span>
         </div>
         <label className="switch">
@@ -131,14 +120,11 @@ export function PopUpSwitchBlock({ value, setValue, text, infoHeading, infoDescr
           <span className="slider round"></span>
         </label>
       </div>
-      <PopUp heading={infoHeading} description={infoDescription} isOpen={infoIsOpen} setIsOpen={setInfoIsOpen} widePopUp={true} />
     </>
   );
 }
 
 export function SidebarFieldBlock({ valueText, setValue, setValueText, fallbackValue, min, max, step, text, infoHeading, infoDescription }) {
-  const [infoIsOpen, setInfoIsOpen] = useState(false);
-
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       event.target.blur();
@@ -150,8 +136,8 @@ export function SidebarFieldBlock({ valueText, setValue, setValueText, fallbackV
       <div className="sidebar-block">
         <div className="inline">
           <label className="label">{text}</label>
-          <span className="tooltip-button pad-left-05 pad-top-11" onClick={() => setInfoIsOpen(true)}>
-            <InfoCircleIcon />
+          <span className="tooltip-button pad-left-05 pad-top-11">
+            <InfoButtonPopUp heading={infoHeading} description={infoDescription} />
           </span>
         </div>
         <input
@@ -166,14 +152,11 @@ export function SidebarFieldBlock({ valueText, setValue, setValueText, fallbackV
           onBlur={(event) => handleFieldBlur(event, setValue, setValueText, min, max, fallbackValue)}
         ></input>
       </div>
-      <PopUp heading={infoHeading} description={infoDescription} isOpen={infoIsOpen} setIsOpen={setInfoIsOpen} />
     </>
   );
 }
 
 export function PopUpFieldBlock({ valueText, setValue, setValueText, fallbackValue, min, max, step, text, infoHeading, infoDescription }) {
-  const [infoIsOpen, setInfoIsOpen] = useState(false);
-
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       event.target.blur();
@@ -185,8 +168,8 @@ export function PopUpFieldBlock({ valueText, setValue, setValueText, fallbackVal
       <div className="popup-block">
         <div className="inline">
           <label className="label">{text}</label>
-          <span className="tooltip-button pad-left-05 pad-top-11" onClick={() => setInfoIsOpen(true)}>
-            <InfoCircleIcon />
+          <span className="tooltip-button pad-left-05 pad-top-11">
+            <InfoButtonPopUp heading={infoHeading} description={infoDescription} widePopUp={true} />
           </span>
         </div>
         <input
@@ -201,7 +184,6 @@ export function PopUpFieldBlock({ valueText, setValue, setValueText, fallbackVal
           onBlur={(event) => handleFieldBlur(event, setValue, setValueText, min, max, fallbackValue)}
         ></input>
       </div>
-      <PopUp heading={infoHeading} description={infoDescription} isOpen={infoIsOpen} setIsOpen={setInfoIsOpen} widePopUp={true} />
     </>
   );
 }
@@ -231,14 +213,12 @@ export function PopupButtonRect({ onClick, onChange, linkRef, tooltip, tooltipId
 }
 
 export function SidebarCodeEditorBlock({ text, onClick, compilerError, defaultValue, textareaRef, infoHeading, infoDescription }) {
-  const [infoIsOpen, setInfoIsOpen] = useState(false);
-
   return (
     <>
       <div className="inline">
         <label className="label pad-left-1">{text}</label>
-        <span className="tooltip-button pad-left-05 pad-top-11" onClick={() => setInfoIsOpen(true)}>
-          <InfoCircleIcon />
+        <span className="tooltip-button pad-left-05 pad-top-11">
+          <InfoButtonPopUp heading={infoHeading} description={infoDescription} />
         </span>
       </div>
       <div className={`editor-sidebar-block ${compilerError ? "no-pad-bottom" : ""}`}>
@@ -248,7 +228,6 @@ export function SidebarCodeEditorBlock({ text, onClick, compilerError, defaultVa
         <SidebarButtonRect onClick={onClick} text="Run" />
       </div>
       <span className={`pad-left-1 warning ${compilerError ? "pad-bottom-1" : ""}`}>{compilerError}</span>
-      <PopUp heading={infoHeading} description={infoDescription} isOpen={infoIsOpen} setIsOpen={setInfoIsOpen} />
     </>
   );
 }
@@ -273,7 +252,7 @@ export function PopUpTextFieldInline({ textInfront, textInside }) {
   );
 }
 
-export function PopUp({ heading, description, children, isOpen, setIsOpen, widePopUp }) {
+export function PopUp({ heading, description, isOpen, setIsOpen, widePopUp, children }) {
   const popUpContainer = widePopUp ? "popup-container-wide" : "popup-container";
 
   return (
@@ -291,6 +270,32 @@ export function PopUp({ heading, description, children, isOpen, setIsOpen, wideP
         </div>
       </div>
     )
+  );
+}
+
+export function SidebarButtonPopUp({ buttonText, tooltip, tooltipId, heading, description, widePopUp, children }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <>
+      <SidebarButtonRect onClick={() => setIsOpen(!isOpen)} tooltip={tooltip} tooltipId={tooltipId} text={buttonText} />
+      {isOpen && (
+        <PopUp heading={heading} description={description} children={children} isOpen={isOpen} setIsOpen={setIsOpen} widePopUp={widePopUp} />
+      )}
+    </>
+  );
+}
+
+export function InfoButtonPopUp({ heading, description, widePopUp, children }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <>
+      <InfoCircleIcon onClick={() => setIsOpen(!isOpen)} />
+      {isOpen && (
+        <PopUp heading={heading} description={description} children={children} isOpen={isOpen} setIsOpen={setIsOpen} widePopUp={widePopUp} />
+      )}
+    </>
   );
 }
 

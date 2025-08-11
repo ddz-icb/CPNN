@@ -1,7 +1,7 @@
 import log from "../../logger.js";
 import { applyTheme, lightTheme } from "../config/appearanceInitValues.js";
 
-// the theme is stored in the local storage of the browser, not the database
+// the theme is stored in the local storage of the browser, not the database since
 
 export function loadTheme(setAppearance) {
   let storedTheme = localStorage.getItem("theme");

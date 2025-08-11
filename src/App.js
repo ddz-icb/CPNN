@@ -422,11 +422,11 @@ function App() {
         handleDeleteGraphFile={handleDeleteGraph}
         handleRemoveActiveGraphFile={handleRemoveActiveGraph}
         handleAddFile={handleAddActiveGraph}
-        handleNewMapping={handleCreateMapping}
+        handleCreateMapping={handleCreateMapping}
         handleRemoveActiveMapping={handleRemoveActiveMapping}
         handleMappingSelect={handleSelectMapping}
         handleDeleteMapping={handleDeleteMapping}
-        handleNewGraphFile={handleCreateGraph}
+        handleCreateGraph={handleCreateGraph}
         handleNewColorScheme={handleCreateColorScheme}
         handleDeleteColorScheme={handleDeleteColorScheme}
         handleSelectLinkColorScheme={handleSelectLinkColorScheme}
