@@ -15,7 +15,6 @@ import {
 } from "./components/application_service/graphCalculations.js";
 import {
   addActiveGraph,
-  createGraph,
   deleteGraph,
   loadGraphNames,
   removeActiveGraph,
@@ -35,8 +34,6 @@ import { Error } from "./components/gui/error.js";
 import { defaultColorSchemes } from "./components/config/appearanceInitValues.js";
 import { getFileNameWithoutExtension } from "./components/other/parseFiles.js";
 import { getGraphDB } from "./components/repository/repoGraphs.js";
-import { downloadInit } from "./components/config/downloadInitValues.js";
-import { physicsInit } from "./components/config/physicsInitValues.js";
 import { filterInit, linkThresholdInit } from "./components/config/filterInitValues.js";
 import {
   addNewMappingFile as createMapping,
@@ -51,6 +48,10 @@ import { useAppearance } from "./components/adapters/state/appearanceState.js";
 import { useDownload } from "./components/adapters/state/downloadState.js";
 import { useGraphData } from "./components/adapters/state/graphState.js";
 import { useError } from "./components/adapters/state/errorState.js";
+import { errorService } from "./components/application_service/errorService.js";
+import { graphService } from "./components/application_service/graphService.js";
+import { useReset } from "./components/adapters/state/resetState.js";
+import { resetService } from "./components/application_service/resetService.js";
 
 function App() {
   const { setFilter, setAllFilter } = useFilter();
@@ -59,26 +60,28 @@ function App() {
   const { download, setDownload } = useDownload();
   const { graphData, setGraphData } = useGraphData();
   const { error, setError, clearError } = useError();
-
-  const [reset, setReset] = useState(false); // true indicates that the simulation (in forceGraph.js) has to be reloaded
+  const { reset, setReset } = useReset();
 
   // GRAPH
   ////////
 
-  const handleSelectGraph = (filename) => {
-    if (!filename) return;
+  function handleSelectGraph(filename) {
+    if (!filename) {
+      errorService.setError("Selected invalid graph");
+      return;
+    }
     log.info("Replacing graph");
 
     try {
-      simulationReset();
+      resetService.simulationReset();
       selectGraph(filename, setGraphData);
-      setGraphData("graphIsPreprocessed", false);
-      setGraphData("mergeProteins", false);
+      graphService.setGraphIsPreprocessed(false); // graphService. -> this.
+      graphService.setMergeProteins(false); // graphService. -> this.
     } catch (error) {
-      setError("Error loading graph");
+      errorService.setError(error.message);
       log.error("Error loading graph:", error);
     }
-  };
+  }
 
   const handleAddActiveGraph = (filename) => {
     if (!filename) return;
@@ -90,7 +93,7 @@ function App() {
     log.info("Adding file with name: ", filename);
 
     try {
-      simulationReset();
+      resetService.simulationReset();
       setGraphData("graphIsPreprocessed", false);
       addActiveGraph(filename, graphData.activeGraphNames, setGraphData, graphData.originGraph);
     } catch (error) {
@@ -105,7 +108,7 @@ function App() {
     if (!filename) return;
     log.info("removing graph file with name:", filename);
 
-    simulationReset();
+    resetService.simulationReset();
     setGraphData("graphIsPreprocessed", false);
     removeActiveGraph(filename, graphData.activeGraphNames, setGraphData);
   };
@@ -132,7 +135,7 @@ function App() {
     log.info("Replacing annotation mapping");
 
     try {
-      simulationReset();
+      resetService.simulationReset();
       setGraphData("graphIsPreprocessed", false);
       selectMapping(mappingName, setGraphData);
     } catch (error) {
@@ -166,7 +169,7 @@ function App() {
 
     setGraphData("activeMapping", null);
     setGraphData("graphIsPreprocessed", false);
-    simulationReset();
+    resetService.simulationReset();
   };
 
   // deletes annotation mapping files
@@ -248,18 +251,6 @@ function App() {
   // INIT STUFF
   //////////////////////////////////////////////
   //////////////////////////////////////////////
-
-  // initates reset //
-  const simulationReset = () => {
-    if (!graphData.activeGraphNames) return;
-    log.info("Handle Simulation Reset");
-
-    setAllFilter(filterInit);
-    setAllPhysics(physicsInit);
-    setDownload(downloadInit);
-    clearError();
-    setReset(true);
-  };
 
   // select example graph on startup
   useEffect(() => {
@@ -345,7 +336,7 @@ function App() {
     log.info("Merging Proteins: ", graphData.mergeProteins);
 
     try {
-      simulationReset();
+      resetService.simulationReset();
       setGraphData("graphIsPreprocessed", false);
       mergedGraph(graphData);
     } catch (error) {
@@ -407,7 +398,7 @@ function App() {
       />
       <main>
         <Error />
-        <ForceGraph reset={reset} setReset={setReset} />
+        <ForceGraph />
       </main>
     </div>
   );

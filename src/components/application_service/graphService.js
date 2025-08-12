@@ -13,7 +13,6 @@ export const graphService = {
     log.info("Adding new graph file");
 
     try {
-      const graphData = useGraphData.getState();
       const graphObject = await createGraph(
         file,
         this.getUploadedGraphNames(),
@@ -28,9 +27,28 @@ export const graphService = {
       this.setUploadedGraphNames([...(this.getUploadedGraphNames() || []), graphObject.name]);
     } catch (error) {
       errorService.setError(error.message);
-      log.error("Error adding graph file:", error);
+      log.error("Error creating graph:", error);
     }
   },
+
+  //   handleSelectGraph(filename) {
+  //     if (!filename) {
+  //       errorService.setError("Selected invalid graph");
+  //       return;
+  //     }
+  //     log.info("Replacing graph");
+
+  //     try {
+  //       simulationReset();
+  //       selectGraph(filename, setGraphData);
+  //       this.setGraphIsPreprocessed(false);
+  //       this.setMergeProteins(false);
+  //     } catch (error) {
+  //       errorService.setError(error.message);
+  //       log.error("Error loading graph:", error);
+  //     }
+  //   },
+
   // ====== Generic getter/setter ======
   get(key) {
     return useGraphData.getState().graphData[key];
@@ -38,7 +56,12 @@ export const graphService = {
   set(key, value) {
     useGraphData.getState().setGraphData(key, value);
   },
-
+  getAll() {
+    return useGraphData.getState().graphData;
+  },
+  setAll(value) {
+    useGraphData.getState().setAllGraphData(value);
+  },
   // ====== Specific getter/setter ======
   getGraph() {
     return this.get("graph");

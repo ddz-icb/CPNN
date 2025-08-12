@@ -14,13 +14,15 @@ import { useGraphData } from "../adapters/state/graphState.js";
 import { useContainer } from "../adapters/state/containerState.js";
 import { useTooltipSettings } from "../adapters/state/tooltipState.js";
 import { useError } from "../adapters/state/errorState.js";
+import { useReset } from "../adapters/state/resetState.js";
 
-export function ForceGraph({ reset, setReset }) {
+export function ForceGraph() {
   const { appearance, setAppearance } = useAppearance();
   const { graphData, setGraphData } = useGraphData();
   const { container, setContainer } = useContainer();
   const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
   const { error, setError } = useError();
+  const { reset, setReset } = useReset();
 
   const containerRef = useRef(null);
 
