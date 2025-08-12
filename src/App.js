@@ -31,7 +31,7 @@ import {
   setInitColorSchemes,
 } from "./components/domain_service/colorSchemeManager.js";
 
-import { Erorr } from "./components/other/error.js";
+import { Error } from "./components/gui/error.js";
 import { defaultColorSchemes } from "./components/config/appearanceInitValues.js";
 import { getFileNameWithoutExtension } from "./components/other/parseFiles.js";
 import { getGraphDB } from "./components/repository/repoGraphs.js";
@@ -50,6 +50,7 @@ import { usePhysics } from "./components/adapters/state/physicsState.js";
 import { useAppearance } from "./components/adapters/state/appearanceState.js";
 import { useDownload } from "./components/adapters/state/downloadState.js";
 import { useGraphData } from "./components/adapters/state/graphState.js";
+import { useError } from "./components/adapters/state/errorState.js";
 
 function App() {
   const { setFilter, setAllFilter } = useFilter();
@@ -57,9 +58,9 @@ function App() {
   const { appearance, setAppearance } = useAppearance();
   const { download, setDownload } = useDownload();
   const { graphData, setGraphData } = useGraphData();
+  const { error, setError } = useError();
 
   const [reset, setReset] = useState(false); // true indicates that the simulation (in forceGraph.js) has to be reloaded
-  const [error, setError] = useState(null); // error gets printed on screen
 
   // GRAPH
   ////////
@@ -437,8 +438,8 @@ function App() {
         handleSelectNodeColorScheme={handleSelectNodeColorScheme}
       />
       <main>
-        {error && <Erorr error={error} setError={setError} />}
-        <ForceGraph reset={reset} setReset={setReset} setError={setError} />
+        <Error />
+        <ForceGraph reset={reset} setReset={setReset} />
       </main>
     </div>
   );
