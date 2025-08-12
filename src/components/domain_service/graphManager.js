@@ -2,11 +2,11 @@ import { exampleGraphJson } from "../assets/exampleGraphJSON.js";
 import log from "../../logger.js";
 import { joinGraphs } from "../application_service/graphCalculations.js";
 import { getFileNameWithoutExtension, parseGraphFile } from "../other/parseFiles.js";
-import { addGraphFileDB, addGraphFileIfNotExistsDB, fromAllGetGraphNameDB, getGraphDB, removeGraphFileByNameDB } from "../repository/repoGraphs.js";
+import { addGraphDB, addGraphIfNotExistsDB, fromAllGetGraphNameDB, getGraphDB, removeGraphByNameDB } from "../repository/repoGraphs.js";
 
 export async function setInitGraph(setGraphData) {
   const graph = JSON.parse(exampleGraphJson.content);
-  addGraphFileIfNotExistsDB(exampleGraphJson);
+  addGraphIfNotExistsDB(exampleGraphJson);
   setGraphData("originGraph", graph);
   setGraphData("activeGraphNames", [exampleGraphJson.name]);
 }
@@ -60,7 +60,7 @@ export async function createGraph(
   }
 
   const graphObject = await parseGraphFile(file, takeAbs, minCorrForEdge, minCompSizeForNode, maxCompSizeForNode, takeSpearmanCoefficient);
-  addGraphFileDB(graphObject);
+  addGraphDB(graphObject);
 
   return graphObject;
 }
@@ -68,5 +68,5 @@ export async function createGraph(
 export async function deleteGraph(uploadedGraphNames, filename, setGraphData) {
   const updatedGraphNames = uploadedGraphNames?.filter((name) => name !== filename);
   setGraphData("uploadedGraphNames", updatedGraphNames);
-  removeGraphFileByNameDB(filename);
+  removeGraphByNameDB(filename);
 }
