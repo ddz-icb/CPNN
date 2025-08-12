@@ -51,21 +51,6 @@ function App() {
   // MAPPING
   //////////
 
-  // sets corresponding mapping after selection
-  const handleSelectMapping = (mappingName) => {
-    if (!mappingName) return;
-    log.info("Replacing annotation mapping");
-
-    try {
-      resetService.simulationReset();
-      setGraphData("graphIsPreprocessed", false);
-      selectMapping(mappingName, setMappingData);
-    } catch (error) {
-      setError("Mapping is already the current mapping");
-      log.error("Mapping is already the current mapping");
-    }
-  };
-
   // processes new annotation mapping
   const handleCreateMapping = (event) => {
     const file = event.target.files[0];

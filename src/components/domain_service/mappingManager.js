@@ -7,10 +7,9 @@ export async function loadMappings(setMappingData) {
   setMappingData("uploadedMappingNames", mappings);
 }
 
-export async function selectMapping(mappingName, setMappingData) {
-  const { mapping, file } = await getMappingDB(mappingName);
-
-  setMappingData("activeMapping", mapping);
+export async function selectMapping(mappingName) {
+  const mapping = await getMappingDB(mappingName);
+  return mapping;
 }
 
 export async function createMapping(file, uploadedMappingNames, setMappingData) {

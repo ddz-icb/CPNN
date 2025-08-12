@@ -8,6 +8,17 @@ db.version(1).stores({
   uploadedFiles: "++id, name",
 });
 
+async function getFileByNameDB(name) {
+  try {
+    const file = await db.uploadedFiles.where("name").equals(name).first();
+    if (!file) throw new Error(`No file found with the name ${name}.`);
+
+    return file;
+  } catch (error) {
+    throw new Error(`Failed to retrieve file with name ${name}: ${error}`);
+  }
+}
+
 export async function getGraphDB(filename) {
   const file = await getFileByNameDB(filename);
 
@@ -80,16 +91,5 @@ export async function fromAllGetGraphNameDB() {
     return names;
   } catch (error) {
     throw new Error(`Failed to retrieve file names: ${error}`);
-  }
-}
-
-async function getFileByNameDB(name) {
-  try {
-    const file = await db.uploadedFiles.where("name").equals(name).first();
-    if (!file) throw new Error(`No file found with the name ${name}.`);
-
-    return file;
-  } catch (error) {
-    throw new Error(`Failed to retrieve file with name ${name}: ${error}`);
   }
 }
