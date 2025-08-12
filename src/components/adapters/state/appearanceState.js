@@ -1,6 +1,8 @@
-export const darkBlue = "#0d3b66";
-export const lightGrey = "#b2becd";
-export const black = "#000000";
+import { create } from "zustand";
+
+const darkBlue = "#0d3b66";
+const lightGrey = "#b2becd";
+const black = "#000000";
 
 export const lightTheme = {
   name: "light",
@@ -15,12 +17,6 @@ export const darkTheme = {
 };
 
 export const themeInit = lightTheme;
-
-export function applyTheme(document, theme) {
-  document.body.className = theme;
-
-  getComputedStyle(document.body);
-}
 
 export const ibmAntiBlindness = {
   name: "IBM (5 colors, barrier-free)",
@@ -79,3 +75,15 @@ export const appearanceInit = {
   nodeColorScheme: null,
   linkColorScheme: null,
 };
+
+export const useAppearance = create((set) => ({
+  appearance: appearanceInit,
+  setAppearance: (key, value) =>
+    set((state) => ({
+      appearance: { ...state.appearance, [key]: value },
+    })),
+  setAllAppearance: (value) =>
+    set(() => ({
+      appearance: value,
+    })),
+}));

@@ -1,5 +1,5 @@
 import log from "../../logger.js";
-import { useGraphData } from "../adapters/state/graph/graphState.js";
+import { useGraphData } from "../adapters/state/graphState.js";
 import { addActiveGraph, createGraph, deleteGraph, removeActiveGraph, selectGraph } from "../domain_service/graphManager.js";
 import { errorService } from "./errorService.js";
 import { resetService } from "./resetService.js";

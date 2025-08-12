@@ -10,8 +10,7 @@ import {
   setColorSchemeDescription,
   uploadColorSchemeDescription,
 } from "./descriptions/appearanceDescriptions.js";
-import { linkWidthInit } from "../../adapters/state/appearance/appearanceInit.js";
-import { useAppearance } from "../../adapters/state/appearance/appearanceState.js";
+import { useAppearance, linkWidthInit } from "../../adapters/state/appearanceState.js";
 
 export function AppearanceSidebar({ handleNewColorScheme, handleDeleteColorScheme, handleSelectLinkColorScheme, handleSelectNodeColorScheme }) {
   return (

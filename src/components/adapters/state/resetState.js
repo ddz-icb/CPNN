@@ -1,5 +1,8 @@
 import { create } from "zustand";
-import { resetInit } from "./resetInit.js";
+
+export const resetInit = {
+  reset: false,
+};
 
 export const useReset = create((set) => ({
   reset: resetInit,

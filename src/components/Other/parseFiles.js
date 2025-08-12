@@ -8,7 +8,7 @@ import {
   filterNodesExist,
   mergeSameProteins,
 } from "../application_service/graphCalculations.js";
-import { expectedPhysicTypes } from "../adapters/state/physics/physicsInit.js";
+import { expectedPhysicTypes } from "../adapters/state/physicsState.js";
 
 export async function parseGraphFile(
   file,

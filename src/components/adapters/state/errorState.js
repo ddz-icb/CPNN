@@ -1,5 +1,6 @@
 import { create } from "zustand";
-import { erorrInit } from "./errorInit.js";
+
+export const erorrInit = null;
 
 export const useError = create((set) => ({
   error: erorrInit,

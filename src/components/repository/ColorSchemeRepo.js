@@ -1,6 +1,6 @@
 import log from "../../logger.js";
 import Dexie from "dexie";
-import { defaultColorSchemeNames } from "../adapters/state/appearance/appearanceInit.js";
+import { defaultColorSchemeNames } from "../adapters/state/appearanceState.js";
 
 export const db = new Dexie("colorSchemes");
 

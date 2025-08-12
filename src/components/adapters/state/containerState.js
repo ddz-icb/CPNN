@@ -1,5 +1,9 @@
 import { create } from "zustand";
-import { containerInit } from "./containerInit.js";
+
+export const containerInit = {
+  height: null,
+  width: null,
+};
 
 export const useContainer = create((set) => ({
   container: containerInit,

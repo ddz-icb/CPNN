@@ -18,7 +18,7 @@ import {
   minNeighborhoodSizeInit,
   compDensityInit,
   minCompSizeInit,
-} from "../../adapters/state/filter/filterInit.js";
+} from "../../adapters/state/filterState.js";
 import {
   compDensityDescription,
   linkFilterDescription,
@@ -30,9 +30,9 @@ import {
   nodeFilterDescription,
 } from "./descriptions/filterDescriptions.js";
 import { handleEditorChange, runCodeEditor } from "../handlers/buttonHandlerFunctions.js";
-import { useFilter } from "../../adapters/state/filter/filterState.js";
-import { useAppearance } from "../../adapters/state/appearance/appearanceState.js";
-import { useGraphData } from "../../adapters/state/graph/graphState.js";
+import { useFilter } from "../../adapters/state/filterState.js";
+import { useAppearance } from "../../adapters/state/appearanceState.js";
+import { useGraphData } from "../../adapters/state/graphState.js";
 
 export function FilterSidebar() {
   const { filter, setFilter, setAllFilter } = useFilter();

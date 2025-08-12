@@ -21,7 +21,7 @@ import {
   uploadPathwayMappingDescription,
 } from "./descriptions/dataDescriptions.js";
 import { mergeProteinsDescription } from "./descriptions/filterDescriptions.js";
-import { useGraphData } from "../../adapters/state/graph/graphState.js";
+import { useGraphData } from "../../adapters/state/graphState.js";
 import { graphService } from "../../application_service/graphService.js";
 
 export function DataSidebar({ handleCreateMapping, handleRemoveActiveMapping, handleMappingSelect, handleDeleteMapping }) {

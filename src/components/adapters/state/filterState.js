@@ -1,3 +1,5 @@
+import { create } from "zustand";
+
 export const linkThresholdInit = 0.7;
 export const minCompSizeInit = 2;
 export const maxCompSizeInit = ""; // typically int but can be empty if no maxSize
@@ -24,3 +26,15 @@ export const filterInit = {
   minNeighborhoodSize: minNeighborhoodSizeInit,
   minNeighborhoodSizeText: minNeighborhoodSizeInit,
 };
+
+export const useFilter = create((set) => ({
+  filter: filterInit,
+  setFilter: (key, value) =>
+    set((state) => ({
+      filter: { ...state.filter, [key]: value },
+    })),
+  setAllFilter: (value) =>
+    set(() => ({
+      filter: value,
+    })),
+}));

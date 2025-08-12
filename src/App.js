@@ -24,10 +24,10 @@ import {
 } from "./components/domain_service/colorSchemeManager.js";
 
 import { Error } from "./components/gui/error.js";
-import { defaultColorSchemes } from "./components/adapters/state/appearance/appearanceInit.js";
+import { defaultColorSchemes } from "./components/adapters/state/appearanceState.js";
 import { getFileNameWithoutExtension } from "./components/other/parseFiles.js";
 import { getGraphDB } from "./components/repository/GraphRepo.js";
-import { linkThresholdInit } from "./components/adapters/state/filter/filterInit.js";
+import { linkThresholdInit } from "./components/adapters/state/filterState.js";
 import {
   addNewMappingFile as createMapping,
   deleteMapping as deleteMapping,
@@ -35,12 +35,12 @@ import {
   selectMapping,
 } from "./components/domain_service/mappingManager.js";
 import { loadTheme, storeTheme } from "./components/domain_service/themeManager.js";
-import { useFilter } from "./components/adapters/state/filter/filterState.js";
-import { usePhysics } from "./components/adapters/state/physics/physicsState.js";
-import { useAppearance } from "./components/adapters/state/appearance/appearanceState.js";
-import { useDownload } from "./components/adapters/state/download/downloadState.js";
-import { useGraphData } from "./components/adapters/state/graph/graphState.js";
-import { useError } from "./components/adapters/state/error/errorState.js";
+import { useFilter } from "./components/adapters/state/filterState.js";
+import { usePhysics } from "./components/adapters/state/physicsState.js";
+import { useAppearance } from "./components/adapters/state/appearanceState.js";
+import { useDownload } from "./components/adapters/state/downloadState.js";
+import { useGraphData } from "./components/adapters/state/graphState.js";
+import { useError } from "./components/adapters/state/errorState.js";
 import { resetService } from "./components/application_service/resetService.js";
 
 function App() {

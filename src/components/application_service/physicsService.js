@@ -1,4 +1,4 @@
-import { usePhysics } from "../adapters/state/physics/physicsState.js";
+import { usePhysics } from "../adapters/state/physicsState.js";
 
 export const physicsService = {
   // ===== Generic getter/setter =====

@@ -1,3 +1,5 @@
+import { create } from "zustand";
+
 export const linkForceInit = true;
 export const linkLengthInit = 70;
 export const xStrengthInit = 0.05;
@@ -50,3 +52,15 @@ export const expectedPhysicTypes = {
   gravityAdvanced: "boolean",
   communityForceStrength: "number",
 };
+
+export const usePhysics = create((set) => ({
+  physics: physicsInit,
+  setPhysics: (key, value) =>
+    set((state) => ({
+      physics: { ...state.physics, [key]: value },
+    })),
+  setAllPhysics: (value) =>
+    set(() => ({
+      physics: value,
+    })),
+}));

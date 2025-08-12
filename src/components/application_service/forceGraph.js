@@ -8,13 +8,13 @@ import { radius, drawCircle, drawLine, getTextStyle } from "../other/draw.js";
 import { getSimulation } from "./graphPhysics.js";
 import { SettingControl } from "./settingControl.js";
 import { getNodeIdName, getNodeLabelOffsetY } from "./graphCalculations.js";
-import { linkLengthInit, nodeRepulsionStrengthInit, xStrengthInit, yStrengthInit } from "../adapters/state/physics/physicsInit.js";
-import { useAppearance } from "../adapters/state/appearance/appearanceState.js";
-import { useGraphData } from "../adapters/state/graph/graphState.js";
-import { useContainer } from "../adapters/state/container/containerState.js";
-import { useTooltipSettings } from "../adapters/state/tooltip/tooltipState.js";
-import { useError } from "../adapters/state/error/errorState.js";
-import { useReset } from "../adapters/state/reset/resetState.js";
+import { linkLengthInit, nodeRepulsionStrengthInit, xStrengthInit, yStrengthInit } from "../adapters/state/physicsState.js";
+import { useAppearance } from "../adapters/state/appearanceState.js";
+import { useGraphData } from "../adapters/state/graphState.js";
+import { useContainer } from "../adapters/state/containerState.js";
+import { useTooltipSettings } from "../adapters/state/tooltipState.js";
+import { useError } from "../adapters/state/errorState.js";
+import { useReset } from "../adapters/state/resetState.js";
 
 export function ForceGraph() {
   const { appearance, setAppearance } = useAppearance();

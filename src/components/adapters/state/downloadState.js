@@ -1,5 +1,14 @@
 import { create } from "zustand";
-import { downloadInit } from "./downloadInit.js";
+
+// on state change: indicates graph should be downloaded
+export const downloadInit = {
+  json: null,
+  jsonCoordsPhysics: null,
+  png: null,
+  svg: null,
+  pdf: null,
+  legendPdf: null,
+};
 
 export const useDownload = create((set) => ({
   download: downloadInit,

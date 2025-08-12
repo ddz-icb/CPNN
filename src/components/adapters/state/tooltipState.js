@@ -1,5 +1,11 @@
 import { create } from "zustand";
-import { tooltipInit } from "./tooltipInit.js";
+
+export const tooltipInit = {
+  isClickTooltipActive: false,
+  clickTooltipData: null,
+  isHoverTooltipActive: false,
+  hoverTooltipData: null,
+};
 
 export const useTooltipSettings = create((set) => ({
   tooltipSettings: tooltipInit,

@@ -1,6 +1,22 @@
 import { create } from "zustand";
 
-import { graphDataInit } from "./graphDataInit.js";
+export const graphDataInit = {
+  graph: null,
+  originGraph: null,
+  linkWeightMin: null,
+  linkWeightMax: null,
+  mergeProteins: false,
+  nodeMap: null,
+  circles: null,
+  nodeLabels: null,
+  lines: null,
+  filteredAfterStart: false,
+  graphIsPreprocessed: false,
+  activeGraphNames: null,
+  uploadedGraphNames: null,
+  activeMapping: null,
+  uploadedMappingNames: null,
+};
 
 export const useGraphData = create((set) => ({
   graphData: graphDataInit,

@@ -1,5 +1,5 @@
 import log from "../../logger.js";
-import { applyTheme, lightTheme } from "../adapters/state/appearance/appearanceInit.js";
+import { lightTheme } from "../adapters/state/appearanceState.js";
 
 // the theme is stored in the local storage of the browser, not the database since
 
@@ -38,4 +38,10 @@ export function storeTheme(theme) {
 
   log.info("Storing theme:", theme);
   localStorage.setItem("theme", JSON.stringify(theme));
+}
+
+function applyTheme(document, theme) {
+  document.body.className = theme;
+
+  getComputedStyle(document.body);
 }
