@@ -1,14 +1,14 @@
 import log from "../../logger.js";
 import Dexie from "dexie";
-import { defaultColorSchemeNames } from "../adapters/state/appearanceState.js";
+import { defaultColorschemeNames } from "../adapters/state/appearanceState.js";
 
-export const db = new Dexie("colorSchemes");
+export const db = new Dexie("colorschemes");
 
 db.version(1).stores({
   uploadedFiles: "++id, name",
 });
 
-export async function addColorSchemeFileDB(file) {
+export async function addColorschemeFileDB(file) {
   try {
     const id = await db.uploadedFiles.add({
       name: file.name,
@@ -21,10 +21,10 @@ export async function addColorSchemeFileDB(file) {
   }
 }
 
-export async function addColorSchemeIfNotExistsDB(file) {
+export async function addColorschemeIfNotExistsDB(file) {
   try {
-    const colorScheme = await getByColorSchemeNameDB(file.name);
-    if (colorScheme) {
+    const colorscheme = await getByColorschemeNameDB(file.name);
+    if (colorscheme) {
       log.info("Color scheme already exists");
       return;
     }
@@ -40,7 +40,7 @@ export async function addColorSchemeIfNotExistsDB(file) {
   }
 }
 
-export async function removeColorSchemeDB(id) {
+export async function removeColorschemeDB(id) {
   try {
     await db.uploadedFiles.delete(id);
     log.info(`File with id ${id} successfully removed.`);
@@ -49,8 +49,8 @@ export async function removeColorSchemeDB(id) {
   }
 }
 
-export async function removeColorSchemeByNameDB(name) {
-  if (defaultColorSchemeNames.includes(name)) {
+export async function removeColorschemeByNameDB(name) {
+  if (defaultColorschemeNames.includes(name)) {
     log.warn("Example color schemes cannot be removed");
     return;
   }
@@ -68,7 +68,7 @@ export async function removeColorSchemeByNameDB(name) {
   }
 }
 
-export async function fromAllGetColorSchemeNameDB() {
+export async function fromAllGetColorschemeNameDB() {
   try {
     const names = [];
     await db.uploadedFiles.toCollection().each((file) => {
@@ -83,7 +83,7 @@ export async function fromAllGetColorSchemeNameDB() {
   }
 }
 
-export async function getByColorSchemeNameDB(name) {
+export async function getByColorschemeNameDB(name) {
   try {
     const file = await db.uploadedFiles.where("name").equals(name).first();
     if (file) {
@@ -98,11 +98,11 @@ export async function getByColorSchemeNameDB(name) {
   }
 }
 
-export async function getColorSchemeDB(filename) {
-  const file = await getByColorSchemeNameDB(filename);
+export async function getColorschemeDB(filename) {
+  const file = await getByColorschemeNameDB(filename);
   if (!file || !file.content) throw new Error(`No file found with the name ${filename}.`);
 
-  const colorScheme = JSON.parse(file.content);
-  if (!colorScheme) throw new Error("File format not recognized");
-  return { colorScheme, file };
+  const colorscheme = JSON.parse(file.content);
+  if (!colorscheme) throw new Error("File format not recognized");
+  return { colorscheme, file };
 }

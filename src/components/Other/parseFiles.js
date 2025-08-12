@@ -295,7 +295,7 @@ async function convertToCorrMatrix(data, takeSpearmanCoefficient) {
   }
 }
 
-export async function parseColorSchemeFile(file) {
+export async function parseColorschemeFile(file) {
   if (!file) {
     throw new Error(`No file found with the name ${file}.`);
   }
@@ -305,17 +305,17 @@ export async function parseColorSchemeFile(file) {
 
   try {
     const fileContent = await parseFileAsText(file);
-    const colorScheme = parseColorScheme(fileContent, file.name);
-    verifyColorScheme(colorScheme);
+    const colorscheme = parseColorscheme(fileContent, file.name);
+    verifyColorscheme(colorscheme);
 
-    return { name: file.name, content: JSON.stringify(colorScheme) };
+    return { name: file.name, content: JSON.stringify(colorscheme) };
   } catch (error) {
     log.error(error.message);
     throw new Error(`${error.message}`);
   }
 }
 
-export function parseColorScheme(content, filename) {
+export function parseColorscheme(content, filename) {
   let fileData = Papa.parse(content, {
     skipEmptyLines: true,
   });
@@ -332,13 +332,13 @@ export function parseColorScheme(content, filename) {
   };
 }
 
-function verifyColorScheme(colorScheme) {
-  if (!Array.isArray(colorScheme.content)) {
+function verifyColorscheme(colorscheme) {
+  if (!Array.isArray(colorscheme.content)) {
     throw new Error("The color scheme must be a list.");
   }
 
   const hexColorRegex = /^#[0-9A-Fa-f]{6}$/;
-  colorScheme.content.forEach((color, index) => {
+  colorscheme.content.forEach((color, index) => {
     if (typeof color !== "string" || !hexColorRegex.test(color)) {
       throw new Error(`Invalid hex-color at index ${index}: ${color}`);
     }

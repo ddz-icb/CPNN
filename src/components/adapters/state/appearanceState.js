@@ -61,8 +61,8 @@ export const nodeAttribsToColorIndices = null;
 export const showNodeLabelsInit = true;
 export const linkWidthInit = 2;
 
-export const defaultColorSchemes = [ibmAntiBlindness, okabe_ItoAntiBlindness, manyColors];
-export const defaultColorSchemeNames = defaultColorSchemes.map((c) => c.name);
+export const defaultColorschemes = [ibmAntiBlindness, okabe_ItoAntiBlindness, manyColors];
+export const defaultColorschemeNames = defaultColorschemes.map((c) => c.name);
 
 export const appearanceInit = {
   theme: themeInit,
@@ -71,9 +71,9 @@ export const appearanceInit = {
   nodeAttribsToColorIndices: null,
   linkWidth: linkWidthInit,
   linkWidthText: linkWidthInit,
-  uploadedColorSchemeNames: defaultColorSchemeNames,
-  nodeColorScheme: null,
-  linkColorScheme: null,
+  uploadedColorschemeNames: defaultColorschemeNames,
+  nodeColorscheme: null,
+  linkColorscheme: null,
 };
 
 export const useAppearance = create((set) => ({

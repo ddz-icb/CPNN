@@ -16,17 +16,17 @@ export function getTextStyle(textColor) {
   });
 }
 
-export function getColor(index, colorScheme) {
-  if (index == null || isNaN(index) || index >= colorScheme.length || index < 0) {
+export function getColor(index, colorscheme) {
+  if (index == null || isNaN(index) || index >= colorscheme.length || index < 0) {
     return fallbackColor;
   }
-  return colorScheme[index];
+  return colorscheme[index];
 }
 
-export function drawCircle(circle, node, circleBorderColor, colorScheme, nodeAttribsToColorIndices) {
+export function drawCircle(circle, node, circleBorderColor, colorscheme, nodeAttribsToColorIndices) {
   circle
     .circle(0, 0, radius)
-    .fill({ color: getColor(nodeAttribsToColorIndices[node.groups[0]], colorScheme) })
+    .fill({ color: getColor(nodeAttribsToColorIndices[node.groups[0]], colorscheme) })
     .stroke({ color: circleBorderColor, width: 2 });
   for (let i = 1; i < node.groups.length; i++) {
     let startAngle = (i * 2 * Math.PI) / node.groups.length;
@@ -37,16 +37,16 @@ export function drawCircle(circle, node, circleBorderColor, colorScheme, nodeAtt
       .arc(0, 0, radius - 1, startAngle, endAngle)
       .lineTo(0, 0)
       .fill({
-        color: getColor(nodeAttribsToColorIndices[node.groups[i]], colorScheme),
+        color: getColor(nodeAttribsToColorIndices[node.groups[i]], colorscheme),
       });
   }
   return circle;
 }
 
-export function drawCircleCanvas(ctx, node, circle, circleBorderColor, colorScheme, nodeAttribsToColorIndices) {
+export function drawCircleCanvas(ctx, node, circle, circleBorderColor, colorscheme, nodeAttribsToColorIndices) {
   ctx.beginPath();
   ctx.arc(circle.x, circle.y, radius, 0, 2 * Math.PI);
-  ctx.fillStyle = getColor(nodeAttribsToColorIndices[node.groups[0]], colorScheme);
+  ctx.fillStyle = getColor(nodeAttribsToColorIndices[node.groups[0]], colorscheme);
   ctx.fill();
   ctx.lineWidth = 2;
   ctx.strokeStyle = circleBorderColor;
@@ -60,7 +60,7 @@ export function drawCircleCanvas(ctx, node, circle, circleBorderColor, colorSche
     ctx.moveTo(circle.x, circle.y);
     ctx.arc(circle.x, circle.y, radius - 1, startAngle, endAngle);
     ctx.closePath();
-    ctx.fillStyle = getColor(nodeAttribsToColorIndices[node.groups[i]], colorScheme);
+    ctx.fillStyle = getColor(nodeAttribsToColorIndices[node.groups[i]], colorscheme);
     ctx.fill();
   }
 }
@@ -77,20 +77,20 @@ export function changeNodeLabelColor(nodeLabels, textColor) {
   }
 }
 
-export function changeNodeColors(circles, nodeMap, circleBorderColor, colorScheme, nodeAttribsToColorIndices) {
+export function changeNodeColors(circles, nodeMap, circleBorderColor, colorscheme, nodeAttribsToColorIndices) {
   for (const circle of circles.children) {
     const { node, sameCircle } = nodeMap[circle.id];
-    drawCircle(circle, node, circleBorderColor, colorScheme, nodeAttribsToColorIndices);
+    drawCircle(circle, node, circleBorderColor, colorscheme, nodeAttribsToColorIndices);
   }
 }
 
-export function drawLine(lines, link, linkWidth, colorScheme, linkAttribsToColorIndices) {
+export function drawLine(lines, link, linkWidth, colorscheme, linkAttribsToColorIndices) {
   if (link.attribs.length === 1) {
     lines
       .moveTo(link.source.x, link.source.y)
       .lineTo(link.target.x, link.target.y)
       .stroke({
-        color: getColor(linkAttribsToColorIndices[link.attribs[0]], colorScheme),
+        color: getColor(linkAttribsToColorIndices[link.attribs[0]], colorscheme),
         width: linkWidth,
       });
   } else {
@@ -108,21 +108,21 @@ export function drawLine(lines, link, linkWidth, colorScheme, linkAttribsToColor
         .moveTo(link.source.x + offsetX, link.source.y + offsetY)
         .lineTo(link.target.x + offsetX, link.target.y + offsetY)
         .stroke({
-          color: getColor(linkAttribsToColorIndices[link.attribs[i]], colorScheme),
+          color: getColor(linkAttribsToColorIndices[link.attribs[i]], colorscheme),
           width: linkWidth,
         });
     }
   }
 }
 
-export function drawLineCanvas(ctx, link, linkWidth, colorScheme, attribToColorIndex) {
+export function drawLineCanvas(ctx, link, linkWidth, colorscheme, attribToColorIndex) {
   ctx.lineWidth = linkWidth;
 
   if (link.attribs.length === 1) {
     ctx.beginPath();
     ctx.moveTo(link.source.x, link.source.y);
     ctx.lineTo(link.target.x, link.target.y);
-    ctx.strokeStyle = getColor(attribToColorIndex[link.attribs[0]], colorScheme);
+    ctx.strokeStyle = getColor(attribToColorIndex[link.attribs[0]], colorscheme);
     ctx.stroke();
     ctx.closePath();
   } else {
@@ -139,7 +139,7 @@ export function drawLineCanvas(ctx, link, linkWidth, colorScheme, attribToColorI
       ctx.beginPath();
       ctx.moveTo(link.source.x + offsetX, link.source.y + offsetY);
       ctx.lineTo(link.target.x + offsetX, link.target.y + offsetY);
-      ctx.strokeStyle = getColor(attribToColorIndex[link.attribs[i]], colorScheme);
+      ctx.strokeStyle = getColor(attribToColorIndex[link.attribs[i]], colorscheme);
       ctx.stroke();
       ctx.closePath();
     }

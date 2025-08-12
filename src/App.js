@@ -15,20 +15,20 @@ import {
 } from "./components/application_service/graphCalculations.js";
 import { loadGraphNames, setInitGraph } from "./components/domain_service/graphManager.js";
 import {
-  createColorScheme,
-  deleteColorScheme,
-  loadColorSchemeNames,
-  selectLinkColorScheme,
-  selectNodeColorScheme,
-  setInitColorSchemes,
-} from "./components/domain_service/colorSchemeManager.js";
+  createColorscheme,
+  deleteColorscheme,
+  loadColorschemeNames,
+  selectLinkColorscheme,
+  selectNodeColorscheme,
+  setInitColorschemes,
+} from "./components/domain_service/colorschemeManager.js";
 
 import { Error } from "./components/gui/error.js";
-import { defaultColorSchemes } from "./components/adapters/state/appearanceState.js";
+import { defaultColorschemes } from "./components/adapters/state/appearanceState.js";
 import { getFileNameWithoutExtension } from "./components/other/parseFiles.js";
 import { getGraphDB } from "./components/repository/GraphRepo.js";
 import { linkThresholdInit } from "./components/adapters/state/filterState.js";
-import { deleteMapping, loadMappings } from "./components/domain_service/mappingManager.js";
+import { loadMappings } from "./components/domain_service/mappingManager.js";
 import { loadTheme, storeTheme } from "./components/domain_service/themeManager.js";
 import { useFilter } from "./components/adapters/state/filterState.js";
 import { usePhysics } from "./components/adapters/state/physicsState.js";
@@ -43,7 +43,6 @@ function App() {
   const { setFilter, setAllFilter } = useFilter();
   const { setAllPhysics } = usePhysics();
   const { appearance, setAppearance } = useAppearance();
-  const { download, setDownload } = useDownload();
   const { graphData, setGraphData } = useGraphData();
   const { mappingData, setMappingData } = useMappingData();
   const { error, setError, clearError } = useError();
@@ -51,24 +50,24 @@ function App() {
   // COLOR SCHEME
   ///////////////
 
-  const handleSelectLinkColorScheme = (colorSchemeName) => {
-    if (!colorSchemeName) return;
+  const handleSelectLinkColorscheme = (colorschemeName) => {
+    if (!colorschemeName) return;
     log.info("Replacing link color scheme");
 
     try {
-      selectLinkColorScheme(colorSchemeName, setAppearance);
+      selectLinkColorscheme(colorschemeName, setAppearance);
     } catch (error) {
       setError("Color scheme is already the current link color scheme");
       log.error("Color scheme is already the current link color scheme");
     }
   };
 
-  const handleSelectNodeColorScheme = (colorSchemeName) => {
-    if (!colorSchemeName) return;
+  const handleSelectNodeColorscheme = (colorschemeName) => {
+    if (!colorschemeName) return;
     log.info("Replacing node color scheme");
 
     try {
-      selectNodeColorScheme(colorSchemeName, setAppearance);
+      selectNodeColorscheme(colorschemeName, setAppearance);
     } catch (error) {
       setError("Color scheme is already the current node color scheme");
       log.error("Color scheme is already the current node color scheme");
@@ -76,17 +75,17 @@ function App() {
   };
 
   // adds new color scheme
-  const handleCreateColorScheme = async (event) => {
+  const handleCreateColorscheme = async (event) => {
     const file = event.target.files[0];
     if (!event || !event.target || !file) return;
-    if (appearance.uploadedColorSchemeNames.some((name) => getFileNameWithoutExtension(name) === getFileNameWithoutExtension(file.name))) {
+    if (appearance.uploadedColorschemeNames.some((name) => getFileNameWithoutExtension(name) === getFileNameWithoutExtension(file.name))) {
       log.warn("Color scheme with this name already exists");
       setError("Color scheme with this name already exists");
       return;
     }
     log.info("Adding new color scheme");
 
-    createColorScheme(file, appearance.uploadedColorSchemeNames, setAppearance)
+    createColorscheme(file, appearance.uploadedColorschemeNames, setAppearance)
       .then(() => {})
       .catch((error) => {
         setError(`${error.message}`);
@@ -94,21 +93,21 @@ function App() {
       });
   };
 
-  const handleDeleteColorScheme = (colorSchemeName) => {
-    if (!colorSchemeName) return;
-    if (defaultColorSchemes.some((scheme) => scheme.name === colorSchemeName)) {
+  const handleDeleteColorscheme = (colorschemeName) => {
+    if (!colorschemeName) return;
+    if (defaultColorschemes.some((scheme) => scheme.name === colorschemeName)) {
       log.warn("Cannot remove default color schemes");
       setError("Cannot remove default color schemes");
       return;
     }
-    if (appearance.nodeColorScheme?.name == colorSchemeName || appearance.linkColorScheme?.name == colorSchemeName) {
+    if (appearance.nodeColorscheme?.name == colorschemeName || appearance.linkColorscheme?.name == colorschemeName) {
       log.warn("Cannot remove selected color scheme as it's still active");
       setError("Cannot remove selected color scheme as it's still active");
       return;
     }
-    log.info("Deleting color schemes with name", colorSchemeName);
+    log.info("Deleting color schemes with name", colorschemeName);
 
-    deleteColorScheme(appearance.uploadedColorSchemeNames, colorSchemeName, setAppearance);
+    deleteColorscheme(appearance.uploadedColorschemeNames, colorschemeName, setAppearance);
   };
 
   // INIT STUFF
@@ -125,7 +124,7 @@ function App() {
   // select default color schemes on startup
   useEffect(() => {
     log.info("Setting init color schemes");
-    setInitColorSchemes(appearance, setAppearance);
+    setInitColorschemes(appearance, setAppearance);
   }, []);
 
   // init uploadedGraphNames
@@ -164,11 +163,11 @@ function App() {
     }
   }, []);
 
-  // init uploadedColorSchemeNames //
+  // init uploadedColorschemeNames //
   useEffect(() => {
     log.info("Loading uploaded color schemes");
     try {
-      loadColorSchemeNames(setAppearance);
+      loadColorschemeNames(setAppearance);
     } catch (error) {
       setError("Error loading color schemes from database");
       log.error("Error loading color schemes from database");
@@ -246,10 +245,10 @@ function App() {
     <div className={appearance.theme.name}>
       <HeaderBar />
       <Sidebar
-        handleNewColorScheme={handleCreateColorScheme}
-        handleDeleteColorScheme={handleDeleteColorScheme}
-        handleSelectLinkColorScheme={handleSelectLinkColorScheme}
-        handleSelectNodeColorScheme={handleSelectNodeColorScheme}
+        handleNewColorscheme={handleCreateColorscheme}
+        handleDeleteColorscheme={handleDeleteColorscheme}
+        handleSelectLinkColorscheme={handleSelectLinkColorscheme}
+        handleSelectNodeColorscheme={handleSelectNodeColorscheme}
       />
       <main>
         <Error />

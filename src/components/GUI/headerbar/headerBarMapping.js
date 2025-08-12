@@ -6,10 +6,10 @@ export function HeaderbarMapping() {
   const { appearance } = useAppearance();
   const { graphData } = useGraphData();
 
-  const renderMapping = (attribsToColorIndices, colorScheme) => {
+  const renderMapping = (attribsToColorIndices, colorscheme) => {
     const content = [];
     for (const key in attribsToColorIndices) {
-      const color = getColor(attribsToColorIndices[key], colorScheme.content);
+      const color = getColor(attribsToColorIndices[key], colorscheme.content);
       if (color !== fallbackColor) {
         content.push(
           <div key={key} className="colorscheme-container">
@@ -28,9 +28,9 @@ export function HeaderbarMapping() {
     return content;
   };
 
-  const nodeMapping = renderMapping(appearance.nodeAttribsToColorIndices, appearance.nodeColorScheme);
+  const nodeMapping = renderMapping(appearance.nodeAttribsToColorIndices, appearance.nodeColorscheme);
 
-  const linkMapping = renderMapping(appearance.linkAttribsToColorIndices, appearance.linkColorScheme);
+  const linkMapping = renderMapping(appearance.linkAttribsToColorIndices, appearance.linkColorscheme);
 
   return (
     <div className={"dropdown min-width-400 margin-left-20"}>

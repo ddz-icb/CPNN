@@ -20,11 +20,11 @@ function createGraphSvgElement(
   graph,
   nodeMap,
   linkWidth,
-  linkColorScheme,
+  linkColorscheme,
   linkAttribsToColorIndices,
   circleBorderColor,
   textColor,
-  nodeColorScheme,
+  nodeColorscheme,
   nodeAttribsToColorIndices
 ) {
   let minX = Infinity,
@@ -56,12 +56,12 @@ function createGraphSvgElement(
   svgElement.setAttribute("height", height);
 
   for (const link of graph.links) {
-    drawLineCanvas(ctx, link, linkWidth, linkColorScheme.content, linkAttribsToColorIndices);
+    drawLineCanvas(ctx, link, linkWidth, linkColorscheme.content, linkAttribsToColorIndices);
   }
 
   for (const node of graph.nodes) {
     const { circle, nodeLabel } = nodeMap[node.id];
-    drawCircleCanvas(ctx, node, circle, circleBorderColor, nodeColorScheme.content, nodeAttribsToColorIndices);
+    drawCircleCanvas(ctx, node, circle, circleBorderColor, nodeColorscheme.content, nodeAttribsToColorIndices);
     if (nodeLabel?.visible) {
       ctx.font = `${nodeLabel._fontSize || 12}px sans-serif`;
       ctx.fillStyle = textColor;
@@ -77,9 +77,9 @@ function drawLegendOnPdf(
   pdf,
   offsetX,
   offsetY,
-  nodeColorScheme,
+  nodeColorscheme,
   nodeAttribsToColorIndices,
-  linkColorScheme,
+  linkColorscheme,
   linkAttribsToColorIndices,
   activeMapping
 ) {
@@ -122,7 +122,7 @@ function drawLegendOnPdf(
   let yPos = offsetY + padding;
   pdf.setTextColor(50, 50, 50);
 
-  const drawSection = (title, attribs, colorScheme, isNode) => {
+  const drawSection = (title, attribs, colorscheme, isNode) => {
     pdf.setFont("helvetica", "normal");
     pdf.setFontSize(headerFontSize);
     pdf.text(title, offsetX + padding, yPos + 10);
@@ -132,7 +132,7 @@ function drawLegendOnPdf(
 
     for (const key in attribs) {
       if (Object.hasOwnProperty.call(attribs, key)) {
-        const color = colorScheme.content[attribs[key]];
+        const color = colorscheme.content[attribs[key]];
         const label = isNode ? activeMapping?.groupMapping?.[key]?.name || key : key;
 
         pdf.setFillColor(color);
@@ -152,9 +152,9 @@ function drawLegendOnPdf(
     yPos += lineHeight;
   };
 
-  drawSection("Nodes", nodeAttribsToColorIndices, nodeColorScheme, true);
+  drawSection("Nodes", nodeAttribsToColorIndices, nodeColorscheme, true);
   yPos += sectionSpacing;
-  drawSection("Links", linkAttribsToColorIndices, linkColorScheme, false);
+  drawSection("Links", linkAttribsToColorIndices, linkColorscheme, false);
 
   return { legendWidth, legendHeight };
 }
@@ -187,11 +187,11 @@ export function downloadAsSVG(
   document,
   graph,
   linkWidth,
-  linkColorScheme,
+  linkColorscheme,
   linkAttribsToColorIndices,
   circleBorderColor,
   textColor,
-  nodeColorScheme,
+  nodeColorscheme,
   nodeAttribsToColorIndices,
   nodeMap
 ) {
@@ -199,11 +199,11 @@ export function downloadAsSVG(
     graph,
     nodeMap,
     linkWidth,
-    linkColorScheme,
+    linkColorscheme,
     linkAttribsToColorIndices,
     circleBorderColor,
     textColor,
-    nodeColorScheme,
+    nodeColorscheme,
     nodeAttribsToColorIndices
   );
   const svgString = new XMLSerializer().serializeToString(svgElement);
@@ -214,11 +214,11 @@ export function downloadAsSVG(
 export function downloadAsPDF(
   graph,
   linkWidth,
-  linkColorScheme,
+  linkColorscheme,
   linkAttribsToColorIndices,
   circleBorderColor,
   textColor,
-  nodeColorScheme,
+  nodeColorscheme,
   nodeAttribsToColorIndices,
   nodeMap
 ) {
@@ -226,11 +226,11 @@ export function downloadAsPDF(
     graph,
     nodeMap,
     linkWidth,
-    linkColorScheme,
+    linkColorscheme,
     linkAttribsToColorIndices,
     circleBorderColor,
     textColor,
-    nodeColorScheme,
+    nodeColorscheme,
     nodeAttribsToColorIndices
   );
 
@@ -271,15 +271,15 @@ export function downloadCsvFile(csvContent, fileName) {
   triggerDownload(blob, fileName.endsWith(".csv") ? fileName : `${fileName}.csv`);
 }
 
-export function downloadLegendPdf(linkColorScheme, linkAttribsToColorIndices, nodeColorScheme, nodeAttribsToColorIndices, activeMapping) {
+export function downloadLegendPdf(linkColorscheme, linkAttribsToColorIndices, nodeColorscheme, nodeAttribsToColorIndices, activeMapping) {
   const tempPdf = new jsPDF();
   const { legendWidth, legendHeight } = drawLegendOnPdf(
     tempPdf,
     0,
     0,
-    nodeColorScheme,
+    nodeColorscheme,
     nodeAttribsToColorIndices,
-    linkColorScheme,
+    linkColorscheme,
     linkAttribsToColorIndices,
     activeMapping
   );
@@ -290,6 +290,6 @@ export function downloadLegendPdf(linkColorScheme, linkAttribsToColorIndices, no
     format: [legendWidth, legendHeight],
   });
 
-  drawLegendOnPdf(pdf, 0, 0, nodeColorScheme, nodeAttribsToColorIndices, linkColorScheme, linkAttribsToColorIndices, activeMapping);
+  drawLegendOnPdf(pdf, 0, 0, nodeColorscheme, nodeAttribsToColorIndices, linkColorscheme, linkAttribsToColorIndices, activeMapping);
   pdf.save("Graph_Legend.pdf");
 }

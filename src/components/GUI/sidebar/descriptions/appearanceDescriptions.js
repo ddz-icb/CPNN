@@ -10,7 +10,7 @@ export const linkWidthDescription = (
   </div>
 );
 
-export const uploadColorSchemeDescription = (
+export const uploadColorschemeDescription = (
   <div>
     <p>
       A color scheme can determine the colors given to both links and nodes. It furthermore determines the order in which the colors are distributed.
@@ -21,7 +21,7 @@ export const uploadColorSchemeDescription = (
   </div>
 );
 
-export const setColorSchemeDescription = (
+export const setColorschemeDescription = (
   <div>
     <p>Select what the color scheme should be applied to</p>
   </div>

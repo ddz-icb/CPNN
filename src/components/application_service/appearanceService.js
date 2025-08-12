@@ -58,24 +58,24 @@ export const appearanceService = {
     this.set("linkWidthText", val);
   },
 
-  getUploadedColorSchemeNames() {
-    return this.get("uploadedColorSchemeNames");
+  getUploadedColorschemeNames() {
+    return this.get("uploadedColorschemeNames");
   },
-  setUploadedColorSchemeNames(val) {
-    this.set("uploadedColorSchemeNames", val);
-  },
-
-  getNodeColorScheme() {
-    return this.get("nodeColorScheme");
-  },
-  setNodeColorScheme(val) {
-    this.set("nodeColorScheme", val);
+  setUploadedColorschemeNames(val) {
+    this.set("uploadedColorschemeNames", val);
   },
 
-  getLinkColorScheme() {
-    return this.get("linkColorScheme");
+  getNodeColorscheme() {
+    return this.get("nodeColorscheme");
   },
-  setLinkColorScheme(val) {
-    this.set("linkColorScheme", val);
+  setNodeColorscheme(val) {
+    this.set("nodeColorscheme", val);
+  },
+
+  getLinkColorscheme() {
+    return this.get("linkColorscheme");
+  },
+  setLinkColorscheme(val) {
+    this.set("linkColorscheme", val);
   },
 };

@@ -1,28 +1,28 @@
 import { useRef, useState, Fragment } from "react";
 import { ReactComponent as TrashIcon } from "../../../icons/trash.svg";
 import { SwitchBlock, Popup, TableList, SliderBlock, Button, PopupTextField } from "../reusable_components/sidebarComponents.js";
-import { colorSchemeCsv } from "../../assets/exampleColorSchemeCSV.js";
+import { colorschemeCsv } from "../../assets/exampleColorschemeCSV.js";
 import { downloadCsvFile } from "../../application_service/download.js";
 import log from "../../../logger.js";
 import {
   linkWidthDescription,
   nodeLabelDescription,
-  setColorSchemeDescription,
-  uploadColorSchemeDescription,
+  setColorschemeDescription,
+  uploadColorschemeDescription,
 } from "./descriptions/appearanceDescriptions.js";
 import { useAppearance, linkWidthInit } from "../../adapters/state/appearanceState.js";
 
-export function AppearanceSidebar({ handleNewColorScheme, handleDeleteColorScheme, handleSelectLinkColorScheme, handleSelectNodeColorScheme }) {
+export function AppearanceSidebar({ handleNewColorscheme, handleDeleteColorscheme, handleSelectLinkColorscheme, handleSelectNodeColorscheme }) {
   return (
     <>
       <AppearanceSettings />
-      <UploadColorScheme handleNewColorScheme={handleNewColorScheme} handleDeleteColorScheme={handleDeleteColorScheme} />
-      <ActiveNodeColorScheme />
-      <ActiveLinkColorScheme />
-      <UploadedColorSchemes
-        handleDeleteColorScheme={handleDeleteColorScheme}
-        handleSelectLinkColorScheme={handleSelectLinkColorScheme}
-        handleSelectNodeColorScheme={handleSelectNodeColorScheme}
+      <UploadColorscheme handleNewColorscheme={handleNewColorscheme} handleDeleteColorscheme={handleDeleteColorscheme} />
+      <ActiveNodeColorscheme />
+      <ActiveLinkColorscheme />
+      <UploadedColorschemes
+        handleDeleteColorscheme={handleDeleteColorscheme}
+        handleSelectLinkColorscheme={handleSelectLinkColorscheme}
+        handleSelectNodeColorscheme={handleSelectNodeColorscheme}
       />
       <ColorSelection />
     </>
@@ -58,23 +58,23 @@ export function AppearanceSettings() {
   );
 }
 
-export function UploadColorScheme({ handleNewColorScheme }) {
-  const [colorSchemePopupActive, setColorSchemePopupActive] = useState(false);
-  const colorSchemeRef = useRef(null);
+export function UploadColorscheme({ handleNewColorscheme }) {
+  const [colorschemePopupActive, setColorschemePopupActive] = useState(false);
+  const colorschemeRef = useRef(null);
 
   return (
     <>
       <Button
-        onClick={() => setColorSchemePopupActive(!colorSchemePopupActive)}
+        onClick={() => setColorschemePopupActive(!colorschemePopupActive)}
         text={"Upload Color Scheme"}
         tooltip={"Upload your Color Scheme as a CSV or TSV File"}
         tooltipId={"upload-graph-tooltip"}
       />
       <Popup
         heading={"Uploading Your Color Scheme"}
-        description={uploadColorSchemeDescription}
-        isOpen={colorSchemePopupActive}
-        setIsOpen={setColorSchemePopupActive}
+        description={uploadColorschemeDescription}
+        isOpen={colorschemePopupActive}
+        setIsOpen={setColorschemePopupActive}
       >
         <PopupTextField inline={true} textInfront={"Color Scheme format:"} textInside={"Color1, Color2, Color3, ..."} />
         <PopupTextField inline={true} textInfront={"Color Scheme example:"} textInside={"#e69f00,#56b4e9,#009e73"} />
@@ -82,17 +82,17 @@ export function UploadColorScheme({ handleNewColorScheme }) {
           <Button
             variant="popup"
             text={"Download Example Color Scheme"}
-            onClick={() => downloadCsvFile(colorSchemeCsv.content, colorSchemeCsv.name)}
+            onClick={() => downloadCsvFile(colorschemeCsv.content, colorschemeCsv.name)}
           />
           <Button
             variant="popup"
             text={"Upload Own Color Scheme"}
-            onClick={() => colorSchemeRef.current.click()}
-            linkRef={colorSchemeRef}
+            onClick={() => colorschemeRef.current.click()}
+            linkRef={colorschemeRef}
             onChange={(event) => {
-              handleNewColorScheme(event);
+              handleNewColorscheme(event);
               event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
-              setColorSchemePopupActive(false);
+              setColorschemePopupActive(false);
             }}
           />
         </div>
@@ -101,56 +101,56 @@ export function UploadColorScheme({ handleNewColorScheme }) {
   );
 }
 
-function ActiveNodeColorScheme() {
+function ActiveNodeColorscheme() {
   const { appearance } = useAppearance();
 
   return (
     <TableList
       heading={"Active Node Color Scheme"}
-      data={appearance.nodeColorScheme ? [appearance.nodeColorScheme] : []}
+      data={appearance.nodeColorscheme ? [appearance.nodeColorscheme] : []}
       displayKey={"name"}
       dark={true}
     />
   );
 }
 
-function ActiveLinkColorScheme() {
+function ActiveLinkColorscheme() {
   const { appearance } = useAppearance();
 
   return (
     <TableList
       heading={"Active Link Color Scheme"}
-      data={appearance.linkColorScheme ? [appearance.linkColorScheme] : []}
+      data={appearance.linkColorscheme ? [appearance.linkColorscheme] : []}
       displayKey={"name"}
       dark={true}
     />
   );
 }
 
-function UploadedColorSchemes({ handleDeleteColorScheme, handleSelectLinkColorScheme, handleSelectNodeColorScheme }) {
+function UploadedColorschemes({ handleDeleteColorscheme, handleSelectLinkColorscheme, handleSelectNodeColorscheme }) {
   const { appearance, setAppearance } = useAppearance();
 
-  const [selectColorSchemePopup, setSelectSchemePopup] = useState(false);
-  const [selectedColorSchemeName, setSelectedScheme] = useState(null);
+  const [selectColorschemePopup, setSelectSchemePopup] = useState(false);
+  const [selectedColorschemeName, setSelectedScheme] = useState(null);
 
   return (
     <>
       <TableList
         heading={"Uploaded Color Schemes"}
-        data={appearance.uploadedColorSchemeNames}
-        onItemClick={(colorSchemeName) => {
-          setSelectedScheme(colorSchemeName);
+        data={appearance.uploadedColorschemeNames}
+        onItemClick={(colorschemeName) => {
+          setSelectedScheme(colorschemeName);
           setSelectSchemePopup(true);
         }}
         itemTooltipContent={() => "Replace Node/Link Color Scheme"}
         ActionIcon={TrashIcon}
-        onActionIconClick={(colorSchemeName) => handleDeleteColorScheme(colorSchemeName)}
+        onActionIconClick={(colorschemeName) => handleDeleteColorscheme(colorschemeName)}
         actionIconTooltipContent={() => "Delete Color Scheme"}
       />
-      <Popup heading={"Set Color Scheme"} description={setColorSchemeDescription} isOpen={selectColorSchemePopup} setIsOpen={setSelectSchemePopup}>
+      <Popup heading={"Set Color Scheme"} description={setColorschemeDescription} isOpen={selectColorschemePopup} setIsOpen={setSelectSchemePopup}>
         <div className="popup-block">
-          <Button variant="popup" onClick={() => handleSelectNodeColorScheme(selectedColorSchemeName)} text={"Set for Nodes"} />
-          <Button variant="popup" onClick={() => handleSelectLinkColorScheme(selectedColorSchemeName)} text={"Set for Links"} />
+          <Button variant="popup" onClick={() => handleSelectNodeColorscheme(selectedColorschemeName)} text={"Set for Nodes"} />
+          <Button variant="popup" onClick={() => handleSelectLinkColorscheme(selectedColorschemeName)} text={"Set for Links"} />
         </div>
       </Popup>
     </>
@@ -164,13 +164,13 @@ function ColorSelection() {
     <div className="pad-left-1 pad-right-1 color-mapping-select-table">
       <ColorMappingSelect
         heading={"Node Color Mapping"}
-        colorScheme={appearance.nodeColorScheme}
+        colorscheme={appearance.nodeColorscheme}
         attribsToColorIndices={appearance.nodeAttribsToColorIndices}
         setMapping={(updatedMapping) => setAppearance("nodeAttribsToColorIndices", updatedMapping)}
       />
       <ColorMappingSelect
         heading={"Link Color Mapping"}
-        colorScheme={appearance.linkColorScheme}
+        colorscheme={appearance.linkColorscheme}
         attribsToColorIndices={appearance.linkAttribsToColorIndices}
         setMapping={(updatedMapping) => setAppearance("linkAttribsToColorIndices", updatedMapping)}
       />
@@ -178,7 +178,7 @@ function ColorSelection() {
   );
 }
 
-export function ColorMappingSelect({ heading, colorScheme, attribsToColorIndices, setMapping }) {
+export function ColorMappingSelect({ heading, colorscheme, attribsToColorIndices, setMapping }) {
   const handleColorChange = (colorIndex, newAttribute) => {
     const updatedMapping = { ...attribsToColorIndices };
 
@@ -193,7 +193,7 @@ export function ColorMappingSelect({ heading, colorScheme, attribsToColorIndices
         updatedMapping[oldAttribute] = previousColorIndex;
       } else {
         const usedColors = Object.values(updatedMapping);
-        const firstAvailableColor = Object.keys(colorScheme.content).find((index) => !usedColors.includes(parseInt(index, 10)));
+        const firstAvailableColor = Object.keys(colorscheme.content).find((index) => !usedColors.includes(parseInt(index, 10)));
 
         if (firstAvailableColor !== undefined) {
           updatedMapping[oldAttribute] = parseInt(firstAvailableColor, 10);
@@ -211,7 +211,7 @@ export function ColorMappingSelect({ heading, colorScheme, attribsToColorIndices
       <span className="heading-label-no-pad pad-bottom-05">{heading}</span>
       <div className="sidebar-block-no-pad">
         <div className="colormapping-selector">
-          {Object.entries(colorScheme.content).map(([colorIndex, color]) => {
+          {Object.entries(colorscheme.content).map(([colorIndex, color]) => {
             const currentAttribute = Object.keys(attribsToColorIndices).find((key) => attribsToColorIndices[key] === parseInt(colorIndex, 10));
 
             return (
