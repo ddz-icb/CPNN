@@ -6,16 +6,16 @@ export const graphDataInit = {
   linkWeightMin: null,
   linkWeightMax: null,
   mergeProteins: false,
+
   nodeMap: null,
   circles: null,
   nodeLabels: null,
   lines: null,
+
   filteredAfterStart: false,
   graphIsPreprocessed: false,
-  activeGraphNames: null,
   uploadedGraphNames: null,
-  activeMapping: null,
-  uploadedMappingNames: null,
+  activeGraphNames: null,
 };
 
 export const useGraphData = create((set) => ({

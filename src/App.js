@@ -42,6 +42,7 @@ import { useDownload } from "./components/adapters/state/downloadState.js";
 import { useGraphData } from "./components/adapters/state/graphState.js";
 import { useError } from "./components/adapters/state/errorState.js";
 import { resetService } from "./components/application_service/resetService.js";
+import { useMappingData } from "./components/adapters/state/mappingState.js";
 
 function App() {
   const { setFilter, setAllFilter } = useFilter();
@@ -49,6 +50,7 @@ function App() {
   const { appearance, setAppearance } = useAppearance();
   const { download, setDownload } = useDownload();
   const { graphData, setGraphData } = useGraphData();
+  const { mappingData, setMappingData } = useMappingData();
   const { error, setError, clearError } = useError();
 
   // MAPPING
@@ -100,7 +102,7 @@ function App() {
   // deletes annotation mapping files
   const handleDeleteMapping = (mappingName) => {
     if (!mappingName) return;
-    if (graphData?.activeMapping?.name == mappingName) {
+    if (mappingData?.activeMapping?.name == mappingName) {
       log.warn("Cannot remove selected mapping as it's still active");
       setError("Cannot remove selected mapping as it's still active");
       return;
@@ -276,7 +278,7 @@ function App() {
     log.info("Modifying graph and forwarding it to the simulation component");
 
     let newGraph = structuredClone(graphData.originGraph);
-    newGraph = applyNodeMapping(newGraph, graphData.activeMapping);
+    newGraph = applyNodeMapping(newGraph, mappingData.activeMapping);
 
     const { minWeight, maxWeight } = getLinkWeightMinMax(newGraph);
     if (minWeight != Infinity) {
@@ -302,7 +304,7 @@ function App() {
     setGraphData("originGraph", newGraph);
     setGraphData("graph", newGraph);
     setGraphData("graphIsPreprocessed", true);
-  }, [graphData.originGraph, graphData.activeGraphNames, graphData.activeMapping]);
+  }, [graphData.originGraph, graphData.activeGraphNames, mappingData.activeMapping]);
 
   return (
     <div className={appearance.theme.name}>

@@ -23,16 +23,18 @@ import {
 import { mergeProteinsDescription } from "./descriptions/filterDescriptions.js";
 import { useGraphData } from "../../adapters/state/graphState.js";
 import { graphService } from "../../application_service/graphService.js";
+import { useMappingData } from "../../adapters/state/mappingState.js";
 
 export function DataSidebar({ handleCreateMapping, handleRemoveActiveMapping, handleMappingSelect, handleDeleteMapping }) {
   const { graphData } = useGraphData();
+  const { mappingData } = useMappingData();
 
   return (
     <>
       <TopDataButtons handleCreateMapping={handleCreateMapping} />
       <ActiveGraphFiles activeGraphNames={graphData.activeGraphNames} />
       <UploadedGraphFiles uploadedGraphNames={graphData.uploadedGraphNames} />
-      <ActiveMapping activeMapping={graphData.activeMapping} handleRemoveActiveMapping={handleRemoveActiveMapping} />
+      <ActiveMapping activeMapping={mappingData.activeMapping} handleRemoveActiveMapping={handleRemoveActiveMapping} />
       <UploadedMappings
         uploadedMappingNames={graphData.uploadedMappingNames}
         handleMappingSelect={handleMappingSelect}
