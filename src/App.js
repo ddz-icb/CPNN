@@ -292,7 +292,6 @@ function App() {
       <Sidebar
         handleCreateMapping={handleCreateMapping}
         handleRemoveActiveMapping={handleRemoveActiveMapping}
-        handleMappingSelect={handleSelectMapping}
         handleDeleteMapping={handleDeleteMapping}
         handleNewColorScheme={handleCreateColorScheme}
         handleDeleteColorScheme={handleDeleteColorScheme}

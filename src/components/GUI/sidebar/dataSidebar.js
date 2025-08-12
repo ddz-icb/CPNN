@@ -24,8 +24,9 @@ import { mergeProteinsDescription } from "./descriptions/filterDescriptions.js";
 import { useGraphData } from "../../adapters/state/graphState.js";
 import { graphService } from "../../application_service/graphService.js";
 import { useMappingData } from "../../adapters/state/mappingState.js";
+import { mappingService } from "../../application_service/mappingService.js";
 
-export function DataSidebar({ handleCreateMapping, handleRemoveActiveMapping, handleMappingSelect, handleDeleteMapping }) {
+export function DataSidebar({ handleCreateMapping, handleRemoveActiveMapping, handleDeleteMapping }) {
   const { graphData } = useGraphData();
   const { mappingData } = useMappingData();
 
@@ -35,11 +36,7 @@ export function DataSidebar({ handleCreateMapping, handleRemoveActiveMapping, ha
       <ActiveGraphFiles activeGraphNames={graphData.activeGraphNames} />
       <UploadedGraphFiles uploadedGraphNames={graphData.uploadedGraphNames} />
       <ActiveMapping activeMapping={mappingData.activeMapping} handleRemoveActiveMapping={handleRemoveActiveMapping} />
-      <UploadedMappings
-        uploadedMappingNames={mappingData.uploadedMappingNames}
-        handleMappingSelect={handleMappingSelect}
-        handleDeleteMapping={handleDeleteMapping}
-      />
+      <UploadedMappings uploadedMappingNames={mappingData.uploadedMappingNames} handleDeleteMapping={handleDeleteMapping} />
     </>
   );
 }
@@ -103,12 +100,12 @@ function ActiveMapping({ activeMapping, handleRemoveActiveMapping }) {
   );
 }
 
-function UploadedMappings({ uploadedMappingNames, handleMappingSelect, handleDeleteMapping }) {
+function UploadedMappings({ uploadedMappingNames, handleDeleteMapping }) {
   return (
     <TableList
       heading={"Uploaded Pathway Mappings"}
       data={uploadedMappingNames}
-      onItemClick={(mappingName) => handleMappingSelect(mappingName)}
+      onItemClick={(mappingName) => mappingService.handleSelectMapping(mappingName)}
       itemTooltipContent={() => "Replace Active Pathway Mapping"}
       ActionIcon={TrashIcon}
       onActionIconClick={(mappingName) => handleDeleteMapping(mappingName)}
