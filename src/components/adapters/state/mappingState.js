@@ -1,5 +1,8 @@
 import { create } from "zustand";
 
+export const activeMappingInit = null;
+export const uploadedMappingNamesInit = null;
+
 export const mappingDataInit = {
   activeMapping: null,
   uploadedMappingNames: null,

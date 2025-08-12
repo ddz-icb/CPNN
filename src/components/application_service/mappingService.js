@@ -1,5 +1,5 @@
 import log from "../../logger.js";
-import { useMappingData } from "../adapters/state/mappingState.js";
+import { activeMappingInit, useMappingData } from "../adapters/state/mappingState.js";
 import { createMapping, selectMapping } from "../domain_service/mappingManager.js";
 import { errorService } from "./errorService.js";
 import { graphService } from "./graphService.js";
@@ -41,6 +41,14 @@ export const mappingService = {
       errorService.setError("Error adding mapping file");
       log.error(error);
     }
+  },
+
+  async handleRemoveActiveMapping() {
+    log.info("Removing currently active annotation mapping");
+
+    this.setActiveMapping(activeMappingInit);
+    graphService.setGraphIsPreprocessed(false);
+    resetService.simulationReset();
   },
 
   // ===== Generic getter/setter =====

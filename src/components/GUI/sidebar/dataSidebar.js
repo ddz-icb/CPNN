@@ -26,7 +26,7 @@ import { graphService } from "../../application_service/graphService.js";
 import { useMappingData } from "../../adapters/state/mappingState.js";
 import { mappingService } from "../../application_service/mappingService.js";
 
-export function DataSidebar({ handleRemoveActiveMapping, handleDeleteMapping }) {
+export function DataSidebar({ handleDeleteMapping }) {
   const { graphData } = useGraphData();
   const { mappingData } = useMappingData();
 
@@ -35,7 +35,7 @@ export function DataSidebar({ handleRemoveActiveMapping, handleDeleteMapping }) 
       <TopDataButtons />
       <ActiveGraphFiles activeGraphNames={graphData.activeGraphNames} />
       <UploadedGraphFiles uploadedGraphNames={graphData.uploadedGraphNames} />
-      <ActiveMapping activeMapping={mappingData.activeMapping} handleRemoveActiveMapping={handleRemoveActiveMapping} />
+      <ActiveMapping activeMapping={mappingData.activeMapping} />
       <UploadedMappings uploadedMappingNames={mappingData.uploadedMappingNames} handleDeleteMapping={handleDeleteMapping} />
     </>
   );
@@ -86,14 +86,14 @@ function UploadedGraphFiles({ uploadedGraphNames }) {
   );
 }
 
-function ActiveMapping({ activeMapping, handleRemoveActiveMapping }) {
+function ActiveMapping({ activeMapping }) {
   return (
     <TableList
       heading={"Currently Active Pathway Mapping"}
       data={activeMapping ? [activeMapping] : []}
       displayKey={"name"}
       ActionIcon={DeleteIcon}
-      onActionIconClick={() => handleRemoveActiveMapping()}
+      onActionIconClick={() => mappingService.handleRemoveActiveMapping()}
       actionIconTooltipContent={() => "Deselect pathway mapping"}
       dark={true}
     />

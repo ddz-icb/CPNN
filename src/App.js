@@ -51,15 +51,6 @@ function App() {
   // MAPPING
   //////////
 
-  // disables currently active annotation mapping
-  const handleRemoveActiveMapping = () => {
-    log.info("Removing currently active annotation mapping");
-
-    setMappingData("activeMapping", null);
-    setGraphData("graphIsPreprocessed", false);
-    resetService.simulationReset();
-  };
-
   // deletes annotation mapping files
   const handleDeleteMapping = (mappingName) => {
     if (!mappingName) return;
@@ -271,7 +262,6 @@ function App() {
     <div className={appearance.theme.name}>
       <HeaderBar />
       <Sidebar
-        handleRemoveActiveMapping={handleRemoveActiveMapping}
         handleDeleteMapping={handleDeleteMapping}
         handleNewColorScheme={handleCreateColorScheme}
         handleDeleteColorScheme={handleDeleteColorScheme}
