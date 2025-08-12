@@ -34,7 +34,7 @@ import { Error } from "./components/gui/error.js";
 import { defaultColorSchemes } from "./components/config/appearanceInitValues.js";
 import { getFileNameWithoutExtension } from "./components/other/parseFiles.js";
 import { getGraphDB } from "./components/repository/repoGraphs.js";
-import { filterInit, linkThresholdInit } from "./components/config/filterInitValues.js";
+import { linkThresholdInit } from "./components/config/filterInitValues.js";
 import {
   addNewMappingFile as createMapping,
   deleteMapping as deleteMapping,
@@ -48,10 +48,8 @@ import { useAppearance } from "./components/adapters/state/appearanceState.js";
 import { useDownload } from "./components/adapters/state/downloadState.js";
 import { useGraphData } from "./components/adapters/state/graphState.js";
 import { useError } from "./components/adapters/state/errorState.js";
-import { errorService } from "./components/application_service/errorService.js";
-import { graphService } from "./components/application_service/graphService.js";
-import { useReset } from "./components/adapters/state/resetState.js";
 import { resetService } from "./components/application_service/resetService.js";
+import { graphService } from "./components/application_service/graphService.js";
 
 function App() {
   const { setFilter, setAllFilter } = useFilter();
@@ -60,28 +58,9 @@ function App() {
   const { download, setDownload } = useDownload();
   const { graphData, setGraphData } = useGraphData();
   const { error, setError, clearError } = useError();
-  const { reset, setReset } = useReset();
 
   // GRAPH
   ////////
-
-  function handleSelectGraph(filename) {
-    if (!filename) {
-      errorService.setError("Selected invalid graph");
-      return;
-    }
-    log.info("Replacing graph");
-
-    try {
-      resetService.simulationReset();
-      selectGraph(filename, setGraphData);
-      graphService.setGraphIsPreprocessed(false); // graphService. -> this.
-      graphService.setMergeProteins(false); // graphService. -> this.
-    } catch (error) {
-      errorService.setError(error.message);
-      log.error("Error loading graph:", error);
-    }
-  }
 
   const handleAddActiveGraph = (filename) => {
     if (!filename) return;
@@ -383,7 +362,6 @@ function App() {
     <div className={appearance.theme.name}>
       <HeaderBar />
       <Sidebar
-        handleSelectGraph={handleSelectGraph}
         handleDeleteGraphFile={handleDeleteGraph}
         handleRemoveActiveGraphFile={handleRemoveActiveGraph}
         handleAddFile={handleAddActiveGraph}

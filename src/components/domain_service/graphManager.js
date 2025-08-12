@@ -16,16 +16,14 @@ export async function loadGraphNames(setGraphData) {
   setGraphData("uploadedGraphNames", filenames);
 }
 
-export async function selectGraph(filename, setGraphData) {
-  const { graph, file } = await getGraphDB(filename);
+export async function selectGraph(filename) {
+  const { graphObject } = await getGraphDB(filename);
 
-  setGraphData("originGraph", graph);
-  setGraphData("activeGraphNames", [file.name]);
-  log.info("Graph Loaded Successfully:", graph);
+  return graphObject;
 }
 
 export async function addActiveGraph(filename, activeGraphNames, setGraphData, oldGraph) {
-  const { graph, file } = await getGraphDB(filename);
+  const { graph } = await getGraphDB(filename);
   const combinedGraph = joinGraphs(oldGraph, graph);
   setGraphData("originGraph", combinedGraph);
   setGraphData("activeGraphNames", [...activeGraphNames, filename]);

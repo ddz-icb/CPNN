@@ -1,7 +1,8 @@
 import log from "../../logger.js";
 import { useGraphData } from "../adapters/state/graphState.js";
-import { createGraph } from "../domain_service/graphManager.js";
+import { createGraph, selectGraph } from "../domain_service/graphManager.js";
 import { errorService } from "./errorService.js";
+import { resetService } from "./resetService.js";
 
 export const graphService = {
   async handleCreateGraph(event, takeAbs, minCorrForEdge, minCompSizeForNode, maxCompSizeForNode, takeSpearmanCoefficient, mergeSameProtein) {
@@ -31,23 +32,25 @@ export const graphService = {
     }
   },
 
-  //   handleSelectGraph(filename) {
-  //     if (!filename) {
-  //       errorService.setError("Selected invalid graph");
-  //       return;
-  //     }
-  //     log.info("Replacing graph");
+  async handleSelectGraph(filename) {
+    if (!filename) {
+      errorService.setError("Selected invalid graph");
+      return;
+    }
+    log.info("Replacing graph");
 
-  //     try {
-  //       simulationReset();
-  //       selectGraph(filename, setGraphData);
-  //       this.setGraphIsPreprocessed(false);
-  //       this.setMergeProteins(false);
-  //     } catch (error) {
-  //       errorService.setError(error.message);
-  //       log.error("Error loading graph:", error);
-  //     }
-  //   },
+    try {
+      const graphObject = await selectGraph(filename);
+      this.setOriginGraph(graphObject);
+      this.getActiveGraphNames([graphObject.name]);
+      this.setGraphIsPreprocessed(false);
+      this.setMergeProteins(false);
+      resetService.simulationReset();
+    } catch (error) {
+      errorService.setError(error.message);
+      log.error("Error loading graph:", error);
+    }
+  },
 
   // ====== Generic getter/setter ======
   get(key) {

@@ -26,7 +26,6 @@ import { graphService } from "../../application_service/graphService.js";
 
 export function DataSidebar({
   handleRemoveActiveGraphFile,
-  handleSelectGraph,
   handleDeleteGraphFile,
   handleAddFile,
   handleCreateMapping,
@@ -42,7 +41,6 @@ export function DataSidebar({
       <ActiveGraphFiles activeGraphNames={graphData.activeGraphNames} handleRemoveActiveGraphFile={handleRemoveActiveGraphFile} />
       <UploadedGraphFiles
         uploadedGraphNames={graphData.uploadedGraphNames}
-        handleSelectGraph={handleSelectGraph}
         handleDeleteGraphFile={handleDeleteGraphFile}
         handleAddFile={handleAddFile}
       />
@@ -80,7 +78,7 @@ function ActiveGraphFiles({ activeGraphNames, handleRemoveActiveGraphFile }) {
   );
 }
 
-function UploadedGraphFiles({ uploadedGraphNames, handleSelectGraph, handleDeleteGraphFile, handleAddFile }) {
+function UploadedGraphFiles({ uploadedGraphNames, handleDeleteGraphFile, handleAddFile }) {
   let uploadedGraphNamesNoExample = uploadedGraphNames?.filter((name) => name !== exampleGraphJson.name);
 
   return (
@@ -88,7 +86,7 @@ function UploadedGraphFiles({ uploadedGraphNames, handleSelectGraph, handleDelet
       <TableList
         heading={"Uploaded Graphs"}
         data={uploadedGraphNamesNoExample}
-        onItemClick={(filename) => handleSelectGraph(filename)}
+        onItemClick={(filename) => graphService.handleSelectGraph(filename)}
         itemTooltipContent={() => "Replace Active Graphs"}
         ActionIcon={PlusIcon}
         onActionIconClick={(filename) => handleAddFile(filename)}

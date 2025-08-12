@@ -102,7 +102,7 @@ export async function getGraphDB(filename) {
   const file = await getByGraphNameDB(filename);
   if (!file || !file.content) throw new Error(`No file found with the name ${filename}.`);
 
-  const graph = JSON.parse(file.content);
-  if (!graph) throw new Error("File format not recognized");
-  return { graph, file };
+  const graphObject = JSON.parse(file.content);
+  if (!graphObject) throw new Error("File format not recognized");
+  return { graphObject };
 }
