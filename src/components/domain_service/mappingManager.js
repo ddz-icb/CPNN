@@ -1,6 +1,6 @@
 import log from "../../logger.js";
 import { parseMappingFile } from "../other/parseFiles.js";
-import { addMappingDB, fromAllGetMappingNameDB, getMappingDB, removeMappingByNameDB } from "../repository/MappingRepo.js";
+import { addMappingDB, fromAllGetMappingNameDB, getMappingDB, removeMappingByNameDB } from "../repository/mappingRepo.js";
 
 export async function loadMappings(setMappingData) {
   const mappings = await fromAllGetMappingNameDB();

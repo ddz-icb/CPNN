@@ -25,7 +25,7 @@ import {
 
 import { Error } from "./components/gui/error.js";
 import { getFileNameWithoutExtension } from "./components/other/parseFiles.js";
-import { getGraphDB } from "./components/repository/GraphRepo.js";
+import { getGraphDB } from "./components/repository/graphRepo.js";
 import { linkThresholdInit } from "./components/adapters/state/filterState.js";
 import { loadMappings } from "./components/domain_service/mappingManager.js";
 import { loadTheme, storeTheme } from "./components/domain_service/themeManager.js";

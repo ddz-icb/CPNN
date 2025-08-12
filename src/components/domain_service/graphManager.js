@@ -2,7 +2,7 @@ import { exampleGraphJson } from "../assets/exampleGraphJSON.js";
 import log from "../../logger.js";
 import { joinGraphs } from "../application_service/graphCalculations.js";
 import { getFileNameWithoutExtension, parseGraphFile } from "../other/parseFiles.js";
-import { addGraphDB, addGraphIfNotExistsDB, fromAllGetGraphNameDB, getGraphDB, removeGraphByNameDB } from "../repository/GraphRepo.js";
+import { addGraphDB, addGraphIfNotExistsDB, fromAllGetGraphNameDB, getGraphDB, removeGraphByNameDB } from "../repository/graphRepo.js";
 
 export async function setInitGraph(setGraphData) {
   const graph = JSON.parse(exampleGraphJson.content);
