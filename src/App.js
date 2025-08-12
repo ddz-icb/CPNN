@@ -61,19 +61,6 @@ function App() {
   // GRAPH
   ////////
 
-  // deletes uploaded files with filename //
-  const handleDeleteGraph = (filename) => {
-    if (!filename) return;
-    if (graphData?.activeGraphNames?.includes(filename)) {
-      log.warn("Cannot remove selected graph as it's still active");
-      setError("Cannot remove selected graph as it's still active");
-      return;
-    }
-    log.info("Deleting files with name", filename);
-
-    deleteGraph(graphData.uploadedGraphNames, filename, setGraphData);
-  };
-
   // MAPPING
   //////////
 
@@ -331,7 +318,6 @@ function App() {
     <div className={appearance.theme.name}>
       <HeaderBar />
       <Sidebar
-        handleDeleteGraphFile={handleDeleteGraph}
         handleCreateMapping={handleCreateMapping}
         handleRemoveActiveMapping={handleRemoveActiveMapping}
         handleMappingSelect={handleSelectMapping}

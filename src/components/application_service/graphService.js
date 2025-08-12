@@ -1,6 +1,6 @@
 import log from "../../logger.js";
 import { useGraphData } from "../adapters/state/graphState.js";
-import { addActiveGraph, createGraph, removeActiveGraph, selectGraph } from "../domain_service/graphManager.js";
+import { addActiveGraph, createGraph, deleteGraph, removeActiveGraph, selectGraph } from "../domain_service/graphManager.js";
 import { errorService } from "./errorService.js";
 import { resetService } from "./resetService.js";
 
@@ -74,7 +74,6 @@ export const graphService = {
     } catch (error) {
       errorService.setError("Error loading graph");
       log.error(error);
-      return;
     }
   },
   async handleRemoveActiveGraph(filename) {
@@ -94,7 +93,27 @@ export const graphService = {
     } catch (error) {
       errorService.setError("Error removing graph");
       log.error(error);
+    }
+  },
+  async handleDeleteGraph(filename) {
+    if (!filename) {
+      errorService.setError("Selected invalid graph");
+      log.error("Selected invalid graph");
       return;
+    }
+    if (graphService.getActiveGraphNames()?.includes(filename)) {
+      errorService.setError("Cannot remove selected graph as it's still active");
+      log.warn("Cannot remove selected graph as it's still active");
+      return;
+    }
+    log.info("Deleting files with name", filename);
+
+    try {
+      const remainingdGraphNames = await deleteGraph(graphService.getUploadedGraphNames(), filename);
+      graphService.setUploadedGraphNames(remainingdGraphNames);
+    } catch (error) {
+      errorService.setError("Error deleting the graph");
+      log.error(error);
     }
   },
 

@@ -24,14 +24,14 @@ import { mergeProteinsDescription } from "./descriptions/filterDescriptions.js";
 import { useGraphData } from "../../adapters/state/graphState.js";
 import { graphService } from "../../application_service/graphService.js";
 
-export function DataSidebar({ handleDeleteGraphFile, handleCreateMapping, handleRemoveActiveMapping, handleMappingSelect, handleDeleteMapping }) {
+export function DataSidebar({ handleCreateMapping, handleRemoveActiveMapping, handleMappingSelect, handleDeleteMapping }) {
   const { graphData } = useGraphData();
 
   return (
     <>
       <TopDataButtons handleCreateMapping={handleCreateMapping} />
       <ActiveGraphFiles activeGraphNames={graphData.activeGraphNames} />
-      <UploadedGraphFiles uploadedGraphNames={graphData.uploadedGraphNames} handleDeleteGraphFile={handleDeleteGraphFile} />
+      <UploadedGraphFiles uploadedGraphNames={graphData.uploadedGraphNames} />
       <ActiveMapping activeMapping={graphData.activeMapping} handleRemoveActiveMapping={handleRemoveActiveMapping} />
       <UploadedMappings
         uploadedMappingNames={graphData.uploadedMappingNames}
@@ -66,7 +66,7 @@ function ActiveGraphFiles({ activeGraphNames }) {
   );
 }
 
-function UploadedGraphFiles({ uploadedGraphNames, handleDeleteGraphFile }) {
+function UploadedGraphFiles({ uploadedGraphNames }) {
   let uploadedGraphNamesNoExample = uploadedGraphNames?.filter((name) => name !== exampleGraphJson.name);
 
   return (
@@ -80,7 +80,7 @@ function UploadedGraphFiles({ uploadedGraphNames, handleDeleteGraphFile }) {
         onActionIconClick={(filename) => graphService.handleAddActiveGraph(filename)}
         actionIconTooltipContent={() => "Add Graph to Currently Active Graphs"}
         ActionIcon2={TrashIcon}
-        onActionIcon2Click={(filename) => handleDeleteGraphFile(filename)}
+        onActionIcon2Click={(filename) => graphService.handleDeleteGraph(filename)}
         actionIcon2TooltipContent={() => "Delete Graph"}
       />
     </>

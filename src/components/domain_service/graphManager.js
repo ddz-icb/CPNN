@@ -59,8 +59,8 @@ export async function createGraph(
   return graphObject;
 }
 
-export async function deleteGraph(uploadedGraphNames, filename, setGraphData) {
-  const updatedGraphNames = uploadedGraphNames?.filter((name) => name !== filename);
-  setGraphData("uploadedGraphNames", updatedGraphNames);
+export async function deleteGraph(uploadedGraphNames, filename) {
+  const updatedGraphNames = (uploadedGraphNames ?? []).filter((name) => name !== filename);
   removeGraphByNameDB(filename);
+  return updatedGraphNames;
 }
