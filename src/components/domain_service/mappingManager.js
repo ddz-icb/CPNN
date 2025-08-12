@@ -1,6 +1,6 @@
 import log from "../../logger.js";
 import { parseMappingFile } from "../other/parseFiles.js";
-import { addMappingFileDB, fromAllGetMappingNameDB, getMappingDB, removeMappingFileByNameDB } from "../repository/MappingRepo.js";
+import { addMappingDB, fromAllGetMappingNameDB, getMappingDB, removeMappingByNameDB } from "../repository/MappingRepo.js";
 
 export async function loadMappings(setMappingData) {
   const mappings = await fromAllGetMappingNameDB();
@@ -12,14 +12,14 @@ export async function selectMapping(mappingName) {
   return mapping;
 }
 
-export async function createMapping(file, uploadedMappingNames, setMappingData) {
-  const mappingFile = await parseMappingFile(file);
-  addMappingFileDB(mappingFile);
-  setMappingData("uploadedMappingNames", [...(uploadedMappingNames || []), file.name]);
+export async function createMapping(file) {
+  const mappingObject = await parseMappingFile(file);
+  await addMappingDB(mappingObject);
+  return mappingObject;
 }
 
 export function deleteMapping(uploadedMappingNames, mappingName, setMappingData) {
   const updatedMappingNames = uploadedMappingNames?.filter((name) => name !== mappingName);
   setMappingData("uploadedMappingNames", updatedMappingNames);
-  removeMappingFileByNameDB(mappingName);
+  removeMappingByNameDB(mappingName);
 }

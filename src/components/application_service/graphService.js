@@ -17,7 +17,6 @@ export const graphService = {
     try {
       const graphObject = await createGraph(
         file,
-        this.getUploadedGraphNames(),
         takeAbs,
         minCorrForEdge,
         minCompSizeForNode,
@@ -26,7 +25,7 @@ export const graphService = {
         mergeSameProtein
       );
 
-      this.setUploadedGraphNames([...(this.getUploadedGraphNames() || []), graphObject.name]);
+      this.setUploadedGraphNames([...(this.getUploadedGraphNames() || []), file.name]);
     } catch (error) {
       errorService.setError(error.message);
       log.error(error);

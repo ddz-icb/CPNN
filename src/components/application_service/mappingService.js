@@ -1,6 +1,6 @@
 import log from "../../logger.js";
 import { useMappingData } from "../adapters/state/mappingState.js";
-import { selectMapping } from "../domain_service/mappingManager.js";
+import { createMapping, selectMapping } from "../domain_service/mappingManager.js";
 import { errorService } from "./errorService.js";
 import { graphService } from "./graphService.js";
 import { resetService } from "./resetService.js";
@@ -21,7 +21,25 @@ export const mappingService = {
       resetService.simulationReset();
     } catch (error) {
       errorService.setError("Mapping is already the current mapping");
-      log.error("Mapping is already the current mapping");
+      log.error(error);
+    }
+  },
+
+  async handleCreateMapping(event) {
+    const file = event?.target?.files?.[0];
+    if (!file) {
+      errorService.setError("The input is not a valid file");
+      log.error("The input is not a valid file");
+      return;
+    }
+    log.info("Adding new mapping file");
+
+    try {
+      const mappingObject = await createMapping(file);
+      this.setUploadedMappingNames([...(this.getUploadedMappingNames() || []), file.name]);
+    } catch (error) {
+      errorService.setError("Error adding mapping file");
+      log.error(error);
     }
   },
 

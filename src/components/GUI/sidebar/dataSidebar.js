@@ -26,13 +26,13 @@ import { graphService } from "../../application_service/graphService.js";
 import { useMappingData } from "../../adapters/state/mappingState.js";
 import { mappingService } from "../../application_service/mappingService.js";
 
-export function DataSidebar({ handleCreateMapping, handleRemoveActiveMapping, handleDeleteMapping }) {
+export function DataSidebar({ handleRemoveActiveMapping, handleDeleteMapping }) {
   const { graphData } = useGraphData();
   const { mappingData } = useMappingData();
 
   return (
     <>
-      <TopDataButtons handleCreateMapping={handleCreateMapping} />
+      <TopDataButtons />
       <ActiveGraphFiles activeGraphNames={graphData.activeGraphNames} />
       <UploadedGraphFiles uploadedGraphNames={graphData.uploadedGraphNames} />
       <ActiveMapping activeMapping={mappingData.activeMapping} handleRemoveActiveMapping={handleRemoveActiveMapping} />
@@ -41,12 +41,12 @@ export function DataSidebar({ handleCreateMapping, handleRemoveActiveMapping, ha
   );
 }
 
-export function TopDataButtons({ handleCreateMapping }) {
+export function TopDataButtons() {
   return (
     <>
       <div className="sidebar-two-buttons">
         <UploadGraph />
-        <UploadMapping handleCreateMapping={handleCreateMapping} />
+        <UploadMapping />
       </div>
     </>
   );
@@ -278,7 +278,7 @@ function UploadGraph() {
   );
 }
 
-function UploadMapping({ handleCreateMapping }) {
+function UploadMapping() {
   const mappingRef = useRef(null);
 
   const mappingFormat = "Uniprot-ID, Pathway Name, Reactome-ID";
@@ -306,7 +306,7 @@ function UploadMapping({ handleCreateMapping }) {
           onClick={() => mappingRef.current.click()}
           linkRef={mappingRef}
           onChange={(event) => {
-            handleCreateMapping(event);
+            mappingService.handleCreateMapping(event);
             event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
           }}
         />

@@ -11,8 +11,6 @@ db.version(1).stores({
 async function getFileByNameDB(name) {
   try {
     const file = await db.uploadedFiles.where("name").equals(name).first();
-    if (!file) throw new Error(`No file found with the name ${name}.`);
-
     return file;
   } catch (error) {
     throw new Error(`Failed to retrieve file with name ${name}: ${error}`);
@@ -21,6 +19,7 @@ async function getFileByNameDB(name) {
 
 export async function getGraphDB(filename) {
   const file = await getFileByNameDB(filename);
+  if (!file) throw new Error("No file found");
 
   const graphObject = JSON.parse(file.content);
   if (!graphObject) throw new Error("File format not recognized");
@@ -29,6 +28,9 @@ export async function getGraphDB(filename) {
 
 export async function addGraphDB(file) {
   try {
+    const existingFile = await getFileByNameDB(file.name);
+    if (existingFile) throw new Error("Graph already exists");
+
     const id = await db.uploadedFiles.add({
       name: file.name,
       content: file.content,
@@ -44,11 +46,16 @@ export async function addGraphIfNotExistsDB(file) {
   try {
     const existingFile = await getFileByNameDB(file.name);
     if (existingFile) {
-      log.warn("Graph already exists. Skipping addition.");
+      log.info("Graph already exists");
       return existingFile.id;
     }
-    const newId = await addGraphDB(file);
-    return newId;
+
+    const id = await db.uploadedFiles.add({
+      name: file.name,
+      content: file.content,
+    });
+    log.info(`File ${file.name} successfully added. Got id ${id}`);
+    return id;
   } catch (error) {
     throw new Error(`Failed to add graph if not exists: ${error}`);
   }
@@ -72,7 +79,7 @@ export async function removeGraphByNameDB(name) {
   try {
     const file = await getFileByNameDB(name);
     if (!file) {
-      log.info(`No file found with the name ${name}.`);
+      log.warn(`No file found with the name ${name}.`);
       return false; // Indicate failure
     }
 

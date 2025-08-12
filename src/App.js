@@ -28,7 +28,7 @@ import { defaultColorSchemes } from "./components/adapters/state/appearanceState
 import { getFileNameWithoutExtension } from "./components/other/parseFiles.js";
 import { getGraphDB } from "./components/repository/GraphRepo.js";
 import { linkThresholdInit } from "./components/adapters/state/filterState.js";
-import { createMapping, deleteMapping, loadMappings, selectMapping } from "./components/domain_service/mappingManager.js";
+import { deleteMapping, loadMappings } from "./components/domain_service/mappingManager.js";
 import { loadTheme, storeTheme } from "./components/domain_service/themeManager.js";
 import { useFilter } from "./components/adapters/state/filterState.js";
 import { usePhysics } from "./components/adapters/state/physicsState.js";
@@ -50,25 +50,6 @@ function App() {
 
   // MAPPING
   //////////
-
-  // processes new annotation mapping
-  const handleCreateMapping = (event) => {
-    const file = event.target.files[0];
-    if (!event || !event.target || !file) return;
-    if (mappingData.uploadedMappingNames.some((name) => getFileNameWithoutExtension(name) === getFileNameWithoutExtension(file.name))) {
-      log.warn("Mapping with this name already exists");
-      setError("Mapping with this name already exists");
-      return;
-    }
-    log.info("Adding new mapping file");
-
-    createMapping(file, mappingData.uploadedMappingNames, setMappingData)
-      .then(() => {})
-      .catch((error) => {
-        setError(`${error.message}`);
-        log.error("Error adding mapping file:", error);
-      });
-  };
 
   // disables currently active annotation mapping
   const handleRemoveActiveMapping = () => {
@@ -290,7 +271,6 @@ function App() {
     <div className={appearance.theme.name}>
       <HeaderBar />
       <Sidebar
-        handleCreateMapping={handleCreateMapping}
         handleRemoveActiveMapping={handleRemoveActiveMapping}
         handleDeleteMapping={handleDeleteMapping}
         handleNewColorScheme={handleCreateColorScheme}

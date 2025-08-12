@@ -39,23 +39,9 @@ export async function removeActiveGraph(filename, activeGraphNames) {
   return { activeGraphNames: stillActiveGraphNames, graphObject: combinedGraphObject };
 }
 
-export async function createGraph(
-  file,
-  uploadedGraphNames,
-  takeAbs,
-  minCorrForEdge,
-  minCompSizeForNode,
-  maxCompSizeForNode,
-  takeSpearmanCoefficient
-) {
-  if (uploadedGraphNames.some((name) => getFileNameWithoutExtension(name) === getFileNameWithoutExtension(file.name))) {
-    log.warn("Graph with this name already exists");
-    throw new Error("Graph with this name already exists");
-  }
-
+export async function createGraph(file, takeAbs, minCorrForEdge, minCompSizeForNode, maxCompSizeForNode, takeSpearmanCoefficient) {
   const graphObject = await parseGraphFile(file, takeAbs, minCorrForEdge, minCompSizeForNode, maxCompSizeForNode, takeSpearmanCoefficient);
   addGraphDB(graphObject);
-
   return graphObject;
 }
 
