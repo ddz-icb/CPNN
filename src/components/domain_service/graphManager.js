@@ -2,7 +2,7 @@ import { exampleGraphJson } from "../assets/exampleGraphJSON.js";
 import log from "../../logger.js";
 import { joinGraphs } from "../application_service/graphCalculations.js";
 import { getFileNameWithoutExtension, parseGraphFile } from "../other/parseFiles.js";
-import { addGraphDB, addGraphIfNotExistsDB, fromAllGetGraphNameDB, getGraphDB, removeGraphByNameDB } from "../repository/repoGraphs.js";
+import { addGraphDB, addGraphIfNotExistsDB, fromAllGetGraphNameDB, getGraphDB, removeGraphByNameDB } from "../repository/GraphRepo.js";
 
 export async function setInitGraph(setGraphData) {
   const graph = JSON.parse(exampleGraphJson.content);
@@ -27,22 +27,16 @@ export async function addActiveGraph(filename, oldGraph) {
   return combinedGraphObject;
 }
 
-export async function removeActiveGraph(filename, activeGraphNames, setGraphData) {
-  let stillActiveFileNames = activeGraphNames?.filter((name) => name !== filename);
-  if (stillActiveFileNames.length === 0) stillActiveFileNames = [exampleGraphJson.name];
-  try {
-    let graphObject = await getGraphDB(stillActiveFileNames[0]);
-    let combinedGraphObject = graphObject;
-    for (let i = 1; i < stillActiveFileNames.length; i++) {
-      graphObject = await getGraphDB(stillActiveFileNames[i]);
-      combinedGraphObject = joinGraphs(combinedGraphObject, graphObject);
-    }
-    setGraphData("originGraph", combinedGraphObject);
-    setGraphData("activeGraphNames", stillActiveFileNames);
-  } catch (error) {
-    log.error("the graph file doesn't exist. This shouldn't be possible");
-    return;
+export async function removeActiveGraph(filename, activeGraphNames) {
+  let stillActiveGraphNames = activeGraphNames?.filter((name) => name !== filename);
+  if (stillActiveGraphNames.length === 0) stillActiveGraphNames = [exampleGraphJson.name];
+  let graphObject = await getGraphDB(stillActiveGraphNames[0]);
+  let combinedGraphObject = graphObject;
+  for (let i = 1; i < stillActiveGraphNames.length; i++) {
+    graphObject = await getGraphDB(stillActiveGraphNames[i]);
+    combinedGraphObject = joinGraphs(combinedGraphObject, graphObject);
   }
+  return { activeGraphNames: stillActiveGraphNames, graphObject: combinedGraphObject };
 }
 
 export async function createGraph(

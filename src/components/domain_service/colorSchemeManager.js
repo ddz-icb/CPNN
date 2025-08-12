@@ -5,7 +5,7 @@ import {
   fromAllGetColorSchemeNameDB,
   getColorSchemeDB,
   removeColorSchemeByNameDB,
-} from "../repository/repoColorScheme.js";
+} from "../repository/ColorSchemeRepo.js";
 import {
   defaultColorSchemeNames,
   ibmAntiBlindness,

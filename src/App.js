@@ -33,7 +33,7 @@ import {
 import { Error } from "./components/gui/error.js";
 import { defaultColorSchemes } from "./components/config/appearanceInitValues.js";
 import { getFileNameWithoutExtension } from "./components/other/parseFiles.js";
-import { getGraphDB } from "./components/repository/repoGraphs.js";
+import { getGraphDB } from "./components/repository/GraphRepo.js";
 import { linkThresholdInit } from "./components/config/filterInitValues.js";
 import {
   addNewMappingFile as createMapping,
@@ -60,16 +60,6 @@ function App() {
 
   // GRAPH
   ////////
-
-  // removes graph file from currently active files //
-  const handleRemoveActiveGraph = (filename) => {
-    if (!filename) return;
-    log.info("removing graph file with name:", filename);
-
-    resetService.simulationReset();
-    setGraphData("graphIsPreprocessed", false);
-    removeActiveGraph(filename, graphData.activeGraphNames, setGraphData);
-  };
 
   // deletes uploaded files with filename //
   const handleDeleteGraph = (filename) => {
@@ -342,7 +332,6 @@ function App() {
       <HeaderBar />
       <Sidebar
         handleDeleteGraphFile={handleDeleteGraph}
-        handleRemoveActiveGraphFile={handleRemoveActiveGraph}
         handleCreateMapping={handleCreateMapping}
         handleRemoveActiveMapping={handleRemoveActiveMapping}
         handleMappingSelect={handleSelectMapping}

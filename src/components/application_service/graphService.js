@@ -1,6 +1,6 @@
 import log from "../../logger.js";
 import { useGraphData } from "../adapters/state/graphState.js";
-import { addActiveGraph, createGraph, selectGraph } from "../domain_service/graphManager.js";
+import { addActiveGraph, createGraph, removeActiveGraph, selectGraph } from "../domain_service/graphManager.js";
 import { errorService } from "./errorService.js";
 import { resetService } from "./resetService.js";
 
@@ -41,9 +41,9 @@ export const graphService = {
     log.info("Replacing graph");
 
     try {
-      const graphObject = await selectGraph(filename);
+      const graphObject = await selectGraph(filename); // graphObject is so far just the content!!!!!!!!!!!!!!!
       this.setOriginGraph(graphObject);
-      this.getActiveGraphNames([graphObject.name]);
+      this.setActiveGraphNames([filename]);
       this.setGraphIsPreprocessed(false);
       this.setMergeProteins(false);
       resetService.simulationReset();
@@ -66,13 +66,33 @@ export const graphService = {
     log.info("Adding file with name: ", filename);
 
     try {
-      resetService.simulationReset();
       this.setGraphIsPreprocessed(false);
       const graphObject = await addActiveGraph(filename, this.getOriginGraph());
       this.setOriginGraph(graphObject);
       this.setActiveGraphNames([...this.getActiveGraphNames(), filename]);
+      resetService.simulationReset();
     } catch (error) {
       errorService.setError("Error loading graph");
+      log.error(error);
+      return;
+    }
+  },
+  async handleRemoveActiveGraph(filename) {
+    if (!filename) {
+      errorService.setError("Selected invalid graph");
+      log.error("Selected invalid graph");
+      return;
+    }
+    log.info("removing graph file with name:", filename);
+
+    try {
+      graphService.setGraphIsPreprocessed(false);
+      const { activeGraphNames, graphObject } = await removeActiveGraph(filename, graphService.getActiveGraphNames());
+      graphService.setOriginGraph(graphObject);
+      graphService.setActiveGraphNames(activeGraphNames);
+      resetService.simulationReset();
+    } catch (error) {
+      errorService.setError("Error removing graph");
       log.error(error);
       return;
     }
