@@ -17,29 +17,27 @@ export async function loadGraphNames(setGraphData) {
 }
 
 export async function selectGraph(filename) {
-  const { graphObject } = await getGraphDB(filename);
-
+  const graphObject = await getGraphDB(filename);
   return graphObject;
 }
 
-export async function addActiveGraph(filename, activeGraphNames, setGraphData, oldGraph) {
-  const { graph } = await getGraphDB(filename);
-  const combinedGraph = joinGraphs(oldGraph, graph);
-  setGraphData("originGraph", combinedGraph);
-  setGraphData("activeGraphNames", [...activeGraphNames, filename]);
+export async function addActiveGraph(filename, oldGraph) {
+  const graphObject = await getGraphDB(filename);
+  const combinedGraphObject = joinGraphs(oldGraph, graphObject);
+  return combinedGraphObject;
 }
 
 export async function removeActiveGraph(filename, activeGraphNames, setGraphData) {
   let stillActiveFileNames = activeGraphNames?.filter((name) => name !== filename);
   if (stillActiveFileNames.length === 0) stillActiveFileNames = [exampleGraphJson.name];
   try {
-    let { graph, file } = await getGraphDB(stillActiveFileNames[0]);
-    let combinedGraph = graph;
+    let graphObject = await getGraphDB(stillActiveFileNames[0]);
+    let combinedGraphObject = graphObject;
     for (let i = 1; i < stillActiveFileNames.length; i++) {
-      let { graph, file } = await getGraphDB(stillActiveFileNames[i]);
-      combinedGraph = joinGraphs(combinedGraph, graph);
+      graphObject = await getGraphDB(stillActiveFileNames[i]);
+      combinedGraphObject = joinGraphs(combinedGraphObject, graphObject);
     }
-    setGraphData("originGraph", combinedGraph);
+    setGraphData("originGraph", combinedGraphObject);
     setGraphData("activeGraphNames", stillActiveFileNames);
   } catch (error) {
     log.error("the graph file doesn't exist. This shouldn't be possible");

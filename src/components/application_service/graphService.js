@@ -1,6 +1,6 @@
 import log from "../../logger.js";
 import { useGraphData } from "../adapters/state/graphState.js";
-import { createGraph, selectGraph } from "../domain_service/graphManager.js";
+import { addActiveGraph, createGraph, selectGraph } from "../domain_service/graphManager.js";
 import { errorService } from "./errorService.js";
 import { resetService } from "./resetService.js";
 
@@ -9,6 +9,7 @@ export const graphService = {
     const file = event?.target?.files?.[0];
     if (!file) {
       errorService.setError("The input is not a valid file");
+      log.error("The input is not a valid file");
       return;
     }
     log.info("Adding new graph file");
@@ -28,13 +29,13 @@ export const graphService = {
       this.setUploadedGraphNames([...(this.getUploadedGraphNames() || []), graphObject.name]);
     } catch (error) {
       errorService.setError(error.message);
-      log.error("Error creating graph:", error);
+      log.error(error);
     }
   },
-
   async handleSelectGraph(filename) {
     if (!filename) {
       errorService.setError("Selected invalid graph");
+      log.error("Selected invalid graph");
       return;
     }
     log.info("Replacing graph");
@@ -48,7 +49,32 @@ export const graphService = {
       resetService.simulationReset();
     } catch (error) {
       errorService.setError(error.message);
-      log.error("Error loading graph:", error);
+      log.error(error);
+    }
+  },
+  async handleAddActiveGraph(filename) {
+    if (!filename) {
+      errorService.setError("Selected invalid graph");
+      log.error("Selected invalid graph");
+      return;
+    }
+    if (this.getActiveGraphNames().some((name) => name === filename)) {
+      errorService.setError("Graph already active");
+      log.error("Graph already active");
+      return;
+    }
+    log.info("Adding file with name: ", filename);
+
+    try {
+      resetService.simulationReset();
+      this.setGraphIsPreprocessed(false);
+      const graphObject = await addActiveGraph(filename, this.getOriginGraph());
+      this.setOriginGraph(graphObject);
+      this.setActiveGraphNames([...this.getActiveGraphNames(), filename]);
+    } catch (error) {
+      errorService.setError("Error loading graph");
+      log.error(error);
+      return;
     }
   },
 

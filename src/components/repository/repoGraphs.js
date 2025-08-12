@@ -23,8 +23,8 @@ export async function addGraphFileDB(file) {
 
 export async function addGraphFileIfNotExistsDB(file) {
   try {
-    const graph = await getByGraphNameDB(file.name);
-    if (graph) {
+    const graphObject = await getByGraphNameDB(file.name);
+    if (graphObject) {
       log.info("Graph already exists");
       return;
     }
@@ -104,5 +104,5 @@ export async function getGraphDB(filename) {
 
   const graphObject = JSON.parse(file.content);
   if (!graphObject) throw new Error("File format not recognized");
-  return { graphObject };
+  return graphObject;
 }

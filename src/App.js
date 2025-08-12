@@ -49,7 +49,6 @@ import { useDownload } from "./components/adapters/state/downloadState.js";
 import { useGraphData } from "./components/adapters/state/graphState.js";
 import { useError } from "./components/adapters/state/errorState.js";
 import { resetService } from "./components/application_service/resetService.js";
-import { graphService } from "./components/application_service/graphService.js";
 
 function App() {
   const { setFilter, setAllFilter } = useFilter();
@@ -61,26 +60,6 @@ function App() {
 
   // GRAPH
   ////////
-
-  const handleAddActiveGraph = (filename) => {
-    if (!filename) return;
-    if (graphData.activeGraphNames.some((name) => name === filename)) {
-      setError("Graph already active");
-      log.error("Graph already active");
-      return;
-    }
-    log.info("Adding file with name: ", filename);
-
-    try {
-      resetService.simulationReset();
-      setGraphData("graphIsPreprocessed", false);
-      addActiveGraph(filename, graphData.activeGraphNames, setGraphData, graphData.originGraph);
-    } catch (error) {
-      setError("Error loading graph");
-      log.error("Error loading graph:", error);
-      return;
-    }
-  };
 
   // removes graph file from currently active files //
   const handleRemoveActiveGraph = (filename) => {
@@ -364,7 +343,6 @@ function App() {
       <Sidebar
         handleDeleteGraphFile={handleDeleteGraph}
         handleRemoveActiveGraphFile={handleRemoveActiveGraph}
-        handleAddFile={handleAddActiveGraph}
         handleCreateMapping={handleCreateMapping}
         handleRemoveActiveMapping={handleRemoveActiveMapping}
         handleMappingSelect={handleSelectMapping}

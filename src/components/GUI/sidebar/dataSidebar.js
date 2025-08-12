@@ -27,7 +27,6 @@ import { graphService } from "../../application_service/graphService.js";
 export function DataSidebar({
   handleRemoveActiveGraphFile,
   handleDeleteGraphFile,
-  handleAddFile,
   handleCreateMapping,
   handleRemoveActiveMapping,
   handleMappingSelect,
@@ -39,11 +38,7 @@ export function DataSidebar({
     <>
       <TopDataButtons handleCreateMapping={handleCreateMapping} />
       <ActiveGraphFiles activeGraphNames={graphData.activeGraphNames} handleRemoveActiveGraphFile={handleRemoveActiveGraphFile} />
-      <UploadedGraphFiles
-        uploadedGraphNames={graphData.uploadedGraphNames}
-        handleDeleteGraphFile={handleDeleteGraphFile}
-        handleAddFile={handleAddFile}
-      />
+      <UploadedGraphFiles uploadedGraphNames={graphData.uploadedGraphNames} handleDeleteGraphFile={handleDeleteGraphFile} />
       <ActiveMapping activeMapping={graphData.activeMapping} handleRemoveActiveMapping={handleRemoveActiveMapping} />
       <UploadedMappings
         uploadedMappingNames={graphData.uploadedMappingNames}
@@ -78,7 +73,7 @@ function ActiveGraphFiles({ activeGraphNames, handleRemoveActiveGraphFile }) {
   );
 }
 
-function UploadedGraphFiles({ uploadedGraphNames, handleDeleteGraphFile, handleAddFile }) {
+function UploadedGraphFiles({ uploadedGraphNames, handleDeleteGraphFile }) {
   let uploadedGraphNamesNoExample = uploadedGraphNames?.filter((name) => name !== exampleGraphJson.name);
 
   return (
@@ -89,7 +84,7 @@ function UploadedGraphFiles({ uploadedGraphNames, handleDeleteGraphFile, handleA
         onItemClick={(filename) => graphService.handleSelectGraph(filename)}
         itemTooltipContent={() => "Replace Active Graphs"}
         ActionIcon={PlusIcon}
-        onActionIconClick={(filename) => handleAddFile(filename)}
+        onActionIconClick={(filename) => graphService.handleAddActiveGraph(filename)}
         actionIconTooltipContent={() => "Add Graph to Currently Active Graphs"}
         ActionIcon2={TrashIcon}
         onActionIcon2Click={(filename) => handleDeleteGraphFile(filename)}
