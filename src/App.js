@@ -28,12 +28,7 @@ import { defaultColorSchemes } from "./components/adapters/state/appearanceState
 import { getFileNameWithoutExtension } from "./components/other/parseFiles.js";
 import { getGraphDB } from "./components/repository/GraphRepo.js";
 import { linkThresholdInit } from "./components/adapters/state/filterState.js";
-import {
-  addNewMappingFile as createMapping,
-  deleteMapping as deleteMapping,
-  loadMappings,
-  selectMapping,
-} from "./components/domain_service/mappingManager.js";
+import { createMapping, deleteMapping, loadMappings, selectMapping } from "./components/domain_service/mappingManager.js";
 import { loadTheme, storeTheme } from "./components/domain_service/themeManager.js";
 import { useFilter } from "./components/adapters/state/filterState.js";
 import { usePhysics } from "./components/adapters/state/physicsState.js";
@@ -64,7 +59,7 @@ function App() {
     try {
       resetService.simulationReset();
       setGraphData("graphIsPreprocessed", false);
-      selectMapping(mappingName, setGraphData);
+      selectMapping(mappingName, setMappingData);
     } catch (error) {
       setError("Mapping is already the current mapping");
       log.error("Mapping is already the current mapping");
@@ -75,14 +70,14 @@ function App() {
   const handleCreateMapping = (event) => {
     const file = event.target.files[0];
     if (!event || !event.target || !file) return;
-    if (graphData.uploadedMappingNames.some((name) => getFileNameWithoutExtension(name) === getFileNameWithoutExtension(file.name))) {
+    if (mappingData.uploadedMappingNames.some((name) => getFileNameWithoutExtension(name) === getFileNameWithoutExtension(file.name))) {
       log.warn("Mapping with this name already exists");
       setError("Mapping with this name already exists");
       return;
     }
     log.info("Adding new mapping file");
 
-    createMapping(file, graphData.uploadedMappingNames, setGraphData)
+    createMapping(file, mappingData.uploadedMappingNames, setMappingData)
       .then(() => {})
       .catch((error) => {
         setError(`${error.message}`);
@@ -94,7 +89,7 @@ function App() {
   const handleRemoveActiveMapping = () => {
     log.info("Removing currently active annotation mapping");
 
-    setGraphData("activeMapping", null);
+    setMappingData("activeMapping", null);
     setGraphData("graphIsPreprocessed", false);
     resetService.simulationReset();
   };
@@ -109,7 +104,7 @@ function App() {
     }
     log.info("Deleting mapping with name", mappingName);
 
-    deleteMapping(graphData.uploadedMappingNames, mappingName, setGraphData);
+    deleteMapping(mappingData.uploadedMappingNames, mappingName, setMappingData);
   };
 
   // COLOR SCHEME
@@ -221,7 +216,7 @@ function App() {
   useEffect(() => {
     log.info("Loading uploaded mappings");
     try {
-      loadMappings(setGraphData);
+      loadMappings(setMappingData);
     } catch (error) {
       setError("Error loading mappings form database");
       log.error("Error loading mappings form database");

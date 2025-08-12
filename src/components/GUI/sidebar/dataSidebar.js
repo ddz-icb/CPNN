@@ -36,7 +36,7 @@ export function DataSidebar({ handleCreateMapping, handleRemoveActiveMapping, ha
       <UploadedGraphFiles uploadedGraphNames={graphData.uploadedGraphNames} />
       <ActiveMapping activeMapping={mappingData.activeMapping} handleRemoveActiveMapping={handleRemoveActiveMapping} />
       <UploadedMappings
-        uploadedMappingNames={graphData.uploadedMappingNames}
+        uploadedMappingNames={mappingData.uploadedMappingNames}
         handleMappingSelect={handleMappingSelect}
         handleDeleteMapping={handleDeleteMapping}
       />

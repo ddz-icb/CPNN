@@ -2,26 +2,25 @@ import log from "../../logger.js";
 import { parseMappingFile } from "../other/parseFiles.js";
 import { addMappingFileDB, fromAllGetMappingNameDB, getMappingDB, removeMappingFileByNameDB } from "../repository/MappingRepo.js";
 
-export async function loadMappings(setGraphData) {
+export async function loadMappings(setMappingData) {
   const mappings = await fromAllGetMappingNameDB();
-  setGraphData("uploadedMappingNames", mappings);
+  setMappingData("uploadedMappingNames", mappings);
 }
 
-export async function selectMapping(mappingName, setGraphData) {
+export async function selectMapping(mappingName, setMappingData) {
   const { mapping, file } = await getMappingDB(mappingName);
 
-  setGraphData("activeMapping", mapping);
-  log.info("Mapping Loaded Successfully:", mapping);
+  setMappingData("activeMapping", mapping);
 }
 
-export async function addNewMappingFile(file, uploadedMappingNames, setGraphData) {
+export async function createMapping(file, uploadedMappingNames, setMappingData) {
   const mappingFile = await parseMappingFile(file);
   addMappingFileDB(mappingFile);
-  setGraphData("uploadedMappingNames", [...(uploadedMappingNames || []), file.name]);
+  setMappingData("uploadedMappingNames", [...(uploadedMappingNames || []), file.name]);
 }
 
-export function deleteMapping(uploadedMappingNames, mappingName, setGraphData) {
+export function deleteMapping(uploadedMappingNames, mappingName, setMappingData) {
   const updatedMappingNames = uploadedMappingNames?.filter((name) => name !== mappingName);
-  setGraphData("uploadedMappingNames", updatedMappingNames);
+  setMappingData("uploadedMappingNames", updatedMappingNames);
   removeMappingFileByNameDB(mappingName);
 }

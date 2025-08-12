@@ -228,11 +228,4 @@ export const graphService = {
   setActiveMapping(val) {
     this.set("activeMapping", val);
   },
-
-  getUploadedMappingNames() {
-    return this.get("uploadedMappingNames");
-  },
-  setUploadedMappingNames(val) {
-    this.set("uploadedMappingNames", val);
-  },
 };
