@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { appearanceInit } from "../../config/appearanceInitValues.js";
+import { appearanceInit } from "./appearanceInit.js";
 
 export const useAppearance = create((set) => ({
   appearance: appearanceInit,

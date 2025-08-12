@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { containerInit } from "../../config/containerInitValues.js";
+import { containerInit } from "./containerInit.js";
 
 export const useContainer = create((set) => ({
   container: containerInit,

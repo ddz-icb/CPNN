@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { downloadInit } from "../../config//downloadInitValues.js";
+import { downloadInit } from "./downloadInit.js";
 
 export const useDownload = create((set) => ({
   download: downloadInit,

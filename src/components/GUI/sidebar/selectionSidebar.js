@@ -5,8 +5,8 @@ import { ReactComponent as MagnetIcon } from "../../../icons/magnet.svg";
 import { ReactComponent as FilterIcon } from "../../../icons/filter.svg";
 import { ReactComponent as PaletteIcon } from "../../../icons/colorPalette.svg";
 import { ReactComponent as DownloadIcon } from "../../../icons/download.svg";
-import { darkTheme, lightTheme } from "../../config/appearanceInitValues.js";
-import { useAppearance } from "../../adapters/state/appearanceState.js";
+import { darkTheme, lightTheme } from "../../adapters/state/appearance/appearanceInit.js";
+import { useAppearance } from "../../adapters/state/appearance/appearanceState.js";
 
 export function SelectionSidebar({ handleNavItemClick }) {
   const { appearance, setAppearance } = useAppearance();

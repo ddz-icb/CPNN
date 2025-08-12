@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { tooltipInit } from "../../config/tooltipInitValues.js";
+import { tooltipInit } from "./tooltipInit.js";
 
 export const useTooltipSettings = create((set) => ({
   tooltipSettings: tooltipInit,

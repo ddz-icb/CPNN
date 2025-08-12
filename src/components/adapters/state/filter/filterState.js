@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { filterInit } from "../../config/filterInitValues.js";
+import { filterInit } from "./filterInit.js";
 
 export const useFilter = create((set) => ({
   filter: filterInit,

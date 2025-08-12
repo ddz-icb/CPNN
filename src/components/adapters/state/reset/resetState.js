@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { resetInit } from "../../config/resetInitValues.js";
+import { resetInit } from "./resetInit.js";
 
 export const useReset = create((set) => ({
   reset: resetInit,

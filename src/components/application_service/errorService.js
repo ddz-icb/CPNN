@@ -1,5 +1,5 @@
-import { useError } from "../adapters/state/errorState.js";
-import { erorrInit } from "../config/errorInitValues.js";
+import { useError } from "../adapters/state/error/errorState.js";
+import { erorrInit } from "../adapters/state/error/errorInit.js";
 
 export const errorService = {
   getError() {

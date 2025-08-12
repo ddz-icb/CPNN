@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-import { graphDataInit } from "../../config/graphDataInitValues.js";
+import { graphDataInit } from "./graphDataInit.js";
 
 export const useGraphData = create((set) => ({
   graphData: graphDataInit,

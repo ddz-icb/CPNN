@@ -1,4 +1,4 @@
-import { useFilter } from "../adapters/state/filterState.js";
+import { useFilter } from "../adapters/state/filter/filterState.js";
 
 export const filterService = {
   // ===== Generic getter/setter =====

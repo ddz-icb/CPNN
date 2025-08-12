@@ -2,12 +2,12 @@ import log from "../../logger.js";
 import { graphService } from "./graphService.js";
 import { errorService } from "./errorService.js";
 import { filterService } from "./filterService.js";
-import { filterInit } from "../config/filterInitValues.js";
+import { filterInit } from "../adapters/state/filter/filterInit.js";
 import { physicsService } from "./physicsService.js";
-import { physicsInit } from "../config/physicsInitValues.js";
+import { physicsInit } from "../adapters/state/physics/physicsInit.js";
 import { downloadService } from "./downloadService.js";
-import { downloadInit } from "../config/downloadInitValues.js";
-import { useReset } from "../adapters/state/resetState.js";
+import { downloadInit } from "../adapters/state/download/downloadInit.js";
+import { useReset } from "../adapters/state/reset/resetState.js";
 
 export const resetService = {
   getReset() {

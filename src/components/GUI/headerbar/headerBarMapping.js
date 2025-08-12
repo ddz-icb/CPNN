@@ -1,5 +1,5 @@
-import { useAppearance } from "../../adapters/state/appearanceState.js";
-import { useGraphData } from "../../adapters/state/graphState.js";
+import { useAppearance } from "../../adapters/state/appearance/appearanceState.js";
+import { useGraphData } from "../../adapters/state/graph/graphState.js";
 import { fallbackColor, getColor } from "../../other/draw.js";
 
 export function HeaderbarMapping() {

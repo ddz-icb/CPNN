@@ -4,7 +4,7 @@ import * as d3 from "d3";
 
 import { downloadAsPDF, downloadAsPNG, downloadAsSVG, downloadGraphJson, downloadLegendPdf } from "./download.js";
 import { changeCircleBorderColor, changeNodeColors, changeNodeLabelColor, radius } from "../other/draw.js";
-import { lightTheme, themeInit } from "../config/appearanceInitValues.js";
+import { lightTheme, themeInit } from "../adapters/state/appearance/appearanceInit.js";
 import {
   filterActiveNodesForPixi,
   filterByLinkAttribs,
@@ -29,12 +29,12 @@ import {
   maxDistanceChargeForce,
   nodeRepulsionMultiplier,
 } from "./graphPhysics.js";
-import { usePhysics } from "../adapters/state/physicsState.js";
-import { useFilter } from "../adapters/state/filterState.js";
-import { useDownload } from "../adapters/state/downloadState.js";
-import { useAppearance } from "../adapters/state/appearanceState.js";
-import { useContainer } from "../adapters/state/containerState.js";
-import { useGraphData } from "../adapters/state/graphState.js";
+import { usePhysics } from "../adapters/state/physics/physicsState.js";
+import { useFilter } from "../adapters/state/filter/filterState.js";
+import { useDownload } from "../adapters/state/download/downloadState.js";
+import { useAppearance } from "../adapters/state/appearance/appearanceState.js";
+import { useContainer } from "../adapters/state/container/containerState.js";
+import { useGraphData } from "../adapters/state/graph/graphState.js";
 
 export function SettingControl({ simulation, app, redraw }) {
   const { physics, setPhysics } = usePhysics();

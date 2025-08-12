@@ -13,7 +13,7 @@ import {
   manyColors,
   manyColorsJson,
   okabe_ItoAntiBlindnessJson,
-} from "../config/appearanceInitValues.js";
+} from "../adapters/state/appearance/appearanceInit.js";
 import { getFileNameWithoutExtension, parseColorSchemeFile } from "../other/parseFiles.js";
 
 export async function setInitColorSchemes(appearance, setAppearance) {

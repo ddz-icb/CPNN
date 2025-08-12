@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { physicsInit } from "../../config/physicsInitValues.js";
+import { physicsInit } from "./physicsInit.js";
 
 export const usePhysics = create((set) => ({
   physics: physicsInit,
