@@ -57,25 +57,4 @@ export const appearanceService = {
   setLinkWidthText(val) {
     this.set("linkWidthText", val);
   },
-
-  getUploadedColorschemeNames() {
-    return this.get("uploadedColorschemeNames");
-  },
-  setUploadedColorschemeNames(val) {
-    this.set("uploadedColorschemeNames", val);
-  },
-
-  getNodeColorscheme() {
-    return this.get("nodeColorscheme");
-  },
-  setNodeColorscheme(val) {
-    this.set("nodeColorscheme", val);
-  },
-
-  getLinkColorscheme() {
-    return this.get("linkColorscheme");
-  },
-  setLinkColorscheme(val) {
-    this.set("linkColorscheme", val);
-  },
 };

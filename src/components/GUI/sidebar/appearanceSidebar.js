@@ -11,6 +11,7 @@ import {
   uploadColorschemeDescription,
 } from "./descriptions/appearanceDescriptions.js";
 import { useAppearance, linkWidthInit } from "../../adapters/state/appearanceState.js";
+import { useColorscheme } from "../../adapters/state/colorschemeState.js";
 
 export function AppearanceSidebar({ handleNewColorscheme, handleDeleteColorscheme, handleSelectLinkColorscheme, handleSelectNodeColorscheme }) {
   return (
@@ -102,12 +103,12 @@ export function UploadColorscheme({ handleNewColorscheme }) {
 }
 
 function ActiveNodeColorscheme() {
-  const { appearance } = useAppearance();
+  const { colorscheme } = useColorscheme();
 
   return (
     <TableList
       heading={"Active Node Color Scheme"}
-      data={appearance.nodeColorscheme ? [appearance.nodeColorscheme] : []}
+      data={colorscheme.nodeColorscheme ? [colorscheme.nodeColorscheme] : []}
       displayKey={"name"}
       dark={true}
     />
@@ -115,12 +116,12 @@ function ActiveNodeColorscheme() {
 }
 
 function ActiveLinkColorscheme() {
-  const { appearance } = useAppearance();
+  const { colorscheme } = useColorscheme();
 
   return (
     <TableList
       heading={"Active Link Color Scheme"}
-      data={appearance.linkColorscheme ? [appearance.linkColorscheme] : []}
+      data={colorscheme.linkColorscheme ? [colorscheme.linkColorscheme] : []}
       displayKey={"name"}
       dark={true}
     />
@@ -158,19 +159,20 @@ function UploadedColorschemes({ handleDeleteColorscheme, handleSelectLinkColorsc
 }
 
 function ColorSelection() {
+  const { colorscheme, setColorscheme } = useColorscheme();
   const { appearance, setAppearance } = useAppearance();
 
   return (
     <div className="pad-left-1 pad-right-1 color-mapping-select-table">
       <ColorMappingSelect
         heading={"Node Color Mapping"}
-        colorscheme={appearance.nodeColorscheme}
+        colorscheme={colorscheme.nodeColorscheme}
         attribsToColorIndices={appearance.nodeAttribsToColorIndices}
         setMapping={(updatedMapping) => setAppearance("nodeAttribsToColorIndices", updatedMapping)}
       />
       <ColorMappingSelect
         heading={"Link Color Mapping"}
-        colorscheme={appearance.linkColorscheme}
+        colorscheme={colorscheme.linkColorscheme}
         attribsToColorIndices={appearance.linkAttribsToColorIndices}
         setMapping={(updatedMapping) => setAppearance("linkAttribsToColorIndices", updatedMapping)}
       />

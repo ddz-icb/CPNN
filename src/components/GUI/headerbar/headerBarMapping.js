@@ -1,9 +1,11 @@
 import { useAppearance } from "../../adapters/state/appearanceState.js";
+import { useColorscheme } from "../../adapters/state/colorschemeState.js";
 import { useGraphData } from "../../adapters/state/graphState.js";
 import { fallbackColor, getColor } from "../../other/draw.js";
 
 export function HeaderbarMapping() {
   const { appearance } = useAppearance();
+  const { colorscheme } = useColorscheme();
   const { graphData } = useGraphData();
 
   const renderMapping = (attribsToColorIndices, colorscheme) => {
@@ -28,9 +30,9 @@ export function HeaderbarMapping() {
     return content;
   };
 
-  const nodeMapping = renderMapping(appearance.nodeAttribsToColorIndices, appearance.nodeColorscheme);
+  const nodeMapping = renderMapping(appearance.nodeAttribsToColorIndices, colorscheme.nodeColorscheme);
 
-  const linkMapping = renderMapping(appearance.linkAttribsToColorIndices, appearance.linkColorscheme);
+  const linkMapping = renderMapping(appearance.linkAttribsToColorIndices, colorscheme.linkColorscheme);
 
   return (
     <div className={"dropdown min-width-400 margin-left-20"}>

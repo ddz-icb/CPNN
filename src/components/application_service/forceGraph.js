@@ -15,9 +15,11 @@ import { useContainer } from "../adapters/state/containerState.js";
 import { useTooltipSettings } from "../adapters/state/tooltipState.js";
 import { useError } from "../adapters/state/errorState.js";
 import { useReset } from "../adapters/state/resetState.js";
+import { useColorscheme } from "../adapters/state/colorschemeState.js";
 
 export function ForceGraph() {
   const { appearance, setAppearance } = useAppearance();
+  const { colorscheme, setColorscheme } = useColorscheme();
   const { graphData, setGraphData } = useGraphData();
   const { container, setContainer } = useContainer();
   const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
@@ -97,7 +99,7 @@ export function ForceGraph() {
 
   // set stage //
   useEffect(() => {
-    if (graphData.circles || !app || !graphData.graph || !container.width || !container.height || !appearance.theme || !appearance.nodeColorscheme)
+    if (graphData.circles || !app || !graphData.graph || !container.width || !container.height || !appearance.theme || !colorscheme.nodeColorscheme)
       return;
     log.info("Setting stage");
 
@@ -112,7 +114,13 @@ export function ForceGraph() {
     const nodeMap = {};
     for (const node of graphData.graph.nodes) {
       let circle = new PIXI.Graphics();
-      circle = drawCircle(circle, node, appearance.theme.circleBorderColor, appearance.nodeColorscheme.content, appearance.nodeAttribsToColorIndices);
+      circle = drawCircle(
+        circle,
+        node,
+        appearance.theme.circleBorderColor,
+        colorscheme.nodeColorscheme.content,
+        appearance.nodeAttribsToColorIndices
+      );
       circle.id = node.id;
       circle.interactive = true;
       circle.buttonMode = true;
@@ -218,7 +226,7 @@ export function ForceGraph() {
     graphData.lines.clear();
 
     for (const link of graph.links) {
-      drawLine(graphData.lines, link, appearance.linkWidth, appearance.linkColorscheme.content, appearance.linkAttribsToColorIndices);
+      drawLine(graphData.lines, link, appearance.linkWidth, colorscheme.linkColorscheme.content, appearance.linkAttribsToColorIndices);
     }
 
     if (appearance.showNodeLabels) {

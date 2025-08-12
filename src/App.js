@@ -24,7 +24,6 @@ import {
 } from "./components/domain_service/colorschemeManager.js";
 
 import { Error } from "./components/gui/error.js";
-import { defaultColorschemes } from "./components/adapters/state/appearanceState.js";
 import { getFileNameWithoutExtension } from "./components/other/parseFiles.js";
 import { getGraphDB } from "./components/repository/GraphRepo.js";
 import { linkThresholdInit } from "./components/adapters/state/filterState.js";
@@ -33,16 +32,17 @@ import { loadTheme, storeTheme } from "./components/domain_service/themeManager.
 import { useFilter } from "./components/adapters/state/filterState.js";
 import { usePhysics } from "./components/adapters/state/physicsState.js";
 import { useAppearance } from "./components/adapters/state/appearanceState.js";
-import { useDownload } from "./components/adapters/state/downloadState.js";
 import { useGraphData } from "./components/adapters/state/graphState.js";
 import { useError } from "./components/adapters/state/errorState.js";
 import { resetService } from "./components/application_service/resetService.js";
 import { useMappingData } from "./components/adapters/state/mappingState.js";
+import { useColorscheme, defaultColorschemes } from "./components/adapters/state/colorschemeState.js";
 
 function App() {
   const { setFilter, setAllFilter } = useFilter();
   const { setAllPhysics } = usePhysics();
   const { appearance, setAppearance } = useAppearance();
+  const { colorscheme, setColorscheme } = useColorscheme();
   const { graphData, setGraphData } = useGraphData();
   const { mappingData, setMappingData } = useMappingData();
   const { error, setError, clearError } = useError();
@@ -55,7 +55,7 @@ function App() {
     log.info("Replacing link color scheme");
 
     try {
-      selectLinkColorscheme(colorschemeName, setAppearance);
+      selectLinkColorscheme(colorschemeName, setColorscheme);
     } catch (error) {
       setError("Color scheme is already the current link color scheme");
       log.error("Color scheme is already the current link color scheme");
@@ -67,7 +67,7 @@ function App() {
     log.info("Replacing node color scheme");
 
     try {
-      selectNodeColorscheme(colorschemeName, setAppearance);
+      selectNodeColorscheme(colorschemeName, setColorscheme);
     } catch (error) {
       setError("Color scheme is already the current node color scheme");
       log.error("Color scheme is already the current node color scheme");
@@ -78,14 +78,14 @@ function App() {
   const handleCreateColorscheme = async (event) => {
     const file = event.target.files[0];
     if (!event || !event.target || !file) return;
-    if (appearance.uploadedColorschemeNames.some((name) => getFileNameWithoutExtension(name) === getFileNameWithoutExtension(file.name))) {
+    if (colorscheme.uploadedColorschemeNames.some((name) => getFileNameWithoutExtension(name) === getFileNameWithoutExtension(file.name))) {
       log.warn("Color scheme with this name already exists");
       setError("Color scheme with this name already exists");
       return;
     }
     log.info("Adding new color scheme");
 
-    createColorscheme(file, appearance.uploadedColorschemeNames, setAppearance)
+    createColorscheme(file, colorscheme.uploadedColorschemeNames, setColorscheme)
       .then(() => {})
       .catch((error) => {
         setError(`${error.message}`);
@@ -100,14 +100,14 @@ function App() {
       setError("Cannot remove default color schemes");
       return;
     }
-    if (appearance.nodeColorscheme?.name == colorschemeName || appearance.linkColorscheme?.name == colorschemeName) {
+    if (colorscheme.nodeColorscheme?.name == colorschemeName || colorscheme.linkColorscheme?.name == colorschemeName) {
       log.warn("Cannot remove selected color scheme as it's still active");
       setError("Cannot remove selected color scheme as it's still active");
       return;
     }
     log.info("Deleting color schemes with name", colorschemeName);
 
-    deleteColorscheme(appearance.uploadedColorschemeNames, colorschemeName, setAppearance);
+    deleteColorscheme(colorscheme.uploadedColorschemeNames, colorschemeName, setColorscheme);
   };
 
   // INIT STUFF
@@ -124,7 +124,7 @@ function App() {
   // select default color schemes on startup
   useEffect(() => {
     log.info("Setting init color schemes");
-    setInitColorschemes(appearance, setAppearance);
+    setInitColorschemes(colorscheme, setColorscheme);
   }, []);
 
   // init uploadedGraphNames
@@ -167,7 +167,7 @@ function App() {
   useEffect(() => {
     log.info("Loading uploaded color schemes");
     try {
-      loadColorschemeNames(setAppearance);
+      loadColorschemeNames(setColorscheme);
     } catch (error) {
       setError("Error loading color schemes from database");
       log.error("Error loading color schemes from database");

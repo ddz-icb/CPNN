@@ -13,56 +13,56 @@ import {
   manyColors,
   manyColorsJson,
   okabe_ItoAntiBlindnessJson,
-} from "../adapters/state/appearanceState.js";
+} from "../adapters/state/colorschemeState.js";
 import { getFileNameWithoutExtension, parseColorschemeFile } from "../other/parseFiles.js";
 
-export async function setInitColorschemes(appearance, setAppearance) {
+export async function setInitColorschemes(colorscheme, setColorscheme) {
   addColorschemeIfNotExistsDB(ibmAntiBlindnessJson);
   addColorschemeIfNotExistsDB(okabe_ItoAntiBlindnessJson);
   addColorschemeIfNotExistsDB(manyColorsJson);
 
-  setAppearance("linkColorscheme", ibmAntiBlindness);
-  setAppearance("nodeColorscheme", manyColors);
-  setAppearance("uploadedColorschemeNames", [...new Set([...(appearance.uploadedColorschemeNames || []), ...defaultColorschemeNames])]);
+  setColorscheme("linkColorscheme", ibmAntiBlindness);
+  setColorscheme("nodeColorscheme", manyColors);
+  setColorscheme("uploadedColorschemeNames", [...new Set([...(colorscheme.uploadedColorschemeNames || []), ...defaultColorschemeNames])]);
 
-  if (!appearance.uploadedColorschemeNames) {
-    setAppearance("uploadedColorschemeNames", defaultColorschemeNames);
+  if (!colorscheme.uploadedColorschemeNames) {
+    setColorscheme("uploadedColorschemeNames", defaultColorschemeNames);
   }
 }
 
-export async function loadColorschemeNames(setAppearance) {
+export async function loadColorschemeNames(setColorscheme) {
   const filenames = await fromAllGetColorschemeNameDB();
   if (filenames.length === 0) return;
 
-  setAppearance("uploadedColorschemeNames", filenames);
+  setColorscheme("uploadedColorschemeNames", filenames);
 }
 
-export async function selectLinkColorscheme(colorschemeName, setAppearance) {
+export async function selectLinkColorscheme(colorschemeName, setColorscheme) {
   const { colorscheme, file } = await getColorschemeDB(colorschemeName);
 
-  setAppearance("linkColorscheme", colorscheme);
+  setColorscheme("linkColorscheme", colorscheme);
   log.info("Link color scheme Loaded Successfully:", colorschemeName);
 }
 
-export async function selectNodeColorscheme(colorschemeName, setAppearance) {
+export async function selectNodeColorscheme(colorschemeName, setColorscheme) {
   const { colorscheme, file } = await getColorschemeDB(colorschemeName);
 
-  setAppearance("nodeColorscheme", colorscheme);
+  setColorscheme("nodeColorscheme", colorscheme);
   log.info("Node color scheme Loaded Successfully:", colorscheme);
 }
 
-export async function createColorscheme(file, uploadedColorschemeNames, setAppearance) {
+export async function createColorscheme(file, uploadedColorschemeNames, setColorscheme) {
   if (uploadedColorschemeNames.some((name) => getFileNameWithoutExtension(name) === getFileNameWithoutExtension(file.name))) {
     log.warn("Color scheme with this name already exists");
     throw new Error("Color scheme with this name already exists");
   }
   const colorschemeFile = await parseColorschemeFile(file);
   addColorschemeFileDB(colorschemeFile);
-  setAppearance("uploadedColorschemeNames", [...(uploadedColorschemeNames || [defaultColorschemeNames]), file.name]);
+  setColorscheme("uploadedColorschemeNames", [...(uploadedColorschemeNames || [defaultColorschemeNames]), file.name]);
 }
 
-export function deleteColorscheme(uploadedColorschemeNames, colorschemeName, setAppearance) {
+export function deleteColorscheme(uploadedColorschemeNames, colorschemeName, setColorscheme) {
   const updatedColorschemes = uploadedColorschemeNames?.filter((name) => name !== colorschemeName);
-  setAppearance("uploadedColorschemeNames", updatedColorschemes);
+  setColorscheme("uploadedColorschemeNames", updatedColorschemes);
   removeColorschemeByNameDB(colorschemeName);
 }

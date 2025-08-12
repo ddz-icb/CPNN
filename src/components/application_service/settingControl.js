@@ -36,12 +36,14 @@ import { useAppearance } from "../adapters/state/appearanceState.js";
 import { useContainer } from "../adapters/state/containerState.js";
 import { useGraphData } from "../adapters/state/graphState.js";
 import { useMappingData } from "../adapters/state/mappingState.js";
+import { useColorscheme } from "../adapters/state/colorschemeState.js";
 
 export function SettingControl({ simulation, app, redraw }) {
   const { physics, setPhysics } = usePhysics();
   const { filter, setFilter } = useFilter();
   const { download, setDownload } = useDownload();
   const { appearance, setAppearance } = useAppearance();
+  const { colorscheme, setColorscheme } = useColorscheme();
   const { container, setContainer } = useContainer();
   const { graphData, setGraphData } = useGraphData();
   const { mappingData, setMappingData } = useMappingData();
@@ -191,11 +193,11 @@ export function SettingControl({ simulation, app, redraw }) {
         document,
         graphData.graph,
         appearance.linkWidth,
-        appearance.linkColorscheme,
+        colorscheme.linkColorscheme,
         appearance.linkAttribsToColorIndices,
         themeInit.circleBorderColor,
         themeInit.textColor,
-        appearance.nodeColorscheme,
+        colorscheme.nodeColorscheme,
         appearance.nodeAttribsToColorIndices,
         graphData.nodeMap
       );
@@ -210,11 +212,11 @@ export function SettingControl({ simulation, app, redraw }) {
       downloadAsPDF(
         graphData.graph,
         appearance.linkWidth,
-        appearance.linkColorscheme,
+        colorscheme.linkColorscheme,
         appearance.linkAttribsToColorIndices,
         themeInit.circleBorderColor,
         themeInit.textColor,
-        appearance.nodeColorscheme,
+        colorscheme.nodeColorscheme,
         appearance.nodeAttribsToColorIndices,
         graphData.nodeMap
       );
@@ -227,9 +229,9 @@ export function SettingControl({ simulation, app, redraw }) {
       log.info("Downloading legend as PDF");
 
       downloadLegendPdf(
-        appearance.linkColorscheme,
+        colorscheme.linkColorscheme,
         appearance.linkAttribsToColorIndices,
-        appearance.nodeColorscheme,
+        colorscheme.nodeColorscheme,
         appearance.nodeAttribsToColorIndices,
         mappingData.activeMapping
       );
@@ -254,10 +256,10 @@ export function SettingControl({ simulation, app, redraw }) {
       graphData.circles,
       graphData.nodeMap,
       appearance.theme.circleBorderColor,
-      appearance.nodeColorscheme.content,
+      colorscheme.nodeColorscheme.content,
       appearance.nodeAttribsToColorIndices
     );
-  }, [appearance.nodeColorscheme, appearance.nodeAttribsToColorIndices]);
+  }, [colorscheme.nodeColorscheme, appearance.nodeAttribsToColorIndices]);
 
   // switch link color scheme
   useEffect(() => {
@@ -266,7 +268,7 @@ export function SettingControl({ simulation, app, redraw }) {
 
     simulation.on("tick.redraw", () => redraw(graphData.graph));
     redraw(graphData.graph);
-  }, [appearance.linkColorscheme, appearance.linkAttribsToColorIndices]);
+  }, [colorscheme.linkColorscheme, appearance.linkAttribsToColorIndices]);
 
   // change link width
   useEffect(() => {
