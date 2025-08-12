@@ -193,11 +193,11 @@ export function SettingControl({ simulation, app, redraw }) {
         document,
         graphData.graph,
         appearance.linkWidth,
-        colorscheme.linkColorscheme,
+        colorscheme.linkColorscheme.content,
         colorscheme.linkAttribsToColorIndices,
         themeInit.circleBorderColor,
         themeInit.textColor,
-        colorscheme.nodeColorscheme,
+        colorscheme.nodeColorscheme.content,
         colorscheme.nodeAttribsToColorIndices,
         graphData.nodeMap
       );
@@ -212,11 +212,11 @@ export function SettingControl({ simulation, app, redraw }) {
       downloadAsPDF(
         graphData.graph,
         appearance.linkWidth,
-        colorscheme.linkColorscheme,
+        colorscheme.linkColorscheme.content,
         colorscheme.linkAttribsToColorIndices,
         themeInit.circleBorderColor,
         themeInit.textColor,
-        colorscheme.nodeColorscheme,
+        colorscheme.nodeColorscheme.content,
         colorscheme.nodeAttribsToColorIndices,
         graphData.nodeMap
       );
@@ -229,9 +229,9 @@ export function SettingControl({ simulation, app, redraw }) {
       log.info("Downloading legend as PDF");
 
       downloadLegendPdf(
-        colorscheme.linkColorscheme,
+        colorscheme.linkColorscheme.content,
         colorscheme.linkAttribsToColorIndices,
-        colorscheme.nodeColorscheme,
+        colorscheme.nodeColorscheme.content,
         colorscheme.nodeAttribsToColorIndices,
         mappingData.activeMapping
       );

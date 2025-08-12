@@ -44,7 +44,7 @@ export const mappingService = {
   },
 
   handleRemoveActiveMapping() {
-    log.info("Removing currently active annotation mapping");
+    log.info("Removing currently active mapping");
 
     this.setActiveMapping(activeMappingInit);
     graphService.setGraphIsPreprocessed(false);

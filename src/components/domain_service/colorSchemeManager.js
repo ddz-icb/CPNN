@@ -1,6 +1,6 @@
 import log from "../../logger.js";
 import {
-  addColorschemeFileDB,
+  addColorschemeDB,
   addColorschemeIfNotExistsDB,
   fromAllGetColorschemeNameDB,
   getColorschemeDB,
@@ -38,17 +38,19 @@ export async function loadColorschemeNames(setColorscheme) {
 }
 
 export async function selectLinkColorscheme(colorschemeName, setColorscheme) {
-  const { colorscheme, file } = await getColorschemeDB(colorschemeName);
+  const colorschemeObject = await getColorschemeDB(colorschemeName);
 
-  setColorscheme("linkColorscheme", colorscheme);
+  setColorscheme("linkColorscheme", colorschemeObject);
   log.info("Link color scheme Loaded Successfully:", colorschemeName);
 }
 
 export async function selectNodeColorscheme(colorschemeName, setColorscheme) {
-  const { colorscheme, file } = await getColorschemeDB(colorschemeName);
+  const colorschemeObject = await getColorschemeDB(colorschemeName);
 
-  setColorscheme("nodeColorscheme", colorscheme);
-  log.info("Node color scheme Loaded Successfully:", colorscheme);
+  console.log("colorscheme", colorschemeObject);
+
+  setColorscheme("nodeColorscheme", colorschemeObject);
+  log.info("Node color scheme Loaded Successfully:", colorschemeObject);
 }
 
 export async function createColorscheme(file, uploadedColorschemeNames, setColorscheme) {
@@ -57,7 +59,7 @@ export async function createColorscheme(file, uploadedColorschemeNames, setColor
     throw new Error("Color scheme with this name already exists");
   }
   const colorschemeFile = await parseColorschemeFile(file);
-  addColorschemeFileDB(colorschemeFile);
+  addColorschemeDB(colorschemeFile);
   setColorscheme("uploadedColorschemeNames", [...(uploadedColorschemeNames || [defaultColorschemeNames]), file.name]);
 }
 

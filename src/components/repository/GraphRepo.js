@@ -80,7 +80,7 @@ export async function removeGraphByNameDB(name) {
     const file = await getFileByNameDB(name);
     if (!file) {
       log.warn(`No file found with the name ${name}.`);
-      return false; // Indicate failure
+      return false;
     }
 
     await db.uploadedFiles.delete(file.id);

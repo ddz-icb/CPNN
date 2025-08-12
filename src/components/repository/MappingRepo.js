@@ -20,7 +20,7 @@ export async function getMappingDB(filename) {
   const file = await getByNameDB(filename);
   if (!file) throw new Error("No file found");
 
-  const mappingObject = JSON.parse(file.content);
+  const mappingObject = JSON.parse(file);
   if (!mappingObject) throw new Error("File format not recognized");
   return mappingObject;
 }

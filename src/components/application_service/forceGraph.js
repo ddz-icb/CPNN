@@ -99,7 +99,15 @@ export function ForceGraph() {
 
   // set stage //
   useEffect(() => {
-    if (graphData.circles || !app || !graphData.graph || !container.width || !container.height || !appearance.theme || !colorscheme.nodeColorscheme)
+    if (
+      graphData.circles ||
+      !app ||
+      !graphData.graph ||
+      !container.width ||
+      !container.height ||
+      !appearance.theme ||
+      !colorscheme.nodeColorscheme.content
+    )
       return;
     log.info("Setting stage");
 

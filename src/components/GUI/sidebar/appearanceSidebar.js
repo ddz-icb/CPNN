@@ -80,11 +80,7 @@ export function UploadColorscheme({ handleNewColorscheme }) {
         <PopupTextField inline={true} textInfront={"Color Scheme format:"} textInside={"Color1, Color2, Color3, ..."} />
         <PopupTextField inline={true} textInfront={"Color Scheme example:"} textInside={"#e69f00,#56b4e9,#009e73"} />
         <div className="popup-block">
-          <Button
-            variant="popup"
-            text={"Download Example Color Scheme"}
-            onClick={() => downloadCsvFile(colorschemeCsv.content, colorschemeCsv.name)}
-          />
+          <Button variant="popup" text={"Download Example Color Scheme"} onClick={() => downloadCsvFile(colorschemeCsv, colorschemeCsv.name)} />
           <Button
             variant="popup"
             text={"Upload Own Color Scheme"}
@@ -165,13 +161,13 @@ function ColorSelection() {
     <div className="pad-left-1 pad-right-1 color-mapping-select-table">
       <ColorMappingSelect
         heading={"Node Color Mapping"}
-        colorscheme={colorscheme.nodeColorscheme}
+        colorscheme={colorscheme.nodeColorscheme.content}
         attribsToColorIndices={colorscheme.nodeAttribsToColorIndices}
         setMapping={(updatedColorMapping) => setColorscheme("nodeAttribsToColorIndices", updatedColorMapping)}
       />
       <ColorMappingSelect
         heading={"Link Color Mapping"}
-        colorscheme={colorscheme.linkColorscheme}
+        colorscheme={colorscheme.linkColorscheme.content}
         attribsToColorIndices={colorscheme.linkAttribsToColorIndices}
         setMapping={(updatedColorMapping) => setColorscheme("linkAttribsToColorIndices", updatedColorMapping)}
       />
@@ -194,7 +190,7 @@ export function ColorMappingSelect({ heading, colorscheme, attribsToColorIndices
         updatedMapping[oldAttribute] = previousColorIndex;
       } else {
         const usedColors = Object.values(updatedMapping);
-        const firstAvailableColor = Object.keys(colorscheme.content).find((index) => !usedColors.includes(parseInt(index, 10)));
+        const firstAvailableColor = Object.keys(colorscheme)?.find((index) => !usedColors.includes(parseInt(index, 10)));
 
         if (firstAvailableColor !== undefined) {
           updatedMapping[oldAttribute] = parseInt(firstAvailableColor, 10);
@@ -212,7 +208,7 @@ export function ColorMappingSelect({ heading, colorscheme, attribsToColorIndices
       <span className="heading-label-no-pad pad-bottom-05">{heading}</span>
       <div className="sidebar-block-no-pad">
         <div className="colormapping-selector">
-          {Object.entries(colorscheme.content).map(([colorIndex, color]) => {
+          {Object.entries(colorscheme).map(([colorIndex, color]) => {
             const currentAttribute = Object.keys(attribsToColorIndices).find((key) => attribsToColorIndices[key] === parseInt(colorIndex, 10));
 
             return (
