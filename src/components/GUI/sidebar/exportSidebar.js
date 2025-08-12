@@ -1,5 +1,5 @@
-import { useDownload } from "../../../states.js";
 import { ReactComponent as DownloadIcon } from "../../../icons/download.svg";
+import { useDownload } from "../../adapters/state/downloadState.js";
 import { TableList } from "../reusable_components/sidebarComponents.js";
 
 export function ExportSidebar() {

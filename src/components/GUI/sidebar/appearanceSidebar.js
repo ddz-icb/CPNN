@@ -3,7 +3,6 @@ import { ReactComponent as TrashIcon } from "../../../icons/trash.svg";
 import { SwitchBlock, Popup, TableList, SliderBlock, Button, PopupTextField } from "../reusable_components/sidebarComponents.js";
 import { colorSchemeCsv } from "../../assets/exampleColorSchemeCSV.js";
 import { downloadCsvFile } from "../../application_service/download.js";
-import { useAppearance } from "../../../states.js";
 import log from "../../../logger.js";
 import {
   linkWidthDescription,
@@ -12,6 +11,7 @@ import {
   uploadColorSchemeDescription,
 } from "./descriptions/appearanceDescriptions.js";
 import { linkWidthInit } from "../../config/appearanceInitValues.js";
+import { useAppearance } from "../../adapters/state/appearanceState.js";
 
 export function AppearanceSidebar({ handleNewColorScheme, handleDeleteColorScheme, handleSelectLinkColorScheme, handleSelectNodeColorScheme }) {
   return (

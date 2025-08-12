@@ -11,7 +11,6 @@ import { parseAttributesFilter as parseLinkAttribsFilter } from "../../other/par
 import { parseGroupsFilter as parseNodeAttribsFilter } from "../../other/parserNodeFilter.js";
 
 import { Button, CodeEditorBlock, FieldBlock, SliderBlock, SwitchBlock } from "../reusable_components/sidebarComponents.js";
-import { useAppearance, useFilter, useGraphData } from "../../../states.js";
 import {
   filterInit,
   linkThresholdInit,
@@ -31,6 +30,9 @@ import {
   nodeFilterDescription,
 } from "./descriptions/filterDescriptions.js";
 import { handleEditorChange, runCodeEditor } from "../handlers/buttonHandlerFunctions.js";
+import { useFilter } from "../../adapters/state/filterState.js";
+import { useAppearance } from "../../adapters/state/appearanceState.js";
+import { useGraphData } from "../../adapters/state/graphState.js";
 
 export function FilterSidebar() {
   const { filter, setFilter, setAllFilter } = useFilter();

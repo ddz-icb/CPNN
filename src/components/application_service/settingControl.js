@@ -1,9 +1,8 @@
 import { useEffect } from "react";
-import { useAppearance, useContainer, useDownload, useFilter, useGraphData, usePhysics } from "../../states.js";
 import log from "../../logger.js";
 import * as d3 from "d3";
 
-import { downloadAsPDF, downloadAsPNG, downloadAsSVG, downloadGraphJson, downloadGraphWithLegendPdf, downloadLegendPdf } from "./download.js";
+import { downloadAsPDF, downloadAsPNG, downloadAsSVG, downloadGraphJson, downloadLegendPdf } from "./download.js";
 import { changeCircleBorderColor, changeNodeColors, changeNodeLabelColor, radius } from "../other/draw.js";
 import { lightTheme, themeInit } from "../config/appearanceInitValues.js";
 import {
@@ -30,6 +29,12 @@ import {
   maxDistanceChargeForce,
   nodeRepulsionMultiplier,
 } from "./graphPhysics.js";
+import { usePhysics } from "../adapters/state/physicsState.js";
+import { useFilter } from "../adapters/state/filterState.js";
+import { useDownload } from "../adapters/state/downloadState.js";
+import { useAppearance } from "../adapters/state/appearanceState.js";
+import { useContainer } from "../adapters/state/containerState.js";
+import { useGraphData } from "../adapters/state/graphState.js";
 
 export function SettingControl({ simulation, app, redraw }) {
   const { physics, setPhysics } = usePhysics();

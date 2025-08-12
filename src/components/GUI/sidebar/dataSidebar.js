@@ -5,7 +5,6 @@ import { useEffect, useRef, useState } from "react";
 
 import { TableList, ButtonPopup, SwitchBlock, SliderBlock, FieldBlock, Button, PopupTextField } from "../reusable_components/sidebarComponents.js";
 import log from "../../../logger.js";
-import { useGraphData } from "../../../states.js";
 import { exampleGraphJson } from "../../assets/exampleGraphJSON.js";
 import { downloadCsvFile, downloadObjectAsFile } from "../../application_service/download.js";
 import { exampleGraphCsv } from "../../assets/exampleGraphCSV.js";
@@ -22,6 +21,7 @@ import {
   uploadPathwayMappingDescription,
 } from "./descriptions/dataDescriptions.js";
 import { mergeProteinsDescription } from "./descriptions/filterDescriptions.js";
+import { useGraphData } from "../../adapters/state/graphState.js";
 
 export function DataSidebar({
   handleRemoveActiveGraphFile,

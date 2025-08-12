@@ -31,7 +31,6 @@ import {
   setInitColorSchemes,
 } from "./components/domain_service/colorSchemeManager.js";
 
-import { useAppearance, useDownload, useFilter, useGraphData, usePhysics } from "./states.js";
 import { Erorr } from "./components/other/error.js";
 import { defaultColorSchemes } from "./components/config/appearanceInitValues.js";
 import { getFileNameWithoutExtension } from "./components/other/parseFiles.js";
@@ -46,6 +45,11 @@ import {
   selectMapping,
 } from "./components/domain_service/mappingManager.js";
 import { loadTheme, storeTheme } from "./components/domain_service/themeManager.js";
+import { useFilter } from "./components/adapters/state/filterState.js";
+import { usePhysics } from "./components/adapters/state/physicsState.js";
+import { useAppearance } from "./components/adapters/state/appearanceState.js";
+import { useDownload } from "./components/adapters/state/downloadState.js";
+import { useGraphData } from "./components/adapters/state/graphState.js";
 
 function App() {
   const { setFilter, setAllFilter } = useFilter();
