@@ -48,22 +48,6 @@ function App() {
   const { mappingData, setMappingData } = useMappingData();
   const { error, setError, clearError } = useError();
 
-  // MAPPING
-  //////////
-
-  // deletes annotation mapping files
-  const handleDeleteMapping = (mappingName) => {
-    if (!mappingName) return;
-    if (mappingData?.activeMapping?.name == mappingName) {
-      log.warn("Cannot remove selected mapping as it's still active");
-      setError("Cannot remove selected mapping as it's still active");
-      return;
-    }
-    log.info("Deleting mapping with name", mappingName);
-
-    deleteMapping(mappingData.uploadedMappingNames, mappingName, setMappingData);
-  };
-
   // COLOR SCHEME
   ///////////////
 
@@ -262,7 +246,6 @@ function App() {
     <div className={appearance.theme.name}>
       <HeaderBar />
       <Sidebar
-        handleDeleteMapping={handleDeleteMapping}
         handleNewColorScheme={handleCreateColorScheme}
         handleDeleteColorScheme={handleDeleteColorScheme}
         handleSelectLinkColorScheme={handleSelectLinkColorScheme}

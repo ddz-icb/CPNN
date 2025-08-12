@@ -1,6 +1,6 @@
 import log from "../../logger.js";
 import { activeMappingInit, useMappingData } from "../adapters/state/mappingState.js";
-import { createMapping, selectMapping } from "../domain_service/mappingManager.js";
+import { createMapping, deleteMapping, selectMapping } from "../domain_service/mappingManager.js";
 import { errorService } from "./errorService.js";
 import { graphService } from "./graphService.js";
 import { resetService } from "./resetService.js";
@@ -43,12 +43,34 @@ export const mappingService = {
     }
   },
 
-  async handleRemoveActiveMapping() {
+  handleRemoveActiveMapping() {
     log.info("Removing currently active annotation mapping");
 
     this.setActiveMapping(activeMappingInit);
     graphService.setGraphIsPreprocessed(false);
     resetService.simulationReset();
+  },
+
+  async handleDeleteMapping(mappingName) {
+    if (!mappingName) {
+      errorService.setError("Selected invalid mapping");
+      log.error("Selected invalid mapping");
+      return;
+    }
+    if (this.getActiveMapping()?.name == mappingName) {
+      log.error("Cannot remove selected mapping as it's still active");
+      errorService.setError("Cannot remove selected mapping as it's still active");
+      return;
+    }
+    log.info("Deleting mapping with name", mappingName);
+
+    try {
+      const updatedMappingNames = await deleteMapping(this.getUploadedMappingNames(), mappingName);
+      this.setUploadedMappingNames(updatedMappingNames);
+    } catch (error) {
+      errorService.setError("Error deleting mapping file");
+      log.error(error);
+    }
   },
 
   // ===== Generic getter/setter =====

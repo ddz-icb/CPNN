@@ -26,7 +26,7 @@ import { graphService } from "../../application_service/graphService.js";
 import { useMappingData } from "../../adapters/state/mappingState.js";
 import { mappingService } from "../../application_service/mappingService.js";
 
-export function DataSidebar({ handleDeleteMapping }) {
+export function DataSidebar() {
   const { graphData } = useGraphData();
   const { mappingData } = useMappingData();
 
@@ -36,7 +36,7 @@ export function DataSidebar({ handleDeleteMapping }) {
       <ActiveGraphFiles activeGraphNames={graphData.activeGraphNames} />
       <UploadedGraphFiles uploadedGraphNames={graphData.uploadedGraphNames} />
       <ActiveMapping activeMapping={mappingData.activeMapping} />
-      <UploadedMappings uploadedMappingNames={mappingData.uploadedMappingNames} handleDeleteMapping={handleDeleteMapping} />
+      <UploadedMappings uploadedMappingNames={mappingData.uploadedMappingNames} />
     </>
   );
 }
@@ -100,7 +100,7 @@ function ActiveMapping({ activeMapping }) {
   );
 }
 
-function UploadedMappings({ uploadedMappingNames, handleDeleteMapping }) {
+function UploadedMappings({ uploadedMappingNames }) {
   return (
     <TableList
       heading={"Uploaded Pathway Mappings"}
@@ -108,7 +108,7 @@ function UploadedMappings({ uploadedMappingNames, handleDeleteMapping }) {
       onItemClick={(mappingName) => mappingService.handleSelectMapping(mappingName)}
       itemTooltipContent={() => "Replace Active Pathway Mapping"}
       ActionIcon={TrashIcon}
-      onActionIconClick={(mappingName) => handleDeleteMapping(mappingName)}
+      onActionIconClick={(mappingName) => mappingService.handleDeleteMapping(mappingName)}
       actionIconTooltipContent={() => "Delete Annotation Mapping"}
     />
   );
