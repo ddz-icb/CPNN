@@ -52,7 +52,6 @@ export async function removeActiveGraph(filename, activeGraphNames, setGraphData
 export async function createGraph(
   file,
   uploadedGraphNames,
-  setGraphData,
   takeAbs,
   minCorrForEdge,
   minCompSizeForNode,
@@ -64,13 +63,14 @@ export async function createGraph(
     throw new Error("Graph with this name already exists");
   }
 
-  const graphFile = await parseGraphFile(file, takeAbs, minCorrForEdge, minCompSizeForNode, maxCompSizeForNode, takeSpearmanCoefficient);
-  addGraphFileDB(graphFile);
-  setGraphData("uploadedGraphNames", [...(uploadedGraphNames || []), file.name]);
+  const graphObject = await parseGraphFile(file, takeAbs, minCorrForEdge, minCompSizeForNode, maxCompSizeForNode, takeSpearmanCoefficient);
+  addGraphFileDB(graphObject);
+
+  return graphObject;
 }
 
 export async function deleteGraph(uploadedGraphNames, filename, setGraphData) {
-  const updatedGraphFileNames = uploadedGraphNames?.filter((name) => name !== filename);
-  setGraphData("uploadedGraphNames", updatedGraphFileNames);
+  const updatedGraphNames = uploadedGraphNames?.filter((name) => name !== filename);
+  setGraphData("uploadedGraphNames", updatedGraphNames);
   removeGraphFileByNameDB(filename);
 }

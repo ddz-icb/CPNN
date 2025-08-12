@@ -2,7 +2,7 @@ import { ReactComponent as XIcon } from "../../icons/x.svg";
 import { useError } from "../adapters/state/errorState.js";
 
 export function Error() {
-  const { error, setError } = useError();
+  const { error, setError, clearError } = useError();
 
   return (
     <>
@@ -11,7 +11,7 @@ export function Error() {
           <div className="error-container">
             <div className="error-header pad-bottom-1">
               <b>Warning</b>
-              <span className="error-button" onClick={() => setError(null)}>
+              <span className="error-button" onClick={() => clearError()}>
                 <XIcon />
               </span>
             </div>

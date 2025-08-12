@@ -1072,6 +1072,8 @@ input[type="radio"]:checked:after {
   height: 100%;
   top: 0;
   left: 0;
+  overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 .error-container {

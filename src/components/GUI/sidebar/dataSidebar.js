@@ -22,6 +22,7 @@ import {
 } from "./descriptions/dataDescriptions.js";
 import { mergeProteinsDescription } from "./descriptions/filterDescriptions.js";
 import { useGraphData } from "../../adapters/state/graphState.js";
+import { graphService } from "../../application_service/graphService.js";
 
 export function DataSidebar({
   handleRemoveActiveGraphFile,
@@ -32,13 +33,12 @@ export function DataSidebar({
   handleRemoveActiveMapping,
   handleMappingSelect,
   handleDeleteMapping,
-  handleCreateGraph,
 }) {
   const { graphData } = useGraphData();
 
   return (
     <>
-      <TopDataButtons handleCreateGraph={handleCreateGraph} handleCreateMapping={handleCreateMapping} />
+      <TopDataButtons handleCreateMapping={handleCreateMapping} />
       <ActiveGraphFiles activeGraphNames={graphData.activeGraphNames} handleRemoveActiveGraphFile={handleRemoveActiveGraphFile} />
       <UploadedGraphFiles
         uploadedGraphNames={graphData.uploadedGraphNames}
@@ -56,11 +56,11 @@ export function DataSidebar({
   );
 }
 
-export function TopDataButtons({ handleCreateGraph, handleCreateMapping }) {
+export function TopDataButtons({ handleCreateMapping }) {
   return (
     <>
       <div className="sidebar-two-buttons">
-        <UploadGraph handleCreateGraph={handleCreateGraph} />
+        <UploadGraph />
         <UploadMapping handleCreateMapping={handleCreateMapping} />
       </div>
     </>
@@ -129,7 +129,7 @@ function UploadedMappings({ uploadedMappingNames, handleMappingSelect, handleDel
   );
 }
 
-function UploadGraph({ handleCreateGraph }) {
+function UploadGraph() {
   const graphFileRef = useRef(null);
 
   const [takeAbs, setTakeAbs] = useState(false);
@@ -152,10 +152,10 @@ function UploadGraph({ handleCreateGraph }) {
   const [nodeIdExample2, setNodeIdExample2] = useState("");
 
   useEffect(() => {
-    let id = "UniprotID";
-    let name = "Name";
-    let sites = "SiteA, SiteB, ... SiteT";
-    let sites2 = "SiteU, SiteV, ... SiteW";
+    const id = "UniprotID";
+    const name = "Name";
+    const sites = "SiteA, SiteB, ... SiteT";
+    const sites2 = "SiteU, SiteV, ... SiteW";
 
     const idFormat = `${id}1_ ${name}1${containsSites ? "_" + sites : ""}; ${id}2_${name}2${containsSites ? "_" + sites2 : ""}; ...`;
 
@@ -276,7 +276,15 @@ function UploadGraph({ handleCreateGraph }) {
           onClick={() => graphFileRef.current.click()}
           linkRef={graphFileRef}
           onChange={(event) => {
-            handleCreateGraph(event, takeAbs, minLinkCorr, minCompSizeForNode, maxCompSizeForNode, spearmanCoefficient, mergeSameProtein);
+            graphService.handleCreateGraph(
+              event,
+              takeAbs,
+              minLinkCorr,
+              minCompSizeForNode,
+              maxCompSizeForNode,
+              spearmanCoefficient,
+              mergeSameProtein
+            );
             event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
           }}
         />

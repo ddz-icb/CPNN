@@ -58,43 +58,12 @@ function App() {
   const { appearance, setAppearance } = useAppearance();
   const { download, setDownload } = useDownload();
   const { graphData, setGraphData } = useGraphData();
-  const { error, setError } = useError();
+  const { error, setError, clearError } = useError();
 
   const [reset, setReset] = useState(false); // true indicates that the simulation (in forceGraph.js) has to be reloaded
 
   // GRAPH
   ////////
-
-  const handleCreateGraph = async (
-    event,
-    takeAbs,
-    minCorrForEdge,
-    minCompSizeForNode,
-    maxCompSizeForNode,
-    takeSpearmanCoefficient,
-    mergeSameProtein
-  ) => {
-    const file = event.target.files[0];
-    if (!event || !event.target || !file) return;
-    log.info("Adding new graph file");
-
-    createGraph(
-      file,
-      graphData.uploadedGraphNames,
-      setGraphData,
-      takeAbs,
-      minCorrForEdge,
-      minCompSizeForNode,
-      maxCompSizeForNode,
-      takeSpearmanCoefficient,
-      mergeSameProtein
-    )
-      .then(() => {})
-      .catch((error) => {
-        setError(`${error.message}`);
-        log.error("Error adding graph file:", error);
-      });
-  };
 
   const handleSelectGraph = (filename) => {
     if (!filename) return;
@@ -288,7 +257,7 @@ function App() {
     setAllFilter(filterInit);
     setAllPhysics(physicsInit);
     setDownload(downloadInit);
-    setError(null);
+    clearError();
     setReset(true);
   };
 
@@ -431,7 +400,6 @@ function App() {
         handleRemoveActiveMapping={handleRemoveActiveMapping}
         handleMappingSelect={handleSelectMapping}
         handleDeleteMapping={handleDeleteMapping}
-        handleCreateGraph={handleCreateGraph}
         handleNewColorScheme={handleCreateColorScheme}
         handleDeleteColorScheme={handleDeleteColorScheme}
         handleSelectLinkColorScheme={handleSelectLinkColorScheme}

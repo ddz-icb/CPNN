@@ -7,4 +7,5 @@ export const useError = create((set) => ({
     set(() => ({
       error: value,
     })),
+  clearError: () => set({ error: erorrInit }),
 }));
