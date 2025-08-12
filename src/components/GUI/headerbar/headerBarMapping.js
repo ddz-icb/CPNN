@@ -30,9 +30,9 @@ export function HeaderbarMapping() {
     return content;
   };
 
-  const nodeMapping = renderMapping(appearance.nodeAttribsToColorIndices, colorscheme.nodeColorscheme);
+  const nodeMapping = renderMapping(colorscheme.nodeAttribsToColorIndices, colorscheme.nodeColorscheme);
 
-  const linkMapping = renderMapping(appearance.linkAttribsToColorIndices, colorscheme.linkColorscheme);
+  const linkMapping = renderMapping(colorscheme.linkAttribsToColorIndices, colorscheme.linkColorscheme);
 
   return (
     <div className={"dropdown min-width-400 margin-left-20"}>

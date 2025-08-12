@@ -18,16 +18,12 @@ export const darkTheme = {
 
 export const themeInit = lightTheme;
 
-export const linkAttribsToColorIndicesInit = null;
-export const nodeAttribsToColorIndices = null;
 export const showNodeLabelsInit = true;
 export const linkWidthInit = 2;
 
 export const appearanceInit = {
   theme: themeInit,
   showNodeLabels: true,
-  linkAttribsToColorIndices: null,
-  nodeAttribsToColorIndices: null,
   linkWidth: linkWidthInit,
   linkWidthText: linkWidthInit,
 };

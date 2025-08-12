@@ -29,21 +29,6 @@ export const appearanceService = {
   setShowNodeLabels(val) {
     this.set("showNodeLabels", val);
   },
-
-  getLinkAttribsToColorIndices() {
-    return this.get("linkAttribsToColorIndices");
-  },
-  setLinkAttribsToColorIndices(val) {
-    this.set("linkAttribsToColorIndices", val);
-  },
-
-  getNodeAttribsToColorIndices() {
-    return this.get("nodeAttribsToColorIndices");
-  },
-  setNodeAttribsToColorIndices(val) {
-    this.set("nodeAttribsToColorIndices", val);
-  },
-
   getLinkWidth() {
     return this.get("linkWidth");
   },

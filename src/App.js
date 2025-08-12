@@ -231,10 +231,10 @@ function App() {
     // set max comp size = amount of nodes
 
     const nodeAttribsToColorIndices = getNodeAttribsToColorIndices(newGraph);
-    setAppearance("nodeAttribsToColorIndices", nodeAttribsToColorIndices);
+    setColorscheme("nodeAttribsToColorIndices", nodeAttribsToColorIndices);
 
     const linkAttribsToColorIndices = getLinkAttribsToColorIndices(newGraph);
-    setAppearance("linkAttribsToColorIndices", linkAttribsToColorIndices);
+    setColorscheme("linkAttribsToColorIndices", linkAttribsToColorIndices);
 
     setGraphData("originGraph", newGraph);
     setGraphData("graph", newGraph);

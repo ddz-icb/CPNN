@@ -194,11 +194,11 @@ export function SettingControl({ simulation, app, redraw }) {
         graphData.graph,
         appearance.linkWidth,
         colorscheme.linkColorscheme,
-        appearance.linkAttribsToColorIndices,
+        colorscheme.linkAttribsToColorIndices,
         themeInit.circleBorderColor,
         themeInit.textColor,
         colorscheme.nodeColorscheme,
-        appearance.nodeAttribsToColorIndices,
+        colorscheme.nodeAttribsToColorIndices,
         graphData.nodeMap
       );
     }
@@ -213,11 +213,11 @@ export function SettingControl({ simulation, app, redraw }) {
         graphData.graph,
         appearance.linkWidth,
         colorscheme.linkColorscheme,
-        appearance.linkAttribsToColorIndices,
+        colorscheme.linkAttribsToColorIndices,
         themeInit.circleBorderColor,
         themeInit.textColor,
         colorscheme.nodeColorscheme,
-        appearance.nodeAttribsToColorIndices,
+        colorscheme.nodeAttribsToColorIndices,
         graphData.nodeMap
       );
     }
@@ -230,9 +230,9 @@ export function SettingControl({ simulation, app, redraw }) {
 
       downloadLegendPdf(
         colorscheme.linkColorscheme,
-        appearance.linkAttribsToColorIndices,
+        colorscheme.linkAttribsToColorIndices,
         colorscheme.nodeColorscheme,
-        appearance.nodeAttribsToColorIndices,
+        colorscheme.nodeAttribsToColorIndices,
         mappingData.activeMapping
       );
     }
@@ -257,9 +257,9 @@ export function SettingControl({ simulation, app, redraw }) {
       graphData.nodeMap,
       appearance.theme.circleBorderColor,
       colorscheme.nodeColorscheme.content,
-      appearance.nodeAttribsToColorIndices
+      colorscheme.nodeAttribsToColorIndices
     );
-  }, [colorscheme.nodeColorscheme, appearance.nodeAttribsToColorIndices]);
+  }, [colorscheme.nodeColorscheme, colorscheme.nodeAttribsToColorIndices]);
 
   // switch link color scheme
   useEffect(() => {
@@ -268,7 +268,7 @@ export function SettingControl({ simulation, app, redraw }) {
 
     simulation.on("tick.redraw", () => redraw(graphData.graph));
     redraw(graphData.graph);
-  }, [colorscheme.linkColorscheme, appearance.linkAttribsToColorIndices]);
+  }, [colorscheme.linkColorscheme, colorscheme.linkAttribsToColorIndices]);
 
   // change link width
   useEffect(() => {

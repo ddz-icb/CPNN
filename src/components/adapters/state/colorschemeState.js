@@ -41,10 +41,15 @@ export const manyColorsJson = { name: "Many Colors (18 colors)", content: JSON.s
 export const defaultColorschemes = [ibmAntiBlindness, okabe_ItoAntiBlindness, manyColors];
 export const defaultColorschemeNames = defaultColorschemes.map((c) => c.name);
 
+export const linkAttribsToColorIndicesInit = null;
+export const nodeAttribsToColorIndicesInit = null;
+
 export const colorschemeInit = {
   uploadedColorschemeNames: defaultColorschemeNames,
   nodeColorscheme: null,
   linkColorscheme: null,
+  linkAttribsToColorIndices: linkAttribsToColorIndicesInit,
+  nodeAttribsToColorIndices: nodeAttribsToColorIndicesInit,
 };
 
 export const useColorscheme = create((set) => ({

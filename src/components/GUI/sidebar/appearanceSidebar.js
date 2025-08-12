@@ -129,7 +129,7 @@ function ActiveLinkColorscheme() {
 }
 
 function UploadedColorschemes({ handleDeleteColorscheme, handleSelectLinkColorscheme, handleSelectNodeColorscheme }) {
-  const { appearance, setAppearance } = useAppearance();
+  const { colorscheme, setColorscheme } = useColorscheme();
 
   const [selectColorschemePopup, setSelectSchemePopup] = useState(false);
   const [selectedColorschemeName, setSelectedScheme] = useState(null);
@@ -138,7 +138,7 @@ function UploadedColorschemes({ handleDeleteColorscheme, handleSelectLinkColorsc
     <>
       <TableList
         heading={"Uploaded Color Schemes"}
-        data={appearance.uploadedColorschemeNames}
+        data={colorscheme.uploadedColorschemeNames}
         onItemClick={(colorschemeName) => {
           setSelectedScheme(colorschemeName);
           setSelectSchemePopup(true);
@@ -160,21 +160,20 @@ function UploadedColorschemes({ handleDeleteColorscheme, handleSelectLinkColorsc
 
 function ColorSelection() {
   const { colorscheme, setColorscheme } = useColorscheme();
-  const { appearance, setAppearance } = useAppearance();
 
   return (
     <div className="pad-left-1 pad-right-1 color-mapping-select-table">
       <ColorMappingSelect
         heading={"Node Color Mapping"}
         colorscheme={colorscheme.nodeColorscheme}
-        attribsToColorIndices={appearance.nodeAttribsToColorIndices}
-        setMapping={(updatedMapping) => setAppearance("nodeAttribsToColorIndices", updatedMapping)}
+        attribsToColorIndices={colorscheme.nodeAttribsToColorIndices}
+        setMapping={(updatedColorMapping) => setColorscheme("nodeAttribsToColorIndices", updatedColorMapping)}
       />
       <ColorMappingSelect
         heading={"Link Color Mapping"}
         colorscheme={colorscheme.linkColorscheme}
-        attribsToColorIndices={appearance.linkAttribsToColorIndices}
-        setMapping={(updatedMapping) => setAppearance("linkAttribsToColorIndices", updatedMapping)}
+        attribsToColorIndices={colorscheme.linkAttribsToColorIndices}
+        setMapping={(updatedColorMapping) => setColorscheme("linkAttribsToColorIndices", updatedColorMapping)}
       />
     </div>
   );

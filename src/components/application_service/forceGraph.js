@@ -119,7 +119,7 @@ export function ForceGraph() {
         node,
         appearance.theme.circleBorderColor,
         colorscheme.nodeColorscheme.content,
-        appearance.nodeAttribsToColorIndices
+        colorscheme.nodeAttribsToColorIndices
       );
       circle.id = node.id;
       circle.interactive = true;
@@ -226,7 +226,7 @@ export function ForceGraph() {
     graphData.lines.clear();
 
     for (const link of graph.links) {
-      drawLine(graphData.lines, link, appearance.linkWidth, colorscheme.linkColorscheme.content, appearance.linkAttribsToColorIndices);
+      drawLine(graphData.lines, link, appearance.linkWidth, colorscheme.linkColorscheme.content, colorscheme.linkAttribsToColorIndices);
     }
 
     if (appearance.showNodeLabels) {
