@@ -2,9 +2,9 @@ import log from "../../logger.js";
 import { parseMappingFile } from "../other/parseFiles.js";
 import { addMappingDB, fromAllGetMappingNameDB, getMappingDB, removeMappingByNameDB } from "../repository/mappingRepo.js";
 
-export async function loadMappings(setMappingData) {
+export async function loadMappingNames() {
   const mappings = await fromAllGetMappingNameDB();
-  setMappingData("uploadedMappingNames", mappings);
+  return mappings;
 }
 
 export async function selectMapping(mappingName) {

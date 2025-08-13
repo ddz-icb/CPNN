@@ -1,6 +1,16 @@
-import { useAppearance } from "../adapters/state/appearanceState.js";
+import { darkTheme, lightTheme, useAppearance } from "../adapters/state/appearanceState.js";
+import { loadTheme, storeTheme } from "../domain_service/themeManager.js";
 
 export const appearanceService = {
+  handleChangeTheme() {
+    const newTheme = this.getTheme().name === lightTheme.name ? darkTheme : lightTheme;
+    storeTheme(newTheme);
+    this.setTheme(newTheme);
+  },
+  handleLoadTheme() {
+    const theme = loadTheme();
+    this.setTheme(theme);
+  },
   // ===== Generic getter/setter =====
   get(key) {
     return useAppearance.getState().appearance[key];

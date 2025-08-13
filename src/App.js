@@ -14,94 +14,29 @@ import {
   mergeSameProteins,
 } from "./components/application_service/graphCalculations.js";
 import { loadGraphNames, setInitGraph } from "./components/domain_service/graphManager.js";
-import { deleteColorscheme, loadColorschemeNames, setInitColorschemes } from "./components/domain_service/colorschemeManager.js";
+import { loadColorschemeNames, createInitColorschemes } from "./components/domain_service/colorschemeManager.js";
 
 import { Error } from "./components/gui/error.js";
 import { getGraphDB } from "./components/repository/graphRepo.js";
 import { linkThresholdInit } from "./components/adapters/state/filterState.js";
-import { loadMappings } from "./components/domain_service/mappingManager.js";
+import { loadMappingNames } from "./components/domain_service/mappingManager.js";
 import { loadTheme, storeTheme } from "./components/domain_service/themeManager.js";
 import { useFilter } from "./components/adapters/state/filterState.js";
-import { usePhysics } from "./components/adapters/state/physicsState.js";
 import { useAppearance } from "./components/adapters/state/appearanceState.js";
 import { useGraphData } from "./components/adapters/state/graphState.js";
 import { useError } from "./components/adapters/state/errorState.js";
 import { resetService } from "./components/application_service/resetService.js";
 import { useMappingData } from "./components/adapters/state/mappingState.js";
-import { useColorscheme, defaultColorschemes } from "./components/adapters/state/colorschemeState.js";
+import { useColorscheme } from "./components/adapters/state/colorschemeState.js";
+import { Init } from "./components/application_service/initService.js";
 
 function App() {
   const { setFilter, setAllFilter } = useFilter();
-  const { setAllPhysics } = usePhysics();
   const { appearance, setAppearance } = useAppearance();
   const { colorscheme, setColorscheme } = useColorscheme();
   const { graphData, setGraphData } = useGraphData();
   const { mappingData, setMappingData } = useMappingData();
   const { error, setError, clearError } = useError();
-
-  // INIT STUFF
-  //////////////////////////////////////////////
-  //////////////////////////////////////////////
-
-  // select example graph on startup
-  useEffect(() => {
-    log.info("Setting init graph");
-    setInitGraph(setGraphData);
-    setGraphData("graphIsPreprocessed", false);
-  }, []);
-
-  // select default color schemes on startup
-  useEffect(() => {
-    log.info("Setting init color schemes");
-    setInitColorschemes(colorscheme, setColorscheme);
-  }, []);
-
-  // init uploadedGraphNames
-  useEffect(() => {
-    log.info("Loading uploaded graphs");
-    try {
-      loadGraphNames(setGraphData);
-    } catch (error) {
-      setError("Error loading graphs from database");
-      log.error("Error loading graphs from database");
-    }
-  }, []);
-
-  // load current theme
-  useEffect(() => {
-    log.info("Loading selected theme");
-    loadTheme(setAppearance);
-  }, []);
-
-  // store current theme //
-  useEffect(() => {
-    if (!appearance.theme) return;
-    log.info("Storing current theme if needed");
-
-    storeTheme(appearance.theme);
-  }, [appearance.theme]);
-
-  // init uploadedMappingFileNames
-  useEffect(() => {
-    log.info("Loading uploaded mappings");
-    try {
-      loadMappings(setMappingData);
-    } catch (error) {
-      setError("Error loading mappings form database");
-      log.error("Error loading mappings form database");
-    }
-  }, []);
-
-  // init uploadedColorschemeNames //
-  useEffect(() => {
-    log.info("Loading uploaded color schemes");
-    try {
-      loadColorschemeNames(setColorscheme);
-    } catch (error) {
-      setError("Error loading color schemes from database");
-      log.error("Error loading color schemes from database");
-    }
-  }, []);
 
   // merge Proteins function initiation (THIS SHOULD DEFINETLY NOT BE HERE)
   useEffect(() => {
@@ -157,8 +92,6 @@ function App() {
       setFilter("linkThresholdText", minWeight);
     }
 
-    // set max comp size = amount of nodes
-
     const nodeAttribsToColorIndices = getNodeAttribsToColorIndices(newGraph);
     setColorscheme("nodeAttribsToColorIndices", nodeAttribsToColorIndices);
 
@@ -171,14 +104,17 @@ function App() {
   }, [graphData.originGraph, graphData.activeGraphNames, mappingData.activeMapping]);
 
   return (
-    <div className={appearance.theme.name}>
-      <HeaderBar />
-      <Sidebar />
-      <main>
-        <Error />
-        <ForceGraph />
+    <>
+      <Init />
+      <main className={appearance.theme.name}>
+        <HeaderBar />
+        <Sidebar />
+        <div className="canvas">
+          <ForceGraph />
+          <Error />
+        </div>
       </main>
-    </div>
+    </>
   );
 }
 export default App;

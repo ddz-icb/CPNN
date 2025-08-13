@@ -1,11 +1,15 @@
 import log from "../../logger.js";
 import { activeMappingInit, useMappingData } from "../adapters/state/mappingState.js";
-import { createMapping, deleteMapping, selectMapping } from "../domain_service/mappingManager.js";
+import { createMapping, deleteMapping, loadMappingNames, selectMapping } from "../domain_service/mappingManager.js";
 import { errorService } from "./errorService.js";
 import { graphService } from "./graphService.js";
 import { resetService } from "./resetService.js";
 
 export const mappingService = {
+  async handleLoadMappingNames() {
+    const mappingNames = await loadMappingNames();
+    this.setUploadedMappingNames(mappingNames);
+  },
   async handleSelectMapping(mappingName) {
     if (!mappingName) {
       errorService.setError("Selected invalid mapping");

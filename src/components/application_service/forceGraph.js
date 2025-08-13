@@ -99,15 +99,7 @@ export function ForceGraph() {
 
   // set stage //
   useEffect(() => {
-    if (
-      graphData.circles ||
-      !app ||
-      !graphData.graph ||
-      !container.width ||
-      !container.height ||
-      !appearance.theme ||
-      !colorscheme.nodeColorscheme.data
-    )
+    if (graphData.circles || !app || !graphData.graph || !container.width || !container.height || !appearance.theme || !colorscheme.nodeColorscheme)
       return;
     log.info("Setting stage");
 
@@ -159,7 +151,7 @@ export function ForceGraph() {
       nodeMap: nodeMap,
       nodeLabels: newNodeLabels,
     }));
-  }, [app, graphData.graph]);
+  }, [app, graphData.graph, colorscheme.nodeColorscheme, container.width, container.height, appearance.theme]);
 
   // init simulation //
   useEffect(() => {

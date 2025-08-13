@@ -3,41 +3,42 @@ import { lightTheme } from "../adapters/state/appearanceState.js";
 
 // the theme is stored in the local storage of the browser, not the database since
 
-export function loadTheme(setAppearance) {
+export function loadTheme() {
   let storedTheme = localStorage.getItem("theme");
 
-  log.info("Stored Theme:", storedTheme);
-
-  if (storedTheme) {
-    try {
+  try {
+    if (storedTheme) {
       storedTheme = JSON.parse(storedTheme);
-    } catch (error) {
-      log.error("Fehler beim Parsen des gespeicherten Themes:", error);
+    } else {
       storedTheme = lightTheme;
       localStorage.setItem("theme", JSON.stringify(lightTheme));
     }
-  } else {
+    applyTheme(document, storedTheme);
+    return storedTheme;
+  } catch (error) {
+    log.error("Error loading stored theme:", error);
     storedTheme = lightTheme;
     localStorage.setItem("theme", JSON.stringify(lightTheme));
+    return storedTheme;
   }
-  applyTheme(document, storedTheme);
-  setAppearance("theme", storedTheme);
 }
 
 export function storeTheme(theme) {
-  let storedTheme = localStorage.getItem("theme");
-
-  if (storedTheme) {
-    try {
+  if (!theme) {
+    // throw error
+  }
+  log.info("Storing theme:", theme);
+  try {
+    let storedTheme = localStorage.getItem("theme");
+    if (storedTheme) {
       storedTheme = JSON.parse(storedTheme);
       if (theme.name === storedTheme.name) return;
-    } catch (error) {
-      log.error("Error parsing stored theme:", error);
     }
-  }
 
-  log.info("Storing theme:", theme);
-  localStorage.setItem("theme", JSON.stringify(theme));
+    localStorage.setItem("theme", JSON.stringify(theme));
+  } catch (error) {
+    log.error("Error parsing stored theme:", error);
+  }
 }
 
 function applyTheme(document, theme) {

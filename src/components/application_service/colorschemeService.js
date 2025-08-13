@@ -1,9 +1,37 @@
 import log from "../../logger.js";
-import { defaultColorschemeNames, useColorscheme } from "../adapters/state/colorschemeState.js";
-import { createColorscheme, deleteColorscheme, selectLinkColorscheme, selectNodeColorscheme } from "../domain_service/colorschemeManager.js";
+import { defaultColorschemeNames, ibmAntiBlindness, manyColors, useColorscheme } from "../adapters/state/colorschemeState.js";
+import {
+  createColorscheme,
+  deleteColorscheme,
+  selectLinkColorscheme,
+  selectNodeColorscheme,
+  createInitColorschemes,
+  loadColorschemeNames,
+} from "../domain_service/colorschemeManager.js";
 import { errorService } from "./errorService.js";
 
 export const colorschemeService = {
+  async handleLoadColorschemeNames() {
+    try {
+      const colorschemeNames = await loadColorschemeNames();
+      this.setUploadedColorschemeNames(colorschemeNames);
+    } catch (error) {
+      errorService.setError(error.message);
+      log.error(error);
+    }
+  },
+  async handleSetInitColorschemes() {
+    try {
+      await createInitColorschemes();
+      this.setLinkColorscheme(ibmAntiBlindness);
+      this.setNodeColorscheme(manyColors);
+      this.setUploadedColorschemeNames([...new Set([...(this.getUploadedColorschemeNames() || []), ...defaultColorschemeNames])]);
+    } catch (error) {
+      errorService.setError(error.message);
+      log.error(error);
+    }
+  },
+
   async handleSelectLinkColorscheme(colorschemeName) {
     if (!colorschemeName) {
       errorService.setError("Selected invalid color scheme");

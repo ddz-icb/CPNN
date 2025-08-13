@@ -1,10 +1,38 @@
 import log from "../../logger.js";
 import { useGraphData } from "../adapters/state/graphState.js";
-import { addActiveGraph, createGraph, deleteGraph, removeActiveGraph, selectGraph } from "../domain_service/graphManager.js";
+import {
+  addActiveGraph,
+  createGraph,
+  deleteGraph,
+  loadGraphNames,
+  removeActiveGraph,
+  selectGraph,
+  setInitGraph,
+} from "../domain_service/graphManager.js";
 import { errorService } from "./errorService.js";
 import { resetService } from "./resetService.js";
 
 export const graphService = {
+  async handleLoadGraphNames() {
+    try {
+      const graphNames = await loadGraphNames();
+      this.setUploadedGraphNames(graphNames);
+    } catch (error) {
+      errorService.setError("Error setting init graph");
+      log.error("Error setting init graph");
+    }
+  },
+  async handleSetInitGraph() {
+    try {
+      const graphObject = await setInitGraph();
+      this.setOriginGraph(graphObject.data);
+      this.setActiveGraphNames([graphObject.name]);
+      this.setGraphIsPreprocessed(false);
+    } catch (error) {
+      errorService.setError("Error setting init graph");
+      log.error("Error setting init graph");
+    }
+  },
   async handleCreateGraph(event, takeAbs, minCorrForEdge, minCompSizeForNode, maxCompSizeForNode, takeSpearmanCoefficient, mergeSameProtein) {
     const file = event?.target?.files?.[0];
     if (!file) {

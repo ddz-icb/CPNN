@@ -4,16 +4,15 @@ import { joinGraphs } from "../application_service/graphCalculations.js";
 import { getFileNameWithoutExtension, parseGraphFile } from "../other/parseFiles.js";
 import { addGraphDB, addGraphIfNotExistsDB, fromAllGetGraphNameDB, getGraphDB, removeGraphByNameDB } from "../repository/graphRepo.js";
 
-export async function setInitGraph(setGraphData) {
+export async function setInitGraph() {
   const graph = JSON.parse(exampleGraphJson.data);
-  addGraphIfNotExistsDB(exampleGraphJson);
-  setGraphData("originGraph", graph);
-  setGraphData("activeGraphNames", [exampleGraphJson.name]);
+  await addGraphIfNotExistsDB(exampleGraphJson);
+  return { name: exampleGraphJson.name, data: graph };
 }
 
-export async function loadGraphNames(setGraphData) {
-  const filenames = await fromAllGetGraphNameDB();
-  setGraphData("uploadedGraphNames", filenames);
+export async function loadGraphNames() {
+  const graphNames = await fromAllGetGraphNameDB();
+  return graphNames;
 }
 
 export async function selectGraph(filename) {
