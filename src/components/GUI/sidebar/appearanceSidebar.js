@@ -14,11 +14,11 @@ import { useAppearance, linkWidthInit } from "../../adapters/state/appearanceSta
 import { useColorscheme } from "../../adapters/state/colorschemeState.js";
 import { colorschemeService } from "../../application_service/colorschemeService.js";
 
-export function AppearanceSidebar({ handleNewColorscheme, handleDeleteColorscheme }) {
+export function AppearanceSidebar({ handleDeleteColorscheme }) {
   return (
     <>
       <AppearanceSettings />
-      <UploadColorscheme handleNewColorscheme={handleNewColorscheme} handleDeleteColorscheme={handleDeleteColorscheme} />
+      <UploadColorscheme handleDeleteColorscheme={handleDeleteColorscheme} />
       <ActiveNodeColorscheme />
       <ActiveLinkColorscheme />
       <UploadedColorschemes handleDeleteColorscheme={handleDeleteColorscheme} />
@@ -56,7 +56,7 @@ export function AppearanceSettings() {
   );
 }
 
-export function UploadColorscheme({ handleNewColorscheme }) {
+export function UploadColorscheme() {
   const [colorschemePopupActive, setColorschemePopupActive] = useState(false);
   const colorschemeRef = useRef(null);
 
@@ -84,7 +84,7 @@ export function UploadColorscheme({ handleNewColorscheme }) {
             onClick={() => colorschemeRef.current.click()}
             linkRef={colorschemeRef}
             onChange={(event) => {
-              handleNewColorscheme(event);
+              colorschemeService.handleCreateColorscheme(event);
               event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
               setColorschemePopupActive(false);
             }}

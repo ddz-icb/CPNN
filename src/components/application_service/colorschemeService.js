@@ -1,6 +1,6 @@
 import log from "../../logger.js";
-import { useColorscheme } from "../adapters/state/colorschemeState.js";
-import { selectLinkColorscheme, selectNodeColorscheme } from "../domain_service/colorschemeManager.js";
+import { defaultColorschemeNames, useColorscheme } from "../adapters/state/colorschemeState.js";
+import { createColorscheme, selectLinkColorscheme, selectNodeColorscheme } from "../domain_service/colorschemeManager.js";
 import { errorService } from "./errorService.js";
 
 export const colorschemeService = {
@@ -36,6 +36,24 @@ export const colorschemeService = {
       log.error(error);
     }
   },
+  async handleCreateColorscheme(event) {
+    const file = event?.target?.files?.[0];
+    if (!file) {
+      errorService.setError("The input is not a valid file");
+      log.error("The input is not a valid file");
+      return;
+    }
+    log.info("Adding new color scheme");
+
+    try {
+      const colorschemeObject = await createColorscheme(file);
+      this.setUploadedColorschemeNames([...(this.getUploadedColorschemeNames() || [defaultColorschemeNames]), colorschemeObject.name]);
+    } catch (error) {
+      errorService.setError(error.message);
+      log.error(error);
+    }
+  },
+
   // ===== Generic getter/setter =====
   get(key) {
     return useColorscheme.getState().colorscheme[key];

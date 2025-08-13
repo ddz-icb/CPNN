@@ -47,14 +47,10 @@ export async function selectNodeColorscheme(colorschemeName) {
   return colorschemeObject;
 }
 
-export async function createColorscheme(file, uploadedColorschemeNames, setColorscheme) {
-  if (uploadedColorschemeNames.some((name) => getFileNameWithoutExtension(name) === getFileNameWithoutExtension(file.name))) {
-    log.warn("Color scheme with this name already exists");
-    throw new Error("Color scheme with this name already exists");
-  }
-  const colorschemeFile = await parseColorschemeFile(file);
-  addColorschemeDB(colorschemeFile);
-  setColorscheme("uploadedColorschemeNames", [...(uploadedColorschemeNames || [defaultColorschemeNames]), file.name]);
+export async function createColorscheme(file) {
+  const colorschemeObject = await parseColorschemeFile(file);
+  addColorschemeDB(colorschemeObject);
+  return colorschemeObject;
 }
 
 export function deleteColorscheme(uploadedColorschemeNames, colorschemeName, setColorscheme) {

@@ -43,25 +43,6 @@ function App() {
   // COLOR SCHEME
   ///////////////
 
-  // adds new color scheme
-  const handleCreateColorscheme = async (event) => {
-    const file = event.target.files[0];
-    if (!event || !event.target || !file) return;
-    if (colorscheme.uploadedColorschemeNames.some((name) => getFileNameWithoutExtension(name) === getFileNameWithoutExtension(file.name))) {
-      log.warn("Color scheme with this name already exists");
-      setError("Color scheme with this name already exists");
-      return;
-    }
-    log.info("Adding new color scheme");
-
-    createColorscheme(file, colorscheme.uploadedColorschemeNames, setColorscheme)
-      .then(() => {})
-      .catch((error) => {
-        setError(`${error.message}`);
-        log.error("Error adding color scheme:", error);
-      });
-  };
-
   const handleDeleteColorscheme = (colorschemeName) => {
     if (!colorschemeName) return;
     if (defaultColorschemes.some((scheme) => scheme.name === colorschemeName)) {
@@ -213,7 +194,7 @@ function App() {
   return (
     <div className={appearance.theme.name}>
       <HeaderBar />
-      <Sidebar handleNewColorscheme={handleCreateColorscheme} handleDeleteColorscheme={handleDeleteColorscheme} />
+      <Sidebar handleDeleteColorscheme={handleDeleteColorscheme} />
       <main>
         <Error />
         <ForceGraph />
