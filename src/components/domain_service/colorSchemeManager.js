@@ -5,7 +5,7 @@ import {
   fromAllGetColorschemeNameDB,
   getColorschemeDB,
   removeColorschemeByNameDB,
-} from "../repository/colorSchemeRepo.js";
+} from "../repository/colorschemeRepo.js";
 import { ibmAntiBlindnessJson, manyColorsJson, okabe_ItoAntiBlindnessJson } from "../adapters/state/colorschemeState.js";
 import { parseColorschemeFile } from "../other/parseFiles.js";
 
