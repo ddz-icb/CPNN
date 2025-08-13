@@ -18,8 +18,6 @@ export async function createMapping(file) {
   return mappingObject;
 }
 
-export async function deleteMapping(uploadedMappingNames, mappingName) {
-  const updatedMappingNames = uploadedMappingNames?.filter((name) => name !== mappingName);
+export async function deleteMapping(mappingName) {
   await removeMappingByNameDB(mappingName);
-  return updatedMappingNames;
 }

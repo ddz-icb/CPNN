@@ -80,8 +80,9 @@ export const mappingService = {
     log.info("Deleting mapping with name", mappingName);
 
     try {
-      const updatedMappingNames = await deleteMapping(this.getUploadedMappingNames(), mappingName);
-      this.setUploadedMappingNames(updatedMappingNames);
+      await deleteMapping(mappingName);
+      const remainingMappingNames = this.getUploadedMappingNames()?.filter((name) => name !== mappingName);
+      this.setUploadedMappingNames(remainingMappingNames);
     } catch (error) {
       errorService.setError("Error deleting mapping file");
       log.error(error);

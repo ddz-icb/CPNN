@@ -126,7 +126,8 @@ export const graphService = {
     log.info("Deleting files with name", filename);
 
     try {
-      const remainingdGraphNames = await deleteGraph(graphService.getUploadedGraphNames(), filename);
+      await deleteGraph(filename);
+      const remainingdGraphNames = this.getUploadedGraphNames().filter((name) => name !== filename);
       graphService.setUploadedGraphNames(remainingdGraphNames);
     } catch (error) {
       errorService.setError("Error deleting the graph");

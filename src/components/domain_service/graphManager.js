@@ -44,8 +44,6 @@ export async function createGraph(file, takeAbs, minCorrForEdge, minCompSizeForN
   return graphObject;
 }
 
-export async function deleteGraph(uploadedGraphNames, filename) {
-  const updatedGraphNames = (uploadedGraphNames ?? []).filter((name) => name !== filename);
+export async function deleteGraph(filename) {
   await removeGraphByNameDB(filename);
-  return updatedGraphNames;
 }

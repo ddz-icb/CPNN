@@ -84,7 +84,8 @@ export const colorschemeService = {
     log.info("Deleting color scheme");
 
     try {
-      const remainingColorschemeNames = await deleteColorscheme(this.getUploadedColorschemeNames(), colorschemeName);
+      await deleteColorscheme(colorschemeName);
+      const remainingColorschemeNames = this.getUploadedColorschemeNames()?.filter((name) => name !== colorschemeName);
       this.setUploadedColorschemeNames(remainingColorschemeNames);
     } catch (error) {
       errorService.setError(error.message);
