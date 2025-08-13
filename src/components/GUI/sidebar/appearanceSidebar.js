@@ -12,19 +12,16 @@ import {
 } from "./descriptions/appearanceDescriptions.js";
 import { useAppearance, linkWidthInit } from "../../adapters/state/appearanceState.js";
 import { useColorscheme } from "../../adapters/state/colorschemeState.js";
+import { colorschemeService } from "../../application_service/colorschemeService.js";
 
-export function AppearanceSidebar({ handleNewColorscheme, handleDeleteColorscheme, handleSelectLinkColorscheme, handleSelectNodeColorscheme }) {
+export function AppearanceSidebar({ handleNewColorscheme, handleDeleteColorscheme, handleSelectNodeColorscheme }) {
   return (
     <>
       <AppearanceSettings />
       <UploadColorscheme handleNewColorscheme={handleNewColorscheme} handleDeleteColorscheme={handleDeleteColorscheme} />
       <ActiveNodeColorscheme />
       <ActiveLinkColorscheme />
-      <UploadedColorschemes
-        handleDeleteColorscheme={handleDeleteColorscheme}
-        handleSelectLinkColorscheme={handleSelectLinkColorscheme}
-        handleSelectNodeColorscheme={handleSelectNodeColorscheme}
-      />
+      <UploadedColorschemes handleDeleteColorscheme={handleDeleteColorscheme} handleSelectNodeColorscheme={handleSelectNodeColorscheme} />
       <ColorSelection />
     </>
   );
@@ -124,7 +121,7 @@ function ActiveLinkColorscheme() {
   );
 }
 
-function UploadedColorschemes({ handleDeleteColorscheme, handleSelectLinkColorscheme, handleSelectNodeColorscheme }) {
+function UploadedColorschemes({ handleDeleteColorscheme, handleSelectNodeColorscheme }) {
   const { colorscheme, setColorscheme } = useColorscheme();
 
   const [selectColorschemePopup, setSelectSchemePopup] = useState(false);
@@ -147,7 +144,7 @@ function UploadedColorschemes({ handleDeleteColorscheme, handleSelectLinkColorsc
       <Popup heading={"Set Color Scheme"} description={setColorschemeDescription} isOpen={selectColorschemePopup} setIsOpen={setSelectSchemePopup}>
         <div className="popup-block">
           <Button variant="popup" onClick={() => handleSelectNodeColorscheme(selectedColorschemeName)} text={"Set for Nodes"} />
-          <Button variant="popup" onClick={() => handleSelectLinkColorscheme(selectedColorschemeName)} text={"Set for Links"} />
+          <Button variant="popup" onClick={() => colorschemeService.handleSelectLinkColorscheme(selectedColorschemeName)} text={"Set for Links"} />
         </div>
       </Popup>
     </>

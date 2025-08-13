@@ -37,11 +37,9 @@ export async function loadColorschemeNames(setColorscheme) {
   setColorscheme("uploadedColorschemeNames", filenames);
 }
 
-export async function selectLinkColorscheme(colorschemeName, setColorscheme) {
+export async function selectLinkColorscheme(colorschemeName) {
   const colorschemeObject = await getColorschemeDB(colorschemeName);
-
-  setColorscheme("linkColorscheme", colorschemeObject);
-  log.info("Link color scheme Loaded Successfully:", colorschemeName);
+  return colorschemeObject;
 }
 
 export async function selectNodeColorscheme(colorschemeName, setColorscheme) {

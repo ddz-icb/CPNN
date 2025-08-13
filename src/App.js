@@ -50,18 +50,6 @@ function App() {
   // COLOR SCHEME
   ///////////////
 
-  const handleSelectLinkColorscheme = (colorschemeName) => {
-    if (!colorschemeName) return;
-    log.info("Replacing link color scheme");
-
-    try {
-      selectLinkColorscheme(colorschemeName, setColorscheme);
-    } catch (error) {
-      setError("Color scheme is already the current link color scheme");
-      log.error("Color scheme is already the current link color scheme");
-    }
-  };
-
   const handleSelectNodeColorscheme = (colorschemeName) => {
     if (!colorschemeName) return;
     log.info("Replacing node color scheme");
@@ -247,7 +235,6 @@ function App() {
       <Sidebar
         handleNewColorscheme={handleCreateColorscheme}
         handleDeleteColorscheme={handleDeleteColorscheme}
-        handleSelectLinkColorscheme={handleSelectLinkColorscheme}
         handleSelectNodeColorscheme={handleSelectNodeColorscheme}
       />
       <main>
