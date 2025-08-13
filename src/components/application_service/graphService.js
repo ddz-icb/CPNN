@@ -102,7 +102,7 @@ export const graphService = {
     }
     if (graphService.getActiveGraphNames()?.includes(filename)) {
       errorService.setError("Cannot remove selected graph as it's still active");
-      log.warn("Cannot remove selected graph as it's still active");
+      log.error("Cannot remove selected graph as it's still active");
       return;
     }
     log.info("Deleting files with name", filename);

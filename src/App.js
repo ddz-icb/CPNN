@@ -14,10 +14,9 @@ import {
   mergeSameProteins,
 } from "./components/application_service/graphCalculations.js";
 import { loadGraphNames, setInitGraph } from "./components/domain_service/graphManager.js";
-import { createColorscheme, deleteColorscheme, loadColorschemeNames, setInitColorschemes } from "./components/domain_service/colorschemeManager.js";
+import { deleteColorscheme, loadColorschemeNames, setInitColorschemes } from "./components/domain_service/colorschemeManager.js";
 
 import { Error } from "./components/gui/error.js";
-import { getFileNameWithoutExtension } from "./components/other/parseFiles.js";
 import { getGraphDB } from "./components/repository/graphRepo.js";
 import { linkThresholdInit } from "./components/adapters/state/filterState.js";
 import { loadMappings } from "./components/domain_service/mappingManager.js";
@@ -39,26 +38,6 @@ function App() {
   const { graphData, setGraphData } = useGraphData();
   const { mappingData, setMappingData } = useMappingData();
   const { error, setError, clearError } = useError();
-
-  // COLOR SCHEME
-  ///////////////
-
-  const handleDeleteColorscheme = (colorschemeName) => {
-    if (!colorschemeName) return;
-    if (defaultColorschemes.some((scheme) => scheme.name === colorschemeName)) {
-      log.warn("Cannot remove default color schemes");
-      setError("Cannot remove default color schemes");
-      return;
-    }
-    if (colorscheme.nodeColorscheme?.name == colorschemeName || colorscheme.linkColorscheme?.name == colorschemeName) {
-      log.warn("Cannot remove selected color scheme as it's still active");
-      setError("Cannot remove selected color scheme as it's still active");
-      return;
-    }
-    log.info("Deleting color schemes with name", colorschemeName);
-
-    deleteColorscheme(colorscheme.uploadedColorschemeNames, colorschemeName, setColorscheme);
-  };
 
   // INIT STUFF
   //////////////////////////////////////////////
@@ -194,7 +173,7 @@ function App() {
   return (
     <div className={appearance.theme.name}>
       <HeaderBar />
-      <Sidebar handleDeleteColorscheme={handleDeleteColorscheme} />
+      <Sidebar />
       <main>
         <Error />
         <ForceGraph />

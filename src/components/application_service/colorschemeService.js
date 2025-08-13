@@ -1,6 +1,6 @@
 import log from "../../logger.js";
 import { defaultColorschemeNames, useColorscheme } from "../adapters/state/colorschemeState.js";
-import { createColorscheme, selectLinkColorscheme, selectNodeColorscheme } from "../domain_service/colorschemeManager.js";
+import { createColorscheme, deleteColorscheme, selectLinkColorscheme, selectNodeColorscheme } from "../domain_service/colorschemeManager.js";
 import { errorService } from "./errorService.js";
 
 export const colorschemeService = {
@@ -48,6 +48,27 @@ export const colorschemeService = {
     try {
       const colorschemeObject = await createColorscheme(file);
       this.setUploadedColorschemeNames([...(this.getUploadedColorschemeNames() || [defaultColorschemeNames]), colorschemeObject.name]);
+    } catch (error) {
+      errorService.setError(error.message);
+      log.error(error);
+    }
+  },
+  async handleDeleteColorscheme(colorschemeName) {
+    if (!colorschemeName) {
+      errorService.setError("Selected invalid color scheme");
+      log.error("Selected invalid color scheme");
+      return;
+    }
+    if (this.getNodeColorscheme()?.name == colorschemeName || this.getLinkColorscheme()?.name == colorschemeName) {
+      log.error("Cannot remove selected color scheme as it's still active");
+      errorService.setError("Cannot remove selected color scheme as it's still active");
+      return;
+    }
+    log.info("Deleting color scheme");
+
+    try {
+      const remainingColorschemeNames = await deleteColorscheme(this.getUploadedColorschemeNames(), colorschemeName);
+      this.setUploadedColorschemeNames(remainingColorschemeNames);
     } catch (error) {
       errorService.setError(error.message);
       log.error(error);

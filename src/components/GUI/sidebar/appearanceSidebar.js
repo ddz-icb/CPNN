@@ -14,14 +14,14 @@ import { useAppearance, linkWidthInit } from "../../adapters/state/appearanceSta
 import { useColorscheme } from "../../adapters/state/colorschemeState.js";
 import { colorschemeService } from "../../application_service/colorschemeService.js";
 
-export function AppearanceSidebar({ handleDeleteColorscheme }) {
+export function AppearanceSidebar() {
   return (
     <>
       <AppearanceSettings />
-      <UploadColorscheme handleDeleteColorscheme={handleDeleteColorscheme} />
+      <UploadColorscheme />
       <ActiveNodeColorscheme />
       <ActiveLinkColorscheme />
-      <UploadedColorschemes handleDeleteColorscheme={handleDeleteColorscheme} />
+      <UploadedColorschemes />
       <ColorSelection />
     </>
   );
@@ -121,7 +121,7 @@ function ActiveLinkColorscheme() {
   );
 }
 
-function UploadedColorschemes({ handleDeleteColorscheme }) {
+function UploadedColorschemes() {
   const { colorscheme, setColorscheme } = useColorscheme();
 
   const [selectColorschemePopup, setSelectSchemePopup] = useState(false);
@@ -138,7 +138,7 @@ function UploadedColorschemes({ handleDeleteColorscheme }) {
         }}
         itemTooltipContent={() => "Replace Node/Link Color Scheme"}
         ActionIcon={TrashIcon}
-        onActionIconClick={(colorschemeName) => handleDeleteColorscheme(colorschemeName)}
+        onActionIconClick={(colorschemeName) => colorschemeService.handleDeleteColorscheme(colorschemeName)}
         actionIconTooltipContent={() => "Delete Color Scheme"}
       />
       <Popup heading={"Set Color Scheme"} description={setColorschemeDescription} isOpen={selectColorschemePopup} setIsOpen={setSelectSchemePopup}>

@@ -53,8 +53,8 @@ export async function createColorscheme(file) {
   return colorschemeObject;
 }
 
-export async function deleteColorscheme(uploadedColorschemeNames, colorschemeName, setColorscheme) {
-  const updatedColorschemes = uploadedColorschemeNames?.filter((name) => name !== colorschemeName);
-  await setColorscheme("uploadedColorschemeNames", updatedColorschemes);
-  removeColorschemeByNameDB(colorschemeName);
+export async function deleteColorscheme(uploadedColorschemeNames, colorschemeName) {
+  const updatedColorschemeNames = uploadedColorschemeNames?.filter((name) => name !== colorschemeName);
+  await removeColorschemeByNameDB(colorschemeName);
+  return updatedColorschemeNames;
 }

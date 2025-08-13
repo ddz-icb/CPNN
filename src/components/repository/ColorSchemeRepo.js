@@ -72,6 +72,10 @@ export async function removeColorschemeDB(id) {
 }
 
 export async function removeColorschemeByNameDB(name) {
+  if (defaultColorschemeNames.some((colorschemeName) => colorschemeName === name)) {
+    throw new Error("Default color schemes cannot be removed");
+  }
+
   try {
     const file = await getFileByNameDB(name);
     if (!file) {
