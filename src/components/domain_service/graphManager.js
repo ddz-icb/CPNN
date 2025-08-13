@@ -41,12 +41,12 @@ export async function removeActiveGraph(filename, activeGraphNames) {
 
 export async function createGraph(file, takeAbs, minCorrForEdge, minCompSizeForNode, maxCompSizeForNode, takeSpearmanCoefficient) {
   const graphObject = await parseGraphFile(file, takeAbs, minCorrForEdge, minCompSizeForNode, maxCompSizeForNode, takeSpearmanCoefficient);
-  addGraphDB(graphObject);
+  await addGraphDB(graphObject);
   return graphObject;
 }
 
 export async function deleteGraph(uploadedGraphNames, filename) {
   const updatedGraphNames = (uploadedGraphNames ?? []).filter((name) => name !== filename);
-  removeGraphByNameDB(filename);
+  await removeGraphByNameDB(filename);
   return updatedGraphNames;
 }

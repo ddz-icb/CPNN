@@ -49,12 +49,12 @@ export async function selectNodeColorscheme(colorschemeName) {
 
 export async function createColorscheme(file) {
   const colorschemeObject = await parseColorschemeFile(file);
-  addColorschemeDB(colorschemeObject);
+  await addColorschemeDB(colorschemeObject);
   return colorschemeObject;
 }
 
-export function deleteColorscheme(uploadedColorschemeNames, colorschemeName, setColorscheme) {
+export async function deleteColorscheme(uploadedColorschemeNames, colorschemeName, setColorscheme) {
   const updatedColorschemes = uploadedColorschemeNames?.filter((name) => name !== colorschemeName);
-  setColorscheme("uploadedColorschemeNames", updatedColorschemes);
+  await setColorscheme("uploadedColorschemeNames", updatedColorschemes);
   removeColorschemeByNameDB(colorschemeName);
 }
