@@ -12,7 +12,7 @@ const MATCH_COMMA = /^,$/; // Matches ','
 const MATCH_SMALLERGREATER = /^(<=|>=|<|>|=)$/; // Matches '<', '>', '=', '<=', '>='
 const MATCH_NUMBER = /^\d+$/; // Matches positive integers
 
-export function parseGroupsFilter(input) {
+export function parseNodeAttribsFilter(input) {
   // return errormessage beginning with "Error:" if not valid.
   // retrun true if empty
   // otherwise return parsed value

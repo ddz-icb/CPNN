@@ -7,8 +7,8 @@ import "codemirror/addon/mode/simple.js";
 import "codemirror/theme/material.css";
 import "../../other/syntaxHighlighting.js";
 
-import { parseAttributesFilter as parseLinkAttribsFilter } from "../../other/parser.js";
-import { parseGroupsFilter as parseNodeAttribsFilter } from "../../other/parserNodeFilter.js";
+import { parseLinkAttribsFilter } from "../../other/linkFilterParser.js";
+import { parseNodeAttribsFilter } from "../../other/nodeFilterParser.js";
 
 import { Button, CodeEditorBlock, FieldBlock, SliderBlock, SwitchBlock } from "../reusable_components/sidebarComponents.js";
 import {

@@ -12,7 +12,7 @@ const MATCH_COMMA = /^,$/; // Matches ','
 const MATCH_SMALLERGREATER = /^(<=|>=|<|>|=)$/; // Matches '<', '>', '=', '<=', '>='
 const MATCH_NUMBER = /^\d+$/; // Matches positive integers
 
-export function parseAttributesFilter(input) {
+export function parseLinkAttribsFilter(input) {
   // return errormessage beginning with "Error:" if not valid.
   // retrun true if empty
   // otherwise return parsed value

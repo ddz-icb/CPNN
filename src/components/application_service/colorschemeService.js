@@ -4,7 +4,6 @@ import {
   createColorscheme,
   deleteColorscheme,
   getColorscheme,
-  createInitColorschemes,
   loadColorschemeNames,
   createColorschemeIfNotExists,
 } from "../domain_service/colorschemeManager.js";
