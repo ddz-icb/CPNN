@@ -16,7 +16,6 @@ export const appearanceService = {
     }
   },
   handleInitTheme() {
-    log.info("Loading theme");
     try {
       const theme = loadTheme();
       this.setTheme(theme);

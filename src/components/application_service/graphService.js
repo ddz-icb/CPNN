@@ -23,17 +23,6 @@ export const graphService = {
       log.error("Error setting init graph");
     }
   },
-  async handleSetInitGraph() {
-    try {
-      const graphObject = await setInitGraph();
-      this.setOriginGraph(graphObject.data);
-      this.setActiveGraphNames([graphObject.name]);
-      this.setGraphIsPreprocessed(false);
-    } catch (error) {
-      errorService.setError("Error setting init graph");
-      log.error("Error setting init graph");
-    }
-  },
   async handleCreateGraph(event, takeAbs, minCorrForEdge, minCompSizeForNode, maxCompSizeForNode, takeSpearmanCoefficient, mergeSameProtein) {
     const file = event?.target?.files?.[0];
     if (!file) {
@@ -142,6 +131,17 @@ export const graphService = {
     } catch (error) {
       errorService.setError("Error deleting the graph");
       log.error(error);
+    }
+  },
+  async handleSetInitGraph() {
+    try {
+      const graphObject = await setInitGraph();
+      this.setOriginGraph(graphObject.data);
+      this.setActiveGraphNames([graphObject.name]);
+      this.setGraphIsPreprocessed(false);
+    } catch (error) {
+      errorService.setError("Error setting init graph");
+      log.error("Error setting init graph");
     }
   },
 

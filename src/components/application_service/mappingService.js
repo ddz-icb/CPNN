@@ -7,8 +7,14 @@ import { resetService } from "./resetService.js";
 
 export const mappingService = {
   async handleLoadMappingNames() {
-    const mappingNames = await loadMappingNames();
-    this.setUploadedMappingNames(mappingNames);
+    log.info("Loading mapping names");
+    try {
+      const mappingNames = await loadMappingNames();
+      this.setUploadedMappingNames(mappingNames);
+    } catch (error) {
+      errorService.setError("Error loading mapping names");
+      log.error(error);
+    }
   },
   async handleSelectMapping(mappingName) {
     if (!mappingName) {
@@ -50,9 +56,14 @@ export const mappingService = {
   handleRemoveActiveMapping() {
     log.info("Removing currently active mapping");
 
-    this.setActiveMapping(activeMappingInit);
-    graphService.setGraphIsPreprocessed(false);
-    resetService.simulationReset();
+    try {
+      this.setActiveMapping(activeMappingInit);
+      graphService.setGraphIsPreprocessed(false);
+      resetService.simulationReset();
+    } catch (error) {
+      errorService.setError("Error removing active mapping");
+      log.error(error);
+    }
   },
 
   async handleDeleteMapping(mappingName) {

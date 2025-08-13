@@ -12,6 +12,7 @@ import { errorService } from "./errorService.js";
 
 export const colorschemeService = {
   async handleLoadColorschemeNames() {
+    log.info("Loading color scheme names");
     try {
       const colorschemeNames = await loadColorschemeNames();
       this.setUploadedColorschemeNames(colorschemeNames);
@@ -20,18 +21,6 @@ export const colorschemeService = {
       log.error(error);
     }
   },
-  async handleSetInitColorschemes() {
-    try {
-      await createInitColorschemes();
-      this.setLinkColorscheme(ibmAntiBlindness);
-      this.setNodeColorscheme(manyColors);
-      this.setUploadedColorschemeNames([...new Set([...(this.getUploadedColorschemeNames() || []), ...defaultColorschemeNames])]);
-    } catch (error) {
-      errorService.setError(error.message);
-      log.error(error);
-    }
-  },
-
   async handleSelectLinkColorscheme(colorschemeName) {
     if (!colorschemeName) {
       errorService.setError("Selected invalid color scheme");
@@ -102,7 +91,17 @@ export const colorschemeService = {
       log.error(error);
     }
   },
-
+  async handleSetInitColorschemes() {
+    try {
+      await createInitColorschemes();
+      this.setLinkColorscheme(ibmAntiBlindness);
+      this.setNodeColorscheme(manyColors);
+      this.setUploadedColorschemeNames([...new Set([...(this.getUploadedColorschemeNames() || []), ...defaultColorschemeNames])]);
+    } catch (error) {
+      errorService.setError(error.message);
+      log.error(error);
+    }
+  },
   // ===== Generic getter/setter =====
   get(key) {
     return useColorscheme.getState().colorscheme[key];
