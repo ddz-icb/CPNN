@@ -23,7 +23,7 @@ export function Init({}) {
 
   useEffect(() => {
     log.info("Loading selected theme");
-    appearanceService.handleLoadTheme();
+    appearanceService.handleInitTheme();
   }, []);
 
   useEffect(() => {

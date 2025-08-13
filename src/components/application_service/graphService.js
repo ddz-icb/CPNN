@@ -14,6 +14,7 @@ import { resetService } from "./resetService.js";
 
 export const graphService = {
   async handleLoadGraphNames() {
+    log.info("Loading graph names");
     try {
       const graphNames = await loadGraphNames();
       this.setUploadedGraphNames(graphNames);
