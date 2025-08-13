@@ -6,15 +6,8 @@ import {
   getColorschemeDB,
   removeColorschemeByNameDB,
 } from "../repository/colorSchemeRepo.js";
-import {
-  defaultColorschemeNames,
-  ibmAntiBlindness,
-  ibmAntiBlindnessJson,
-  manyColors,
-  manyColorsJson,
-  okabe_ItoAntiBlindnessJson,
-} from "../adapters/state/colorschemeState.js";
-import { getFileNameWithoutExtension, parseColorschemeFile } from "../other/parseFiles.js";
+import { ibmAntiBlindnessJson, manyColorsJson, okabe_ItoAntiBlindnessJson } from "../adapters/state/colorschemeState.js";
+import { parseColorschemeFile } from "../other/parseFiles.js";
 
 export async function createInitColorschemes() {
   await addColorschemeIfNotExistsDB(ibmAntiBlindnessJson);
