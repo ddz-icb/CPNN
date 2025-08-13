@@ -12,15 +12,17 @@ export async function parseMappingFile(file) {
 
   try {
     const fileContent = await parseFileAsText(file);
-    const mapping = parseMapping(fileContent, file.name);
+    const mappingData = parseMapping(fileContent);
+    const mapping = { name: file.name, data: mappingData };
     verifyMapping(mapping);
-    return { name: file.name, data: JSON.stringify(mapping) };
+    return mapping;
   } catch (error) {
+    log.error(error.message);
     throw new Error(`${error.message}`);
   }
 }
 
-export function parseMapping(content, filename) {
+export function parseMapping(content) {
   try {
     let fileData = Papa.parse(content, {
       header: true,
@@ -59,12 +61,11 @@ export function parseMapping(content, filename) {
     }
 
     return {
-      name: filename,
       nodeMapping: nodeMapping,
       groupMapping: groupMapping,
     };
   } catch (error) {
-    throw new Error(`Erorr parsing pathway mapping with name ${filename}.`);
+    throw new Error(`Erorr parsing pathway mapping.`);
   }
 }
 
@@ -73,13 +74,13 @@ function verifyMapping(mapping) {
     throw new Error("Error while parsing the mapping file. It does not have the right format.");
   }
 
-  Object.entries(mapping.groupMapping).forEach(([key, node]) => {
+  Object.entries(mapping.data.groupMapping).forEach(([key, node]) => {
     if (!node.hasOwnProperty("name")) {
       throw new Error(`${key} is missing the 'name' property.`);
     }
   });
 
-  Object.entries(mapping.nodeMapping).forEach(([key, node]) => {
+  Object.entries(mapping.data.nodeMapping).forEach(([key, node]) => {
     if (!node.hasOwnProperty("pathwayNames")) {
       throw new Error(`${key} is missing the 'Pathway Name' property.`);
     }

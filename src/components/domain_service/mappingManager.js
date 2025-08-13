@@ -1,23 +1,22 @@
-import log from "../../logger.js";
 import { parseMappingFile } from "../application_service/parsing/mappingParser.js";
-import { addMappingDB, fromAllGetMappingNameDB, getMappingDB, removeMappingByNameDB } from "../repository/mappingRepo.js";
+import { createMappingDB, deleteMappingDB, getAllMappingNamesDB, getMappingDB } from "../repository/mappingRepo.js";
 
 export async function loadMappingNames() {
-  const mappings = await fromAllGetMappingNameDB();
+  const mappings = await getAllMappingNamesDB();
   return mappings;
 }
 
-export async function selectMapping(mappingName) {
+export async function getMapping(mappingName) {
   const mapping = await getMappingDB(mappingName);
   return mapping;
 }
 
 export async function createMapping(file) {
-  const mappingObject = await parseMappingFile(file);
-  await addMappingDB(mappingObject);
-  return mappingObject;
+  const mapping = await parseMappingFile(file);
+  await createMappingDB(mapping.data, mapping.name);
+  return mapping;
 }
 
 export async function deleteMapping(mappingName) {
-  await removeMappingByNameDB(mappingName);
+  await deleteMappingDB(mappingName);
 }

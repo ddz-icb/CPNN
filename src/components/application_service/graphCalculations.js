@@ -1,6 +1,4 @@
 import UnionFind from "union-find";
-import log from "../../logger.js";
-import { max } from "lodash";
 import Graph from "graphology";
 import louvain from "graphology-communities-louvain";
 
@@ -418,7 +416,7 @@ export function applyNodeMapping(graph, mapping) {
     return graph;
   }
 
-  const nodeMapping = mapping.nodeMapping;
+  const nodeMapping = mapping.data.nodeMapping;
 
   graph.nodes.forEach((node) => {
     const entries = node.id.split(";");

@@ -1,6 +1,6 @@
 import log from "../../logger.js";
 import { activeMappingInit, useMappingData } from "../adapters/state/mappingState.js";
-import { createMapping, deleteMapping, loadMappingNames, selectMapping } from "../domain_service/mappingManager.js";
+import { createMapping, deleteMapping, loadMappingNames, getMapping } from "../domain_service/mappingManager.js";
 import { errorService } from "./errorService.js";
 import { graphService } from "./graphService.js";
 import { resetService } from "./resetService.js";
@@ -12,7 +12,7 @@ export const mappingService = {
       const mappingNames = await loadMappingNames();
       this.setUploadedMappingNames(mappingNames);
     } catch (error) {
-      errorService.setError("Error loading mapping names");
+      errorService.setError(error.message);
       log.error(error);
     }
   },
@@ -25,16 +25,15 @@ export const mappingService = {
     log.info("Replacing mapping");
 
     try {
-      const mappingObject = await selectMapping(mappingName);
+      const mappingObject = await getMapping(mappingName);
       this.setActiveMapping(mappingObject);
       graphService.setGraphIsPreprocessed(false);
       resetService.simulationReset();
     } catch (error) {
-      errorService.setError("Mapping is already the current mapping");
+      errorService.setError(error.message);
       log.error(error);
     }
   },
-
   async handleCreateMapping(event) {
     const file = event?.target?.files?.[0];
     if (!file) {
@@ -48,11 +47,10 @@ export const mappingService = {
       const mappingObject = await createMapping(file);
       this.setUploadedMappingNames([...(this.getUploadedMappingNames() || []), file.name]);
     } catch (error) {
-      errorService.setError("Error adding mapping file");
+      errorService.setError(error.message);
       log.error(error);
     }
   },
-
   handleRemoveActiveMapping() {
     log.info("Removing currently active mapping");
 
@@ -61,11 +59,10 @@ export const mappingService = {
       graphService.setGraphIsPreprocessed(false);
       resetService.simulationReset();
     } catch (error) {
-      errorService.setError("Error removing active mapping");
+      errorService.setError(error.message);
       log.error(error);
     }
   },
-
   async handleDeleteMapping(mappingName) {
     if (!mappingName) {
       errorService.setError("Selected invalid mapping");
@@ -84,11 +81,10 @@ export const mappingService = {
       const remainingMappingNames = this.getUploadedMappingNames()?.filter((name) => name !== mappingName);
       this.setUploadedMappingNames(remainingMappingNames);
     } catch (error) {
-      errorService.setError("Error deleting mapping file");
+      errorService.setError(error.message);
       log.error(error);
     }
   },
-
   // ===== Generic getter/setter =====
   get(key) {
     return useMappingData.getState().mappingData[key];

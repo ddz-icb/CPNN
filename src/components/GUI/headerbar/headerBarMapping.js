@@ -3,7 +3,7 @@ import { useColorscheme } from "../../adapters/state/colorschemeState.js";
 import { useGraphData } from "../../adapters/state/graphState.js";
 import { fallbackColor, getColor } from "../../other/draw.js";
 
-export function HeaderbarMapping() {
+export function HeaderbarColorMapping() {
   const { appearance } = useAppearance();
   const { colorscheme } = useColorscheme();
   const { graphData } = useGraphData();
@@ -30,20 +30,20 @@ export function HeaderbarMapping() {
     return content;
   };
 
-  const nodeMapping = renderMapping(colorscheme.nodeAttribsToColorIndices, colorscheme.nodeColorscheme.data);
+  const nodeColorMapping = renderMapping(colorscheme.nodeAttribsToColorIndices, colorscheme.nodeColorscheme.data);
 
-  const linkMapping = renderMapping(colorscheme.linkAttribsToColorIndices, colorscheme.linkColorscheme.data);
+  const linkColorMapping = renderMapping(colorscheme.linkAttribsToColorIndices, colorscheme.linkColorscheme.data);
 
   return (
     <div className={"dropdown min-width-400 margin-left-20"}>
       <div className="dropdown-section-container pad-top-05">
         <div className="dropdown-section">
           <p className="heading-label-no-pad pad-left-1 margin-0">Nodes</p>
-          {nodeMapping}
+          {nodeColorMapping}
         </div>
         <div className="dropdown-section">
           <p className="heading-label-no-pad pad-left-1 margin-0">Links</p>
-          {linkMapping}
+          {linkColorMapping}
         </div>
       </div>
     </div>

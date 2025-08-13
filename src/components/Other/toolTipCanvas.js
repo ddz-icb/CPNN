@@ -223,10 +223,10 @@ export function ClickTooltip({ mapping }) {
   };
 
   let groupContent = [];
-  if (mapping && mapping.groupMapping && tooltipSettings.clickTooltipData?.nodeGroups[0]) {
+  if (mapping && mapping.data.groupMapping && tooltipSettings.clickTooltipData?.nodeGroups[0]) {
     tooltipSettings.clickTooltipData.nodeGroups.forEach((group) => {
-      const groupName = mapping.groupMapping[group]?.name;
-      const reactomeId = mapping.groupMapping[group]?.reactomeId;
+      const groupName = mapping.data.groupMapping[group]?.name;
+      const reactomeId = mapping.data.groupMapping[group]?.reactomeId;
 
       if (groupName && reactomeId) {
         groupContent.push(

@@ -7,90 +7,79 @@ db.version(1).stores({
   uploadedFiles: "++id, name",
 });
 
-async function getByNameDB(name) {
+async function getMappingByNameDB(mappingName) {
   try {
-    const file = await db.uploadedFiles.where("name").equals(name).first();
-    return file;
+    const mapping = await db.uploadedFiles.where("name").equals(mappingName).first();
+    return mapping;
   } catch (error) {
-    throw new Error(`Failed to retrieve file with name ${name}: ${error}`);
+    throw new Error(`Failed to retrieve file with name ${mappingName}: ${error}`);
   }
 }
 
 export async function getMappingDB(filename) {
-  const file = await getByNameDB(filename);
-  if (!file) throw new Error("No file found");
-
-  const mappingObject = JSON.parse(file.data);
-  if (!mappingObject) throw new Error("File format not recognized");
-  return mappingObject;
+  const mapping = await getMappingByNameDB(filename);
+  if (!mapping) throw new Error("No file found");
+  return mapping;
 }
 
-export async function addMappingDB(file) {
+export async function createMappingDB(mappingData, mappingName) {
+  console.log("MAPPINDATA", mappingData);
+  console.log("MAPPINName", mappingName);
   try {
-    const existingFile = await getByNameDB(file.name);
-    if (existingFile) throw new Error("Mapping already exists");
+    const mapping = await getMappingByNameDB(mappingName);
+    if (mapping) throw new Error("Mapping already exists");
 
     const id = await db.uploadedFiles.add({
-      name: file.name,
-      data: file.data,
+      name: mappingName,
+      data: mappingData,
     });
-    log.info(`File ${file.name} successfully added. Got id ${id}`);
+    log.info(`File ${mappingName} successfully added. Got id ${id}`);
     return id;
   } catch (error) {
-    throw new Error(`Failed to add ${file.name}: ${error}`);
+    throw new Error(`Failed to add ${mappingName}: ${error}`);
   }
 }
 
-export async function addMappingIfNotExistsDB(file) {
+export async function createMappingIfNotExistsDB(mappingData, mappingName) {
   try {
-    const existingFile = await getByNameDB(file.name);
-    if (existingFile) {
+    const mapping = await getMappingByNameDB(mappingName);
+    if (mapping) {
       log.info("Mapping already exists");
-      return existingFile.id;
+      return mapping.id;
     }
 
     const id = await db.uploadedFiles.add({
-      name: file.name,
-      data: file.data,
+      name: mappingName,
+      data: mappingData,
     });
-    log.info(`File ${file.name} successfully added. Got id ${id}`);
+    log.info(`File ${mappingName} successfully added. Got id ${id}`);
     return id;
   } catch (error) {
     throw new Error(`Failed to add mapping if not exists: ${error}`);
   }
 }
 
-export async function removeMappingDB(id) {
+export async function deleteMappingDB(mappingName) {
   try {
-    await db.uploadedFiles.delete(id);
-    log.info(`File with id ${id} successfully removed.`);
-    return true;
-  } catch (error) {
-    throw new Error(`Failed to remove file with id ${id}: ${error}`);
-  }
-}
-
-export async function removeMappingByNameDB(name) {
-  try {
-    const file = await getByNameDB(name);
-    if (!file) {
-      log.warn(`No file found with the name ${name}.`);
+    const mapping = await getMappingByNameDB(mappingName);
+    if (!mapping) {
+      log.warn(`No file found with the name ${mappingName}.`);
       return false;
     }
 
-    await db.uploadedFiles.delete(file.id);
-    log.info(`File with name ${name} and id ${file.id} successfully removed.`);
+    await db.uploadedFiles.delete(mapping.id);
+    log.info(`File with name ${mappingName} and id ${mapping.id} successfully removed.`);
     return true;
   } catch (error) {
-    throw new Error(`Failed to remove file with name ${name}: ${error}`);
+    throw new Error(`Failed to remove file with name ${mappingName}: ${error}`);
   }
 }
 
-export async function fromAllGetMappingNameDB() {
+export async function getAllMappingNamesDB() {
   try {
-    const files = await db.uploadedFiles.toCollection().distinct().toArray();
-    const names = files.map((file) => file.name);
-    return names;
+    const mappings = await db.uploadedFiles.toCollection().distinct().toArray();
+    const mappingNames = mappings.map((mapping) => mapping.name);
+    return mappingNames;
   } catch (error) {
     throw new Error(`Failed to retrieve file names: ${error}`);
   }
