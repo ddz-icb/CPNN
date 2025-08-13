@@ -1,6 +1,6 @@
 import log from "../../logger.js";
 import { useColorscheme } from "../adapters/state/colorschemeState.js";
-import { selectLinkColorscheme } from "../domain_service/colorschemeManager.js";
+import { selectLinkColorscheme, selectNodeColorscheme } from "../domain_service/colorschemeManager.js";
 import { errorService } from "./errorService.js";
 
 export const colorschemeService = {
@@ -15,6 +15,22 @@ export const colorschemeService = {
     try {
       const colorschemeObject = await selectLinkColorscheme(colorschemeName);
       this.setLinkColorscheme(colorschemeObject);
+    } catch (error) {
+      errorService.setError(error.message);
+      log.error(error);
+    }
+  },
+  async handleSelectNodeColorscheme(colorschemeName) {
+    if (!colorschemeName) {
+      errorService.setError("Selected invalid color scheme");
+      log.error("Selected invalid color scheme");
+      return;
+    }
+    log.info("Replacing node color scheme");
+
+    try {
+      const colorschemeObject = await selectNodeColorscheme(colorschemeName);
+      this.setNodeColorscheme(colorschemeObject);
     } catch (error) {
       errorService.setError(error.message);
       log.error(error);

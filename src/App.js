@@ -14,14 +14,7 @@ import {
   mergeSameProteins,
 } from "./components/application_service/graphCalculations.js";
 import { loadGraphNames, setInitGraph } from "./components/domain_service/graphManager.js";
-import {
-  createColorscheme,
-  deleteColorscheme,
-  loadColorschemeNames,
-  selectLinkColorscheme,
-  selectNodeColorscheme,
-  setInitColorschemes,
-} from "./components/domain_service/colorschemeManager.js";
+import { createColorscheme, deleteColorscheme, loadColorschemeNames, setInitColorschemes } from "./components/domain_service/colorschemeManager.js";
 
 import { Error } from "./components/gui/error.js";
 import { getFileNameWithoutExtension } from "./components/other/parseFiles.js";
@@ -49,18 +42,6 @@ function App() {
 
   // COLOR SCHEME
   ///////////////
-
-  const handleSelectNodeColorscheme = (colorschemeName) => {
-    if (!colorschemeName) return;
-    log.info("Replacing node color scheme");
-
-    try {
-      selectNodeColorscheme(colorschemeName, setColorscheme);
-    } catch (error) {
-      setError("Color scheme is already the current node color scheme");
-      log.error("Color scheme is already the current node color scheme");
-    }
-  };
 
   // adds new color scheme
   const handleCreateColorscheme = async (event) => {
@@ -232,11 +213,7 @@ function App() {
   return (
     <div className={appearance.theme.name}>
       <HeaderBar />
-      <Sidebar
-        handleNewColorscheme={handleCreateColorscheme}
-        handleDeleteColorscheme={handleDeleteColorscheme}
-        handleSelectNodeColorscheme={handleSelectNodeColorscheme}
-      />
+      <Sidebar handleNewColorscheme={handleCreateColorscheme} handleDeleteColorscheme={handleDeleteColorscheme} />
       <main>
         <Error />
         <ForceGraph />

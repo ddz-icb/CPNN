@@ -14,14 +14,14 @@ import { useAppearance, linkWidthInit } from "../../adapters/state/appearanceSta
 import { useColorscheme } from "../../adapters/state/colorschemeState.js";
 import { colorschemeService } from "../../application_service/colorschemeService.js";
 
-export function AppearanceSidebar({ handleNewColorscheme, handleDeleteColorscheme, handleSelectNodeColorscheme }) {
+export function AppearanceSidebar({ handleNewColorscheme, handleDeleteColorscheme }) {
   return (
     <>
       <AppearanceSettings />
       <UploadColorscheme handleNewColorscheme={handleNewColorscheme} handleDeleteColorscheme={handleDeleteColorscheme} />
       <ActiveNodeColorscheme />
       <ActiveLinkColorscheme />
-      <UploadedColorschemes handleDeleteColorscheme={handleDeleteColorscheme} handleSelectNodeColorscheme={handleSelectNodeColorscheme} />
+      <UploadedColorschemes handleDeleteColorscheme={handleDeleteColorscheme} />
       <ColorSelection />
     </>
   );
@@ -121,7 +121,7 @@ function ActiveLinkColorscheme() {
   );
 }
 
-function UploadedColorschemes({ handleDeleteColorscheme, handleSelectNodeColorscheme }) {
+function UploadedColorschemes({ handleDeleteColorscheme }) {
   const { colorscheme, setColorscheme } = useColorscheme();
 
   const [selectColorschemePopup, setSelectSchemePopup] = useState(false);
@@ -143,7 +143,7 @@ function UploadedColorschemes({ handleDeleteColorscheme, handleSelectNodeColorsc
       />
       <Popup heading={"Set Color Scheme"} description={setColorschemeDescription} isOpen={selectColorschemePopup} setIsOpen={setSelectSchemePopup}>
         <div className="popup-block">
-          <Button variant="popup" onClick={() => handleSelectNodeColorscheme(selectedColorschemeName)} text={"Set for Nodes"} />
+          <Button variant="popup" onClick={() => colorschemeService.handleSelectNodeColorscheme(selectedColorschemeName)} text={"Set for Nodes"} />
           <Button variant="popup" onClick={() => colorschemeService.handleSelectLinkColorscheme(selectedColorschemeName)} text={"Set for Links"} />
         </div>
       </Popup>
