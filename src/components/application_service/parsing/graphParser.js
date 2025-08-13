@@ -1,14 +1,9 @@
-import log from "../../logger.js";
+import log from "../../../logger.js";
 import Papa from "papaparse";
 import axios from "axios";
-import {
-  filterByThreshold,
-  filterMaxCompSize,
-  filterMinCompSize,
-  filterNodesExist,
-  mergeSameProteins,
-} from "../application_service/graphCalculations.js";
-import { expectedPhysicTypes } from "../adapters/state/physicsState.js";
+import { expectedPhysicTypes } from "../../adapters/state/physicsState.js";
+import { filterByThreshold, filterMaxCompSize, filterMinCompSize, filterNodesExist, mergeSameProteins } from "../graphCalculations.js";
+import { parseFileAsText } from "../../other/fileFunctions.js";
 
 export async function parseGraphFile(
   file,
@@ -158,6 +153,7 @@ function parseGraphCSVorTSV(content) {
     firstColumn: firstColumn.slice(1),
   };
 }
+
 function verifyGraph(graph) {
   if (!graph || typeof graph !== "object") {
     throw new Error("Error while parsing the graph file. It does not have the right format.");
@@ -293,146 +289,4 @@ async function convertToCorrMatrix(data, takeSpearmanCoefficient) {
     console.error("Error fetching correlation matrix:", error.message);
     throw error;
   }
-}
-
-export async function parseColorschemeFile(file) {
-  if (!file) {
-    throw new Error(`No file found with the name ${file}.`);
-  }
-
-  const fileExtension = file.name.split(".").pop();
-  if (fileExtension !== "csv" && fileExtension !== "tsv") throw new Error(`Wrong file extension. Only .csv and .tsv is allowed.`);
-
-  try {
-    const fileContent = await parseFileAsText(file);
-    const colorschemeData = parseColorscheme(fileContent);
-    const colorscheme = { name: file.name, data: colorschemeData };
-    verifyColorscheme(colorscheme);
-    return colorscheme;
-  } catch (error) {
-    log.error(error.message);
-    throw new Error(`${error.message}`);
-  }
-}
-
-export function parseColorscheme(content) {
-  let fileData = Papa.parse(content, {
-    skipEmptyLines: true,
-  });
-
-  let colorschemeData = fileData.data;
-  colorschemeData = colorschemeData.reduce((acc, row) => {
-    const validColors = row.map((element) => element.toLowerCase())?.filter((element) => element.length !== 0);
-    return acc.concat(validColors);
-  }, []);
-
-  return colorschemeData;
-}
-
-function verifyColorscheme(colorscheme) {
-  if (!Array.isArray(colorscheme.data)) {
-    throw new Error("The color scheme must be a list.");
-  }
-
-  const hexColorRegex = /^#[0-9A-Fa-f]{6}$/;
-  colorscheme.data.forEach((color, index) => {
-    if (typeof color !== "string" || !hexColorRegex.test(color)) {
-      throw new Error(`Invalid hex-color at index ${index}: ${color}`);
-    }
-  });
-}
-
-export async function parseMappingFile(file) {
-  if (!file) {
-    throw new Error(`No file found with the name ${file}.`);
-  }
-
-  const fileExtension = file.name.split(".").pop();
-  if (fileExtension !== "csv" && fileExtension !== "tsv") throw new Error(`Wrong file extension. Only .csv and .tsv is allowed.`);
-
-  try {
-    const fileContent = await parseFileAsText(file);
-    const mapping = parseMapping(fileContent, file.name);
-    verifyMapping(mapping);
-    return { name: file.name, data: JSON.stringify(mapping) };
-  } catch (error) {
-    throw new Error(`${error.message}`);
-  }
-}
-
-export function parseMapping(content, filename) {
-  try {
-    let fileData = Papa.parse(content, {
-      header: true,
-      dynamicTyping: true,
-      skipEmptyLines: true,
-      delimiter: "",
-      transform: function (value, field) {
-        if (field !== "UniProt-ID") {
-          return value.split(";").map((item) => item.trim());
-        }
-        return value;
-      },
-    });
-
-    const nodeMapping = {};
-    const groupMapping = {};
-
-    for (let row of fileData.data) {
-      const uniProtId = row["UniProt-ID"];
-      const pathwayNames = row["Pathway Name"];
-      const reactomeIds = row["Reactome-ID"] || [];
-
-      nodeMapping[uniProtId] = {
-        pathwayNames: pathwayNames,
-        reactomeIds: reactomeIds,
-      };
-
-      for (let i = 0; i < pathwayNames.length; i++) {
-        if (!groupMapping[pathwayNames[i]]) {
-          groupMapping[pathwayNames[i]] = {
-            name: pathwayNames[i],
-            reactomeId: reactomeIds[i],
-          };
-        }
-      }
-    }
-
-    return {
-      name: filename,
-      nodeMapping: nodeMapping,
-      groupMapping: groupMapping,
-    };
-  } catch (error) {
-    throw new Error(`Erorr parsing pathway mapping with name ${filename}.`);
-  }
-}
-
-function verifyMapping(mapping) {
-  if (!mapping || typeof mapping !== "object") {
-    throw new Error("Error while parsing the mapping file. It does not have the right format.");
-  }
-
-  Object.entries(mapping.groupMapping).forEach(([key, node]) => {
-    if (!node.hasOwnProperty("name")) {
-      throw new Error(`${key} is missing the 'name' property.`);
-    }
-  });
-
-  Object.entries(mapping.nodeMapping).forEach(([key, node]) => {
-    if (!node.hasOwnProperty("pathwayNames")) {
-      throw new Error(`${key} is missing the 'Pathway Name' property.`);
-    }
-  });
-}
-
-export const getFileNameWithoutExtension = (filename) => filename.replace(/\.[^/.]+$/, "");
-
-function parseFileAsText(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = (e) => resolve(e.target.result);
-    reader.onerror = () => reject(new Error("Error reading file"));
-    reader.readAsText(file);
-  });
 }

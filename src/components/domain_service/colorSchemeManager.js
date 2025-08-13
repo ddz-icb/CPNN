@@ -1,4 +1,4 @@
-import log from "../../logger.js";
+import { parseColorschemeFile } from "../application_service/parsing/colorschemeParser.js";
 import {
   createColorschemeDB,
   createColorschemeIfNotExistsDB,
@@ -6,7 +6,6 @@ import {
   getColorschemeDB,
   deleteColorschemeDB,
 } from "../repository/colorschemeRepo.js";
-import { parseColorschemeFile } from "../other/parseFiles.js";
 
 export async function loadColorschemeNames() {
   const colorschemeNames = await getAllColorschemeNamesDB();

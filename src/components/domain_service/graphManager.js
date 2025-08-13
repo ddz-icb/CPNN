@@ -1,8 +1,8 @@
 import { exampleGraphJson } from "../assets/exampleGraphJSON.js";
 import log from "../../logger.js";
 import { joinGraphs } from "../application_service/graphCalculations.js";
-import { parseGraphFile } from "../other/parseFiles.js";
 import { addGraphDB, addGraphIfNotExistsDB, fromAllGetGraphNameDB, getGraphDB, removeGraphByNameDB } from "../repository/graphRepo.js";
+import { parseGraphFile } from "../application_service/parsing/graphParser.js";
 
 export async function setInitGraph() {
   const graph = JSON.parse(exampleGraphJson.data);

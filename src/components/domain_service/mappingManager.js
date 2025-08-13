@@ -1,5 +1,5 @@
 import log from "../../logger.js";
-import { parseMappingFile } from "../other/parseFiles.js";
+import { parseMappingFile } from "../application_service/parsing/mappingParser.js";
 import { addMappingDB, fromAllGetMappingNameDB, getMappingDB, removeMappingByNameDB } from "../repository/mappingRepo.js";
 
 export async function loadMappingNames() {
