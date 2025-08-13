@@ -13,14 +13,10 @@ import {
   joinGraphs,
   mergeSameProteins,
 } from "./components/application_service/graphCalculations.js";
-import { loadGraphNames, setInitGraph } from "./components/domain_service/graphManager.js";
-import { loadColorschemeNames, createInitColorschemes } from "./components/domain_service/colorschemeManager.js";
 
 import { Error } from "./components/gui/error.js";
 import { getGraphDB } from "./components/repository/graphRepo.js";
 import { linkThresholdInit } from "./components/adapters/state/filterState.js";
-import { loadMappingNames } from "./components/domain_service/mappingManager.js";
-import { loadTheme, storeTheme } from "./components/domain_service/themeManager.js";
 import { useFilter } from "./components/adapters/state/filterState.js";
 import { useAppearance } from "./components/adapters/state/appearanceState.js";
 import { useGraphData } from "./components/adapters/state/graphState.js";
