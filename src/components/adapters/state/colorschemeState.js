@@ -34,10 +34,6 @@ export const manyColors = {
   ],
 };
 
-export const ibmAntiBlindnessJson = { name: "IBM (5 colors, barrier-free)", data: JSON.stringify(ibmAntiBlindness) };
-export const okabe_ItoAntiBlindnessJson = { name: "Okabe (7 colors, barrier-free)", data: JSON.stringify(okabe_ItoAntiBlindness) };
-export const manyColorsJson = { name: "Many Colors (18 colors)", data: JSON.stringify(manyColors) };
-
 export const defaultColorschemes = [ibmAntiBlindness, okabe_ItoAntiBlindness, manyColors];
 export const defaultColorschemeNames = defaultColorschemes.map((c) => c.name);
 

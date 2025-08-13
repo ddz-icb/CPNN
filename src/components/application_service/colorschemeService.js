@@ -1,12 +1,12 @@
 import log from "../../logger.js";
-import { defaultColorschemeNames, ibmAntiBlindness, manyColors, useColorscheme } from "../adapters/state/colorschemeState.js";
+import { defaultColorschemeNames, ibmAntiBlindness, manyColors, okabe_ItoAntiBlindness, useColorscheme } from "../adapters/state/colorschemeState.js";
 import {
   createColorscheme,
   deleteColorscheme,
-  selectLinkColorscheme,
-  selectNodeColorscheme,
+  getColorscheme,
   createInitColorschemes,
   loadColorschemeNames,
+  createColorschemeIfNotExists,
 } from "../domain_service/colorschemeManager.js";
 import { errorService } from "./errorService.js";
 
@@ -30,8 +30,8 @@ export const colorschemeService = {
     log.info("Replacing link color scheme");
 
     try {
-      const colorschemeObject = await selectLinkColorscheme(colorschemeName);
-      this.setLinkColorscheme(colorschemeObject);
+      const colorscheme = await getColorscheme(colorschemeName);
+      this.setLinkColorscheme(colorscheme);
     } catch (error) {
       errorService.setError(error.message);
       log.error(error);
@@ -46,8 +46,8 @@ export const colorschemeService = {
     log.info("Replacing node color scheme");
 
     try {
-      const colorschemeObject = await selectNodeColorscheme(colorschemeName);
-      this.setNodeColorscheme(colorschemeObject);
+      const colorscheme = await getColorscheme(colorschemeName);
+      this.setNodeColorscheme(colorscheme);
     } catch (error) {
       errorService.setError(error.message);
       log.error(error);
@@ -63,8 +63,8 @@ export const colorschemeService = {
     log.info("Adding new color scheme");
 
     try {
-      const colorschemeObject = await createColorscheme(file);
-      this.setUploadedColorschemeNames([...(this.getUploadedColorschemeNames() || [defaultColorschemeNames]), colorschemeObject.name]);
+      const colorscheme = await createColorscheme(file);
+      this.setUploadedColorschemeNames([...(this.getUploadedColorschemeNames() || [defaultColorschemeNames]), colorscheme.name]);
     } catch (error) {
       errorService.setError(error.message);
       log.error(error);
@@ -94,7 +94,10 @@ export const colorschemeService = {
   },
   async handleSetInitColorschemes() {
     try {
-      await createInitColorschemes();
+      await createColorschemeIfNotExists(ibmAntiBlindness);
+      await createColorschemeIfNotExists(okabe_ItoAntiBlindness);
+      await createColorschemeIfNotExists(manyColors);
+
       this.setLinkColorscheme(ibmAntiBlindness);
       this.setNodeColorscheme(manyColors);
       this.setUploadedColorschemeNames([...new Set([...(this.getUploadedColorschemeNames() || []), ...defaultColorschemeNames])]);

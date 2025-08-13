@@ -8,94 +8,81 @@ db.version(1).stores({
   uploadedFiles: "++id, name",
 });
 
-async function getFileByNameDB(name) {
+async function getColorschemeByNameDB(colorschemeName) {
   try {
-    const file = await db.uploadedFiles.where("name").equals(name).first();
-    return file;
+    const colorscheme = await db.uploadedFiles.where("name").equals(colorschemeName).first();
+    return colorscheme;
   } catch (error) {
-    throw new Error(`Failed to retrieve file with name ${name}: ${error}`);
+    throw new Error(`Failed to retrieve file with name ${colorschemeName}: ${error}`);
   }
 }
 
-export async function getColorschemeDB(filename) {
-  const file = await getFileByNameDB(filename);
-  if (!file) throw new Error("No file found");
-
-  const colorschemeObject = JSON.parse(file.data);
-  if (!colorschemeObject) throw new Error("File format not recognized");
-  return colorschemeObject;
+export async function getColorschemeDB(colorschemeName) {
+  const colorscheme = await getColorschemeByNameDB(colorschemeName);
+  if (!colorscheme) throw new Error("No file found");
+  return colorscheme;
 }
 
-export async function addColorschemeDB(file) {
+export async function createColorschemeDB(colorschemeData, colorschemeName) {
   try {
-    const existingFile = await getFileByNameDB(file.name);
-    if (existingFile) throw new Error("Colorscheme already exists");
+    const colorscheme = await getColorschemeByNameDB(colorschemeName);
+    if (colorscheme) throw new Error("Colorscheme already exists");
 
     const id = await db.uploadedFiles.add({
-      name: file.name,
-      data: file.data,
+      name: colorschemeName,
+      data: colorschemeData,
     });
-    log.info(`File ${file.name} successfully added. Got id ${id}`);
+    log.info(`File ${colorschemeName} successfully added. Got id ${id}`);
     return id;
   } catch (error) {
-    throw new Error(`Failed to add ${file.name}: ${error}`);
+    throw new Error(`Failed to add ${colorschemeName}: ${error}`);
   }
 }
 
-export async function addColorschemeIfNotExistsDB(file) {
+export async function createColorschemeIfNotExistsDB(colorschemeData, colorschemeName) {
   try {
-    const existingFile = await getFileByNameDB(file.name);
-    if (existingFile) {
+    const colorscheme = await getColorschemeByNameDB(colorschemeName);
+    if (colorscheme) {
       log.info("Colorscheme already exists");
-      return existingFile.id;
+      return colorscheme.id;
     }
 
     const id = await db.uploadedFiles.add({
-      name: file.name,
-      data: file.data,
+      name: colorschemeName,
+      data: colorschemeData,
     });
-    log.info(`File ${file.name} successfully added. Got id ${id}`);
+    log.info(`File ${colorschemeName} successfully added. Got id ${id}`);
     return id;
   } catch (error) {
     throw new Error(`Failed to add graph if not exists: ${error}`);
   }
 }
 
-export async function removeColorschemeDB(id) {
-  try {
-    await db.uploadedFiles.delete(id);
-    log.info(`File with id ${id} successfully removed.`);
-    return true;
-  } catch (error) {
-    throw new Error(`Failed to remove file with id ${id}: ${error}`);
-  }
-}
-
-export async function removeColorschemeByNameDB(name) {
-  if (defaultColorschemeNames.some((colorschemeName) => colorschemeName === name)) {
-    throw new Error("Default color schemes cannot be removed");
+export async function deleteColorschemeDB(colorschemeName) {
+  if (defaultColorschemeNames.some((name) => name === colorschemeName)) {
+    throw new Error("Default color schemes cannot be deleted");
   }
 
   try {
-    const file = await getFileByNameDB(name);
-    if (!file) {
-      log.warn(`No file found with the name ${name}.`);
+    const colorscheme = await getColorschemeByNameDB(colorschemeName);
+    if (!colorscheme) {
+      log.warn(`No file found with the name ${colorschemeName}.`);
       return false;
     }
 
-    await db.uploadedFiles.delete(file.id);
-    log.info(`File with name ${name} and id ${file.id} successfully removed.`);
+    await db.uploadedFiles.delete(colorscheme.id);
+    log.info(`File with name ${colorschemeName} and id ${colorscheme.id} successfully deleted.`);
     return true;
   } catch (error) {
-    throw new Error(`Failed to remove file with name ${name}: ${error}`);
+    throw new Error(`Failed to delete file with name ${colorschemeName}: ${error}`);
   }
 }
 
-export async function fromAllGetColorschemeNameDB() {
+export async function getAllColorschemeNamesDB() {
   try {
-    const files = await db.uploadedFiles.toCollection().distinct().toArray();
-    const names = files.map((file) => file.name);
-    return names;
+    const colorschemes = await db.uploadedFiles.toCollection().distinct().toArray();
+    const colorschemeNames = colorschemes.map((colorscheme) => colorscheme.name);
+    return colorschemeNames;
   } catch (error) {
     throw new Error(`Failed to retrieve file names: ${error}`);
   }

@@ -305,31 +305,28 @@ export async function parseColorschemeFile(file) {
 
   try {
     const fileContent = await parseFileAsText(file);
-    const colorscheme = parseColorscheme(fileContent, file.name);
+    const colorschemeData = parseColorscheme(fileContent);
+    const colorscheme = { name: file.name, data: colorschemeData };
     verifyColorscheme(colorscheme);
-
-    return { name: file.name, data: JSON.stringify(colorscheme) };
+    return colorscheme;
   } catch (error) {
     log.error(error.message);
     throw new Error(`${error.message}`);
   }
 }
 
-export function parseColorscheme(content, filename) {
+export function parseColorscheme(content) {
   let fileData = Papa.parse(content, {
     skipEmptyLines: true,
   });
 
-  let colorData = fileData.data;
-  colorData = colorData.reduce((acc, row) => {
+  let colorschemeData = fileData.data;
+  colorschemeData = colorschemeData.reduce((acc, row) => {
     const validColors = row.map((element) => element.toLowerCase())?.filter((element) => element.length !== 0);
     return acc.concat(validColors);
   }, []);
 
-  return {
-    name: filename,
-    data: colorData,
-  };
+  return colorschemeData;
 }
 
 function verifyColorscheme(colorscheme) {
