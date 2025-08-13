@@ -164,19 +164,19 @@ function UploadGraph() {
         <Button
           variant="popup"
           text={"JSON Example Graph"}
-          onClick={() => downloadObjectAsFile(exampleGraphJson.content, exampleGraphJson.name)}
+          onClick={() => downloadObjectAsFile(exampleGraphJson.data, exampleGraphJson.name)}
           className="no-pad-top"
         />
         <Button
           variant="popup"
           text={"Matrix Example Graph"}
-          onClick={() => downloadCsvFile(exampleGraphCsv.content, exampleGraphCsv.name)}
+          onClick={() => downloadCsvFile(exampleGraphCsv.data, exampleGraphCsv.name)}
           className="no-pad-top"
         />
         <Button
           variant="popup"
           text={"Raw Data Example Graph"}
-          onClick={() => downloadCsvFile(exampleGraphRaw.content, exampleGraphRaw.name)}
+          onClick={() => downloadCsvFile(exampleGraphRaw.data, exampleGraphRaw.name)}
           className="no-pad-top"
         />
       </div>
@@ -298,7 +298,7 @@ function UploadMapping() {
         <Button
           variant="popup"
           text={"Download Example Pathway Mapping"}
-          onClick={() => downloadCsvFile(exampleMappingCsv.content, exampleMappingCsv.name)}
+          onClick={() => downloadCsvFile(exampleMappingCsv.data, exampleMappingCsv.name)}
         />
         <Button
           variant="popup"

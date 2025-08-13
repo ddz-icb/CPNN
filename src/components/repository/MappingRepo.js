@@ -20,7 +20,7 @@ export async function getMappingDB(filename) {
   const file = await getByNameDB(filename);
   if (!file) throw new Error("No file found");
 
-  const mappingObject = JSON.parse(file);
+  const mappingObject = JSON.parse(file.data);
   if (!mappingObject) throw new Error("File format not recognized");
   return mappingObject;
 }
@@ -32,7 +32,7 @@ export async function addMappingDB(file) {
 
     const id = await db.uploadedFiles.add({
       name: file.name,
-      content: file.content,
+      data: file.data,
     });
     log.info(`File ${file.name} successfully added. Got id ${id}`);
     return id;
@@ -51,7 +51,7 @@ export async function addMappingIfNotExistsDB(file) {
 
     const id = await db.uploadedFiles.add({
       name: file.name,
-      content: file.content,
+      data: file.data,
     });
     log.info(`File ${file.name} successfully added. Got id ${id}`);
     return id;

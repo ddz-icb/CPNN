@@ -39,4 +39,4 @@ O00443,Membrane Trafficking,R-HSA-199991
 O00459,"PIP3 activates AKT signaling, Signaling by VEGF, Signaling by Insulin receptor","R-HSA-1257604, R-HSA-194138, R-HSA-74752"
 `;
 
-export const exampleMappingCsv = { name: "ExampleMapping.csv", content: exampleMapping.trim() };
+export const exampleMappingCsv = { name: "ExampleMapping.csv", data: exampleMapping.trim() };

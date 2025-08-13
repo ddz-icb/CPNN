@@ -106,7 +106,7 @@ export function ForceGraph() {
       !container.width ||
       !container.height ||
       !appearance.theme ||
-      !colorscheme.nodeColorscheme.content
+      !colorscheme.nodeColorscheme.data
     )
       return;
     log.info("Setting stage");
@@ -122,13 +122,7 @@ export function ForceGraph() {
     const nodeMap = {};
     for (const node of graphData.graph.nodes) {
       let circle = new PIXI.Graphics();
-      circle = drawCircle(
-        circle,
-        node,
-        appearance.theme.circleBorderColor,
-        colorscheme.nodeColorscheme.content,
-        colorscheme.nodeAttribsToColorIndices
-      );
+      circle = drawCircle(circle, node, appearance.theme.circleBorderColor, colorscheme.nodeColorscheme.data, colorscheme.nodeAttribsToColorIndices);
       circle.id = node.id;
       circle.interactive = true;
       circle.buttonMode = true;
@@ -234,7 +228,7 @@ export function ForceGraph() {
     graphData.lines.clear();
 
     for (const link of graph.links) {
-      drawLine(graphData.lines, link, appearance.linkWidth, colorscheme.linkColorscheme.content, colorscheme.linkAttribsToColorIndices);
+      drawLine(graphData.lines, link, appearance.linkWidth, colorscheme.linkColorscheme.data, colorscheme.linkAttribsToColorIndices);
     }
 
     if (appearance.showNodeLabels) {

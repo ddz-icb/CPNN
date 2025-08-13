@@ -5,7 +5,7 @@ import { getFileNameWithoutExtension, parseGraphFile } from "../other/parseFiles
 import { addGraphDB, addGraphIfNotExistsDB, fromAllGetGraphNameDB, getGraphDB, removeGraphByNameDB } from "../repository/graphRepo.js";
 
 export async function setInitGraph(setGraphData) {
-  const graph = JSON.parse(exampleGraphJson.content);
+  const graph = JSON.parse(exampleGraphJson.data);
   addGraphIfNotExistsDB(exampleGraphJson);
   setGraphData("originGraph", graph);
   setGraphData("activeGraphNames", [exampleGraphJson.name]);

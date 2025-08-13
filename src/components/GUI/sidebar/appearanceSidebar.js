@@ -161,13 +161,13 @@ function ColorSelection() {
     <div className="pad-left-1 pad-right-1 color-mapping-select-table">
       <ColorMappingSelect
         heading={"Node Color Mapping"}
-        colorscheme={colorscheme.nodeColorscheme.content}
+        colorscheme={colorscheme.nodeColorscheme.data}
         attribsToColorIndices={colorscheme.nodeAttribsToColorIndices}
         setMapping={(updatedColorMapping) => setColorscheme("nodeAttribsToColorIndices", updatedColorMapping)}
       />
       <ColorMappingSelect
         heading={"Link Color Mapping"}
-        colorscheme={colorscheme.linkColorscheme.content}
+        colorscheme={colorscheme.linkColorscheme.data}
         attribsToColorIndices={colorscheme.linkAttribsToColorIndices}
         setMapping={(updatedColorMapping) => setColorscheme("linkAttribsToColorIndices", updatedColorMapping)}
       />

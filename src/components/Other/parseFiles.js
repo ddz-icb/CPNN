@@ -37,7 +37,7 @@ export async function parseGraphFile(
     );
     verifyGraph(graph);
 
-    return { name: file.name, content: JSON.stringify(graph) };
+    return { name: file.name, data: JSON.stringify(graph) };
   } catch (error) {
     throw new Error(`${error.message}`);
   }
@@ -308,7 +308,7 @@ export async function parseColorschemeFile(file) {
     const colorscheme = parseColorscheme(fileContent, file.name);
     verifyColorscheme(colorscheme);
 
-    return { name: file.name, content: JSON.stringify(colorscheme) };
+    return { name: file.name, data: JSON.stringify(colorscheme) };
   } catch (error) {
     log.error(error.message);
     throw new Error(`${error.message}`);
@@ -328,17 +328,17 @@ export function parseColorscheme(content, filename) {
 
   return {
     name: filename,
-    content: colorData,
+    data: colorData,
   };
 }
 
 function verifyColorscheme(colorscheme) {
-  if (!Array.isArray(colorscheme.content)) {
+  if (!Array.isArray(colorscheme.data)) {
     throw new Error("The color scheme must be a list.");
   }
 
   const hexColorRegex = /^#[0-9A-Fa-f]{6}$/;
-  colorscheme.content.forEach((color, index) => {
+  colorscheme.data.forEach((color, index) => {
     if (typeof color !== "string" || !hexColorRegex.test(color)) {
       throw new Error(`Invalid hex-color at index ${index}: ${color}`);
     }
@@ -357,7 +357,7 @@ export async function parseMappingFile(file) {
     const fileContent = await parseFileAsText(file);
     const mapping = parseMapping(fileContent, file.name);
     verifyMapping(mapping);
-    return { name: file.name, content: JSON.stringify(mapping) };
+    return { name: file.name, data: JSON.stringify(mapping) };
   } catch (error) {
     throw new Error(`${error.message}`);
   }

@@ -21,7 +21,7 @@ export async function getGraphDB(filename) {
   const file = await getFileByNameDB(filename);
   if (!file) throw new Error("No file found");
 
-  const graphObject = JSON.parse(file.content);
+  const graphObject = JSON.parse(file.data);
   if (!graphObject) throw new Error("File format not recognized");
   return graphObject;
 }
@@ -33,7 +33,7 @@ export async function addGraphDB(file) {
 
     const id = await db.uploadedFiles.add({
       name: file.name,
-      content: file.content,
+      data: file.data,
     });
     log.info(`File ${file.name} successfully added. Got id ${id}`);
     return id;
@@ -52,7 +52,7 @@ export async function addGraphIfNotExistsDB(file) {
 
     const id = await db.uploadedFiles.add({
       name: file.name,
-      content: file.content,
+      data: file.data,
     });
     log.info(`File ${file.name} successfully added. Got id ${id}`);
     return id;

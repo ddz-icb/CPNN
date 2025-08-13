@@ -21,7 +21,7 @@ export async function getColorschemeDB(filename) {
   const file = await getFileByNameDB(filename);
   if (!file) throw new Error("No file found");
 
-  const colorschemeObject = JSON.parse(file.content);
+  const colorschemeObject = JSON.parse(file.data);
   if (!colorschemeObject) throw new Error("File format not recognized");
   return colorschemeObject;
 }
@@ -33,7 +33,7 @@ export async function addColorschemeDB(file) {
 
     const id = await db.uploadedFiles.add({
       name: file.name,
-      content: file.content,
+      data: file.data,
     });
     log.info(`File ${file.name} successfully added. Got id ${id}`);
     return id;
@@ -52,7 +52,7 @@ export async function addColorschemeIfNotExistsDB(file) {
 
     const id = await db.uploadedFiles.add({
       name: file.name,
-      content: file.content,
+      data: file.data,
     });
     log.info(`File ${file.name} successfully added. Got id ${id}`);
     return id;

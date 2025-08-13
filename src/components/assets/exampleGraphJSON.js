@@ -3855,4 +3855,4 @@ const exampleGraph = JSON.stringify({
   ],
 });
 
-export const exampleGraphJson = { name: "ExampleGraph.json", content: exampleGraph };
+export const exampleGraphJson = { name: "ExampleGraph.json", data: exampleGraph };
