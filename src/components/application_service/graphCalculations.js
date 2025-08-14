@@ -2,10 +2,10 @@ import UnionFind from "union-find";
 import Graph from "graphology";
 import louvain from "graphology-communities-louvain";
 
-export function joinGraphs(graphDataNEW, newGraphDataNEW) {
-  const nodeMap = new Map(graphDataNEW.nodes.map((node) => [node.id, { ...node }]));
+export function joinGraphs(graphData, newGraphData) {
+  const nodeMap = new Map(graphData.nodes.map((node) => [node.id, { ...node }]));
 
-  newGraphDataNEW.nodes.forEach((node) => {
+  newGraphData.nodes.forEach((node) => {
     if (nodeMap.has(node.id)) {
       const baseNode = nodeMap.get(node.id);
       nodeMap.set(node.id, {
@@ -19,9 +19,9 @@ export function joinGraphs(graphDataNEW, newGraphDataNEW) {
 
   const joinedNodes = Array.from(nodeMap.values());
 
-  const linkMap = new Map(graphDataNEW.links.map((link) => [`${link.source}-${link.target}`, { ...link }]));
+  const linkMap = new Map(graphData.links.map((link) => [`${link.source}-${link.target}`, { ...link }]));
 
-  newGraphDataNEW.links.forEach((link) => {
+  newGraphData.links.forEach((link) => {
     const key1 = `${link.source}-${link.target}`;
     const key2 = `${link.target}-${link.source}`;
     const baseLink = linkMap.get(key1) || linkMap.get(key2);
@@ -62,14 +62,14 @@ export function getJoinedGraphName(graphNames) {
   return graphNames.join("-");
 }
 
-export function returnComponentData(graphDataNEW) {
+export function returnComponentData(graphData) {
   const idToIndexMap = {};
-  graphDataNEW.nodes.forEach((node, index) => {
+  graphData.nodes.forEach((node, index) => {
     idToIndexMap[node.id] = index;
   });
 
-  const uf = new UnionFind(graphDataNEW.nodes.length);
-  graphDataNEW.links.forEach((link) => {
+  const uf = new UnionFind(graphData.nodes.length);
+  graphData.links.forEach((link) => {
     // checking link.source.id and link.source for safety as d3 replaces the id in source with a graphics objects
     const sourceIndex = idToIndexMap[link.source.id || link.source];
     const targetIndex = idToIndexMap[link.target.id || link.target];
@@ -78,7 +78,7 @@ export function returnComponentData(graphDataNEW) {
 
   const componentArray = [];
   const componentSizeArray = [];
-  graphDataNEW.nodes.forEach((node) => {
+  graphData.nodes.forEach((node) => {
     const component = uf.find(idToIndexMap[node.id]);
     componentSizeArray[component] = componentSizeArray[component] ? componentSizeArray[component] + 1 : 1;
 
@@ -87,10 +87,10 @@ export function returnComponentData(graphDataNEW) {
   return [componentArray, componentSizeArray];
 }
 
-export function returnAdjacentData(graphDataNEW) {
+export function returnAdjacentData(graphData) {
   const adjacentData = {};
 
-  graphDataNEW.links.forEach((link) => {
+  graphData.links.forEach((link) => {
     adjacentData[link.source.id || link.source] = (adjacentData[link.source.id || link.source] || 0) + 1;
     adjacentData[link.target.id || link.target] = (adjacentData[link.target.id || link.target] || 0) + 1;
   });
@@ -103,12 +103,12 @@ export function returnAdjacentData(graphDataNEW) {
   return adjacentMap;
 }
 
-export function filterByThreshold(graphDataNEW, linkThreshold) {
-  if (linkThreshold === 0) return graphDataNEW;
+export function filterByThreshold(graphData, linkThreshold) {
+  if (linkThreshold === 0) return graphData;
 
-  graphDataNEW = {
-    ...graphDataNEW,
-    links: graphDataNEW.links
+  graphData = {
+    ...graphData,
+    links: graphData.links
       .map((link) => {
         const filteredAttribs = link.attribs.filter((_, i) => link.weights[i] >= linkThreshold);
         const filteredWeights = link.weights.filter((weight) => weight >= linkThreshold);
@@ -121,14 +121,14 @@ export function filterByThreshold(graphDataNEW, linkThreshold) {
       })
       .filter((link) => link.attribs.length > 0),
   };
-  return graphDataNEW;
+  return graphData;
 }
 
-export function filterCompDensity(graphDataNEW, compDensity) {
-  const [componentArray, componentSizeArray] = returnComponentData(graphDataNEW);
+export function filterCompDensity(graphData, compDensity) {
+  const [componentArray, componentSizeArray] = returnComponentData(graphData);
 
   const componentEdgeCount = [];
-  graphDataNEW.links.forEach((link) => {
+  graphData.links.forEach((link) => {
     const sourceId = link.source.id || link.source;
     const targetId = link.target.id || link.target;
     const compSource = componentArray[sourceId];
@@ -146,63 +146,63 @@ export function filterCompDensity(graphDataNEW, compDensity) {
   }
 
   return {
-    ...graphDataNEW,
-    nodes: graphDataNEW.nodes.filter((node) => {
+    ...graphData,
+    nodes: graphData.nodes.filter((node) => {
       const comp = componentArray[node.id];
       return componentAvgDegree[comp] >= compDensity;
     }),
   };
 }
 
-export function filterMinNeighborhood(graphDataNEW, minNeighborhoodSize) {
-  if (minNeighborhoodSize <= 0) return graphDataNEW;
+export function filterMinNeighborhood(graphData, minNeighborhoodSize) {
+  if (minNeighborhoodSize <= 0) return graphData;
 
-  const adjacentMap = returnAdjacentData(graphDataNEW);
+  const adjacentMap = returnAdjacentData(graphData);
 
   return {
-    ...graphDataNEW,
-    nodes: graphDataNEW.nodes.filter((node) => adjacentMap.get(node.id) >= minNeighborhoodSize),
+    ...graphData,
+    nodes: graphData.nodes.filter((node) => adjacentMap.get(node.id) >= minNeighborhoodSize),
   };
 }
 
-export function filterNodesExist(graphDataNEW) {
-  const nodeSet = new Set(graphDataNEW.nodes.map((node) => node.id));
+export function filterNodesExist(graphData) {
+  const nodeSet = new Set(graphData.nodes.map((node) => node.id));
 
   return {
-    ...graphDataNEW,
-    links: graphDataNEW.links.filter((link) => nodeSet.has(link.source.id || link.source) && nodeSet.has(link.target.id || link.target)),
+    ...graphData,
+    links: graphData.links.filter((link) => nodeSet.has(link.source.id || link.source) && nodeSet.has(link.target.id || link.target)),
   };
 }
 
-export function filterMinCompSize(graphDataNEW, minCompSize) {
-  if (minCompSize === 1) return graphDataNEW;
+export function filterMinCompSize(graphData, minCompSize) {
+  if (minCompSize === 1) return graphData;
 
-  const [componentArray, componentSizeArray] = returnComponentData(graphDataNEW);
+  const [componentArray, componentSizeArray] = returnComponentData(graphData);
 
   return {
-    ...graphDataNEW,
-    nodes: graphDataNEW.nodes.filter((node) => componentSizeArray[componentArray[node.id]] >= minCompSize),
+    ...graphData,
+    nodes: graphData.nodes.filter((node) => componentSizeArray[componentArray[node.id]] >= minCompSize),
   };
 }
 
-export function filterMaxCompSize(graphDataNEW, maxCompSize) {
-  if (maxCompSize == "") return graphDataNEW;
+export function filterMaxCompSize(graphData, maxCompSize) {
+  if (maxCompSize == "") return graphData;
 
-  const [componentArray, componentSizeArray] = returnComponentData(graphDataNEW);
+  const [componentArray, componentSizeArray] = returnComponentData(graphData);
 
   return {
-    ...graphDataNEW,
-    nodes: graphDataNEW.nodes.filter((node) => componentSizeArray[componentArray[node.id]] <= maxCompSize),
+    ...graphData,
+    nodes: graphData.nodes.filter((node) => componentSizeArray[componentArray[node.id]] <= maxCompSize),
   };
 }
 
-export function filterByLinkAttribs(graphDataNEW, filterRequest) {
+export function filterByLinkAttribs(graphData, filterRequest) {
   // linkAttribs is true if the filterRequest was empty
-  if (filterRequest === true) return graphDataNEW;
+  if (filterRequest === true) return graphData;
 
-  graphDataNEW = {
-    ...graphDataNEW,
-    links: graphDataNEW.links
+  graphData = {
+    ...graphData,
+    links: graphData.links
       .map((link) => {
         for (const andTerm of filterRequest) {
           let meetsTerm = false;
@@ -293,16 +293,16 @@ export function filterByLinkAttribs(graphDataNEW, filterRequest) {
       .filter((link) => link.attribs.length > 0),
   };
 
-  return graphDataNEW;
+  return graphData;
 }
 
-export function filterByNodeAttribs(graphDataNEW, filterRequest) {
+export function filterByNodeAttribs(graphData, filterRequest) {
   // filterRequest is true if the filter is empty
-  if (filterRequest === true) return graphDataNEW;
+  if (filterRequest === true) return graphData;
 
-  graphDataNEW = {
-    ...graphDataNEW,
-    nodes: graphDataNEW.nodes
+  graphData = {
+    ...graphData,
+    nodes: graphData.nodes
       .map((node) => {
         for (const andTerm of filterRequest) {
           let meetsTerm = false;
@@ -395,14 +395,14 @@ export function filterByNodeAttribs(graphDataNEW, filterRequest) {
       .filter((node) => node.groups.length > 0),
   };
 
-  return graphDataNEW;
+  return graphData;
 }
 
-export function filterActiveNodesForPixi(circles, nodeLabels, showNodeLabels, graphDataNEW, nodeMap) {
+export function filterActiveNodesForPixi(circles, nodeLabels, showNodeLabels, graphData, nodeMap) {
   circles.children.forEach((circle) => (circle.visible = false));
   nodeLabels.children.forEach((label) => (label.visible = false));
 
-  graphDataNEW.nodes.forEach((n) => {
+  graphData.nodes.forEach((n) => {
     const { node, circle, nodeLabel } = nodeMap[n.id];
     circle.visible = true;
     if (showNodeLabels) {
@@ -411,14 +411,14 @@ export function filterActiveNodesForPixi(circles, nodeLabels, showNodeLabels, gr
   });
 }
 
-export function applyNodeMapping(graphDataNEW, mapping) {
+export function applyNodeMapping(graphData, mapping) {
   if (mapping === null) {
-    return graphDataNEW;
+    return graphData;
   }
 
   const nodeMapping = mapping.data.nodeMapping;
 
-  graphDataNEW.nodes.forEach((node) => {
+  graphData.nodes.forEach((node) => {
     const entries = node.id.split(";");
     const protIdsForLookup = new Set(entries.map((entry) => entry.split("_")[0]));
 
@@ -441,14 +441,14 @@ export function applyNodeMapping(graphDataNEW, mapping) {
     node.groups = Array.from(groupsSet);
   });
 
-  return graphDataNEW;
+  return graphData;
 }
 
-export function getNodeAttribsToColorIndices(graphDataNEW) {
+export function getNodeAttribsToColorIndices(graphData) {
   const nodeAttribsToColorIndices = [];
   let i = 0;
 
-  graphDataNEW.nodes.forEach((node) => {
+  graphData.nodes.forEach((node) => {
     node.groups.forEach((group) => {
       if (!nodeAttribsToColorIndices.hasOwnProperty(group)) {
         nodeAttribsToColorIndices[group] = i;
@@ -460,11 +460,11 @@ export function getNodeAttribsToColorIndices(graphDataNEW) {
   return nodeAttribsToColorIndices;
 }
 
-export function getLinkAttribsToColorIndices(graphDataNEW) {
+export function getLinkAttribsToColorIndices(graphData) {
   const linkAttribsToColorIndices = [];
   let i = 0;
 
-  graphDataNEW.links.forEach((link) => {
+  graphData.links.forEach((link) => {
     link.attribs.forEach((attrib) => {
       if (!linkAttribsToColorIndices.hasOwnProperty(attrib)) {
         linkAttribsToColorIndices[attrib] = i;
@@ -476,8 +476,8 @@ export function getLinkAttribsToColorIndices(graphDataNEW) {
   return linkAttribsToColorIndices;
 }
 
-export function getIdsHavePhosphosites(graphDataNEW) {
-  const nodeId = graphDataNEW.nodes[0].id;
+export function getIdsHavePhosphosites(graphData) {
+  const nodeId = graphData.nodes[0].id;
   const firstNodeIdElement = nodeId.split(";")[0];
   const phosphosites = firstNodeIdElement.split("_")[2];
   return phosphosites ? true : false;
@@ -515,11 +515,11 @@ export function getNodeLabelOffsetY(nodeId) {
   return -25;
 }
 
-export function getLinkWeightMinMax(graphDataNEW) {
+export function getLinkWeightMinMax(graphData) {
   let minWeight = Infinity;
   let maxWeight = -Infinity;
 
-  graphDataNEW.links.forEach((link) => {
+  graphData.links.forEach((link) => {
     link.weights.forEach((w) => {
       if (w < minWeight) minWeight = w;
       if (w > maxWeight) maxWeight = w;
@@ -529,9 +529,9 @@ export function getLinkWeightMinMax(graphDataNEW) {
   return { minWeight: minWeight, maxWeight: maxWeight };
 }
 
-export function mergeSameProteins(graphDataNEW) {
+export function mergeSameProteins(graphData) {
   const protIdToNodeMap = new Map();
-  graphDataNEW.nodes.forEach((node) => {
+  graphData.nodes.forEach((node) => {
     const protIds = getProtIdsWithIsoform(node.id);
     protIds.forEach((protId) => {
       if (!protIdToNodeMap.has(protId)) {
@@ -541,8 +541,8 @@ export function mergeSameProteins(graphDataNEW) {
     });
   });
 
-  const nodeIndexMap = new Map(graphDataNEW.nodes.map((node, index) => [node.id, index]));
-  const unionFind = new UnionFind(graphDataNEW.nodes.length);
+  const nodeIndexMap = new Map(graphData.nodes.map((node, index) => [node.id, index]));
+  const unionFind = new UnionFind(graphData.nodes.length);
 
   protIdToNodeMap.forEach((nodeIds) => {
     for (let i = 1; i < nodeIds.length; i++) {
@@ -553,10 +553,10 @@ export function mergeSameProteins(graphDataNEW) {
       }
     }
   });
-  const nodeIdToNodeObjectMap = new Map(graphDataNEW.nodes.map((node) => [node.id, node]));
+  const nodeIdToNodeObjectMap = new Map(graphData.nodes.map((node) => [node.id, node]));
 
   const groupsMap = new Map();
-  graphDataNEW.nodes.forEach((node) => {
+  graphData.nodes.forEach((node) => {
     const parentIndex = unionFind.find(nodeIndexMap.get(node.id));
     if (!groupsMap.has(parentIndex)) {
       groupsMap.set(parentIndex, []);
@@ -600,11 +600,11 @@ export function mergeSameProteins(graphDataNEW) {
     });
   });
 
-  graphDataNEW.nodes = Array.from(parentIndexToMergedNode.values());
+  graphData.nodes = Array.from(parentIndexToMergedNode.values());
 
   const mergedLinksMap = new Map();
 
-  graphDataNEW.links.forEach((link) => {
+  graphData.links.forEach((link) => {
     const sourceParentIndex = unionFind.find(nodeIndexMap.get(link.source));
     const targetParentIndex = unionFind.find(nodeIndexMap.get(link.target));
 
@@ -645,19 +645,19 @@ export function mergeSameProteins(graphDataNEW) {
     }
   });
 
-  graphDataNEW.links = Array.from(mergedLinksMap.values());
+  graphData.links = Array.from(mergedLinksMap.values());
 
-  return graphDataNEW;
+  return graphData;
 }
 
-export function communityDetectionLouvain(graphDataNEW) {
+export function communityDetectionLouvain(graphData) {
   const newGraph = new Graph();
 
-  graphDataNEW.nodes.forEach((node) => {
+  graphData.nodes.forEach((node) => {
     newGraph.addNode(node.id);
   });
 
-  graphDataNEW.links.forEach((link) => {
+  graphData.links.forEach((link) => {
     const sourceId = link.source.id || link.source;
     const targetId = link.target.id || link.target;
 

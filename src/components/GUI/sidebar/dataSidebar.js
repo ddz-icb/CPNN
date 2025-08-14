@@ -20,20 +20,20 @@ import {
   uploadPathwayMappingDescription,
 } from "./descriptions/dataDescriptions.js";
 import { mergeProteinsDescription } from "./descriptions/filterDescriptions.js";
-import { useGraphData } from "../../adapters/state/graphState.js";
 import { graphService } from "../../application_service/graphService.js";
 import { useMappingData } from "../../adapters/state/mappingState.js";
 import { mappingService } from "../../application_service/mappingService.js";
+import { useGraphState } from "../../adapters/state/graphState.js";
 
 export function DataSidebar() {
-  const { graphData } = useGraphData();
+  const { graphState } = useGraphState();
   const { mappingData } = useMappingData();
 
   return (
     <>
       <TopDataButtons />
-      <ActiveGraphFiles activeGraphNames={graphData.activeGraphNames} />
-      <UploadedGraphFiles uploadedGraphNames={graphData.uploadedGraphNames} />
+      <ActiveGraphFiles activeGraphNames={graphState.activeGraphNames} />
+      <UploadedGraphFiles uploadedGraphNames={graphState.uploadedGraphNames} />
       <ActiveMapping activeMapping={mappingData.activeMapping} />
       <UploadedMappings uploadedMappingNames={mappingData.uploadedMappingNames} />
     </>

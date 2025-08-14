@@ -31,12 +31,12 @@ import {
 import { handleEditorChange, runCodeEditor } from "../handlers/buttonHandlerFunctions.js";
 import { useFilter } from "../../adapters/state/filterState.js";
 import { useAppearance } from "../../adapters/state/appearanceState.js";
-import { useGraphData } from "../../adapters/state/graphState.js";
+import { useGraphState } from "../../adapters/state/graphState.js";
 
 export function FilterSidebar() {
   const { filter, setFilter, setAllFilter } = useFilter();
   const { appearance } = useAppearance();
-  const { graphData, setGraphData } = useGraphData();
+  const { graphState, setGraphState } = useGraphState();
 
   const linkFilterEditorRef = useRef(null);
   const nodeFilterEditorRef = useRef(null);
@@ -49,7 +49,7 @@ export function FilterSidebar() {
 
   const handleResetFilters = () => {
     setAllFilter(filterInit);
-    setGraphData("mergeProteins", false);
+    setGraphState("mergeProteins", false);
     setCompilerErrorLinkFilter(null);
     setCompilerErrorNodeFilter(null);
   };
@@ -115,8 +115,8 @@ export function FilterSidebar() {
         <Button text={"Reset Filters"} onClick={handleResetFilters} />
       </div>
       <SwitchBlock
-        value={graphData.mergeProteins}
-        setValue={() => setGraphData("mergeProteins", !graphData.mergeProteins)}
+        value={graphState.mergeProteins}
+        setValue={() => setGraphState("mergeProteins", !graphState.mergeProteins)}
         text={"Merge Proteins"}
         infoHeading={"Merge nodes of same protein"}
         infoDescription={mergeProteinsDescription}
@@ -127,8 +127,8 @@ export function FilterSidebar() {
         setValue={(value) => setFilter("linkThreshold", value)}
         setValueText={(value) => setFilter("linkThresholdText", value)}
         fallbackValue={linkThresholdInit}
-        min={Math.floor((graphData.linkWeightMin / 0.05) * 0.05) - 0.05}
-        max={Math.ceil(graphData.linkWeightMax / 0.05) * 0.05}
+        min={Math.floor((graphState.linkWeightMin / 0.05) * 0.05) - 0.05}
+        max={Math.ceil(graphState.linkWeightMax / 0.05) * 0.05}
         step={0.05}
         text={"Link Weight Threshold"}
         infoHeading={"Filtering Links by Threshold"}

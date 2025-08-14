@@ -18,7 +18,7 @@ function triggerDownload(blob, filename) {
 }
 
 function createGraphSvgElement(
-  graphDataNEW,
+  graphData,
   nodeMap,
   linkWidth,
   linkColorscheme,
@@ -34,7 +34,7 @@ function createGraphSvgElement(
     maxY = -Infinity;
   const tempCtx = document.createElement("canvas").getContext("2d");
 
-  for (const node of graphDataNEW.nodes) {
+  for (const node of graphData.nodes) {
     const { circle, nodeLabel } = nodeMap[node.id];
     if (nodeLabel?.visible) tempCtx.font = `${nodeLabel._fontSize || 12}px sans-serif`;
     const textWidth = nodeLabel?.visible ? tempCtx.measureText(nodeLabel.text).width : 0;
@@ -56,11 +56,11 @@ function createGraphSvgElement(
   svgElement.setAttribute("width", width);
   svgElement.setAttribute("height", height);
 
-  for (const link of graphDataNEW.links) {
+  for (const link of graphData.links) {
     drawLineCanvas(ctx, link, linkWidth, linkColorscheme, linkAttribsToColorIndices);
   }
 
-  for (const node of graphDataNEW.nodes) {
+  for (const node of graphData.nodes) {
     const { circle, nodeLabel } = nodeMap[node.id];
     drawCircleCanvas(ctx, node, circle, circleBorderColor, nodeColorscheme, nodeAttribsToColorIndices);
     if (nodeLabel?.visible) {

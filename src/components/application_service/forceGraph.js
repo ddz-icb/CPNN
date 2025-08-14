@@ -10,7 +10,7 @@ import { SettingControl } from "./settingControl.js";
 import { getNodeIdName, getNodeLabelOffsetY } from "./graphCalculations.js";
 import { linkLengthInit, nodeRepulsionStrengthInit, xStrengthInit, yStrengthInit } from "../adapters/state/physicsState.js";
 import { useAppearance } from "../adapters/state/appearanceState.js";
-import { useGraphData } from "../adapters/state/graphState.js";
+import { useGraphState } from "../adapters/state/graphState.js";
 import { useContainer } from "../adapters/state/containerState.js";
 import { useTooltipSettings } from "../adapters/state/tooltipState.js";
 import { useError } from "../adapters/state/errorState.js";
@@ -20,7 +20,7 @@ import { useColorscheme } from "../adapters/state/colorschemeState.js";
 export function ForceGraph() {
   const { appearance, setAppearance } = useAppearance();
   const { colorscheme, setColorscheme } = useColorscheme();
-  const { graphData, setGraphData } = useGraphData();
+  const { graphState, setGraphState } = useGraphState();
   const { container, setContainer } = useContainer();
   const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
   const { error, setError } = useError();
@@ -36,7 +36,7 @@ export function ForceGraph() {
     if (!reset) return;
     log.info("Resetting simulation");
 
-    setGraphData("", (prev) => ({
+    setGraphState("", (prev) => ({
       ...prev,
       graph: null,
       nodeMap: null,
@@ -62,7 +62,7 @@ export function ForceGraph() {
 
   // init Pixi //
   useEffect(() => {
-    if (!containerRef.current || app || !graphData.graph) return;
+    if (!containerRef.current || app || !graphState.graph) return;
     log.info("Init PIXI app");
 
     const containerRect = containerRef.current.getBoundingClientRect();
@@ -95,11 +95,11 @@ export function ForceGraph() {
     };
 
     initPIXI();
-  }, [containerRef, graphData.graph]);
+  }, [containerRef, graphState.graph]);
 
   // set stage //
   useEffect(() => {
-    if (graphData.circles || !app || !graphData.graph || !container.width || !container.height || !appearance.theme || !colorscheme.nodeColorscheme)
+    if (graphState.circles || !app || !graphState.graph || !container.width || !container.height || !appearance.theme || !colorscheme.nodeColorscheme)
       return;
     log.info("Setting stage");
 
@@ -110,9 +110,9 @@ export function ForceGraph() {
     app.stage.addChild(newCircles);
     app.stage.addChild(newNodeLabels);
 
-    const offsetSpawnValue = graphData.graph.data.nodes.length * 10;
+    const offsetSpawnValue = graphState.graph.data.nodes.length * 10;
     const nodeMap = {};
-    for (const node of graphData.graph.data.nodes) {
+    for (const node of graphState.graph.data.nodes) {
       let circle = new PIXI.Graphics();
       circle = drawCircle(circle, node, appearance.theme.circleBorderColor, colorscheme.nodeColorscheme.data, colorscheme.nodeAttribsToColorIndices);
       circle.id = node.id;
@@ -144,18 +144,18 @@ export function ForceGraph() {
       nodeMap[node.id] = { node, circle, nodeLabel };
     }
 
-    setGraphData("", (prev) => ({
+    setGraphState("", (prev) => ({
       ...prev,
       lines: newLines,
       circles: newCircles,
       nodeMap: nodeMap,
       nodeLabels: newNodeLabels,
     }));
-  }, [app, graphData.graph, colorscheme.nodeColorscheme, container.width, container.height, appearance.theme]);
+  }, [app, graphState.graph, colorscheme.nodeColorscheme, container.width, container.height, appearance.theme]);
 
   // init simulation //
   useEffect(() => {
-    if (!app || !graphData.graph || simulation || graphData.filteredAfterStart) {
+    if (!app || !graphState.graph || simulation || graphState.filteredAfterStart) {
       return;
     }
     log.info("Init simulation");
@@ -164,22 +164,22 @@ export function ForceGraph() {
     initDragAndZoom(app, newSimulation, radius, setTooltipSettings, container.width, container.height);
 
     setSimulation(newSimulation);
-  }, [app, graphData.graph]);
+  }, [app, graphState.graph]);
 
   // running simulation //
   useEffect(() => {
-    if (!graphData.circles || !graphData.graph || !simulation || !graphData.filteredAfterStart || !graphData.lines) return;
-    log.info("Running simulation with the following graph:", graphData.graph);
+    if (!graphState.circles || !graphState.graph || !simulation || !graphState.filteredAfterStart || !graphState.lines) return;
+    log.info("Running simulation with the following graph:", graphState.graph);
 
     try {
-      let activeCircles = graphData.circles.children.filter((circle) => circle.visible);
+      let activeCircles = graphState.circles.children.filter((circle) => circle.visible);
 
       simulation
-        .on("tick.redraw", () => redraw(graphData.graph.data))
+        .on("tick.redraw", () => redraw(graphState.graph.data))
         .on("end", render)
         .nodes(activeCircles)
         .force("link")
-        .links(graphData.graph.data.links);
+        .links(graphState.graph.data.links);
 
       // restart the simulation and reheat if necessary to make sure everything is being rerendered correctly
       simulation.restart();
@@ -202,7 +202,7 @@ export function ForceGraph() {
         simulation.stop();
       }
     };
-  }, [graphData.graph, graphData.circles, graphData.lines, simulation, graphData.filteredAfterStart]);
+  }, [graphState.graph, graphState.circles, graphState.lines, simulation, graphState.filteredAfterStart]);
 
   // resize the canvas on window resize //
   useEffect(() => {
@@ -216,16 +216,16 @@ export function ForceGraph() {
   }, [app]);
 
   // redraw runs while the simulation is active //
-  function redraw(graphDataNEW) {
-    graphData.lines.clear();
+  function redraw(graphData) {
+    graphState.lines.clear();
 
-    for (const link of graphDataNEW.links) {
-      drawLine(graphData.lines, link, appearance.linkWidth, colorscheme.linkColorscheme.data, colorscheme.linkAttribsToColorIndices);
+    for (const link of graphData.links) {
+      drawLine(graphState.lines, link, appearance.linkWidth, colorscheme.linkColorscheme.data, colorscheme.linkAttribsToColorIndices);
     }
 
     if (appearance.showNodeLabels) {
-      graphDataNEW.nodes.forEach((n) => {
-        const { node, circle, nodeLabel } = graphData.nodeMap[n.id];
+      graphData.nodes.forEach((n) => {
+        const { node, circle, nodeLabel } = graphState.nodeMap[n.id];
         nodeLabel.x = circle.x;
         nodeLabel.y = circle.y + getNodeLabelOffsetY(node.id);
       });

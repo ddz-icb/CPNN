@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export const graphDataInit = {
+export const graphStateInit = {
   graph: null,
   originGraph: null,
   linkWeightMin: null,
@@ -18,17 +18,17 @@ export const graphDataInit = {
   activeGraphNames: null,
 };
 
-export const useGraphData = create((set) => ({
-  graphData: graphDataInit,
-  setGraphData: (key, value) =>
+export const useGraphState = create((set) => ({
+  graphState: graphStateInit,
+  setGraphState: (key, value) =>
     set((state) => {
       if (typeof value === "function") {
-        return { graphData: value(state.graphData) };
+        return { graphState: value(state.graphState) };
       }
-      return { graphData: { ...state.graphData, [key]: value } };
+      return { graphState: { ...state.graphState, [key]: value } };
     }),
-  setAllGraphData: (value) =>
+  setAllGraphState: (value) =>
     set(() => ({
-      graphData: value,
+      graphState: value,
     })),
 }));

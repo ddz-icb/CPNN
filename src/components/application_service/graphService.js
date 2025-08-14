@@ -1,5 +1,5 @@
 import log from "../../logger.js";
-import { useGraphData } from "../adapters/state/graphState.js";
+import { useGraphState } from "../adapters/state/graphState.js";
 import { exampleGraphJson } from "../assets/exampleGraphJSON.js";
 import { createGraph, deleteGraph, loadGraphNames, getGraph } from "../domain_service/graphManager.js";
 import { createGraphIfNotExistsDB } from "../repository/graphRepo.js";
@@ -159,16 +159,16 @@ export const graphService = {
   },
   // ====== Generic getter/setter ======
   get(key) {
-    return useGraphData.getState().graphData[key];
+    return useGraphState.getState().graphState[key];
   },
   set(key, value) {
-    useGraphData.getState().setGraphData(key, value);
+    useGraphState.getState().setGraphState(key, value);
   },
   getAll() {
-    return useGraphData.getState().graphData;
+    return useGraphState.getState().graphState;
   },
   setAll(value) {
-    useGraphData.getState().setAllGraphData(value);
+    useGraphState.getState().setAllGraphState(value);
   },
   // ====== Specific getter/setter ======
   getGraph() {

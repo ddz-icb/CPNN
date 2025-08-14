@@ -1,12 +1,12 @@
 import { useAppearance } from "../../adapters/state/appearanceState.js";
 import { useColorscheme } from "../../adapters/state/colorschemeState.js";
-import { useGraphData } from "../../adapters/state/graphState.js";
+import { useGraphState } from "../../adapters/state/graphState.js";
 import { fallbackColor, getColor } from "../../other/draw.js";
 
 export function HeaderbarColorMapping() {
   const { appearance } = useAppearance();
   const { colorscheme } = useColorscheme();
-  const { graphData } = useGraphData();
+  const { graphState } = useGraphState();
 
   const renderMapping = (attribsToColorIndices, colorscheme) => {
     const content = [];
