@@ -411,12 +411,12 @@ export function filterActiveNodesForPixi(circles, nodeLabels, showNodeLabels, gr
   });
 }
 
-export function applyNodeMapping(graphData, mapping) {
-  if (mapping === null) {
+export function applyNodeMapping(graphData, mappingData) {
+  if (!mappingData) {
     return graphData;
   }
 
-  const nodeMapping = mapping.data.nodeMapping;
+  const nodeMapping = mappingData.nodeMapping;
 
   graphData.nodes.forEach((node) => {
     const entries = node.id.split(";");

@@ -1,7 +1,9 @@
 import log from "../../logger.js";
 import { activeMappingInit, useMappingData } from "../adapters/state/mappingState.js";
+import { getGraph } from "../domain_service/graphManager.js";
 import { createMapping, deleteMapping, loadMappingNames, getMapping } from "../domain_service/mappingManager.js";
 import { errorService } from "./errorService.js";
+import { applyNodeMapping, getJoinedGraphName, joinGraphs } from "./graphCalculations.js";
 import { graphService } from "./graphService.js";
 import { resetService } from "./resetService.js";
 
@@ -25,8 +27,12 @@ export const mappingService = {
     log.info("Replacing mapping");
 
     try {
-      const mappingObject = await getMapping(mappingName);
-      this.setActiveMapping(mappingObject);
+      const mapping = await getMapping(mappingName);
+      const graph = await graphService.getJoinedGraph(graphService.getActiveGraphNames());
+      graph.data = applyNodeMapping(graph.data, mapping.data);
+
+      this.setActiveMapping(mapping);
+      graphService.setOriginGraph(graph);
       graphService.setGraphIsPreprocessed(false);
       resetService.simulationReset();
     } catch (error) {
@@ -44,18 +50,21 @@ export const mappingService = {
     log.info("Adding new mapping file");
 
     try {
-      const mappingObject = await createMapping(file);
+      const mapping = await createMapping(file);
       this.setUploadedMappingNames([...(this.getUploadedMappingNames() || []), file.name]);
     } catch (error) {
       errorService.setError(error.message);
       log.error(error);
     }
   },
-  handleRemoveActiveMapping() {
+  async handleRemoveActiveMapping() {
     log.info("Removing currently active mapping");
 
     try {
+      const graph = await graphService.getJoinedGraph(graphService.getActiveGraphNames());
+
       this.setActiveMapping(activeMappingInit);
+      graphService.setOriginGraph(graph);
       graphService.setGraphIsPreprocessed(false);
       resetService.simulationReset();
     } catch (error) {

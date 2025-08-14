@@ -91,6 +91,22 @@ export const graphService = {
       log.error(error);
     }
   },
+  async getJoinedGraph(fileNames) {
+    if (!fileNames) {
+      errorService.setError("Selected invalid graphs");
+      log.error("Selected invalid graphs");
+      return;
+    }
+    let graph = await getGraph(fileNames[0]);
+    let joinedGraphData = graph.data;
+    for (let i = 1; i < fileNames.length; i++) {
+      graph = await getGraph(fileNames[i]);
+      joinedGraphData = joinGraphs(joinedGraphData.data, graph.data);
+    }
+    const joinedGraphName = getJoinedGraphName(graphService.getActiveGraphNames());
+    const joinedGraph = { name: joinedGraphName, data: joinedGraphData };
+    return joinedGraph;
+  },
   async handleRemoveActiveGraph(filename) {
     if (!filename) {
       errorService.setError("Selected invalid graph");

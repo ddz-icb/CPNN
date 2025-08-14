@@ -78,7 +78,6 @@ function App() {
     log.info("Modifying graph and forwarding it to the simulation component");
 
     let newGraph = structuredClone(graphState.originGraph);
-    newGraph.data = applyNodeMapping(newGraph.data, mappingData.activeMapping);
 
     const { minWeight, maxWeight } = getLinkWeightMinMax(newGraph.data);
     if (minWeight != Infinity) {
@@ -102,7 +101,7 @@ function App() {
     setGraphState("originGraph", newGraph);
     setGraphState("graph", newGraph);
     setGraphState("graphIsPreprocessed", true);
-  }, [graphState.originGraph, graphState.activeGraphNames, mappingData.activeMapping]);
+  }, [graphState.originGraph, graphState.activeGraphNames]);
 
   return (
     <>
