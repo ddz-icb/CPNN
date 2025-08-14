@@ -107,16 +107,9 @@ export const graphService = {
     try {
       let remainingGraphNames = this.getActiveGraphNames()?.filter((name) => name !== filename);
       if (remainingGraphNames.length === 0) {
-        this.handleSetInitGraph();
-        resetService.simulationReset();
-        return;
+        remainingGraphNames = [exampleGraphJson.name];
       }
-      const graph = await this.getJoinedGraph(remainingGraphNames);
-
-      this.setOriginGraph(graph);
       this.setActiveGraphNames(remainingGraphNames);
-      this.setGraphIsPreprocessed(false);
-      resetService.simulationReset();
     } catch (error) {
       errorService.setError("Error removing graph");
       log.error(error);
@@ -147,9 +140,7 @@ export const graphService = {
   async handleSetInitGraph() {
     try {
       await createGraphIfNotExistsDB(exampleGraphJson);
-      this.setOriginGraph(exampleGraphJson);
       this.setActiveGraphNames([exampleGraphJson.name]);
-      this.setGraphIsPreprocessed(false);
     } catch (error) {
       errorService.setError("Error setting init graph");
       log.error("Error setting init graph");

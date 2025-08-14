@@ -48,8 +48,7 @@ function App() {
       resetService.simulationReset();
     }
 
-    if (!graphState.graphIsPreprocessed || !graphState.activeGraphNames || !graphState.activeGraphNames[0] || !graphService.getActiveGraphNames())
-      return;
+    if (!graphState.activeGraphNames || !graphService.getActiveGraphNames()) return;
     log.info("Reloading graph");
 
     try {
