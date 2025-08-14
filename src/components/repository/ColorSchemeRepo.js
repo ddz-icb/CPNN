@@ -59,10 +59,6 @@ export async function createColorschemeIfNotExistsDB(colorscheme) {
 }
 
 export async function deleteColorschemeDB(colorschemeName) {
-  if (defaultColorschemeNames.some((name) => name === colorschemeName)) {
-    throw new Error("Default color schemes cannot be deleted");
-  }
-
   try {
     const colorscheme = await getColorschemeByNameDB(colorschemeName);
     if (!colorscheme) {
