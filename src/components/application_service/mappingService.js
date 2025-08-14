@@ -52,12 +52,7 @@ export const mappingService = {
     log.info("Removing currently active mapping");
 
     try {
-      const graph = await graphService.getJoinedGraph(graphService.getActiveGraphNames());
-
       this.setActiveMapping(activeMappingInit);
-      graphService.setOriginGraph(graph);
-      graphService.setGraphIsPreprocessed(false);
-      resetService.simulationReset();
     } catch (error) {
       errorService.setError(error.message);
       log.error(error);

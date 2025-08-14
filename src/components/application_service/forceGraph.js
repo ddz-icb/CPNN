@@ -12,15 +12,16 @@ import { linkLengthInit, nodeRepulsionStrengthInit, xStrengthInit, yStrengthInit
 import { useAppearance } from "../adapters/state/appearanceState.js";
 import { useGraphState } from "../adapters/state/graphState.js";
 import { useContainer } from "../adapters/state/containerState.js";
-import { useTooltipSettings } from "../adapters/state/tooltipState.js";
+import { tooltipInit, useTooltipSettings } from "../adapters/state/tooltipState.js";
 import { useError } from "../adapters/state/errorState.js";
 import { useReset } from "../adapters/state/resetState.js";
 import { useColorscheme } from "../adapters/state/colorschemeState.js";
+import { tooltipService } from "./tooltipService.js";
 
 export function ForceGraph() {
   const { appearance, setAppearance } = useAppearance();
   const { colorscheme, setColorscheme } = useColorscheme();
-  const { graphState, setGraphState } = useGraphState();
+  const { graphState, setGraphState, setAllGraphState } = useGraphState();
   const { container, setContainer } = useContainer();
   const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
   const { error, setError } = useError();
@@ -34,7 +35,6 @@ export function ForceGraph() {
   // reset simulation //
   useEffect(() => {
     if (!reset) return;
-    log.info("Resetting simulation");
 
     setGraphState("", (prev) => ({
       ...prev,
@@ -45,7 +45,7 @@ export function ForceGraph() {
       filteredAfterStart: false,
     }));
 
-    setTooltipSettings("", { isClickTooltipActive: false, clickTooltipData: null, isHoverTooltipActive: false, hoverTooltipData: null });
+    tooltipService.setAll(tooltipInit);
 
     if (simulation) {
       simulation.stop();
