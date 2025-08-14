@@ -7,7 +7,7 @@ import { Sidebar } from "./components/gui/sidebar/sidebar.js";
 import { HeaderBar } from "./components/gui/headerbar/headerbar.js";
 import {
   applyNodeMapping,
-  getJoinedGraphName,
+  joinGraphName,
   getLinkAttribsToColorIndices,
   getLinkWeightMinMax,
   getNodeAttribsToColorIndices,
@@ -50,7 +50,7 @@ function App() {
         joinedGraphData = mergeSameProteins(joinedGraphData);
       }
 
-      const joinedGraphName = getJoinedGraphName(graphState.activeGraphNames);
+      const joinedGraphName = joinGraphName(graphState.activeGraphNames);
       const joinedGraph = { name: joinedGraphName, data: joinedGraphData };
 
       setGraphState("originGraph", joinedGraph);

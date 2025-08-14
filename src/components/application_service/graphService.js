@@ -4,7 +4,7 @@ import { exampleGraphJson } from "../assets/exampleGraphJSON.js";
 import { createGraph, deleteGraph, loadGraphNames, getGraph } from "../domain_service/graphManager.js";
 import { createGraphIfNotExistsDB } from "../repository/graphRepo.js";
 import { errorService } from "./errorService.js";
-import { getJoinedGraphName, joinGraphs } from "./graphCalculations.js";
+import { joinGraphName, joinGraphs } from "./graphCalculations.js";
 import { resetService } from "./resetService.js";
 
 export const graphService = {
@@ -80,7 +80,7 @@ export const graphService = {
     try {
       const newGraph = await getGraph(filename);
       const joinedGraphData = joinGraphs(this.getOriginGraph().data, newGraph.data);
-      const joinedGraphName = getJoinedGraphName([this.getOriginGraph().name, newGraph.name]);
+      const joinedGraphName = joinGraphName([this.getOriginGraph().name, newGraph.name]);
       const joinedGraph = { name: joinedGraphName, data: joinedGraphData };
       this.setOriginGraph(joinedGraph);
       this.setActiveGraphNames([...this.getActiveGraphNames(), filename]);
@@ -101,9 +101,9 @@ export const graphService = {
     let joinedGraphData = graph.data;
     for (let i = 1; i < fileNames.length; i++) {
       graph = await getGraph(fileNames[i]);
-      joinedGraphData = joinGraphs(joinedGraphData.data, graph.data);
+      joinedGraphData = joinGraphs(joinedGraphData, graph.data);
     }
-    const joinedGraphName = getJoinedGraphName(graphService.getActiveGraphNames());
+    const joinedGraphName = joinGraphName(fileNames);
     const joinedGraph = { name: joinedGraphName, data: joinedGraphData };
     return joinedGraph;
   },
@@ -122,18 +122,11 @@ export const graphService = {
         resetService.simulationReset();
         return;
       }
-      let graph = await getGraph(remainingGraphNames[0]);
-      let joinedGraphData = graph.data;
-      for (let i = 1; i < remainingGraphNames.length; i++) {
-        graph = await getGraph(remainingGraphNames[i]);
-        joinedGraphData = joinGraphs(joinedGraphData.data, graph.data);
-      }
-      const joinedGraphName = getJoinedGraphName(remainingGraphNames);
-      const joinedGraph = { name: joinedGraphName, data: joinedGraphData };
+      const graph = await this.getJoinedGraph(remainingGraphNames);
 
-      graphService.setOriginGraph(joinedGraph);
-      graphService.setActiveGraphNames(remainingGraphNames);
-      graphService.setGraphIsPreprocessed(false);
+      this.setOriginGraph(graph);
+      this.setActiveGraphNames(remainingGraphNames);
+      this.setGraphIsPreprocessed(false);
       resetService.simulationReset();
     } catch (error) {
       errorService.setError("Error removing graph");
@@ -146,7 +139,7 @@ export const graphService = {
       log.error("Selected invalid graph");
       return;
     }
-    if (graphService.getActiveGraphNames()?.includes(filename)) {
+    if (this.getActiveGraphNames()?.includes(filename)) {
       errorService.setError("Cannot remove selected graph as it's still active");
       log.error("Cannot remove selected graph as it's still active");
       return;
@@ -156,7 +149,7 @@ export const graphService = {
     try {
       await deleteGraph(filename);
       const remainingdGraphNames = this.getUploadedGraphNames().filter((name) => name !== filename);
-      graphService.setUploadedGraphNames(remainingdGraphNames);
+      this.setUploadedGraphNames(remainingdGraphNames);
     } catch (error) {
       errorService.setError("Error deleting the graph");
       log.error(error);

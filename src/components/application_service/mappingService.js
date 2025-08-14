@@ -3,7 +3,7 @@ import { activeMappingInit, useMappingData } from "../adapters/state/mappingStat
 import { getGraph } from "../domain_service/graphManager.js";
 import { createMapping, deleteMapping, loadMappingNames, getMapping } from "../domain_service/mappingManager.js";
 import { errorService } from "./errorService.js";
-import { applyNodeMapping, getJoinedGraphName, joinGraphs } from "./graphCalculations.js";
+import { applyNodeMapping, joinGraphName, joinGraphs } from "./graphCalculations.js";
 import { graphService } from "./graphService.js";
 import { resetService } from "./resetService.js";
 

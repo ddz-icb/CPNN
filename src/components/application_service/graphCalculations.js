@@ -58,7 +58,7 @@ export function joinGraphs(graphData, newGraphData) {
   return joinedGraphData;
 }
 
-export function getJoinedGraphName(graphNames) {
+export function joinGraphName(graphNames) {
   return graphNames.join("-");
 }
 
