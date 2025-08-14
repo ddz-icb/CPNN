@@ -3,6 +3,7 @@ import canvasToSvg from "canvas-to-svg";
 import { jsPDF } from "jspdf";
 import { svg2pdf } from "svg2pdf.js";
 import { drawCircleCanvas, drawLineCanvas } from "../other/draw.js";
+import { getFileNameWithoutExtension } from "../other/fileFunctions.js";
 
 function triggerDownload(blob, filename) {
   log.info(`Downloading ${filename}`);
@@ -159,7 +160,7 @@ function drawLegendOnPdf(
   return { legendWidth, legendHeight };
 }
 
-export function downloadAsPNG(app, document) {
+export function downloadAsPNG(app, document, graphName) {
   app.renderer.extract
     .image(app.stage, "image/png")
     .then((image) => {
@@ -175,7 +176,7 @@ export function downloadAsPNG(app, document) {
       const dataURL = canvas.toDataURL("image/png", 1.0);
       const link = document.createElement("a");
       link.href = dataURL;
-      link.download = "Graph.png";
+      link.download = getFileNameWithoutExtension(graphName);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -207,7 +208,7 @@ export function downloadAsSVG(
   );
   const svgString = new XMLSerializer().serializeToString(svgElement);
   const blob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
-  triggerDownload(blob, `${graph.name}.svg`);
+  triggerDownload(blob, `${getFileNameWithoutExtension(graph.name)}.svg`);
 }
 
 export function downloadAsPDF(
@@ -240,7 +241,7 @@ export function downloadAsPDF(
   });
 
   svg2pdf(svgElement, pdf, { xOffset: 10, yOffset: 10 }).then(() => {
-    pdf.save(`${graph.name}.pdf`);
+    pdf.save(`${getFileNameWithoutExtension(graph.name)}.pdf`);
   });
 }
 
@@ -256,7 +257,7 @@ export function downloadGraphJson(graph, nodeMap, physics) {
   if (physics) data.physics = physics;
 
   const blob = new Blob([JSON.stringify(data, null, 4)], { type: "application/json" });
-  triggerDownload(blob, graph.name);
+  triggerDownload(blob, getFileNameWithoutExtension(graph.name));
 }
 
 export function downloadObjectAsFile(object, name) {
@@ -267,7 +268,7 @@ export function downloadObjectAsFile(object, name) {
 
 export function downloadCsvFile(csvContent, fileName) {
   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-  triggerDownload(blob, fileName.endsWith(".csv") ? fileName : `${fileName}.csv`);
+  triggerDownload(blob, `${getFileNameWithoutExtension(fileName)}.csv`);
 }
 
 export function downloadLegendPdf(graphName, linkColorscheme, linkAttribsToColorIndices, nodeColorscheme, nodeAttribsToColorIndices, activeMapping) {
@@ -290,5 +291,5 @@ export function downloadLegendPdf(graphName, linkColorscheme, linkAttribsToColor
   });
 
   drawLegendOnPdf(pdf, 0, 0, nodeColorscheme, nodeAttribsToColorIndices, linkColorscheme, linkAttribsToColorIndices, activeMapping);
-  pdf.save(`${graphName}_legend.pdf`);
+  pdf.save(`${getFileNameWithoutExtension(graphName)}_legend.pdf`);
 }

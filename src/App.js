@@ -38,11 +38,11 @@ function App() {
   // merge Proteins function initiation (THIS SHOULD DEFINETLY NOT BE HERE)
   useEffect(() => {
     async function joinedGraph(graphData) {
-      let { graph, file } = await getGraphDB(graphData.activeGraphNames[0]);
+      let graph = await getGraphDB(graphData.activeGraphNames[0]);
 
       let joinedGraphData = graph.data;
       for (let i = 1; i < graphData.activeGraphNames.length; i++) {
-        let { graph, file } = await getGraphDB(graphData.activeGraphNames[i]);
+        graph = await getGraphDB(graphData.activeGraphNames[i]);
         joinedGraphData = joinGraphs(joinedGraphData, graph.data);
       }
 

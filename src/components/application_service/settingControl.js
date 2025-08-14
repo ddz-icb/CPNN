@@ -177,7 +177,7 @@ export function SettingControl({ simulation, app, redraw }) {
       changeCircleBorderColor(graphData.circles, lightTheme.circleBorderColor);
       changeNodeLabelColor(graphData.nodeLabels, lightTheme.textColor);
 
-      downloadAsPNG(app, document);
+      downloadAsPNG(app, document, graphData.graph.name);
 
       changeCircleBorderColor(graphData.circles, appearance.theme.circleBorderColor);
       changeNodeLabelColor(graphData.nodeLabels, appearance.theme.textColor);
