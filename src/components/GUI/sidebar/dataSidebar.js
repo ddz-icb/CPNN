@@ -21,13 +21,13 @@ import {
 } from "./descriptions/dataDescriptions.js";
 import { mergeProteinsDescription } from "./descriptions/filterDescriptions.js";
 import { graphService } from "../../application_service/graphService.js";
-import { useMappingData } from "../../adapters/state/mappingState.js";
+import { useMappingState } from "../../adapters/state/mappingState.js";
 import { mappingService } from "../../application_service/mappingService.js";
 import { useGraphState } from "../../adapters/state/graphState.js";
 
 export function DataSidebar() {
   const { graphState } = useGraphState();
-  const { mappingData } = useMappingData();
+  const { mappingData } = useMappingState();
 
   return (
     <>

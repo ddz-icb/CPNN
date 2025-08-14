@@ -35,7 +35,7 @@ import { useDownload } from "../adapters/state/downloadState.js";
 import { useAppearance } from "../adapters/state/appearanceState.js";
 import { useContainer } from "../adapters/state/containerState.js";
 import { useGraphState } from "../adapters/state/graphState.js";
-import { useMappingData } from "../adapters/state/mappingState.js";
+import { useMappingState } from "../adapters/state/mappingState.js";
 import { useColorschemeState } from "../adapters/state/colorschemeState.js";
 
 export function SettingControl({ simulation, app, redraw }) {
@@ -46,7 +46,7 @@ export function SettingControl({ simulation, app, redraw }) {
   const { colorschemeState, setColorschemeState } = useColorschemeState();
   const { container, setContainer } = useContainer();
   const { graphState, setGraphState } = useGraphState();
-  const { mappingData, setMappingData } = useMappingData();
+  const { mappingState, setMappingState } = useMappingState();
 
   // filter nodes and links //
   useEffect(() => {
@@ -233,7 +233,7 @@ export function SettingControl({ simulation, app, redraw }) {
         colorschemeState.linkAttribsToColorIndices,
         colorschemeState.nodeColorscheme.data,
         colorschemeState.nodeAttribsToColorIndices,
-        mappingData.activeMapping
+        mappingState.activeMapping
       );
     }
   }, [download.legendPdf]);

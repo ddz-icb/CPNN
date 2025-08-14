@@ -8,17 +8,17 @@ export const mappingDataInit = {
   uploadedMappingNames: null,
 };
 
-export const useMappingData = create((set) => ({
-  mappingData: mappingDataInit,
-  setMappingData: (key, value) =>
+export const useMappingState = create((set) => ({
+  mappingState: mappingDataInit,
+  setMappingState: (key, value) =>
     set((state) => {
       if (typeof value === "function") {
-        return { mappingData: value(state.mappingData) };
+        return { mappingState: value(state.mappingState) };
       }
-      return { mappingData: { ...state.mappingData, [key]: value } };
+      return { mappingState: { ...state.mappingState, [key]: value } };
     }),
-  setAllMappingData: (value) =>
+  setAllMappingState: (value) =>
     set(() => ({
-      mappingData: value,
+      mappingState: value,
     })),
 }));

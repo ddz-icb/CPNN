@@ -7,15 +7,15 @@ import * as $3Dmol from "3dmol/build/3Dmol.js";
 import { useAppearance } from "../adapters/state/appearanceState.js";
 import { useContainer } from "../adapters/state/containerState.js";
 import { useTooltipSettings } from "../adapters/state/tooltipState.js";
-import { useMappingData } from "../adapters/state/mappingState.js";
+import { useMappingState } from "../adapters/state/mappingState.js";
 
 export function Tooltips({}) {
   const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
-  const { mappingData, setMappingData } = useMappingData();
+  const { mappingState, setMappingState } = useMappingState();
 
   return (
     <>
-      {tooltipSettings.isClickTooltipActive && <ClickTooltip mapping={mappingData.activeMapping} />}
+      {tooltipSettings.isClickTooltipActive && <ClickTooltip mapping={mappingState.activeMapping} />}
       {!tooltipSettings.isClickTooltipActive && tooltipSettings.isHoverTooltipActive && <HoverTooltip />}
     </>
   );

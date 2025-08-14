@@ -1,9 +1,7 @@
 import log from "../../logger.js";
-import { activeMappingInit, useMappingData } from "../adapters/state/mappingState.js";
+import { activeMappingInit, useMappingState } from "../adapters/state/mappingState.js";
 import { createMapping, deleteMapping, loadMappingNames, getMapping } from "../domain_service/mappingManager.js";
 import { errorService } from "./errorService.js";
-import { graphService } from "./graphService.js";
-import { resetService } from "./resetService.js";
 
 export const mappingService = {
   async handleLoadMappingNames() {
@@ -82,16 +80,16 @@ export const mappingService = {
   },
   // ===== Generic getter/setter =====
   get(key) {
-    return useMappingData.getState().mappingData[key];
+    return useMappingState.getState().mappingState[key];
   },
   set(key, value) {
-    useMappingData.getState().setMappingData(key, value);
+    useMappingState.getState().setMappingState(key, value);
   },
   getAll() {
-    return useMappingData.getState().mappingData;
+    return useMappingState.getState().mappingState;
   },
   setAll(value) {
-    useMappingData.getState().setAllMappingData(value);
+    useMappingState.getState().setAllMappingState(value);
   },
 
   // ===== Specific getters/setters =====

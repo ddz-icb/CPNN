@@ -19,7 +19,7 @@ import { useFilter } from "./components/adapters/state/filterState.js";
 import { useAppearance } from "./components/adapters/state/appearanceState.js";
 import { useError } from "./components/adapters/state/errorState.js";
 import { resetService } from "./components/application_service/resetService.js";
-import { useMappingData } from "./components/adapters/state/mappingState.js";
+import { useMappingState } from "./components/adapters/state/mappingState.js";
 import { useColorschemeState } from "./components/adapters/state/colorschemeState.js";
 import { Init } from "./components/application_service/initService.js";
 import { useGraphState } from "./components/adapters/state/graphState.js";
@@ -30,7 +30,7 @@ function App() {
   const { appearance, setAppearance } = useAppearance();
   const { colorschemeState, setColorschemeState } = useColorschemeState();
   const { graphState, setGraphState } = useGraphState();
-  const { mappingData, setMappingData } = useMappingData();
+  const { mappingState, setMappingState } = useMappingState();
   const { error, setError, clearError } = useError();
 
   // reloads graph //
@@ -38,7 +38,7 @@ function App() {
     async function reloadGraph() {
       let graph = await graphService.getJoinedGraph(graphService.getActiveGraphNames());
       graph.data = mergeSameProteins(graph.data, graphState.mergeProteins);
-      graph.data = applyNodeMapping(graph.data, mappingData.activeMapping?.data);
+      graph.data = applyNodeMapping(graph.data, mappingState.activeMapping?.data);
       setGraphState("originGraph", graph);
       setGraphState("activeGraphNames", graphState.activeGraphNames);
       setGraphState("graphIsPreprocessed", false);
@@ -54,7 +54,7 @@ function App() {
       setError("Error loading graph");
       log.error("Error loading graph:", error);
     }
-  }, [graphState.mergeProteins, mappingData.activeMapping, graphService.getActiveGraphNames()]);
+  }, [graphState.mergeProteins, mappingState.activeMapping, graphService.getActiveGraphNames()]);
 
   // forwards graph to forceGraph component //
   useEffect(() => {
