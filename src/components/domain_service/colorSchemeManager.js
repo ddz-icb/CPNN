@@ -19,12 +19,12 @@ export async function getColorscheme(colorschemeName) {
 
 export async function createColorscheme(file) {
   const colorscheme = await parseColorschemeFile(file);
-  await createColorschemeDB(colorscheme.data, colorscheme.name);
+  await createColorschemeDB(colorscheme);
   return colorscheme;
 }
 
 export async function createColorschemeIfNotExists(colorscheme) {
-  await createColorschemeIfNotExistsDB(colorscheme.data, colorscheme.name);
+  await createColorschemeIfNotExistsDB(colorscheme);
 }
 
 export async function deleteColorscheme(colorschemeName) {

@@ -23,35 +23,35 @@ export async function getColorschemeDB(colorschemeName) {
   return colorscheme;
 }
 
-export async function createColorschemeDB(colorschemeData, colorschemeName) {
+export async function createColorschemeDB(colorscheme) {
   try {
-    const colorscheme = await getColorschemeByNameDB(colorschemeName);
-    if (colorscheme) throw new Error("Colorscheme already exists");
+    const existingColorscheme = await getColorschemeByNameDB(colorscheme.name);
+    if (existingColorscheme) throw new Error("Colorscheme already exists");
 
     const id = await db.uploadedFiles.add({
-      name: colorschemeName,
-      data: colorschemeData,
+      name: colorscheme.name,
+      data: colorscheme.data,
     });
-    log.info(`File ${colorschemeName} successfully added. Got id ${id}`);
+    log.info(`File ${colorscheme.name} successfully added. Got id ${id}`);
     return id;
   } catch (error) {
-    throw new Error(`Failed to add ${colorschemeName}: ${error}`);
+    throw new Error(`Failed to add ${colorscheme.name}: ${error}`);
   }
 }
 
-export async function createColorschemeIfNotExistsDB(colorschemeData, colorschemeName) {
+export async function createColorschemeIfNotExistsDB(colorscheme) {
   try {
-    const colorscheme = await getColorschemeByNameDB(colorschemeName);
-    if (colorscheme) {
+    const existingColorscheme = await getColorschemeByNameDB(colorscheme.name);
+    if (existingColorscheme) {
       log.info("Colorscheme already exists");
-      return colorscheme.id;
+      return existingColorscheme.id;
     }
 
     const id = await db.uploadedFiles.add({
-      name: colorschemeName,
-      data: colorschemeData,
+      name: colorscheme.name,
+      data: colorscheme.data,
     });
-    log.info(`File ${colorschemeName} successfully added. Got id ${id}`);
+    log.info(`File ${colorscheme.name} successfully added. Got id ${id}`);
     return id;
   } catch (error) {
     throw new Error(`Failed to add file if not exists: ${error}`);
