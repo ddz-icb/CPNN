@@ -13,7 +13,7 @@ export async function getMapping(mappingName) {
 
 export async function createMapping(file) {
   const mapping = await parseMappingFile(file);
-  await createMappingDB(mapping.data, mapping.name);
+  await createMappingDB(mapping);
   return mapping;
 }
 

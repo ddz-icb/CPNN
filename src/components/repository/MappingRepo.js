@@ -22,35 +22,35 @@ export async function getMappingDB(filename) {
   return mapping;
 }
 
-export async function createMappingDB(mappingData, mappingName) {
+export async function createMappingDB(mapping) {
   try {
-    const mapping = await getMappingByNameDB(mappingName);
-    if (mapping) throw new Error("Mapping already exists");
+    const existingMapping = await getMappingByNameDB(mapping.name);
+    if (existingMapping) throw new Error("Mapping already exists");
 
     const id = await db.uploadedFiles.add({
-      name: mappingName,
-      data: mappingData,
+      name: mapping.name,
+      data: mapping.data,
     });
-    log.info(`File ${mappingName} successfully added. Got id ${id}`);
+    log.info(`File ${mapping.name} successfully added. Got id ${id}`);
     return id;
   } catch (error) {
-    throw new Error(`Failed to add ${mappingName}: ${error}`);
+    throw new Error(`Failed to add ${mapping.name}: ${error}`);
   }
 }
 
-export async function createMappingIfNotExistsDB(mappingData, mappingName) {
+export async function createMappingIfNotExistsDB(mapping) {
   try {
-    const mapping = await getMappingByNameDB(mappingName);
-    if (mapping) {
+    const existingMapping = await getMappingByNameDB(mapping.name);
+    if (existingMapping) {
       log.info("Mapping already exists");
-      return mapping.id;
+      return existingMapping.id;
     }
 
     const id = await db.uploadedFiles.add({
-      name: mappingName,
-      data: mappingData,
+      name: mapping.name,
+      data: mapping.data,
     });
-    log.info(`File ${mappingName} successfully added. Got id ${id}`);
+    log.info(`File ${mapping.name} successfully added. Got id ${id}`);
     return id;
   } catch (error) {
     throw new Error(`Failed to add mapping if not exists: ${error}`);
