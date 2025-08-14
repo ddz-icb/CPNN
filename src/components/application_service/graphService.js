@@ -122,8 +122,13 @@ export const graphService = {
       return;
     }
     if (this.getActiveGraphNames()?.includes(filename)) {
-      errorService.setError("Cannot remove selected graph as it's still active");
-      log.error("Cannot remove selected graph as it's still active");
+      errorService.setError("Cannot delete selected graph as it's still active");
+      log.error("Cannot delete selected graph as it's still active");
+      return;
+    }
+    if (filename === exampleGraphJson.name) {
+      errorService.setError("Cannot delete default graph");
+      log.error("Cannot delete default graph");
       return;
     }
     log.info("Deleting files with name", filename);

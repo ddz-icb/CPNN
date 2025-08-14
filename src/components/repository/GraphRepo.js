@@ -59,11 +59,6 @@ export async function createGraphIfNotExistsDB(graph) {
 }
 
 export async function deleteGraphDB(graphName) {
-  // this has to be moved into app service
-  if (graphName === exampleGraphJson.name) {
-    throw new Error(`The example graph cannot be removed`);
-  }
-
   try {
     const graph = await getGraphByNameDB(graphName);
     if (!graph) {
