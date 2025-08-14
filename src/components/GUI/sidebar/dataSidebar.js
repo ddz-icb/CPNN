@@ -27,15 +27,15 @@ import { useGraphState } from "../../adapters/state/graphState.js";
 
 export function DataSidebar() {
   const { graphState } = useGraphState();
-  const { mappingData } = useMappingState();
+  const { mappingState } = useMappingState();
 
   return (
     <>
       <TopDataButtons />
       <ActiveGraphFiles activeGraphNames={graphState.activeGraphNames} />
       <UploadedGraphFiles uploadedGraphNames={graphState.uploadedGraphNames} />
-      <ActiveMapping activeMapping={mappingData.activeMapping} />
-      <UploadedMappings uploadedMappingNames={mappingData.uploadedMappingNames} />
+      <ActiveMapping activeMapping={mappingState.activeMapping} />
+      <UploadedMappings uploadedMappingNames={mappingState.uploadedMappingNames} />
     </>
   );
 }

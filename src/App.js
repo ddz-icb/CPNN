@@ -22,14 +22,12 @@ import { resetService } from "./components/application_service/resetService.js";
 import { useMappingState } from "./components/adapters/state/mappingState.js";
 import { useColorschemeState } from "./components/adapters/state/colorschemeState.js";
 import { Init } from "./components/application_service/initService.js";
-import { useGraphState } from "./components/adapters/state/graphState.js";
 import { graphService } from "./components/application_service/graphService.js";
 
 function App() {
   const { setFilter, setAllFilter } = useFilter();
   const { appearance, setAppearance } = useAppearance();
   const { colorschemeState, setColorschemeState } = useColorschemeState();
-  const { graphState, setGraphState } = useGraphState();
   const { mappingState, setMappingState } = useMappingState();
   const { error, setError, clearError } = useError();
 
@@ -37,15 +35,15 @@ function App() {
   useEffect(() => {
     async function reloadGraph() {
       let graph = await graphService.getJoinedGraph(graphService.getActiveGraphNames());
-      graph.data = mergeSameProteins(graph.data, graphState.mergeProteins);
+      graph.data = mergeSameProteins(graph.data, graphService.getMergeProteins());
       graph.data = applyNodeMapping(graph.data, mappingState.activeMapping?.data);
-      setGraphState("originGraph", graph);
-      setGraphState("activeGraphNames", graphState.activeGraphNames);
-      setGraphState("graphIsPreprocessed", false);
+      graphService.setOriginGraph(graph);
+      graphService.setActiveGraphNames(graphService.getActiveGraphNames());
+      graphService.setGraphIsPreprocessed(false);
       resetService.simulationReset();
     }
 
-    if (!graphState.activeGraphNames || !graphService.getActiveGraphNames()) return;
+    if (!graphService.getActiveGraphNames()) return;
     log.info("Reloading graph");
 
     try {
@@ -54,21 +52,21 @@ function App() {
       setError("Error loading graph");
       log.error("Error loading graph:", error);
     }
-  }, [graphState.mergeProteins, mappingState.activeMapping, graphService.getActiveGraphNames()]);
+  }, [graphService.getMergeProteins(), mappingState.activeMapping, graphService.getActiveGraphNames()]);
 
   // forwards graph to forceGraph component //
   useEffect(() => {
-    if (!graphState.originGraph || !graphState.activeGraphNames || graphState.graphIsPreprocessed) return;
+    if (!graphService.getOriginGraph() || !graphService.getActiveGraphNames() || graphService.getGraphIsPreprocessed()) return;
     log.info("Modifying graph and forwarding it to the simulation component");
 
-    let newGraph = structuredClone(graphState.originGraph);
+    let newGraph = structuredClone(graphService.getOriginGraph());
 
     const { minWeight, maxWeight } = getLinkWeightMinMax(newGraph.data);
     if (minWeight != Infinity) {
-      setGraphState("linkWeightMin", minWeight);
+      graphService.setLinkWeightMin(minWeight);
     }
     if (maxWeight != -Infinity) {
-      setGraphState("linkWeightMax", maxWeight);
+      graphService.setLinkWeightMax(maxWeight);
     }
 
     if (minWeight != Infinity && minWeight > linkThresholdInit) {
@@ -82,10 +80,10 @@ function App() {
     const linkAttribsToColorIndices = getLinkAttribsToColorIndices(newGraph.data);
     setColorschemeState("linkAttribsToColorIndices", linkAttribsToColorIndices);
 
-    setGraphState("originGraph", newGraph);
-    setGraphState("graph", newGraph);
-    setGraphState("graphIsPreprocessed", true);
-  }, [graphState.originGraph, graphState.activeGraphNames]);
+    graphService.setOriginGraph(newGraph);
+    graphService.setGraph(newGraph);
+    graphService.setGraphIsPreprocessed(true);
+  }, [graphService.getOriginGraph(), graphService.getActiveGraphNames()]);
 
   return (
     <>
