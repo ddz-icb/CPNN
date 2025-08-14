@@ -48,14 +48,14 @@ export const colorschemeInit = {
   nodeAttribsToColorIndices: nodeAttribsToColorIndicesInit,
 };
 
-export const useColorscheme = create((set) => ({
-  colorscheme: colorschemeInit,
-  setColorscheme: (key, value) =>
+export const useColorschemeState = create((set) => ({
+  colorschemeState: colorschemeInit,
+  setColorschemeState: (key, value) =>
     set((state) => ({
-      colorscheme: { ...state.colorscheme, [key]: value },
+      colorschemeState: { ...state.colorschemeState, [key]: value },
     })),
-  setAllColorscheme: (value) =>
+  setAllColorschemeState: (value) =>
     set(() => ({
-      colorscheme: value,
+      colorschemeState: value,
     })),
 }));

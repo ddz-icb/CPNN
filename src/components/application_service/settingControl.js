@@ -36,14 +36,14 @@ import { useAppearance } from "../adapters/state/appearanceState.js";
 import { useContainer } from "../adapters/state/containerState.js";
 import { useGraphState } from "../adapters/state/graphState.js";
 import { useMappingData } from "../adapters/state/mappingState.js";
-import { useColorscheme } from "../adapters/state/colorschemeState.js";
+import { useColorschemeState } from "../adapters/state/colorschemeState.js";
 
 export function SettingControl({ simulation, app, redraw }) {
   const { physics, setPhysics } = usePhysics();
   const { filter, setFilter } = useFilter();
   const { download, setDownload } = useDownload();
   const { appearance, setAppearance } = useAppearance();
-  const { colorscheme, setColorscheme } = useColorscheme();
+  const { colorschemeState, setColorschemeState } = useColorschemeState();
   const { container, setContainer } = useContainer();
   const { graphState, setGraphState } = useGraphState();
   const { mappingData, setMappingData } = useMappingData();
@@ -192,12 +192,12 @@ export function SettingControl({ simulation, app, redraw }) {
       downloadAsSVG(
         graphState.graph,
         appearance.linkWidth,
-        colorscheme.linkColorscheme.data,
-        colorscheme.linkAttribsToColorIndices,
+        colorschemeState.linkColorscheme.data,
+        colorschemeState.linkAttribsToColorIndices,
         themeInit.circleBorderColor,
         themeInit.textColor,
-        colorscheme.nodeColorscheme.data,
-        colorscheme.nodeAttribsToColorIndices,
+        colorschemeState.nodeColorscheme.data,
+        colorschemeState.nodeAttribsToColorIndices,
         graphState.nodeMap
       );
     }
@@ -211,12 +211,12 @@ export function SettingControl({ simulation, app, redraw }) {
       downloadAsPDF(
         graphState.graph,
         appearance.linkWidth,
-        colorscheme.linkColorscheme.data,
-        colorscheme.linkAttribsToColorIndices,
+        colorschemeState.linkColorscheme.data,
+        colorschemeState.linkAttribsToColorIndices,
         themeInit.circleBorderColor,
         themeInit.textColor,
-        colorscheme.nodeColorscheme.data,
-        colorscheme.nodeAttribsToColorIndices,
+        colorschemeState.nodeColorscheme.data,
+        colorschemeState.nodeAttribsToColorIndices,
         graphState.nodeMap
       );
     }
@@ -229,10 +229,10 @@ export function SettingControl({ simulation, app, redraw }) {
 
       downloadLegendPdf(
         graphState.graph.name,
-        colorscheme.linkColorscheme.data,
-        colorscheme.linkAttribsToColorIndices,
-        colorscheme.nodeColorscheme.data,
-        colorscheme.nodeAttribsToColorIndices,
+        colorschemeState.linkColorscheme.data,
+        colorschemeState.linkAttribsToColorIndices,
+        colorschemeState.nodeColorscheme.data,
+        colorschemeState.nodeAttribsToColorIndices,
         mappingData.activeMapping
       );
     }
@@ -256,10 +256,10 @@ export function SettingControl({ simulation, app, redraw }) {
       graphState.circles,
       graphState.nodeMap,
       appearance.theme.circleBorderColor,
-      colorscheme.nodeColorscheme.data,
-      colorscheme.nodeAttribsToColorIndices
+      colorschemeState.nodeColorscheme.data,
+      colorschemeState.nodeAttribsToColorIndices
     );
-  }, [colorscheme.nodeColorscheme, colorscheme.nodeAttribsToColorIndices]);
+  }, [colorschemeState.nodeColorscheme, colorschemeState.nodeAttribsToColorIndices]);
 
   // switch link color scheme
   useEffect(() => {
@@ -268,7 +268,7 @@ export function SettingControl({ simulation, app, redraw }) {
 
     simulation.on("tick.redraw", () => redraw(graphState.graph.data));
     redraw(graphState.graph.data);
-  }, [colorscheme.linkColorscheme, colorscheme.linkAttribsToColorIndices]);
+  }, [colorschemeState.linkColorscheme, colorschemeState.linkAttribsToColorIndices]);
 
   // change link width
   useEffect(() => {

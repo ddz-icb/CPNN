@@ -15,12 +15,12 @@ import { useContainer } from "../adapters/state/containerState.js";
 import { tooltipInit, useTooltipSettings } from "../adapters/state/tooltipState.js";
 import { useError } from "../adapters/state/errorState.js";
 import { useReset } from "../adapters/state/resetState.js";
-import { useColorscheme } from "../adapters/state/colorschemeState.js";
+import { useColorschemeState } from "../adapters/state/colorschemeState.js";
 import { tooltipService } from "./tooltipService.js";
 
 export function ForceGraph() {
   const { appearance, setAppearance } = useAppearance();
-  const { colorscheme, setColorscheme } = useColorscheme();
+  const { colorschemeState, setColorschemeState } = useColorschemeState();
   const { graphState, setGraphState, setAllGraphState } = useGraphState();
   const { container, setContainer } = useContainer();
   const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
@@ -99,7 +99,15 @@ export function ForceGraph() {
 
   // set stage //
   useEffect(() => {
-    if (graphState.circles || !app || !graphState.graph || !container.width || !container.height || !appearance.theme || !colorscheme.nodeColorscheme)
+    if (
+      graphState.circles ||
+      !app ||
+      !graphState.graph ||
+      !container.width ||
+      !container.height ||
+      !appearance.theme ||
+      !colorschemeState.nodeColorscheme
+    )
       return;
     log.info("Setting stage");
 
@@ -114,7 +122,13 @@ export function ForceGraph() {
     const nodeMap = {};
     for (const node of graphState.graph.data.nodes) {
       let circle = new PIXI.Graphics();
-      circle = drawCircle(circle, node, appearance.theme.circleBorderColor, colorscheme.nodeColorscheme.data, colorscheme.nodeAttribsToColorIndices);
+      circle = drawCircle(
+        circle,
+        node,
+        appearance.theme.circleBorderColor,
+        colorschemeState.nodeColorscheme.data,
+        colorschemeState.nodeAttribsToColorIndices
+      );
       circle.id = node.id;
       circle.interactive = true;
       circle.buttonMode = true;
@@ -151,7 +165,7 @@ export function ForceGraph() {
       nodeMap: nodeMap,
       nodeLabels: newNodeLabels,
     }));
-  }, [app, graphState.graph, colorscheme.nodeColorscheme, container.width, container.height, appearance.theme]);
+  }, [app, graphState.graph, colorschemeState.nodeColorscheme, container.width, container.height, appearance.theme]);
 
   // init simulation //
   useEffect(() => {
@@ -220,7 +234,7 @@ export function ForceGraph() {
     graphState.lines.clear();
 
     for (const link of graphData.links) {
-      drawLine(graphState.lines, link, appearance.linkWidth, colorscheme.linkColorscheme.data, colorscheme.linkAttribsToColorIndices);
+      drawLine(graphState.lines, link, appearance.linkWidth, colorschemeState.linkColorscheme.data, colorschemeState.linkAttribsToColorIndices);
     }
 
     if (appearance.showNodeLabels) {

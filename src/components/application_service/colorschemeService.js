@@ -1,5 +1,11 @@
 import log from "../../logger.js";
-import { defaultColorschemeNames, ibmAntiBlindness, manyColors, okabe_ItoAntiBlindness, useColorscheme } from "../adapters/state/colorschemeState.js";
+import {
+  defaultColorschemeNames,
+  ibmAntiBlindness,
+  manyColors,
+  okabe_ItoAntiBlindness,
+  useColorschemeState,
+} from "../adapters/state/colorschemeState.js";
 import {
   createColorscheme,
   deleteColorscheme,
@@ -107,16 +113,16 @@ export const colorschemeService = {
   },
   // ===== Generic getter/setter =====
   get(key) {
-    return useColorscheme.getState().colorscheme[key];
+    return useColorschemeState.getState().colorschemeState[key];
   },
   set(key, value) {
-    useColorscheme.getState().setColorscheme(key, value);
+    useColorschemeState.getState().setColorschemeState(key, value);
   },
   getAll() {
-    return useColorscheme.getState().colorscheme;
+    return useColorschemeState.getState().colorschemeState;
   },
   setAll(value) {
-    useColorscheme.getState().setAllColorscheme(value);
+    useColorschemeState.getState().setAllColorschemeState(value);
   },
 
   // ===== Specific getters/setters =====

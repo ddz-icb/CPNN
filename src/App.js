@@ -7,23 +7,20 @@ import { Sidebar } from "./components/gui/sidebar/sidebar.js";
 import { HeaderBar } from "./components/gui/headerbar/headerbar.js";
 import {
   applyNodeMapping,
-  joinGraphName,
   getLinkAttribsToColorIndices,
   getLinkWeightMinMax,
   getNodeAttribsToColorIndices,
-  joinGraphs,
   mergeSameProteins,
 } from "./components/application_service/graphCalculations.js";
 
 import { Error } from "./components/gui/error.js";
-import { getGraphDB } from "./components/repository/graphRepo.js";
 import { linkThresholdInit } from "./components/adapters/state/filterState.js";
 import { useFilter } from "./components/adapters/state/filterState.js";
 import { useAppearance } from "./components/adapters/state/appearanceState.js";
 import { useError } from "./components/adapters/state/errorState.js";
 import { resetService } from "./components/application_service/resetService.js";
 import { useMappingData } from "./components/adapters/state/mappingState.js";
-import { useColorscheme } from "./components/adapters/state/colorschemeState.js";
+import { useColorschemeState } from "./components/adapters/state/colorschemeState.js";
 import { Init } from "./components/application_service/initService.js";
 import { useGraphState } from "./components/adapters/state/graphState.js";
 import { graphService } from "./components/application_service/graphService.js";
@@ -31,7 +28,7 @@ import { graphService } from "./components/application_service/graphService.js";
 function App() {
   const { setFilter, setAllFilter } = useFilter();
   const { appearance, setAppearance } = useAppearance();
-  const { colorscheme, setColorscheme } = useColorscheme();
+  const { colorschemeState, setColorschemeState } = useColorschemeState();
   const { graphState, setGraphState } = useGraphState();
   const { mappingData, setMappingData } = useMappingData();
   const { error, setError, clearError } = useError();
@@ -80,10 +77,10 @@ function App() {
     }
 
     const nodeAttribsToColorIndices = getNodeAttribsToColorIndices(newGraph.data);
-    setColorscheme("nodeAttribsToColorIndices", nodeAttribsToColorIndices);
+    setColorschemeState("nodeAttribsToColorIndices", nodeAttribsToColorIndices);
 
     const linkAttribsToColorIndices = getLinkAttribsToColorIndices(newGraph.data);
-    setColorscheme("linkAttribsToColorIndices", linkAttribsToColorIndices);
+    setColorschemeState("linkAttribsToColorIndices", linkAttribsToColorIndices);
 
     setGraphState("originGraph", newGraph);
     setGraphState("graph", newGraph);
