@@ -20,7 +20,7 @@ export async function parseGraphFile(
 
   try {
     const fileContent = await parseFileAsText(file);
-    const graph = await parseGraph(
+    const graphData = await parseGraph(
       file.name,
       fileContent,
       takeAbs,
@@ -30,9 +30,9 @@ export async function parseGraphFile(
       takeSpearmanCoefficient,
       mergeSameProtein
     );
+    const graph = { name: file.name, data: graphData };
     verifyGraph(graph);
-
-    return { name: file.name, data: JSON.stringify(graph) };
+    return graph;
   } catch (error) {
     throw new Error(`${error.message}`);
   }
@@ -41,12 +41,13 @@ export async function parseGraphFile(
 async function parseGraph(name, content, takeAbs, minCorrForEdge, minCompSizeForNode, maxCompSizeForNode, takeSpearmanCoefficient, mergeSameProtein) {
   const fileExtension = name.split(".").pop();
 
-  let graph = null;
+  let graphData = null;
 
   if (fileExtension === "json") {
-    graph = JSON.parse(content);
+    graphData = JSON.parse(content);
   } else if (fileExtension === "csv" || fileExtension === "tsv") {
     var fileData = parseGraphCSVorTSV(content);
+
     if (!fileData || !fileData.header) return null;
 
     fileData.header = fileData.header.map((value) => (typeof value === "string" ? value : String(value)));
@@ -68,10 +69,10 @@ async function parseGraph(name, content, takeAbs, minCorrForEdge, minCompSizeFor
 
     const linkAttrib = name.split(".")[0];
 
-    graph = { nodes: [], links: [] };
+    graphData = { nodes: [], links: [] };
 
     for (let i = 0; i < fileData.header.length; i++) {
-      graph.nodes.push({
+      graphData.nodes.push({
         id: fileData.header[i],
         groups: [],
       });
@@ -79,7 +80,7 @@ async function parseGraph(name, content, takeAbs, minCorrForEdge, minCompSizeFor
 
     for (let i = 0; i < fileData.header.length; i++) {
       for (let j = 0; j < i; j++) {
-        graph.links.push({
+        graphData.links.push({
           source: fileData.header[i],
           target: fileData.header[j],
           weights: [fileData.data[i][j]],
@@ -91,22 +92,22 @@ async function parseGraph(name, content, takeAbs, minCorrForEdge, minCompSizeFor
     throw new Error(`File format not recognized`);
   }
 
-  graph = filterByThreshold(graph, minCorrForEdge);
-  graph = filterMinCompSize(graph, minCompSizeForNode);
-  graph = filterMaxCompSize(graph, maxCompSizeForNode);
-  graph = filterNodesExist(graph);
+  graphData = filterByThreshold(graphData, minCorrForEdge);
+  graphData = filterMinCompSize(graphData, minCompSizeForNode);
+  graphData = filterMaxCompSize(graphData, maxCompSizeForNode);
+  graphData = filterNodesExist(graphData);
 
   if (takeAbs) {
-    graph.links.forEach((link) => {
+    graphData.links.forEach((link) => {
       link.weights = link.weights.map((weight) => Math.abs(parseFloat(weight)));
     });
   } else {
-    graph.links.forEach((link) => {
+    graphData.links.forEach((link) => {
       link.weights = link.weights.filter((weight) => weight > 0);
     });
   }
 
-  graph.links = graph.links
+  graphData.links = graphData.links
     .map((link) => {
       const filteredWeights = link.weights.filter((weight) => weight !== 0);
       const filteredAttribs = link.attribs.filter((_, index) => link.weights[index] !== 0);
@@ -120,17 +121,17 @@ async function parseGraph(name, content, takeAbs, minCorrForEdge, minCompSizeFor
     .filter((link) => link.weights.length > 0);
 
   if (mergeSameProtein) {
-    graph = mergeSameProteins(graph);
+    graphData = mergeSameProteins(graphData);
   }
 
-  graph.nodes.sort((a, b) => a.id.localeCompare(b.id));
-  graph.links.sort((a, b) => {
+  graphData.nodes.sort((a, b) => a.id.localeCompare(b.id));
+  graphData.links.sort((a, b) => {
     const sourceComparison = a.source.localeCompare(b.source);
     if (sourceComparison !== 0) return sourceComparison;
     return a.target.localeCompare(b.target);
   });
 
-  return graph;
+  return graphData;
 }
 
 function parseGraphCSVorTSV(content) {
@@ -155,11 +156,11 @@ function parseGraphCSVorTSV(content) {
 }
 
 function verifyGraph(graph) {
-  if (!graph || typeof graph !== "object") {
+  if (!graph.data || typeof graph.data !== "object") {
     throw new Error("Error while parsing the graph file. It does not have the right format.");
   }
 
-  const { nodes, links } = graph;
+  const { nodes, links } = graph.data;
   if (!Array.isArray(nodes) || !Array.isArray(links)) {
     throw new Error("Graph file must contain 'nodes' and 'links' arrays.");
   }
@@ -188,16 +189,17 @@ function verifyGraph(graph) {
     }
   });
 
-  if (graph.physics !== undefined) {
-    if (typeof graph.physics !== "object" || Array.isArray(graph.physics)) {
+  if (graph.data.physics !== undefined) {
+    const physics = graph.data.physics;
+    if (typeof physics !== "object" || Array.isArray(physics)) {
       throw new Error("The 'physics' property must be an object.");
     }
     const expectedTypes = expectedPhysicTypes;
 
-    for (const key in graph.physics) {
+    for (const key in physics) {
       if (expectedTypes.hasOwnProperty(key)) {
-        if (typeof graph.physics[key] !== expectedTypes[key]) {
-          throw new Error(`Invalid type for physics.${key}: expected ${expectedTypes[key]}, got ${typeof graph.physics[key]}.`);
+        if (typeof physics[key] !== expectedTypes[key]) {
+          throw new Error(`Invalid type for physics.${key}: expected ${expectedTypes[key]}, got ${typeof physics[key]}.`);
         }
       }
     }

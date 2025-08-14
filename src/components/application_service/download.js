@@ -17,7 +17,7 @@ function triggerDownload(blob, filename) {
 }
 
 function createGraphSvgElement(
-  graph,
+  graphDataNEW,
   nodeMap,
   linkWidth,
   linkColorscheme,
@@ -33,7 +33,7 @@ function createGraphSvgElement(
     maxY = -Infinity;
   const tempCtx = document.createElement("canvas").getContext("2d");
 
-  for (const node of graph.nodes) {
+  for (const node of graphDataNEW.nodes) {
     const { circle, nodeLabel } = nodeMap[node.id];
     if (nodeLabel?.visible) tempCtx.font = `${nodeLabel._fontSize || 12}px sans-serif`;
     const textWidth = nodeLabel?.visible ? tempCtx.measureText(nodeLabel.text).width : 0;
@@ -55,11 +55,11 @@ function createGraphSvgElement(
   svgElement.setAttribute("width", width);
   svgElement.setAttribute("height", height);
 
-  for (const link of graph.links) {
+  for (const link of graphDataNEW.links) {
     drawLineCanvas(ctx, link, linkWidth, linkColorscheme, linkAttribsToColorIndices);
   }
 
-  for (const node of graph.nodes) {
+  for (const node of graphDataNEW.nodes) {
     const { circle, nodeLabel } = nodeMap[node.id];
     drawCircleCanvas(ctx, node, circle, circleBorderColor, nodeColorscheme, nodeAttribsToColorIndices);
     if (nodeLabel?.visible) {
@@ -184,7 +184,6 @@ export function downloadAsPNG(app, document) {
 }
 
 export function downloadAsSVG(
-  document,
   graph,
   linkWidth,
   linkColorscheme,
@@ -196,7 +195,7 @@ export function downloadAsSVG(
   nodeMap
 ) {
   const { svgElement } = createGraphSvgElement(
-    graph,
+    graph.data,
     nodeMap,
     linkWidth,
     linkColorscheme,
@@ -208,7 +207,7 @@ export function downloadAsSVG(
   );
   const svgString = new XMLSerializer().serializeToString(svgElement);
   const blob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
-  triggerDownload(blob, "Graph.svg");
+  triggerDownload(blob, `${graph.name}.svg`);
 }
 
 export function downloadAsPDF(
@@ -223,7 +222,7 @@ export function downloadAsPDF(
   nodeMap
 ) {
   const { svgElement, width, height } = createGraphSvgElement(
-    graph,
+    graph.data,
     nodeMap,
     linkWidth,
     linkColorscheme,
@@ -241,23 +240,23 @@ export function downloadAsPDF(
   });
 
   svg2pdf(svgElement, pdf, { xOffset: 10, yOffset: 10 }).then(() => {
-    pdf.save("Graph.pdf");
+    pdf.save(`${graph.name}.pdf`);
   });
 }
 
-export function downloadGraphJson(graph, filename, nodeMap, physics) {
+export function downloadGraphJson(graph, nodeMap, physics) {
   const convertLinks = (links) => links.map(({ source, target, ...rest }) => ({ ...rest, source: source.id, target: target.id }));
 
-  let nodes = graph.nodes;
+  let nodes = graph.data.nodes;
   if (nodeMap) {
-    nodes = graph.nodes.map((node) => ({ ...node, x: nodeMap[node.id].circle.x, y: nodeMap[node.id].circle.y }));
+    nodes = graph.data.nodes.map((node) => ({ ...node, x: nodeMap[node.id].circle.x, y: nodeMap[node.id].circle.y }));
   }
 
-  const data = { nodes, links: convertLinks(graph.links) };
+  const data = { nodes, links: convertLinks(graph.data.links) };
   if (physics) data.physics = physics;
 
   const blob = new Blob([JSON.stringify(data, null, 4)], { type: "application/json" });
-  triggerDownload(blob, filename);
+  triggerDownload(blob, graph.name);
 }
 
 export function downloadObjectAsFile(object, name) {
@@ -271,7 +270,7 @@ export function downloadCsvFile(csvContent, fileName) {
   triggerDownload(blob, fileName.endsWith(".csv") ? fileName : `${fileName}.csv`);
 }
 
-export function downloadLegendPdf(linkColorscheme, linkAttribsToColorIndices, nodeColorscheme, nodeAttribsToColorIndices, activeMapping) {
+export function downloadLegendPdf(graphName, linkColorscheme, linkAttribsToColorIndices, nodeColorscheme, nodeAttribsToColorIndices, activeMapping) {
   const tempPdf = new jsPDF();
   const { legendWidth, legendHeight } = drawLegendOnPdf(
     tempPdf,
@@ -291,5 +290,5 @@ export function downloadLegendPdf(linkColorscheme, linkAttribsToColorIndices, no
   });
 
   drawLegendOnPdf(pdf, 0, 0, nodeColorscheme, nodeAttribsToColorIndices, linkColorscheme, linkAttribsToColorIndices, activeMapping);
-  pdf.save("Graph_Legend.pdf");
+  pdf.save(`${graphName}_legend.pdf`);
 }

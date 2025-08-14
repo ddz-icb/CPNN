@@ -1,15 +1,10 @@
 import log from "../../logger.js";
 import { useGraphData } from "../adapters/state/graphState.js";
-import {
-  addActiveGraph,
-  createGraph,
-  deleteGraph,
-  loadGraphNames,
-  removeActiveGraph,
-  selectGraph,
-  setInitGraph,
-} from "../domain_service/graphManager.js";
+import { exampleGraphJson } from "../assets/exampleGraphJSON.js";
+import { createGraph, deleteGraph, loadGraphNames, getGraph } from "../domain_service/graphManager.js";
+import { createGraphIfNotExistsDB } from "../repository/graphRepo.js";
 import { errorService } from "./errorService.js";
+import { getJoinedGraphName, joinGraphs } from "./graphCalculations.js";
 import { resetService } from "./resetService.js";
 
 export const graphService = {
@@ -33,7 +28,7 @@ export const graphService = {
     log.info("Adding new graph file");
 
     try {
-      const graphObject = await createGraph(
+      const graph = await createGraph(
         file,
         takeAbs,
         minCorrForEdge,
@@ -58,11 +53,11 @@ export const graphService = {
     log.info("Replacing graph");
 
     try {
-      const graphObject = await selectGraph(filename); // graphObject is so far just the content!!!!!!!!!!!!!!!
-      this.setOriginGraph(graphObject);
+      const graph = await getGraph(filename);
+      this.setOriginGraph(graph);
       this.setActiveGraphNames([filename]);
-      this.setGraphIsPreprocessed(false);
       this.setMergeProteins(false);
+      this.setGraphIsPreprocessed(false);
       resetService.simulationReset();
     } catch (error) {
       errorService.setError(error.message);
@@ -83,10 +78,13 @@ export const graphService = {
     log.info("Adding file with name: ", filename);
 
     try {
-      this.setGraphIsPreprocessed(false);
-      const graphObject = await addActiveGraph(filename, this.getOriginGraph());
-      this.setOriginGraph(graphObject);
+      const newGraph = await getGraph(filename);
+      const joinedGraphData = joinGraphs(this.getOriginGraph().data, newGraph.data);
+      const joinedGraphName = getJoinedGraphName([this.getOriginGraph().name, newGraph.name]);
+      const joinedGraph = { name: joinedGraphName, data: joinedGraphData };
+      this.setOriginGraph(joinedGraph);
       this.setActiveGraphNames([...this.getActiveGraphNames(), filename]);
+      this.setGraphIsPreprocessed(false);
       resetService.simulationReset();
     } catch (error) {
       errorService.setError("Error loading graph");
@@ -102,10 +100,24 @@ export const graphService = {
     log.info("removing graph file with name:", filename);
 
     try {
+      let remainingGraphNames = this.getActiveGraphNames()?.filter((name) => name !== filename);
+      if (remainingGraphNames.length === 0) {
+        this.handleSetInitGraph();
+        resetService.simulationReset();
+        return;
+      }
+      let graph = await getGraph(remainingGraphNames[0]);
+      let joinedGraphData = graph.data;
+      for (let i = 1; i < remainingGraphNames.length; i++) {
+        graph = await getGraph(remainingGraphNames[i]);
+        joinedGraphData = joinGraphs(joinedGraphData.data, graph.data);
+      }
+      const joinedGraphName = getJoinedGraphName(remainingGraphNames);
+      const joinedGraph = { name: joinedGraphName, data: joinedGraphData };
+
+      graphService.setOriginGraph(joinedGraph);
+      graphService.setActiveGraphNames(remainingGraphNames);
       graphService.setGraphIsPreprocessed(false);
-      const { activeGraphNames, graphObject } = await removeActiveGraph(filename, graphService.getActiveGraphNames());
-      graphService.setOriginGraph(graphObject);
-      graphService.setActiveGraphNames(activeGraphNames);
       resetService.simulationReset();
     } catch (error) {
       errorService.setError("Error removing graph");
@@ -136,16 +148,15 @@ export const graphService = {
   },
   async handleSetInitGraph() {
     try {
-      const graphObject = await setInitGraph();
-      this.setOriginGraph(graphObject.data);
-      this.setActiveGraphNames([graphObject.name]);
+      await createGraphIfNotExistsDB(exampleGraphJson);
+      this.setOriginGraph(exampleGraphJson);
+      this.setActiveGraphNames([exampleGraphJson.name]);
       this.setGraphIsPreprocessed(false);
     } catch (error) {
       errorService.setError("Error setting init graph");
       log.error("Error setting init graph");
     }
   },
-
   // ====== Generic getter/setter ======
   get(key) {
     return useGraphData.getState().graphData[key];

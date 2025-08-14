@@ -8,94 +8,82 @@ db.version(1).stores({
   uploadedFiles: "++id, name",
 });
 
-async function getFileByNameDB(name) {
+async function getGraphByNameDB(graphName) {
   try {
-    const file = await db.uploadedFiles.where("name").equals(name).first();
-    return file;
+    const graph = await db.uploadedFiles.where("name").equals(graphName).first();
+    return graph;
   } catch (error) {
-    throw new Error(`Failed to retrieve file with name ${name}: ${error}`);
+    throw new Error(`Failed to retrieve file with name ${graphName}: ${error}`);
   }
 }
 
 export async function getGraphDB(filename) {
-  const file = await getFileByNameDB(filename);
-  if (!file) throw new Error("No file found");
-
-  const graphObject = JSON.parse(file.data);
-  if (!graphObject) throw new Error("File format not recognized");
-  return graphObject;
+  const graph = await getGraphByNameDB(filename);
+  if (!graph) throw new Error("No file found");
+  return graph;
 }
 
-export async function addGraphDB(file) {
+export async function createGraphDB(graph) {
   try {
-    const existingFile = await getFileByNameDB(file.name);
-    if (existingFile) throw new Error("Graph already exists");
+    const existingGraph = await getGraphByNameDB(graph.name);
+    if (existingGraph) throw new Error("Graph already exists");
 
     const id = await db.uploadedFiles.add({
-      name: file.name,
-      data: file.data,
+      name: graph.name,
+      data: graph.data,
     });
-    log.info(`File ${file.name} successfully added. Got id ${id}`);
+    log.info(`File ${graph.name} successfully added. Got id ${id}`);
     return id;
   } catch (error) {
-    throw new Error(`Failed to add ${file.name}: ${error}`);
+    throw new Error(`Failed to add ${graph.name}: ${error}`);
   }
 }
 
-export async function addGraphIfNotExistsDB(file) {
+export async function createGraphIfNotExistsDB(graph) {
   try {
-    const existingFile = await getFileByNameDB(file.name);
-    if (existingFile) {
+    const existingGraph = await getGraphByNameDB(graph.name);
+    if (existingGraph) {
       log.info("Graph already exists");
-      return existingFile.id;
+      return existingGraph.id;
     }
 
     const id = await db.uploadedFiles.add({
-      name: file.name,
-      data: file.data,
+      name: graph.name,
+      data: graph.data,
     });
-    log.info(`File ${file.name} successfully added. Got id ${id}`);
+    log.info(`File ${graph.name} successfully added. Got id ${id}`);
     return id;
   } catch (error) {
-    throw new Error(`Failed to add graph if not exists: ${error}`);
+    throw new Error(`Failed to add file if not exists: ${error}`);
   }
 }
 
-export async function removeGraphDB(id) {
-  try {
-    await db.uploadedFiles.delete(id);
-    log.info(`File with id ${id} successfully removed.`);
-    return true;
-  } catch (error) {
-    throw new Error(`Failed to remove file with id ${id}: ${error}`);
-  }
-}
-
-export async function removeGraphByNameDB(name) {
-  if (name === exampleGraphJson.name) {
+export async function deleteGraphDB(graphName) {
+  // this has to be moved into app service
+  if (graphName === exampleGraphJson.name) {
     throw new Error(`The example graph cannot be removed`);
   }
 
   try {
-    const file = await getFileByNameDB(name);
-    if (!file) {
-      log.warn(`No file found with the name ${name}.`);
+    const graph = await getGraphByNameDB(graphName);
+    if (!graph) {
+      log.warn(`No file found with the name ${graphName}.`);
       return false;
     }
 
-    await db.uploadedFiles.delete(file.id);
-    log.info(`File with name ${name} and id ${file.id} successfully removed.`);
+    await db.uploadedFiles.delete(graph.id);
+    log.info(`File with name ${graphName} and id ${graph.id} successfully removed.`);
     return true;
   } catch (error) {
-    throw new Error(`Failed to remove file with name ${name}: ${error}`);
+    throw new Error(`Failed to remove file with name ${graphName}: ${error}`);
   }
 }
 
-export async function fromAllGetGraphNameDB() {
+export async function getAllGraphNamesDB() {
   try {
-    const files = await db.uploadedFiles.toCollection().distinct().toArray();
-    const names = files.map((file) => file.name);
-    return names;
+    const graphs = await db.uploadedFiles.toCollection().distinct().toArray();
+    const graphNames = graphs.map((graph) => graph.name);
+    return graphNames;
   } catch (error) {
     throw new Error(`Failed to retrieve file names: ${error}`);
   }

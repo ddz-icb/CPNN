@@ -54,7 +54,7 @@ export async function createColorschemeIfNotExistsDB(colorschemeData, colorschem
     log.info(`File ${colorschemeName} successfully added. Got id ${id}`);
     return id;
   } catch (error) {
-    throw new Error(`Failed to add graph if not exists: ${error}`);
+    throw new Error(`Failed to add file if not exists: ${error}`);
   }
 }
 

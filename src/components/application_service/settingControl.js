@@ -53,8 +53,6 @@ export function SettingControl({ simulation, app, redraw }) {
     if (
       !graphData.graph ||
       !graphData.originGraph ||
-      !graphData.originGraph.links ||
-      !graphData.originGraph.nodes ||
       !graphData.circles ||
       !graphData.circles.children ||
       !graphData.circles.children.length > 0 ||
@@ -83,27 +81,29 @@ export function SettingControl({ simulation, app, redraw }) {
       filter.compDensity
     );
 
-    let filteredGraph = {
-      ...graphData.graph,
-      nodes: graphData.originGraph.nodes,
-      links: graphData.originGraph.links,
+    let filteredGraphData = {
+      ...graphData.graph.data,
+      nodes: graphData.originGraph.data.nodes,
+      links: graphData.originGraph.data.links,
     };
 
-    filteredGraph = filterByNodeAttribs(filteredGraph, filter.nodeFilter);
-    filteredGraph = filterNodesExist(filteredGraph);
+    filteredGraphData = filterByNodeAttribs(filteredGraphData, filter.nodeFilter);
+    filteredGraphData = filterNodesExist(filteredGraphData);
 
-    filteredGraph = filterByThreshold(filteredGraph, filter.linkThreshold);
-    filteredGraph = filterByLinkAttribs(filteredGraph, filter.linkFilter);
+    filteredGraphData = filterByThreshold(filteredGraphData, filter.linkThreshold);
+    filteredGraphData = filterByLinkAttribs(filteredGraphData, filter.linkFilter);
 
-    filteredGraph = filterCompDensity(filteredGraph, filter.compDensity);
-    filteredGraph = filterMinNeighborhood(filteredGraph, filter.minNeighborhoodSize);
-    filteredGraph = filterNodesExist(filteredGraph);
+    filteredGraphData = filterCompDensity(filteredGraphData, filter.compDensity);
+    filteredGraphData = filterMinNeighborhood(filteredGraphData, filter.minNeighborhoodSize);
+    filteredGraphData = filterNodesExist(filteredGraphData);
 
-    filteredGraph = filterMinCompSize(filteredGraph, filter.minCompSize);
-    filteredGraph = filterMaxCompSize(filteredGraph, filter.maxCompSize);
-    filteredGraph = filterNodesExist(filteredGraph);
+    filteredGraphData = filterMinCompSize(filteredGraphData, filter.minCompSize);
+    filteredGraphData = filterMaxCompSize(filteredGraphData, filter.maxCompSize);
+    filteredGraphData = filterNodesExist(filteredGraphData);
 
-    filterActiveNodesForPixi(graphData.circles, graphData.nodeLabels, appearance.showNodeLabels, filteredGraph, graphData.nodeMap);
+    const filteredGraph = { name: graphData.graph.name, data: filteredGraphData };
+
+    filterActiveNodesForPixi(graphData.circles, graphData.nodeLabels, appearance.showNodeLabels, filteredGraphData, graphData.nodeMap);
     setGraphData("filteredAfterStart", true);
     setGraphData("graph", filteredGraph);
   }, [
@@ -119,12 +119,12 @@ export function SettingControl({ simulation, app, redraw }) {
   ]);
 
   useEffect(() => {
-    if (!graphData.graph || !graphData.graph.physics) return;
-    const physics = graphData.graph.physics;
+    if (!graphData.graph?.data?.physics) return;
+    const physics = graphData.graph.data.physics;
     log.info("applying physics settings", physics);
 
     applyPhysics(physics, setPhysics);
-  }, [graphData.graph?.physics]);
+  }, [graphData.graph?.data?.physics]);
 
   // enable/disable node labels
   useEffect(() => {
@@ -132,16 +132,16 @@ export function SettingControl({ simulation, app, redraw }) {
     log.info("Enabling/Disabling node labels");
 
     if (appearance.showNodeLabels == true) {
-      graphData.graph.nodes.forEach((n) => {
+      graphData.graph.data.nodes.forEach((n) => {
         const { nodeLabel } = graphData.nodeMap[n.id];
         nodeLabel.visible = true;
       });
-      simulation.on("tick.redraw", () => redraw(graphData.graph));
-      redraw(graphData.graph);
+      simulation.on("tick.redraw", () => redraw(graphData.graph.data));
+      redraw(graphData.graph.data);
     } else {
       graphData.nodeLabels.children.forEach((label) => (label.visible = false));
-      simulation.on("tick.redraw", () => redraw(graphData.graph));
-      redraw(graphData.graph);
+      simulation.on("tick.redraw", () => redraw(graphData.graph.data));
+      redraw(graphData.graph.data);
     }
   }, [appearance.showNodeLabels]);
 
@@ -150,7 +150,7 @@ export function SettingControl({ simulation, app, redraw }) {
     if (download.json != null && graphData.graph) {
       try {
         log.info("Downloading graph as JSON");
-        downloadGraphJson(graphData.graph, "Graph.json");
+        downloadGraphJson(graphData.graph);
       } catch (error) {
         log.error("Error downloading the graph as JSON:", error);
       }
@@ -162,7 +162,7 @@ export function SettingControl({ simulation, app, redraw }) {
     if (download.jsonCoordsPhysics != null && graphData.graph) {
       try {
         log.info("Downloading graph as JSON with coordinates and physics");
-        downloadGraphJson(graphData.graph, "Graph.json", graphData.nodeMap, physics);
+        downloadGraphJson(graphData.graph, graphData.nodeMap, physics);
       } catch (error) {
         log.error("Error downloading the graph as JSON with coordinates:", error);
       }
@@ -190,7 +190,6 @@ export function SettingControl({ simulation, app, redraw }) {
       log.info("Downloading graph as SVG");
 
       downloadAsSVG(
-        document,
         graphData.graph,
         appearance.linkWidth,
         colorscheme.linkColorscheme.data,
@@ -229,6 +228,7 @@ export function SettingControl({ simulation, app, redraw }) {
       log.info("Downloading legend as PDF");
 
       downloadLegendPdf(
+        graphData.graph.name,
         colorscheme.linkColorscheme.data,
         colorscheme.linkAttribsToColorIndices,
         colorscheme.nodeColorscheme.data,
@@ -266,8 +266,8 @@ export function SettingControl({ simulation, app, redraw }) {
     if (!simulation || !graphData.lines) return;
     log.info("Changing link color scheme");
 
-    simulation.on("tick.redraw", () => redraw(graphData.graph));
-    redraw(graphData.graph);
+    simulation.on("tick.redraw", () => redraw(graphData.graph.data));
+    redraw(graphData.graph.data);
   }, [colorscheme.linkColorscheme, colorscheme.linkAttribsToColorIndices]);
 
   // change link width
@@ -275,8 +275,8 @@ export function SettingControl({ simulation, app, redraw }) {
     if (!simulation || !graphData.lines) return;
     log.info("Changing link width", physics.communityForceStrength);
 
-    simulation.on("tick.redraw", () => redraw(graphData.graph));
-    redraw(graphData.graph);
+    simulation.on("tick.redraw", () => redraw(graphData.graph.data));
+    redraw(graphData.graph.data);
   }, [appearance.linkWidth]);
 
   // enable or disable link force //
@@ -293,7 +293,7 @@ export function SettingControl({ simulation, app, redraw }) {
     simulation.force(
       "link",
       d3
-        .forceLink(graphData.graph.links)
+        .forceLink(graphData.graph.data.links)
         .id((d) => d.id)
         .distance(physics.linkLength)
     );
@@ -350,7 +350,7 @@ export function SettingControl({ simulation, app, redraw }) {
     }
     log.info("Changing component strength", physics.componentStrength);
 
-    const [componentArray, componentSizeArray] = returnComponentData(graphData.graph);
+    const [componentArray, componentSizeArray] = returnComponentData(graphData.graph.data);
 
     // this value can be increased to slightly increase performance
     const threshold = filter.minCompSize > 2 ? filter.minCompSize : 2;
@@ -429,8 +429,8 @@ export function SettingControl({ simulation, app, redraw }) {
     // have to disable link force for this
     setPhysics("linkForce", false);
 
-    const [componentArray, componentSizeArray] = returnComponentData(graphData.graph);
-    const adjacentCountMap = returnAdjacentData(graphData.graph);
+    const [componentArray, componentSizeArray] = returnComponentData(graphData.graph.data);
+    const adjacentCountMap = returnAdjacentData(graphData.graph.data);
     const minCircleSize = 6;
 
     simulation.force("circleLayout", circularLayout(componentArray, adjacentCountMap, minCircleSize));
@@ -449,7 +449,7 @@ export function SettingControl({ simulation, app, redraw }) {
 
     log.info("Changing community force", physics.communityForceStrength);
 
-    const communityMap = communityDetectionLouvain(graphData.graph);
+    const communityMap = communityDetectionLouvain(graphData.graph.data);
 
     simulation.force("communityForce", communityForce(communityMap).strength(physics.communityForceStrength));
     simulation.alpha(1).restart();

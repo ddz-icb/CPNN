@@ -23,8 +23,6 @@ export async function getMappingDB(filename) {
 }
 
 export async function createMappingDB(mappingData, mappingName) {
-  console.log("MAPPINDATA", mappingData);
-  console.log("MAPPINName", mappingName);
   try {
     const mapping = await getMappingByNameDB(mappingName);
     if (mapping) throw new Error("Mapping already exists");

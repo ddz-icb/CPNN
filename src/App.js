@@ -7,6 +7,7 @@ import { Sidebar } from "./components/gui/sidebar/sidebar.js";
 import { HeaderBar } from "./components/gui/headerbar/headerbar.js";
 import {
   applyNodeMapping,
+  getJoinedGraphName,
   getLinkAttribsToColorIndices,
   getLinkWeightMinMax,
   getNodeAttribsToColorIndices,
@@ -36,20 +37,23 @@ function App() {
 
   // merge Proteins function initiation (THIS SHOULD DEFINETLY NOT BE HERE)
   useEffect(() => {
-    async function mergedGraph(graphData) {
-      const { graph, file } = await getGraphDB(graphData.activeGraphNames[0]);
+    async function joinedGraph(graphData) {
+      let { graph, file } = await getGraphDB(graphData.activeGraphNames[0]);
 
-      let combinedGraph = graph;
+      let joinedGraphData = graph.data;
       for (let i = 1; i < graphData.activeGraphNames.length; i++) {
         let { graph, file } = await getGraphDB(graphData.activeGraphNames[i]);
-        combinedGraph = joinGraphs(combinedGraph, graph);
+        joinedGraphData = joinGraphs(joinedGraphData, graph.data);
       }
 
       if (graphData.mergeProteins) {
-        combinedGraph = mergeSameProteins(combinedGraph);
+        joinedGraphData = mergeSameProteins(joinedGraphData);
       }
 
-      setGraphData("originGraph", combinedGraph);
+      const joinedGraphName = getJoinedGraphName(graphData.activeGraphNames);
+      const joinedGraph = { name: joinedGraphName, data: joinedGraphData };
+
+      setGraphData("originGraph", joinedGraph);
       setGraphData("activeGraphNames", graphData.activeGraphNames);
     }
 
@@ -60,7 +64,7 @@ function App() {
     try {
       resetService.simulationReset();
       setGraphData("graphIsPreprocessed", false);
-      mergedGraph(graphData);
+      joinedGraph(graphData);
     } catch (error) {
       setError("Error loading graph");
       log.error("Error loading graph:", error);
@@ -73,9 +77,9 @@ function App() {
     log.info("Modifying graph and forwarding it to the simulation component");
 
     let newGraph = structuredClone(graphData.originGraph);
-    newGraph = applyNodeMapping(newGraph, mappingData.activeMapping);
+    newGraph.data = applyNodeMapping(newGraph.data, mappingData.activeMapping);
 
-    const { minWeight, maxWeight } = getLinkWeightMinMax(newGraph);
+    const { minWeight, maxWeight } = getLinkWeightMinMax(newGraph.data);
     if (minWeight != Infinity) {
       setGraphData("linkWeightMin", minWeight);
     }
@@ -88,10 +92,10 @@ function App() {
       setFilter("linkThresholdText", minWeight);
     }
 
-    const nodeAttribsToColorIndices = getNodeAttribsToColorIndices(newGraph);
+    const nodeAttribsToColorIndices = getNodeAttribsToColorIndices(newGraph.data);
     setColorscheme("nodeAttribsToColorIndices", nodeAttribsToColorIndices);
 
-    const linkAttribsToColorIndices = getLinkAttribsToColorIndices(newGraph);
+    const linkAttribsToColorIndices = getLinkAttribsToColorIndices(newGraph.data);
     setColorscheme("linkAttribsToColorIndices", linkAttribsToColorIndices);
 
     setGraphData("originGraph", newGraph);

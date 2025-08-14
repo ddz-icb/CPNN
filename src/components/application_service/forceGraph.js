@@ -110,9 +110,9 @@ export function ForceGraph() {
     app.stage.addChild(newCircles);
     app.stage.addChild(newNodeLabels);
 
-    const offsetSpawnValue = graphData.graph.nodes.length * 10;
+    const offsetSpawnValue = graphData.graph.data.nodes.length * 10;
     const nodeMap = {};
-    for (const node of graphData.graph.nodes) {
+    for (const node of graphData.graph.data.nodes) {
       let circle = new PIXI.Graphics();
       circle = drawCircle(circle, node, appearance.theme.circleBorderColor, colorscheme.nodeColorscheme.data, colorscheme.nodeAttribsToColorIndices);
       circle.id = node.id;
@@ -175,11 +175,11 @@ export function ForceGraph() {
       let activeCircles = graphData.circles.children.filter((circle) => circle.visible);
 
       simulation
-        .on("tick.redraw", () => redraw(graphData.graph))
+        .on("tick.redraw", () => redraw(graphData.graph.data))
         .on("end", render)
         .nodes(activeCircles)
         .force("link")
-        .links(graphData.graph.links);
+        .links(graphData.graph.data.links);
 
       // restart the simulation and reheat if necessary to make sure everything is being rerendered correctly
       simulation.restart();
@@ -202,7 +202,7 @@ export function ForceGraph() {
         simulation.stop();
       }
     };
-  }, [graphData.graph, graphData.circles, simulation]);
+  }, [graphData.graph, graphData.circles, graphData.lines, simulation, graphData.filteredAfterStart]);
 
   // resize the canvas on window resize //
   useEffect(() => {
@@ -216,15 +216,15 @@ export function ForceGraph() {
   }, [app]);
 
   // redraw runs while the simulation is active //
-  function redraw(graph) {
+  function redraw(graphDataNEW) {
     graphData.lines.clear();
 
-    for (const link of graph.links) {
+    for (const link of graphDataNEW.links) {
       drawLine(graphData.lines, link, appearance.linkWidth, colorscheme.linkColorscheme.data, colorscheme.linkAttribsToColorIndices);
     }
 
     if (appearance.showNodeLabels) {
-      graph.nodes.forEach((n) => {
+      graphDataNEW.nodes.forEach((n) => {
         const { node, circle, nodeLabel } = graphData.nodeMap[n.id];
         nodeLabel.x = circle.x;
         nodeLabel.y = circle.y + getNodeLabelOffsetY(node.id);

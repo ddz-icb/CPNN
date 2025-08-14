@@ -4,7 +4,6 @@ import { ReactComponent as PlusIcon } from "../../../icons/plus.svg";
 import { useEffect, useRef, useState } from "react";
 
 import { TableList, ButtonPopup, SwitchBlock, SliderBlock, FieldBlock, Button, PopupTextField } from "../reusable_components/sidebarComponents.js";
-import log from "../../../logger.js";
 import { exampleGraphJson } from "../../assets/exampleGraphJSON.js";
 import { downloadCsvFile, downloadObjectAsFile } from "../../application_service/download.js";
 import { exampleGraphCsv } from "../../assets/exampleGraphCSV.js";

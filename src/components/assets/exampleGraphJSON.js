@@ -1,4 +1,4 @@
-const exampleGraph = JSON.stringify({
+const exampleGraph = {
   nodes: [
     {
       id: "Q08043_ACTN3_S321",
@@ -3853,6 +3853,6 @@ const exampleGraph = JSON.stringify({
       index: 466,
     },
   ],
-});
+};
 
 export const exampleGraphJson = { name: "ExampleGraph.json", data: exampleGraph };
