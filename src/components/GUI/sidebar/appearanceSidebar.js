@@ -96,12 +96,10 @@ export function UploadColorscheme() {
 }
 
 function ActiveNodeColorscheme() {
-  const { colorscheme } = useColorschemeState();
-
   return (
     <TableList
       heading={"Active Node Color Scheme"}
-      data={colorscheme.nodeColorscheme ? [colorscheme.nodeColorscheme] : []}
+      data={colorschemeService.getNodeColorscheme() ? [colorschemeService.getNodeColorscheme()] : []}
       displayKey={"name"}
       dark={true}
     />
@@ -109,12 +107,10 @@ function ActiveNodeColorscheme() {
 }
 
 function ActiveLinkColorscheme() {
-  const { colorscheme } = useColorschemeState();
-
   return (
     <TableList
       heading={"Active Link Color Scheme"}
-      data={colorscheme.linkColorscheme ? [colorscheme.linkColorscheme] : []}
+      data={colorschemeService.getLinkColorscheme() ? [colorschemeService.getLinkColorscheme()] : []}
       displayKey={"name"}
       dark={true}
     />
@@ -152,27 +148,25 @@ function UploadedColorschemes() {
 }
 
 function ColorSelection() {
-  const { colorschemeState, setColorscheme: setColorschemeState } = useColorschemeState();
-
   return (
     <div className="pad-left-1 pad-right-1 color-mapping-select-table">
       <ColorMappingSelect
         heading={"Node Color Mapping"}
-        colorscheme={colorschemeState.nodeColorscheme.data}
-        attribsToColorIndices={colorschemeState.nodeAttribsToColorIndices}
-        setMapping={(updatedColorMapping) => setColorschemeState("nodeAttribsToColorIndices", updatedColorMapping)}
+        colorschemeData={colorschemeService.getNodeColorscheme().data}
+        attribsToColorIndices={colorschemeService.getNodeAttribsToColorIndices()}
+        setMapping={(updatedColorMapping) => colorschemeService.setNodeAttribsToColorIndices(updatedColorMapping)}
       />
       <ColorMappingSelect
         heading={"Link Color Mapping"}
-        colorscheme={colorschemeState.linkColorscheme.data}
-        attribsToColorIndices={colorschemeState.linkAttribsToColorIndices}
-        setMapping={(updatedColorMapping) => setColorschemeState("linkAttribsToColorIndices", updatedColorMapping)}
+        colorschemeData={colorschemeService.getNodeColorscheme().data}
+        attribsToColorIndices={colorschemeService.getLinkAttribsToColorIndices()}
+        setMapping={(updatedColorMapping) => colorschemeService.setLinkAttribsToColorIndices(updatedColorMapping)}
       />
     </div>
   );
 }
 
-export function ColorMappingSelect({ heading, colorscheme, attribsToColorIndices, setMapping }) {
+export function ColorMappingSelect({ heading, colorschemeData, attribsToColorIndices, setMapping }) {
   const handleColorChange = (colorIndex, newAttribute) => {
     const updatedMapping = { ...attribsToColorIndices };
 
@@ -187,7 +181,7 @@ export function ColorMappingSelect({ heading, colorscheme, attribsToColorIndices
         updatedMapping[oldAttribute] = previousColorIndex;
       } else {
         const usedColors = Object.values(updatedMapping);
-        const firstAvailableColor = Object.keys(colorscheme)?.find((index) => !usedColors.includes(parseInt(index, 10)));
+        const firstAvailableColor = Object.keys(colorschemeData)?.find((index) => !usedColors.includes(parseInt(index, 10)));
 
         if (firstAvailableColor !== undefined) {
           updatedMapping[oldAttribute] = parseInt(firstAvailableColor, 10);
@@ -205,7 +199,7 @@ export function ColorMappingSelect({ heading, colorscheme, attribsToColorIndices
       <span className="heading-label-no-pad pad-bottom-05">{heading}</span>
       <div className="sidebar-block-no-pad">
         <div className="colormapping-selector">
-          {Object.entries(colorscheme).map(([colorIndex, color]) => {
+          {Object.entries(colorschemeData).map(([colorIndex, color]) => {
             const currentAttribute = Object.keys(attribsToColorIndices).find((key) => attribsToColorIndices[key] === parseInt(colorIndex, 10));
 
             return (
