@@ -12,7 +12,7 @@ const MATCH_COMMA = /^,$/; // Matches ','
 const MATCH_SMALLERGREATER = /^(<=|>=|<|>|=)$/; // Matches '<', '>', '=', '<=', '>='
 const MATCH_NUMBER = /^\d+$/; // Matches positive integers
 
-export function parseLinkAttribsFilter(input) {
+export function parseAttribsFilter(input) {
   // return errormessage beginning with "Error:" if not valid.
   // retrun true if empty
   // otherwise return parsed value
@@ -22,7 +22,9 @@ export function parseLinkAttribsFilter(input) {
   const cleanedInput = input.replace(/[“”„‟]/g, '"');
   const tokens = cleanedInput
     .match(/"[^"]*"|<=|>=|=|<|>|,|\(|\)|{|}|[^\s()<>{},="]+/g)
-    .map((token) => (token.startsWith('"') ? token.slice(1, -1) : token));
+    ?.map((token) => (token.startsWith('"') ? token.slice(1, -1) : token));
+
+  if (!tokens) return true;
 
   const stateFunctions = {
     state0: newTermConjunction,

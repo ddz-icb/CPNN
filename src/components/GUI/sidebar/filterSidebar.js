@@ -7,8 +7,7 @@ import "codemirror/addon/mode/simple.js";
 import "codemirror/theme/material.css";
 import "../../other/syntaxHighlighting.js";
 
-import { parseLinkAttribsFilter } from "../../other/linkFilterParser.js";
-import { parseNodeAttribsFilter } from "../../other/nodeFilterParser.js";
+import { parseAttribsFilter } from "../../other/filterParser.js";
 
 import { Button, CodeEditorBlock, FieldBlock, SliderBlock, SwitchBlock } from "../reusable_components/sidebarComponents.js";
 import {
@@ -144,7 +143,7 @@ export function FilterSidebar() {
             filter.linkFilterText,
             (value) => setFilter("linkFilter", value),
             (value) => setFilter("linkFilterText", value),
-            parseLinkAttribsFilter,
+            parseAttribsFilter,
             setCompilerErrorLinkFilter
           )
         }
@@ -161,7 +160,7 @@ export function FilterSidebar() {
             filter.nodeFilterText,
             (value) => setFilter("nodeFilter", value),
             (value) => setFilter("nodeFilterText", value),
-            parseNodeAttribsFilter,
+            parseAttribsFilter,
             setCompilerErrorNodeFilter
           )
         }
