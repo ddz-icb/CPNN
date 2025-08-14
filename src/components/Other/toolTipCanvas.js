@@ -7,23 +7,24 @@ import * as $3Dmol from "3dmol/build/3Dmol.js";
 import { useAppearance } from "../adapters/state/appearanceState.js";
 import { useContainer } from "../adapters/state/containerState.js";
 import { useTooltipSettings } from "../adapters/state/tooltipState.js";
-import { useMappingState } from "../adapters/state/mappingState.js";
+import { mappingService } from "../application_service/mappingService.js";
 
 export function Tooltips({}) {
   const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
-  const { mappingState, setMappingState } = useMappingState();
 
   return (
     <>
-      {tooltipSettings.isClickTooltipActive && <ClickTooltip mapping={mappingState.activeMapping} />}
+      {tooltipSettings.isClickTooltipActive && <ClickTooltip />}
       {!tooltipSettings.isClickTooltipActive && tooltipSettings.isHoverTooltipActive && <HoverTooltip />}
     </>
   );
 }
 
-export function ClickTooltip({ mapping }) {
+export function ClickTooltip() {
   const { appearance, setAppearance } = useAppearance();
   const { container, setContainer } = useContainer();
+
+  const mappingData = mappingService.getActiveMapping()?.data;
 
   const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
 
@@ -223,10 +224,10 @@ export function ClickTooltip({ mapping }) {
   };
 
   let groupContent = [];
-  if (mapping && mapping.data.groupMapping && tooltipSettings.clickTooltipData?.nodeGroups[0]) {
+  if (mappingData?.groupMapping && tooltipSettings.clickTooltipData?.nodeGroups[0]) {
     tooltipSettings.clickTooltipData.nodeGroups.forEach((group) => {
-      const groupName = mapping.data.groupMapping[group]?.name;
-      const reactomeId = mapping.data.groupMapping[group]?.reactomeId;
+      const groupName = mappingData.groupMapping[group]?.name;
+      const reactomeId = mappingData.groupMapping[group]?.reactomeId;
 
       if (groupName && reactomeId) {
         groupContent.push(
