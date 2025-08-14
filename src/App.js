@@ -26,6 +26,7 @@ import { useMappingData } from "./components/adapters/state/mappingState.js";
 import { useColorscheme } from "./components/adapters/state/colorschemeState.js";
 import { Init } from "./components/application_service/initService.js";
 import { useGraphState } from "./components/adapters/state/graphState.js";
+import { graphService } from "./components/application_service/graphService.js";
 
 function App() {
   const { setFilter, setAllFilter } = useFilter();
@@ -35,42 +36,29 @@ function App() {
   const { mappingData, setMappingData } = useMappingData();
   const { error, setError, clearError } = useError();
 
-  // merge Proteins function initiation (THIS SHOULD DEFINETLY NOT BE HERE)
+  // reloads graph //
   useEffect(() => {
-    async function joinedGraph(graphState) {
-      let graph = await getGraphDB(graphState.activeGraphNames[0]);
-
-      let joinedGraphData = graph.data;
-      for (let i = 1; i < graphState.activeGraphNames.length; i++) {
-        graph = await getGraphDB(graphState.activeGraphNames[i]);
-        joinedGraphData = joinGraphs(joinedGraphData, graph.data);
-      }
-
-      if (graphState.mergeProteins) {
-        joinedGraphData = mergeSameProteins(joinedGraphData);
-      }
-
-      const joinedGraphName = joinGraphName(graphState.activeGraphNames);
-      const joinedGraph = { name: joinedGraphName, data: joinedGraphData };
-
-      setGraphState("originGraph", joinedGraph);
+    async function reloadGraph() {
+      let graph = await graphService.getJoinedGraph(graphService.getActiveGraphNames());
+      graph.data = mergeSameProteins(graph.data, graphState.mergeProteins);
+      graph.data = applyNodeMapping(graph.data, mappingData.activeMapping?.data);
+      setGraphState("originGraph", graph);
       setGraphState("activeGraphNames", graphState.activeGraphNames);
+      setGraphState("graphIsPreprocessed", false);
+      resetService.simulationReset();
     }
 
-    if (graphState.mergeProteins == null || !graphState.graphIsPreprocessed || !graphState.activeGraphNames || !graphState.activeGraphNames[0])
+    if (!graphState.graphIsPreprocessed || !graphState.activeGraphNames || !graphState.activeGraphNames[0] || !graphService.getActiveGraphNames())
       return;
-
-    log.info("Merging Proteins: ", graphState.mergeProteins);
+    log.info("Reloading graph");
 
     try {
-      resetService.simulationReset();
-      setGraphState("graphIsPreprocessed", false);
-      joinedGraph(graphState);
+      reloadGraph();
     } catch (error) {
       setError("Error loading graph");
       log.error("Error loading graph:", error);
     }
-  }, [graphState.mergeProteins]);
+  }, [graphState.mergeProteins, mappingData.activeMapping, graphService.getActiveGraphNames()]);
 
   // forwards graph to forceGraph component //
   useEffect(() => {

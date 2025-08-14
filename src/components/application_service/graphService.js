@@ -53,12 +53,8 @@ export const graphService = {
     log.info("Replacing graph");
 
     try {
-      const graph = await getGraph(filename);
-      this.setOriginGraph(graph);
       this.setActiveGraphNames([filename]);
       this.setMergeProteins(false);
-      this.setGraphIsPreprocessed(false);
-      resetService.simulationReset();
     } catch (error) {
       errorService.setError(error.message);
       log.error(error);
@@ -78,14 +74,7 @@ export const graphService = {
     log.info("Adding file with name: ", filename);
 
     try {
-      const newGraph = await getGraph(filename);
-      const joinedGraphData = joinGraphs(this.getOriginGraph().data, newGraph.data);
-      const joinedGraphName = joinGraphName([this.getOriginGraph().name, newGraph.name]);
-      const joinedGraph = { name: joinedGraphName, data: joinedGraphData };
-      this.setOriginGraph(joinedGraph);
       this.setActiveGraphNames([...this.getActiveGraphNames(), filename]);
-      this.setGraphIsPreprocessed(false);
-      resetService.simulationReset();
     } catch (error) {
       errorService.setError("Error loading graph");
       log.error(error);

@@ -412,9 +412,7 @@ export function filterActiveNodesForPixi(circles, nodeLabels, showNodeLabels, gr
 }
 
 export function applyNodeMapping(graphData, mappingData) {
-  if (!mappingData) {
-    return graphData;
-  }
+  if (!mappingData) return graphData;
 
   const nodeMapping = mappingData.nodeMapping;
 
@@ -529,7 +527,9 @@ export function getLinkWeightMinMax(graphData) {
   return { minWeight: minWeight, maxWeight: maxWeight };
 }
 
-export function mergeSameProteins(graphData) {
+export function mergeSameProteins(graphData, mergeProteins) {
+  if (!mergeProteins) return graphData;
+
   const protIdToNodeMap = new Map();
   graphData.nodes.forEach((node) => {
     const protIds = getProtIdsWithIsoform(node.id);

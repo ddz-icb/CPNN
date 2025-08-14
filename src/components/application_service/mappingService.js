@@ -1,9 +1,7 @@
 import log from "../../logger.js";
 import { activeMappingInit, useMappingData } from "../adapters/state/mappingState.js";
-import { getGraph } from "../domain_service/graphManager.js";
 import { createMapping, deleteMapping, loadMappingNames, getMapping } from "../domain_service/mappingManager.js";
 import { errorService } from "./errorService.js";
-import { applyNodeMapping, joinGraphName, joinGraphs } from "./graphCalculations.js";
 import { graphService } from "./graphService.js";
 import { resetService } from "./resetService.js";
 
@@ -25,16 +23,9 @@ export const mappingService = {
       return;
     }
     log.info("Replacing mapping");
-
     try {
       const mapping = await getMapping(mappingName);
-      const graph = await graphService.getJoinedGraph(graphService.getActiveGraphNames());
-      graph.data = applyNodeMapping(graph.data, mapping.data);
-
       this.setActiveMapping(mapping);
-      graphService.setOriginGraph(graph);
-      graphService.setGraphIsPreprocessed(false);
-      resetService.simulationReset();
     } catch (error) {
       errorService.setError(error.message);
       log.error(error);
