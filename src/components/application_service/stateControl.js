@@ -5,7 +5,7 @@ import * as d3 from "d3";
 import { downloadAsPDF, downloadAsPNG, downloadAsSVG, downloadGraphJson, downloadLegendPdf } from "./download.js";
 import { changeCircleBorderColor, changeNodeColors, changeNodeLabelColor, radius } from "../other/draw.js";
 import { lightTheme, themeInit } from "../adapters/state/appearanceState.js";
-import { getAdjacentData, getComponentData, communityDetectionLouvain, getCommunityMap } from "../domain_service/graph_calculations/graphUtils.js";
+import { getAdjacentData, getComponentData, getCommunityMap } from "../domain_service/graph_calculations/graphUtils.js";
 import {
   accuracyBarnesHut,
   applyPhysics,
@@ -15,7 +15,7 @@ import {
   componentForce,
   maxDistanceChargeForce,
   nodeRepulsionMultiplier,
-} from "./graphPhysics.js";
+} from "../domain_service/physics_calculations/graphPhysics.js";
 import { usePhysics } from "../adapters/state/physicsState.js";
 import { useFilter } from "../adapters/state/filterState.js";
 import { useDownload } from "../adapters/state/downloadState.js";
