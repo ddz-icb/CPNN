@@ -17,7 +17,7 @@ import { useReset } from "../adapters/state/resetState.js";
 import { useColorschemeState } from "../adapters/state/colorschemeState.js";
 import { getNodeIdName } from "../domain_service/nodeIdParser.js";
 
-export function RenderGraph() {
+export function RenderCanvas() {
   const { appearance, setAppearance } = useAppearance();
   const { colorschemeState, setColorschemeState } = useColorschemeState();
   const { graphState, setGraphState, setAllGraphState } = useGraphState();
