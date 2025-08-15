@@ -1,6 +1,6 @@
 import log from "../../logger.js";
 import { darkTheme, lightTheme, useAppearance } from "../adapters/state/appearanceState.js";
-import { loadTheme, storeTheme } from "../domain_service/themeManager.js";
+import { loadTheme, storeTheme } from "../domain_service/object_managers/themeManager.js";
 import { errorService } from "./errorService.js";
 
 export const appearanceService = {

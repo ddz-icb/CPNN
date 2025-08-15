@@ -2,8 +2,8 @@ import log from "../../../logger.js";
 import Papa from "papaparse";
 import axios from "axios";
 import { expectedPhysicTypes } from "../../adapters/state/physicsState.js";
-import { filterByThreshold, filterMaxCompSize, filterMinCompSize, filterNodesExist } from "../../domain_service/graphCalculations.js";
 import { parseFileAsText } from "../../other/fileFunctions.js";
+import { filterByThreshold, filterMaxCompSize, filterMinCompSize, filterNodesExist } from "../graph_calculations/filterGraph.js";
 
 export async function parseGraphFile(file, takeAbs, minCorrForEdge, minCompSizeForNode, maxCompSizeForNode, takeSpearmanCoefficient, mergeProteins) {
   if (!file) {

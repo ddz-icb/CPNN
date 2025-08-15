@@ -4,7 +4,7 @@ import { exampleGraphJson } from "../assets/exampleGraphJSON.js";
 import { createGraph, deleteGraph, loadGraphNames, getGraph } from "../domain_service/object_managers/graphManager.js";
 import { createGraphIfNotExistsDB } from "../repository/graphRepo.js";
 import { errorService } from "./errorService.js";
-import { joinGraphNames, joinGraphs } from "../domain_service/graphCalculations.js";
+import { joinGraphNames, joinGraphs } from "../domain_service/graph_calculations/joinGraph.js";
 
 export const graphService = {
   async handleLoadGraphNames() {

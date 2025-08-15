@@ -6,7 +6,7 @@ import { getNodeLabelOffsetY, handleResize, initDragAndZoom } from "./interactiv
 import { initTooltips, Tooltips } from "../gui/tooltipCanvas.js";
 import { radius, drawCircle, drawLine, getTextStyle } from "../other/draw.js";
 import { getSimulation } from "./graphPhysics.js";
-import { SettingControl } from "./settingControl.js";
+import { StateControl } from "./stateControl.js";
 import { linkLengthInit, nodeRepulsionStrengthInit, xStrengthInit, yStrengthInit } from "../adapters/state/physicsState.js";
 import { useAppearance } from "../adapters/state/appearanceState.js";
 import { useGraphState } from "../adapters/state/graphState.js";
@@ -255,7 +255,7 @@ export function RenderCanvas() {
   return (
     <>
       <Tooltips />
-      <SettingControl simulation={simulation} app={app} redraw={redraw} />
+      <StateControl simulation={simulation} app={app} redraw={redraw} />
       <div ref={containerRef} className="container" />
     </>
   );

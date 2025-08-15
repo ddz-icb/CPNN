@@ -6,12 +6,10 @@ import { RenderCanvas } from "./components/application_service/renderCanvas.js";
 import { Sidebar } from "./components/gui/sidebar/sidebar.js";
 import { HeaderBar } from "./components/gui/headerbar/headerbar.js";
 import {
-  applyNodeMapping,
   getLinkAttribsToColorIndices,
   getLinkWeightMinMax,
   getNodeAttribsToColorIndices,
-  mergeProteins,
-} from "./components/domain_service/graphCalculations.js";
+} from "./components/domain_service/graph_calculations/graphUtils.js";
 
 import { Error } from "./components/gui/error.js";
 import { linkThresholdInit } from "./components/adapters/state/filterState.js";
@@ -24,6 +22,8 @@ import { useColorschemeState } from "./components/adapters/state/colorschemeStat
 import { Init } from "./components/application_service/initService.js";
 import { graphService } from "./components/application_service/graphService.js";
 import { useGraphState } from "./components/adapters/state/graphState.js";
+import { filterMergeProteins } from "./components/domain_service/graph_calculations/filterGraph.js";
+import { applyNodeMapping } from "./components/domain_service/graph_calculations/mappingCalculations.js";
 
 function App() {
   const { setFilter, setAllFilter } = useFilter();
@@ -37,7 +37,7 @@ function App() {
   useEffect(() => {
     async function reloadGraph() {
       let graph = await graphService.getJoinedGraph(graphState.activeGraphNames);
-      graph.data = mergeProteins(graph.data, graphState.mergeProteins);
+      graph.data = filterMergeProteins(graph.data, graphState.mergeProteins);
       graph.data = applyNodeMapping(graph.data, mappingState.activeMapping?.data);
       setGraphState("originGraph", graph);
       setGraphState("activeGraphNames", graphState.activeGraphNames);

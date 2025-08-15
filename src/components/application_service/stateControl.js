@@ -5,20 +5,7 @@ import * as d3 from "d3";
 import { downloadAsPDF, downloadAsPNG, downloadAsSVG, downloadGraphJson, downloadLegendPdf } from "./download.js";
 import { changeCircleBorderColor, changeNodeColors, changeNodeLabelColor, radius } from "../other/draw.js";
 import { lightTheme, themeInit } from "../adapters/state/appearanceState.js";
-import {
-  filterActiveNodesForPixi,
-  filterByLinkAttribs,
-  filterByThreshold,
-  filterMinCompSize,
-  filterMaxCompSize,
-  filterByNodeAttribs,
-  filterNodesExist,
-  getAdjacentData,
-  getComponentData,
-  filterCompDensity,
-  filterMinNeighborhood,
-  communityDetectionLouvain,
-} from "../domain_service/graphCalculations.js";
+import { getAdjacentData, getComponentData, communityDetectionLouvain, getCommunityMap } from "../domain_service/graph_calculations/graphUtils.js";
 import {
   accuracyBarnesHut,
   applyPhysics,
@@ -38,8 +25,19 @@ import { useGraphState } from "../adapters/state/graphState.js";
 
 import { useMappingState } from "../adapters/state/mappingState.js";
 import { useColorschemeState } from "../adapters/state/colorschemeState.js";
+import {
+  filterActiveNodesForPixi,
+  filterByLinkAttribs,
+  filterByNodeAttribs,
+  filterByThreshold,
+  filterCompDensity,
+  filterMaxCompSize,
+  filterMinCompSize,
+  filterMinNeighborhood,
+  filterNodesExist,
+} from "../domain_service/graph_calculations/filterGraph.js";
 
-export function SettingControl({ simulation, app, redraw }) {
+export function StateControl({ simulation, app, redraw }) {
   const { physics, setPhysics } = usePhysics();
   const { filter, setFilter } = useFilter();
   const { download, setDownload } = useDownload();
@@ -450,7 +448,7 @@ export function SettingControl({ simulation, app, redraw }) {
 
     log.info("Changing community force", physics.communityForceStrength);
 
-    const communityMap = communityDetectionLouvain(graphState.graph.data);
+    const communityMap = getCommunityMap(graphState.graph.data);
 
     simulation.force("communityForce", communityForce(communityMap).strength(physics.communityForceStrength));
     simulation.alpha(1).restart();
