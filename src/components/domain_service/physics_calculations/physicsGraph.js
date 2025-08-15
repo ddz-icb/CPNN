@@ -61,7 +61,7 @@ export function borderCheck(radius, borderHeight, borderWidth, width, height) {
 }
 
 // ==== Component Force ====
-export function componentForce(componentArray, _componentSizeArray, centroidThreshold) {
+export function componentForce(componentArray, centroidThreshold) {
   let nodes;
   let strength = 0.1; // adjustable by user
 

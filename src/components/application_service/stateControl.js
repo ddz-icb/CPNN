@@ -354,7 +354,7 @@ export function StateControl({ simulation, app, redraw }) {
     // this value can be increased to slightly increase performance
     const threshold = filter.minCompSize > 2 ? filter.minCompSize : 2;
 
-    simulation.force("component", componentForce(componentArray, componentSizeArray, threshold).strength(physics.componentStrength));
+    simulation.force("component", componentForce(componentArray, threshold).strength(physics.componentStrength));
     simulation.alpha(1).restart();
   }, [physics.componentStrength, graphState.graph]);
 
