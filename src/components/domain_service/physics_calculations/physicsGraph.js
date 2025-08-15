@@ -1,8 +1,32 @@
+// ==== Constants ====
 export const accuracyBarnesHut = 0.1;
 export const maxDistanceChargeForce = 300;
 export const nodeRepulsionMultiplier = -300;
 export const borderMultiplier = 10;
 
+// ==== Shared Utilities ====
+function groupBy(nodes, keyFn) {
+  const map = new Map();
+  for (const node of nodes) {
+    const key = keyFn(node);
+    if (!map.has(key)) map.set(key, []);
+    map.get(key).push(node);
+  }
+  return map;
+}
+
+function calculateCentroid(nodes) {
+  if (!nodes.length) return { x: 0, y: 0, size: 0 };
+  let x = 0,
+    y = 0;
+  for (const n of nodes) {
+    x += n.x;
+    y += n.y;
+  }
+  return { x: x / nodes.length, y: y / nodes.length, size: nodes.length };
+}
+
+// ==== Forces ====
 export function borderCheck(radius, borderHeight, borderWidth, width, height) {
   let nodes;
   let strength = 1;
@@ -15,271 +39,168 @@ export function borderCheck(radius, borderHeight, borderWidth, width, height) {
   const bottomBorder = centerY + (borderHeight * strength) / 2;
 
   function force(alpha) {
-    nodes.forEach((node) => {
-      let dx = 0;
-      let dy = 0;
+    for (const node of nodes) {
+      let dx = 0,
+        dy = 0;
+      if (node.x < leftBorder + radius) dx += (leftBorder + radius - node.x) * strength;
+      else if (node.x > rightBorder - radius) dx += (rightBorder - radius - node.x) * strength;
 
-      if (node.x < leftBorder + radius) {
-        dx += (leftBorder + radius - node.x) * strength;
-      } else if (node.x > rightBorder - radius) {
-        dx += (rightBorder - radius - node.x) * strength;
-      }
-
-      if (node.y < topBorder + radius) {
-        dy += (topBorder + radius - node.y) * strength;
-      } else if (node.y > bottomBorder - radius) {
-        dy += (bottomBorder - radius - node.y) * strength;
-      }
+      if (node.y < topBorder + radius) dy += (topBorder + radius - node.y) * strength;
+      else if (node.y > bottomBorder - radius) dy += (bottomBorder - radius - node.y) * strength;
 
       node.vx += dx * alpha;
       node.vy += dy * alpha;
-    });
+    }
   }
 
-  force.initialize = function (_) {
+  force.initialize = (_) => {
     nodes = _;
   };
-
-  force.strength = function (_) {
-    if (typeof _ === "undefined") return strength;
-    strength = _;
-    return force;
-  };
-
+  force.strength = (_) => (_ === undefined ? strength : ((strength = _), force));
   return force;
 }
 
-export function componentForce(componentArray, componentSizeArray, centroidThreshold) {
+// ==== Component Force ====
+export function componentForce(componentArray, _componentSizeArray, centroidThreshold) {
   let nodes;
-  let strength = 0.1; // this variable can be changed via user input
-
-  function calculateCentroid(componentNodes) {
-    let x = 0,
-      y = 0;
-    componentNodes.forEach((node) => {
-      x += node.x;
-      y += node.y;
-    });
-    return {
-      x: x / componentNodes.length,
-      y: y / componentNodes.length,
-      size: componentNodes.length,
-    };
-  }
+  let strength = 0.1; // adjustable by user
 
   function force(alpha) {
-    const componentNodes = {};
-    nodes.forEach((node) => {
-      const component = componentArray[node.id];
-      if (!componentNodes[component]) {
-        componentNodes[component] = [];
-      }
-      componentNodes[component].push(node);
-    });
-
-    const centroids = {};
-    for (const component in componentNodes) {
-      const componentSize = componentNodes[component].length;
-      if (componentSize >= centroidThreshold) {
-        centroids[component] = calculateCentroid(componentNodes[component]);
+    const groups = groupBy(nodes, (node) => componentArray[node.id]);
+    const centroids = new Map();
+    for (const [id, group] of groups) {
+      if (group.length >= centroidThreshold) {
+        centroids.set(id, calculateCentroid(group));
       }
     }
 
-    nodes.forEach((node, i) => {
-      const component = componentArray[node.id];
-
-      // the centroidKey is equivalent to the component
-      for (const centroidKey in centroids) {
-        const centroid = centroids[centroidKey];
-        if (centroid !== centroids[component]) {
+    for (const node of nodes) {
+      const nodeComp = componentArray[node.id];
+      for (const [otherComp, centroid] of centroids) {
+        if (nodeComp !== otherComp) {
           const dx = centroid.x - node.x;
           const dy = centroid.y - node.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-
-          const force = (strength * centroidThreshold * alpha) / distance;
-
-          node.vx -= dx * force;
-          node.vy -= dy * force;
+          const distSq = dx * dx + dy * dy;
+          if (distSq > 0) {
+            const dist = Math.sqrt(distSq);
+            const f = (strength * centroidThreshold * alpha) / dist;
+            node.vx -= dx * f;
+            node.vy -= dy * f;
+          }
         }
       }
-    });
+    }
   }
 
-  force.initialize = function (_) {
+  force.initialize = (_) => {
     nodes = _;
   };
-
-  force.strength = function (_) {
-    if (typeof _ === "undefined") return strength;
-    strength = _;
-    return force;
-  };
-
+  force.strength = (_) => (_ === undefined ? strength : ((strength = _), force));
   return force;
 }
 
+// ==== Community Force ====
+export function communityForce(communityMap) {
+  let nodes;
+  let strength = 0.1; // adjustable
+  const baseStrength = 0.3;
+
+  function force(alpha) {
+    const groups = groupBy(nodes, (node) => communityMap.get(node.id));
+    const centroids = new Map();
+    for (const [id, group] of groups) {
+      centroids.set(id, calculateCentroid(group));
+    }
+
+    for (const node of nodes) {
+      const nodeComm = communityMap.get(node.id);
+      for (const [otherComm, centroid] of centroids) {
+        if (nodeComm !== otherComm) {
+          const dx = centroid.x - node.x;
+          const dy = centroid.y - node.y;
+          const distSq = dx * dx + dy * dy;
+          if (distSq > 0) {
+            const dist = Math.sqrt(distSq);
+            const f = (strength * baseStrength * alpha * Math.sqrt(centroid.size)) / dist;
+            node.vx -= dx * f;
+            node.vy -= dy * f;
+          }
+        }
+      }
+    }
+  }
+
+  force.initialize = (_) => {
+    nodes = _;
+  };
+  force.strength = (_) => (_ === undefined ? strength : ((strength = _), force));
+  return force;
+}
+
+// ==== Circular Layout ====
 export function circularLayout(componentArray, adjacentCountMap, minCircleSize) {
   let nodes;
   let strength = 1;
 
-  function calculateCentroid(componentNodes) {
-    let x = 0,
-      y = 0;
-    componentNodes.forEach((node) => {
-      x += node.x;
-      y += node.y;
-    });
-    return {
-      x: x / componentNodes.length,
-      y: y / componentNodes.length,
-      size: componentNodes.length,
-    };
-  }
-
   function force(alpha) {
-    const componentNodes = {};
-    nodes.forEach((node) => {
-      const component = componentArray[node.id];
-      if (!componentNodes[component]) {
-        componentNodes[component] = [];
-      }
-      componentNodes[component].push(node);
-    });
+    const groups = groupBy(nodes, (node) => componentArray[node.id]);
+    const centroids = new Map();
+    const circleGroups = new Map();
 
-    const centroidsCircularCluster = {};
-    const centroidsCluster = {};
-    for (const component in componentNodes) {
-      const compSize = componentNodes[component].length;
-      centroidsCluster[component] = calculateCentroid(componentNodes[component]);
-      if (compSize >= minCircleSize) {
-        centroidsCircularCluster[component] = centroidsCluster[component];
+    for (const [id, group] of groups) {
+      const centroid = calculateCentroid(group);
+      centroids.set(id, centroid);
+      if (group.length >= minCircleSize) circleGroups.set(id, centroid);
+    }
+
+    // Circular arrangement for large groups
+    for (const [id, centroid] of circleGroups) {
+      const group = groups.get(id);
+      const radius = 50 * Math.sqrt(group.length);
+      group.sort((a, b) => adjacentCountMap.get(b.id) - adjacentCountMap.get(a.id));
+      for (let i = 0; i < group.length; i++) {
+        const angle = (2 * Math.PI * i) / group.length;
+        const targetX = centroid.x + radius * Math.cos(angle - Math.PI / 2);
+        const targetY = centroid.y + radius * Math.sin(angle - Math.PI / 2);
+        const dx = targetX - group[i].x;
+        const dy = targetY - group[i].y;
+        group[i].vx += dx * alpha * strength;
+        group[i].vy += dy * alpha * strength;
       }
     }
 
-    for (const component in componentNodes) {
-      const compSize = componentNodes[component].length;
-      if (compSize >= minCircleSize) {
-        const centroid = centroidsCircularCluster[component];
-        const radius = 50 * Math.sqrt(compSize);
-        componentNodes[component].sort((a, b) => adjacentCountMap.get(b.id) - adjacentCountMap.get(a.id));
-        componentNodes[component].forEach((node, i) => {
-          const angle = (2 * Math.PI * i) / compSize;
-          const targetX = centroid.x + radius * Math.cos(angle - Math.PI / 2);
-          const targetY = centroid.y + radius * Math.sin(angle - Math.PI / 2);
-          const dx = targetX - node.x;
-          const dy = targetY - node.y;
-          node.vx += dx * alpha * strength;
-          node.vy += dy * alpha * strength;
-        });
-      }
-    }
-
-    const clusterKeys = Object.keys(centroidsCluster);
-    for (let i = 0; i < clusterKeys.length; i++) {
-      for (let j = i + 1; j < clusterKeys.length; j++) {
-        const key1 = clusterKeys[i];
-        const key2 = clusterKeys[j];
-        const c1 = centroidsCluster[key1];
-        const c2 = centroidsCluster[key2];
-        const size1 = componentNodes[key1].length;
-        const size2 = componentNodes[key2].length;
+    // Cluster repulsion
+    const keys = [...centroids.keys()];
+    for (let i = 0; i < keys.length; i++) {
+      for (let j = i + 1; j < keys.length; j++) {
+        const c1 = centroids.get(keys[i]);
+        const c2 = centroids.get(keys[j]);
+        const size1 = groups.get(keys[i]).length;
+        const size2 = groups.get(keys[j]).length;
         const radius1 = 50 * Math.sqrt(size1);
         const radius2 = 50 * Math.sqrt(size2);
+
         const dx = c2.x - c1.x;
         const dy = c2.y - c1.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        const minDistance = radius1 + radius2 + 10;
-        if (distance < minDistance && distance > 0) {
-          const repulse = ((minDistance - distance) / distance) * alpha * strength;
-          componentNodes[key1].forEach((node) => {
-            node.vx -= dx * repulse;
-            node.vy -= dy * repulse;
-          });
-          componentNodes[key2].forEach((node) => {
-            node.vx += dx * repulse;
-            node.vy += dy * repulse;
-          });
-        }
-      }
-    }
-  }
-
-  force.initialize = function (_) {
-    nodes = _;
-  };
-
-  return force;
-}
-
-export function communityForce(communityMap) {
-  let nodes;
-  let strength = 0.1; // can be changed by user
-  const baseStrength = 0.3;
-
-  function calculateCentroid(communityNodes) {
-    let x = 0;
-    let y = 0;
-    if (communityNodes.length === 0) {
-      return { x: 0, y: 0, size: 0 };
-    }
-    communityNodes.forEach((node) => {
-      x += node.x;
-      y += node.y;
-    });
-    return {
-      x: x / communityNodes.length,
-      y: y / communityNodes.length,
-      size: communityNodes.length,
-    };
-  }
-
-  function force(alpha) {
-    const communityGroups = new Map();
-    nodes.forEach((node) => {
-      const communityId = communityMap.get(node.id);
-      if (communityId === undefined) return;
-
-      if (!communityGroups.has(communityId)) {
-        communityGroups.set(communityId, []);
-      }
-      communityGroups.get(communityId).push(node);
-    });
-
-    const centroids = new Map();
-    communityGroups.forEach((nodesInCommunity, communityId) => {
-      centroids.set(communityId, calculateCentroid(nodesInCommunity));
-    });
-
-    nodes.forEach((node) => {
-      const nodeCommunityId = communityMap.get(node.id);
-      if (nodeCommunityId === undefined) return;
-
-      centroids.forEach((centroid, centroidCommunityId) => {
-        if (nodeCommunityId !== centroidCommunityId) {
-          const dx = centroid.x - node.x;
-          const dy = centroid.y - node.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-
-          if (distance > 0) {
-            const forceMagnitude = (strength * baseStrength * alpha * Math.sqrt(centroid.size)) / distance;
-
-            node.vx -= dx * forceMagnitude;
-            node.vy -= dy * forceMagnitude;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const minDist = radius1 + radius2 + 10;
+        if (dist < minDist && dist > 0) {
+          const repulse = ((minDist - dist) / dist) * alpha * strength;
+          for (const n of groups.get(keys[i])) {
+            n.vx -= dx * repulse;
+            n.vy -= dy * repulse;
+          }
+          for (const n of groups.get(keys[j])) {
+            n.vx += dx * repulse;
+            n.vy += dy * repulse;
           }
         }
-      });
-    });
+      }
+    }
   }
 
-  force.initialize = function (_) {
+  force.initialize = (_) => {
     nodes = _;
   };
-
-  force.strength = function (_) {
-    if (typeof _ === "undefined") return strength;
-    strength = _;
-    return force;
-  };
-
   return force;
 }
