@@ -2,12 +2,11 @@ import "../../index.css";
 import log from "../../logger.js";
 import * as PIXI from "pixi.js";
 import { useRef, useEffect, useState } from "react";
-import { handleResize, initDragAndZoom } from "../other/interactiveCanvas.js";
-import { initTooltips, Tooltips } from "../other/tooltipCanvas.js";
+import { getNodeLabelOffsetY, handleResize, initDragAndZoom } from "./interactiveCanvas.js";
+import { initTooltips, Tooltips } from "../gui/tooltipCanvas.js";
 import { radius, drawCircle, drawLine, getTextStyle } from "../other/draw.js";
 import { getSimulation } from "./graphPhysics.js";
 import { SettingControl } from "./settingControl.js";
-import { getNodeLabelOffsetY } from "../domain_service/graphCalculations.js";
 import { linkLengthInit, nodeRepulsionStrengthInit, xStrengthInit, yStrengthInit } from "../adapters/state/physicsState.js";
 import { useAppearance } from "../adapters/state/appearanceState.js";
 import { useGraphState } from "../adapters/state/graphState.js";
@@ -18,7 +17,7 @@ import { useReset } from "../adapters/state/resetState.js";
 import { useColorschemeState } from "../adapters/state/colorschemeState.js";
 import { getNodeIdName } from "../domain_service/nodeIdParser.js";
 
-export function ForceGraph() {
+export function RenderGraph() {
   const { appearance, setAppearance } = useAppearance();
   const { colorschemeState, setColorschemeState } = useColorschemeState();
   const { graphState, setGraphState, setAllGraphState } = useGraphState();

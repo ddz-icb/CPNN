@@ -5,7 +5,7 @@ import CodeMirror from "codemirror";
 import "codemirror/lib/codemirror.css";
 import "codemirror/addon/mode/simple.js";
 import "codemirror/theme/material.css";
-import "../../other/syntaxHighlighting.js";
+import "../../config/editorSyntaxHighlighting.js";
 
 import { parseAttribsFilter } from "../../other/filterParser.js";
 

@@ -482,10 +482,6 @@ export function getIdsHavePhosphosites(graphData) {
   return phosphosites ? true : false;
 }
 
-export function getNodeLabelOffsetY(nodeId) {
-  return -25;
-}
-
 export function getLinkWeightMinMax(graphData) {
   let minWeight = Infinity;
   let maxWeight = -Infinity;

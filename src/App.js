@@ -2,7 +2,7 @@ import "./index.css";
 import log from "./logger.js";
 import { useEffect } from "react";
 
-import { ForceGraph } from "./components/application_service/forceGraph.js";
+import { RenderGraph } from "./components/application_service/renderGraph.js";
 import { Sidebar } from "./components/gui/sidebar/sidebar.js";
 import { HeaderBar } from "./components/gui/headerbar/headerbar.js";
 import {
@@ -94,7 +94,7 @@ function App() {
         <HeaderBar />
         <Sidebar />
         <div className="canvas">
-          <ForceGraph />
+          <RenderGraph />
           <Error />
         </div>
       </main>

@@ -90,3 +90,7 @@ const dragended = (event, setTooltipSettings) => {
   }
   setTooltipSettings("isHoverTooltipActive", false);
 };
+
+export function getNodeLabelOffsetY(nodeId) {
+  return -25;
+}
