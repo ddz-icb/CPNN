@@ -28,9 +28,9 @@ import { useGraphState } from "./components/adapters/state/graphState.js";
 function App() {
   const { setFilter, setAllFilter } = useFilter();
   const { appearance, setAppearance } = useAppearance();
+  const { error, setError, clearError } = useError();
   const { colorschemeState, setColorschemeState } = useColorschemeState();
   const { mappingState, setMappingState } = useMappingState();
-  const { error, setError, clearError } = useError();
   const { graphState, setGraphState } = useGraphState();
 
   // reloads graph //
