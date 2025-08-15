@@ -1,10 +1,10 @@
 import log from "../../logger.js";
 import { useGraphState } from "../adapters/state/graphState.js";
 import { exampleGraphJson } from "../assets/exampleGraphJSON.js";
-import { createGraph, deleteGraph, loadGraphNames, getGraph } from "../domain_service/graphManager.js";
+import { createGraph, deleteGraph, loadGraphNames, getGraph } from "../domain_service/object_managers/graphManager.js";
 import { createGraphIfNotExistsDB } from "../repository/graphRepo.js";
 import { errorService } from "./errorService.js";
-import { joinGraphName, joinGraphs } from "./graphCalculations.js";
+import { joinGraphNames, joinGraphs } from "../domain_service/graphCalculations.js";
 
 export const graphService = {
   async handleLoadGraphNames() {
@@ -83,7 +83,7 @@ export const graphService = {
       graph = await getGraph(fileNames[i]);
       joinedGraphData = joinGraphs(joinedGraphData, graph.data);
     }
-    const joinedGraphName = joinGraphName(fileNames);
+    const joinedGraphName = joinGraphNames(fileNames);
     const joinedGraph = { name: joinedGraphName, data: joinedGraphData };
     return joinedGraph;
   },

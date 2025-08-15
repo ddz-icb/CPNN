@@ -12,7 +12,7 @@ import {
   getColorscheme,
   loadColorschemeNames,
   createColorschemeIfNotExists,
-} from "../domain_service/colorschemeManager.js";
+} from "../domain_service/object_managers/colorschemeManager.js";
 import { errorService } from "./errorService.js";
 
 export const colorschemeService = {

@@ -7,7 +7,7 @@ import { initTooltips, Tooltips } from "../other/tooltipCanvas.js";
 import { radius, drawCircle, drawLine, getTextStyle } from "../other/draw.js";
 import { getSimulation } from "./graphPhysics.js";
 import { SettingControl } from "./settingControl.js";
-import { getNodeIdName, getNodeLabelOffsetY } from "./graphCalculations.js";
+import { getNodeLabelOffsetY } from "../domain_service/graphCalculations.js";
 import { linkLengthInit, nodeRepulsionStrengthInit, xStrengthInit, yStrengthInit } from "../adapters/state/physicsState.js";
 import { useAppearance } from "../adapters/state/appearanceState.js";
 import { useGraphState } from "../adapters/state/graphState.js";
@@ -16,7 +16,7 @@ import { tooltipInit, useTooltipSettings } from "../adapters/state/tooltipState.
 import { useError } from "../adapters/state/errorState.js";
 import { useReset } from "../adapters/state/resetState.js";
 import { useColorschemeState } from "../adapters/state/colorschemeState.js";
-import { tooltipService } from "./tooltipService.js";
+import { getNodeIdName } from "../domain_service/nodeIdParser.js";
 
 export function ForceGraph() {
   const { appearance, setAppearance } = useAppearance();

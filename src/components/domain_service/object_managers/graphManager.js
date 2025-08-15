@@ -1,5 +1,5 @@
-import { createGraphDB, deleteGraphDB, getAllGraphNamesDB, getGraphDB } from "../repository/graphRepo.js";
-import { parseGraphFile } from "../application_service/parsing/graphParser.js";
+import { createGraphDB, deleteGraphDB, getAllGraphNamesDB, getGraphDB } from "../../repository/graphRepo.js";
+import { parseGraphFile } from "../../application_service/parsing/graphParser.js";
 
 export async function loadGraphNames() {
   const graphNames = await getAllGraphNamesDB();

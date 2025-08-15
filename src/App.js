@@ -11,7 +11,7 @@ import {
   getLinkWeightMinMax,
   getNodeAttribsToColorIndices,
   mergeProteins,
-} from "./components/application_service/graphCalculations.js";
+} from "./components/domain_service/graphCalculations.js";
 
 import { Error } from "./components/gui/error.js";
 import { linkThresholdInit } from "./components/adapters/state/filterState.js";

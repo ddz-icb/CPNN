@@ -1,5 +1,5 @@
-import { parseMappingFile } from "../application_service/parsing/mappingParser.js";
-import { createMappingDB, deleteMappingDB, getAllMappingNamesDB, getMappingDB } from "../repository/mappingRepo.js";
+import { parseMappingFile } from "../../application_service/parsing/mappingParser.js";
+import { createMappingDB, deleteMappingDB, getAllMappingNamesDB, getMappingDB } from "../../repository/mappingRepo.js";
 
 export async function loadMappingNames() {
   const mappings = await getAllMappingNamesDB();

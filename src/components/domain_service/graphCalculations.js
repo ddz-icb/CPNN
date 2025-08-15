@@ -1,6 +1,7 @@
 import UnionFind from "union-find";
 import Graph from "graphology";
 import louvain from "graphology-communities-louvain";
+import { getIdsSeparateEntries, getPhosphositesProtIdEntry, getProtIdAndNameEntry, getProtIdsWithIsoform } from "./nodeIdParser.js";
 
 export function joinGraphs(graphData, newGraphData) {
   const nodeMap = new Map(graphData.nodes.map((node) => [node.id, { ...node }]));
@@ -58,11 +59,11 @@ export function joinGraphs(graphData, newGraphData) {
   return joinedGraphData;
 }
 
-export function joinGraphName(graphNames) {
+export function joinGraphNames(graphNames) {
   return graphNames.join("-");
 }
 
-export function returnComponentData(graphData) {
+export function getComponentData(graphData) {
   const idToIndexMap = {};
   graphData.nodes.forEach((node, index) => {
     idToIndexMap[node.id] = index;
@@ -87,7 +88,7 @@ export function returnComponentData(graphData) {
   return [componentArray, componentSizeArray];
 }
 
-export function returnAdjacentData(graphData) {
+export function getAdjacentData(graphData) {
   const adjacentData = {};
 
   graphData.links.forEach((link) => {
@@ -125,7 +126,7 @@ export function filterByThreshold(graphData, linkThreshold) {
 }
 
 export function filterCompDensity(graphData, compDensity) {
-  const [componentArray, componentSizeArray] = returnComponentData(graphData);
+  const [componentArray, componentSizeArray] = getComponentData(graphData);
 
   const componentEdgeCount = [];
   graphData.links.forEach((link) => {
@@ -157,7 +158,7 @@ export function filterCompDensity(graphData, compDensity) {
 export function filterMinNeighborhood(graphData, minNeighborhoodSize) {
   if (minNeighborhoodSize <= 0) return graphData;
 
-  const adjacentMap = returnAdjacentData(graphData);
+  const adjacentMap = getAdjacentData(graphData);
 
   return {
     ...graphData,
@@ -177,7 +178,7 @@ export function filterNodesExist(graphData) {
 export function filterMinCompSize(graphData, minCompSize) {
   if (minCompSize === 1) return graphData;
 
-  const [componentArray, componentSizeArray] = returnComponentData(graphData);
+  const [componentArray, componentSizeArray] = getComponentData(graphData);
 
   return {
     ...graphData,
@@ -188,7 +189,7 @@ export function filterMinCompSize(graphData, minCompSize) {
 export function filterMaxCompSize(graphData, maxCompSize) {
   if (maxCompSize == "") return graphData;
 
-  const [componentArray, componentSizeArray] = returnComponentData(graphData);
+  const [componentArray, componentSizeArray] = getComponentData(graphData);
 
   return {
     ...graphData,
@@ -481,34 +482,6 @@ export function getIdsHavePhosphosites(graphData) {
   return phosphosites ? true : false;
 }
 
-export function getProtIdsWithIsoform(nodeId) {
-  return nodeId.split(";").map((id) => id.split("_")[0].trim());
-}
-
-export function getProtIdsWithIsoformEntry(entry) {
-  return entry.split("_")[0].trim();
-}
-
-export function getIdsSeperateEntries(nodeId) {
-  return nodeId.split(";").map((entry) => entry.trim());
-}
-
-export function getPhosphositesProtIdEntry(entry) {
-  return entry
-    .split("_")[2]
-    .split(", ")
-    .map((entry) => entry.trim());
-}
-
-export function getProtIdAndNameEntry(entry) {
-  const parts = entry.split("_");
-  return parts.slice(0, 2).join("_");
-}
-
-export function getNodeIdName(nodeId) {
-  return nodeId.split("_")[1];
-}
-
 export function getNodeLabelOffsetY(nodeId) {
   return -25;
 }
@@ -575,7 +548,7 @@ export function mergeProteins(graphData, mergeProteins) {
 
       node.groups.forEach((g) => combinedGroups.add(g));
 
-      const entries = getIdsSeperateEntries(node.id);
+      const entries = getIdsSeparateEntries(node.id);
       entries.forEach((entry) => {
         const protIdName = getProtIdAndNameEntry(entry);
         const phosphosites = getPhosphositesProtIdEntry(entry);

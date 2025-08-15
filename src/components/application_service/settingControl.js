@@ -13,12 +13,12 @@ import {
   filterMaxCompSize,
   filterByNodeAttribs,
   filterNodesExist,
-  returnAdjacentData,
-  returnComponentData,
+  getAdjacentData,
+  getComponentData,
   filterCompDensity,
   filterMinNeighborhood,
   communityDetectionLouvain,
-} from "./graphCalculations.js";
+} from "../domain_service/graphCalculations.js";
 import {
   accuracyBarnesHut,
   applyPhysics,
@@ -35,6 +35,7 @@ import { useDownload } from "../adapters/state/downloadState.js";
 import { useAppearance } from "../adapters/state/appearanceState.js";
 import { useContainer } from "../adapters/state/containerState.js";
 import { useGraphState } from "../adapters/state/graphState.js";
+
 import { useMappingState } from "../adapters/state/mappingState.js";
 import { useColorschemeState } from "../adapters/state/colorschemeState.js";
 
@@ -350,7 +351,7 @@ export function SettingControl({ simulation, app, redraw }) {
     }
     log.info("Changing component strength", physics.componentStrength);
 
-    const [componentArray, componentSizeArray] = returnComponentData(graphState.graph.data);
+    const [componentArray, componentSizeArray] = getComponentData(graphState.graph.data);
 
     // this value can be increased to slightly increase performance
     const threshold = filter.minCompSize > 2 ? filter.minCompSize : 2;
@@ -429,8 +430,8 @@ export function SettingControl({ simulation, app, redraw }) {
     // have to disable link force for this
     setPhysics("linkForce", false);
 
-    const [componentArray, componentSizeArray] = returnComponentData(graphState.graph.data);
-    const adjacentCountMap = returnAdjacentData(graphState.graph.data);
+    const [componentArray, componentSizeArray] = getComponentData(graphState.graph.data);
+    const adjacentCountMap = getAdjacentData(graphState.graph.data);
     const minCircleSize = 6;
 
     simulation.force("circleLayout", circularLayout(componentArray, adjacentCountMap, minCircleSize));
