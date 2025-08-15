@@ -1,35 +1,7 @@
-import * as d3 from "d3";
-
 export const accuracyBarnesHut = 0.1;
 export const maxDistanceChargeForce = 300;
 export const nodeRepulsionMultiplier = -300;
 export const borderMultiplier = 10;
-
-export function getSimulation(width, height, linkLength, xStrength, yStrength, nodeRepulsionStrength) {
-  const simulation = d3
-    .forceSimulation()
-    .force(
-      "charge",
-      d3
-        .forceManyBody()
-        .theta(accuracyBarnesHut)
-        .distanceMax(maxDistanceChargeForce)
-        .strength(nodeRepulsionStrength * nodeRepulsionMultiplier)
-    )
-    .force(
-      "link",
-      d3
-        .forceLink()
-        .id((d) => d.id)
-        .distance(linkLength)
-    )
-    .force("x", d3.forceX(width / 2).strength(xStrength))
-    .force("y", d3.forceY(height / 2).strength(yStrength))
-    .alphaMin(0.05);
-
-  simulation.randomSource();
-  return simulation;
-}
 
 export function borderCheck(radius, borderHeight, borderWidth, width, height) {
   let nodes;
@@ -310,41 +282,4 @@ export function communityForce(communityMap) {
   };
 
   return force;
-}
-
-export function applyPhysics(physics, setPhysics) {
-  if (physics.circleLayout !== undefined) setPhysics("circleLayout", physics.circleLayout);
-  if (physics.xStrength !== undefined) {
-    setPhysics("xStrength", physics.xStrength);
-    setPhysics("xStrengthText", physics.xStrength);
-  }
-  if (physics.yStrength !== undefined) {
-    setPhysics("yStrength", physics.yStrength);
-    setPhysics("yStrengthText", physics.yStrength);
-  }
-  if (physics.componentStrength !== undefined) {
-    setPhysics("componentStrength", physics.componentStrength);
-    setPhysics("componentStrengthText", physics.componentStrength);
-  }
-  if (physics.nodeRepulsionStrength !== undefined) {
-    setPhysics("nodeRepulsionStrength", physics.nodeRepulsionStrength);
-    setPhysics("nodeRepulsionStrengthText", physics.nodeRepulsionStrength);
-  }
-  if (physics.linkForce !== undefined) setPhysics("linkForce", physics.linkForce);
-  if (physics.linkLength !== undefined) {
-    setPhysics("linkLength", physics.linkLength);
-  }
-  if (physics.checkBorder !== undefined) setPhysics("checkBorder", physics.checkBorder);
-  if (physics.borderWidth !== undefined) {
-    setPhysics("borderWidth", physics.borderWidth);
-    setPhysics("borderWidthText", physics.borderWidth);
-  }
-  if (physics.borderHeight !== undefined) {
-    setPhysics("borderHeight", physics.borderHeight);
-    setPhysics("borderHeightText", physics.borderHeight);
-  }
-  if (physics.communityForceStrength !== undefined) {
-    setPhysics("communityForceStrength", physics.communityForceStrength);
-    setPhysics("communityForceStrengthText", physics.communityForceStrength);
-  }
 }

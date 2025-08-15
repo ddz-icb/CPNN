@@ -8,14 +8,13 @@ import { lightTheme, themeInit } from "../adapters/state/appearanceState.js";
 import { getAdjacentData, getComponentData, getCommunityMap } from "../domain_service/graph_calculations/graphUtils.js";
 import {
   accuracyBarnesHut,
-  applyPhysics,
   borderCheck,
   circularLayout,
   communityForce,
   componentForce,
   maxDistanceChargeForce,
   nodeRepulsionMultiplier,
-} from "../domain_service/physics_calculations/graphPhysics.js";
+} from "../domain_service/physics_calculations/physicsGraph.js";
 import { usePhysics } from "../adapters/state/physicsState.js";
 import { useFilter } from "../adapters/state/filterState.js";
 import { useDownload } from "../adapters/state/downloadState.js";
@@ -36,6 +35,7 @@ import {
   filterMinNeighborhood,
   filterNodesExist,
 } from "../domain_service/graph_calculations/filterGraph.js";
+import { applyPhysics } from "../domain_service/physics_calculations/applyPhysics.js";
 
 export function StateControl({ simulation, app, redraw }) {
   const { physics, setPhysics } = usePhysics();
