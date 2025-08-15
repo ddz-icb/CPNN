@@ -117,7 +117,7 @@ function UploadGraph() {
   const graphFileRef = useRef(null);
 
   const [takeAbs, setTakeAbs] = useState(false);
-  const [mergeSameProtein, setMergeSameProtein] = useState(false);
+  const [mergeProteins, setMergeSameProtein] = useState(false);
   const [spearmanCoefficient, setSpearmanCoefficient] = useState(false);
 
   const [minLinkCorr, setMinLinkCorr] = useState(0);
@@ -197,8 +197,8 @@ function UploadGraph() {
       />
       <SwitchBlock
         variant="popup"
-        value={mergeSameProtein}
-        setValue={() => setMergeSameProtein(!mergeSameProtein)}
+        value={mergeProteins}
+        setValue={() => setMergeSameProtein(!mergeProteins)}
         text={"Merge nodes of same protein"}
         infoHeading={"Merge Proteins"}
         infoDescription={mergeProteinsDescription}
@@ -260,15 +260,7 @@ function UploadGraph() {
           onClick={() => graphFileRef.current.click()}
           linkRef={graphFileRef}
           onChange={(event) => {
-            graphService.handleCreateGraph(
-              event,
-              takeAbs,
-              minLinkCorr,
-              minCompSizeForNode,
-              maxCompSizeForNode,
-              spearmanCoefficient,
-              mergeSameProtein
-            );
+            graphService.handleCreateGraph(event, takeAbs, minLinkCorr, minCompSizeForNode, maxCompSizeForNode, spearmanCoefficient, mergeProteins);
             event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
           }}
         />

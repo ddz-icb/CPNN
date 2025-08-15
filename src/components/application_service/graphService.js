@@ -5,7 +5,6 @@ import { createGraph, deleteGraph, loadGraphNames, getGraph } from "../domain_se
 import { createGraphIfNotExistsDB } from "../repository/graphRepo.js";
 import { errorService } from "./errorService.js";
 import { joinGraphName, joinGraphs } from "./graphCalculations.js";
-import { resetService } from "./resetService.js";
 
 export const graphService = {
   async handleLoadGraphNames() {
@@ -18,7 +17,7 @@ export const graphService = {
       log.error("Error setting init graph");
     }
   },
-  async handleCreateGraph(event, takeAbs, minCorrForEdge, minCompSizeForNode, maxCompSizeForNode, takeSpearmanCoefficient, mergeSameProtein) {
+  async handleCreateGraph(event, takeAbs, minCorrForEdge, minCompSizeForNode, maxCompSizeForNode, takeSpearmanCoefficient, mergeProteins) {
     const file = event?.target?.files?.[0];
     if (!file) {
       errorService.setError("The input is not a valid file");
@@ -28,15 +27,7 @@ export const graphService = {
     log.info("Adding new graph file");
 
     try {
-      const graph = await createGraph(
-        file,
-        takeAbs,
-        minCorrForEdge,
-        minCompSizeForNode,
-        maxCompSizeForNode,
-        takeSpearmanCoefficient,
-        mergeSameProtein
-      );
+      const graph = await createGraph(file, takeAbs, minCorrForEdge, minCompSizeForNode, maxCompSizeForNode, takeSpearmanCoefficient, mergeProteins);
 
       this.setUploadedGraphNames([...(this.getUploadedGraphNames() || []), file.name]);
     } catch (error) {

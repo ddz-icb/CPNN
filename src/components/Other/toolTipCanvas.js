@@ -8,6 +8,7 @@ import { useAppearance } from "../adapters/state/appearanceState.js";
 import { useContainer } from "../adapters/state/containerState.js";
 import { useTooltipSettings } from "../adapters/state/tooltipState.js";
 import { mappingService } from "../application_service/mappingService.js";
+import { useMappingState } from "../adapters/state/mappingState.js";
 
 export function Tooltips({}) {
   const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
@@ -23,8 +24,8 @@ export function Tooltips({}) {
 export function ClickTooltip() {
   const { appearance, setAppearance } = useAppearance();
   const { container, setContainer } = useContainer();
-
-  const mappingData = mappingService.getActiveMapping()?.data;
+  const { mappingState, setMappingState } = useMappingState();
+  const mappingData = mappingState.activeMapping?.data;
 
   const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
 

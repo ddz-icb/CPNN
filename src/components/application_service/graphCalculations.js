@@ -527,7 +527,7 @@ export function getLinkWeightMinMax(graphData) {
   return { minWeight: minWeight, maxWeight: maxWeight };
 }
 
-export function mergeSameProteins(graphData, mergeProteins) {
+export function mergeProteins(graphData, mergeProteins) {
   if (!mergeProteins) return graphData;
 
   const protIdToNodeMap = new Map();

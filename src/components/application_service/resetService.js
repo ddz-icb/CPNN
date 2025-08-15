@@ -16,7 +16,7 @@ export const resetService = {
   setReset(value) {
     useReset.getState().setReset({ reset: value });
   },
-  simulationReset() {
+  resetSimulation() {
     if (!graphService.getActiveGraphNames()) return;
     log.info("Resetting the simulation");
 

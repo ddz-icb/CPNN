@@ -2,18 +2,10 @@ import log from "../../../logger.js";
 import Papa from "papaparse";
 import axios from "axios";
 import { expectedPhysicTypes } from "../../adapters/state/physicsState.js";
-import { filterByThreshold, filterMaxCompSize, filterMinCompSize, filterNodesExist, mergeSameProteins } from "../graphCalculations.js";
+import { filterByThreshold, filterMaxCompSize, filterMinCompSize, filterNodesExist, mergeProteins } from "../graphCalculations.js";
 import { parseFileAsText } from "../../other/fileFunctions.js";
 
-export async function parseGraphFile(
-  file,
-  takeAbs,
-  minCorrForEdge,
-  minCompSizeForNode,
-  maxCompSizeForNode,
-  takeSpearmanCoefficient,
-  mergeSameProtein
-) {
+export async function parseGraphFile(file, takeAbs, minCorrForEdge, minCompSizeForNode, maxCompSizeForNode, takeSpearmanCoefficient, mergeProteins) {
   if (!file) {
     throw new Error(`No file found with the name ${file}.`);
   }
@@ -28,7 +20,7 @@ export async function parseGraphFile(
       minCompSizeForNode,
       maxCompSizeForNode,
       takeSpearmanCoefficient,
-      mergeSameProtein
+      mergeProteins
     );
     const graph = { name: file.name, data: graphData };
     verifyGraph(graph);
@@ -38,7 +30,7 @@ export async function parseGraphFile(
   }
 }
 
-async function parseGraph(name, content, takeAbs, minCorrForEdge, minCompSizeForNode, maxCompSizeForNode, takeSpearmanCoefficient, mergeSameProtein) {
+async function parseGraph(name, content, takeAbs, minCorrForEdge, minCompSizeForNode, maxCompSizeForNode, takeSpearmanCoefficient, mergeProteins) {
   const fileExtension = name.split(".").pop();
 
   let graphData = null;
@@ -120,8 +112,8 @@ async function parseGraph(name, content, takeAbs, minCorrForEdge, minCompSizeFor
     })
     .filter((link) => link.weights.length > 0);
 
-  if (mergeSameProtein) {
-    graphData = mergeSameProteins(graphData);
+  if (mergeProteins) {
+    graphData = mergeProteins(graphData);
   }
 
   graphData.nodes.sort((a, b) => a.id.localeCompare(b.id));

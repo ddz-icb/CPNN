@@ -23,7 +23,7 @@ export function ForceGraph() {
   const { colorschemeState, setColorschemeState } = useColorschemeState();
   const { graphState, setGraphState, setAllGraphState } = useGraphState();
   const { container, setContainer } = useContainer();
-  const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
+  const { tooltipSettings, setTooltipSettings, setAllTooltipSettings } = useTooltipSettings();
   const { error, setError } = useError();
   const { reset, setReset } = useReset();
 
@@ -45,7 +45,7 @@ export function ForceGraph() {
       filteredAfterStart: false,
     }));
 
-    tooltipService.setAll(tooltipInit);
+    setAllTooltipSettings(tooltipInit);
 
     if (simulation) {
       simulation.stop();

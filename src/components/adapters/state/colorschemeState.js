@@ -40,7 +40,7 @@ export const defaultColorschemeNames = defaultColorschemes.map((c) => c.name);
 export const linkAttribsToColorIndicesInit = null;
 export const nodeAttribsToColorIndicesInit = null;
 
-export const colorschemeInit = {
+export const colorschemeStateInit = {
   uploadedColorschemeNames: defaultColorschemeNames,
   nodeColorscheme: null,
   linkColorscheme: null,
@@ -49,7 +49,7 @@ export const colorschemeInit = {
 };
 
 export const useColorschemeState = create((set) => ({
-  colorschemeState: colorschemeInit,
+  colorschemeState: colorschemeStateInit,
   setColorschemeState: (key, value) =>
     set((state) => ({
       colorschemeState: { ...state.colorschemeState, [key]: value },

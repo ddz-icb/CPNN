@@ -96,10 +96,12 @@ export function UploadColorscheme() {
 }
 
 function ActiveNodeColorscheme() {
+  const { colorschemeState, setColorschemeState } = useColorschemeState();
+
   return (
     <TableList
       heading={"Active Node Color Scheme"}
-      data={colorschemeService.getNodeColorscheme() ? [colorschemeService.getNodeColorscheme()] : []}
+      data={colorschemeState.nodeColorscheme ? [colorschemeState.nodeColorscheme] : []}
       displayKey={"name"}
       dark={true}
     />
@@ -107,10 +109,12 @@ function ActiveNodeColorscheme() {
 }
 
 function ActiveLinkColorscheme() {
+  const { colorschemeState, setColorschemeState } = useColorschemeState();
+
   return (
     <TableList
       heading={"Active Link Color Scheme"}
-      data={colorschemeService.getLinkColorscheme() ? [colorschemeService.getLinkColorscheme()] : []}
+      data={colorschemeState.linkColorscheme ? [colorschemeState.linkColorscheme] : []}
       displayKey={"name"}
       dark={true}
     />
@@ -148,19 +152,21 @@ function UploadedColorschemes() {
 }
 
 function ColorSelection() {
+  const { colorschemeState, setColorschemeState } = useColorschemeState();
+
   return (
     <div className="pad-left-1 pad-right-1 color-mapping-select-table">
       <ColorMappingSelect
         heading={"Node Color Mapping"}
-        colorschemeData={colorschemeService.getNodeColorscheme().data}
-        attribsToColorIndices={colorschemeService.getNodeAttribsToColorIndices()}
-        setMapping={(updatedColorMapping) => colorschemeService.setNodeAttribsToColorIndices(updatedColorMapping)}
+        colorschemeData={colorschemeState.nodeColorscheme?.data ? [colorschemeState.nodeColorscheme.data] : []}
+        attribsToColorIndices={colorschemeState.nodeAttribsToColorIndices}
+        setMapping={(updatedColorMapping) => setColorschemeState("nodeAttribsToColorIndices", updatedColorMapping)}
       />
       <ColorMappingSelect
         heading={"Link Color Mapping"}
-        colorschemeData={colorschemeService.getNodeColorscheme().data}
-        attribsToColorIndices={colorschemeService.getLinkAttribsToColorIndices()}
-        setMapping={(updatedColorMapping) => colorschemeService.setLinkAttribsToColorIndices(updatedColorMapping)}
+        colorschemeData={colorschemeState.linkColorscheme?.data ? [colorschemeState.linkColorscheme.data] : []}
+        attribsToColorIndices={colorschemeState.linkAttribsToColorIndices}
+        setMapping={(updatedColorMapping) => setColorschemeState("linkAttribsToColorIndices", updatedColorMapping)}
       />
     </div>
   );
