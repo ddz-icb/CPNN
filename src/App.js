@@ -23,7 +23,7 @@ import { Init } from "./components/application_service/initService.js";
 import { graphService } from "./components/application_service/graphService.js";
 import { useGraphState } from "./components/adapters/state/graphState.js";
 import { filterMergeProteins } from "./components/domain_service/graph_calculations/filterGraph.js";
-import { applyNodeMapping } from "./components/domain_service/graph_calculations/mappingCalculations.js";
+import { applyNodeMapping } from "./components/domain_service/graph_calculations/applyMapping.js";
 
 function App() {
   const { setFilter, setAllFilter } = useFilter();
