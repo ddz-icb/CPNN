@@ -1,12 +1,12 @@
 import { useEffect } from "react";
-import log from "../../logger.js";
+import log from "../../../logger.js";
 
-import { changeCircleBorderColor, changeNodeColors, changeNodeLabelColor } from "../domain_service/canvas_drawing/draw.js";
-import { usePhysics } from "../adapters/state/physicsState.js";
-import { useAppearance } from "../adapters/state/appearanceState.js";
-import { useGraphState } from "../adapters/state/graphState.js";
+import { changeCircleBorderColor, changeNodeColors, changeNodeLabelColor } from "../../domain_service/canvas_drawing/draw.js";
+import { usePhysics } from "../../adapters/state/physicsState.js";
+import { useAppearance } from "../../adapters/state/appearanceState.js";
+import { useGraphState } from "../../adapters/state/graphState.js";
 
-import { useColorschemeState } from "../adapters/state/colorschemeState.js";
+import { useColorschemeState } from "../../adapters/state/colorschemeState.js";
 
 export function AppearanceStateControl({ app, simulation, redraw }) {
   const { physics, setPhysics } = usePhysics();

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import log from "../../logger.js";
+import log from "../../../logger.js";
 
 import {
   filterActiveNodesForPixi,
@@ -11,10 +11,10 @@ import {
   filterMinCompSize,
   filterMinNeighborhood,
   filterNodesExist,
-} from "../domain_service/graph_calculations/filterGraph.js";
-import { useFilter } from "../adapters/state/filterState.js";
-import { useAppearance } from "../adapters/state/appearanceState.js";
-import { useGraphState } from "../adapters/state/graphState.js";
+} from "../../domain_service/graph_calculations/filterGraph.js";
+import { useFilter } from "../../adapters/state/filterState.js";
+import { useAppearance } from "../../adapters/state/appearanceState.js";
+import { useGraphState } from "../../adapters/state/graphState.js";
 
 export function FilterStateControl() {
   const { filter, setFilter } = useFilter();

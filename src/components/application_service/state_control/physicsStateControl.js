@@ -1,9 +1,9 @@
 import { useEffect } from "react";
-import log from "../../logger.js";
+import log from "../../../logger.js";
 import * as d3 from "d3";
 
-import { radius } from "../domain_service/canvas_drawing/draw.js";
-import { getAdjacentData, getComponentData, getCommunityMap } from "../domain_service/graph_calculations/graphUtils.js";
+import { radius } from "../../domain_service/canvas_drawing/draw.js";
+import { getAdjacentData, getComponentData, getCommunityMap } from "../../domain_service/graph_calculations/graphUtils.js";
 import {
   accuracyBarnesHut,
   borderCheck,
@@ -12,11 +12,11 @@ import {
   componentForce,
   maxDistanceChargeForce,
   nodeRepulsionMultiplier,
-} from "../domain_service/physics_calculations/physicsGraph.js";
-import { usePhysics } from "../adapters/state/physicsState.js";
-import { useFilter } from "../adapters/state/filterState.js";
-import { useContainer } from "../adapters/state/containerState.js";
-import { useGraphState } from "../adapters/state/graphState.js";
+} from "../../domain_service/physics_calculations/physicsGraph.js";
+import { usePhysics } from "../../adapters/state/physicsState.js";
+import { useFilter } from "../../adapters/state/filterState.js";
+import { useContainer } from "../../adapters/state/containerState.js";
+import { useGraphState } from "../../adapters/state/graphState.js";
 
 export function PhysicsStateControl({ simulation }) {
   const { physics, setPhysics } = usePhysics();

@@ -5,7 +5,7 @@ import { useRef, useEffect, useState } from "react";
 import { getNodeLabelOffsetY, handleResize, initDragAndZoom } from "./interactiveCanvas.js";
 import { initTooltips, Tooltips } from "../gui/tooltipCanvas.js";
 import { radius, drawCircle, drawLine, getTextStyle } from "../domain_service/canvas_drawing/draw.js";
-import { PhysicsStateControl } from "./physicsStateControl.js";
+import { PhysicsStateControl } from "./state_control/physicsStateControl.js";
 import { linkLengthInit, nodeRepulsionStrengthInit, xStrengthInit, yStrengthInit } from "../adapters/state/physicsState.js";
 import { useAppearance } from "../adapters/state/appearanceState.js";
 import { useGraphState } from "../adapters/state/graphState.js";
@@ -16,9 +16,9 @@ import { useReset } from "../adapters/state/resetState.js";
 import { useColorschemeState } from "../adapters/state/colorschemeState.js";
 import { getNodeIdName } from "../domain_service/parsing/nodeIdParser.js";
 import { getSimulation } from "../domain_service/physics_calculations/getSimulation.js";
-import { DownloadStateControl } from "./downloadStateControl.js";
-import { AppearanceStateControl } from "./appearanceStateControl.js";
-import { FilterStateControl } from "./filterStateControl.js";
+import { DownloadStateControl } from "./state_control/downloadStateControl.js";
+import { AppearanceStateControl } from "./state_control/appearanceStateControl.js";
+import { FilterStateControl } from "./state_control/filterStateControl.js";
 
 export function RenderGraph() {
   const { appearance, setAppearance } = useAppearance();
