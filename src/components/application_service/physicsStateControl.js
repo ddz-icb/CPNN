@@ -15,100 +15,15 @@ import {
 } from "../domain_service/physics_calculations/physicsGraph.js";
 import { usePhysics } from "../adapters/state/physicsState.js";
 import { useFilter } from "../adapters/state/filterState.js";
-import { useAppearance } from "../adapters/state/appearanceState.js";
 import { useContainer } from "../adapters/state/containerState.js";
 import { useGraphState } from "../adapters/state/graphState.js";
 
-import {
-  filterActiveNodesForPixi,
-  filterByLinkAttribs,
-  filterByNodeAttribs,
-  filterByThreshold,
-  filterCompDensity,
-  filterMaxCompSize,
-  filterMinCompSize,
-  filterMinNeighborhood,
-  filterNodesExist,
-} from "../domain_service/graph_calculations/filterGraph.js";
-
-export function StateControl({ simulation }) {
+export function PhysicsStateControl({ simulation }) {
   const { physics, setPhysics } = usePhysics();
   const { filter, setFilter } = useFilter();
-  const { appearance, setAppearance } = useAppearance();
   const { container, setContainer } = useContainer();
   const { graphState, setGraphState } = useGraphState();
 
-  // filter nodes and links //
-  useEffect(() => {
-    if (
-      !graphState.graph ||
-      !graphState.originGraph ||
-      !graphState.circles ||
-      !graphState.circles.children ||
-      !graphState.circles.children.length > 0 ||
-      !graphState.nodeMap ||
-      !graphState.graphIsPreprocessed
-    ) {
-      return;
-    }
-
-    log.info(
-      "Filtering nodes and links.\n    Threshold:  ",
-      filter.linkThreshold,
-      "\n    Link Attributes: ",
-      filter.linkFilter,
-      "\n    Node Attributes: ",
-      filter.nodeFilter,
-      "\n    Mininum component size: ",
-      filter.minCompSize,
-      "\n    Maximum component size: ",
-      filter.maxCompSize,
-      "\n    Minimum neighborhood size: ",
-      filter.minNeighborhoodSize,
-      "\n    Groups: ",
-      filter.nodeFilter,
-      "\n    Comp Density: ",
-      filter.compDensity
-    );
-
-    let filteredGraphData = {
-      ...graphState.graph.data,
-      nodes: graphState.originGraph.data.nodes,
-      links: graphState.originGraph.data.links,
-    };
-
-    filteredGraphData = filterByNodeAttribs(filteredGraphData, filter.nodeFilter);
-    filteredGraphData = filterNodesExist(filteredGraphData);
-
-    filteredGraphData = filterByThreshold(filteredGraphData, filter.linkThreshold);
-    filteredGraphData = filterByLinkAttribs(filteredGraphData, filter.linkFilter);
-
-    filteredGraphData = filterCompDensity(filteredGraphData, filter.compDensity);
-    filteredGraphData = filterMinNeighborhood(filteredGraphData, filter.minNeighborhoodSize);
-    filteredGraphData = filterNodesExist(filteredGraphData);
-
-    filteredGraphData = filterMinCompSize(filteredGraphData, filter.minCompSize);
-    filteredGraphData = filterMaxCompSize(filteredGraphData, filter.maxCompSize);
-    filteredGraphData = filterNodesExist(filteredGraphData);
-
-    const filteredGraph = { name: graphState.graph.name, data: filteredGraphData };
-
-    filterActiveNodesForPixi(graphState.circles, graphState.nodeLabels, appearance.showNodeLabels, filteredGraphData, graphState.nodeMap);
-    setGraphState("filteredAfterStart", true);
-    setGraphState("graph", filteredGraph);
-  }, [
-    filter.linkThreshold,
-    filter.linkFilter,
-    filter.nodeFilter,
-    filter.minCompSize,
-    filter.maxCompSize,
-    filter.compDensity,
-    filter.minNeighborhoodSize,
-    graphState.originGraph,
-    graphState.circles,
-  ]);
-
-  // enable or disable link force //
   useEffect(() => {
     if (!simulation) return;
     if (physics.linkForce == false) {
@@ -132,7 +47,6 @@ export function StateControl({ simulation }) {
     simulation.alpha(1).restart();
   }, [physics.linkForce]);
 
-  // change link length //
   useEffect(() => {
     if (!simulation || physics.linkForce == false) return;
     log.info("changing link length", physics.linkLength);
@@ -141,7 +55,6 @@ export function StateControl({ simulation }) {
     simulation.alpha(1).restart();
   }, [physics.linkLength]);
 
-  // change X Strength //
   useEffect(() => {
     if (!simulation) return;
     if (physics.xStrength == 0) {
@@ -155,7 +68,6 @@ export function StateControl({ simulation }) {
     simulation.alpha(1).restart();
   }, [physics.xStrength, container.width, container.height]);
 
-  // change Y Strength //
   useEffect(() => {
     if (!simulation) return;
     if (physics.yStrength == 0) {
@@ -169,7 +81,6 @@ export function StateControl({ simulation }) {
     simulation.alpha(1).restart();
   }, [physics.yStrength, container.width, container.height]);
 
-  // change component Strength //
   useEffect(() => {
     if (!simulation) return;
     if (physics.componentStrength == 0) {
@@ -188,7 +99,6 @@ export function StateControl({ simulation }) {
     simulation.alpha(1).restart();
   }, [physics.componentStrength, graphState.graph]);
 
-  // change node repulsion strength //
   useEffect(() => {
     if (!simulation) return;
     if (physics.nodeRepulsionStrength == 0) {
@@ -208,7 +118,6 @@ export function StateControl({ simulation }) {
     simulation.alpha(1).restart();
   }, [physics.nodeRepulsionStrength]);
 
-  // change node repulsion strength //
   useEffect(() => {
     if (!simulation || physics.nodeCollision == null) return;
     log.info("Changing node collision strength", physics.nodeCollision);
@@ -225,7 +134,6 @@ export function StateControl({ simulation }) {
     simulation.alpha(1).restart();
   }, [physics.nodeCollision]);
 
-  // change graph border //
   useEffect(() => {
     if (!simulation || !container.width || !container.height) return;
 
@@ -239,7 +147,6 @@ export function StateControl({ simulation }) {
     simulation.alpha(1).restart();
   }, [physics.checkBorder, physics.borderHeight, physics.borderWidth, container.width, container.height]);
 
-  // enable circular layout
   useEffect(() => {
     if (!simulation) return;
     if (physics.circleLayout == false) {
@@ -266,7 +173,6 @@ export function StateControl({ simulation }) {
     simulation.alpha(1).restart();
   }, [physics.circleLayout]);
 
-  // enable community force
   useEffect(() => {
     if (!simulation) return;
 

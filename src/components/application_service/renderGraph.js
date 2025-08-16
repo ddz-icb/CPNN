@@ -5,7 +5,7 @@ import { useRef, useEffect, useState } from "react";
 import { getNodeLabelOffsetY, handleResize, initDragAndZoom } from "./interactiveCanvas.js";
 import { initTooltips, Tooltips } from "../gui/tooltipCanvas.js";
 import { radius, drawCircle, drawLine, getTextStyle } from "../domain_service/canvas_drawing/draw.js";
-import { StateControl } from "./stateControl.js";
+import { PhysicsStateControl } from "./physicsStateControl.js";
 import { linkLengthInit, nodeRepulsionStrengthInit, xStrengthInit, yStrengthInit } from "../adapters/state/physicsState.js";
 import { useAppearance } from "../adapters/state/appearanceState.js";
 import { useGraphState } from "../adapters/state/graphState.js";
@@ -18,6 +18,7 @@ import { getNodeIdName } from "../domain_service/parsing/nodeIdParser.js";
 import { getSimulation } from "../domain_service/physics_calculations/getSimulation.js";
 import { DownloadStateControl } from "./downloadStateControl.js";
 import { AppearanceStateControl } from "./appearanceStateControl.js";
+import { FilterStateControl } from "./filterStateControl.js";
 
 export function RenderGraph() {
   const { appearance, setAppearance } = useAppearance();
@@ -257,9 +258,10 @@ export function RenderGraph() {
   return (
     <>
       <Tooltips />
-      <StateControl simulation={simulation} />
+      <PhysicsStateControl simulation={simulation} />
       <DownloadStateControl app={app} />
       <AppearanceStateControl app={app} simulation={simulation} redraw={redraw} />
+      <FilterStateControl />
       <div ref={containerRef} className="container" />
     </>
   );
