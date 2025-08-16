@@ -158,13 +158,13 @@ function ColorSelection() {
     <div className="pad-left-1 pad-right-1 color-mapping-select-table">
       <ColorMappingSelect
         heading={"Node Color Mapping"}
-        colorschemeData={colorschemeState.nodeColorscheme?.data ? [colorschemeState.nodeColorscheme.data] : []}
+        colorschemeData={colorschemeState.nodeColorscheme?.data ? colorschemeState.nodeColorscheme.data : []}
         attribsToColorIndices={colorschemeState.nodeAttribsToColorIndices}
         setMapping={(updatedColorMapping) => setColorschemeState("nodeAttribsToColorIndices", updatedColorMapping)}
       />
       <ColorMappingSelect
         heading={"Link Color Mapping"}
-        colorschemeData={colorschemeState.linkColorscheme?.data ? [colorschemeState.linkColorscheme.data] : []}
+        colorschemeData={colorschemeState.linkColorscheme?.data ? colorschemeState.linkColorscheme.data : []}
         attribsToColorIndices={colorschemeState.linkAttribsToColorIndices}
         setMapping={(updatedColorMapping) => setColorschemeState("linkAttribsToColorIndices", updatedColorMapping)}
       />
@@ -205,7 +205,7 @@ export function ColorMappingSelect({ heading, colorschemeData, attribsToColorInd
       <span className="heading-label-no-pad pad-bottom-05">{heading}</span>
       <div className="sidebar-block-no-pad">
         <div className="colormapping-selector">
-          {Object.entries(colorschemeData).map(([colorIndex, color]) => {
+          {colorschemeData.map((color, colorIndex) => {
             const currentAttribute = Object.keys(attribsToColorIndices).find((key) => attribsToColorIndices[key] === parseInt(colorIndex, 10));
 
             return (
