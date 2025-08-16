@@ -2,8 +2,7 @@ import { useEffect } from "react";
 import log from "../../logger.js";
 import * as d3 from "d3";
 
-import { downloadGraphJson } from "../domain_service/download.js";
-import { changeCircleBorderColor, changeNodeColors, changeNodeLabelColor, radius } from "../domain_service/canvas_drawing/draw.js";
+import { radius } from "../domain_service/canvas_drawing/draw.js";
 import { getAdjacentData, getComponentData, getCommunityMap } from "../domain_service/graph_calculations/graphUtils.js";
 import {
   accuracyBarnesHut,
@@ -20,7 +19,6 @@ import { useAppearance } from "../adapters/state/appearanceState.js";
 import { useContainer } from "../adapters/state/containerState.js";
 import { useGraphState } from "../adapters/state/graphState.js";
 
-import { useColorschemeState } from "../adapters/state/colorschemeState.js";
 import {
   filterActiveNodesForPixi,
   filterByLinkAttribs,
@@ -32,13 +30,11 @@ import {
   filterMinNeighborhood,
   filterNodesExist,
 } from "../domain_service/graph_calculations/filterGraph.js";
-import { applyPhysics } from "../domain_service/physics_calculations/applyPhysics.js";
 
 export function StateControl({ simulation }) {
   const { physics, setPhysics } = usePhysics();
   const { filter, setFilter } = useFilter();
   const { appearance, setAppearance } = useAppearance();
-  const { colorschemeState, setColorschemeState } = useColorschemeState();
   const { container, setContainer } = useContainer();
   const { graphState, setGraphState } = useGraphState();
 
@@ -111,14 +107,6 @@ export function StateControl({ simulation }) {
     graphState.originGraph,
     graphState.circles,
   ]);
-
-  useEffect(() => {
-    if (!graphState.graph?.data?.physics) return;
-    const physics = graphState.graph.data.physics;
-    log.info("applying physics settings", physics);
-
-    applyPhysics(physics, setPhysics);
-  }, [graphState.graph?.data?.physics]);
 
   // enable or disable link force //
   useEffect(() => {
