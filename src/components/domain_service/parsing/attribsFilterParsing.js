@@ -1,32 +1,30 @@
 import log from "../../../logger.js";
 
-const MATCH_ATTRIBUTE = /^(?!\{|}|not|and|or|<|>|\(|\)|,).*$/; // Matches non-empty string excluding specified tokens
-const MATCH_OPEN_PAREN = /^\($/; // Matches '('
-const MATCH_CLOSE_PAREN = /^\)$/; // Matches ')'
-const MATCH_NOT = /^not$/; // Matches the word "not"
-const MATCH_AND = /^and$/; // Matches the word "and"
-const MATCH_OR = /^or$/; // Matches the word "or"
-const MATCH_OPEN_CURLY = /^\{$/; // Matches '{'
-const MATCH_CLOSE_CURLY = /^\}$/; // Matches '}'
-const MATCH_COMMA = /^,$/; // Matches ','
-const MATCH_SMALLERGREATER = /^(<=|>=|<|>|=)$/; // Matches '<', '>', '=', '<=', '>='
-const MATCH_NUMBER = /^\d+$/; // Matches positive integers
+const TOKENS = {
+  ATTRIBUTE: /^(?!\{|}|not|and|or|<|>|\(|\)|,).*$/,
+  OPEN_PAREN: /^\($/,
+  CLOSE_PAREN: /^\)$/,
+  NOT: /^not$/,
+  AND: /^and$/,
+  OR: /^or$/,
+  OPEN_CURLY: /^\{$/,
+  CLOSE_CURLY: /^\}$/,
+  COMMA: /^,$/,
+  CMP: /^(<=|>=|<|>|=)$/,
+  NUMBER: /^\d+$/,
+};
 
 export function parseAttribsFilter(input) {
-  // return errormessage beginning with "Error:" if not valid.
-  // retrun true if empty
-  // otherwise return parsed value
   if (input === "") return true;
+
   log.info("Parsing attributes filter:\n", input);
 
   const cleanedInput = input.replace(/[“”„‟]/g, '"');
-  const tokens = cleanedInput
-    .match(/"[^"]*"|<=|>=|=|<|>|,|\(|\)|{|}|[^\s()<>{},="]+/g)
-    ?.map((token) => (token.startsWith('"') ? token.slice(1, -1) : token));
+  const tokens = cleanedInput.match(/"[^"]*"|<=|>=|=|<|>|,|\(|\)|{|}|[^\s()<>{},="]+/g)?.map((t) => (t.startsWith('"') ? t.slice(1, -1) : t));
 
   if (!tokens) return true;
 
-  const stateFunctions = {
+  const states = {
     state0: newTermConjunction,
     state1: conjunction,
     state2: notTermConjunction,
@@ -44,236 +42,169 @@ export function parseAttribsFilter(input) {
   const endStates = new Set(["state6", "state1"]);
 
   let currentState = "state6";
-
-  let processedFilterRequest = [];
+  const processedRequest = [];
 
   for (const token of tokens) {
-    if (!(currentState in stateFunctions)) {
-      return currentState;
-    }
-    currentState = stateFunctions[currentState](processedFilterRequest, token);
+    if (!(currentState in states)) throw new Error(`Invalid state: ${currentState}`);
+    currentState = states[currentState](processedRequest, token);
   }
 
-  if (!(currentState in stateFunctions)) {
-    return currentState;
-  }
-  if (!endStates.has(currentState)) {
-    return "Error: the received statement is not complete";
-  }
+  if (!(currentState in states)) throw new Error(`Invalid state: ${currentState}`);
+  if (!endStates.has(currentState)) throw new Error("The received statement is not complete");
 
-  return processedFilterRequest;
+  return processedRequest;
 }
 
-function start(processedFilterRequest, token) {
-  log.info("startState with token: ", token);
+// ======== State functions ==========
+function start(processedRequest, token) {
+  log.info("startState with token:", token);
 
-  if (MATCH_OPEN_PAREN.test(token)) {
-    processedFilterRequest.push([]);
+  if (TOKENS.OPEN_PAREN.test(token)) {
+    processedRequest.push([]);
     return "state3";
-  } else if (MATCH_SMALLERGREATER.test(token)) {
-    processedFilterRequest.push([token]);
+  }
+  if (TOKENS.CMP.test(token)) {
+    processedRequest.push([token]);
     return "state11";
-  } else if (MATCH_NOT.test(token)) {
-    return "state2";
-  } else if (MATCH_OPEN_CURLY.test(token)) {
-    processedFilterRequest.push([new Set()]);
+  }
+  if (TOKENS.NOT.test(token)) return "state2";
+  if (TOKENS.OPEN_CURLY.test(token)) {
+    processedRequest.push([new Set()]);
     return "state8";
-  } else if (MATCH_ATTRIBUTE.test(token)) {
-    processedFilterRequest.push([token]);
-    return "state1";
-  } else {
-    return `Error: Expected attribute or 'not' or '(' or '<' or '>' but got: '${token}'`;
   }
+  if (TOKENS.ATTRIBUTE.test(token)) {
+    processedRequest.push([token]);
+    return "state1";
+  }
+  throw new Error(`Expected attribute or 'not' or '(' or comparator but got '${token}'`);
 }
 
-function newTermConjunction(processedFilterRequest, token) {
-  log.info("newTermConjunctionState with token: ", token);
+function newTermConjunction(processedRequest, token) {
+  return start(processedRequest, token); // identical to start
+}
 
-  if (MATCH_OPEN_PAREN.test(token)) {
-    processedFilterRequest.push([]);
-    return "state3";
-  } else if (MATCH_SMALLERGREATER.test(token)) {
-    processedFilterRequest.push([token]);
-    return "state11";
-  } else if (MATCH_NOT.test(token)) {
-    return "state2";
-  } else if (MATCH_OPEN_CURLY.test(token)) {
-    processedFilterRequest.push([new Set()]);
+function conjunction(processedRequest, token) {
+  log.info("conjunctionState with token:", token);
+  if (TOKENS.AND.test(token)) return "state0";
+  throw new Error(`Expected 'and' but got '${token}'`);
+}
+
+function notTermConjunction(processedRequest, token) {
+  log.info("notTermConjunctionState with token:", token);
+
+  if (TOKENS.OPEN_CURLY.test(token)) {
+    processedRequest.push(["not", new Set()]);
     return "state8";
-  } else if (MATCH_ATTRIBUTE.test(token)) {
-    processedFilterRequest.push([token]);
+  }
+  if (TOKENS.ATTRIBUTE.test(token)) {
+    processedRequest.push(["not", token]);
     return "state1";
-  } else {
-    return `Error: Expected attribute or 'not' or '(' or '<' or '>' but got: '${token}'`;
   }
+  throw new Error(`Expected attribute or '{' but got '${token}'`);
 }
 
-function conjunction(processedFilterRequest, token) {
-  log.info("conjunctionState with token: ", token);
+function newTermDisjunction(processedRequest, token) {
+  log.info("newTermDisjunctionState with token:", token);
+  const last = processedRequest[processedRequest.length - 1];
 
-  if (MATCH_AND.test(token)) {
-    return "state0";
-  } else {
-    return `Error: Expected 'and' but got: '${token}'`;
-  }
-}
-
-function notTermConjunction(processedFilterRequest, token) {
-  log.info("notTermConjunctionState with token: ", token);
-
-  if (MATCH_OPEN_CURLY.test(token)) {
-    processedFilterRequest.push(["not", new Set()]);
-    return "state8";
-  } else if (MATCH_ATTRIBUTE.test(token)) {
-    processedFilterRequest.push(["not", token]);
-    return "state1";
-  } else {
-    return `Error: Expected attribute or '{' but got: '${token}'`;
-  }
-}
-
-function newTermDisjunction(processedFilterRequest, token) {
-  log.info("newTermDisjunctionState with token: ", token);
-
-  if (MATCH_OPEN_CURLY.test(token)) {
-    let previousElement = processedFilterRequest[processedFilterRequest.length - 1];
-    previousElement.push(new Set());
+  if (TOKENS.OPEN_CURLY.test(token)) {
+    last.push(new Set());
     return "state10";
-  } else if (MATCH_SMALLERGREATER.test(token)) {
-    let previousElement = processedFilterRequest[processedFilterRequest.length - 1];
-    previousElement.push(token);
+  }
+  if (TOKENS.CMP.test(token)) {
+    last.push(token);
     return "state12";
-  } else if (MATCH_NOT.test(token)) {
-    return "state5";
-  } else if (MATCH_ATTRIBUTE.test(token)) {
-    let previousElement = processedFilterRequest[processedFilterRequest.length - 1];
-    previousElement.push(token);
+  }
+  if (TOKENS.NOT.test(token)) return "state5";
+  if (TOKENS.ATTRIBUTE.test(token)) {
+    last.push(token);
     return "state4";
-  } else {
-    return `Error: Expected attribute or 'not' or '<' or '>' but got: '${token}'`;
   }
+  throw new Error(`Expected attribute, 'not', comparator or '{' but got '${token}'`);
 }
 
-function disjunction(processedFilterRequest, token) {
-  log.info("disjunctionState with token: ", token);
+function disjunction(processedRequest, token) {
+  log.info("disjunctionState with token:", token);
 
-  if (MATCH_OR.test(token)) {
-    return "state3";
-  } else if (MATCH_CLOSE_PAREN) {
-    return "state1";
-  } else {
-    return `Error: Expected 'or' or ')' but got: '${token}'`;
-  }
+  if (TOKENS.OR.test(token)) return "state3";
+  if (TOKENS.CLOSE_PAREN.test(token)) return "state1";
+  throw new Error(`Expected 'or' or ')' but got '${token}'`);
 }
 
-function notTermDisjunction(processedFilterRequest, token) {
-  log.info("notTermDisjunctionState with token: ", token);
+function notTermDisjunction(processedRequest, token) {
+  log.info("notTermDisjunctionState with token:", token);
+  const last = processedRequest[processedRequest.length - 1];
 
-  if (MATCH_OPEN_CURLY.test(token)) {
-    let previousElement = processedFilterRequest[processedFilterRequest.length - 1];
-    previousElement.push("not");
-    previousElement.push(new Set());
+  if (TOKENS.OPEN_CURLY.test(token)) {
+    last.push("not", new Set());
     return "state10";
-  } else if (MATCH_ATTRIBUTE.test(token)) {
-    let previousElement = processedFilterRequest[processedFilterRequest.length - 1];
-    previousElement.push("not");
-    previousElement.push(token);
+  }
+  if (TOKENS.ATTRIBUTE.test(token)) {
+    last.push("not", token);
     return "state4";
-  } else {
-    return `Error: Expected attribute but got: '${token}'`;
   }
+  throw new Error(`Expected attribute or '{' but got '${token}'`);
 }
 
-function curlyCommaConjunction(processedFilterRequest, token) {
-  log.info("curlyCommaConjunctionState with token: ", token);
-
-  if (MATCH_CLOSE_CURLY.test(token)) {
-    return "state1";
-  } else if (MATCH_COMMA.test(token)) {
-    return "state8";
-  } else {
-    return `Error: Expected ',' or '}' but got: '${token}'`;
-  }
+function curlyCommaConjunction(_, token) {
+  log.info("curlyCommaConjunctionState with token:", token);
+  if (TOKENS.CLOSE_CURLY.test(token)) return "state1";
+  if (TOKENS.COMMA.test(token)) return "state8";
+  throw new Error(`Expected ',' or '}' but got '${token}'`);
 }
 
-function newTermCurlyConjunction(processedFilterRequest, token) {
-  log.info("newTermCurlyConjunctionState with token: ", token);
+function newTermCurlyConjunction(processedRequest, token) {
+  log.info("newTermCurlyConjunctionState with token:", token);
+  const set = getCurrentSet(processedRequest, token);
 
-  let lastEntry = processedFilterRequest[processedFilterRequest.length - 1];
-  let currentSet;
-
-  if (Array.isArray(lastEntry) && lastEntry.length > 0) {
-    currentSet = lastEntry[lastEntry.length - 1];
-    if (!(currentSet instanceof Set)) {
-      return `Error: Expected a Set object for curly term but got: '${token}'`;
-    }
-  } else {
-    return `Error: Invalid state for curly term. Expected an array containing a Set. Got: '${token}'`;
-  }
-
-  if (MATCH_ATTRIBUTE.test(token)) {
-    currentSet.add(token);
+  if (TOKENS.ATTRIBUTE.test(token)) {
+    set.add(token);
     return "state7";
-  } else {
-    return `Error: Expected attribute but got: '${token}'`;
   }
+  throw new Error(`Expected attribute but got '${token}'`);
 }
 
-function curlyCommaDisjunction(processedFilterRequest, token) {
-  log.info("curlyCommaDisjunctionState with token: ", token);
-
-  if (MATCH_CLOSE_CURLY.test(token)) {
-    return "state4";
-  } else if (MATCH_COMMA.test(token)) {
-    return "state10";
-  } else {
-    return `Error: Expected ',' or '}' but got: '${token}'`;
-  }
+function curlyCommaDisjunction(_, token) {
+  log.info("curlyCommaDisjunctionState with token:", token);
+  if (TOKENS.CLOSE_CURLY.test(token)) return "state4";
+  if (TOKENS.COMMA.test(token)) return "state10";
+  throw new Error(`Expected ',' or '}' but got '${token}'`);
 }
 
-function newTermCurlyDisjunction(processedFilterRequest, token) {
-  log.info("newTermCurlyDisjunctionState with token: ", token);
+function newTermCurlyDisjunction(processedRequest, token) {
+  log.info("newTermCurlyDisjunctionState with token:", token);
+  const set = getCurrentSet(processedRequest, token);
 
-  let lastEntry = processedFilterRequest[processedFilterRequest.length - 1];
-  let currentSet;
-
-  if (Array.isArray(lastEntry) && lastEntry.length > 0) {
-    currentSet = lastEntry[lastEntry.length - 1];
-    if (!(currentSet instanceof Set)) {
-      return `Error: Expected a Set object for curly term but got: '${token}'`;
-    }
-  } else {
-    return `Error: Invalid state for curly term. Expected an array containing a Set. Got: '${token}'`;
-  }
-
-  if (MATCH_ATTRIBUTE.test(token)) {
-    currentSet.add(token);
+  if (TOKENS.ATTRIBUTE.test(token)) {
+    set.add(token);
     return "state9";
-  } else {
-    return `Error: Expected attribute but got: '${token}'`;
   }
+  throw new Error(`Expected attribute but got '${token}'`);
 }
 
-function smallerGreaterTermConjunction(processedFilterRequest, token) {
-  log.info("smallerGreaterTermConjunctionState with token: ", token);
-
-  if (MATCH_NUMBER.test(token)) {
-    let previousElement = processedFilterRequest[processedFilterRequest.length - 1];
-    previousElement.push(token);
+function smallerGreaterTermConjunction(processedRequest, token) {
+  log.info("smallerGreaterTermConjunctionState with token:", token);
+  if (TOKENS.NUMBER.test(token)) {
+    processedRequest[processedRequest.length - 1].push(token);
     return "state1";
-  } else {
-    return `Error: Expected number but got: '${token}'`;
   }
+  throw new Error(`Expected number but got '${token}'`);
 }
 
-function smallerGreaterTermDisjunction(processedFilterRequest, token) {
-  log.info("smallerGreaterTermDisjunctionState with token: ", token);
-
-  if (MATCH_NUMBER.test(token)) {
-    let previousElement = processedFilterRequest[processedFilterRequest.length - 1];
-    previousElement.push(token);
+function smallerGreaterTermDisjunction(processedRequest, token) {
+  log.info("smallerGreaterTermDisjunctionState with token:", token);
+  if (TOKENS.NUMBER.test(token)) {
+    processedRequest[processedRequest.length - 1].push(token);
     return "state4";
-  } else {
-    return `Error: Expected number but got: '${token}'`;
   }
+  throw new Error(`Expected number but got '${token}'`);
+}
+
+// ========= helper functions =========
+function getCurrentSet(processedRequest, token) {
+  const last = processedRequest[processedRequest.length - 1];
+  if (!Array.isArray(last) || !(last[last.length - 1] instanceof Set)) {
+    throw new Error(`Expected a Set object but got '${token}'`);
+  }
+  return last[last.length - 1];
 }
