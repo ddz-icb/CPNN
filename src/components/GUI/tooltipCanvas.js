@@ -2,7 +2,7 @@ import log from "../../logger.js";
 import axios from "axios";
 import { useState, useEffect, useRef } from "react";
 import { ReactComponent as XIcon } from "../../icons/x.svg";
-import { getDescriptionUniprotData, getFullNameUniprotData, getPdbIdUniprotData } from "../domain_service/parsing/uniprotDataParser.js";
+import { getDescriptionUniprotData, getFullNameUniprotData, getPdbIdUniprotData } from "../domain_service/parsing/uniprotDataParsing.js";
 import * as $3Dmol from "3dmol/build/3Dmol.js";
 import { useAppearance } from "../adapters/state/appearanceState.js";
 import { useContainer } from "../adapters/state/containerState.js";
