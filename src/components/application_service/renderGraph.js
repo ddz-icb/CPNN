@@ -14,7 +14,7 @@ import { tooltipInit, useTooltipSettings } from "../adapters/state/tooltipState.
 import { useError } from "../adapters/state/errorState.js";
 import { useReset } from "../adapters/state/resetState.js";
 import { useColorschemeState } from "../adapters/state/colorschemeState.js";
-import { getNodeIdName } from "../domain_service/parsing/nodeIdParser.js";
+import { getNodeIdName } from "../domain_service/parsing/nodeIdParsing.js";
 import { getSimulation } from "../domain_service/physics_calculations/getSimulation.js";
 import { DownloadStateControl } from "./state_control/downloadStateControl.js";
 import { AppearanceStateControl } from "./state_control/appearanceStateControl.js";

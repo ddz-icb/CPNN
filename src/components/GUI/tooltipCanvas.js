@@ -2,7 +2,7 @@ import log from "../../logger.js";
 import axios from "axios";
 import { useState, useEffect, useRef } from "react";
 import { ReactComponent as XIcon } from "../../icons/x.svg";
-import { extractDescription, extractFullName, extractPdbId } from "../other/extract.js";
+import { getDescriptionUniprotData, getFullNameUniprotData, getPdbIdUniprotData } from "../domain_service/parsing/uniprotDataParser.js";
 import * as $3Dmol from "3dmol/build/3Dmol.js";
 import { useAppearance } from "../adapters/state/appearanceState.js";
 import { useContainer } from "../adapters/state/containerState.js";
@@ -89,7 +89,7 @@ export function ClickTooltip() {
           return;
         }
 
-        const fullName = extractFullName(responseUniprot.data);
+        const fullName = getFullNameUniprotData(responseUniprot.data);
         if (!fullName) {
           log.info("No full name extracted");
           setFullName("");
@@ -97,7 +97,7 @@ export function ClickTooltip() {
         }
         setFullName(fullName);
 
-        const description = extractDescription(responseUniprot.data);
+        const description = getDescriptionUniprotData(responseUniprot.data);
         if (!description) {
           log.info("No description extracted");
           setDescription("");
@@ -105,7 +105,7 @@ export function ClickTooltip() {
         }
         setDescription(description);
 
-        const pdbId = extractPdbId(responseUniprot.data);
+        const pdbId = getPdbIdUniprotData(responseUniprot.data);
         if (!pdbId) {
           log.info("No PDB ID extracted");
           setPdbId(null);

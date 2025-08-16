@@ -1,7 +1,7 @@
 import UnionFind from "union-find";
 import Graph from "graphology";
 import louvain from "graphology-communities-louvain";
-import { getIdsSeparateEntries, getPhosphositesProtIdEntry, getProtIdAndNameEntry, getProtIdsWithIsoform } from "../parsing/nodeIdParser.js";
+import { getIdsSeparateEntries, getPhosphositesProtIdEntry, getProtIdAndNameEntry, getProtIdsWithIsoform } from "../parsing/nodeIdParsing.js";
 
 export function getComponentData(graphData) {
   const idToIndexMap = {};

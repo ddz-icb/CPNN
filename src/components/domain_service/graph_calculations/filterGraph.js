@@ -1,5 +1,5 @@
 import UnionFind from "union-find";
-import { getIdsSeparateEntries, getPhosphositesProtIdEntry, getProtIdAndNameEntry, getProtIdsWithIsoform } from "../parsing/nodeIdParser.js";
+import { getIdsSeparateEntries, getPhosphositesProtIdEntry, getProtIdAndNameEntry, getProtIdsWithIsoform } from "../parsing/nodeIdParsing.js";
 import { getAdjacentData, getComponentData } from "./graphUtils.js";
 
 export function filterByThreshold(graphData, linkThreshold) {
