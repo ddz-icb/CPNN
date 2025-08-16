@@ -3,7 +3,7 @@ import canvasToSvg from "canvas-to-svg";
 import { jsPDF } from "jspdf";
 import { svg2pdf } from "svg2pdf.js";
 import { drawCircleCanvas, drawLineCanvas } from "./canvas_drawing/draw.js";
-import { getFileNameWithoutExtension } from "../other/fileFunctions.js";
+import { getFileNameWithoutExtension } from "./parsing/fileParsing.js";
 
 function triggerDownload(blob, filename) {
   log.info(`Downloading ${filename}`);

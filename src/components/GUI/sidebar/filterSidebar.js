@@ -7,8 +7,6 @@ import "codemirror/addon/mode/simple.js";
 import "codemirror/theme/material.css";
 import "../../config/editorSyntaxHighlighting.js";
 
-import { parseAttribsFilter } from "../../other/filterParser.js";
-
 import { Button, CodeEditorBlock, FieldBlock, SliderBlock, SwitchBlock } from "../reusable_components/sidebarComponents.js";
 import {
   filterInit,
@@ -32,6 +30,7 @@ import { handleEditorChange, runCodeEditor } from "../handlers/buttonHandlerFunc
 import { useFilter } from "../../adapters/state/filterState.js";
 import { useAppearance } from "../../adapters/state/appearanceState.js";
 import { useGraphState } from "../../adapters/state/graphState.js";
+import { parseAttribsFilter } from "../../domain_service/parsing/attribsFilterParsing.js";
 
 export function FilterSidebar() {
   const { filter, setFilter, setAllFilter } = useFilter();

@@ -2,7 +2,7 @@ import log from "../../../logger.js";
 import Papa from "papaparse";
 import axios from "axios";
 import { expectedPhysicTypes } from "../../adapters/state/physicsState.js";
-import { parseFileAsText } from "../../other/fileFunctions.js";
+import { getFileAsText } from "./fileParsing.js";
 import { filterByThreshold, filterMaxCompSize, filterMinCompSize, filterNodesExist } from "../graph_calculations/filterGraph.js";
 
 export async function parseGraphFile(file, takeAbs, minCorrForEdge, minCompSizeForNode, maxCompSizeForNode, takeSpearmanCoefficient, mergeProteins) {
@@ -11,7 +11,7 @@ export async function parseGraphFile(file, takeAbs, minCorrForEdge, minCompSizeF
   }
 
   try {
-    const fileContent = await parseFileAsText(file);
+    const fileContent = await getFileAsText(file);
     const graphData = await parseGraph(
       file.name,
       fileContent,

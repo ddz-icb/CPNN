@@ -1,4 +1,4 @@
-import log from "../../logger.js";
+import log from "../../../logger.js";
 
 const MATCH_ATTRIBUTE = /^(?!\{|}|not|and|or|<|>|\(|\)|,).*$/; // Matches non-empty string excluding specified tokens
 const MATCH_OPEN_PAREN = /^\($/; // Matches '('
