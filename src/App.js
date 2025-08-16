@@ -2,7 +2,6 @@ import "./index.css";
 import log from "./logger.js";
 import { useEffect } from "react";
 
-import { RenderCanvas } from "./components/application_service/renderCanvas.js";
 import { Sidebar } from "./components/gui/sidebar/sidebar.js";
 import { HeaderBar } from "./components/gui/headerbar/headerbar.js";
 import {
@@ -24,6 +23,7 @@ import { graphService } from "./components/application_service/graphService.js";
 import { useGraphState } from "./components/adapters/state/graphState.js";
 import { filterMergeProteins } from "./components/domain_service/graph_calculations/filterGraph.js";
 import { applyNodeMapping } from "./components/domain_service/graph_calculations/applyMapping.js";
+import { RenderGraph } from "./components/application_service/renderGraph.js";
 
 function App() {
   const { setFilter, setAllFilter } = useFilter();
@@ -94,7 +94,7 @@ function App() {
         <HeaderBar />
         <Sidebar />
         <div className="canvas">
-          <RenderCanvas />
+          <RenderGraph />
           <Error />
         </div>
       </main>

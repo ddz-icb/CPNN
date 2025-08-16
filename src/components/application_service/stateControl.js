@@ -2,9 +2,8 @@ import { useEffect } from "react";
 import log from "../../logger.js";
 import * as d3 from "d3";
 
-import { downloadAsPDF, downloadAsPNG, downloadAsSVG, downloadGraphJson, downloadLegendPdf } from "./download.js";
-import { changeCircleBorderColor, changeNodeColors, changeNodeLabelColor, radius } from "../other/draw.js";
-import { lightTheme, themeInit } from "../adapters/state/appearanceState.js";
+import { downloadGraphJson } from "../domain_service/download.js";
+import { changeCircleBorderColor, changeNodeColors, changeNodeLabelColor, radius } from "../domain_service/canvas_drawing/draw.js";
 import { getAdjacentData, getComponentData, getCommunityMap } from "../domain_service/graph_calculations/graphUtils.js";
 import {
   accuracyBarnesHut,
@@ -17,12 +16,10 @@ import {
 } from "../domain_service/physics_calculations/physicsGraph.js";
 import { usePhysics } from "../adapters/state/physicsState.js";
 import { useFilter } from "../adapters/state/filterState.js";
-import { useDownload } from "../adapters/state/downloadState.js";
 import { useAppearance } from "../adapters/state/appearanceState.js";
 import { useContainer } from "../adapters/state/containerState.js";
 import { useGraphState } from "../adapters/state/graphState.js";
 
-import { useMappingState } from "../adapters/state/mappingState.js";
 import { useColorschemeState } from "../adapters/state/colorschemeState.js";
 import {
   filterActiveNodesForPixi,
@@ -37,15 +34,13 @@ import {
 } from "../domain_service/graph_calculations/filterGraph.js";
 import { applyPhysics } from "../domain_service/physics_calculations/applyPhysics.js";
 
-export function StateControl({ simulation, app, redraw }) {
+export function StateControl({ simulation }) {
   const { physics, setPhysics } = usePhysics();
   const { filter, setFilter } = useFilter();
-  const { download, setDownload } = useDownload();
   const { appearance, setAppearance } = useAppearance();
   const { colorschemeState, setColorschemeState } = useColorschemeState();
   const { container, setContainer } = useContainer();
   const { graphState, setGraphState } = useGraphState();
-  const { mappingState, setMappingState } = useMappingState();
 
   // filter nodes and links //
   useEffect(() => {
@@ -124,159 +119,6 @@ export function StateControl({ simulation, app, redraw }) {
 
     applyPhysics(physics, setPhysics);
   }, [graphState.graph?.data?.physics]);
-
-  // enable/disable node labels
-  useEffect(() => {
-    if (!graphState.circles || !app) return;
-    log.info("Enabling/Disabling node labels");
-
-    if (appearance.showNodeLabels == true) {
-      graphState.graph.data.nodes.forEach((n) => {
-        const { nodeLabel } = graphState.nodeMap[n.id];
-        nodeLabel.visible = true;
-      });
-      simulation.on("tick.redraw", () => redraw(graphState.graph.data));
-      redraw(graphState.graph.data);
-    } else {
-      graphState.nodeLabels.children.forEach((label) => (label.visible = false));
-      simulation.on("tick.redraw", () => redraw(graphState.graph.data));
-      redraw(graphState.graph.data);
-    }
-  }, [appearance.showNodeLabels]);
-
-  // download graph data as json //
-  useEffect(() => {
-    if (download.json != null && graphState.graph) {
-      try {
-        log.info("Downloading graph as JSON");
-        downloadGraphJson(graphState.graph);
-      } catch (error) {
-        log.error("Error downloading the graph as JSON:", error);
-      }
-    }
-  }, [download.json]);
-
-  // download graph data as json with coordinates and physics //
-  useEffect(() => {
-    if (download.jsonCoordsPhysics != null && graphState.graph) {
-      try {
-        log.info("Downloading graph as JSON with coordinates and physics");
-        downloadGraphJson(graphState.graph, graphState.nodeMap, physics);
-      } catch (error) {
-        log.error("Error downloading the graph as JSON with coordinates:", error);
-      }
-    }
-  }, [download.jsonCoordsPhysics]);
-
-  // download graph as png //
-  useEffect(() => {
-    if (download.png != null && graphState.graph) {
-      log.info("Downloading graph as PNG");
-
-      changeCircleBorderColor(graphState.circles, lightTheme.circleBorderColor);
-      changeNodeLabelColor(graphState.nodeLabels, lightTheme.textColor);
-
-      downloadAsPNG(app, document, graphState.graph.name);
-
-      changeCircleBorderColor(graphState.circles, appearance.theme.circleBorderColor);
-      changeNodeLabelColor(graphState.nodeLabels, appearance.theme.textColor);
-    }
-  }, [download.png]);
-
-  // download graph as svg //
-  useEffect(() => {
-    if (download.svg != null && graphState.graph) {
-      log.info("Downloading graph as SVG");
-
-      downloadAsSVG(
-        graphState.graph,
-        appearance.linkWidth,
-        colorschemeState.linkColorscheme.data,
-        colorschemeState.linkAttribsToColorIndices,
-        themeInit.circleBorderColor,
-        themeInit.textColor,
-        colorschemeState.nodeColorscheme.data,
-        colorschemeState.nodeAttribsToColorIndices,
-        graphState.nodeMap
-      );
-    }
-  }, [download.svg]);
-
-  // download graph as pdf //
-  useEffect(() => {
-    if (download.pdf != null && graphState.graph) {
-      log.info("Downloading graph as PDF");
-
-      downloadAsPDF(
-        graphState.graph,
-        appearance.linkWidth,
-        colorschemeState.linkColorscheme.data,
-        colorschemeState.linkAttribsToColorIndices,
-        themeInit.circleBorderColor,
-        themeInit.textColor,
-        colorschemeState.nodeColorscheme.data,
-        colorschemeState.nodeAttribsToColorIndices,
-        graphState.nodeMap
-      );
-    }
-  }, [download.pdf]);
-
-  // download legend as pdf //
-  useEffect(() => {
-    if (download.legendPdf != null && graphState.graph) {
-      log.info("Downloading legend as PDF");
-
-      downloadLegendPdf(
-        graphState.graph.name,
-        colorschemeState.linkColorscheme.data,
-        colorschemeState.linkAttribsToColorIndices,
-        colorschemeState.nodeColorscheme.data,
-        colorschemeState.nodeAttribsToColorIndices,
-        mappingState.activeMapping
-      );
-    }
-  }, [download.legendPdf]);
-
-  // switch colors upon changing theme //
-  useEffect(() => {
-    if (!graphState.circles) return;
-    log.info("Switching colors");
-
-    changeCircleBorderColor(graphState.circles, appearance.theme.circleBorderColor);
-    changeNodeLabelColor(graphState.nodeLabels, appearance.theme.textColor);
-  }, [appearance.theme]);
-
-  // switch node color scheme
-  useEffect(() => {
-    if (!graphState.circles) return;
-    log.info("Changing node color scheme");
-
-    changeNodeColors(
-      graphState.circles,
-      graphState.nodeMap,
-      appearance.theme.circleBorderColor,
-      colorschemeState.nodeColorscheme.data,
-      colorschemeState.nodeAttribsToColorIndices
-    );
-  }, [colorschemeState.nodeColorscheme, colorschemeState.nodeAttribsToColorIndices]);
-
-  // switch link color scheme
-  useEffect(() => {
-    if (!simulation || !graphState.lines) return;
-    log.info("Changing link color scheme");
-
-    simulation.on("tick.redraw", () => redraw(graphState.graph.data));
-    redraw(graphState.graph.data);
-  }, [colorschemeState.linkColorscheme, colorschemeState.linkAttribsToColorIndices]);
-
-  // change link width
-  useEffect(() => {
-    if (!simulation || !graphState.lines) return;
-    log.info("Changing link width", physics.communityForceStrength);
-
-    simulation.on("tick.redraw", () => redraw(graphState.graph.data));
-    redraw(graphState.graph.data);
-  }, [appearance.linkWidth]);
 
   // enable or disable link force //
   useEffect(() => {

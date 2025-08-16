@@ -4,7 +4,7 @@ import * as PIXI from "pixi.js";
 import { useRef, useEffect, useState } from "react";
 import { getNodeLabelOffsetY, handleResize, initDragAndZoom } from "./interactiveCanvas.js";
 import { initTooltips, Tooltips } from "../gui/tooltipCanvas.js";
-import { radius, drawCircle, drawLine, getTextStyle } from "../other/draw.js";
+import { radius, drawCircle, drawLine, getTextStyle } from "../domain_service/canvas_drawing/draw.js";
 import { StateControl } from "./stateControl.js";
 import { linkLengthInit, nodeRepulsionStrengthInit, xStrengthInit, yStrengthInit } from "../adapters/state/physicsState.js";
 import { useAppearance } from "../adapters/state/appearanceState.js";
@@ -16,8 +16,10 @@ import { useReset } from "../adapters/state/resetState.js";
 import { useColorschemeState } from "../adapters/state/colorschemeState.js";
 import { getNodeIdName } from "../domain_service/parsing/nodeIdParser.js";
 import { getSimulation } from "../domain_service/physics_calculations/getSimulation.js";
+import { DownloadStateControl } from "./downloadStateControl.js";
+import { AppearanceStateControl } from "./appearanceStateControl.js";
 
-export function RenderCanvas() {
+export function RenderGraph() {
   const { appearance, setAppearance } = useAppearance();
   const { colorschemeState, setColorschemeState } = useColorschemeState();
   const { graphState, setGraphState, setAllGraphState } = useGraphState();
@@ -255,7 +257,9 @@ export function RenderCanvas() {
   return (
     <>
       <Tooltips />
-      <StateControl simulation={simulation} app={app} redraw={redraw} />
+      <StateControl simulation={simulation} />
+      <DownloadStateControl app={app} />
+      <AppearanceStateControl app={app} simulation={simulation} redraw={redraw} />
       <div ref={containerRef} className="container" />
     </>
   );

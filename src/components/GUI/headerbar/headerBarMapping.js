@@ -1,5 +1,5 @@
 import { useColorschemeState } from "../../adapters/state/colorschemeState.js";
-import { fallbackColor, getColor } from "../../other/draw.js";
+import { fallbackColor, getColor } from "../../domain_service/canvas_drawing/draw.js";
 
 export function HeaderbarColorMapping() {
   const { colorschemeState } = useColorschemeState();
