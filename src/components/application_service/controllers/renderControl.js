@@ -8,7 +8,7 @@ import { radius, drawCircle, drawLine, getTextStyle, getBitMapStyle } from "../.
 import { PhysicsStateControl } from "./physicsControl.js";
 import { gravityStrengthInit, linkLengthInit, nodeRepulsionStrengthInit } from "../../adapters/state/physicsState.js";
 import { useAppearance } from "../../adapters/state/appearanceState.js";
-import { useGraphState } from "../../adapters/state/graphState.js";
+import { circlesInit, filteredAfterStartInit, graphInit, linesInit, nodeMapInit, useGraphState } from "../../adapters/state/graphState.js";
 import { useContainer } from "../../adapters/state/containerState.js";
 import { tooltipInit, useTooltipSettings } from "../../adapters/state/tooltipState.js";
 import { useError } from "../../adapters/state/errorState.js";
@@ -40,14 +40,11 @@ export function RenderGraph() {
   useEffect(() => {
     if (!reset) return;
 
-    setGraphState("", (prev) => ({
-      ...prev,
-      graph: null,
-      nodeMap: null,
-      circles: null,
-      lines: null,
-      filteredAfterStart: false,
-    }));
+    setGraphState("graph", graphInit);
+    setGraphState("nodeMap", nodeMapInit);
+    setGraphState("circles", circlesInit);
+    setGraphState("lines", linesInit);
+    setGraphState("filteredAfterStart", filteredAfterStartInit);
 
     setAllTooltipSettings(tooltipInit);
 
@@ -114,7 +111,7 @@ export function RenderGraph() {
       app.stage.addChild(newNodeLabels);
 
       const offsetSpawnValue = graphState.graph.data.nodes.length * 10;
-      const nodeMap = {};
+      const newNodeMap = {};
       for (const node of graphState.graph.data.nodes) {
         let circle = new PIXI.Graphics();
         circle = drawCircle(circle, node, theme.circleBorderColor, colorschemeState.nodeColorscheme.data, colorschemeState.nodeAttribsToColorIndices);
@@ -134,16 +131,13 @@ export function RenderGraph() {
         nodeLabel.visible = false;
         newNodeLabels.addChild(nodeLabel);
 
-        nodeMap[node.id] = { node, circle, nodeLabel };
+        newNodeMap[node.id] = { node, circle, nodeLabel };
       }
 
-      setGraphState("", (prev) => ({
-        ...prev,
-        lines: newLines,
-        circles: newCircles,
-        nodeMap: nodeMap,
-        nodeLabels: newNodeLabels,
-      }));
+      setGraphState("nodeLabels", newNodeLabels);
+      setGraphState("circles", newCircles);
+      setGraphState("lines", newLines);
+      setGraphState("nodeMap", newNodeMap);
     } catch (error) {
       setError(error.message);
       log.error(error.message);
