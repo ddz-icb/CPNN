@@ -1,10 +1,24 @@
 import log from "../../../logger.js";
 import * as d3 from "d3";
 import * as PIXI from "pixi.js";
+import { getNodeIdName } from "../parsing/nodeIdParsing.js";
 
 export const radius = 8;
 export const color = d3.scaleOrdinal(d3.schemeCategory10);
 export const fallbackColor = "#777777";
+
+export function getBitMapStyle(nodeId) {
+  return {
+    text: getNodeIdName(nodeId),
+    style: {
+      chars: [["A", "Z"], ["a", "z"], ["0", "9"], " !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"],
+      padding: 4,
+      resolution: 4,
+      distanceField: { type: "sdf", range: 8 },
+      fontSize: 12,
+    },
+  };
+}
 
 export function getTextStyle(textColor) {
   return new PIXI.TextStyle({

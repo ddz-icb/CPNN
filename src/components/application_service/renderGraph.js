@@ -4,7 +4,7 @@ import * as PIXI from "pixi.js";
 import { useRef, useEffect, useState } from "react";
 import { getNodeLabelOffsetY, handleResize, initDragAndZoom } from "./interactiveCanvas.js";
 import { initTooltips, Tooltips } from "../gui/tooltipCanvas.js";
-import { radius, drawCircle, drawLine, getTextStyle } from "../domain_service/canvas_drawing/draw.js";
+import { radius, drawCircle, drawLine, getTextStyle, getBitMapStyle } from "../domain_service/canvas_drawing/draw.js";
 import { PhysicsStateControl } from "./state_control/physicsStateControl.js";
 import { gravityStrengthInit, linkLengthInit, nodeRepulsionStrengthInit } from "../adapters/state/physicsState.js";
 import { useAppearance } from "../adapters/state/appearanceState.js";
@@ -77,20 +77,23 @@ export function RenderGraph() {
     setContainer("width", width);
 
     const initPIXI = async () => {
-      const app = new PIXI.Application();
-      await app.init({
-        width,
-        height,
-        antialias: !0,
-        resolution: window.devicePixelRatio || 2,
-        backgroundAlpha: 0,
-        autoDensity: true,
-      });
-
-      containerRef.current.appendChild(app.canvas);
-
-      setApp(app);
-      log.info("PIXI Initialized successfully");
+      try {
+        const app = new PIXI.Application();
+        await app.init({
+          width,
+          height,
+          antialias: !0,
+          resolution: window.devicePixelRatio || 2,
+          backgroundAlpha: 0,
+          autoDensity: true,
+        });
+        containerRef.current.appendChild(app.canvas);
+        setApp(app);
+        log.info("PIXI Initialized successfully");
+      } catch (error) {
+        setError(error.message);
+        log.error(error.message);
+      }
     };
 
     initPIXI();
@@ -102,54 +105,49 @@ export function RenderGraph() {
       return;
     log.info("Setting stage");
 
-    const newLines = new PIXI.Graphics();
-    const newCircles = new PIXI.Container();
-    const newNodeLabels = new PIXI.Container();
-    app.stage.addChild(newLines);
-    app.stage.addChild(newCircles);
-    app.stage.addChild(newNodeLabels);
+    try {
+      const newLines = new PIXI.Graphics();
+      const newCircles = new PIXI.Container();
+      const newNodeLabels = new PIXI.Container();
+      app.stage.addChild(newLines);
+      app.stage.addChild(newCircles);
+      app.stage.addChild(newNodeLabels);
 
-    const offsetSpawnValue = graphState.graph.data.nodes.length * 10;
-    const nodeMap = {};
-    for (const node of graphState.graph.data.nodes) {
-      let circle = new PIXI.Graphics();
-      circle = drawCircle(circle, node, theme.circleBorderColor, colorschemeState.nodeColorscheme.data, colorschemeState.nodeAttribsToColorIndices);
-      circle.id = node.id;
-      circle.interactive = true;
-      circle.buttonMode = true;
-      circle.x = node.x || container.width / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
-      circle.y = node.y || container.height / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
-      initTooltips(circle, node, setTooltipSettings);
-      newCircles.addChild(circle);
+      const offsetSpawnValue = graphState.graph.data.nodes.length * 10;
+      const nodeMap = {};
+      for (const node of graphState.graph.data.nodes) {
+        let circle = new PIXI.Graphics();
+        circle = drawCircle(circle, node, theme.circleBorderColor, colorschemeState.nodeColorscheme.data, colorschemeState.nodeAttribsToColorIndices);
+        circle.id = node.id;
+        circle.interactive = true;
+        circle.buttonMode = true;
+        circle.x = node.x || container.width / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
+        circle.y = node.y || container.height / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
+        newCircles.addChild(circle);
+        initTooltips(circle, node, setTooltipSettings);
 
-      let nodeLabel = new PIXI.BitmapText({
-        text: getNodeIdName(node.id),
-        style: {
-          chars: [["A", "Z"], ["a", "z"], ["0", "9"], " !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"],
-          padding: 4,
-          resolution: 4,
-          distanceField: { type: "sdf", range: 8 },
-          fontSize: 12,
-        },
-      });
+        let nodeLabel = new PIXI.BitmapText(getBitMapStyle(node.id));
+        nodeLabel.style = getTextStyle(theme.textColor);
+        nodeLabel.x = circle.x;
+        nodeLabel.y = circle.y + getNodeLabelOffsetY(node.id);
+        nodeLabel.pivot.x = nodeLabel.width / 2;
+        nodeLabel.visible = false;
+        newNodeLabels.addChild(nodeLabel);
 
-      nodeLabel.style = getTextStyle(theme.textColor);
-      nodeLabel.x = circle.x;
-      nodeLabel.y = circle.y + getNodeLabelOffsetY(node.id);
-      nodeLabel.pivot.x = nodeLabel.width / 2;
-      nodeLabel.visible = false;
-      newNodeLabels.addChild(nodeLabel);
+        nodeMap[node.id] = { node, circle, nodeLabel };
+      }
 
-      nodeMap[node.id] = { node, circle, nodeLabel };
+      setGraphState("", (prev) => ({
+        ...prev,
+        lines: newLines,
+        circles: newCircles,
+        nodeMap: nodeMap,
+        nodeLabels: newNodeLabels,
+      }));
+    } catch (error) {
+      setError(error.message);
+      log.error(error.message);
     }
-
-    setGraphState("", (prev) => ({
-      ...prev,
-      lines: newLines,
-      circles: newCircles,
-      nodeMap: nodeMap,
-      nodeLabels: newNodeLabels,
-    }));
   }, [app, graphState.graph, colorschemeState.nodeColorscheme, container.width, container.height, theme]);
 
   // init simulation //
@@ -159,10 +157,14 @@ export function RenderGraph() {
     }
     log.info("Init simulation");
 
-    const newSimulation = getSimulation(container.width, container.height, linkLengthInit, gravityStrengthInit, nodeRepulsionStrengthInit);
-    initDragAndZoom(app, newSimulation, radius, setTooltipSettings, container.width, container.height);
-
-    setSimulation(newSimulation);
+    try {
+      const newSimulation = getSimulation(container.width, container.height, linkLengthInit, gravityStrengthInit, nodeRepulsionStrengthInit);
+      initDragAndZoom(app, newSimulation, radius, setTooltipSettings, container.width, container.height);
+      setSimulation(newSimulation);
+    } catch (error) {
+      setError(error.message);
+      log.error(error.message);
+    }
   }, [app, graphState.graph]);
 
   // running simulation //
@@ -189,7 +191,7 @@ export function RenderGraph() {
       setSimulation(simulation);
     } catch (error) {
       setError("Error loading graph. The graph data is most likely incorrect", error.message);
-      log.error(`${error.message}`);
+      log.error(error.message);
 
       if (simulation) {
         simulation.stop();
