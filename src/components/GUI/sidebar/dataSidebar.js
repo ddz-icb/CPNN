@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { TableList, ButtonPopup, SwitchBlock, SliderBlock, FieldBlock, Button, PopupTextField } from "../reusable_components/sidebarComponents.js";
 import { exampleGraphJson } from "../../assets/exampleGraphJSON.js";
-import { downloadCsvFile, downloadObjectAsFile } from "../../domain_service/download.js";
+import { downloadCsvFile, downloadObjectAsFile } from "../../domain_service/download/download.js";
 import { exampleGraphCsv } from "../../assets/exampleGraphCSV.js";
 import { exampleMappingCsv } from "../../assets/exampleMappingCSV.js";
 import { exampleGraphRaw } from "../../assets/exampleGraphRawTSV.js";
@@ -20,9 +20,9 @@ import {
   uploadPathwayMappingDescription,
 } from "./descriptions/dataDescriptions.js";
 import { mergeProteinsDescription } from "./descriptions/filterDescriptions.js";
-import { graphService } from "../../application_service/graphService.js";
+import { graphService } from "../../application_service/services/graphService.js";
 import { useMappingState } from "../../adapters/state/mappingState.js";
-import { mappingService } from "../../application_service/mappingService.js";
+import { mappingService } from "../../application_service/services/mappingService.js";
 import { useGraphState } from "../../adapters/state/graphState.js";
 
 export function DataSidebar() {

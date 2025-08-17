@@ -1,18 +1,18 @@
-import log from "../../logger.js";
+import log from "../../../logger.js";
 import {
   defaultColorschemeNames,
   ibmAntiBlindness,
   manyColors,
   okabe_ItoAntiBlindness,
   useColorschemeState,
-} from "../adapters/state/colorschemeState.js";
+} from "../../adapters/state/colorschemeState.js";
 import {
   createColorscheme,
   deleteColorscheme,
   getColorscheme,
   loadColorschemeNames,
   createColorschemeIfNotExists,
-} from "../domain_model/colorschemeManager.js";
+} from "../../domain_model/colorschemeManager.js";
 import { errorService } from "./errorService.js";
 
 export const colorschemeService = {

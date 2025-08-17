@@ -7,7 +7,7 @@ import * as $3Dmol from "3dmol/build/3Dmol.js";
 import { useAppearance } from "../adapters/state/appearanceState.js";
 import { useContainer } from "../adapters/state/containerState.js";
 import { useTooltipSettings } from "../adapters/state/tooltipState.js";
-import { mappingService } from "../application_service/mappingService.js";
+import { mappingService } from "../application_service/services/mappingService.js";
 import { useMappingState } from "../adapters/state/mappingState.js";
 import { useTheme } from "../adapters/state/themeState.js";
 

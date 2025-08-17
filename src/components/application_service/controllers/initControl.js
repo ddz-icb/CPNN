@@ -1,11 +1,11 @@
-import log from "../../logger.js";
+import log from "../../../logger.js";
 import { useEffect } from "react";
-import { graphService } from "./graphService.js";
-import { colorschemeService } from "./colorschemeService.js";
-import { themeService } from "./themeService.js";
-import { mappingService } from "./mappingService.js";
+import { graphService } from "../services/graphService.js";
+import { colorschemeService } from "../services/colorschemeService.js";
+import { themeService } from "../services/themeService.js";
+import { mappingService } from "../services/mappingService.js";
 
-export function Init({}) {
+export function Init() {
   useEffect(() => {
     log.info("Setting init graph");
     graphService.handleSetInitGraph();

@@ -6,7 +6,7 @@ import { useDownload } from "../../adapters/state/downloadState.js";
 import { useGraphState } from "../../adapters/state/graphState.js";
 import { useMappingState } from "../../adapters/state/mappingState.js";
 import { usePhysics } from "../../adapters/state/physicsState.js";
-import { downloadAsPDF, downloadAsPNG, downloadAsSVG, downloadGraphJson, downloadLegendPdf } from "../../domain_service/download.js";
+import { downloadAsPDF, downloadAsPNG, downloadAsSVG, downloadGraphJson, downloadLegendPdf } from "../../domain_service/download/download.js";
 import { changeCircleBorderColor, changeNodeLabelColor } from "../../domain_service/canvas_drawing/draw.js";
 import { lightTheme, themeInit, useTheme } from "../../adapters/state/themeState.js";
 

@@ -2,7 +2,7 @@ import { useRef, useState, Fragment } from "react";
 import { ReactComponent as TrashIcon } from "../../../icons/trash.svg";
 import { SwitchBlock, Popup, TableList, SliderBlock, Button, PopupTextField } from "../reusable_components/sidebarComponents.js";
 import { colorschemeCsv } from "../../assets/exampleColorschemeCSV.js";
-import { downloadCsvFile } from "../../domain_service/download.js";
+import { downloadCsvFile } from "../../domain_service/download/download.js";
 import log from "../../../logger.js";
 import {
   linkWidthDescription,
@@ -12,7 +12,7 @@ import {
 } from "./descriptions/appearanceDescriptions.js";
 import { useAppearance, linkWidthInit } from "../../adapters/state/appearanceState.js";
 import { useColorschemeState } from "../../adapters/state/colorschemeState.js";
-import { colorschemeService } from "../../application_service/colorschemeService.js";
+import { colorschemeService } from "../../application_service/services/colorschemeService.js";
 
 export function AppearanceSidebar() {
   return (

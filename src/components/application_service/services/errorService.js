@@ -1,5 +1,5 @@
-import { useError } from "../adapters/state/errorState.js";
-import { erorrInit } from "../adapters/state/errorState.js";
+import { useError } from "../../adapters/state/errorState.js";
+import { erorrInit } from "../../adapters/state/errorState.js";
 
 export const errorService = {
   getError() {

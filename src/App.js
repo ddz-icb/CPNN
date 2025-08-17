@@ -15,16 +15,16 @@ import { linkThresholdInit } from "./components/adapters/state/filterState.js";
 import { useFilter } from "./components/adapters/state/filterState.js";
 import { useAppearance } from "./components/adapters/state/appearanceState.js";
 import { useError } from "./components/adapters/state/errorState.js";
-import { resetService } from "./components/application_service/resetService.js";
+import { resetService } from "./components/application_service/services/resetService.js";
 import { useMappingState } from "./components/adapters/state/mappingState.js";
 import { useColorschemeState } from "./components/adapters/state/colorschemeState.js";
-import { Init } from "./components/application_service/initService.js";
-import { graphService } from "./components/application_service/graphService.js";
+import { Init } from "./components/application_service/controllers/initControl.js";
+import { graphService } from "./components/application_service/services/graphService.js";
 import { useGraphState } from "./components/adapters/state/graphState.js";
 import { filterMergeProteins } from "./components/domain_service/graph_calculations/filterGraph.js";
 import { applyNodeMapping } from "./components/domain_service/graph_calculations/applyMapping.js";
-import { RenderGraph } from "./components/application_service/renderGraph.js";
 import { useTheme } from "./components/adapters/state/themeState.js";
+import { RenderGraph } from "./components/application_service/controllers/renderControl.js";
 
 function App() {
   const { setFilter, setAllFilter } = useFilter();

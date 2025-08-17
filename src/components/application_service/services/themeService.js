@@ -1,6 +1,6 @@
-import log from "../../logger.js";
-import { darkTheme, lightTheme, useTheme } from "../adapters/state/themeState.js";
-import { loadTheme, storeTheme } from "../domain_model/themeManager.js";
+import log from "../../../logger.js";
+import { darkTheme, lightTheme, useTheme } from "../../adapters/state/themeState.js";
+import { loadTheme, storeTheme } from "../../domain_model/themeManager.js";
 import { errorService } from "./errorService.js";
 
 export const themeService = {

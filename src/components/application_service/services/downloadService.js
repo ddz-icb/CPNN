@@ -1,4 +1,4 @@
-import { useDownload } from "../adapters/state/downloadState.js";
+import { useDownload } from "../../adapters/state/downloadState.js";
 
 export const downloadService = {
   // ===== Generic getter/setter =====

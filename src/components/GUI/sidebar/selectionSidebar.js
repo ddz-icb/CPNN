@@ -7,7 +7,7 @@ import { ReactComponent as PaletteIcon } from "../../../icons/colorPalette.svg";
 import { ReactComponent as DownloadIcon } from "../../../icons/download.svg";
 import { lightTheme, useTheme } from "../../adapters/state/themeState.js";
 import { useAppearance } from "../../adapters/state/appearanceState.js";
-import { themeService } from "../../application_service/themeService.js";
+import { themeService } from "../../application_service/services/themeService.js";
 
 export function SelectionSidebar({ handleNavItemClick }) {
   const { theme } = useTheme();
