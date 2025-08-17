@@ -25,15 +25,16 @@ import { filterMergeProteins } from "./components/domain_service/graph_calculati
 import { applyNodeMapping } from "./components/domain_service/graph_calculations/applyMapping.js";
 import { useTheme } from "./components/adapters/state/themeState.js";
 import { RenderGraph } from "./components/application_service/controllers/renderControl.js";
+import { useGraphMetrics } from "./components/adapters/state/graphMetrics.js";
 
 function App() {
   const { setFilter, setAllFilter } = useFilter();
-  const { appearance, setAppearance } = useAppearance();
   const { theme, setTheme } = useTheme();
   const { error, setError, clearError } = useError();
   const { colorschemeState, setColorschemeState } = useColorschemeState();
   const { mappingState, setMappingState } = useMappingState();
   const { graphState, setGraphState } = useGraphState();
+  const { graphMetrics, setGraphMetrics } = useGraphMetrics();
 
   // reloads graph //
   useEffect(() => {
@@ -67,10 +68,10 @@ function App() {
 
     const { minWeight, maxWeight } = getLinkWeightMinMax(newGraph.data);
     if (minWeight != Infinity) {
-      setGraphState("linkWeightMin", minWeight);
+      setGraphMetrics("linkWeightMin", minWeight);
     }
     if (maxWeight != -Infinity) {
-      setGraphState("linkWeightMax", maxWeight);
+      setGraphMetrics("linkWeightMax", maxWeight);
     }
 
     if (minWeight != Infinity && minWeight > linkThresholdInit) {

@@ -31,11 +31,13 @@ import { useFilter } from "../../adapters/state/filterState.js";
 import { useGraphState } from "../../adapters/state/graphState.js";
 import { parseAttribsFilter } from "../../domain_service/parsing/attribsFilterParsing.js";
 import { useTheme } from "../../adapters/state/themeState.js";
+import { useGraphMetrics } from "../../adapters/state/graphMetrics.js";
 
 export function FilterSidebar() {
   const { filter, setFilter, setAllFilter } = useFilter();
   const { theme } = useTheme();
   const { graphState, setGraphState } = useGraphState();
+  const { graphMetrics, setGraphMetrics } = useGraphMetrics();
 
   const linkFilterEditorRef = useRef(null);
   const nodeFilterEditorRef = useRef(null);
@@ -126,8 +128,8 @@ export function FilterSidebar() {
         setValue={(value) => setFilter("linkThreshold", value)}
         setValueText={(value) => setFilter("linkThresholdText", value)}
         fallbackValue={linkThresholdInit}
-        min={Math.floor((graphState.linkWeightMin / 0.05) * 0.05) - 0.05}
-        max={Math.ceil(graphState.linkWeightMax / 0.05) * 0.05}
+        min={Math.floor((graphMetrics.linkWeightMin / 0.05) * 0.05) - 0.05}
+        max={Math.min(Math.ceil((graphMetrics.linkWeightMax / 0.05) * 0.05) + 0.05, 1)}
         step={0.05}
         text={"Link Weight Threshold"}
         infoHeading={"Filtering Links by Threshold"}

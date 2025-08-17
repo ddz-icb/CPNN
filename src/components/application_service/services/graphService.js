@@ -162,28 +162,12 @@ export const graphService = {
   setGraph(val) {
     this.set("graph", val);
   },
-
   getOriginGraph() {
     return this.get("originGraph");
   },
   setOriginGraph(val) {
     this.set("originGraph", val);
   },
-
-  getLinkWeightMin() {
-    return this.get("linkWeightMin");
-  },
-  setLinkWeightMin(val) {
-    this.set("linkWeightMin", val);
-  },
-
-  getLinkWeightMax() {
-    return this.get("linkWeightMax");
-  },
-  setLinkWeightMax(val) {
-    this.set("linkWeightMax", val);
-  },
-
   getMergeProteins() {
     return this.get("mergeProteins");
   },

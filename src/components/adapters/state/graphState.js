@@ -1,22 +1,25 @@
 import { create } from "zustand";
 
+export const graphInit = null;
+export const nodeMapInit = null;
+export const circlesInit = null;
+export const linesInit = null;
+export const filteredAfterStartInit = false;
+
 // NEXTT: AUFTEILEN
 export const graphStateInit = {
-  graph: null,
+  graph: graphInit,
   originGraph: null,
-
-  linkWeightMin: null,
-  linkWeightMax: null,
 
   mergeProteins: false,
 
   // pixi stuff
-  nodeMap: null,
-  circles: null,
+  nodeMap: nodeMapInit,
+  circles: circlesInit,
   nodeLabels: null,
-  lines: null,
+  lines: linesInit,
 
-  filteredAfterStart: false,
+  filteredAfterStart: filteredAfterStartInit,
   graphIsPreprocessed: false,
 
   uploadedGraphNames: null,
