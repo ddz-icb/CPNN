@@ -1,4 +1,4 @@
-import log from "../../logger.js";
+import log from "../logger.js";
 import Dexie from "dexie";
 import { defaultColorschemeNames } from "../adapters/state/colorschemeState.js";
 

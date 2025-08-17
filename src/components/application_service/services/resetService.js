@@ -1,4 +1,4 @@
-import log from "../../../logger.js";
+import log from "../../logger.js";
 import { graphService } from "./graphService.js";
 import { errorService } from "./errorService.js";
 import { filterInit, useFilter } from "../../adapters/state/filterState.js";

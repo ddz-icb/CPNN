@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import log from "../../../logger.js";
+import log from "../../logger.js";
 
 import {
   filterActiveNodesForPixi,

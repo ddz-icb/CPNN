@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import log from "../../../logger.js";
+import log from "../../logger.js";
 import { useAppearance } from "../../adapters/state/appearanceState.js";
 import { useColorschemeState } from "../../adapters/state/colorschemeState.js";
 import { useDownload } from "../../adapters/state/downloadState.js";

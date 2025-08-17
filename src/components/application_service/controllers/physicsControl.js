@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import log from "../../../logger.js";
+import log from "../../logger.js";
 import * as d3 from "d3";
 
 import { radius } from "../../domain_service/canvas_drawing/draw.js";
