@@ -1,8 +1,6 @@
 import { create } from "zustand";
 
-export const resetInit = {
-  reset: false,
-};
+export const resetInit = false;
 
 export const useReset = create((set) => ({
   reset: resetInit,

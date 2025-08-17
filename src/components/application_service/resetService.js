@@ -11,10 +11,10 @@ import { useReset } from "../adapters/state/resetState.js";
 
 export const resetService = {
   getReset() {
-    return useReset.getState().reset.reset;
+    return useReset.getState().reset;
   },
   setReset(value) {
-    useReset.getState().setReset({ reset: value });
+    useReset.getState().setReset(value);
   },
   resetSimulation() {
     if (!graphService.getActiveGraphNames()) return;
