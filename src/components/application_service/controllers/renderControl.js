@@ -1,5 +1,5 @@
 import "../../../index.css";
-import log from "../../logger.js";
+import log from "../../adapters/logging/logger.js";
 import * as PIXI from "pixi.js";
 import { useRef, useEffect, useState } from "react";
 import { getNodeLabelOffsetY, handleResize, initDragAndZoom } from "../services/interactiveCanvas.js";

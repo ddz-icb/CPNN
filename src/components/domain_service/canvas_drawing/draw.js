@@ -1,4 +1,4 @@
-import log from "../../logger.js";
+import log from "../../adapters/logging/logger.js";
 import * as d3 from "d3";
 import * as PIXI from "pixi.js";
 import { getNodeIdName } from "../parsing/nodeIdParsing.js";

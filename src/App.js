@@ -1,5 +1,5 @@
 import "./index.css";
-import log from "./components/logger.js";
+import log from "./components/adapters/logging/logger.js";
 import { useEffect } from "react";
 
 import { Sidebar } from "./components/gui/sidebar/sidebar.js";

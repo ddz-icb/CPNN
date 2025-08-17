@@ -1,4 +1,4 @@
-import log from "../logger.js";
+import log from "../adapters/logging/logger.js";
 import axios from "axios";
 import { useState, useEffect, useRef } from "react";
 import { ReactComponent as XIcon } from "../../icons/x.svg";

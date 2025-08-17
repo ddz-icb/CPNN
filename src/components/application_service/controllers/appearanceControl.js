@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import log from "../../logger.js";
+import log from "../../adapters/logging/logger.js";
 
 import { changeCircleBorderColor, changeNodeColors, changeNodeLabelColor } from "../../domain_service/canvas_drawing/draw.js";
 import { usePhysics } from "../../adapters/state/physicsState.js";

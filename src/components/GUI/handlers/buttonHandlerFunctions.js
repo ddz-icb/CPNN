@@ -1,4 +1,4 @@
-import log from "../../logger.js";
+import log from "../../adapters/logging/logger.js";
 
 export const handleSliderChange = (event, setValue, setValueText, min = 0, max = Infinity) => {
   const value = event.target.value;

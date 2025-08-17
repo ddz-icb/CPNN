@@ -1,4 +1,4 @@
-import log from "../../logger.js";
+import log from "../../adapters/logging/logger.js";
 import { useEffect } from "react";
 import { graphService } from "../services/graphService.js";
 import { colorschemeService } from "../services/colorschemeService.js";

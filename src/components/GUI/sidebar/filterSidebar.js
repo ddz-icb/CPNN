@@ -1,5 +1,5 @@
 import "../../../index.css";
-import log from "../../logger.js";
+import log from "../../adapters/logging/logger.js";
 import { useEffect, useState, useRef } from "react";
 import CodeMirror from "codemirror";
 import "codemirror/lib/codemirror.css";

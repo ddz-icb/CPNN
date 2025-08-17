@@ -1,4 +1,4 @@
-import log from "../../logger.js";
+import log from "../../adapters/logging/logger.js";
 import canvasToSvg from "canvas-to-svg";
 import { jsPDF } from "jspdf";
 import { svg2pdf } from "svg2pdf.js";

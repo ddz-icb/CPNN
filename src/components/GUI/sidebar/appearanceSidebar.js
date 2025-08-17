@@ -3,7 +3,7 @@ import { ReactComponent as TrashIcon } from "../../../icons/trash.svg";
 import { SwitchBlock, Popup, TableList, SliderBlock, Button, PopupTextField } from "../reusable_components/sidebarComponents.js";
 import { colorschemeCsv } from "../../assets/exampleColorschemeCSV.js";
 import { downloadCsvFile } from "../../domain_service/download/download.js";
-import log from "../../logger.js";
+import log from "../../adapters/logging/logger.js";
 import {
   linkWidthDescription,
   nodeLabelDescription,

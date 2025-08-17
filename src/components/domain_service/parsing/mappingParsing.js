@@ -1,4 +1,4 @@
-import log from "../../logger.js";
+import log from "../../adapters/logging/logger.js";
 import Papa from "papaparse";
 import { getFileAsText } from "./fileParsing.js";
 
