@@ -6,24 +6,25 @@ export const circlesInit = null;
 export const linesInit = null;
 export const filteredAfterStartInit = false;
 
-// NEXTT: AUFTEILEN
 export const graphStateInit = {
+  // graph state
   graph: graphInit,
   originGraph: null,
 
+  // graph flags
   mergeProteins: false,
+  filteredAfterStart: filteredAfterStartInit,
+  isPreprocessed: false,
 
-  // pixi stuff
+  // graph state
+  activeGraphNames: null,
+  uploadedGraphNames: null,
+
+  // pixi State
   nodeMap: nodeMapInit,
   circles: circlesInit,
   nodeLabels: null,
   lines: linesInit,
-
-  filteredAfterStart: filteredAfterStartInit,
-  graphIsPreprocessed: false,
-
-  uploadedGraphNames: null,
-  activeGraphNames: null,
 };
 
 export const useGraphState = create((set) => ({

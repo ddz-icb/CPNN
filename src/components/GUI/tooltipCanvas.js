@@ -27,7 +27,7 @@ export function ClickTooltip() {
   const { theme, setTheme } = useTheme();
   const { container, setContainer } = useContainer();
   const { mappingState, setMappingState } = useMappingState();
-  const mappingData = mappingState.activeMapping?.data;
+  const mappingData = mappingState.mapping?.data;
 
   const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
 

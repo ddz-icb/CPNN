@@ -34,7 +34,7 @@ export function DataSidebar() {
       <TopDataButtons />
       <ActiveGraphFiles activeGraphNames={graphState.activeGraphNames} />
       <UploadedGraphFiles uploadedGraphNames={graphState.uploadedGraphNames} />
-      <ActiveMapping activeMapping={mappingState.activeMapping} />
+      <Mapping mapping={mappingState.mapping} />
       <UploadedMappings uploadedMappingNames={mappingState.uploadedMappingNames} />
     </>
   );
@@ -85,14 +85,14 @@ function UploadedGraphFiles({ uploadedGraphNames }) {
   );
 }
 
-function ActiveMapping({ activeMapping }) {
+function Mapping({ mapping }) {
   return (
     <TableList
       heading={"Currently Active Pathway Mapping"}
-      data={activeMapping ? [activeMapping] : []}
+      data={mapping ? [mapping] : []}
       displayKey={"name"}
       ActionIcon={DeleteIcon}
-      onActionIconClick={() => mappingService.handleRemoveActiveMapping()}
+      onActionIconClick={() => mappingService.handleRemoveMapping()}
       actionIconTooltipContent={() => "Deselect pathway mapping"}
       dark={true}
     />

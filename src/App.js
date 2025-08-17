@@ -13,7 +13,6 @@ import {
 import { Error } from "./components/gui/error.js";
 import { linkThresholdInit } from "./components/adapters/state/filterState.js";
 import { useFilter } from "./components/adapters/state/filterState.js";
-import { useAppearance } from "./components/adapters/state/appearanceState.js";
 import { useError } from "./components/adapters/state/errorState.js";
 import { resetService } from "./components/application_service/services/resetService.js";
 import { useMappingState } from "./components/adapters/state/mappingState.js";
@@ -25,7 +24,7 @@ import { filterMergeProteins } from "./components/domain_service/graph_calculati
 import { applyNodeMapping } from "./components/domain_service/graph_calculations/applyMapping.js";
 import { useTheme } from "./components/adapters/state/themeState.js";
 import { RenderGraph } from "./components/application_service/controllers/renderControl.js";
-import { useGraphMetrics } from "./components/adapters/state/graphMetrics.js";
+import { useGraphMetrics } from "./components/adapters/state/graphMetricsState.js";
 
 function App() {
   const { setFilter, setAllFilter } = useFilter();
@@ -41,10 +40,10 @@ function App() {
     async function reloadGraph() {
       let graph = await graphService.getJoinedGraph(graphState.activeGraphNames);
       graph.data = filterMergeProteins(graph.data, graphState.mergeProteins);
-      graph.data = applyNodeMapping(graph.data, mappingState.activeMapping?.data);
+      graph.data = applyNodeMapping(graph.data, mappingState.mapping?.data);
       setGraphState("originGraph", graph);
       setGraphState("activeGraphNames", graphState.activeGraphNames);
-      setGraphState("graphIsPreprocessed", false);
+      setGraphState("isPreprocessed", false);
       resetService.resetSimulation();
     }
 
@@ -57,11 +56,11 @@ function App() {
       setError("Error loading graph");
       log.error("Error loading graph:", error);
     }
-  }, [graphState.mergeProteins, mappingState.activeMapping, graphState.activeGraphNames]);
+  }, [graphState.mergeProteins, mappingState.mapping, graphState.activeGraphNames]);
 
   // forwards graph to forceGraph component //
   useEffect(() => {
-    if (!graphState.originGraph || !graphState.activeGraphNames || graphState.graphIsPreprocessed) return;
+    if (!graphState.originGraph || !graphState.activeGraphNames || graphState.isPreprocessed) return;
     log.info("Modifying graph and forwarding it to the simulation component");
 
     let newGraph = structuredClone(graphState.originGraph);
@@ -87,7 +86,7 @@ function App() {
 
     setGraphState("originGraph", newGraph);
     setGraphState("graph", newGraph);
-    setGraphState("graphIsPreprocessed", true);
+    setGraphState("isPreprocessed", true);
   }, [graphState.originGraph, graphState.activeGraphNames]);
 
   return (

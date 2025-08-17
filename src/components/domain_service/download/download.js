@@ -74,16 +74,7 @@ function createGraphSvgElement(
   return { svgElement, width, height };
 }
 
-function drawLegendOnPdf(
-  pdf,
-  offsetX,
-  offsetY,
-  nodeColorscheme,
-  nodeAttribsToColorIndices,
-  linkColorscheme,
-  linkAttribsToColorIndices,
-  activeMapping
-) {
+function drawLegendOnPdf(pdf, offsetX, offsetY, nodeColorscheme, nodeAttribsToColorIndices, linkColorscheme, linkAttribsToColorIndices, mapping) {
   const padding = 15;
   const rectSize = 10;
   const rectSpacing = 8;
@@ -99,7 +90,7 @@ function drawLegendOnPdf(
   [nodeAttribsToColorIndices, linkAttribsToColorIndices].forEach((attribs, index) => {
     for (const key in attribs) {
       if (Object.hasOwnProperty.call(attribs, key)) {
-        const label = index === 0 ? activeMapping?.data?.groupMapping?.[key]?.name || key : key;
+        const label = index === 0 ? mapping?.data?.groupMapping?.[key]?.name || key : key;
         maxTextWidth = Math.max(maxTextWidth, tempPdf.getTextWidth(label));
       }
     }
@@ -134,7 +125,7 @@ function drawLegendOnPdf(
     for (const key in attribs) {
       if (Object.hasOwnProperty.call(attribs, key)) {
         const color = colorscheme[attribs[key]];
-        const label = isNode ? activeMapping?.data?.groupMapping?.[key]?.name || key : key;
+        const label = isNode ? mapping?.data?.groupMapping?.[key]?.name || key : key;
 
         pdf.setFillColor(color);
         pdf.rect(offsetX + padding, yPos, rectSize, rectSize, "F");
@@ -271,7 +262,7 @@ export function downloadCsvFile(csvContent, fileName) {
   triggerDownload(blob, `${getFileNameWithoutExtension(fileName)}.csv`);
 }
 
-export function downloadLegendPdf(graphName, linkColorscheme, linkAttribsToColorIndices, nodeColorscheme, nodeAttribsToColorIndices, activeMapping) {
+export function downloadLegendPdf(graphName, linkColorscheme, linkAttribsToColorIndices, nodeColorscheme, nodeAttribsToColorIndices, mapping) {
   const tempPdf = new jsPDF();
   const { legendWidth, legendHeight } = drawLegendOnPdf(
     tempPdf,
@@ -281,7 +272,7 @@ export function downloadLegendPdf(graphName, linkColorscheme, linkAttribsToColor
     nodeAttribsToColorIndices,
     linkColorscheme,
     linkAttribsToColorIndices,
-    activeMapping
+    mapping
   );
 
   const pdf = new jsPDF({
@@ -290,6 +281,6 @@ export function downloadLegendPdf(graphName, linkColorscheme, linkAttribsToColor
     format: [legendWidth, legendHeight],
   });
 
-  drawLegendOnPdf(pdf, 0, 0, nodeColorscheme, nodeAttribsToColorIndices, linkColorscheme, linkAttribsToColorIndices, activeMapping);
+  drawLegendOnPdf(pdf, 0, 0, nodeColorscheme, nodeAttribsToColorIndices, linkColorscheme, linkAttribsToColorIndices, mapping);
   pdf.save(`${getFileNameWithoutExtension(graphName)}_legend.pdf`);
 }

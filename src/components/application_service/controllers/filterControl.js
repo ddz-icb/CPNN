@@ -30,7 +30,7 @@ export function FilterStateControl() {
       !graphState.circles.children ||
       !graphState.circles.children.length > 0 ||
       !graphState.nodeMap ||
-      !graphState.graphIsPreprocessed
+      !graphState.isPreprocessed
     ) {
       return;
     }

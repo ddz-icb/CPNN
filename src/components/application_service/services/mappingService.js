@@ -1,5 +1,5 @@
 import log from "../../adapters/logging/logger.js";
-import { activeMappingInit, useMappingState } from "../../adapters/state/mappingState.js";
+import { mappingInit, useMappingState } from "../../adapters/state/mappingState.js";
 import { createMapping, deleteMapping, loadMappingNames, getMapping } from "../../domain_model/mappingManager.js";
 import { errorService } from "./errorService.js";
 
@@ -23,7 +23,7 @@ export const mappingService = {
     log.info("Replacing mapping");
     try {
       const mapping = await getMapping(mappingName);
-      this.setActiveMapping(mapping);
+      this.setMapping(mapping);
     } catch (error) {
       errorService.setError(error.message);
       log.error(error);
@@ -46,11 +46,11 @@ export const mappingService = {
       log.error(error);
     }
   },
-  async handleRemoveActiveMapping() {
+  async handleRemoveMapping() {
     log.info("Removing currently active mapping");
 
     try {
-      this.setActiveMapping(activeMappingInit);
+      this.setMapping(mappingInit);
     } catch (error) {
       errorService.setError(error.message);
       log.error(error);
@@ -62,7 +62,7 @@ export const mappingService = {
       log.error("Selected invalid mapping");
       return;
     }
-    if (this.getActiveMapping()?.name == mappingName) {
+    if (this.getMapping()?.name == mappingName) {
       log.error("Cannot delete selected mapping as it's still active");
       errorService.setError("Cannot delete selected mapping as it's still active");
       return;
@@ -93,11 +93,11 @@ export const mappingService = {
   },
 
   // ===== Specific getters/setters =====
-  getActiveMapping() {
-    return this.get("activeMapping");
+  getMapping() {
+    return this.get("mapping");
   },
-  setActiveMapping(val) {
-    this.set("activeMapping", val);
+  setMapping(val) {
+    this.set("mapping", val);
   },
 
   getUploadedMappingNames() {

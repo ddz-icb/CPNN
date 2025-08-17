@@ -211,10 +211,10 @@ export const graphService = {
   },
 
   getGraphIsPreprocessed() {
-    return this.get("graphIsPreprocessed");
+    return this.get("isPreprocessed");
   },
   setGraphIsPreprocessed(val) {
-    this.set("graphIsPreprocessed", val);
+    this.set("isPreprocessed", val);
   },
 
   getActiveGraphNames() {
@@ -231,10 +231,10 @@ export const graphService = {
     this.set("uploadedGraphNames", val);
   },
 
-  getActiveMapping() {
-    return this.get("activeMapping");
+  getMapping() {
+    return this.get("mapping");
   },
-  setActiveMapping(val) {
-    this.set("activeMapping", val);
+  setMapping(val) {
+    this.set("mapping", val);
   },
 };

@@ -107,7 +107,7 @@ export function DownloadStateControl({ app }) {
         colorschemeState.linkAttribsToColorIndices,
         colorschemeState.nodeColorscheme.data,
         colorschemeState.nodeAttribsToColorIndices,
-        mappingState.activeMapping
+        mappingState.mapping
       );
     }
   }, [download.legendPdf]);

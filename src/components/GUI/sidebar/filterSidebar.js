@@ -31,13 +31,13 @@ import { useFilter } from "../../adapters/state/filterState.js";
 import { useGraphState } from "../../adapters/state/graphState.js";
 import { parseAttribsFilter } from "../../domain_service/parsing/attribsFilterParsing.js";
 import { useTheme } from "../../adapters/state/themeState.js";
-import { useGraphMetrics } from "../../adapters/state/graphMetrics.js";
+import { useGraphMetrics } from "../../adapters/state/graphMetricsState.js";
 
 export function FilterSidebar() {
   const { filter, setFilter, setAllFilter } = useFilter();
   const { theme } = useTheme();
   const { graphState, setGraphState } = useGraphState();
-  const { graphMetrics, setGraphMetrics } = useGraphMetrics();
+  const { graphMetrics } = useGraphMetrics();
 
   const linkFilterEditorRef = useRef(null);
   const nodeFilterEditorRef = useRef(null);
