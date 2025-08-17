@@ -23,9 +23,9 @@ import { useGraphState } from "./components/adapters/state/graphState.js";
 import { filterMergeProteins } from "./components/domain_service/graph_calculations/filterGraph.js";
 import { applyNodeMapping } from "./components/domain_service/graph_calculations/applyMapping.js";
 import { useTheme } from "./components/adapters/state/themeState.js";
-import { RenderGraph } from "./components/application_service/controllers/renderControl.js";
 import { useGraphMetrics } from "./components/adapters/state/graphMetricsState.js";
 import { useGraphFlags } from "./components/adapters/state/graphFlagsState.js";
+import { RenderControl } from "./components/application_service/controllers/renderControl.js";
 
 function App() {
   const { setFilter, setAllFilter } = useFilter();
@@ -98,7 +98,7 @@ function App() {
         <HeaderBar />
         <Sidebar />
         <div className="canvas">
-          <RenderGraph />
+          <RenderControl />
           <Error />
         </div>
       </main>
