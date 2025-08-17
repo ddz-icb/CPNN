@@ -1,5 +1,5 @@
 import log from "../../logger.js";
-import { darkTheme, lightTheme, useAppearance } from "../adapters/state/appearanceState.js";
+import { darkTheme, lightTheme, useTheme } from "../adapters/state/themeState.js";
 import { loadTheme, storeTheme } from "../domain_model/themeManager.js";
 import { errorService } from "./errorService.js";
 
@@ -25,23 +25,10 @@ export const themeService = {
     }
   },
   // ===== Generic getter/setter =====
-  get(key) {
-    return useAppearance.getState().appearance[key];
-  },
-  set(key, value) {
-    useAppearance.getState().setAppearance(key, value);
-  },
-  getAll() {
-    return useAppearance.getState().appearance;
-  },
-  setAll(value) {
-    useAppearance.getState().setAllAppearance(value);
-  },
-  // ===== Specific getters/setters =====
   getTheme() {
-    return this.get("theme");
+    return useTheme.getState().theme;
   },
-  setTheme(val) {
-    this.set("theme", val);
+  setTheme(value) {
+    useTheme.getState().setTheme(value);
   },
 };

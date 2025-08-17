@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import log from "../../../logger.js";
-import { lightTheme, themeInit, useAppearance } from "../../adapters/state/appearanceState.js";
+import { useAppearance } from "../../adapters/state/appearanceState.js";
 import { useColorschemeState } from "../../adapters/state/colorschemeState.js";
 import { useDownload } from "../../adapters/state/downloadState.js";
 import { useGraphState } from "../../adapters/state/graphState.js";
@@ -8,10 +8,12 @@ import { useMappingState } from "../../adapters/state/mappingState.js";
 import { usePhysics } from "../../adapters/state/physicsState.js";
 import { downloadAsPDF, downloadAsPNG, downloadAsSVG, downloadGraphJson, downloadLegendPdf } from "../../domain_service/download.js";
 import { changeCircleBorderColor, changeNodeLabelColor } from "../../domain_service/canvas_drawing/draw.js";
+import { lightTheme, themeInit, useTheme } from "../../adapters/state/themeState.js";
 
 export function DownloadStateControl({ app }) {
   const { physics, setPhysics } = usePhysics();
   const { appearance, setAppearance } = useAppearance();
+  const { theme, setTheme } = useTheme();
   const { colorschemeState, setColorschemeState } = useColorschemeState();
   const { graphState, setGraphState } = useGraphState();
   const { mappingState, setMappingState } = useMappingState();
@@ -51,8 +53,8 @@ export function DownloadStateControl({ app }) {
 
       downloadAsPNG(app, document, graphState.graph.name);
 
-      changeCircleBorderColor(graphState.circles, appearance.theme.circleBorderColor);
-      changeNodeLabelColor(graphState.nodeLabels, appearance.theme.textColor);
+      changeCircleBorderColor(graphState.circles, theme.circleBorderColor);
+      changeNodeLabelColor(graphState.nodeLabels, theme.textColor);
     }
   }, [download.png]);
 

@@ -19,9 +19,11 @@ import { getSimulation } from "../domain_service/physics_calculations/getSimulat
 import { DownloadStateControl } from "./state_control/downloadStateControl.js";
 import { AppearanceStateControl } from "./state_control/appearanceStateControl.js";
 import { FilterStateControl } from "./state_control/filterStateControl.js";
+import { useTheme } from "../adapters/state/themeState.js";
 
 export function RenderGraph() {
   const { appearance, setAppearance } = useAppearance();
+  const { theme, setTheme } = useTheme();
   const { colorschemeState, setColorschemeState } = useColorschemeState();
   const { graphState, setGraphState, setAllGraphState } = useGraphState();
   const { container, setContainer } = useContainer();
@@ -101,15 +103,7 @@ export function RenderGraph() {
 
   // set stage //
   useEffect(() => {
-    if (
-      graphState.circles ||
-      !app ||
-      !graphState.graph ||
-      !container.width ||
-      !container.height ||
-      !appearance.theme ||
-      !colorschemeState.nodeColorscheme
-    )
+    if (graphState.circles || !app || !graphState.graph || !container.width || !container.height || !theme || !colorschemeState.nodeColorscheme)
       return;
     log.info("Setting stage");
 
@@ -124,13 +118,7 @@ export function RenderGraph() {
     const nodeMap = {};
     for (const node of graphState.graph.data.nodes) {
       let circle = new PIXI.Graphics();
-      circle = drawCircle(
-        circle,
-        node,
-        appearance.theme.circleBorderColor,
-        colorschemeState.nodeColorscheme.data,
-        colorschemeState.nodeAttribsToColorIndices
-      );
+      circle = drawCircle(circle, node, theme.circleBorderColor, colorschemeState.nodeColorscheme.data, colorschemeState.nodeAttribsToColorIndices);
       circle.id = node.id;
       circle.interactive = true;
       circle.buttonMode = true;
@@ -150,7 +138,7 @@ export function RenderGraph() {
         },
       });
 
-      nodeLabel.style = getTextStyle(appearance.theme.textColor);
+      nodeLabel.style = getTextStyle(theme.textColor);
       nodeLabel.x = circle.x;
       nodeLabel.y = circle.y + getNodeLabelOffsetY(node.id);
       nodeLabel.pivot.x = nodeLabel.width / 2;
@@ -167,7 +155,7 @@ export function RenderGraph() {
       nodeMap: nodeMap,
       nodeLabels: newNodeLabels,
     }));
-  }, [app, graphState.graph, colorschemeState.nodeColorscheme, container.width, container.height, appearance.theme]);
+  }, [app, graphState.graph, colorschemeState.nodeColorscheme, container.width, container.height, theme]);
 
   // init simulation //
   useEffect(() => {

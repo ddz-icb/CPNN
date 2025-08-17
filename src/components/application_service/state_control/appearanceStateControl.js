@@ -7,10 +7,12 @@ import { useAppearance } from "../../adapters/state/appearanceState.js";
 import { useGraphState } from "../../adapters/state/graphState.js";
 
 import { useColorschemeState } from "../../adapters/state/colorschemeState.js";
+import { useTheme } from "../../adapters/state/themeState.js";
 
 export function AppearanceStateControl({ app, simulation, redraw }) {
   const { physics, setPhysics } = usePhysics();
   const { appearance, setAppearance } = useAppearance();
+  const { theme, setTheme } = useTheme();
   const { colorschemeState, setColorschemeState } = useColorschemeState();
   const { graphState, setGraphState } = useGraphState();
   // enable/disable node labels
@@ -35,11 +37,11 @@ export function AppearanceStateControl({ app, simulation, redraw }) {
   // switch colors upon changing theme //
   useEffect(() => {
     if (!graphState.circles) return;
-    log.info("Switching colors");
+    log.info("Switching colors", theme);
 
-    changeCircleBorderColor(graphState.circles, appearance.theme.circleBorderColor);
-    changeNodeLabelColor(graphState.nodeLabels, appearance.theme.textColor);
-  }, [appearance.theme]);
+    changeCircleBorderColor(graphState.circles, theme.circleBorderColor);
+    changeNodeLabelColor(graphState.nodeLabels, theme.textColor);
+  }, [theme]);
 
   // switch node color scheme
   useEffect(() => {
@@ -49,7 +51,7 @@ export function AppearanceStateControl({ app, simulation, redraw }) {
     changeNodeColors(
       graphState.circles,
       graphState.nodeMap,
-      appearance.theme.circleBorderColor,
+      theme.circleBorderColor,
       colorschemeState.nodeColorscheme.data,
       colorschemeState.nodeAttribsToColorIndices
     );

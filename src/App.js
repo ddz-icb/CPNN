@@ -24,10 +24,12 @@ import { useGraphState } from "./components/adapters/state/graphState.js";
 import { filterMergeProteins } from "./components/domain_service/graph_calculations/filterGraph.js";
 import { applyNodeMapping } from "./components/domain_service/graph_calculations/applyMapping.js";
 import { RenderGraph } from "./components/application_service/renderGraph.js";
+import { useTheme } from "./components/adapters/state/themeState.js";
 
 function App() {
   const { setFilter, setAllFilter } = useFilter();
   const { appearance, setAppearance } = useAppearance();
+  const { theme, setTheme } = useTheme();
   const { error, setError, clearError } = useError();
   const { colorschemeState, setColorschemeState } = useColorschemeState();
   const { mappingState, setMappingState } = useMappingState();
@@ -90,7 +92,7 @@ function App() {
   return (
     <>
       <Init />
-      <main className={appearance.theme.name}>
+      <main className={theme.name}>
         <HeaderBar />
         <Sidebar />
         <div className="canvas">

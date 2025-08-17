@@ -1,5 +1,5 @@
 import log from "../../logger.js";
-import { lightTheme } from "../adapters/state/appearanceState.js";
+import { lightTheme } from "../adapters/state/themeState.js";
 
 // the theme is stored in the local storage of the browser, not the database
 

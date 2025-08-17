@@ -9,6 +9,7 @@ import { useContainer } from "../adapters/state/containerState.js";
 import { useTooltipSettings } from "../adapters/state/tooltipState.js";
 import { mappingService } from "../application_service/mappingService.js";
 import { useMappingState } from "../adapters/state/mappingState.js";
+import { useTheme } from "../adapters/state/themeState.js";
 
 export function Tooltips({}) {
   const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
@@ -23,6 +24,7 @@ export function Tooltips({}) {
 
 export function ClickTooltip() {
   const { appearance, setAppearance } = useAppearance();
+  const { theme, setTheme } = useTheme();
   const { container, setContainer } = useContainer();
   const { mappingState, setMappingState } = useMappingState();
   const mappingData = mappingState.activeMapping?.data;
@@ -135,7 +137,7 @@ export function ClickTooltip() {
       log.info("init 3dmol viewer");
       try {
         const config = {
-          backgroundColor: appearance.theme.name === "light" ? "0xffffff" : "0x2a2e35",
+          backgroundColor: theme.name === "light" ? "0xffffff" : "0x2a2e35",
         };
         if (
           !viewerRef ||
@@ -170,9 +172,9 @@ export function ClickTooltip() {
   useEffect(() => {
     if (!viewer) return;
 
-    const backgroundColor = appearance.theme.name === "light" ? "0xffffff" : "0x2a2e35";
+    const backgroundColor = theme.name === "light" ? "0xffffff" : "0x2a2e35";
     viewer.setBackgroundColor(backgroundColor);
-  }, [appearance.theme]);
+  }, [theme]);
 
   useEffect(() => {
     if (viewer) {

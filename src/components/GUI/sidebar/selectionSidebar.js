@@ -5,12 +5,12 @@ import { ReactComponent as MagnetIcon } from "../../../icons/magnet.svg";
 import { ReactComponent as FilterIcon } from "../../../icons/filter.svg";
 import { ReactComponent as PaletteIcon } from "../../../icons/colorPalette.svg";
 import { ReactComponent as DownloadIcon } from "../../../icons/download.svg";
-import { darkTheme, lightTheme } from "../../adapters/state/appearanceState.js";
+import { lightTheme, useTheme } from "../../adapters/state/themeState.js";
 import { useAppearance } from "../../adapters/state/appearanceState.js";
 import { themeService } from "../../application_service/themeService.js";
 
 export function SelectionSidebar({ handleNavItemClick }) {
-  const { appearance, setAppearance } = useAppearance();
+  const { theme } = useTheme();
 
   return (
     <>
@@ -22,7 +22,7 @@ export function SelectionSidebar({ handleNavItemClick }) {
       <NavItem text={"Export"} icon={<DownloadIcon />} onClick={() => handleNavItemClick("Export")} />
       <NavItem
         text={"Change Theme"}
-        icon={appearance.theme.name === lightTheme.name ? <MoonIcon /> : <SunIcon />}
+        icon={theme.name === lightTheme.name ? <MoonIcon /> : <SunIcon />}
         onClick={() => themeService.handleChangeTheme()}
       />
     </>

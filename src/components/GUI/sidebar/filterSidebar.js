@@ -28,13 +28,13 @@ import {
 } from "./descriptions/filterDescriptions.js";
 import { handleEditorChange, runCodeEditor } from "../handlers/buttonHandlerFunctions.js";
 import { useFilter } from "../../adapters/state/filterState.js";
-import { useAppearance } from "../../adapters/state/appearanceState.js";
 import { useGraphState } from "../../adapters/state/graphState.js";
 import { parseAttribsFilter } from "../../domain_service/parsing/attribsFilterParsing.js";
+import { useTheme } from "../../adapters/state/themeState.js";
 
 export function FilterSidebar() {
   const { filter, setFilter, setAllFilter } = useFilter();
-  const { appearance } = useAppearance();
+  const { theme } = useTheme();
   const { graphState, setGraphState } = useGraphState();
 
   const linkFilterEditorRef = useRef(null);
@@ -58,7 +58,7 @@ export function FilterSidebar() {
     if (linkFilterTextAreaRef.current) {
       linkFilterEditorRef.current = CodeMirror.fromTextArea(linkFilterTextAreaRef.current, {
         mode: "customMode",
-        theme: appearance.theme.name === "light" ? "default" : "material",
+        theme: theme.name === "light" ? "default" : "material",
         linewrapping: false,
         bracketMatching: true,
         scrollbarStyle: "null",
@@ -73,7 +73,7 @@ export function FilterSidebar() {
     if (nodeFilterTextAreaRef.current) {
       nodeFilterEditorRef.current = CodeMirror.fromTextArea(nodeFilterTextAreaRef.current, {
         mode: "customMode",
-        theme: appearance.theme.name === "light" ? "default" : "material",
+        theme: theme.name === "light" ? "default" : "material",
         linewrapping: false,
         bracketMatching: true,
         scrollbarStyle: "null",
@@ -104,9 +104,9 @@ export function FilterSidebar() {
   useEffect(() => {
     log.info("changing code editor theme");
 
-    nodeFilterEditorRef.current.setOption("theme", appearance.theme.name === "light" ? "default" : "material");
-    linkFilterEditorRef.current.setOption("theme", appearance.theme.name === "light" ? "default" : "material");
-  }, [appearance.theme]);
+    nodeFilterEditorRef.current.setOption("theme", theme.name === "light" ? "default" : "material");
+    linkFilterEditorRef.current.setOption("theme", theme.name === "light" ? "default" : "material");
+  }, [theme]);
 
   return (
     <>
