@@ -5,7 +5,7 @@ import { colorschemeService } from "../services/colorschemeService.js";
 import { themeService } from "../services/themeService.js";
 import { mappingService } from "../services/mappingService.js";
 
-export function Init() {
+export function InitControl() {
   useEffect(() => {
     log.info("Setting init graph");
     graphService.handleSetInitGraph();

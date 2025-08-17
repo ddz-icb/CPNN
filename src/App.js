@@ -17,7 +17,7 @@ import { useError } from "./components/adapters/state/errorState.js";
 import { resetService } from "./components/application_service/services/resetService.js";
 import { useMappingState } from "./components/adapters/state/mappingState.js";
 import { useColorschemeState } from "./components/adapters/state/colorschemeState.js";
-import { Init } from "./components/application_service/controllers/initControl.js";
+import { InitControl } from "./components/application_service/controllers/initControl.js";
 import { graphService } from "./components/application_service/services/graphService.js";
 import { useGraphState } from "./components/adapters/state/graphState.js";
 import { filterMergeProteins } from "./components/domain_service/graph_calculations/filterGraph.js";
@@ -93,7 +93,7 @@ function App() {
 
   return (
     <>
-      <Init />
+      <InitControl />
       <main className={theme.name}>
         <HeaderBar />
         <Sidebar />
