@@ -1,6 +1,6 @@
 import { Button, SliderBlock, SwitchBlock } from "../reusable_components/sidebarComponents.js";
 
-import { communityForceStrengthInit, componentStrengthInit, physicsInit, xStrengthInit } from "../../adapters/state/physicsState.js";
+import { communityForceStrengthInit, componentStrengthInit, gravityStrengthInit, physicsInit } from "../../adapters/state/physicsState.js";
 import {
   borderHeightDescription,
   borderWidthDescription,
@@ -32,17 +32,15 @@ export function PhysicsSidebar({}) {
         infoDescription={circleLayoutDescription}
       />
       <SliderBlock
-        value={physics.xStrength}
-        valueText={physics.xStrengthText}
+        value={physics.gravityStrength}
+        valueText={physics.gravityStrengthText}
         setValue={(value) => {
-          setPhysics("xStrength", value);
-          setPhysics("yStrength", value);
+          setPhysics("gravityStrength", value);
         }}
         setValueText={(value) => {
-          setPhysics("xStrengthText", value);
-          setPhysics("yStrengthText", value);
+          setPhysics("gravityStrengthText", value);
         }}
-        fallbackValue={xStrengthInit}
+        fallbackValue={gravityStrengthInit}
         min={0}
         max={1}
         step={0.05}

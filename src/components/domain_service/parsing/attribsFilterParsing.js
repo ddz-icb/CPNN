@@ -15,11 +15,13 @@ const TOKENS = {
 };
 
 export function parseAttribsFilter(input) {
-  if (input === "") return true;
+  if (!input) return true;
 
   log.info("Parsing attributes filter:\n", input);
 
   const cleanedInput = input.replace(/[“”„‟]/g, '"');
+  if (!cleanedInput) return true;
+
   const tokens = cleanedInput.match(/"[^"]*"|<=|>=|=|<|>|,|\(|\)|{|}|[^\s()<>{},="]+/g)?.map((t) => (t.startsWith('"') ? t.slice(1, -1) : t));
 
   if (!tokens) return true;
@@ -58,6 +60,11 @@ export function parseAttribsFilter(input) {
 // ======== State functions ==========
 function start(processedRequest, token) {
   log.info("startState with token:", token);
+  return newTermConjunction(processedRequest, token);
+}
+
+function newTermConjunction(processedRequest, token) {
+  log.info("newTermConjunctionState with token:", token);
 
   if (TOKENS.OPEN_PAREN.test(token)) {
     processedRequest.push([]);
@@ -77,10 +84,6 @@ function start(processedRequest, token) {
     return "state1";
   }
   throw new Error(`Expected attribute or 'not' or '(' or comparator but got '${token}'`);
-}
-
-function newTermConjunction(processedRequest, token) {
-  return start(processedRequest, token); // identical to start
 }
 
 function conjunction(processedRequest, token) {

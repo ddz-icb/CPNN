@@ -2,8 +2,7 @@ import { create } from "zustand";
 
 export const linkForceInit = true;
 export const linkLengthInit = 70;
-export const xStrengthInit = 0.05;
-export const yStrengthInit = 0.05;
+export const gravityStrengthInit = 0.05;
 export const componentStrengthInit = 0;
 export const nodeRepulsionStrengthInit = 1;
 export const nodeCollisionInit = true;
@@ -16,8 +15,8 @@ export const borderHeightInit = 200;
 
 export const physicsInit = {
   circleLayout: circleLayoutInit,
-  xStrength: xStrengthInit,
-  yStrength: yStrengthInit,
+  gravityStrength: gravityStrengthInit,
+  gravityStrengthText: gravityStrengthInit,
   componentStrength: componentStrengthInit,
   nodeRepulsionStrength: nodeRepulsionStrengthInit,
   nodeCollision: nodeCollisionInit,
@@ -29,8 +28,6 @@ export const physicsInit = {
   borderHeight: borderHeightInit,
   borderHeightText: borderHeightInit,
   borderWidthText: borderWidthInit,
-  xStrengthText: xStrengthInit,
-  yStrengthText: yStrengthInit,
   componentStrengthText: componentStrengthInit,
   nodeRepulsionStrengthText: nodeRepulsionStrengthInit,
   communityForceStrength: communityForceStrengthInit,
@@ -39,8 +36,7 @@ export const physicsInit = {
 
 export const expectedPhysicTypes = {
   circleLayout: "boolean",
-  xStrength: "number",
-  yStrength: "number",
+  gravityStrength: "number",
   componentStrength: "number",
   nodeRepulsionStrength: "number",
   nodeCollision: "boolean",

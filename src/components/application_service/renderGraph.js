@@ -6,7 +6,7 @@ import { getNodeLabelOffsetY, handleResize, initDragAndZoom } from "./interactiv
 import { initTooltips, Tooltips } from "../gui/tooltipCanvas.js";
 import { radius, drawCircle, drawLine, getTextStyle } from "../domain_service/canvas_drawing/draw.js";
 import { PhysicsStateControl } from "./state_control/physicsStateControl.js";
-import { linkLengthInit, nodeRepulsionStrengthInit, xStrengthInit, yStrengthInit } from "../adapters/state/physicsState.js";
+import { gravityStrengthInit, linkLengthInit, nodeRepulsionStrengthInit } from "../adapters/state/physicsState.js";
 import { useAppearance } from "../adapters/state/appearanceState.js";
 import { useGraphState } from "../adapters/state/graphState.js";
 import { useContainer } from "../adapters/state/containerState.js";
@@ -176,7 +176,7 @@ export function RenderGraph() {
     }
     log.info("Init simulation");
 
-    const newSimulation = getSimulation(container.width, container.height, linkLengthInit, xStrengthInit, yStrengthInit, nodeRepulsionStrengthInit);
+    const newSimulation = getSimulation(container.width, container.height, linkLengthInit, gravityStrengthInit, nodeRepulsionStrengthInit);
     initDragAndZoom(app, newSimulation, radius, setTooltipSettings, container.width, container.height);
 
     setSimulation(newSimulation);

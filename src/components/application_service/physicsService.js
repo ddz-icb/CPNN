@@ -30,20 +30,12 @@ export const physicsService = {
     this.set("linkLength", val);
   },
 
-  getXStrength() {
-    return this.get("xStrength");
+  getGravityStrength() {
+    return this.get("gravityStrength");
   },
-  setXStrength(val) {
-    this.set("xStrength", val);
+  setGravityStrength(val) {
+    this.set("gravityStrength", val);
   },
-
-  getYStrength() {
-    return this.get("yStrength");
-  },
-  setYStrength(val) {
-    this.set("yStrength", val);
-  },
-
   getComponentStrength() {
     return this.get("componentStrength");
   },

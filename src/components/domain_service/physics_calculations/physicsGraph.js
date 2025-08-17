@@ -138,7 +138,7 @@ export function communityForce(communityMap) {
 }
 
 // ==== Circular Layout ====
-export function circularLayout(componentArray, adjacentCountMap, minCircleSize) {
+export function circularForce(componentArray, adjacentCountMap, minCircleSize) {
   let nodes;
   let strength = 1;
 
@@ -202,5 +202,24 @@ export function circularLayout(componentArray, adjacentCountMap, minCircleSize) 
   force.initialize = (_) => {
     nodes = _;
   };
+  return force;
+}
+
+// ==== Gravity Force ====
+export function gravityForce(x, y) {
+  let nodes;
+  let strength = 0.1;
+
+  function force(alpha) {
+    for (const node of nodes) {
+      node.vx += (x - node.x) * strength * alpha;
+      node.vy += (y - node.y) * strength * alpha;
+    }
+  }
+
+  force.initialize = (_) => {
+    nodes = _;
+  };
+  force.strength = (_) => (_ === undefined ? strength : ((strength = _), force));
   return force;
 }

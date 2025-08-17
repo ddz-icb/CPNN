@@ -142,8 +142,8 @@ export function FilterSidebar() {
             filter.linkFilterText,
             (value) => setFilter("linkFilter", value),
             (value) => setFilter("linkFilterText", value),
-            parseAttribsFilter,
-            setCompilerErrorLinkFilter
+            () => parseAttribsFilter(),
+            () => setCompilerErrorLinkFilter()
           )
         }
         defaultValue={filter.linkFilterText}
@@ -159,8 +159,8 @@ export function FilterSidebar() {
             filter.nodeFilterText,
             (value) => setFilter("nodeFilter", value),
             (value) => setFilter("nodeFilterText", value),
-            parseAttribsFilter,
-            setCompilerErrorNodeFilter
+            () => parseAttribsFilter(),
+            () => setCompilerErrorLinkFilter()
           )
         }
         defaultValue={filter.nodeFilterText}

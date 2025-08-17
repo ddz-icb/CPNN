@@ -37,14 +37,13 @@ export const handleEditorChange = (editor, setValueText) => {
 };
 
 export const runCodeEditor = (valueText, setValue, setValueText, parse, setCompilerError) => {
-  const parsedValue = parse(valueText);
-
-  if (String(parsedValue).split(" ")[0] === "Error:") {
-    setCompilerError(parsedValue);
-    log.error("Invalid input:", parsedValue);
-  } else {
+  try {
+    const parsedValue = parse(valueText);
     setCompilerError(null);
     setValueText(valueText);
     setValue(parsedValue);
+  } catch (error) {
+    setCompilerError(error);
+    log.error("Invalid input:", error);
   }
 };

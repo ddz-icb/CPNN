@@ -7,9 +7,10 @@ import { getAdjacentData, getComponentData, getCommunityMap } from "../../domain
 import {
   accuracyBarnesHut,
   borderCheck,
-  circularLayout,
+  circularForce,
   communityForce,
   componentForce,
+  gravityForce,
   maxDistanceChargeForce,
   nodeRepulsionMultiplier,
 } from "../../domain_service/physics_calculations/physicsGraph.js";
@@ -57,29 +58,16 @@ export function PhysicsStateControl({ simulation }) {
 
   useEffect(() => {
     if (!simulation) return;
-    if (physics.xStrength == 0) {
+    if (physics.gravityStrength == 0) {
       simulation.alpha(1).restart();
-      simulation.force("x", null);
+      simulation.force("gravity", null);
       return;
     }
-    log.info("Changing horizontal gravity", physics.xStrength);
+    log.info("Changing gravity", physics.gravityStrength);
 
-    simulation.force("x", d3.forceX(container.width / 2).strength(physics.xStrength));
+    simulation.force("gravity", gravityForce(container.width / 2, container.height / 2).strength(physics.gravityStrength));
     simulation.alpha(1).restart();
-  }, [physics.xStrength, container.width, container.height]);
-
-  useEffect(() => {
-    if (!simulation) return;
-    if (physics.yStrength == 0) {
-      simulation.alpha(1).restart();
-      simulation.force("y", null);
-      return;
-    }
-    log.info("Changing vertical gravity", physics.yStrength);
-
-    simulation.force("y", d3.forceY(container.height / 2).strength(physics.yStrength));
-    simulation.alpha(1).restart();
-  }, [physics.yStrength, container.width, container.height]);
+  }, [physics.gravityStrength, container.width, container.height]);
 
   useEffect(() => {
     if (!simulation) return;
@@ -169,7 +157,7 @@ export function PhysicsStateControl({ simulation }) {
     const adjacentCountMap = getAdjacentData(graphState.graph.data);
     const minCircleSize = 6;
 
-    simulation.force("circleLayout", circularLayout(componentArray, adjacentCountMap, minCircleSize));
+    simulation.force("circleLayout", circularForce(componentArray, adjacentCountMap, minCircleSize));
     simulation.alpha(1).restart();
   }, [physics.circleLayout]);
 
