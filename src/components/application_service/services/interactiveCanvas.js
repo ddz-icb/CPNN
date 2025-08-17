@@ -5,7 +5,7 @@ import * as d3 from "d3";
 
 // throttle the resize interval for better performance
 export const handleResize = throttle((containerRef, app) => {
-  if (app && app.renderer && containerRef && containerRef.current) {
+  if (app?.renderer && containerRef && containerRef.current) {
     const width = containerRef.current.clientWidth;
     const height = containerRef.current.clientHeight;
     app.renderer.resize(width, height);

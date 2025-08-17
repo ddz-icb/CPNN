@@ -2,6 +2,7 @@ import log from "../../adapters/logging/logger.js";
 import * as d3 from "d3";
 import * as PIXI from "pixi.js";
 import { getNodeIdName } from "../parsing/nodeIdParsing.js";
+import { getNodeLabelOffsetY } from "../../application_service/services/interactiveCanvas.js";
 
 export const radius = 8;
 export const color = d3.scaleOrdinal(d3.schemeCategory10);
@@ -35,6 +36,28 @@ export function getColor(index, colorscheme) {
     return fallbackColor;
   }
   return colorscheme[index];
+}
+
+export function redraw(graphData, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, showNodeLabels, nodeMap, app) {
+  lines.clear();
+
+  for (const link of graphData.links) {
+    drawLine(lines, link, linkWidth, linkColorscheme.data, linkAttribsToColorIndices);
+  }
+
+  if (showNodeLabels) {
+    graphData.nodes.forEach((n) => {
+      const { node, circle, nodeLabel } = nodeMap[n.id];
+      nodeLabel.x = circle.x;
+      nodeLabel.y = circle.y + getNodeLabelOffsetY(node.id);
+    });
+  }
+
+  app.renderer.render(app.stage);
+}
+
+export function render(app) {
+  app.renderer.render(app.stage);
 }
 
 export function drawCircle(circle, node, circleBorderColor, colorscheme, nodeAttribsToColorIndices) {

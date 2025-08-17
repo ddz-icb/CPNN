@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import log from "../../adapters/logging/logger.js";
 
-import { changeCircleBorderColor, changeNodeColors, changeNodeLabelColor } from "../../domain_service/canvas_drawing/draw.js";
+import { changeCircleBorderColor, changeNodeColors, changeNodeLabelColor, redraw } from "../../domain_service/canvas_drawing/draw.js";
 import { usePhysics } from "../../adapters/state/physicsState.js";
 import { useAppearance } from "../../adapters/state/appearanceState.js";
 import { useGraphState } from "../../adapters/state/graphState.js";
@@ -11,7 +11,7 @@ import { useTheme } from "../../adapters/state/themeState.js";
 import { usePixiState } from "../../adapters/state/pixiState.js";
 import { useRenderState } from "../../adapters/state/canvasState.js";
 
-export function AppearanceControl({ redraw }) {
+export function AppearanceControl() {
   const { physics, setPhysics } = usePhysics();
   const { appearance, setAppearance } = useAppearance();
   const { theme, setTheme } = useTheme();
@@ -19,6 +19,7 @@ export function AppearanceControl({ redraw }) {
   const { graphState, setGraphState } = useGraphState();
   const { pixiState, setPixiState } = usePixiState();
   const { renderState, setRenderState } = useRenderState();
+
   // enable/disable node labels
   useEffect(() => {
     if (!pixiState.circles) return;
@@ -29,12 +30,52 @@ export function AppearanceControl({ redraw }) {
         const { nodeLabel } = pixiState.nodeMap[n.id];
         nodeLabel.visible = true;
       });
-      renderState.simulation.on("tick.redraw", () => redraw(graphState.graph.data));
-      redraw(graphState.graph.data);
+      renderState.simulation.on("tick.redraw", () =>
+        redraw(
+          graphState.graph.data,
+          pixiState.lines,
+          appearance.linkWidth,
+          colorschemeState.linkColorscheme,
+          colorschemeState.linkAttribsToColorIndices,
+          appearance.showNodeLabels,
+          pixiState.nodeMap,
+          renderState.app
+        )
+      );
+      redraw(
+        graphState.graph.data,
+        pixiState.lines,
+        appearance.linkWidth,
+        colorschemeState.linkColorscheme,
+        colorschemeState.linkAttribsToColorIndices,
+        appearance.showNodeLabels,
+        pixiState.nodeMap,
+        renderState.app
+      );
     } else {
       pixiState.nodeLabels.children.forEach((label) => (label.visible = false));
-      renderState.simulation.on("tick.redraw", () => redraw(graphState.graph.data));
-      redraw(graphState.graph.data);
+      renderState.simulation.on("tick.redraw", () =>
+        redraw(
+          graphState.graph.data,
+          pixiState.lines,
+          appearance.linkWidth,
+          colorschemeState.linkColorscheme,
+          colorschemeState.linkAttribsToColorIndices,
+          appearance.showNodeLabels,
+          pixiState.nodeMap,
+          renderState.app
+        )
+      );
+      redraw(
+        graphState.graph.data,
+        pixiState.lines,
+        appearance.linkWidth,
+        colorschemeState.linkColorscheme,
+        colorschemeState.linkAttribsToColorIndices,
+        appearance.showNodeLabels,
+        pixiState.nodeMap,
+        renderState.app
+      );
     }
   }, [appearance.showNodeLabels]);
 
@@ -66,8 +107,28 @@ export function AppearanceControl({ redraw }) {
     if (!renderState.simulation || !pixiState.lines) return;
     log.info("Changing link color scheme");
 
-    renderState.simulation.on("tick.redraw", () => redraw(graphState.graph.data));
-    redraw(graphState.graph.data);
+    renderState.simulation.on("tick.redraw", () =>
+      redraw(
+        graphState.graph.data,
+        pixiState.lines,
+        appearance.linkWidth,
+        colorschemeState.linkColorscheme,
+        colorschemeState.linkAttribsToColorIndices,
+        appearance.showNodeLabels,
+        pixiState.nodeMap,
+        renderState.app
+      )
+    );
+    redraw(
+      graphState.graph.data,
+      pixiState.lines,
+      appearance.linkWidth,
+      colorschemeState.linkColorscheme,
+      colorschemeState.linkAttribsToColorIndices,
+      appearance.showNodeLabels,
+      pixiState.nodeMap,
+      renderState.app
+    );
   }, [colorschemeState.linkColorscheme, colorschemeState.linkAttribsToColorIndices]);
 
   // change link width
@@ -75,7 +136,27 @@ export function AppearanceControl({ redraw }) {
     if (!renderState.simulation || !pixiState.lines) return;
     log.info("Changing link width", physics.communityForceStrength);
 
-    renderState.simulation.on("tick.redraw", () => redraw(graphState.graph.data));
-    redraw(graphState.graph.data);
+    renderState.simulation.on("tick.redraw", () =>
+      redraw(
+        graphState.graph.data,
+        pixiState.lines,
+        appearance.linkWidth,
+        colorschemeState.linkColorscheme,
+        colorschemeState.linkAttribsToColorIndices,
+        appearance.showNodeLabels,
+        pixiState.nodeMap,
+        renderState.app
+      )
+    );
+    redraw(
+      graphState.graph.data,
+      pixiState.lines,
+      appearance.linkWidth,
+      colorschemeState.linkColorscheme,
+      colorschemeState.linkAttribsToColorIndices,
+      appearance.showNodeLabels,
+      pixiState.nodeMap,
+      renderState.app
+    );
   }, [appearance.linkWidth]);
 }

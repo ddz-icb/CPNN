@@ -4,8 +4,7 @@ import * as PIXI from "pixi.js";
 import { useRef, useEffect, useState } from "react";
 import { getNodeLabelOffsetY, handleResize, initDragAndZoom } from "../services/interactiveCanvas.js";
 import { initTooltips, Tooltips } from "../../gui/tooltipCanvas.js";
-import { radius, drawCircle, drawLine, getTextStyle, getBitMapStyle } from "../../domain_service/canvas_drawing/draw.js";
-import { PhysicsControl } from "./physicsControl.js";
+import { radius, drawCircle, drawLine, getTextStyle, getBitMapStyle, redraw, render } from "../../domain_service/canvas_drawing/draw.js";
 import { gravityStrengthInit, linkLengthInit, nodeRepulsionStrengthInit } from "../../adapters/state/physicsState.js";
 import { useAppearance } from "../../adapters/state/appearanceState.js";
 import { graphInit, useGraphState } from "../../adapters/state/graphState.js";
@@ -15,9 +14,7 @@ import { useError } from "../../adapters/state/errorState.js";
 import { useReset } from "../../adapters/state/resetState.js";
 import { useColorschemeState } from "../../adapters/state/colorschemeState.js";
 import { getSimulation } from "../../domain_service/physics_calculations/getSimulation.js";
-import { DownloadControl } from "./downloadControl.js";
 import { AppearanceControl } from "./appearanceControl.js";
-import { FilterControl } from "./filterControl.js";
 import { useTheme } from "../../adapters/state/themeState.js";
 import { circlesInit, linesInit, nodeMapInit, usePixiState } from "../../adapters/state/pixiState.js";
 import { filteredAfterStartInit, useGraphFlags } from "../../adapters/state/graphFlagsState.js";
@@ -180,8 +177,19 @@ export function RenderControl() {
       let activeCircles = pixiState.circles.children.filter((circle) => circle.visible);
 
       renderState.simulation
-        .on("tick.redraw", () => redraw(graphState.graph.data))
-        .on("end", render)
+        .on("tick.redraw", () =>
+          redraw(
+            graphState.graph.data,
+            pixiState.lines,
+            appearance.linkWidth,
+            colorschemeState.linkColorscheme,
+            colorschemeState.linkAttribsToColorIndices,
+            appearance.showNodeLabels,
+            pixiState.nodeMap,
+            renderState.app
+          )
+        )
+        .on("end", () => render(renderState.app))
         .nodes(activeCircles)
         .force("link")
         .links(graphState.graph.data.links);
@@ -220,34 +228,10 @@ export function RenderControl() {
     };
   }, [renderState.app]);
 
-  // redraw runs while the simulation is active //
-  function redraw(graphData) {
-    pixiState.lines.clear();
-
-    for (const link of graphData.links) {
-      drawLine(pixiState.lines, link, appearance.linkWidth, colorschemeState.linkColorscheme.data, colorschemeState.linkAttribsToColorIndices);
-    }
-
-    if (appearance.showNodeLabels) {
-      graphData.nodes.forEach((n) => {
-        const { node, circle, nodeLabel } = pixiState.nodeMap[n.id];
-        nodeLabel.x = circle.x;
-        nodeLabel.y = circle.y + getNodeLabelOffsetY(node.id);
-      });
-    }
-
-    renderState.app.renderer.render(renderState.app.stage);
-  }
-
-  // render runs when the simulation is inactive //
-  function render() {
-    renderState.app.renderer.render(renderState.app.stage);
-  }
-
   return (
     <>
       <Tooltips />
-      <AppearanceControl redraw={redraw} />
+      <AppearanceControl />
       <div ref={containerRef} className="container" />
     </>
   );
