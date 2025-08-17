@@ -103,7 +103,11 @@ export function CodeEditorBlock({ text, onClick, compilerError, defaultValue, te
         </div>
         <Button onClick={onClick} text="Run" />
       </div>
-      <span className={`pad-left-1 warning ${compilerError ? "pad-bottom-1" : ""}`}>{compilerError}</span>
+      {compilerError && (
+        <div className="popup-block">
+          <span className="warning pad-left-1">{compilerError}</span>
+        </div>
+      )}
     </>
   );
 }

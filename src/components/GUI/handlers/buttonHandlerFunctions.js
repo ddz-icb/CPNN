@@ -43,7 +43,7 @@ export const runCodeEditor = (valueText, setValue, setValueText, parse, setCompi
     setValueText(valueText);
     setValue(parsedValue);
   } catch (error) {
-    setCompilerError(error);
-    log.error("Invalid input:", error);
+    setCompilerError(error.message);
+    log.warn("Invalid input:", error);
   }
 };

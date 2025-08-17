@@ -142,8 +142,8 @@ export function FilterSidebar() {
             filter.linkFilterText,
             (value) => setFilter("linkFilter", value),
             (value) => setFilter("linkFilterText", value),
-            () => parseAttribsFilter(),
-            () => setCompilerErrorLinkFilter()
+            (input) => parseAttribsFilter(input),
+            (error) => setCompilerErrorLinkFilter(error)
           )
         }
         defaultValue={filter.linkFilterText}
