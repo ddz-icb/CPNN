@@ -117,7 +117,7 @@ function UploadGraph() {
   const graphFileRef = useRef(null);
 
   const [takeAbs, setTakeAbs] = useState(false);
-  const [mergeProteins, setMergeSameProtein] = useState(false);
+  const [mergeProteins, setMergeProtein] = useState(false);
   const [spearmanCoefficient, setSpearmanCoefficient] = useState(false);
 
   const [minLinkCorr, setMinLinkCorr] = useState(0);
@@ -198,7 +198,7 @@ function UploadGraph() {
       <SwitchBlock
         variant="popup"
         value={mergeProteins}
-        setValue={() => setMergeSameProtein(!mergeProteins)}
+        setValue={() => setMergeProtein(!mergeProteins)}
         text={"Merge nodes of same protein"}
         infoHeading={"Merge Proteins"}
         infoDescription={mergeProteinsDescription}

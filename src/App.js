@@ -25,6 +25,7 @@ import { applyNodeMapping } from "./components/domain_service/graph_calculations
 import { useTheme } from "./components/adapters/state/themeState.js";
 import { RenderGraph } from "./components/application_service/controllers/renderControl.js";
 import { useGraphMetrics } from "./components/adapters/state/graphMetricsState.js";
+import { useGraphFlags } from "./components/adapters/state/graphFlagsState.js";
 
 function App() {
   const { setFilter, setAllFilter } = useFilter();
@@ -33,17 +34,18 @@ function App() {
   const { colorschemeState, setColorschemeState } = useColorschemeState();
   const { mappingState, setMappingState } = useMappingState();
   const { graphState, setGraphState } = useGraphState();
+  const { graphFlags, setGraphFlags } = useGraphFlags();
   const { graphMetrics, setGraphMetrics } = useGraphMetrics();
 
   // reloads graph //
   useEffect(() => {
     async function reloadGraph() {
       let graph = await graphService.getJoinedGraph(graphState.activeGraphNames);
-      graph.data = filterMergeProteins(graph.data, graphState.mergeProteins);
+      graph.data = filterMergeProteins(graph.data, graphFlags.mergeProteins);
       graph.data = applyNodeMapping(graph.data, mappingState.mapping?.data);
       setGraphState("originGraph", graph);
       setGraphState("activeGraphNames", graphState.activeGraphNames);
-      setGraphState("isPreprocessed", false);
+      setGraphFlags("isPreprocessed", false);
       resetService.resetSimulation();
     }
 
@@ -56,11 +58,11 @@ function App() {
       setError("Error loading graph");
       log.error("Error loading graph:", error);
     }
-  }, [graphState.mergeProteins, mappingState.mapping, graphState.activeGraphNames]);
+  }, [graphFlags.mergeProteins, mappingState.mapping, graphState.activeGraphNames]);
 
   // forwards graph to forceGraph component //
   useEffect(() => {
-    if (!graphState.originGraph || !graphState.activeGraphNames || graphState.isPreprocessed) return;
+    if (!graphState.originGraph || !graphState.activeGraphNames || graphFlags.isPreprocessed) return;
     log.info("Modifying graph and forwarding it to the simulation component");
 
     let newGraph = structuredClone(graphState.originGraph);
@@ -86,7 +88,7 @@ function App() {
 
     setGraphState("originGraph", newGraph);
     setGraphState("graph", newGraph);
-    setGraphState("isPreprocessed", true);
+    setGraphFlags("isPreprocessed", true);
   }, [graphState.originGraph, graphState.activeGraphNames]);
 
   return (

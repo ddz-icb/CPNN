@@ -1,21 +1,15 @@
 import { create } from "zustand";
 
 export const graphInit = null;
-export const filteredAfterStartInit = false;
+export const originGraphInit = null;
+export const activeGraphNamesInit = null;
+export const uploadedGraphNamesInit = null;
 
 export const graphStateInit = {
-  // graph state
   graph: graphInit,
-  originGraph: null,
-
-  // graph flags
-  mergeProteins: false,
-  filteredAfterStart: filteredAfterStartInit,
-  isPreprocessed: false,
-
-  // graph state
-  activeGraphNames: null,
-  uploadedGraphNames: null,
+  originGraph: originGraphInit,
+  activeGraphNames: activeGraphNamesInit,
+  uploadedGraphNames: uploadedGraphNamesInit,
 };
 
 export const useGraphState = create((set) => ({

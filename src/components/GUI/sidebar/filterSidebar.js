@@ -32,11 +32,13 @@ import { useGraphState } from "../../adapters/state/graphState.js";
 import { parseAttribsFilter } from "../../domain_service/parsing/attribsFilterParsing.js";
 import { useTheme } from "../../adapters/state/themeState.js";
 import { useGraphMetrics } from "../../adapters/state/graphMetricsState.js";
+import { useGraphFlags } from "../../adapters/state/graphFlagsState.js";
 
 export function FilterSidebar() {
   const { filter, setFilter, setAllFilter } = useFilter();
   const { theme } = useTheme();
   const { graphState, setGraphState } = useGraphState();
+  const { graphFlags, setGraphFlags } = useGraphFlags();
   const { graphMetrics } = useGraphMetrics();
 
   const linkFilterEditorRef = useRef(null);
@@ -50,7 +52,7 @@ export function FilterSidebar() {
 
   const handleResetFilters = () => {
     setAllFilter(filterInit);
-    setGraphState("mergeProteins", false);
+    setGraphFlags("mergeProteins", false);
     setCompilerErrorLinkFilter(null);
     setCompilerErrorNodeFilter(null);
   };
@@ -116,8 +118,8 @@ export function FilterSidebar() {
         <Button text={"Reset Filters"} onClick={handleResetFilters} />
       </div>
       <SwitchBlock
-        value={graphState.mergeProteins}
-        setValue={() => setGraphState("mergeProteins", !graphState.mergeProteins)}
+        value={graphFlags.mergeProteins}
+        setValue={() => setGraphState("mergeProteins", !graphFlags.mergeProteins)}
         text={"Merge Proteins"}
         infoHeading={"Merge nodes of same protein"}
         infoDescription={mergeProteinsDescription}

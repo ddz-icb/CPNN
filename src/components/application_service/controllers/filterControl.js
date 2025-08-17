@@ -16,11 +16,13 @@ import { useFilter } from "../../adapters/state/filterState.js";
 import { useAppearance } from "../../adapters/state/appearanceState.js";
 import { useGraphState } from "../../adapters/state/graphState.js";
 import { usePixiState } from "../../adapters/state/pixiState.js";
+import { useGraphFlags } from "../../adapters/state/graphFlagsState.js";
 
 export function FilterStateControl() {
   const { filter, setFilter } = useFilter();
   const { appearance, setAppearance } = useAppearance();
   const { graphState, setGraphState } = useGraphState();
+  const { graphFlags, setGraphFlags } = useGraphFlags();
   const { pixiState, setPixiState } = usePixiState();
 
   // filter nodes and links //
@@ -30,7 +32,7 @@ export function FilterStateControl() {
       !graphState.originGraph ||
       !pixiState?.circles?.children?.length > 0 ||
       !pixiState.nodeMap ||
-      !graphState.isPreprocessed
+      !graphFlags.isPreprocessed
     ) {
       return;
     }
@@ -77,7 +79,7 @@ export function FilterStateControl() {
     const filteredGraph = { name: graphState.graph.name, data: filteredGraphData };
 
     filterActiveNodesForPixi(pixiState.circles, pixiState.nodeLabels, appearance.showNodeLabels, filteredGraphData, pixiState.nodeMap);
-    setGraphState("filteredAfterStart", true);
+    setGraphFlags("filteredAfterStart", true);
     setGraphState("graph", filteredGraph);
   }, [
     filter.linkThreshold,

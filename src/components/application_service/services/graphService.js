@@ -5,6 +5,7 @@ import { createGraph, deleteGraph, loadGraphNames, getGraph } from "../../domain
 import { createGraphIfNotExistsDB } from "../../repository/graphRepo.js";
 import { errorService } from "./errorService.js";
 import { joinGraphNames, joinGraphs } from "../../domain_service/graph_calculations/joinGraph.js";
+import { useGraphFlags } from "../../adapters/state/graphFlagsState.js";
 
 export const graphService = {
   async handleLoadGraphNames() {
@@ -143,69 +144,81 @@ export const graphService = {
     }
   },
   // ====== Generic getter/setter ======
-  get(key) {
+  getGraphState(key) {
     return useGraphState.getState().graphState[key];
   },
-  set(key, value) {
+  getGraphFlags(key) {
+    return useGraphFlags.getState().graphFlags[key];
+  },
+  setGraphState(key, value) {
     useGraphState.getState().setGraphState(key, value);
   },
-  getAll() {
+  setGraphFlags(key, value) {
+    useGraphFlags.getState().setGraphFlags(key, value);
+  },
+  getAllGraphState() {
     return useGraphState.getState().graphState;
   },
-  setAll(value) {
+  getAllGraphFlags() {
+    return useGraphFlags.getState().graphFlags;
+  },
+  setAllGraphState(value) {
     useGraphState.getState().setAllGraphState(value);
+  },
+  setAllGraphFlags(value) {
+    useGraphFlags.getState().setAllGraphFlags(value);
   },
   // ====== Specific getter/setter ======
   getGraph() {
-    return this.get("graph");
+    return this.getGraphState("graph");
   },
   setGraph(val) {
-    this.set("graph", val);
+    this.setGraphState("graph", val);
   },
   getOriginGraph() {
-    return this.get("originGraph");
+    return this.getGraphState("originGraph");
   },
   setOriginGraph(val) {
-    this.set("originGraph", val);
+    this.setGraphState("originGraph", val);
   },
   getMergeProteins() {
-    return this.get("mergeProteins");
+    return this.getGraphFlags("mergeProteins");
   },
   setMergeProteins(val) {
-    this.set("mergeProteins", val);
+    this.setGraphFlags("mergeProteins", val);
   },
   getFilteredAfterStart() {
-    return this.get("filteredAfterStart");
+    return this.getGraphFlags("filteredAfterStart");
   },
   setFilteredAfterStart(val) {
-    this.set("filteredAfterStart", val);
+    this.setGraphFlags("filteredAfterStart", val);
   },
 
   getGraphIsPreprocessed() {
-    return this.get("isPreprocessed");
+    return this.getGraphFlags("isPreprocessed");
   },
   setGraphIsPreprocessed(val) {
-    this.set("isPreprocessed", val);
+    this.setGraphFlags("isPreprocessed", val);
   },
 
   getActiveGraphNames() {
-    return this.get("activeGraphNames");
+    return this.getGraphState("activeGraphNames");
   },
   setActiveGraphNames(val) {
-    this.set("activeGraphNames", val);
+    this.setGraphState("activeGraphNames", val);
   },
 
   getUploadedGraphNames() {
-    return this.get("uploadedGraphNames");
+    return this.getGraphState("uploadedGraphNames");
   },
   setUploadedGraphNames(val) {
-    this.set("uploadedGraphNames", val);
+    this.setGraphState("uploadedGraphNames", val);
   },
 
   getMapping() {
-    return this.get("mapping");
+    return this.getGraphState("mapping");
   },
   setMapping(val) {
-    this.set("mapping", val);
+    this.setGraphState("mapping", val);
   },
 };
