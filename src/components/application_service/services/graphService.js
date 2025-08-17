@@ -30,7 +30,7 @@ export const graphService = {
     try {
       const graph = await createGraph(file, takeAbs, minCorrForEdge, minCompSizeForNode, maxCompSizeForNode, takeSpearmanCoefficient, mergeProteins);
 
-      this.setUploadedGraphNames([...(this.getUploadedGraphNames() || []), file.name]);
+      this.setUploadedGraphNames([...(this.getUploadedGraphNames() || []), graph.name]);
     } catch (error) {
       errorService.setError(error.message);
       log.error(error);

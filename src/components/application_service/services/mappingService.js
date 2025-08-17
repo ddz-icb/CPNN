@@ -40,7 +40,7 @@ export const mappingService = {
 
     try {
       const mapping = await createMapping(file);
-      this.setUploadedMappingNames([...(this.getUploadedMappingNames() || []), file.name]);
+      this.setUploadedMappingNames([...(this.getUploadedMappingNames() || []), mapping.name]);
     } catch (error) {
       errorService.setError(error.message);
       log.error(error);
