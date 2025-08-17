@@ -87,11 +87,6 @@ export function RenderGraph() {
         autoDensity: true,
       });
 
-      app.canvas.style.position = "absolute";
-      app.canvas.style.display = "block";
-      app.canvas.style.width = "100%";
-      app.canvas.style.height = "100%";
-
       containerRef.current.appendChild(app.canvas);
 
       setApp(app);
