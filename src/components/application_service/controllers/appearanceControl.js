@@ -8,6 +8,7 @@ import { useGraphState } from "../../adapters/state/graphState.js";
 
 import { useColorschemeState } from "../../adapters/state/colorschemeState.js";
 import { useTheme } from "../../adapters/state/themeState.js";
+import { usePixiState } from "../../adapters/state/pixiState.js";
 
 export function AppearanceStateControl({ app, simulation, redraw }) {
   const { physics, setPhysics } = usePhysics();
@@ -15,20 +16,21 @@ export function AppearanceStateControl({ app, simulation, redraw }) {
   const { theme, setTheme } = useTheme();
   const { colorschemeState, setColorschemeState } = useColorschemeState();
   const { graphState, setGraphState } = useGraphState();
+  const { pixiState, setPixiState } = usePixiState();
   // enable/disable node labels
   useEffect(() => {
-    if (!graphState.circles || !app) return;
+    if (!pixiState.circles || !app) return;
     log.info("Enabling/Disabling node labels");
 
     if (appearance.showNodeLabels == true) {
       graphState.graph.data.nodes.forEach((n) => {
-        const { nodeLabel } = graphState.nodeMap[n.id];
+        const { nodeLabel } = pixiState.nodeMap[n.id];
         nodeLabel.visible = true;
       });
       simulation.on("tick.redraw", () => redraw(graphState.graph.data));
       redraw(graphState.graph.data);
     } else {
-      graphState.nodeLabels.children.forEach((label) => (label.visible = false));
+      pixiState.nodeLabels.children.forEach((label) => (label.visible = false));
       simulation.on("tick.redraw", () => redraw(graphState.graph.data));
       redraw(graphState.graph.data);
     }
@@ -36,21 +38,21 @@ export function AppearanceStateControl({ app, simulation, redraw }) {
 
   // switch colors upon changing theme //
   useEffect(() => {
-    if (!graphState.circles) return;
+    if (!pixiState.circles) return;
     log.info("Switching colors", theme);
 
-    changeCircleBorderColor(graphState.circles, theme.circleBorderColor);
-    changeNodeLabelColor(graphState.nodeLabels, theme.textColor);
+    changeCircleBorderColor(pixiState.circles, theme.circleBorderColor);
+    changeNodeLabelColor(pixiState.nodeLabels, theme.textColor);
   }, [theme]);
 
   // switch node color scheme
   useEffect(() => {
-    if (!graphState.circles) return;
+    if (!pixiState.circles) return;
     log.info("Changing node color scheme");
 
     changeNodeColors(
-      graphState.circles,
-      graphState.nodeMap,
+      pixiState.circles,
+      pixiState.nodeMap,
       theme.circleBorderColor,
       colorschemeState.nodeColorscheme.data,
       colorschemeState.nodeAttribsToColorIndices
@@ -59,7 +61,7 @@ export function AppearanceStateControl({ app, simulation, redraw }) {
 
   // switch link color scheme
   useEffect(() => {
-    if (!simulation || !graphState.lines) return;
+    if (!simulation || !pixiState.lines) return;
     log.info("Changing link color scheme");
 
     simulation.on("tick.redraw", () => redraw(graphState.graph.data));
@@ -68,7 +70,7 @@ export function AppearanceStateControl({ app, simulation, redraw }) {
 
   // change link width
   useEffect(() => {
-    if (!simulation || !graphState.lines) return;
+    if (!simulation || !pixiState.lines) return;
     log.info("Changing link width", physics.communityForceStrength);
 
     simulation.on("tick.redraw", () => redraw(graphState.graph.data));

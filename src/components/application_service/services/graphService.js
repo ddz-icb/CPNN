@@ -174,35 +174,6 @@ export const graphService = {
   setMergeProteins(val) {
     this.set("mergeProteins", val);
   },
-
-  getNodeMap() {
-    return this.get("nodeMap");
-  },
-  setNodeMap(val) {
-    this.set("nodeMap", val);
-  },
-
-  getCircles() {
-    return this.get("circles");
-  },
-  setCircles(val) {
-    this.set("circles", val);
-  },
-
-  getNodeLabels() {
-    return this.get("nodeLabels");
-  },
-  setNodeLabels(val) {
-    this.set("nodeLabels", val);
-  },
-
-  getLines() {
-    return this.get("lines");
-  },
-  setLines(val) {
-    this.set("lines", val);
-  },
-
   getFilteredAfterStart() {
     return this.get("filteredAfterStart");
   },

@@ -9,6 +9,7 @@ import { usePhysics } from "../../adapters/state/physicsState.js";
 import { downloadAsPDF, downloadAsPNG, downloadAsSVG, downloadGraphJson, downloadLegendPdf } from "../../domain_service/download/download.js";
 import { changeCircleBorderColor, changeNodeLabelColor } from "../../domain_service/canvas_drawing/draw.js";
 import { lightTheme, themeInit, useTheme } from "../../adapters/state/themeState.js";
+import { usePixiState } from "../../adapters/state/pixiState.js";
 
 export function DownloadStateControl({ app }) {
   const { physics, setPhysics } = usePhysics();
@@ -16,6 +17,7 @@ export function DownloadStateControl({ app }) {
   const { theme, setTheme } = useTheme();
   const { colorschemeState, setColorschemeState } = useColorschemeState();
   const { graphState, setGraphState } = useGraphState();
+  const { pixiState, setPixiState } = usePixiState();
   const { mappingState, setMappingState } = useMappingState();
   const { download, setDownload } = useDownload();
 
@@ -36,7 +38,7 @@ export function DownloadStateControl({ app }) {
     if (download.jsonCoordsPhysics != null && graphState.graph) {
       try {
         log.info("Downloading graph as JSON with coordinates and physics");
-        downloadGraphJson(graphState.graph, graphState.nodeMap, physics);
+        downloadGraphJson(graphState.graph, pixiState.nodeMap, physics);
       } catch (error) {
         log.error("Error downloading the graph as JSON with coordinates:", error);
       }
@@ -48,13 +50,13 @@ export function DownloadStateControl({ app }) {
     if (download.png != null && graphState.graph) {
       log.info("Downloading graph as PNG");
 
-      changeCircleBorderColor(graphState.circles, lightTheme.circleBorderColor);
-      changeNodeLabelColor(graphState.nodeLabels, lightTheme.textColor);
+      changeCircleBorderColor(pixiState.circles, lightTheme.circleBorderColor);
+      changeNodeLabelColor(pixiState.nodeLabels, lightTheme.textColor);
 
       downloadAsPNG(app, document, graphState.graph.name);
 
-      changeCircleBorderColor(graphState.circles, theme.circleBorderColor);
-      changeNodeLabelColor(graphState.nodeLabels, theme.textColor);
+      changeCircleBorderColor(pixiState.circles, theme.circleBorderColor);
+      changeNodeLabelColor(pixiState.nodeLabels, theme.textColor);
     }
   }, [download.png]);
 
@@ -72,7 +74,7 @@ export function DownloadStateControl({ app }) {
         themeInit.textColor,
         colorschemeState.nodeColorscheme.data,
         colorschemeState.nodeAttribsToColorIndices,
-        graphState.nodeMap
+        pixiState.nodeMap
       );
     }
   }, [download.svg]);
@@ -91,7 +93,7 @@ export function DownloadStateControl({ app }) {
         themeInit.textColor,
         colorschemeState.nodeColorscheme.data,
         colorschemeState.nodeAttribsToColorIndices,
-        graphState.nodeMap
+        pixiState.nodeMap
       );
     }
   }, [download.pdf]);

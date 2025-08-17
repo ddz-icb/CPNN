@@ -8,24 +8,25 @@ import { radius, drawCircle, drawLine, getTextStyle, getBitMapStyle } from "../.
 import { PhysicsStateControl } from "./physicsControl.js";
 import { gravityStrengthInit, linkLengthInit, nodeRepulsionStrengthInit } from "../../adapters/state/physicsState.js";
 import { useAppearance } from "../../adapters/state/appearanceState.js";
-import { circlesInit, filteredAfterStartInit, graphInit, linesInit, nodeMapInit, useGraphState } from "../../adapters/state/graphState.js";
+import { filteredAfterStartInit, graphInit, useGraphState } from "../../adapters/state/graphState.js";
 import { useContainer } from "../../adapters/state/containerState.js";
 import { tooltipInit, useTooltipSettings } from "../../adapters/state/tooltipState.js";
 import { useError } from "../../adapters/state/errorState.js";
 import { useReset } from "../../adapters/state/resetState.js";
 import { useColorschemeState } from "../../adapters/state/colorschemeState.js";
-import { getNodeIdName } from "../../domain_service/parsing/nodeIdParsing.js";
 import { getSimulation } from "../../domain_service/physics_calculations/getSimulation.js";
 import { DownloadStateControl } from "./downloadControl.js";
 import { AppearanceStateControl } from "./appearanceControl.js";
 import { FilterStateControl } from "./filterControl.js";
 import { useTheme } from "../../adapters/state/themeState.js";
+import { circlesInit, linesInit, nodeMapInit, usePixiState } from "../../adapters/state/pixiState.js";
 
 export function RenderGraph() {
   const { appearance, setAppearance } = useAppearance();
   const { theme, setTheme } = useTheme();
   const { colorschemeState, setColorschemeState } = useColorschemeState();
   const { graphState, setGraphState, setAllGraphState } = useGraphState();
+  const { pixiState, setPixiState } = usePixiState();
   const { container, setContainer } = useContainer();
   const { tooltipSettings, setTooltipSettings, setAllTooltipSettings } = useTooltipSettings();
   const { error, setError } = useError();
@@ -41,10 +42,10 @@ export function RenderGraph() {
     if (!reset) return;
 
     setGraphState("graph", graphInit);
-    setGraphState("nodeMap", nodeMapInit);
-    setGraphState("circles", circlesInit);
-    setGraphState("lines", linesInit);
     setGraphState("filteredAfterStart", filteredAfterStartInit);
+    setPixiState("nodeMap", nodeMapInit);
+    setPixiState("circles", circlesInit);
+    setPixiState("lines", linesInit);
 
     setAllTooltipSettings(tooltipInit);
 
@@ -98,7 +99,7 @@ export function RenderGraph() {
 
   // set stage //
   useEffect(() => {
-    if (graphState.circles || !app || !graphState.graph || !container.width || !container.height || !theme || !colorschemeState.nodeColorscheme)
+    if (pixiState.circles || !app || !graphState.graph || !container.width || !container.height || !theme || !colorschemeState.nodeColorscheme)
       return;
     log.info("Setting stage");
 
@@ -134,10 +135,10 @@ export function RenderGraph() {
         newNodeMap[node.id] = { node, circle, nodeLabel };
       }
 
-      setGraphState("nodeLabels", newNodeLabels);
-      setGraphState("circles", newCircles);
-      setGraphState("lines", newLines);
-      setGraphState("nodeMap", newNodeMap);
+      setPixiState("nodeLabels", newNodeLabels);
+      setPixiState("circles", newCircles);
+      setPixiState("lines", newLines);
+      setPixiState("nodeMap", newNodeMap);
     } catch (error) {
       setError(error.message);
       log.error(error.message);
@@ -163,11 +164,11 @@ export function RenderGraph() {
 
   // running simulation //
   useEffect(() => {
-    if (!graphState.circles || !graphState.graph || !simulation || !graphState.filteredAfterStart || !graphState.lines) return;
+    if (!pixiState.circles || !graphState.graph || !simulation || !graphState.filteredAfterStart || !pixiState.lines) return;
     log.info("Running simulation with the following graph:", graphState.graph);
 
     try {
-      let activeCircles = graphState.circles.children.filter((circle) => circle.visible);
+      let activeCircles = pixiState.circles.children.filter((circle) => circle.visible);
 
       simulation
         .on("tick.redraw", () => redraw(graphState.graph.data))
@@ -197,7 +198,7 @@ export function RenderGraph() {
         simulation.stop();
       }
     };
-  }, [graphState.graph, graphState.circles, graphState.lines, simulation, graphState.filteredAfterStart]);
+  }, [graphState.graph, pixiState.circles, pixiState.lines, simulation, graphState.filteredAfterStart]);
 
   // resize the canvas on window resize //
   useEffect(() => {
@@ -212,15 +213,15 @@ export function RenderGraph() {
 
   // redraw runs while the simulation is active //
   function redraw(graphData) {
-    graphState.lines.clear();
+    pixiState.lines.clear();
 
     for (const link of graphData.links) {
-      drawLine(graphState.lines, link, appearance.linkWidth, colorschemeState.linkColorscheme.data, colorschemeState.linkAttribsToColorIndices);
+      drawLine(pixiState.lines, link, appearance.linkWidth, colorschemeState.linkColorscheme.data, colorschemeState.linkAttribsToColorIndices);
     }
 
     if (appearance.showNodeLabels) {
       graphData.nodes.forEach((n) => {
-        const { node, circle, nodeLabel } = graphState.nodeMap[n.id];
+        const { node, circle, nodeLabel } = pixiState.nodeMap[n.id];
         nodeLabel.x = circle.x;
         nodeLabel.y = circle.y + getNodeLabelOffsetY(node.id);
       });

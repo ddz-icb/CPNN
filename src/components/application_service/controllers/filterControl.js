@@ -15,21 +15,21 @@ import {
 import { useFilter } from "../../adapters/state/filterState.js";
 import { useAppearance } from "../../adapters/state/appearanceState.js";
 import { useGraphState } from "../../adapters/state/graphState.js";
+import { usePixiState } from "../../adapters/state/pixiState.js";
 
 export function FilterStateControl() {
   const { filter, setFilter } = useFilter();
   const { appearance, setAppearance } = useAppearance();
   const { graphState, setGraphState } = useGraphState();
+  const { pixiState, setPixiState } = usePixiState();
 
   // filter nodes and links //
   useEffect(() => {
     if (
       !graphState.graph ||
       !graphState.originGraph ||
-      !graphState.circles ||
-      !graphState.circles.children ||
-      !graphState.circles.children.length > 0 ||
-      !graphState.nodeMap ||
+      !pixiState?.circles?.children?.length > 0 ||
+      !pixiState.nodeMap ||
       !graphState.isPreprocessed
     ) {
       return;
@@ -76,7 +76,7 @@ export function FilterStateControl() {
 
     const filteredGraph = { name: graphState.graph.name, data: filteredGraphData };
 
-    filterActiveNodesForPixi(graphState.circles, graphState.nodeLabels, appearance.showNodeLabels, filteredGraphData, graphState.nodeMap);
+    filterActiveNodesForPixi(pixiState.circles, pixiState.nodeLabels, appearance.showNodeLabels, filteredGraphData, pixiState.nodeMap);
     setGraphState("filteredAfterStart", true);
     setGraphState("graph", filteredGraph);
   }, [
@@ -88,6 +88,6 @@ export function FilterStateControl() {
     filter.compDensity,
     filter.minNeighborhoodSize,
     graphState.originGraph,
-    graphState.circles,
+    pixiState.circles,
   ]);
 }
