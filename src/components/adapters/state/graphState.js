@@ -1,12 +1,16 @@
 import { create } from "zustand";
 
+// NEXTT: AUFTEILEN
 export const graphStateInit = {
   graph: null,
   originGraph: null,
+
   linkWeightMin: null,
   linkWeightMax: null,
+
   mergeProteins: false,
 
+  // pixi stuff
   nodeMap: null,
   circles: null,
   nodeLabels: null,
@@ -14,6 +18,7 @@ export const graphStateInit = {
 
   filteredAfterStart: false,
   graphIsPreprocessed: false,
+
   uploadedGraphNames: null,
   activeGraphNames: null,
 };
@@ -21,12 +26,9 @@ export const graphStateInit = {
 export const useGraphState = create((set) => ({
   graphState: graphStateInit,
   setGraphState: (key, value) =>
-    set((state) => {
-      if (typeof value === "function") {
-        return { graphState: value(state.graphState) };
-      }
-      return { graphState: { ...state.graphState, [key]: value } };
-    }),
+    set((state) => ({
+      graphState: { ...state.graphState, [key]: value },
+    })),
   setAllGraphState: (value) =>
     set(() => ({
       graphState: value,
