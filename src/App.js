@@ -26,6 +26,9 @@ import { useTheme } from "./components/adapters/state/themeState.js";
 import { useGraphMetrics } from "./components/adapters/state/graphMetricsState.js";
 import { useGraphFlags } from "./components/adapters/state/graphFlagsState.js";
 import { RenderControl } from "./components/application_service/controllers/renderControl.js";
+import { PhysicsControl } from "./components/application_service/controllers/physicsControl.js";
+import { DownloadControl } from "./components/application_service/controllers/downloadControl.js";
+import { FilterControl } from "./components/application_service/controllers/filterControl.js";
 
 function App() {
   const { setFilter, setAllFilter } = useFilter();
@@ -94,6 +97,9 @@ function App() {
   return (
     <>
       <InitControl />
+      <PhysicsControl />
+      <DownloadControl />
+      <FilterControl />
       <main className={theme.name}>
         <HeaderBar />
         <Sidebar />

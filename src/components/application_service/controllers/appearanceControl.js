@@ -9,17 +9,19 @@ import { useGraphState } from "../../adapters/state/graphState.js";
 import { useColorschemeState } from "../../adapters/state/colorschemeState.js";
 import { useTheme } from "../../adapters/state/themeState.js";
 import { usePixiState } from "../../adapters/state/pixiState.js";
+import { useRenderState } from "../../adapters/state/canvasState.js";
 
-export function AppearanceControl({ app, simulation, redraw }) {
+export function AppearanceControl({ redraw }) {
   const { physics, setPhysics } = usePhysics();
   const { appearance, setAppearance } = useAppearance();
   const { theme, setTheme } = useTheme();
   const { colorschemeState, setColorschemeState } = useColorschemeState();
   const { graphState, setGraphState } = useGraphState();
   const { pixiState, setPixiState } = usePixiState();
+  const { renderState, setRenderState } = useRenderState();
   // enable/disable node labels
   useEffect(() => {
-    if (!pixiState.circles || !app) return;
+    if (!pixiState.circles) return;
     log.info("Enabling/Disabling node labels");
 
     if (appearance.showNodeLabels == true) {
@@ -27,11 +29,11 @@ export function AppearanceControl({ app, simulation, redraw }) {
         const { nodeLabel } = pixiState.nodeMap[n.id];
         nodeLabel.visible = true;
       });
-      simulation.on("tick.redraw", () => redraw(graphState.graph.data));
+      renderState.simulation.on("tick.redraw", () => redraw(graphState.graph.data));
       redraw(graphState.graph.data);
     } else {
       pixiState.nodeLabels.children.forEach((label) => (label.visible = false));
-      simulation.on("tick.redraw", () => redraw(graphState.graph.data));
+      renderState.simulation.on("tick.redraw", () => redraw(graphState.graph.data));
       redraw(graphState.graph.data);
     }
   }, [appearance.showNodeLabels]);
@@ -61,19 +63,19 @@ export function AppearanceControl({ app, simulation, redraw }) {
 
   // switch link color scheme
   useEffect(() => {
-    if (!simulation || !pixiState.lines) return;
+    if (!renderState.simulation || !pixiState.lines) return;
     log.info("Changing link color scheme");
 
-    simulation.on("tick.redraw", () => redraw(graphState.graph.data));
+    renderState.simulation.on("tick.redraw", () => redraw(graphState.graph.data));
     redraw(graphState.graph.data);
   }, [colorschemeState.linkColorscheme, colorschemeState.linkAttribsToColorIndices]);
 
   // change link width
   useEffect(() => {
-    if (!simulation || !pixiState.lines) return;
+    if (!renderState.simulation || !pixiState.lines) return;
     log.info("Changing link width", physics.communityForceStrength);
 
-    simulation.on("tick.redraw", () => redraw(graphState.graph.data));
+    renderState.simulation.on("tick.redraw", () => redraw(graphState.graph.data));
     redraw(graphState.graph.data);
   }, [appearance.linkWidth]);
 }

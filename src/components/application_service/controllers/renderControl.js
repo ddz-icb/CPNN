@@ -21,6 +21,7 @@ import { FilterControl } from "./filterControl.js";
 import { useTheme } from "../../adapters/state/themeState.js";
 import { circlesInit, linesInit, nodeMapInit, usePixiState } from "../../adapters/state/pixiState.js";
 import { filteredAfterStartInit, useGraphFlags } from "../../adapters/state/graphFlagsState.js";
+import { simulationInit, useRenderState } from "../../adapters/state/canvasState.js";
 
 export function RenderControl() {
   const { appearance } = useAppearance();
@@ -33,11 +34,9 @@ export function RenderControl() {
   const { setTooltipSettings, setAllTooltipSettings } = useTooltipSettings();
   const { setError } = useError();
   const { reset, setReset } = useReset();
+  const { renderState, setRenderState } = useRenderState();
 
   const containerRef = useRef(null);
-
-  const [app, setApp] = useState(null);
-  const [simulation, setSimulation] = useState(null);
 
   // reset simulation //
   useEffect(() => {
@@ -51,14 +50,14 @@ export function RenderControl() {
 
     setAllTooltipSettings(tooltipInit);
 
-    if (simulation) {
-      simulation.stop();
-      setSimulation(null);
+    if (renderState.simulation) {
+      renderState.simulation.stop();
+      setRenderState("simulation", simulationInit);
     }
 
-    if (app) {
-      app.stage.removeChildren();
-      containerRef.current.appendChild(app.canvas);
+    if (renderState.app) {
+      renderState.app.stage.removeChildren();
+      containerRef.current.appendChild(renderState.app.canvas);
     }
 
     setReset(null);
@@ -66,7 +65,7 @@ export function RenderControl() {
 
   // init Pixi //
   useEffect(() => {
-    if (!containerRef.current || app || !graphState.graph) return;
+    if (!containerRef.current || renderState.app || !graphState.graph) return;
     log.info("Init PIXI app");
 
     const containerRect = containerRef.current.getBoundingClientRect();
@@ -88,7 +87,7 @@ export function RenderControl() {
           autoDensity: true,
         });
         containerRef.current.appendChild(app.canvas);
-        setApp(app);
+        setRenderState("app", app);
         log.info("PIXI Initialized successfully");
       } catch (error) {
         setError(error.message);
@@ -101,7 +100,15 @@ export function RenderControl() {
 
   // set stage //
   useEffect(() => {
-    if (pixiState.circles || !app || !graphState.graph || !container.width || !container.height || !theme || !colorschemeState.nodeColorscheme)
+    if (
+      pixiState.circles ||
+      !renderState.app ||
+      !graphState.graph ||
+      !container.width ||
+      !container.height ||
+      !theme ||
+      !colorschemeState.nodeColorscheme
+    )
       return;
     log.info("Setting stage");
 
@@ -109,9 +116,9 @@ export function RenderControl() {
       const newLines = new PIXI.Graphics();
       const newCircles = new PIXI.Container();
       const newNodeLabels = new PIXI.Container();
-      app.stage.addChild(newLines);
-      app.stage.addChild(newCircles);
-      app.stage.addChild(newNodeLabels);
+      renderState.app.stage.addChild(newLines);
+      renderState.app.stage.addChild(newCircles);
+      renderState.app.stage.addChild(newNodeLabels);
 
       const offsetSpawnValue = graphState.graph.data.nodes.length * 10;
       const newNodeMap = {};
@@ -145,34 +152,34 @@ export function RenderControl() {
       setError(error.message);
       log.error(error.message);
     }
-  }, [app, graphState.graph, colorschemeState.nodeColorscheme, container.width, container.height, theme]);
+  }, [renderState.app, graphState.graph, colorschemeState.nodeColorscheme, container.width, container.height, theme]);
 
   // init simulation //
   useEffect(() => {
-    if (!app || !graphState.graph || simulation || graphFlags.filteredAfterStart) {
+    if (!renderState.app || !graphState.graph || renderState.simulation || graphFlags.filteredAfterStart) {
       return;
     }
     log.info("Init simulation");
 
     try {
       const newSimulation = getSimulation(container.width, container.height, linkLengthInit, gravityStrengthInit, nodeRepulsionStrengthInit);
-      initDragAndZoom(app, newSimulation, radius, setTooltipSettings, container.width, container.height);
-      setSimulation(newSimulation);
+      initDragAndZoom(renderState.app, newSimulation, radius, setTooltipSettings, container.width, container.height);
+      setRenderState("simulation", newSimulation);
     } catch (error) {
       setError(error.message);
       log.error(error.message);
     }
-  }, [app, graphState.graph]);
+  }, [renderState.app, graphState.graph]);
 
   // running simulation //
   useEffect(() => {
-    if (!pixiState.circles || !graphState.graph || !simulation || !graphFlags.filteredAfterStart || !pixiState.lines) return;
+    if (!pixiState.circles || !graphState.graph || !renderState.simulation || !graphFlags.filteredAfterStart || !pixiState.lines) return;
     log.info("Running simulation with the following graph:", graphState.graph);
 
     try {
       let activeCircles = pixiState.circles.children.filter((circle) => circle.visible);
 
-      simulation
+      renderState.simulation
         .on("tick.redraw", () => redraw(graphState.graph.data))
         .on("end", render)
         .nodes(activeCircles)
@@ -180,38 +187,38 @@ export function RenderControl() {
         .links(graphState.graph.data.links);
 
       // restart the simulation and reheat if necessary to make sure everything is being rerendered correctly
-      simulation.restart();
-      if (simulation.alpha() < 0.5) {
-        simulation.alpha(0.5);
+      renderState.simulation.restart();
+      if (renderState.simulation.alpha() < 0.5) {
+        renderState.simulation.alpha(0.5);
       }
 
-      setSimulation(simulation);
+      setRenderState(renderState.simulation);
     } catch (error) {
       setError("Error loading graph. The graph data is most likely incorrect", error.message);
       log.error(error.message);
 
-      if (simulation) {
-        simulation.stop();
+      if (renderState.simulation) {
+        renderState.simulation.stop();
       }
     }
 
     return () => {
-      if (simulation) {
-        simulation.stop();
+      if (renderState.simulation) {
+        renderState.simulation.stop();
       }
     };
-  }, [graphState.graph, pixiState.circles, pixiState.lines, simulation, graphFlags.filteredAfterStart]);
+  }, [graphState.graph, pixiState.circles, pixiState.lines, renderState.simulation, graphFlags.filteredAfterStart]);
 
   // resize the canvas on window resize //
   useEffect(() => {
-    if (app) {
-      window.addEventListener("resize", () => handleResize(containerRef, app));
+    if (renderState.app) {
+      window.addEventListener("resize", () => handleResize(containerRef, renderState.app));
     }
 
     return () => {
-      window.removeEventListener("resize", () => handleResize(containerRef, app));
+      window.removeEventListener("resize", () => handleResize(containerRef, renderState.app));
     };
-  }, [app]);
+  }, [renderState.app]);
 
   // redraw runs while the simulation is active //
   function redraw(graphData) {
@@ -229,21 +236,18 @@ export function RenderControl() {
       });
     }
 
-    app.renderer.render(app.stage);
+    renderState.app.renderer.render(renderState.app.stage);
   }
 
   // render runs when the simulation is inactive //
   function render() {
-    app.renderer.render(app.stage);
+    renderState.app.renderer.render(renderState.app.stage);
   }
 
   return (
     <>
       <Tooltips />
-      <PhysicsControl simulation={simulation} />
-      <DownloadControl app={app} />
-      <AppearanceControl app={app} simulation={simulation} redraw={redraw} />
-      <FilterControl />
+      <AppearanceControl redraw={redraw} />
       <div ref={containerRef} className="container" />
     </>
   );

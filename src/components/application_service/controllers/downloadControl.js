@@ -10,8 +10,9 @@ import { downloadAsPDF, downloadAsPNG, downloadAsSVG, downloadGraphJson, downloa
 import { changeCircleBorderColor, changeNodeLabelColor } from "../../domain_service/canvas_drawing/draw.js";
 import { lightTheme, themeInit, useTheme } from "../../adapters/state/themeState.js";
 import { usePixiState } from "../../adapters/state/pixiState.js";
+import { useRenderState } from "../../adapters/state/canvasState.js";
 
-export function DownloadControl({ app }) {
+export function DownloadControl() {
   const { physics, setPhysics } = usePhysics();
   const { appearance, setAppearance } = useAppearance();
   const { theme, setTheme } = useTheme();
@@ -20,6 +21,7 @@ export function DownloadControl({ app }) {
   const { pixiState, setPixiState } = usePixiState();
   const { mappingState, setMappingState } = useMappingState();
   const { download, setDownload } = useDownload();
+  const { renderState, setRenderState } = useRenderState();
 
   // download graph data as json //
   useEffect(() => {
@@ -53,7 +55,7 @@ export function DownloadControl({ app }) {
       changeCircleBorderColor(pixiState.circles, lightTheme.circleBorderColor);
       changeNodeLabelColor(pixiState.nodeLabels, lightTheme.textColor);
 
-      downloadAsPNG(app, document, graphState.graph.name);
+      downloadAsPNG(renderState.app, document, graphState.graph.name);
 
       changeCircleBorderColor(pixiState.circles, theme.circleBorderColor);
       changeNodeLabelColor(pixiState.nodeLabels, theme.textColor);
