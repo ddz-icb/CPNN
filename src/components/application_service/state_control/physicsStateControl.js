@@ -59,8 +59,8 @@ export function PhysicsStateControl({ simulation }) {
   useEffect(() => {
     if (!simulation) return;
     if (physics.gravityStrength == 0) {
-      simulation.alpha(1).restart();
       simulation.force("gravity", null);
+      simulation.alpha(1).restart();
       return;
     }
     log.info("Changing gravity", physics.gravityStrength);
@@ -165,12 +165,12 @@ export function PhysicsStateControl({ simulation }) {
     if (!simulation) return;
 
     if (physics.communityForceStrength == 0) {
+      log.info("Disabling community force");
       simulation.force("communityForce", null);
       simulation.alpha(1).restart();
       return;
     }
-
-    log.info("Changing community force", physics.communityForceStrength);
+    log.info("Changing community strength", physics.communityForceStrength);
 
     const communityMap = getCommunityMap(graphState.graph.data);
 

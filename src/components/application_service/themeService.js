@@ -3,7 +3,7 @@ import { darkTheme, lightTheme, useAppearance } from "../adapters/state/appearan
 import { loadTheme, storeTheme } from "../domain_model/themeManager.js";
 import { errorService } from "./errorService.js";
 
-export const appearanceService = {
+export const themeService = {
   handleChangeTheme() {
     log.info("Changing theme");
     try {
@@ -37,32 +37,11 @@ export const appearanceService = {
   setAll(value) {
     useAppearance.getState().setAllAppearance(value);
   },
-
   // ===== Specific getters/setters =====
   getTheme() {
     return this.get("theme");
   },
   setTheme(val) {
     this.set("theme", val);
-  },
-
-  getShowNodeLabels() {
-    return this.get("showNodeLabels");
-  },
-  setShowNodeLabels(val) {
-    this.set("showNodeLabels", val);
-  },
-  getLinkWidth() {
-    return this.get("linkWidth");
-  },
-  setLinkWidth(val) {
-    this.set("linkWidth", val);
-  },
-
-  getLinkWidthText() {
-    return this.get("linkWidthText");
-  },
-  setLinkWidthText(val) {
-    this.set("linkWidthText", val);
   },
 };

@@ -7,7 +7,7 @@ import { ReactComponent as PaletteIcon } from "../../../icons/colorPalette.svg";
 import { ReactComponent as DownloadIcon } from "../../../icons/download.svg";
 import { darkTheme, lightTheme } from "../../adapters/state/appearanceState.js";
 import { useAppearance } from "../../adapters/state/appearanceState.js";
-import { appearanceService } from "../../application_service/appearanceService.js";
+import { themeService } from "../../application_service/themeService.js";
 
 export function SelectionSidebar({ handleNavItemClick }) {
   const { appearance, setAppearance } = useAppearance();
@@ -23,7 +23,7 @@ export function SelectionSidebar({ handleNavItemClick }) {
       <NavItem
         text={"Change Theme"}
         icon={appearance.theme.name === lightTheme.name ? <MoonIcon /> : <SunIcon />}
-        onClick={() => appearanceService.handleChangeTheme()}
+        onClick={() => themeService.handleChangeTheme()}
       />
     </>
   );

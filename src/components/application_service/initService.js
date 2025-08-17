@@ -2,7 +2,7 @@ import log from "../../logger.js";
 import { useEffect } from "react";
 import { graphService } from "./graphService.js";
 import { colorschemeService } from "./colorschemeService.js";
-import { appearanceService } from "./appearanceService.js";
+import { themeService } from "./themeService.js";
 import { mappingService } from "./mappingService.js";
 
 export function Init({}) {
@@ -23,7 +23,7 @@ export function Init({}) {
 
   useEffect(() => {
     log.info("Loading selected theme");
-    appearanceService.handleInitTheme();
+    themeService.handleInitTheme();
   }, []);
 
   useEffect(() => {
