@@ -11,7 +11,7 @@ import { changeCircleBorderColor, changeNodeLabelColor } from "../../domain_serv
 import { lightTheme, themeInit, useTheme } from "../../adapters/state/themeState.js";
 import { usePixiState } from "../../adapters/state/pixiState.js";
 
-export function DownloadStateControl({ app }) {
+export function DownloadControl({ app }) {
   const { physics, setPhysics } = usePhysics();
   const { appearance, setAppearance } = useAppearance();
   const { theme, setTheme } = useTheme();

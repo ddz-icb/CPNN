@@ -19,7 +19,7 @@ import { useFilter } from "../../adapters/state/filterState.js";
 import { useContainer } from "../../adapters/state/containerState.js";
 import { useGraphState } from "../../adapters/state/graphState.js";
 
-export function PhysicsStateControl({ simulation }) {
+export function PhysicsControl({ simulation }) {
   const { physics, setPhysics } = usePhysics();
   const { filter, setFilter } = useFilter();
   const { container, setContainer } = useContainer();

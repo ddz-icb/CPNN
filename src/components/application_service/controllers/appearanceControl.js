@@ -10,7 +10,7 @@ import { useColorschemeState } from "../../adapters/state/colorschemeState.js";
 import { useTheme } from "../../adapters/state/themeState.js";
 import { usePixiState } from "../../adapters/state/pixiState.js";
 
-export function AppearanceStateControl({ app, simulation, redraw }) {
+export function AppearanceControl({ app, simulation, redraw }) {
   const { physics, setPhysics } = usePhysics();
   const { appearance, setAppearance } = useAppearance();
   const { theme, setTheme } = useTheme();

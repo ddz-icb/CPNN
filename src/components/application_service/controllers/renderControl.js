@@ -5,7 +5,7 @@ import { useRef, useEffect, useState } from "react";
 import { getNodeLabelOffsetY, handleResize, initDragAndZoom } from "../services/interactiveCanvas.js";
 import { initTooltips, Tooltips } from "../../gui/tooltipCanvas.js";
 import { radius, drawCircle, drawLine, getTextStyle, getBitMapStyle } from "../../domain_service/canvas_drawing/draw.js";
-import { PhysicsStateControl } from "./physicsControl.js";
+import { PhysicsControl } from "./physicsControl.js";
 import { gravityStrengthInit, linkLengthInit, nodeRepulsionStrengthInit } from "../../adapters/state/physicsState.js";
 import { useAppearance } from "../../adapters/state/appearanceState.js";
 import { graphInit, useGraphState } from "../../adapters/state/graphState.js";
@@ -15,14 +15,14 @@ import { useError } from "../../adapters/state/errorState.js";
 import { useReset } from "../../adapters/state/resetState.js";
 import { useColorschemeState } from "../../adapters/state/colorschemeState.js";
 import { getSimulation } from "../../domain_service/physics_calculations/getSimulation.js";
-import { DownloadStateControl } from "./downloadControl.js";
-import { AppearanceStateControl } from "./appearanceControl.js";
-import { FilterStateControl } from "./filterControl.js";
+import { DownloadControl } from "./downloadControl.js";
+import { AppearanceControl } from "./appearanceControl.js";
+import { FilterControl } from "./filterControl.js";
 import { useTheme } from "../../adapters/state/themeState.js";
 import { circlesInit, linesInit, nodeMapInit, usePixiState } from "../../adapters/state/pixiState.js";
 import { filteredAfterStartInit, useGraphFlags } from "../../adapters/state/graphFlagsState.js";
 
-export function RenderGraph() {
+export function RenderControl() {
   const { appearance } = useAppearance();
   const { theme } = useTheme();
   const { colorschemeState } = useColorschemeState();
@@ -240,10 +240,10 @@ export function RenderGraph() {
   return (
     <>
       <Tooltips />
-      <PhysicsStateControl simulation={simulation} />
-      <DownloadStateControl app={app} />
-      <AppearanceStateControl app={app} simulation={simulation} redraw={redraw} />
-      <FilterStateControl />
+      <PhysicsControl simulation={simulation} />
+      <DownloadControl app={app} />
+      <AppearanceControl app={app} simulation={simulation} redraw={redraw} />
+      <FilterControl />
       <div ref={containerRef} className="container" />
     </>
   );

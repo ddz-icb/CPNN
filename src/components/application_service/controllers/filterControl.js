@@ -18,7 +18,7 @@ import { useGraphState } from "../../adapters/state/graphState.js";
 import { usePixiState } from "../../adapters/state/pixiState.js";
 import { useGraphFlags } from "../../adapters/state/graphFlagsState.js";
 
-export function FilterStateControl() {
+export function FilterControl() {
   const { filter, setFilter } = useFilter();
   const { appearance, setAppearance } = useAppearance();
   const { graphState, setGraphState } = useGraphState();
