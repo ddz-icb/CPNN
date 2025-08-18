@@ -3,7 +3,7 @@ import log from "../../adapters/logging/logger.js";
 import * as d3 from "d3";
 
 import { radius } from "../../domain_service/canvas_drawing/draw.js";
-import { getAdjacentData, getComponentData, getCommunityMap } from "../../domain_service/graph_calculations/graphUtils.js";
+import { getAdjacentData, getComponentData, getIdToCommunity } from "../../domain_service/graph_calculations/graphUtils.js";
 import {
   accuracyBarnesHut,
   borderCheck,
@@ -80,12 +80,12 @@ export function PhysicsControl() {
     }
     log.info("Changing component strength", physics.componentStrength);
 
-    const [nodeIdToComp, compToCompSize] = getComponentData(graphState.graph.data);
+    const [IdToComp, compToCompSize] = getComponentData(graphState.graph.data);
 
     // this value can be increased to slightly increase performance
     const threshold = 3;
 
-    renderState.simulation.force("component", componentForce(nodeIdToComp, threshold).strength(physics.componentStrength));
+    renderState.simulation.force("component", componentForce(IdToComp, threshold).strength(physics.componentStrength));
     renderState.simulation.alpha(1).restart();
   }, [physics.componentStrength, graphState.graph]);
 
@@ -156,11 +156,11 @@ export function PhysicsControl() {
     // have to disable link force for this
     setPhysics("linkForce", false);
 
-    const [nodeIdToComp, compToCompSize] = getComponentData(graphState.graph.data);
+    const [IdToComp, compToCompSize] = getComponentData(graphState.graph.data);
     const adjacentCountMap = getAdjacentData(graphState.graph.data);
     const minCircleSize = 6;
 
-    renderState.simulation.force("circleLayout", circularForce(nodeIdToComp, adjacentCountMap, minCircleSize));
+    renderState.simulation.force("circleLayout", circularForce(IdToComp, adjacentCountMap, minCircleSize));
     renderState.simulation.alpha(1).restart();
   }, [physics.circleLayout]);
 
@@ -175,9 +175,9 @@ export function PhysicsControl() {
     }
     log.info("Changing community strength", physics.communityForceStrength);
 
-    const communityMap = getCommunityMap(graphState.graph.data);
+    const idToCommunity = getIdToCommunity(graphState.graph.data);
 
-    renderState.simulation.force("communityForce", communityForce(communityMap).strength(physics.communityForceStrength));
+    renderState.simulation.force("communityForce", communityForce(idToCommunity).strength(physics.communityForceStrength));
     renderState.simulation.alpha(1).restart();
   }, [physics.communityForceStrength]);
 }

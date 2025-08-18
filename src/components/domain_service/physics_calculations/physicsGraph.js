@@ -37,7 +37,7 @@ export function borderCheck(radius, borderHeight, borderWidth, center) {
   return force;
 }
 
-export function componentForce(nodeIdToComp, centroidThreshold) {
+export function componentForce(IdToComp, centroidThreshold) {
   let nodes;
   let strength = 0.1;
 
@@ -47,12 +47,12 @@ export function componentForce(nodeIdToComp, centroidThreshold) {
   function initialize(n) {
     nodes = n;
 
-    const idSet = new Set(Object.values(nodeIdToComp));
+    const idSet = new Set(Object.values(IdToComp));
     compIds = [...idSet];
 
     nodeToComp.clear();
     for (const node of nodes) {
-      nodeToComp.set(node, nodeIdToComp[node.id]);
+      nodeToComp.set(node, IdToComp[node.id]);
     }
   }
 
@@ -109,20 +109,20 @@ export function componentForce(nodeIdToComp, centroidThreshold) {
   return force;
 }
 
-export function communityForce(communityMap) {
+export function communityForce(idToCommunity) {
   let nodes;
   let strength = 0.1;
   const baseStrength = 0.3;
 
   function force(alpha) {
-    const groups = groupBy(nodes, (node) => communityMap.get(node.id));
+    const groups = groupBy(nodes, (node) => idToCommunity.get(node.id));
     const centroids = new Map();
     for (const [id, group] of groups) {
       centroids.set(id, getCentroid(group));
     }
 
     for (const node of nodes) {
-      const nodeComm = communityMap.get(node.id);
+      const nodeComm = idToCommunity.get(node.id);
       for (const [otherComm, centroid] of centroids) {
         if (nodeComm !== otherComm) {
           const dx = centroid.x - node.x;
@@ -146,12 +146,12 @@ export function communityForce(communityMap) {
   return force;
 }
 
-export function circularForce(nodeIdToComp, adjacentCountMap, minCircleSize) {
+export function circularForce(IdToComp, adjacentCountMap, minCircleSize) {
   let nodes;
   let strength = 1;
 
   function force(alpha) {
-    const groups = groupBy(nodes, (node) => nodeIdToComp[node.id]);
+    const groups = groupBy(nodes, (node) => IdToComp[node.id]);
     const centroids = new Map();
     const circleGroups = new Map();
 

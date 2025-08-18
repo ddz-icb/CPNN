@@ -37,31 +37,31 @@ export function getComponentData(graphData) {
     uf.link(sourceIndex, targetIndex);
   });
 
-  const nodeIdToComp = [];
+  const IdToComp = [];
   const compToCompSize = [];
   graphData.nodes.forEach((node) => {
     const component = uf.find(idToIndexMap[node.id]);
     compToCompSize[component] = compToCompSize[component] ? compToCompSize[component] + 1 : 1;
 
-    nodeIdToComp[node.id] = component;
+    IdToComp[node.id] = component;
   });
-  return [nodeIdToComp, compToCompSize];
+  return [IdToComp, compToCompSize];
 }
 
 export function getAdjacentData(graphData) {
-  const adjacentData = {};
+  const neighborCount = {};
 
   graphData.links.forEach((link) => {
-    adjacentData[link.source.id || link.source] = (adjacentData[link.source.id || link.source] || 0) + 1;
-    adjacentData[link.target.id || link.target] = (adjacentData[link.target.id || link.target] || 0) + 1;
+    neighborCount[link.source.id || link.source] = (neighborCount[link.source.id || link.source] || 0) + 1;
+    neighborCount[link.target.id || link.target] = (neighborCount[link.target.id || link.target] || 0) + 1;
   });
 
-  const adjacentMap = new Map();
-  Object.keys(adjacentData).forEach((key) => {
-    adjacentMap.set(key, adjacentData[key]);
+  const idToNeighborCount = new Map();
+  Object.keys(neighborCount).forEach((key) => {
+    idToNeighborCount.set(key, neighborCount[key]);
   });
 
-  return adjacentMap;
+  return idToNeighborCount;
 }
 
 export function getNodeAttribsToColorIndices(graphData) {
@@ -117,7 +117,7 @@ export function getLinkWeightMinMax(graphData) {
   return { minWeight: minWeight, maxWeight: maxWeight };
 }
 
-export function getCommunityMap(graphData) {
+export function getIdToCommunity(graphData) {
   const newGraph = new Graph();
 
   graphData.nodes.forEach((node) => {
@@ -136,10 +136,10 @@ export function getCommunityMap(graphData) {
 
   louvain.assign(newGraph);
 
-  const communityMap = new Map();
+  const idToCommunity = new Map();
   newGraph.forEachNode((nodeId, attributes) => {
-    communityMap.set(nodeId, attributes.community);
+    idToCommunity.set(nodeId, attributes.community);
   });
 
-  return communityMap;
+  return idToCommunity;
 }
