@@ -117,6 +117,7 @@ export function changeNodeLabelColor(nodeLabels, textColor) {
 export function changeNodeColors(circles, nodeMap, circleBorderColor, colorscheme, nodeAttribsToColorIndices) {
   for (const circle of circles.children) {
     const { node, sameCircle } = nodeMap[circle.id];
+    circle.clear();
     drawCircle(circle, node, circleBorderColor, colorscheme, nodeAttribsToColorIndices);
   }
 }
