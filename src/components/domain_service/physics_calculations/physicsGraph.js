@@ -27,16 +27,14 @@ function calculateCentroid(nodes) {
 }
 
 // ==== Forces ====
-export function borderCheck(radius, borderHeight, borderWidth, width, height) {
+export function borderCheck(radius, borderHeight, borderWidth, center) {
   let nodes;
   let strength = 1;
 
-  const centerX = width / 2;
-  const centerY = height / 2;
-  const leftBorder = centerX - (borderWidth * strength) / 2;
-  const rightBorder = centerX + (borderWidth * strength) / 2;
-  const topBorder = centerY - (borderHeight * strength) / 2;
-  const bottomBorder = centerY + (borderHeight * strength) / 2;
+  const leftBorder = center.x - (borderWidth * strength) / 2;
+  const rightBorder = center.x + (borderWidth * strength) / 2;
+  const topBorder = center.y - (borderHeight * strength) / 2;
+  const bottomBorder = center.y + (borderHeight * strength) / 2;
 
   function force(alpha) {
     for (const node of nodes) {

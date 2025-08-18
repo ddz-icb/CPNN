@@ -132,7 +132,8 @@ export function PhysicsControl() {
       renderState.simulation.force("border", null);
     } else {
       log.info("Setting graph border");
-      renderState.simulation.force("border", borderCheck(radius, physics.borderHeight, physics.borderWidth, container.width, container.height));
+      const center = { x: container.width / 2, y: container.height / 2 };
+      renderState.simulation.force("border", borderCheck(radius, physics.borderHeight, physics.borderWidth, center));
     }
     renderState.simulation.alpha(1).restart();
   }, [physics.checkBorder, physics.borderHeight, physics.borderWidth, container.width, container.height]);
