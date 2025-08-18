@@ -1,6 +1,5 @@
 import { getCentroid, groupBy } from "../graph_calculations/graphUtils.js";
 
-// ==== Constants ====
 export const accuracyBarnesHut = 0.1;
 export const maxDistanceChargeForce = 300;
 export const nodeRepulsionMultiplier = -300;

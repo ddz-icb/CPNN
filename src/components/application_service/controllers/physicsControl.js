@@ -82,7 +82,6 @@ export function PhysicsControl() {
 
     const [IdToComp, compToCompSize] = getComponentData(graphState.graph.data);
 
-    // this value can be increased to slightly increase performance
     const threshold = 3;
 
     renderState.simulation.force("component", componentForce(IdToComp, threshold).strength(physics.componentStrength));
