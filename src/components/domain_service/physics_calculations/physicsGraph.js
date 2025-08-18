@@ -111,27 +111,45 @@ export function groupRepulsionForce(IdToGroup, centroidThreshold) {
 export function circularForce(IdToComp, adjacentCountMap, minCircleSize) {
   let nodes;
   let strength = 1;
+  let groupIdToNodes = new Map();
+  let groupIdToNodesSorted = new Map();
+  let groupIdToRadius = new Map();
+
+  function recomputeGroups() {
+    groupIdToNodes.clear();
+    for (const n of nodes) {
+      const gId = IdToComp[n.id];
+      if (!groupIdToNodes.has(gId)) groupIdToNodes.set(gId, []);
+      groupIdToNodes.get(gId).push(n);
+    }
+    groupIdToNodesSorted.clear();
+    groupIdToRadius.clear();
+    for (const [id, group] of groupIdToNodes) {
+      groupIdToNodesSorted.set(
+        id,
+        group.slice().sort((a, b) => adjacentCountMap.get(b.id) - adjacentCountMap.get(a.id))
+      );
+      groupIdToRadius.set(id, 50 * Math.sqrt(group.length));
+    }
+  }
 
   function force(alpha) {
-    const groups = groupBy(nodes, (node) => IdToComp[node.id]);
     const centroids = new Map();
-    const circleGroups = new Map();
 
-    for (const [id, group] of groups) {
-      const centroid = getCentroid(group);
-      centroids.set(id, centroid);
-      if (group.length >= minCircleSize) circleGroups.set(id, centroid);
+    for (const [id, group] of groupIdToNodes) {
+      centroids.set(id, getCentroid(group));
     }
 
-    // Circular arrangement for large groups
-    for (const [id, centroid] of circleGroups) {
-      const group = groups.get(id);
-      const radius = 50 * Math.sqrt(group.length);
-      group.sort((a, b) => adjacentCountMap.get(b.id) - adjacentCountMap.get(a.id));
-      for (let i = 0; i < group.length; i++) {
-        const angle = (2 * Math.PI * i) / group.length;
-        const targetX = centroid.x + radius * Math.cos(angle - Math.PI / 2);
-        const targetY = centroid.y + radius * Math.sin(angle - Math.PI / 2);
+    // circular layout
+    for (const [id, centroid] of centroids) {
+      const group = groupIdToNodesSorted.get(id);
+      if (group.length < minCircleSize) continue;
+      const radius = groupIdToRadius.get(id);
+      const len = group.length;
+      for (let i = 0; i < len; i++) {
+        const angle = (2 * Math.PI * i) / len - Math.PI / 2;
+        const targetX = centroid.x + radius * Math.cos(angle);
+        const targetY = centroid.y + radius * Math.sin(angle);
         const dx = targetX - group[i].x;
         const dy = targetY - group[i].y;
         group[i].vx += dx * alpha * strength;
@@ -139,30 +157,43 @@ export function circularForce(IdToComp, adjacentCountMap, minCircleSize) {
       }
     }
 
-    // Cluster repulsion
-    const keys = [...centroids.keys()];
-    for (let i = 0; i < keys.length; i++) {
-      for (let j = i + 1; j < keys.length; j++) {
-        const c1 = centroids.get(keys[i]);
-        const c2 = centroids.get(keys[j]);
-        const size1 = groups.get(keys[i]).length;
-        const size2 = groups.get(keys[j]).length;
-        const radius1 = 50 * Math.sqrt(size1);
-        const radius2 = 50 * Math.sqrt(size2);
+    const centroidIds = [...centroids.keys()];
+    for (let i = 0; i < centroidIds.length; i++) {
+      const id1 = centroidIds[i];
+      const c1 = centroids.get(id1);
+      const radius1 = groupIdToRadius.get(id1);
+      const nodes1 = groupIdToNodes.get(id1);
+
+      for (let j = i + 1; j < centroidIds.length; j++) {
+        const id2 = centroidIds[j];
+        const c2 = centroids.get(id2);
+        const radius2 = groupIdToRadius.get(id2);
 
         const dx = c2.x - c1.x;
         const dy = c2.y - c1.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
+        const distSq = dx * dx + dy * dy;
+
         const minDist = radius1 + radius2 + 10;
-        if (dist < minDist && dist > 0) {
-          const repulse = ((minDist - dist) / dist) * alpha * strength;
-          for (const n of groups.get(keys[i])) {
-            n.vx -= dx * repulse;
-            n.vy -= dy * repulse;
+        const minDistSq = minDist * minDist;
+
+        if (distSq < minDistSq && distSq > 0) {
+          const dist = Math.sqrt(distSq);
+
+          const overlap = minDist - dist;
+          const force = (overlap / dist) * alpha * strength;
+
+          const forceX = dx * force;
+          const forceY = dy * force;
+
+          const nodes2 = groupIdToNodes.get(id2);
+
+          for (const n of nodes1) {
+            n.vx -= forceX;
+            n.vy -= forceY;
           }
-          for (const n of groups.get(keys[j])) {
-            n.vx += dx * repulse;
-            n.vy += dy * repulse;
+          for (const n of nodes2) {
+            n.vx += forceX;
+            n.vy += forceY;
           }
         }
       }
@@ -171,7 +202,9 @@ export function circularForce(IdToComp, adjacentCountMap, minCircleSize) {
 
   force.initialize = (_) => {
     nodes = _;
+    recomputeGroups();
   };
+
   return force;
 }
 

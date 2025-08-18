@@ -8,7 +8,6 @@ import {
   accuracyBarnesHut,
   borderCheck,
   circularForce,
-  communityForce,
   groupRepulsionForce,
   gravityForce,
   maxDistanceChargeForce,
@@ -82,7 +81,6 @@ export function PhysicsControl() {
 
     const [IdToComp, compToCompSize] = getComponentData(graphState.graph.data);
 
-    console.log("HEHEEHE", IdToComp);
     const threshold = 3;
 
     renderState.simulation.force("component", groupRepulsionForce(IdToComp, threshold).strength(physics.componentStrength));
