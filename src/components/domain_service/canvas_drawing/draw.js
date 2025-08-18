@@ -1,4 +1,3 @@
-import log from "../../adapters/logging/logger.js";
 import * as d3 from "d3";
 import * as PIXI from "pixi.js";
 import { getNodeIdName } from "../parsing/nodeIdParsing.js";
@@ -104,7 +103,7 @@ export function drawCircleCanvas(ctx, node, circle, circleBorderColor, colorsche
 
 export function changeCircleBorderColor(circles, newColor) {
   for (const circle of circles.children) {
-    circle.circle(0, 0, radius || 8).stroke({ color: newColor, width: 2 });
+    circle.circle(0, 0, radius).stroke({ color: newColor, width: 2 });
   }
 }
 
@@ -116,7 +115,7 @@ export function changeNodeLabelColor(nodeLabels, textColor) {
 
 export function changeNodeColors(circles, nodeMap, circleBorderColor, colorscheme, nodeAttribsToColorIndices) {
   for (const circle of circles.children) {
-    const { node, sameCircle } = nodeMap[circle.id];
+    const { node } = nodeMap[circle.id];
     circle.clear();
     drawCircle(circle, node, circleBorderColor, colorscheme, nodeAttribsToColorIndices);
   }
