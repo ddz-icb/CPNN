@@ -36,43 +36,43 @@ export function borderCheck(radius, borderHeight, borderWidth, center) {
   return force;
 }
 
-export function componentForce(IdToComp, centroidThreshold) {
+export function groupRepulsionForce(IdToGroup, centroidThreshold) {
   let nodes;
   let strength = 0.1;
 
-  let compIds = [];
-  let nodeToComp = new Map();
+  let groupIds = [];
+  let nodeToGroup = new Map();
 
   function initialize(n) {
     nodes = n;
 
-    const idSet = new Set(Object.values(IdToComp));
-    compIds = [...idSet];
+    const idSet = new Set(Object.values(IdToGroup));
+    groupIds = [...idSet];
 
-    nodeToComp.clear();
+    nodeToGroup.clear();
     for (const node of nodes) {
-      nodeToComp.set(node, IdToComp[node.id]);
+      nodeToGroup.set(node, IdToGroup[node.id]);
     }
   }
 
   function force(alpha) {
     if (!nodes) return;
 
-    const compSums = new Map();
-    for (const compId of compIds) {
-      compSums.set(compId, { x: 0, y: 0, count: 0 });
+    const groupSums = new Map();
+    for (const compId of groupIds) {
+      groupSums.set(compId, { x: 0, y: 0, count: 0 });
     }
 
     for (const node of nodes) {
-      const compId = nodeToComp.get(node);
-      const acc = compSums.get(compId);
+      const compId = nodeToGroup.get(node);
+      const acc = groupSums.get(compId);
       acc.x += node.x;
       acc.y += node.y;
       acc.count++;
     }
 
     const centroids = [];
-    for (const [compId, { x, y, count }] of compSums) {
+    for (const [compId, { x, y, count }] of groupSums) {
       if (count >= centroidThreshold) {
         centroids.push({
           compId,
@@ -85,7 +85,7 @@ export function componentForce(IdToComp, centroidThreshold) {
     const strengthFactor = strength * centroidThreshold * alpha;
 
     for (const node of nodes) {
-      const compId = nodeToComp.get(node);
+      const compId = nodeToGroup.get(node);
 
       for (const centroid of centroids) {
         if (centroid.compId === compId) continue;
@@ -105,43 +105,6 @@ export function componentForce(IdToComp, centroidThreshold) {
 
   force.initialize = initialize;
   force.strength = (s) => (s === undefined ? strength : ((strength = s), force));
-  return force;
-}
-
-export function communityForce(idToCommunity) {
-  let nodes;
-  let strength = 0.1;
-  const baseStrength = 0.3;
-
-  function force(alpha) {
-    const groups = groupBy(nodes, (node) => idToCommunity.get(node.id));
-    const centroids = new Map();
-    for (const [id, group] of groups) {
-      centroids.set(id, getCentroid(group));
-    }
-
-    for (const node of nodes) {
-      const nodeComm = idToCommunity.get(node.id);
-      for (const [otherComm, centroid] of centroids) {
-        if (nodeComm !== otherComm) {
-          const dx = centroid.x - node.x;
-          const dy = centroid.y - node.y;
-          const distSq = dx * dx + dy * dy;
-          if (distSq > 0) {
-            const dist = Math.sqrt(distSq);
-            const f = (strength * baseStrength * alpha * Math.sqrt(centroid.size)) / dist;
-            node.vx -= dx * f;
-            node.vy -= dy * f;
-          }
-        }
-      }
-    }
-  }
-
-  force.initialize = (_) => {
-    nodes = _;
-  };
-  force.strength = (_) => (_ === undefined ? strength : ((strength = _), force));
   return force;
 }
 

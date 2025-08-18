@@ -117,7 +117,7 @@ export function getLinkWeightMinMax(graphData) {
   return { minWeight: minWeight, maxWeight: maxWeight };
 }
 
-export function getIdToCommunity(graphData) {
+export function getCommunityData(graphData) {
   const newGraph = new Graph();
 
   graphData.nodes.forEach((node) => {
@@ -136,10 +136,15 @@ export function getIdToCommunity(graphData) {
 
   louvain.assign(newGraph);
 
-  const idToCommunity = new Map();
+  const idToComm = {};
+  const commToSize = {};
+
   newGraph.forEachNode((nodeId, attributes) => {
-    idToCommunity.set(nodeId, attributes.community);
+    const community = attributes.community;
+    idToComm[nodeId] = community;
+
+    commToSize[community] = (commToSize[community] || 0) + 1;
   });
 
-  return idToCommunity;
+  return [idToComm, commToSize];
 }

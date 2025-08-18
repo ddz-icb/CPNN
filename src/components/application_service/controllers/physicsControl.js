@@ -3,13 +3,13 @@ import log from "../../adapters/logging/logger.js";
 import * as d3 from "d3";
 
 import { radius } from "../../domain_service/canvas_drawing/draw.js";
-import { getAdjacentData, getComponentData, getIdToCommunity } from "../../domain_service/graph_calculations/graphUtils.js";
+import { getAdjacentData, getComponentData, getCommunityData } from "../../domain_service/graph_calculations/graphUtils.js";
 import {
   accuracyBarnesHut,
   borderCheck,
   circularForce,
   communityForce,
-  componentForce,
+  groupRepulsionForce,
   gravityForce,
   maxDistanceChargeForce,
   nodeRepulsionMultiplier,
@@ -82,9 +82,10 @@ export function PhysicsControl() {
 
     const [IdToComp, compToCompSize] = getComponentData(graphState.graph.data);
 
+    console.log("HEHEEHE", IdToComp);
     const threshold = 3;
 
-    renderState.simulation.force("component", componentForce(IdToComp, threshold).strength(physics.componentStrength));
+    renderState.simulation.force("component", groupRepulsionForce(IdToComp, threshold).strength(physics.componentStrength));
     renderState.simulation.alpha(1).restart();
   }, [physics.componentStrength, graphState.graph]);
 
@@ -168,15 +169,16 @@ export function PhysicsControl() {
 
     if (physics.communityForceStrength == 0) {
       log.info("Disabling community force");
-      renderState.simulation.force("communityForce", null);
+      renderState.simulation.force("community", null);
       renderState.simulation.alpha(1).restart();
       return;
     }
     log.info("Changing community strength", physics.communityForceStrength);
 
-    const idToCommunity = getIdToCommunity(graphState.graph.data);
+    const [idToComm, commToSize] = getCommunityData(graphState.graph.data);
+    const threshold = 3;
 
-    renderState.simulation.force("communityForce", communityForce(idToCommunity).strength(physics.communityForceStrength));
+    renderState.simulation.force("community", groupRepulsionForce(idToComm, threshold).strength(physics.communityForceStrength));
     renderState.simulation.alpha(1).restart();
   }, [physics.communityForceStrength]);
 }
