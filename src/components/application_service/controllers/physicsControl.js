@@ -22,10 +22,10 @@ import { useRenderState } from "../../adapters/state/canvasState.js";
 
 export function PhysicsControl() {
   const { physics, setPhysics } = usePhysics();
-  const { filter, setFilter } = useFilter();
-  const { container, setContainer } = useContainer();
-  const { graphState, setGraphState } = useGraphState();
-  const { renderState, setRenderState } = useRenderState();
+  const { filter } = useFilter();
+  const { container } = useContainer();
+  const { graphState } = useGraphState();
+  const { renderState } = useRenderState();
 
   useEffect(() => {
     if (!renderState.simulation) return;
