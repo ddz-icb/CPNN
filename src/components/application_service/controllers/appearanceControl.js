@@ -20,6 +20,45 @@ export function AppearanceControl() {
   const { pixiState, setPixiState } = usePixiState();
   const { renderState, setRenderState } = useRenderState();
 
+  // rebind redraw function and run one cycle
+  useEffect(() => {
+    if (
+      !renderState.simulation ||
+      !graphState.graph ||
+      !pixiState.lines ||
+      !appearance.linkWidth ||
+      !colorschemeState.linkColorscheme ||
+      !colorschemeState.linkAttribsToColorIndices ||
+      !pixiState.nodeMap ||
+      !renderState.app
+    )
+      return;
+    log.info("Updating redraw function");
+
+    renderState.simulation.on("tick.redraw", () =>
+      redraw(
+        graphState.graph.data,
+        pixiState.lines,
+        appearance.linkWidth,
+        colorschemeState.linkColorscheme,
+        colorschemeState.linkAttribsToColorIndices,
+        appearance.showNodeLabels,
+        pixiState.nodeMap,
+        renderState.app
+      )
+    );
+    redraw(
+      graphState.graph.data,
+      pixiState.lines,
+      appearance.linkWidth,
+      colorschemeState.linkColorscheme,
+      colorschemeState.linkAttribsToColorIndices,
+      appearance.showNodeLabels,
+      pixiState.nodeMap,
+      renderState.app
+    );
+  }, [appearance.showNodeLabels, colorschemeState.linkColorscheme, colorschemeState.linkAttribsToColorIndices, appearance.linkWidth]);
+
   // enable/disable node labels
   useEffect(() => {
     if (!pixiState.circles) return;
@@ -30,52 +69,8 @@ export function AppearanceControl() {
         const { nodeLabel } = pixiState.nodeMap[n.id];
         nodeLabel.visible = true;
       });
-      renderState.simulation.on("tick.redraw", () =>
-        redraw(
-          graphState.graph.data,
-          pixiState.lines,
-          appearance.linkWidth,
-          colorschemeState.linkColorscheme,
-          colorschemeState.linkAttribsToColorIndices,
-          appearance.showNodeLabels,
-          pixiState.nodeMap,
-          renderState.app
-        )
-      );
-      redraw(
-        graphState.graph.data,
-        pixiState.lines,
-        appearance.linkWidth,
-        colorschemeState.linkColorscheme,
-        colorschemeState.linkAttribsToColorIndices,
-        appearance.showNodeLabels,
-        pixiState.nodeMap,
-        renderState.app
-      );
     } else {
       pixiState.nodeLabels.children.forEach((label) => (label.visible = false));
-      renderState.simulation.on("tick.redraw", () =>
-        redraw(
-          graphState.graph.data,
-          pixiState.lines,
-          appearance.linkWidth,
-          colorschemeState.linkColorscheme,
-          colorschemeState.linkAttribsToColorIndices,
-          appearance.showNodeLabels,
-          pixiState.nodeMap,
-          renderState.app
-        )
-      );
-      redraw(
-        graphState.graph.data,
-        pixiState.lines,
-        appearance.linkWidth,
-        colorschemeState.linkColorscheme,
-        colorschemeState.linkAttribsToColorIndices,
-        appearance.showNodeLabels,
-        pixiState.nodeMap,
-        renderState.app
-      );
     }
   }, [appearance.showNodeLabels]);
 
@@ -101,62 +96,4 @@ export function AppearanceControl() {
       colorschemeState.nodeAttribsToColorIndices
     );
   }, [colorschemeState.nodeColorscheme, colorschemeState.nodeAttribsToColorIndices]);
-
-  // switch link color scheme
-  useEffect(() => {
-    if (!renderState.simulation || !pixiState.lines) return;
-    log.info("Changing link color scheme");
-
-    renderState.simulation.on("tick.redraw", () =>
-      redraw(
-        graphState.graph.data,
-        pixiState.lines,
-        appearance.linkWidth,
-        colorschemeState.linkColorscheme,
-        colorschemeState.linkAttribsToColorIndices,
-        appearance.showNodeLabels,
-        pixiState.nodeMap,
-        renderState.app
-      )
-    );
-    redraw(
-      graphState.graph.data,
-      pixiState.lines,
-      appearance.linkWidth,
-      colorschemeState.linkColorscheme,
-      colorschemeState.linkAttribsToColorIndices,
-      appearance.showNodeLabels,
-      pixiState.nodeMap,
-      renderState.app
-    );
-  }, [colorschemeState.linkColorscheme, colorschemeState.linkAttribsToColorIndices]);
-
-  // change link width
-  useEffect(() => {
-    if (!renderState.simulation || !pixiState.lines) return;
-    log.info("Changing link width", physics.communityForceStrength);
-
-    renderState.simulation.on("tick.redraw", () =>
-      redraw(
-        graphState.graph.data,
-        pixiState.lines,
-        appearance.linkWidth,
-        colorschemeState.linkColorscheme,
-        colorschemeState.linkAttribsToColorIndices,
-        appearance.showNodeLabels,
-        pixiState.nodeMap,
-        renderState.app
-      )
-    );
-    redraw(
-      graphState.graph.data,
-      pixiState.lines,
-      appearance.linkWidth,
-      colorschemeState.linkColorscheme,
-      colorschemeState.linkAttribsToColorIndices,
-      appearance.showNodeLabels,
-      pixiState.nodeMap,
-      renderState.app
-    );
-  }, [appearance.linkWidth]);
 }
