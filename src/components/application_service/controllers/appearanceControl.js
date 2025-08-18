@@ -12,13 +12,12 @@ import { usePixiState } from "../../adapters/state/pixiState.js";
 import { useRenderState } from "../../adapters/state/canvasState.js";
 
 export function AppearanceControl() {
-  const { physics, setPhysics } = usePhysics();
-  const { appearance, setAppearance } = useAppearance();
-  const { theme, setTheme } = useTheme();
-  const { colorschemeState, setColorschemeState } = useColorschemeState();
-  const { graphState, setGraphState } = useGraphState();
-  const { pixiState, setPixiState } = usePixiState();
-  const { renderState, setRenderState } = useRenderState();
+  const { appearance } = useAppearance();
+  const { theme } = useTheme();
+  const { colorschemeState } = useColorschemeState();
+  const { graphState } = useGraphState();
+  const { pixiState } = usePixiState();
+  const { renderState } = useRenderState();
 
   // rebind redraw function and run one cycle
   useEffect(() => {
