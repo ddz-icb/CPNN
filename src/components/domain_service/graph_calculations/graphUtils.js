@@ -37,15 +37,15 @@ export function getComponentData(graphData) {
     uf.link(sourceIndex, targetIndex);
   });
 
-  const nodeIdToCompMap = [];
-  const compToCompSizeMap = [];
+  const nodeIdToComp = [];
+  const compToCompSize = [];
   graphData.nodes.forEach((node) => {
     const component = uf.find(idToIndexMap[node.id]);
-    compToCompSizeMap[component] = compToCompSizeMap[component] ? compToCompSizeMap[component] + 1 : 1;
+    compToCompSize[component] = compToCompSize[component] ? compToCompSize[component] + 1 : 1;
 
-    nodeIdToCompMap[node.id] = component;
+    nodeIdToComp[node.id] = component;
   });
-  return [nodeIdToCompMap, compToCompSizeMap];
+  return [nodeIdToComp, compToCompSize];
 }
 
 export function getAdjacentData(graphData) {

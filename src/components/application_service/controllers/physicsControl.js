@@ -80,12 +80,12 @@ export function PhysicsControl() {
     }
     log.info("Changing component strength", physics.componentStrength);
 
-    const [nodeIdToCompMap, compToCompSizeMap] = getComponentData(graphState.graph.data);
+    const [nodeIdToComp, compToCompSize] = getComponentData(graphState.graph.data);
 
     // this value can be increased to slightly increase performance
     const threshold = 3;
 
-    renderState.simulation.force("component", componentForce(nodeIdToCompMap, threshold).strength(physics.componentStrength));
+    renderState.simulation.force("component", componentForce(nodeIdToComp, threshold).strength(physics.componentStrength));
     renderState.simulation.alpha(1).restart();
   }, [physics.componentStrength, graphState.graph]);
 
@@ -156,11 +156,11 @@ export function PhysicsControl() {
     // have to disable link force for this
     setPhysics("linkForce", false);
 
-    const [nodeIdToCompMap, compToCompSizeMap] = getComponentData(graphState.graph.data);
+    const [nodeIdToComp, compToCompSize] = getComponentData(graphState.graph.data);
     const adjacentCountMap = getAdjacentData(graphState.graph.data);
     const minCircleSize = 6;
 
-    renderState.simulation.force("circleLayout", circularForce(nodeIdToCompMap, adjacentCountMap, minCircleSize));
+    renderState.simulation.force("circleLayout", circularForce(nodeIdToComp, adjacentCountMap, minCircleSize));
     renderState.simulation.alpha(1).restart();
   }, [physics.circleLayout]);
 

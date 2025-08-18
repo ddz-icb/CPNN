@@ -24,22 +24,22 @@ export function filterByThreshold(graphData, linkThreshold) {
 }
 
 export function filterCompDensity(graphData, compDensity) {
-  const [nodeIdToCompMap, compToCompSizeMap] = getComponentData(graphData);
+  const [nodeIdToComp, compToCompSize] = getComponentData(graphData);
 
   const componentEdgeCount = [];
   graphData.links.forEach((link) => {
     const sourceId = link.source.id || link.source;
     const targetId = link.target.id || link.target;
-    const compSource = nodeIdToCompMap[sourceId];
-    const compTarget = nodeIdToCompMap[targetId];
+    const compSource = nodeIdToComp[sourceId];
+    const compTarget = nodeIdToComp[targetId];
     if (compSource === compTarget) {
       componentEdgeCount[compSource] = (componentEdgeCount[compSource] || 0) + 1;
     }
   });
 
   const componentAvgDegree = [];
-  for (let comp in compToCompSizeMap) {
-    const n = compToCompSizeMap[comp];
+  for (let comp in compToCompSize) {
+    const n = compToCompSize[comp];
     const m = componentEdgeCount[comp] || 0;
     componentAvgDegree[comp] = n > 0 ? (2 * m) / n : 0;
   }
@@ -47,7 +47,7 @@ export function filterCompDensity(graphData, compDensity) {
   return {
     ...graphData,
     nodes: graphData.nodes.filter((node) => {
-      const comp = nodeIdToCompMap[node.id];
+      const comp = nodeIdToComp[node.id];
       return componentAvgDegree[comp] >= compDensity;
     }),
   };
@@ -76,22 +76,22 @@ export function filterNodesExist(graphData) {
 export function filterMinCompSize(graphData, minCompSize) {
   if (minCompSize === 1) return graphData;
 
-  const [nodeIdToCompMap, compToCompSizeMap] = getComponentData(graphData);
+  const [nodeIdToComp, compToCompSize] = getComponentData(graphData);
 
   return {
     ...graphData,
-    nodes: graphData.nodes.filter((node) => compToCompSizeMap[nodeIdToCompMap[node.id]] >= minCompSize),
+    nodes: graphData.nodes.filter((node) => compToCompSize[nodeIdToComp[node.id]] >= minCompSize),
   };
 }
 
 export function filterMaxCompSize(graphData, maxCompSize) {
   if (maxCompSize == "") return graphData;
 
-  const [nodeIdToCompMap, compToCompSizeMap] = getComponentData(graphData);
+  const [nodeIdToComp, compToCompSize] = getComponentData(graphData);
 
   return {
     ...graphData,
-    nodes: graphData.nodes.filter((node) => compToCompSizeMap[nodeIdToCompMap[node.id]] <= maxCompSize),
+    nodes: graphData.nodes.filter((node) => compToCompSize[nodeIdToComp[node.id]] <= maxCompSize),
   };
 }
 

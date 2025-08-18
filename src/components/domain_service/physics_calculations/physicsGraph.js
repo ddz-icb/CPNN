@@ -37,31 +37,74 @@ export function borderCheck(radius, borderHeight, borderWidth, center) {
   return force;
 }
 
-export function componentForce(nodeIdToCompMap, centroidThreshold) {
+export function componentForce(nodeIdToComp, centroidThreshold) {
   let nodes;
   let strength = 0.1;
 
+  let compIds = [];
+  let nodeToComp = new Map();
+
+  function initialize(n) {
+    nodes = n;
+
+    const idSet = new Set(Object.values(nodeIdToComp));
+    compIds = [...idSet];
+
+    nodeToComp.clear();
+    for (const node of nodes) {
+      nodeToComp.set(node, nodeIdToComp[node.id]);
+    }
+  }
+
   function force(alpha) {
-    const groups = groupBy(nodes, (n) => nodeIdToCompMap[n.id]);
-    const centroids = new Map([...groups].filter(([_, g]) => g.length >= centroidThreshold).map(([id, g]) => [id, getCentroid(g)]));
+    if (!nodes) return;
+
+    const compSums = new Map();
+    for (const compId of compIds) {
+      compSums.set(compId, { x: 0, y: 0, count: 0 });
+    }
 
     for (const node of nodes) {
-      for (const [compId, centroid] of centroids) {
-        if (nodeIdToCompMap[node.id] === compId) continue;
+      const compId = nodeToComp.get(node);
+      const acc = compSums.get(compId);
+      acc.x += node.x;
+      acc.y += node.y;
+      acc.count++;
+    }
+
+    const centroids = [];
+    for (const [compId, { x, y, count }] of compSums) {
+      if (count >= centroidThreshold) {
+        centroids.push({
+          compId,
+          x: x / count,
+          y: y / count,
+        });
+      }
+    }
+
+    const strengthFactor = strength * centroidThreshold * alpha;
+
+    for (const node of nodes) {
+      const compId = nodeToComp.get(node);
+
+      for (const centroid of centroids) {
+        if (centroid.compId === compId) continue;
 
         const dx = centroid.x - node.x;
         const dy = centroid.y - node.y;
         const distSq = dx * dx + dy * dy;
-        if (!distSq) continue;
+        if (distSq < 1e-4) continue;
+        const inverseDist = 1 / Math.sqrt(distSq);
+        const f = strengthFactor * inverseDist;
 
-        const f = (strength * centroidThreshold * alpha) / Math.sqrt(distSq);
         node.vx -= dx * f;
         node.vy -= dy * f;
       }
     }
   }
 
-  force.initialize = (n) => (nodes = n);
+  force.initialize = initialize;
   force.strength = (s) => (s === undefined ? strength : ((strength = s), force));
   return force;
 }
@@ -103,12 +146,12 @@ export function communityForce(communityMap) {
   return force;
 }
 
-export function circularForce(nodeIdToCompMap, adjacentCountMap, minCircleSize) {
+export function circularForce(nodeIdToComp, adjacentCountMap, minCircleSize) {
   let nodes;
   let strength = 1;
 
   function force(alpha) {
-    const groups = groupBy(nodes, (node) => nodeIdToCompMap[node.id]);
+    const groups = groupBy(nodes, (node) => nodeIdToComp[node.id]);
     const centroids = new Map();
     const circleGroups = new Map();
 
