@@ -1,32 +1,11 @@
+import { getCentroid, groupBy } from "../graph_calculations/graphUtils.js";
+
 // ==== Constants ====
 export const accuracyBarnesHut = 0.1;
 export const maxDistanceChargeForce = 300;
 export const nodeRepulsionMultiplier = -300;
 export const borderMultiplier = 10;
 
-// ==== Shared Utilities ====
-function groupBy(nodes, keyFn) {
-  const map = new Map();
-  for (const node of nodes) {
-    const key = keyFn(node);
-    if (!map.has(key)) map.set(key, []);
-    map.get(key).push(node);
-  }
-  return map;
-}
-
-function calculateCentroid(nodes) {
-  if (!nodes.length) return { x: 0, y: 0, size: 0 };
-  let x = 0,
-    y = 0;
-  for (const n of nodes) {
-    x += n.x;
-    y += n.y;
-  }
-  return { x: x / nodes.length, y: y / nodes.length, size: nodes.length };
-}
-
-// ==== Forces ====
 export function borderCheck(radius, borderHeight, borderWidth, center) {
   let nodes;
   let strength = 1;
@@ -58,56 +37,45 @@ export function borderCheck(radius, borderHeight, borderWidth, center) {
   return force;
 }
 
-// ==== Component Force ====
-export function componentForce(componentArray, centroidThreshold) {
+export function componentForce(nodeIdToCompMap, centroidThreshold) {
   let nodes;
-  let strength = 0.1; // adjustable by user
+  let strength = 0.1;
 
   function force(alpha) {
-    const groups = groupBy(nodes, (node) => componentArray[node.id]);
-    const centroids = new Map();
-    for (const [id, group] of groups) {
-      if (group.length >= centroidThreshold) {
-        centroids.set(id, calculateCentroid(group));
-      }
-    }
+    const groups = groupBy(nodes, (n) => nodeIdToCompMap[n.id]);
+    const centroids = new Map([...groups].filter(([_, g]) => g.length >= centroidThreshold).map(([id, g]) => [id, getCentroid(g)]));
 
     for (const node of nodes) {
-      const nodeComp = componentArray[node.id];
-      for (const [otherComp, centroid] of centroids) {
-        if (nodeComp !== otherComp) {
-          const dx = centroid.x - node.x;
-          const dy = centroid.y - node.y;
-          const distSq = dx * dx + dy * dy;
-          if (distSq > 0) {
-            const dist = Math.sqrt(distSq);
-            const f = (strength * centroidThreshold * alpha) / dist;
-            node.vx -= dx * f;
-            node.vy -= dy * f;
-          }
-        }
+      for (const [compId, centroid] of centroids) {
+        if (nodeIdToCompMap[node.id] === compId) continue;
+
+        const dx = centroid.x - node.x;
+        const dy = centroid.y - node.y;
+        const distSq = dx * dx + dy * dy;
+        if (!distSq) continue;
+
+        const f = (strength * centroidThreshold * alpha) / Math.sqrt(distSq);
+        node.vx -= dx * f;
+        node.vy -= dy * f;
       }
     }
   }
 
-  force.initialize = (_) => {
-    nodes = _;
-  };
-  force.strength = (_) => (_ === undefined ? strength : ((strength = _), force));
+  force.initialize = (n) => (nodes = n);
+  force.strength = (s) => (s === undefined ? strength : ((strength = s), force));
   return force;
 }
 
-// ==== Community Force ====
 export function communityForce(communityMap) {
   let nodes;
-  let strength = 0.1; // adjustable
+  let strength = 0.1;
   const baseStrength = 0.3;
 
   function force(alpha) {
     const groups = groupBy(nodes, (node) => communityMap.get(node.id));
     const centroids = new Map();
     for (const [id, group] of groups) {
-      centroids.set(id, calculateCentroid(group));
+      centroids.set(id, getCentroid(group));
     }
 
     for (const node of nodes) {
@@ -135,18 +103,17 @@ export function communityForce(communityMap) {
   return force;
 }
 
-// ==== Circular Layout ====
-export function circularForce(componentArray, adjacentCountMap, minCircleSize) {
+export function circularForce(nodeIdToCompMap, adjacentCountMap, minCircleSize) {
   let nodes;
   let strength = 1;
 
   function force(alpha) {
-    const groups = groupBy(nodes, (node) => componentArray[node.id]);
+    const groups = groupBy(nodes, (node) => nodeIdToCompMap[node.id]);
     const centroids = new Map();
     const circleGroups = new Map();
 
     for (const [id, group] of groups) {
-      const centroid = calculateCentroid(group);
+      const centroid = getCentroid(group);
       centroids.set(id, centroid);
       if (group.length >= minCircleSize) circleGroups.set(id, centroid);
     }
@@ -203,7 +170,6 @@ export function circularForce(componentArray, adjacentCountMap, minCircleSize) {
   return force;
 }
 
-// ==== Gravity Force ====
 export function gravityForce(x, y) {
   let nodes;
   let strength = 0.1;

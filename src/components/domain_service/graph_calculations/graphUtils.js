@@ -1,7 +1,27 @@
 import UnionFind from "union-find";
 import Graph from "graphology";
 import louvain from "graphology-communities-louvain";
-import { getIdsSeparateEntries, getPhosphositesProtIdEntry, getProtIdAndNameEntry, getProtIdsWithIsoform } from "../parsing/nodeIdParsing.js";
+
+export function groupBy(nodes, keyFn) {
+  const map = new Map();
+  for (const node of nodes) {
+    const key = keyFn(node);
+    if (!map.has(key)) map.set(key, []);
+    map.get(key).push(node);
+  }
+  return map;
+}
+
+export function getCentroid(nodes) {
+  if (!nodes.length) return { x: 0, y: 0, size: 0 };
+  let x = 0,
+    y = 0;
+  for (const n of nodes) {
+    x += n.x;
+    y += n.y;
+  }
+  return { x: x / nodes.length, y: y / nodes.length, size: nodes.length };
+}
 
 export function getComponentData(graphData) {
   const idToIndexMap = {};
@@ -17,15 +37,15 @@ export function getComponentData(graphData) {
     uf.link(sourceIndex, targetIndex);
   });
 
-  const componentArray = [];
-  const componentSizeArray = [];
+  const nodeIdToCompMap = [];
+  const compToCompSizeMap = [];
   graphData.nodes.forEach((node) => {
     const component = uf.find(idToIndexMap[node.id]);
-    componentSizeArray[component] = componentSizeArray[component] ? componentSizeArray[component] + 1 : 1;
+    compToCompSizeMap[component] = compToCompSizeMap[component] ? compToCompSizeMap[component] + 1 : 1;
 
-    componentArray[node.id] = component;
+    nodeIdToCompMap[node.id] = component;
   });
-  return [componentArray, componentSizeArray];
+  return [nodeIdToCompMap, compToCompSizeMap];
 }
 
 export function getAdjacentData(graphData) {
