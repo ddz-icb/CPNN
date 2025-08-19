@@ -3,7 +3,6 @@ import axios from "axios";
 import * as $3Dmol from "3dmol/build/3Dmol.js";
 
 import log from "../../adapters/logging/logger.js";
-import { ReactComponent as XIcon } from "../../../icons/x.svg";
 import { getDescriptionUniprotData, getFullNameUniprotData, getPdbIdUniprotData } from "../../domain_service/parsing/uniprotDataParsing.js";
 
 import { useContainer } from "../../adapters/state/containerState.js";
@@ -11,6 +10,16 @@ import { useTooltipSettings } from "../../adapters/state/tooltipState.js";
 import { useMappingState } from "../../adapters/state/mappingState.js";
 import { useTheme } from "../../adapters/state/themeState.js";
 import { parseEntries } from "../../domain_service/parsing/nodeIdParsing.js";
+import { Tooltip } from "../reusable_components/tooltipComponents.js";
+
+const fullNameInit = "";
+const descriptionInit = "";
+const pdbIdInit = "";
+const protIdNoIsoformInit = "";
+const geneInit = "";
+const isoformsInit = [];
+const hasPhosphositesInit = false;
+const responsePdbInit = null;
 
 export function ClickTooltip() {
   const { theme } = useTheme();
@@ -18,18 +27,29 @@ export function ClickTooltip() {
   const { mappingState } = useMappingState();
   const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
 
-  const [fullName, setFullName] = useState("");
-  const [description, setDescription] = useState("");
-  const [pdbId, setPdbId] = useState("");
-  const [protIdNoIsoform, setProtIdNoIsoform] = useState("");
-  const [gene, setGene] = useState("");
-  const [isoforms, setIsoforms] = useState([]);
-  const [hasPhosphosites, setHasPhosphosites] = useState(false);
-  const [responsePdb, setResponsePdb] = useState(null);
+  const [fullName, setFullName] = useState(fullNameInit);
+  const [description, setDescription] = useState(descriptionInit);
+  const [pdbId, setPdbId] = useState(pdbIdInit);
+  const [protIdNoIsoform, setProtIdNoIsoform] = useState(protIdNoIsoformInit);
+  const [gene, setGene] = useState(geneInit);
+  const [isoforms, setIsoforms] = useState(isoformsInit);
+  const [hasPhosphosites, setHasPhosphosites] = useState(hasPhosphositesInit);
+  const [responsePdb, setResponsePdb] = useState(responsePdbInit);
 
   const [style, setStyle] = useState({});
   const [viewer, setViewer] = useState(null);
   const viewerRef = useRef(null);
+
+  const resetTooltipData = () => {
+    setFullName(fullNameInit);
+    setDescription(descriptionInit);
+    setPdbId(pdbIdInit);
+    setProtIdNoIsoform(protIdNoIsoformInit);
+    setGene(geneInit);
+    setIsoforms(isoformsInit);
+    setHasPhosphosites(hasPhosphositesInit);
+    setResponsePdb(responsePdbInit);
+  };
 
   useEffect(() => {
     if (!tooltipSettings.clickTooltipData?.node) return;
@@ -63,6 +83,7 @@ export function ClickTooltip() {
       }
     };
 
+    resetTooltipData();
     fetchData();
   }, [tooltipSettings.clickTooltipData]);
 
@@ -80,6 +101,7 @@ export function ClickTooltip() {
   // Render PDB model
   useEffect(() => {
     if (!viewer || !responsePdb || !tooltipSettings.isClickTooltipActive) return;
+    viewer.clear();
     viewer.addModel(responsePdb.data, "pdb");
     viewer.setStyle({}, { cartoon: { color: "spectrum" } });
     viewer.zoomTo();
@@ -106,11 +128,6 @@ export function ClickTooltip() {
     setStyle({ left: `${left}px`, top: `${top}px`, transform });
   }, [tooltipSettings.isClickTooltipActive, tooltipSettings.clickTooltipData]);
 
-  const closeTooltip = () => {
-    viewer?.clear();
-    setTooltipSettings("isClickTooltipActive", false);
-  };
-
   const groupContent =
     mappingState.mapping?.data?.groupMapping && tooltipSettings.clickTooltipData?.nodeGroups
       ? tooltipSettings.clickTooltipData.nodeGroups
@@ -128,56 +145,13 @@ export function ClickTooltip() {
       : [];
 
   return (
-    <div className="tooltip tooltip-click" style={style}>
-      <div className="tooltip-content">
-        <div className="tooltip-header">
-          <p>{gene}</p>
-          <span className="tooltip-button" onClick={closeTooltip}>
-            <XIcon />
-          </span>
-        </div>
-
-        <div className="tooltip-body">
-          {fullName && (
-            <>
-              <b className="text-secondary">Full Name</b>
-              <div>{fullName}</div>
-            </>
-          )}
-          {isoforms.length > 0 && (
-            <>
-              <b className="text-secondary">Protein-IDs {hasPhosphosites && "and Phosphosites"}</b>
-              <div>
-                {isoforms.map(({ pepId, phosphosites }, i) => (
-                  <div key={`${pepId}-${i}`}>
-                    {pepId}
-                    {phosphosites ? `: ${phosphosites}` : ""}
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
-          {groupContent.length > 0 && (
-            <>
-              <b className="text-secondary">Gene/Protein Annotations</b>
-              <div>{groupContent}</div>
-            </>
-          )}
-          {description && (
-            <>
-              <b className="text-secondary">Description</b>
-              <div>{description}</div>
-            </>
-          )}
-        </div>
-
-        <div
-          className="pdb-viewer"
-          ref={viewerRef}
-          style={!responsePdb ? { position: "absolute", left: "-9999px", width: "1px", height: "1px" } : {}}
-        />
-
-        <div className="tooltip-footer">
+    <Tooltip
+      heading={gene}
+      isOpen={tooltipSettings.isClickTooltipActive}
+      setIsOpen={(value) => setTooltipSettings("isClickTooltipActive", value)}
+      style={style}
+      footer={
+        <>
           {fullName && (
             <a className="tooltip-footer-item" href={`https://www.uniprot.org/uniprotkb/${protIdNoIsoform}/`} target="_blank" rel="noreferrer">
               To UniProt
@@ -188,8 +162,49 @@ export function ClickTooltip() {
               To RCSB PDB
             </a>
           )}
-        </div>
-      </div>
-    </div>
+        </>
+      }
+    >
+      {fullName && (
+        <>
+          <b className="text-secondary">Full Name</b>
+          <div>{fullName}</div>
+        </>
+      )}
+
+      {isoforms.length > 0 && (
+        <>
+          <b className="text-secondary">Protein-IDs {hasPhosphosites && "and Phosphosites"}</b>
+          <div>
+            {isoforms.map(({ pepId, phosphosites }, i) => (
+              <div key={`${pepId}-${i}`}>
+                {pepId}
+                {phosphosites ? `: ${phosphosites}` : ""}
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+
+      {groupContent.length > 0 && (
+        <>
+          <b className="text-secondary">Gene/Protein Annotations</b>
+          <div>{groupContent}</div>
+        </>
+      )}
+
+      {description && (
+        <>
+          <b className="text-secondary">Description</b>
+          <div>{description}</div>
+        </>
+      )}
+
+      <div
+        className="pdb-viewer"
+        ref={viewerRef}
+        style={!responsePdb ? { position: "absolute", left: "-9999px", width: "1px", height: "1px" } : {}}
+      />
+    </Tooltip>
   );
 }
