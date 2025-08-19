@@ -106,7 +106,7 @@ function drawLegendOnPdf(pdf, offsetX, offsetY, nodeColorscheme, nodeAttribsToCo
   const totalItemsHeight = (nodeCount + 1 + linkCount + 1) * lineHeight;
   const legendHeight = padding * 2 + headerSpacing * 2 + sectionSpacing + totalItemsHeight;
 
-  pdf.setFillColor(240, 240, 240);
+  pdf.setFillColor(255, 255, 255);
   pdf.rect(offsetX, offsetY, legendWidth, legendHeight, "F");
   pdf.setDrawColor(200, 200, 200);
   pdf.rect(offsetX, offsetY, legendWidth, legendHeight);
