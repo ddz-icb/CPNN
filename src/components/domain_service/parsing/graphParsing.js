@@ -36,7 +36,7 @@ export async function parseGraphFile(file, settings) {
   }
 
   const fileContent = await getFileAsText(file);
-  let graphData = await parseByFileType(file.name, fileContent);
+  let graphData = await parseByFileType(file.name, fileContent, settings.takeSpearman);
 
   graphData = applyFilters(graphData, settings);
 
@@ -48,7 +48,7 @@ export async function parseGraphFile(file, settings) {
   return graph;
 }
 
-export async function parseByFileType(name, content) {
+export async function parseByFileType(name, content, takeSpearman) {
   const fileExtension = name.split(".").pop();
   const linkAttrib = name.split(".")[0];
 
@@ -70,7 +70,7 @@ export async function parseByFileType(name, content) {
 
     if (isValidRawTableData(content)) {
       log.info("Parsing raw table data (csv/tsv)");
-      const corrMatrix = await convertToCorrMatrix(parsedData);
+      const corrMatrix = await convertToCorrMatrix(parsedData, takeSpearman);
       return convertSymmetricMatrixToGraph(corrMatrix, linkAttrib);
     }
 
@@ -163,8 +163,8 @@ export function isValidRawTableData(content) {
 
 ////////////////////////
 
-export async function convertToCorrMatrix(fileData, useSpearman = false) {
-  const method = useSpearman ? "spearman" : "pearson";
+export async function convertToCorrMatrix(fileData, takeSpearman = false) {
+  const method = takeSpearman ? "spearman" : "pearson";
   const data = fileData.data.map((row, index) => [fileData.firstColumn[index], ...row]);
 
   const formData = new FormData();
