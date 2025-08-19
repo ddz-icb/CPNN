@@ -151,11 +151,7 @@ export function ClickTooltip() {
       />
       <TooltipItem heading={"Gene/Protein Annotations"} value={tooltipSettings?.clickTooltipData?.nodeGroups} />
       <TooltipItem heading={"Description"} value={description} />
-      <div
-        className="pdb-viewer"
-        ref={viewerRef}
-        style={!responsePdb ? { position: "absolute", left: "-9999px", width: "1px", height: "1px" } : {}}
-      />
+      <div className="pdb-viewer" ref={viewerRef} />
     </Tooltip>
   );
 }
