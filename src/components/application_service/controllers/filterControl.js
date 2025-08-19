@@ -17,26 +17,26 @@ import { useAppearance } from "../../adapters/state/appearanceState.js";
 import { useGraphState } from "../../adapters/state/graphState.js";
 import { usePixiState } from "../../adapters/state/pixiState.js";
 import { useGraphFlags } from "../../adapters/state/graphFlagsState.js";
+import { errorService } from "../services/errorService.js";
 
 export function FilterControl() {
-  const { filter, setFilter } = useFilter();
-  const { appearance, setAppearance } = useAppearance();
+  const { filter } = useFilter();
+  const { appearance } = useAppearance();
   const { graphState, setGraphState } = useGraphState();
   const { graphFlags, setGraphFlags } = useGraphFlags();
-  const { pixiState, setPixiState } = usePixiState();
+  const { pixiState } = usePixiState();
 
   // filter nodes and links //
   useEffect(() => {
     if (
       !graphState.graph ||
       !graphState.originGraph ||
-      !pixiState?.circles?.children?.length > 0 ||
+      !(pixiState?.circles?.children?.length > 0) ||
       !pixiState.nodeMap ||
       !graphFlags.isPreprocessed
     ) {
       return;
     }
-
     log.info(
       "Filtering nodes and links.\n    Threshold:  ",
       filter.linkThreshold,
@@ -56,31 +56,37 @@ export function FilterControl() {
       filter.compDensity
     );
 
-    let filteredGraphData = {
-      ...graphState.graph.data,
-      nodes: graphState.originGraph.data.nodes,
-      links: graphState.originGraph.data.links,
-    };
+    try {
+      let filteredGraphData = {
+        ...graphState.graph.data,
+        nodes: graphState.originGraph.data.nodes,
+        links: graphState.originGraph.data.links,
+      };
 
-    filteredGraphData = filterByNodeAttribs(filteredGraphData, filter.nodeFilter);
-    filteredGraphData = filterNodesExist(filteredGraphData);
+      filteredGraphData = filterByNodeAttribs(filteredGraphData, filter.nodeFilter);
+      filteredGraphData = filterNodesExist(filteredGraphData);
 
-    filteredGraphData = filterByThreshold(filteredGraphData, filter.linkThreshold);
-    filteredGraphData = filterByLinkAttribs(filteredGraphData, filter.linkFilter);
+      filteredGraphData = filterByThreshold(filteredGraphData, filter.linkThreshold);
+      filteredGraphData = filterByLinkAttribs(filteredGraphData, filter.linkFilter);
 
-    filteredGraphData = filterCompDensity(filteredGraphData, filter.compDensity);
-    filteredGraphData = filterMinNeighborhood(filteredGraphData, filter.minNeighborhoodSize);
-    filteredGraphData = filterNodesExist(filteredGraphData);
+      filteredGraphData = filterCompDensity(filteredGraphData, filter.compDensity);
+      filteredGraphData = filterMinNeighborhood(filteredGraphData, filter.minNeighborhoodSize);
+      filteredGraphData = filterNodesExist(filteredGraphData);
 
-    filteredGraphData = filterMinCompSize(filteredGraphData, filter.minCompSize);
-    filteredGraphData = filterMaxCompSize(filteredGraphData, filter.maxCompSize);
-    filteredGraphData = filterNodesExist(filteredGraphData);
+      filteredGraphData = filterMinCompSize(filteredGraphData, filter.minCompSize);
+      filteredGraphData = filterMaxCompSize(filteredGraphData, filter.maxCompSize);
+      filteredGraphData = filterNodesExist(filteredGraphData);
 
-    const filteredGraph = { name: graphState.graph.name, data: filteredGraphData };
+      const filteredGraph = { name: graphState.graph.name, data: filteredGraphData };
 
-    filterActiveNodesForPixi(pixiState.circles, pixiState.nodeLabels, appearance.showNodeLabels, filteredGraphData, pixiState.nodeMap);
-    setGraphFlags("filteredAfterStart", true);
-    setGraphState("graph", filteredGraph);
+      filterActiveNodesForPixi(pixiState.circles, pixiState.nodeLabels, appearance.showNodeLabels, filteredGraphData, pixiState.nodeMap);
+
+      setGraphFlags("filteredAfterStart", true);
+      setGraphState("graph", filteredGraph);
+    } catch (error) {
+      errorService.setError(error.message);
+      log.error("Error while filtering graph:", error);
+    }
   }, [
     filter.linkThreshold,
     filter.linkFilter,
