@@ -8,10 +8,9 @@ export async function parseMappingFile(file) {
     throw new Error(`No file found with the name ${file}.`);
   }
 
-  const fileExtension = file.name.split(".").pop();
-  if (fileExtension !== "csv" && fileExtension !== "tsv") throw new Error(`Wrong file extension. Only .csv and .tsv is allowed.`);
-
   try {
+    const fileExtension = file.name.split(".").pop();
+    if (fileExtension !== "csv" && fileExtension !== "tsv") throw new Error(`Wrong file extension. Only .csv and .tsv is allowed.`);
     const fileContent = await getFileAsText(file);
     const mappingData = parseMapping(fileContent);
     const mapping = { name: file.name, data: mappingData };
@@ -24,48 +23,44 @@ export async function parseMappingFile(file) {
 }
 
 export function parseMapping(content) {
-  try {
-    let fileData = Papa.parse(content, {
-      header: true,
-      dynamicTyping: true,
-      skipEmptyLines: true,
-      delimiter: "",
-      transform: function (value, field) {
-        if (field !== "UniProt-ID") {
-          return value.split(";").map((item) => item.trim());
-        }
-        return value;
-      },
-    });
+  let fileData = Papa.parse(content, {
+    header: true,
+    dynamicTyping: true,
+    skipEmptyLines: true,
+    delimiter: "",
+    transform: function (value, field) {
+      if (field !== "UniProt-ID") {
+        return value.split(";").map((item) => item.trim());
+      }
+      return value;
+    },
+  });
 
-    const nodeMapping = {};
-    const groupMapping = {};
+  const nodeMapping = {};
+  const groupMapping = {};
 
-    for (let row of fileData.data) {
-      const uniProtId = row["UniProt-ID"];
-      const pathwayNames = row["Pathway Name"];
-      const reactomeIds = row["Reactome-ID"] || [];
+  for (let row of fileData.data) {
+    const uniProtId = row["UniProt-ID"];
+    const pathwayNames = row["Pathway Name"];
+    const reactomeIds = row["Reactome-ID"] || [];
 
-      nodeMapping[uniProtId] = {
-        pathwayNames: pathwayNames,
-        reactomeIds: reactomeIds,
-      };
+    nodeMapping[uniProtId] = {
+      pathwayNames: pathwayNames,
+      reactomeIds: reactomeIds,
+    };
 
-      for (let i = 0; i < pathwayNames.length; i++) {
-        if (!groupMapping[pathwayNames[i]]) {
-          groupMapping[pathwayNames[i]] = {
-            name: pathwayNames[i],
-            reactomeId: reactomeIds[i],
-          };
-        }
+    for (let i = 0; i < pathwayNames.length; i++) {
+      if (!groupMapping[pathwayNames[i]]) {
+        groupMapping[pathwayNames[i]] = {
+          name: pathwayNames[i],
+          reactomeId: reactomeIds[i],
+        };
       }
     }
-
-    return {
-      nodeMapping: nodeMapping,
-      groupMapping: groupMapping,
-    };
-  } catch (error) {
-    throw new Error(`Erorr parsing pathway mapping.`);
   }
+
+  return {
+    nodeMapping: nodeMapping,
+    groupMapping: groupMapping,
+  };
 }

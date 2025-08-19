@@ -8,10 +8,9 @@ export async function parseColorschemeFile(file) {
     throw new Error(`No file found with the name ${file}.`);
   }
 
-  const fileExtension = file.name.split(".").pop();
-  if (fileExtension !== "csv" && fileExtension !== "tsv") throw new Error(`Wrong file extension. Only .csv and .tsv is allowed.`);
-
   try {
+    const fileExtension = file.name.split(".").pop();
+    if (fileExtension !== "csv" && fileExtension !== "tsv") throw new Error(`Wrong file extension. Only .csv and .tsv is allowed.`);
     const fileContent = await getFileAsText(file);
     const colorschemeData = parseColorscheme(fileContent);
     const colorscheme = { name: file.name, data: colorschemeData };
