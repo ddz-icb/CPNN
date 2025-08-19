@@ -44,7 +44,7 @@ function App() {
   // sets origin graph //
   useEffect(() => {
     if (!graphState.activeGraphNames) return;
-    log.info("Reloading graph");
+    log.info("Loading graph");
 
     async function reloadGraph() {
       let graph = await graphService.getJoinedGraph(graphState.activeGraphNames);
@@ -65,7 +65,7 @@ function App() {
   // sets working graph //
   useEffect(() => {
     if (!graphState.originGraph || !graphState.activeGraphNames || graphFlags.isPreprocessed) return;
-    log.info("Modifying graph and forwarding it to the simulation component");
+    log.info("Forwarding graph to the render component");
 
     const graph = structuredClone(graphState.originGraph);
 
