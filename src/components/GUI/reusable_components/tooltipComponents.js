@@ -21,3 +21,27 @@ export function Tooltip({ heading, isOpen, setIsOpen, children, style, footer })
     </>
   );
 }
+
+export function TooltipItem({ heading, value }) {
+  return (
+    <>
+      {value && (
+        <>
+          <b className="text-secondary">{heading}</b>
+          <div>{value}</div>
+        </>
+      )}
+    </>
+  );
+}
+export function TooltipLinkItem({ text, link }) {
+  return (
+    <>
+      {text && (
+        <a className="tooltip-footer-item" href={link} target="_blank" rel="noreferrer">
+          <div>{text}</div>
+        </a>
+      )}
+    </>
+  );
+}

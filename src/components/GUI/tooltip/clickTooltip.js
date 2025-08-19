@@ -7,10 +7,9 @@ import { getDescriptionUniprotData, getFullNameUniprotData, getPdbIdUniprotData 
 
 import { useContainer } from "../../adapters/state/containerState.js";
 import { useTooltipSettings } from "../../adapters/state/tooltipState.js";
-import { useMappingState } from "../../adapters/state/mappingState.js";
 import { useTheme } from "../../adapters/state/themeState.js";
 import { getNodeIdEntries, parseNodeIdEntries } from "../../domain_service/parsing/nodeIdParsing.js";
-import { Tooltip } from "../reusable_components/tooltipComponents.js";
+import { Tooltip, TooltipItem, TooltipLinkItem } from "../reusable_components/tooltipComponents.js";
 
 const fullNameInit = "";
 const descriptionInit = "";
@@ -24,7 +23,6 @@ const responsePdbInit = null;
 export function ClickTooltip() {
   const { theme } = useTheme();
   const { container } = useContainer();
-  const { mappingState } = useMappingState();
   const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
 
   const [fullName, setFullName] = useState(fullNameInit);
@@ -128,22 +126,6 @@ export function ClickTooltip() {
     setStyle({ left: `${left}px`, top: `${top}px`, transform });
   }, [tooltipSettings.isClickTooltipActive, tooltipSettings.clickTooltipData]);
 
-  const groupContent =
-    mappingState.mapping?.data?.groupMapping && tooltipSettings.clickTooltipData?.nodeGroups
-      ? tooltipSettings.clickTooltipData.nodeGroups
-          .map((group) => {
-            const { name, reactomeId } = mappingState.mapping.data.groupMapping[group] || {};
-            return reactomeId ? (
-              <a key={group} href={`https://reactome.org/PathwayBrowser/#/${reactomeId}`} target="_blank" rel="noopener noreferrer">
-                {name}
-              </a>
-            ) : (
-              name || group
-            );
-          })
-          .reduce((acc, item, i) => (i === 0 ? [item] : [...acc, ", ", item]), [])
-      : [];
-
   return (
     <Tooltip
       heading={gene}
@@ -152,54 +134,23 @@ export function ClickTooltip() {
       style={style}
       footer={
         <>
-          {fullName && (
-            <a className="tooltip-footer-item" href={`https://www.uniprot.org/uniprotkb/${protIdNoIsoform}/`} target="_blank" rel="noreferrer">
-              To UniProt
-            </a>
-          )}
-          {pdbId && (
-            <a className="tooltip-footer-item" href={`https://www.rcsb.org/structure/${pdbId}/`} target="_blank" rel="noreferrer">
-              To RCSB PDB
-            </a>
-          )}
+          <TooltipLinkItem text={"To UniProt"} link={`https://www.uniprot.org/uniprotkb/${protIdNoIsoform}/`} />
+          <TooltipLinkItem text={"To RCSB PDB"} link={`https://www.rcsb.org/structure/${pdbId}/`} />
         </>
       }
     >
-      {fullName && (
-        <>
-          <b className="text-secondary">Full Name</b>
-          <div>{fullName}</div>
-        </>
-      )}
-
-      {isoforms.length > 0 && (
-        <>
-          <b className="text-secondary">Protein-IDs {hasPhosphosites && "and Phosphosites"}</b>
-          <div>
-            {isoforms.map(({ pepId, phosphosites }, i) => (
-              <div key={`${pepId}-${i}`}>
-                {pepId}
-                {phosphosites ? `: ${phosphosites}` : ""}
-              </div>
-            ))}
+      <TooltipItem heading={"Full Name"} value={fullName} />
+      <TooltipItem
+        heading={`Protein-IDs ${hasPhosphosites && "and Phosphosites"}`}
+        value={isoforms.map(({ pepId, phosphosites }, i) => (
+          <div key={`${pepId}-${i}`}>
+            {pepId}
+            {phosphosites}
           </div>
-        </>
-      )}
-
-      {groupContent.length > 0 && (
-        <>
-          <b className="text-secondary">Gene/Protein Annotations</b>
-          <div>{groupContent}</div>
-        </>
-      )}
-
-      {description && (
-        <>
-          <b className="text-secondary">Description</b>
-          <div>{description}</div>
-        </>
-      )}
-
+        ))}
+      />
+      <TooltipItem heading={"Gene/Protein Annotations"} value={tooltipSettings?.clickTooltipData?.nodeGroups} />
+      <TooltipItem heading={"Description"} value={description} />
       <div
         className="pdb-viewer"
         ref={viewerRef}
