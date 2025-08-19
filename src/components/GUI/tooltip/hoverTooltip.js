@@ -8,16 +8,15 @@ export function HoverTooltip() {
   const [gene, setGene] = useState("");
 
   useEffect(() => {
-    if (tooltipSettings.hoverTooltipData) {
-      setGene(getNodeIdName(tooltipSettings.hoverTooltipData.node));
-    }
+    if (!tooltipSettings.hoverTooltipData) return;
+
+    setGene(getNodeIdName(tooltipSettings.hoverTooltipData.node));
   }, [tooltipSettings.hoverTooltipData]);
 
   useEffect(() => {
-    if (tooltipSettings.isHoverTooltipActive && tooltipSettings.hoverTooltipData) {
-      const { x, y } = tooltipSettings.hoverTooltipData;
-      setStyle({ left: `${x + 15}px`, top: `${y}px` });
-    }
+    if (!tooltipSettings.isHoverTooltipActive || !tooltipSettings.hoverTooltipData) return;
+    const { x, y } = tooltipSettings.hoverTooltipData;
+    setStyle({ left: `${x + 15}px`, top: `${y}px` });
   }, [tooltipSettings.isHoverTooltipActive, tooltipSettings.hoverTooltipData]);
 
   return (
