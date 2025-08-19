@@ -25,7 +25,6 @@ export function ClickTooltip() {
   const { container } = useContainer();
   const { mappingState } = useMappingState();
   const mappingData = mappingState.mapping?.data;
-
   const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
 
   const [fullName, setFullName] = useState("");
@@ -194,14 +193,14 @@ export function ClickTooltip() {
           top: y,
           transform: "translateY(-100%)",
         });
-        if (tooltipSettings.clickTooltipData.x > (2 * container.width) / 3) {
+        if (tooltipSettings.clickTooltipData.x > (2 * container.width) / 2) {
           setStyle({
             left: x2,
             top: y,
             transform: "translateX(-100%) translateY(-100%)",
           });
         }
-      } else if (tooltipSettings.clickTooltipData.x > (2 * container.width) / 3) {
+      } else if (tooltipSettings.clickTooltipData.x > (2 * container.width) / 2) {
         setStyle({
           left: x2,
           top: y,
@@ -332,7 +331,7 @@ export function ClickTooltip() {
 }
 
 export function HoverTooltip({}) {
-  const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
+  const { tooltipSettings } = useTooltipSettings();
 
   const [style, setStyle] = useState({});
   const [gene, setGene] = useState("");
@@ -358,29 +357,4 @@ export function HoverTooltip({}) {
       <p className="margin-0">{gene}</p>
     </div>
   );
-}
-
-// this function should not be here
-export function initTooltips(circle, node, setTooltipSettings) {
-  circle.on("mouseover", (mouseData) => {
-    setTooltipSettings("hoverTooltipData", {
-      node: node.id,
-      nodeGroups: node.groups,
-      x: mouseData.originalEvent.pageX,
-      y: mouseData.originalEvent.pageY,
-    });
-    setTooltipSettings("isHoverTooltipActive", true);
-  });
-  circle.on("mouseout", () => {
-    setTooltipSettings("isHoverTooltipActive", false);
-  });
-  circle.on("click", (mouseData) => {
-    setTooltipSettings("clickTooltipData", {
-      node: node.id,
-      nodeGroups: node.groups,
-      x: mouseData.originalEvent.pageX,
-      y: mouseData.originalEvent.pageY,
-    });
-    setTooltipSettings("isClickTooltipActive", true);
-  });
 }

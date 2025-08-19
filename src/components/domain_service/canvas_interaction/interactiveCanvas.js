@@ -70,3 +70,27 @@ export function initDragAndZoom(app, simulation, radius, setTooltipSettings, wid
 
   d3.select(app.renderer.canvas).call(zoom.transform, state.transform);
 }
+
+export function initTooltips(circle, node, setTooltipSettings) {
+  circle.on("mouseover", (mouseData) => {
+    setTooltipSettings("hoverTooltipData", {
+      node: node.id,
+      nodeGroups: node.groups,
+      x: mouseData.originalEvent.pageX,
+      y: mouseData.originalEvent.pageY,
+    });
+    setTooltipSettings("isHoverTooltipActive", true);
+  });
+  circle.on("mouseout", () => {
+    setTooltipSettings("isHoverTooltipActive", false);
+  });
+  circle.on("click", (mouseData) => {
+    setTooltipSettings("clickTooltipData", {
+      node: node.id,
+      nodeGroups: node.groups,
+      x: mouseData.originalEvent.pageX,
+      y: mouseData.originalEvent.pageY,
+    });
+    setTooltipSettings("isClickTooltipActive", true);
+  });
+}
