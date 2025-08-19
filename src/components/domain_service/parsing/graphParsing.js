@@ -1,7 +1,7 @@
 import log from "../../adapters/logging/logger.js";
 import Papa from "papaparse";
 import axios from "axios";
-import { getFileAsText } from "./fileParsing.js";
+import { getFileAsText, parseSVFile } from "./fileParsing.js";
 import {
   filterByThreshold,
   filterMaxCompSize,
@@ -10,7 +10,8 @@ import {
   filterNodesExist,
   filterTakeAbs,
 } from "../graph_calculations/filterGraph.js";
-import { verifyGraph } from "../verification/graphVerification.js";
+import { isSymmMatrix, isTableData, verifyGraph } from "../verification/graphVerification.js";
+import { sortGraph } from "../graph_calculations/graphUtils.js";
 
 function applyFilters(graphData, settings) {
   let filteredGraph = graphData;
@@ -23,23 +24,14 @@ function applyFilters(graphData, settings) {
   return filterNodesExist(filteredGraph);
 }
 
-function sortGraph(graph) {
-  graph.nodes.sort((a, b) => a.id.localeCompare(b.id));
-  graph.links.sort((a, b) => a.source.localeCompare(b.source) || a.target.localeCompare(b.target));
-}
-
-////////////////////
-
 export async function parseGraphFile(file, settings) {
   if (!file) {
     throw new Error("No file was provided.");
   }
 
   const fileContent = await getFileAsText(file);
-  let graphData = await parseByFileType(file.name, fileContent, settings.takeSpearman);
-
+  let graphData = await parseGraphByFileType(file.name, fileContent, settings.takeSpearman);
   graphData = applyFilters(graphData, settings);
-
   sortGraph(graphData);
 
   const graph = { name: file.name, data: graphData };
@@ -48,7 +40,7 @@ export async function parseGraphFile(file, settings) {
   return graph;
 }
 
-export async function parseByFileType(name, content, takeSpearman) {
+async function parseGraphByFileType(name, content, takeSpearman) {
   const fileExtension = name.split(".").pop();
   const linkAttrib = name.split(".")[0];
 
@@ -57,49 +49,28 @@ export async function parseByFileType(name, content, takeSpearman) {
       log.info("Parsing JSON graph");
       return JSON.parse(content);
     }
+    if (fileExtension != "csv" && fileExtension != "tsv") throw new Error("Unknown file type");
 
     const parsedData = parseSVFile(content);
-    if (!parsedData || !parsedData.header) {
-      throw new Error("CSV/TSV file has a wrong or empty format.");
-    }
+    if (!parsedData || !parsedData.header) throw new Error("CSV/TSV file has a wrong or empty format.");
 
-    if (isSymmetricMatrix(content)) {
-      log.info("Parsing symmetrical matrix (csv/tsv)");
+    if (isSymmMatrix(parsedData)) {
+      log.info("Parsing symmetrical matrix (CSV/TSV)");
       return convertSymmetricMatrixToGraph(parsedData, linkAttrib);
     }
 
-    if (isValidRawTableData(content)) {
-      log.info("Parsing raw table data (csv/tsv)");
-      const corrMatrix = await convertToCorrMatrix(parsedData, takeSpearman);
+    if (isTableData(parsedData)) {
+      log.info("Parsing raw table data (CSV/TSV)");
+      const corrMatrix = await convertRawTableToCorrMatrix(parsedData, takeSpearman);
       return convertSymmetricMatrixToGraph(corrMatrix, linkAttrib);
     }
 
-    throw new Error("File has an unknown type or format.");
+    throw new Error("File has an unknown format.");
   } catch (error) {
     log.error(`Failed to parse graph: ${error.message}`);
     throw error;
   }
 }
-
-function parseSVFile(content) {
-  const { data } = Papa.parse(content, {
-    header: false,
-    dynamicTyping: true,
-    skipEmptyLines: true,
-    delimiter: "", // Auto-detect delimiter
-  });
-
-  if (!data?.length) return null;
-
-  const header = data[0].map(String).slice(1);
-  const dataRows = data.slice(1);
-  const firstColumn = dataRows.map((row) => row[0]);
-  const updatedData = dataRows.map((row) => row.slice(1));
-
-  return { header, firstColumn, data: updatedData };
-}
-
-//////////////////
 
 function convertSymmetricMatrixToGraph(fileData, linkAttrib) {
   const graphData = { nodes: [], links: [] };
@@ -121,49 +92,7 @@ function convertSymmetricMatrixToGraph(fileData, linkAttrib) {
   return graphData;
 }
 
-////////////////////////
-
-export function isSymmetricMatrix(content) {
-  const { data: rows } = Papa.parse(content, { header: false, dynamicTyping: true, skipEmptyLines: true });
-  if (!rows?.length || rows[0].length !== rows.length) {
-    return false;
-  }
-  const firstColumn = rows.map((row) => row[0]);
-  const firstRow = rows[0];
-  return firstColumn.every((val, i) => val === firstRow[i]);
-}
-
-/////////////////
-
-export function isValidRawTableData(content) {
-  const { data: rows } = Papa.parse(content, { header: false, dynamicTyping: true, skipEmptyLines: true });
-  if (rows.length < 2) return false;
-
-  const columnCount = rows[0].length;
-  if (columnCount < 2 || !rows.every((r) => r.length === columnCount)) {
-    log.error("Invalid number of columns in raw table.");
-    return false;
-  }
-
-  const [headerRow, ...dataRows] = rows;
-  if (!headerRow.slice(1).every((col) => typeof col === "string" && col.trim() !== "")) {
-    log.error("Invalid header row in raw table.");
-    return false;
-  }
-
-  for (const row of dataRows) {
-    if (typeof row[0] !== "string" || row[0].trim() === "") {
-      log.error("Invalid first column in raw table.");
-      return false;
-    }
-  }
-
-  return true;
-}
-
-////////////////////////
-
-export async function convertToCorrMatrix(fileData, takeSpearman = false) {
+async function convertRawTableToCorrMatrix(fileData, takeSpearman = false) {
   const method = takeSpearman ? "spearman" : "pearson";
   const data = fileData.data.map((row, index) => [fileData.firstColumn[index], ...row]);
 

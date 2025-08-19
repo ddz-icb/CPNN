@@ -148,3 +148,8 @@ export function getCommunityData(graphData) {
 
   return [idToComm, commToSize];
 }
+
+export function sortGraph(graph) {
+  graph.nodes.sort((a, b) => a.id.localeCompare(b.id));
+  graph.links.sort((a, b) => a.source.localeCompare(b.source) || a.target.localeCompare(b.target));
+}

@@ -50,3 +50,32 @@ export function verifyGraph(graph) {
     }
   }
 }
+
+export function isSymmMatrix(fileData) {
+  const { header, data } = fileData;
+  if (!header?.length || header.length !== data.length) {
+    return false;
+  }
+  const firstColumn = data.map((row) => row[0]);
+  return header.every((val, i) => val === firstColumn[i]);
+}
+
+export function isTableData(fileData) {
+  const { header, data, firstColumn } = fileData;
+  if (firstColumn.length < 1) return false;
+
+  const columnCount = header.length;
+  if (columnCount < 1 || !data.every((r) => r.length === columnCount)) {
+    return false;
+  }
+
+  if (!header.every((col) => typeof col === "string" && col.trim() !== "")) {
+    return false;
+  }
+
+  if (!firstColumn.every((rowName) => typeof rowName === "string" && rowName.trim() !== "")) {
+    return false;
+  }
+
+  return true;
+}
