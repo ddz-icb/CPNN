@@ -42,18 +42,15 @@ export function parseMapping(content) {
   for (let row of fileData.data) {
     const uniProtId = row["UniProt-ID"];
     const pathwayNames = row["Pathway Name"];
-    const reactomeIds = row["Reactome-ID"] || [];
 
     nodeMapping[uniProtId] = {
       pathwayNames: pathwayNames,
-      reactomeIds: reactomeIds,
     };
 
     for (let i = 0; i < pathwayNames.length; i++) {
       if (!groupMapping[pathwayNames[i]]) {
         groupMapping[pathwayNames[i]] = {
           name: pathwayNames[i],
-          reactomeId: reactomeIds[i],
         };
       }
     }

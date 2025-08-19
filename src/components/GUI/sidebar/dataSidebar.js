@@ -280,8 +280,8 @@ function UploadGraph() {
 function UploadMapping() {
   const mappingRef = useRef(null);
 
-  const mappingFormat = "Uniprot-ID, Pathway Name, Reactome-ID";
-  const mappingExample = "O60306,mRNA Splicing,R-HSA-72172";
+  const mappingFormat = "Uniprot-ID, Pathway Name";
+  const mappingExample = "O60306,mRNA Splicing";
 
   return (
     <ButtonPopup

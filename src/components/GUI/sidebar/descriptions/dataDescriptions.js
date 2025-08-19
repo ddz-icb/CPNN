@@ -54,9 +54,8 @@ export const uploadPathwayMappingDescription = (
     associated with one or more pathways. Nodes belonging to the same pathway will then be colored accordingly.
     <br />
     <br />
-    Pathway mappings can be uploaded in CSV or TSV format. These mappings must contain a "UniProt-ID" and a "Pathway Name" column. If supplied with a
-    "Reactome-ID" column, links to reactome.org with the corresponding pathway will be embedded, when klicking on nodes. To better understand the
-    required format, you can download the example mapping below.
+    Pathway mappings can be uploaded in CSV or TSV format. These mappings must contain a "UniProt-ID" and a "Pathway Name" column. To better
+    understand the required format, you can download the example mapping below.
   </div>
 );
 
