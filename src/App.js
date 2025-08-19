@@ -29,6 +29,7 @@ import { RenderControl } from "./components/application_service/controllers/rend
 import { PhysicsControl } from "./components/application_service/controllers/physicsControl.js";
 import { DownloadControl } from "./components/application_service/controllers/downloadControl.js";
 import { FilterControl } from "./components/application_service/controllers/filterControl.js";
+import { AppearanceControl } from "./components/application_service/controllers/appearanceControl.js";
 
 function App() {
   const { setFilter, setAllFilter } = useFilter();
@@ -100,6 +101,7 @@ function App() {
       <PhysicsControl />
       <DownloadControl />
       <FilterControl />
+      <AppearanceControl />
       <main className={theme.name}>
         <HeaderBar />
         <Sidebar />

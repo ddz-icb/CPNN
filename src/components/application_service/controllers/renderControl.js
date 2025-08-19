@@ -231,7 +231,6 @@ export function RenderControl() {
   return (
     <>
       <Tooltips />
-      <AppearanceControl />
       <div ref={containerRef} className="container" />
     </>
   );

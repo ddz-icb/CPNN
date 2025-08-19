@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import log from "../../adapters/logging/logger.js";
 
 import { changeCircleBorderColor, changeNodeColors, changeNodeLabelColor, redraw } from "../../domain_service/canvas_drawing/draw.js";
-import { usePhysics } from "../../adapters/state/physicsState.js";
 import { useAppearance } from "../../adapters/state/appearanceState.js";
 import { useGraphState } from "../../adapters/state/graphState.js";
 
