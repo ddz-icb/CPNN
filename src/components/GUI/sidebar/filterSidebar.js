@@ -130,7 +130,7 @@ export function FilterSidebar() {
         setValue={(value) => setFilter("linkThreshold", value)}
         setValueText={(value) => setFilter("linkThresholdText", value)}
         fallbackValue={linkThresholdInit}
-        min={Math.floor((graphMetrics.linkWeightMin / 0.05) * 0.05) - 0.05}
+        min={Math.max(Math.floor((graphMetrics.linkWeightMin / 0.05) * 0.05) - 0.05, 0)}
         max={Math.min(Math.ceil((graphMetrics.linkWeightMax / 0.05) * 0.05) + 0.05, 1)}
         step={0.05}
         text={"Link Weight Threshold"}
