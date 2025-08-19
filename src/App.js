@@ -14,9 +14,10 @@ import { useGraphLoader } from "./components/application_service/controllers/use
 import { useGraphSetup } from "./components/application_service/controllers/useGraphSetup.js";
 
 function App() {
+  const { theme } = useTheme();
+
   useGraphLoader();
   useGraphSetup();
-  const { theme } = useTheme();
 
   return (
     <>
