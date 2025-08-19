@@ -48,7 +48,6 @@ function App() {
       graph.data = filterMergeProteins(graph.data, graphFlags.mergeProteins);
       graph.data = applyNodeMapping(graph.data, mappingState.mapping?.data);
       setGraphState("originGraph", graph);
-      setGraphState("activeGraphNames", graphState.activeGraphNames);
       setGraphFlags("isPreprocessed", false);
       resetService.resetSimulation();
     }

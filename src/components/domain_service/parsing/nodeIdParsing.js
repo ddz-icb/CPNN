@@ -1,24 +1,24 @@
-export function getProtIdsWithIsoformEntry(entry) {
+export function getNodeIdAndIsoformEntry(entry) {
   return entry.split("_")[0].trim();
 }
 
-export function getIdsSeparateEntries(nodeId) {
+export function getNodeIdEntries(nodeId) {
   return nodeId.split(";").map((entry) => entry.trim());
 }
 
-export function getPhosphositesProtIdEntry(entry) {
+export function getPhosphositesNodeIdEntry(entry) {
   return entry
     .split("_")[2]
     .split(", ")
     .map((entry) => entry.trim());
 }
 
-export function getProtIdAndNameEntry(entry) {
+export function getNodeIdAndNameEntry(entry) {
   const parts = entry.split("_");
   return parts.slice(0, 2).join("_");
 }
 
-export function getProtIdsWithIsoform(nodeId) {
+export function getNodeIdsAndIsoform(nodeId) {
   return nodeId.split(";").map((id) => id.split("_")[0].trim());
 }
 
@@ -26,7 +26,7 @@ export function getNodeIdName(nodeId) {
   return nodeId.split("_")[1];
 }
 
-export function parseEntries(entries) {
+export function parseNodeIdEntries(entries) {
   if (!entries?.length) return {};
 
   const protIdNoIsoform = entries[0].split("_")[0]?.split("-")[0] || "";

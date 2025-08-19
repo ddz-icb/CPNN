@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTooltipSettings } from "../../adapters/state/tooltipState.js";
+import { getNodeIdName } from "../../domain_service/parsing/nodeIdParsing.js";
 
 export function HoverTooltip() {
   const { tooltipSettings } = useTooltipSettings();
@@ -8,7 +9,7 @@ export function HoverTooltip() {
 
   useEffect(() => {
     if (tooltipSettings.hoverTooltipData) {
-      setGene(tooltipSettings.hoverTooltipData.node.split("_")[1] || "");
+      setGene(getNodeIdName(tooltipSettings.hoverTooltipData.node));
     }
   }, [tooltipSettings.hoverTooltipData]);
 

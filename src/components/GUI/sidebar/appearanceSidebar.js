@@ -122,7 +122,7 @@ function ActiveLinkColorscheme() {
 }
 
 function UploadedColorschemes() {
-  const { colorschemeState, setColorschemeState } = useColorschemeState();
+  const { colorschemeState } = useColorschemeState();
 
   const [selectColorschemePopup, setSelectSchemePopup] = useState(false);
   const [selectedColorschemeName, setSelectedScheme] = useState(null);

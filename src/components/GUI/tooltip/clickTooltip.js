@@ -9,7 +9,7 @@ import { useContainer } from "../../adapters/state/containerState.js";
 import { useTooltipSettings } from "../../adapters/state/tooltipState.js";
 import { useMappingState } from "../../adapters/state/mappingState.js";
 import { useTheme } from "../../adapters/state/themeState.js";
-import { parseEntries } from "../../domain_service/parsing/nodeIdParsing.js";
+import { getNodeIdEntries, parseNodeIdEntries } from "../../domain_service/parsing/nodeIdParsing.js";
 import { Tooltip } from "../reusable_components/tooltipComponents.js";
 
 const fullNameInit = "";
@@ -56,8 +56,8 @@ export function ClickTooltip() {
 
     const fetchData = async () => {
       try {
-        const entries = tooltipSettings.clickTooltipData.node.split(";");
-        const { protIdNoIsoform, gene, hasPhosphosites, isoforms } = parseEntries(entries);
+        const entries = getNodeIdEntries(tooltipSettings.clickTooltipData.node);
+        const { protIdNoIsoform, gene, hasPhosphosites, isoforms } = parseNodeIdEntries(entries);
         setProtIdNoIsoform(protIdNoIsoform);
         setGene(gene);
         setHasPhosphosites(hasPhosphosites);

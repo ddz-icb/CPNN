@@ -1,5 +1,14 @@
 import UnionFind from "union-find";
-import { getIdsSeparateEntries, getPhosphositesProtIdEntry, getProtIdAndNameEntry, getProtIdsWithIsoform } from "../parsing/nodeIdParsing.js";
+import {
+  getIdsSeparateEntries,
+  getNodeIdAndNameEntry,
+  getNodeIdEntries,
+  getNodeIdsAndIsoform,
+  getPhosphositesNodeIdEntry,
+  getPhosphositesProtIdEntry,
+  getProtIdAndNameEntry,
+  getProtIdsWithIsoform,
+} from "../parsing/nodeIdParsing.js";
 import { getAdjacentData, getComponentData } from "./graphUtils.js";
 
 export function filterByThreshold(graphData, linkThreshold) {
@@ -315,7 +324,7 @@ export function filterMergeProteins(graphData, mergeProteins) {
 
   const protIdToNodeMap = new Map();
   graphData.nodes.forEach((node) => {
-    const protIds = getProtIdsWithIsoform(node.id);
+    const protIds = getNodeIdsAndIsoform(node.id);
     protIds.forEach((protId) => {
       if (!protIdToNodeMap.has(protId)) {
         protIdToNodeMap.set(protId, []);
@@ -358,10 +367,10 @@ export function filterMergeProteins(graphData, mergeProteins) {
 
       node.groups.forEach((g) => combinedGroups.add(g));
 
-      const entries = getIdsSeparateEntries(node.id);
+      const entries = getNodeIdEntries(node.id);
       entries.forEach((entry) => {
-        const protIdName = getProtIdAndNameEntry(entry);
-        const phosphosites = getPhosphositesProtIdEntry(entry);
+        const protIdName = getNodeIdAndNameEntry(entry);
+        const phosphosites = getPhosphositesNodeIdEntry(entry);
 
         if (!protIdToPhosphositesMap.has(protIdName)) {
           protIdToPhosphositesMap.set(protIdName, new Set());
