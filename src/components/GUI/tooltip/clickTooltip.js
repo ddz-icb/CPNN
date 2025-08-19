@@ -128,14 +128,7 @@ export function ClickTooltip() {
       : [];
 
   return (
-    <div
-      className="tooltip tooltip-click"
-      style={{
-        ...style,
-        opacity: tooltipSettings.isClickTooltipActive ? 0.95 : 0,
-        visibility: tooltipSettings.isClickTooltipActive ? "visible" : "hidden",
-      }}
-    >
+    <div className="tooltip tooltip-click" style={style}>
       <div className="tooltip-content">
         <div className="tooltip-header">
           <p>{gene}</p>
