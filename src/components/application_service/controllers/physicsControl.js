@@ -18,11 +18,13 @@ import { useContainer } from "../../adapters/state/containerState.js";
 import { useGraphState } from "../../adapters/state/graphState.js";
 import { useRenderState } from "../../adapters/state/canvasState.js";
 import { errorService } from "../services/errorService.js";
+import { useGraphFlags } from "../../adapters/state/graphFlagsState.js";
 
 export function PhysicsControl() {
   const { physics, setPhysics } = usePhysics();
   const { container } = useContainer();
   const { graphState } = useGraphState();
+  const { graphFlags } = useGraphFlags();
   const { renderState } = useRenderState();
 
   useEffect(() => {
@@ -81,7 +83,7 @@ export function PhysicsControl() {
   }, [physics.gravityStrength, container.width, container.height]);
 
   useEffect(() => {
-    if (!renderState.simulation) return;
+    if (!renderState.simulation || !graphState.graph || !graphFlags.filteredAfterStart) return;
     log.info("Changing component strength", physics.componentStrength);
 
     try {
@@ -99,7 +101,7 @@ export function PhysicsControl() {
       errorService.setError(error.message);
       log.error("Error updating component force:", error);
     }
-  }, [physics.componentStrength]);
+  }, [physics.componentStrength, graphState.graph]);
 
   useEffect(() => {
     if (!renderState.simulation) return;
@@ -165,7 +167,7 @@ export function PhysicsControl() {
   }, [physics.checkBorder, physics.borderHeight, physics.borderWidth, container.width, container.height]);
 
   useEffect(() => {
-    if (!renderState.simulation) return;
+    if (!renderState.simulation || !graphState.graph || !graphFlags.filteredAfterStart) return;
     log.info("Changing circular layout force", physics.circleLayout);
 
     try {
@@ -189,10 +191,10 @@ export function PhysicsControl() {
       errorService.setError(error.message);
       log.error("Error updating circular layout:", error);
     }
-  }, [physics.circleLayout]);
+  }, [physics.circleLayout, graphState.graph]);
 
   useEffect(() => {
-    if (!renderState.simulation) return;
+    if (!renderState.simulation || !graphState.graph || !graphFlags.filteredAfterStart) return;
     log.info("Changing community strength", physics.communityForceStrength);
 
     try {
@@ -210,5 +212,5 @@ export function PhysicsControl() {
       errorService.setError(error.message);
       log.error("Error updating community force:", error);
     }
-  }, [physics.communityForceStrength]);
+  }, [physics.communityForceStrength, graphState.graph]);
 }
