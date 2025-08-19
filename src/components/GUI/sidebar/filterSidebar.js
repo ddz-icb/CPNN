@@ -119,7 +119,7 @@ export function FilterSidebar() {
       </div>
       <SwitchBlock
         value={graphFlags.mergeProteins}
-        setValue={() => setGraphState("mergeProteins", !graphFlags.mergeProteins)}
+        setValue={() => setGraphFlags("mergeProteins", !graphFlags.mergeProteins)}
         text={"Merge Proteins"}
         infoHeading={"Merge nodes of same protein"}
         infoDescription={mergeProteinsDescription}
