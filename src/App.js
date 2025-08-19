@@ -10,7 +10,6 @@ import {
   getNodeAttribsToColorIndices,
 } from "./components/domain_service/graph_calculations/graphUtils.js";
 
-import { Error } from "./components/gui/error.js";
 import { linkThresholdInit } from "./components/adapters/state/filterState.js";
 import { useFilter } from "./components/adapters/state/filterState.js";
 import { useError } from "./components/adapters/state/errorState.js";
@@ -30,16 +29,17 @@ import { PhysicsControl } from "./components/application_service/controllers/phy
 import { DownloadControl } from "./components/application_service/controllers/downloadControl.js";
 import { FilterControl } from "./components/application_service/controllers/filterControl.js";
 import { AppearanceControl } from "./components/application_service/controllers/appearanceControl.js";
+import { Error } from "./components/gui/error/error.js";
 
 function App() {
-  const { setFilter, setAllFilter } = useFilter();
-  const { theme, setTheme } = useTheme();
-  const { error, setError, clearError } = useError();
-  const { colorschemeState, setColorschemeState } = useColorschemeState();
-  const { mappingState, setMappingState } = useMappingState();
+  const { setFilter } = useFilter();
+  const { theme } = useTheme();
+  const { setError } = useError();
+  const { setColorschemeState } = useColorschemeState();
+  const { mappingState } = useMappingState();
   const { graphState, setGraphState } = useGraphState();
   const { graphFlags, setGraphFlags } = useGraphFlags();
-  const { graphMetrics, setGraphMetrics } = useGraphMetrics();
+  const { setGraphMetrics } = useGraphMetrics();
 
   // reloads graph //
   useEffect(() => {

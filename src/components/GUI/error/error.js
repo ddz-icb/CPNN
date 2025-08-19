@@ -1,8 +1,8 @@
-import { ReactComponent as XIcon } from "../../icons/x.svg";
-import { useError } from "../adapters/state/errorState.js";
+import { ReactComponent as XIcon } from "../../../icons/x.svg";
+import { useError } from "../../adapters/state/errorState.js";
 
 export function Error() {
-  const { error, setError, clearError } = useError();
+  const { error, clearError } = useError();
 
   return (
     <>

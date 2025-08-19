@@ -1,13 +1,13 @@
-import log from "../adapters/logging/logger.js";
+import log from "../../adapters/logging/logger.js";
 import axios from "axios";
 import { useState, useEffect, useRef } from "react";
-import { ReactComponent as XIcon } from "../../icons/x.svg";
-import { getDescriptionUniprotData, getFullNameUniprotData, getPdbIdUniprotData } from "../domain_service/parsing/uniprotDataParsing.js";
+import { ReactComponent as XIcon } from "../../../icons/x.svg";
+import { getDescriptionUniprotData, getFullNameUniprotData, getPdbIdUniprotData } from "../../domain_service/parsing/uniprotDataParsing.js";
 import * as $3Dmol from "3dmol/build/3Dmol.js";
-import { useContainer } from "../adapters/state/containerState.js";
-import { useTooltipSettings } from "../adapters/state/tooltipState.js";
-import { useMappingState } from "../adapters/state/mappingState.js";
-import { useTheme } from "../adapters/state/themeState.js";
+import { useContainer } from "../../adapters/state/containerState.js";
+import { useTooltipSettings } from "../../adapters/state/tooltipState.js";
+import { useMappingState } from "../../adapters/state/mappingState.js";
+import { useTheme } from "../../adapters/state/themeState.js";
 
 export function Tooltips({}) {
   const { tooltipSettings } = useTooltipSettings();
@@ -360,6 +360,7 @@ export function HoverTooltip({}) {
   );
 }
 
+// this function should not be here
 export function initTooltips(circle, node, setTooltipSettings) {
   circle.on("mouseover", (mouseData) => {
     setTooltipSettings("hoverTooltipData", {

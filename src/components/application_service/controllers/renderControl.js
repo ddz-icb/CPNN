@@ -3,7 +3,7 @@ import log from "../../adapters/logging/logger.js";
 import * as PIXI from "pixi.js";
 import { useRef, useEffect, useState } from "react";
 import { handleResize, initDragAndZoom } from "../../domain_service/canvas_interaction/interactiveCanvas.js";
-import { initTooltips, Tooltips } from "../../gui/tooltipCanvas.js";
+import { initTooltips, Tooltips } from "../../gui/tooltip/tooltipCanvas.js";
 import { radius, drawCircle, getTextStyle, getBitMapStyle, redraw, render, getNodeLabelOffsetY } from "../../domain_service/canvas_drawing/draw.js";
 import { gravityStrengthInit, linkLengthInit, nodeRepulsionStrengthInit } from "../../adapters/state/physicsState.js";
 import { useAppearance } from "../../adapters/state/appearanceState.js";
