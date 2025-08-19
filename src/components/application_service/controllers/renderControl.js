@@ -96,6 +96,7 @@ export function RenderControl() {
 
   // set stage //
   useEffect(() => {
+    console.log("AÖSDLKFJASÖLDKFJAÖLSKDJFÖALKSDF", graphState.graph);
     if (
       pixiState.circles ||
       !renderState.app ||

@@ -41,19 +41,18 @@ function App() {
   const { graphFlags, setGraphFlags } = useGraphFlags();
   const { setGraphMetrics } = useGraphMetrics();
 
-  // reloads graph //
+  // sets origin graph //
   useEffect(() => {
+    if (!graphState.activeGraphNames) return;
+    log.info("Reloading graph");
+
     async function reloadGraph() {
       let graph = await graphService.getJoinedGraph(graphState.activeGraphNames);
       graph.data = filterMergeProteins(graph.data, graphFlags.mergeProteins);
       graph.data = applyNodeMapping(graph.data, mappingState.mapping?.data);
       setGraphState("originGraph", graph);
-      setGraphFlags("isPreprocessed", false);
       resetService.resetSimulation();
     }
-
-    if (!graphState.activeGraphNames) return;
-    log.info("Reloading graph");
 
     try {
       reloadGraph();
@@ -63,14 +62,14 @@ function App() {
     }
   }, [graphFlags.mergeProteins, mappingState.mapping, graphState.activeGraphNames]);
 
-  // forwards graph to forceGraph component //
+  // sets working graph //
   useEffect(() => {
     if (!graphState.originGraph || !graphState.activeGraphNames || graphFlags.isPreprocessed) return;
     log.info("Modifying graph and forwarding it to the simulation component");
 
-    let newGraph = structuredClone(graphState.originGraph);
+    const graph = structuredClone(graphState.originGraph);
 
-    const { minWeight, maxWeight } = getLinkWeightMinMax(newGraph.data);
+    const { minWeight, maxWeight } = getLinkWeightMinMax(graph.data);
     if (minWeight != Infinity) {
       setGraphMetrics("linkWeightMin", minWeight);
     }
@@ -83,16 +82,15 @@ function App() {
       setFilter("linkThresholdText", minWeight);
     }
 
-    const nodeAttribsToColorIndices = getNodeAttribsToColorIndices(newGraph.data);
+    const nodeAttribsToColorIndices = getNodeAttribsToColorIndices(graph.data);
     setColorschemeState("nodeAttribsToColorIndices", nodeAttribsToColorIndices);
 
-    const linkAttribsToColorIndices = getLinkAttribsToColorIndices(newGraph.data);
+    const linkAttribsToColorIndices = getLinkAttribsToColorIndices(graph.data);
     setColorschemeState("linkAttribsToColorIndices", linkAttribsToColorIndices);
 
-    setGraphState("originGraph", newGraph);
-    setGraphState("graph", newGraph);
+    setGraphState("graph", graph);
     setGraphFlags("isPreprocessed", true);
-  }, [graphState.originGraph, graphState.activeGraphNames]);
+  }, [graphState.originGraph]);
 
   return (
     <>

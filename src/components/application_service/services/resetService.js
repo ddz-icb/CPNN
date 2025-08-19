@@ -5,17 +5,22 @@ import { filterInit, useFilter } from "../../adapters/state/filterState.js";
 import { physicsInit, usePhysics } from "../../adapters/state/physicsState.js";
 import { downloadInit, useDownload } from "../../adapters/state/downloadState.js";
 import { useReset } from "../../adapters/state/resetState.js";
+import { filteredAfterStartInit, isPreprocessedInit, useGraphFlags } from "../../adapters/state/graphFlagsState.js";
+import { graphMetricsInit, useGraphMetrics } from "../../adapters/state/graphMetricsState.js";
 
 export const resetService = {
   resetSimulation() {
     if (!graphService.getActiveGraphNames()) return;
     log.info("Resetting the simulation");
 
-    errorService.clearError();
-
     useFilter.getState().setAllFilter(filterInit);
     useDownload.getState().setAllDownload(downloadInit);
     usePhysics.getState().setAllPhysics(physicsInit);
+
+    useGraphMetrics.getState().setAllGraphMetrics(graphMetricsInit);
+
+    useGraphFlags.getState().setGraphFlags("isPreprocessed", isPreprocessedInit);
+    useGraphFlags.getState().setGraphFlags("filteredAfterStart", filteredAfterStartInit);
 
     errorService.clearError();
     this.setReset(true);
