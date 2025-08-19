@@ -18,7 +18,7 @@ export const graphService = {
       log.error("Error setting init graph");
     }
   },
-  async handleCreateGraph(event, takeAbs, minCorrForEdge, minCompSizeForNode, maxCompSizeForNode, takeSpearmanCoefficient, mergeProteins) {
+  async handleCreateGraph(event, createGraphSettings) {
     const file = event?.target?.files?.[0];
     if (!file) {
       errorService.setError("The input is not a valid file");
@@ -28,7 +28,7 @@ export const graphService = {
     log.info("Adding new graph file");
 
     try {
-      const graph = await createGraph(file, takeAbs, minCorrForEdge, minCompSizeForNode, maxCompSizeForNode, takeSpearmanCoefficient, mergeProteins);
+      const graph = await createGraph(file, createGraphSettings);
 
       this.setUploadedGraphNames([...(this.getUploadedGraphNames() || []), graph.name]);
     } catch (error) {

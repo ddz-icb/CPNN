@@ -11,8 +11,8 @@ export async function getGraph(filename) {
   return graph;
 }
 
-export async function createGraph(file, takeAbs, minCorrForEdge, minCompSizeForNode, maxCompSizeForNode, takeSpearmanCoefficient) {
-  const graph = await parseGraphFile(file, takeAbs, minCorrForEdge, minCompSizeForNode, maxCompSizeForNode, takeSpearmanCoefficient);
+export async function createGraph(file, createGraphSettings) {
+  const graph = await parseGraphFile(file, createGraphSettings);
   await createGraphDB(graph);
   return graph;
 }

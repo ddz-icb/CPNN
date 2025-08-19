@@ -118,15 +118,15 @@ function UploadGraph() {
 
   const [takeAbs, setTakeAbs] = useState(false);
   const [mergeProteins, setMergeProtein] = useState(false);
-  const [spearmanCoefficient, setSpearmanCoefficient] = useState(false);
+  const [takeSpearman, setTakeSpearman] = useState(false);
 
-  const [minLinkCorr, setMinLinkCorr] = useState(0);
-  const [minLinkCorrText, setMinLinkCorrText] = useState(0);
+  const [minEdgeCorr, setMinEdgeCorr] = useState(0);
+  const [minEdgeCorrText, setMinEdgeCorrText] = useState(0);
 
-  const [minCompSizeForNode, setMinCompSize] = useState(2);
+  const [minCompSize, setMinCompSize] = useState(2);
   const [minCompSizeText, setMinCompSizeText] = useState(2);
 
-  const [maxCompSizeForNode, setMaxCompSize] = useState("");
+  const [maxCompSize, setMaxCompSize] = useState("");
   const [maxCompSizeText, setMaxCompSizeText] = useState("");
 
   const [containsSites, setContainsSites] = useState(false);
@@ -181,8 +181,8 @@ function UploadGraph() {
       </div>
       <SwitchBlock
         variant="popup"
-        value={spearmanCoefficient}
-        setValue={() => setSpearmanCoefficient(!spearmanCoefficient)}
+        value={takeSpearman}
+        setValue={() => setTakeSpearman(!takeSpearman)}
         text={"Calculate spearman correlation"}
         infoHeading={"Use spearman correlation"}
         infoDescription={spearmanCoefficientDescription}
@@ -206,10 +206,10 @@ function UploadGraph() {
       <div className="popup-block"></div>
       <SliderBlock
         variant="popup"
-        value={minLinkCorr}
-        valueText={minLinkCorrText}
-        setValue={(value) => setMinLinkCorr(value)}
-        setValueText={(value) => setMinLinkCorrText(value)}
+        value={minEdgeCorr}
+        valueText={minEdgeCorrText}
+        setValue={(value) => setMinEdgeCorr(value)}
+        setValueText={(value) => setMinEdgeCorrText(value)}
         fallbackValue={0}
         min={0}
         max={1}
@@ -260,7 +260,15 @@ function UploadGraph() {
           onClick={() => graphFileRef.current.click()}
           linkRef={graphFileRef}
           onChange={(event) => {
-            graphService.handleCreateGraph(event, takeAbs, minLinkCorr, minCompSizeForNode, maxCompSizeForNode, spearmanCoefficient, mergeProteins);
+            const createGraphSettings = {
+              takeAbs: takeAbs,
+              minEdgeCorr: minEdgeCorr,
+              minCompSize: minCompSize,
+              maxCompSize: maxCompSize,
+              takeSpearman: takeSpearman,
+              mergeProteins: mergeProteins,
+            };
+            graphService.handleCreateGraph(event, createGraphSettings);
             event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
           }}
         />

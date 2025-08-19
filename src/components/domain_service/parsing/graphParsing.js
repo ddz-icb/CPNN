@@ -5,23 +5,14 @@ import { expectedPhysicTypes } from "../../adapters/state/physicsState.js";
 import { getFileAsText } from "./fileParsing.js";
 import { filterByThreshold, filterMaxCompSize, filterMinCompSize, filterNodesExist } from "../graph_calculations/filterGraph.js";
 
-export async function parseGraphFile(file, takeAbs, minCorrForEdge, minCompSizeForNode, maxCompSizeForNode, takeSpearmanCoefficient, mergeProteins) {
+export async function parseGraphFile(file, createGraphSettings) {
   if (!file) {
     throw new Error(`No file found with the name ${file}.`);
   }
 
   try {
     const fileContent = await getFileAsText(file);
-    const graphData = await parseGraph(
-      file.name,
-      fileContent,
-      takeAbs,
-      minCorrForEdge,
-      minCompSizeForNode,
-      maxCompSizeForNode,
-      takeSpearmanCoefficient,
-      mergeProteins
-    );
+    const graphData = await parseGraph(file.name, fileContent, createGraphSettings);
     const graph = { name: file.name, data: graphData };
     verifyGraph(graph);
     return graph;
@@ -30,7 +21,14 @@ export async function parseGraphFile(file, takeAbs, minCorrForEdge, minCompSizeF
   }
 }
 
-async function parseGraph(name, content, takeAbs, minCorrForEdge, minCompSizeForNode, maxCompSizeForNode, takeSpearmanCoefficient, mergeProteins) {
+async function parseGraph(name, content, createGraphSettings) {
+  const takeAbs = createGraphSettings.takeAbs;
+  const minEdgeCorr = createGraphSettings.minEdgeCorr;
+  const minCompSize = createGraphSettings.minCompSize;
+  const maxCompSize = createGraphSettings.maxCompSize;
+  const takeSpearman = createGraphSettings.takeSpearman;
+  const mergeProteins = createGraphSettings.mergeProteins;
+
   const fileExtension = name.split(".").pop();
 
   let graphData = null;
@@ -47,14 +45,14 @@ async function parseGraph(name, content, takeAbs, minCorrForEdge, minCompSizeFor
     // if data is raw, convert to matrix
     if (!isSymmMatrix(content)) {
       if (!isValidRawTableData(content)) return null;
-      log.info("Converting data into symmetrical matrix. Used correlation coefficient:", takeSpearmanCoefficient ? "Spearman" : "Pearson");
+      log.info("Converting data into symmetrical matrix. Used correlation coefficient:", takeSpearman ? "Spearman" : "Pearson");
 
       // add fileData.firstColumn as the first column of fileData.data; up until this point fileData.data is only numbers
       fileData.data = fileData.data.map((row, index) => {
         return [fileData.firstColumn[index], ...row];
       });
 
-      const corrMatrix = await convertToCorrMatrix(fileData.data, takeSpearmanCoefficient);
+      const corrMatrix = await convertToCorrMatrix(fileData.data, takeSpearman);
 
       fileData = { header: corrMatrix.index, data: corrMatrix.data };
     }
@@ -84,9 +82,9 @@ async function parseGraph(name, content, takeAbs, minCorrForEdge, minCompSizeFor
     throw new Error(`File format not recognized`);
   }
 
-  graphData = filterByThreshold(graphData, minCorrForEdge);
-  graphData = filterMinCompSize(graphData, minCompSizeForNode);
-  graphData = filterMaxCompSize(graphData, maxCompSizeForNode);
+  graphData = filterByThreshold(graphData, minEdgeCorr);
+  graphData = filterMinCompSize(graphData, minCompSize);
+  graphData = filterMaxCompSize(graphData, maxCompSize);
   graphData = filterNodesExist(graphData);
 
   if (takeAbs) {
