@@ -4,15 +4,13 @@ import { useState, useEffect, useRef } from "react";
 import { ReactComponent as XIcon } from "../../icons/x.svg";
 import { getDescriptionUniprotData, getFullNameUniprotData, getPdbIdUniprotData } from "../domain_service/parsing/uniprotDataParsing.js";
 import * as $3Dmol from "3dmol/build/3Dmol.js";
-import { useAppearance } from "../adapters/state/appearanceState.js";
 import { useContainer } from "../adapters/state/containerState.js";
 import { useTooltipSettings } from "../adapters/state/tooltipState.js";
-import { mappingService } from "../application_service/services/mappingService.js";
 import { useMappingState } from "../adapters/state/mappingState.js";
 import { useTheme } from "../adapters/state/themeState.js";
 
 export function Tooltips({}) {
-  const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
+  const { tooltipSettings } = useTooltipSettings();
 
   return (
     <>
@@ -23,10 +21,9 @@ export function Tooltips({}) {
 }
 
 export function ClickTooltip() {
-  const { appearance, setAppearance } = useAppearance();
-  const { theme, setTheme } = useTheme();
-  const { container, setContainer } = useContainer();
-  const { mappingState, setMappingState } = useMappingState();
+  const { theme } = useTheme();
+  const { container } = useContainer();
+  const { mappingState } = useMappingState();
   const mappingData = mappingState.mapping?.data;
 
   const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
