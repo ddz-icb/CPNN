@@ -97,11 +97,11 @@ function App() {
 
   return (
     <>
-      <InitControl />
-      <PhysicsControl />
+      <AppearanceControl />
       <DownloadControl />
       <FilterControl />
-      <AppearanceControl />
+      <PhysicsControl />
+      <InitControl />
       <main className={theme.name}>
         <HeaderBar />
         <Sidebar />

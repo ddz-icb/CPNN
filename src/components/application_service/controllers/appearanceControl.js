@@ -9,6 +9,7 @@ import { useColorschemeState } from "../../adapters/state/colorschemeState.js";
 import { useTheme } from "../../adapters/state/themeState.js";
 import { usePixiState } from "../../adapters/state/pixiState.js";
 import { useRenderState } from "../../adapters/state/canvasState.js";
+import { errorService } from "../services/errorService.js";
 
 export function AppearanceControl() {
   const { appearance } = useAppearance();
@@ -33,7 +34,19 @@ export function AppearanceControl() {
       return;
     log.info("Updating redraw function");
 
-    renderState.simulation.on("tick.redraw", () =>
+    try {
+      renderState.simulation.on("tick.redraw", () =>
+        redraw(
+          graphState.graph.data,
+          pixiState.lines,
+          appearance.linkWidth,
+          colorschemeState.linkColorscheme,
+          colorschemeState.linkAttribsToColorIndices,
+          appearance.showNodeLabels,
+          pixiState.nodeMap,
+          renderState.app
+        )
+      );
       redraw(
         graphState.graph.data,
         pixiState.lines,
@@ -43,18 +56,11 @@ export function AppearanceControl() {
         appearance.showNodeLabels,
         pixiState.nodeMap,
         renderState.app
-      )
-    );
-    redraw(
-      graphState.graph.data,
-      pixiState.lines,
-      appearance.linkWidth,
-      colorschemeState.linkColorscheme,
-      colorschemeState.linkAttribsToColorIndices,
-      appearance.showNodeLabels,
-      pixiState.nodeMap,
-      renderState.app
-    );
+      );
+    } catch (error) {
+      errorService.setError(error.message);
+      log.error(error);
+    }
   }, [appearance.showNodeLabels, colorschemeState.linkColorscheme, colorschemeState.linkAttribsToColorIndices, appearance.linkWidth]);
 
   // enable/disable node labels
@@ -62,23 +68,33 @@ export function AppearanceControl() {
     if (!pixiState.circles) return;
     log.info("Enabling/Disabling node labels");
 
-    if (appearance.showNodeLabels == true) {
-      graphState.graph.data.nodes.forEach((n) => {
-        const { nodeLabel } = pixiState.nodeMap[n.id];
-        nodeLabel.visible = true;
-      });
-    } else {
-      pixiState.nodeLabels.children.forEach((label) => (label.visible = false));
+    try {
+      if (appearance.showNodeLabels === true) {
+        graphState.graph.data.nodes.forEach((n) => {
+          const { nodeLabel } = pixiState.nodeMap[n.id];
+          nodeLabel.visible = true;
+        });
+      } else {
+        pixiState.nodeLabels.children.forEach((label) => (label.visible = false));
+      }
+    } catch (error) {
+      errorService.setError(error.message);
+      log.error(error);
     }
   }, [appearance.showNodeLabels]);
 
-  // switch colors upon changing theme //
+  // switch colors upon changing theme
   useEffect(() => {
     if (!pixiState.circles) return;
     log.info("Switching colors", theme);
 
-    changeCircleBorderColor(pixiState.circles, theme.circleBorderColor);
-    changeNodeLabelColor(pixiState.nodeLabels, theme.textColor);
+    try {
+      changeCircleBorderColor(pixiState.circles, theme.circleBorderColor);
+      changeNodeLabelColor(pixiState.nodeLabels, theme.textColor);
+    } catch (error) {
+      errorService.setError(error.message);
+      log.error(error);
+    }
   }, [theme]);
 
   // switch node color scheme
@@ -86,12 +102,17 @@ export function AppearanceControl() {
     if (!pixiState.circles) return;
     log.info("Changing node color scheme");
 
-    changeNodeColors(
-      pixiState.circles,
-      pixiState.nodeMap,
-      theme.circleBorderColor,
-      colorschemeState.nodeColorscheme.data,
-      colorschemeState.nodeAttribsToColorIndices
-    );
+    try {
+      changeNodeColors(
+        pixiState.circles,
+        pixiState.nodeMap,
+        theme.circleBorderColor,
+        colorschemeState.nodeColorscheme.data,
+        colorschemeState.nodeAttribsToColorIndices
+      );
+    } catch (error) {
+      errorService.setError(error.message);
+      log.error(error);
+    }
   }, [colorschemeState.nodeColorscheme, colorschemeState.nodeAttribsToColorIndices]);
 }
