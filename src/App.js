@@ -67,7 +67,7 @@ function App() {
     if (!graphState.originGraph || !graphState.activeGraphNames || graphFlags.isPreprocessed) return;
     log.info("Forwarding graph to the render component");
 
-    const graph = structuredClone(graphState.originGraph);
+    const graph = graphState.originGraph;
 
     const { minWeight, maxWeight } = getLinkWeightMinMax(graph.data);
     if (minWeight != Infinity) {
