@@ -1,6 +1,7 @@
 import log from "../../adapters/logging/logger.js";
 import Papa from "papaparse";
 import { getFileAsText } from "./fileParsing.js";
+import { verifyMapping } from "../verification/mappingVerification.js";
 
 export async function parseMappingFile(file) {
   if (!file) {
@@ -67,22 +68,4 @@ export function parseMapping(content) {
   } catch (error) {
     throw new Error(`Erorr parsing pathway mapping.`);
   }
-}
-
-function verifyMapping(mapping) {
-  if (!mapping || typeof mapping !== "object") {
-    throw new Error("Error while parsing the mapping file. It does not have the right format.");
-  }
-
-  Object.entries(mapping.data.groupMapping).forEach(([key, node]) => {
-    if (!node.hasOwnProperty("name")) {
-      throw new Error(`${key} is missing the 'name' property.`);
-    }
-  });
-
-  Object.entries(mapping.data.nodeMapping).forEach(([key, node]) => {
-    if (!node.hasOwnProperty("pathwayNames")) {
-      throw new Error(`${key} is missing the 'Pathway Name' property.`);
-    }
-  });
 }
