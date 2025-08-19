@@ -14,7 +14,6 @@ import { useError } from "../../adapters/state/errorState.js";
 import { useReset } from "../../adapters/state/resetState.js";
 import { useColorschemeState } from "../../adapters/state/colorschemeState.js";
 import { getSimulation } from "../../domain_service/physics_calculations/getSimulation.js";
-import { AppearanceControl } from "./appearanceControl.js";
 import { useTheme } from "../../adapters/state/themeState.js";
 import { circlesInit, linesInit, nodeMapInit, usePixiState } from "../../adapters/state/pixiState.js";
 import { filteredAfterStartInit, useGraphFlags } from "../../adapters/state/graphFlagsState.js";
