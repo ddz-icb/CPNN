@@ -432,3 +432,16 @@ export function filterMergeProteins(graphData, mergeProteins) {
 
   return graphData;
 }
+
+export function filterTakeAbs(graphData, takeAbs) {
+  if (!takeAbs) {
+    graphData.links.forEach((link) => {
+      link.weights = link.weights.filter((w) => w > 0);
+    });
+  } else {
+    graphData.links.forEach((link) => {
+      link.weights = link.weights.map(Math.abs);
+    });
+  }
+  return graphData;
+}

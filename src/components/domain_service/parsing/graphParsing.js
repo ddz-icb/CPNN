@@ -2,26 +2,25 @@ import log from "../../adapters/logging/logger.js";
 import Papa from "papaparse";
 import axios from "axios";
 import { getFileAsText } from "./fileParsing.js";
-import { filterByThreshold, filterMaxCompSize, filterMinCompSize, filterNodesExist } from "../graph_calculations/filterGraph.js";
+import {
+  filterByThreshold,
+  filterMaxCompSize,
+  filterMergeProteins,
+  filterMinCompSize,
+  filterNodesExist,
+  filterTakeAbs,
+} from "../graph_calculations/filterGraph.js";
 import { verifyGraph } from "../verification/graphVerification.js";
 
-function applyFilters(graph, settings) {
-  graph = filterByThreshold(graph, settings.minEdgeCorr);
-  graph = filterMinCompSize(graph, settings.minCompSize);
-  graph = filterMaxCompSize(graph, settings.maxCompSize);
-  return filterNodesExist(graph);
-}
+function applyFilters(graphData, settings) {
+  let filteredGraph = graphData;
+  filteredGraph = filterByThreshold(filteredGraph, settings.minEdgeCorr);
+  filteredGraph = filterMinCompSize(filteredGraph, settings.minCompSize);
+  filteredGraph = filterMaxCompSize(filteredGraph, settings.maxCompSize);
+  filteredGraph = filterTakeAbs(filteredGraph, settings.takeAbs);
+  filteredGraph = filterMergeProteins(filteredGraph, settings.mergeProteins);
 
-function normalizeWeightsAbs(graph) {
-  graph.links.forEach((link) => {
-    link.weights = link.weights.map(Math.abs);
-  });
-}
-
-function filterPositiveWeights(graph) {
-  graph.links.forEach((link) => {
-    link.weights = link.weights.filter((w) => w > 0);
-  });
+  return filterNodesExist(filteredGraph);
 }
 
 function sortGraph(graph) {
@@ -29,7 +28,7 @@ function sortGraph(graph) {
   graph.links.sort((a, b) => a.source.localeCompare(b.source) || a.target.localeCompare(b.target));
 }
 
-// --- Hauptfunktionen für das Parsen und Verarbeiten ---
+////////////////////
 
 export async function parseGraphFile(file, settings) {
   if (!file) {
@@ -40,18 +39,6 @@ export async function parseGraphFile(file, settings) {
   let graphData = await parseByFileType(file.name, fileContent);
 
   graphData = applyFilters(graphData, settings);
-
-  // should be contained in filters
-  if (settings.takeAbs) {
-    normalizeWeightsAbs(graphData);
-  } else {
-    filterPositiveWeights(graphData);
-  }
-
-  // should be contained in filters
-  if (settings.mergeProteins) {
-    graphData = settings.mergeProteins(graphData);
-  }
 
   sortGraph(graphData);
 
@@ -69,47 +56,63 @@ export async function parseByFileType(name, content) {
     if (fileExtension === "json") {
       log.info("Parsing JSON graph");
       return JSON.parse(content);
-    } else if ((fileExtension === "csv" || fileExtension === "tsv") && isSymmMatrix(content)) {
-      log.info("Parsing symmetrical matrix (csv/tsv)");
-      const fileData = parseSVFile(content);
-      if (!fileData || !fileData.header) {
-        throw new Error("Symmetrical matrix has wrong format.");
-      }
-      return convertSymmMatrixToGraph(fileData, linkAttrib);
-    } else if ((fileExtension === "csv" || fileExtension === "tsv") && isValidRawTableData(content)) {
-      log.info("Parsing raw table data (csv/tsv)");
-      const fileData = parseSVFile(content);
-      if (!fileData || !fileData.header) {
-        throw new Error("Raw table data has wrong format.");
-      }
-      console.log("FILEDATAAAAAAA", fileData);
-      const corrMatrix = await convertToCorrMatrix(fileData);
-      return convertSymmMatrixToGraph(corrMatrix, linkAttrib);
-    } else {
-      throw new Error("File has an unknown type or format.");
     }
+
+    const parsedData = parseSVFile(content);
+    if (!parsedData || !parsedData.header) {
+      throw new Error("CSV/TSV file has a wrong or empty format.");
+    }
+
+    if (isSymmetricMatrix(content)) {
+      log.info("Parsing symmetrical matrix (csv/tsv)");
+      return convertSymmetricMatrixToGraph(parsedData, linkAttrib);
+    }
+
+    if (isValidRawTableData(content)) {
+      log.info("Parsing raw table data (csv/tsv)");
+      const corrMatrix = await convertToCorrMatrix(parsedData);
+      return convertSymmetricMatrixToGraph(corrMatrix, linkAttrib);
+    }
+
+    throw new Error("File has an unknown type or format.");
   } catch (error) {
     log.error(`Failed to parse graph: ${error.message}`);
     throw error;
   }
 }
 
-function convertSymmMatrixToGraph(fileData, linkAttrib) {
-  console.log("FILEDATA", fileData);
-  console.log("AATRIB", linkAttrib);
+function parseSVFile(content) {
+  const { data } = Papa.parse(content, {
+    header: false,
+    dynamicTyping: true,
+    skipEmptyLines: true,
+    delimiter: "", // Auto-detect delimiter
+  });
 
+  if (!data?.length) return null;
+
+  const header = data[0].map(String).slice(1);
+  const dataRows = data.slice(1);
+  const firstColumn = dataRows.map((row) => row[0]);
+  const updatedData = dataRows.map((row) => row.slice(1));
+
+  return { header, firstColumn, data: updatedData };
+}
+
+//////////////////
+
+function convertSymmetricMatrixToGraph(fileData, linkAttrib) {
   const graphData = { nodes: [], links: [] };
+  const { header, data } = fileData;
 
-  // Create nodes
-  graphData.nodes = fileData.header.map((id) => ({ id, groups: [] }));
+  graphData.nodes = header.map((id) => ({ id, groups: [] }));
 
-  // Create links
-  for (let i = 0; i < fileData.header.length; i++) {
+  for (let i = 0; i < header.length; i++) {
     for (let j = 0; j < i; j++) {
       graphData.links.push({
-        source: fileData.header[i],
-        target: fileData.header[j],
-        weights: [fileData.data[i][j]],
+        source: header[i],
+        target: header[j],
+        weights: [data[i][j]],
         attribs: [linkAttrib],
       });
     }
@@ -118,38 +121,19 @@ function convertSymmMatrixToGraph(fileData, linkAttrib) {
   return graphData;
 }
 
-function parseSVFile(content) {
-  const fileData = Papa.parse(content, {
-    header: false,
-    dynamicTyping: true,
-    skipEmptyLines: true,
-    delimiter: "", // Auto-detect delimiter
-  });
+////////////////////////
 
-  if (!fileData.data?.length) return null;
-
-  // Ensure the header row is treated as strings + slice off header
-  const header = fileData.data[0].map(String).slice(1);
-  const data = fileData.data.slice(1);
-  const firstColumn = data.map((row) => row[0]);
-
-  // Slice the first column from the data rows
-  const updatedData = data.map((row) => row.slice(1));
-
-  return { header, firstColumn, data: updatedData };
-}
-
-///////////////////////
-
-export function isSymmMatrix(content) {
-  const fileData = Papa.parse(content, { header: false, dynamicTyping: true, skipEmptyLines: true });
-  if (!fileData.data?.length || fileData.data[0].length !== fileData.data.length) {
+export function isSymmetricMatrix(content) {
+  const { data: rows } = Papa.parse(content, { header: false, dynamicTyping: true, skipEmptyLines: true });
+  if (!rows?.length || rows[0].length !== rows.length) {
     return false;
   }
-  const firstColumn = fileData.data.map((row) => row[0]);
-  const firstRow = fileData.data[0];
+  const firstColumn = rows.map((row) => row[0]);
+  const firstRow = rows[0];
   return firstColumn.every((val, i) => val === firstRow[i]);
 }
+
+/////////////////
 
 export function isValidRawTableData(content) {
   const { data: rows } = Papa.parse(content, { header: false, dynamicTyping: true, skipEmptyLines: true });
@@ -177,6 +161,8 @@ export function isValidRawTableData(content) {
   return true;
 }
 
+////////////////////////
+
 export async function convertToCorrMatrix(fileData, useSpearman = false) {
   const method = useSpearman ? "spearman" : "pearson";
   const data = fileData.data.map((row, index) => [fileData.firstColumn[index], ...row]);
@@ -189,10 +175,10 @@ export async function convertToCorrMatrix(fileData, useSpearman = false) {
     const response = await axios.post("http://localhost:3001/correlationMatrix", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
-    const { columns, data, index } = response.data;
-    return { header: columns, firstColumn: columns, data: data };
+    const { columns, data: matrixData } = response.data;
+    return { header: columns, firstColumn: columns, data: matrixData };
   } catch (error) {
-    console.error("Error fetching correlation matrix:", error.message);
+    log.error("Error fetching correlation matrix:", error.message);
     throw error;
   }
 }
