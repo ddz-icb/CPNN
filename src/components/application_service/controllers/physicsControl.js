@@ -99,7 +99,7 @@ export function PhysicsControl() {
       errorService.setError(error.message);
       log.error("Error updating component force:", error);
     }
-  }, [physics.componentStrength, graphState.graph]);
+  }, [physics.componentStrength]);
 
   useEffect(() => {
     if (!renderState.simulation) return;
