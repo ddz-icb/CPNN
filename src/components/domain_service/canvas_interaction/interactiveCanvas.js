@@ -70,7 +70,3 @@ export function initDragAndZoom(app, simulation, radius, setTooltipSettings, wid
 
   d3.select(app.renderer.canvas).call(zoom.transform, state.transform);
 }
-
-export function getNodeLabelOffsetY(nodeId) {
-  return -25;
-}
