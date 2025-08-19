@@ -129,8 +129,7 @@ export function ClickTooltip() {
   return (
     <Tooltip
       heading={gene}
-      isOpen={tooltipSettings.isClickTooltipActive}
-      setIsOpen={(value) => setTooltipSettings("isClickTooltipActive", value)}
+      close={() => setTooltipSettings("isClickTooltipActive", false)}
       style={style}
       footer={
         <>
