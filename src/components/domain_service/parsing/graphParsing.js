@@ -102,7 +102,7 @@ async function convertRawTableToCorrMatrix(fileData, takeSpearman = false) {
 
   try {
     // const response = await axios.post("http://localhost:3001/correlationMatrix", formData, {
-    const response = await axios.post("https://cpnn.ddz.de/correlationMatrix", formData, {
+    const response = await axios.post("https://cpnn.ddz.de/api/correlationMatrix", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
     const { columns, data: matrixData } = response.data;
