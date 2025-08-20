@@ -2,7 +2,7 @@ import log from "../../adapters/logging/logger.js";
 import { useGraphState } from "../../adapters/state/graphState.js";
 import { exampleGraphJson } from "../../assets/exampleGraphJSON.js";
 import { createGraph, deleteGraph, loadGraphNames, getGraph } from "../../domain_model/graphManager.js";
-import { createGraphIfNotExistsDB } from "../../repository/graphRepo.js";
+import { createGraphIfNotExistsDB, deleteGraphDB } from "../../repository/graphRepo.js";
 import { errorService } from "./errorService.js";
 import { joinGraphNames, joinGraphs } from "../../domain_service/graph_calculations/joinGraph.js";
 import { useGraphFlags } from "../../adapters/state/graphFlagsState.js";
@@ -136,6 +136,9 @@ export const graphService = {
   },
   async handleSetInitGraph() {
     try {
+      // temporary: to clear cache
+      await deleteGraphDB(exampleGraphJson.name);
+
       await createGraphIfNotExistsDB(exampleGraphJson);
       this.setActiveGraphNames([exampleGraphJson.name]);
     } catch (error) {

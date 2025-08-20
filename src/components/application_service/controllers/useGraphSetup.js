@@ -23,7 +23,6 @@ export const useGraphSetup = () => {
     log.info("Forwarding graph to the render component");
 
     const graph = graphState.originGraph;
-    console.log("GRAPH", graph);
 
     const { minWeight, maxWeight } = getLinkWeightMinMax(graph.data);
     if (minWeight !== Infinity) {
