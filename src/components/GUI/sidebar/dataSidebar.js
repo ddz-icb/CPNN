@@ -43,7 +43,7 @@ export function DataSidebar() {
 export function TopDataButtons() {
   return (
     <>
-      <div className="sidebar-two-buttons">
+      <div className="sidebar-block">
         <UploadGraph />
         <UploadMapping />
       </div>

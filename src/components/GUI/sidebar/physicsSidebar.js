@@ -21,7 +21,7 @@ export function PhysicsSidebar({}) {
 
   return (
     <>
-      <div className="inline pad-top-05 pad-bottom-05">
+      <div className="sidebar-block">
         <Button text={"Set Phyiscs to Default"} onClick={() => setAllPhysics(physicsInit)} />
       </div>
       <SwitchBlock

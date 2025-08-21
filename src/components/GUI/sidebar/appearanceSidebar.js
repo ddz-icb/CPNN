@@ -62,12 +62,14 @@ export function UploadColorscheme() {
 
   return (
     <>
-      <Button
-        onClick={() => setColorschemePopupActive(!colorschemePopupActive)}
-        text={"Upload Color Scheme"}
-        tooltip={"Upload your Color Scheme as a CSV or TSV File"}
-        tooltipId={"upload-graph-tooltip"}
-      />
+      <div className="sidebar-block">
+        <Button
+          onClick={() => setColorschemePopupActive(!colorschemePopupActive)}
+          text={"Upload Color Scheme"}
+          tooltip={"Upload your Color Scheme as a CSV or TSV File"}
+          tooltipId={"upload-graph-tooltip"}
+        />
+      </div>
       <Popup
         heading={"Uploading Your Color Scheme"}
         description={uploadColorschemeDescription}
