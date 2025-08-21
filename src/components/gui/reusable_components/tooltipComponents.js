@@ -5,7 +5,7 @@ export function Tooltip({ heading, close, children, style, footer }) {
     <div className="tooltip tooltip-click" style={style}>
       <div className="tooltip-content">
         <div className="tooltip-header">
-          <p>{heading}</p>
+          <span className="tooltip-heading">{heading}</span>
           <span className="tooltip-button" onClick={() => close()}>
             <XIcon />
           </span>
