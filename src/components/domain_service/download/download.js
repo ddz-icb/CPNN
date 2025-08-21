@@ -262,6 +262,11 @@ export function downloadCsvFile(csvContent, fileName) {
   triggerDownload(blob, `${getFileNameWithoutExtension(fileName)}.csv`);
 }
 
+export function downloadTsvFile(tsvContent, fileName) {
+  const blob = new Blob([tsvContent], { type: "text/tab-separated-values;charset=utf-8;" });
+  triggerDownload(blob, `${getFileNameWithoutExtension(fileName)}.tsv`);
+}
+
 export function downloadLegendPdf(graphName, linkColorscheme, linkAttribsToColorIndices, nodeColorscheme, nodeAttribsToColorIndices, mapping) {
   const tempPdf = new jsPDF();
   const { legendWidth, legendHeight } = drawLegendOnPdf(

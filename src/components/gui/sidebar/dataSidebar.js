@@ -5,9 +5,9 @@ import { useEffect, useRef, useState } from "react";
 
 import { TableList, ButtonPopup, SwitchBlock, SliderBlock, FieldBlock, Button, PopupTextField } from "../reusable_components/sidebarComponents.js";
 import { exampleGraphJson } from "../../assets/exampleGraphJSON.js";
-import { downloadCsvFile, downloadObjectAsFile } from "../../domain_service/download/download.js";
-import { exampleGraphCsv } from "../../assets/exampleGraphCSV.js";
-import { exampleMappingCsv } from "../../assets/exampleMappingCSV.js";
+import { downloadObjectAsFile, downloadTsvFile } from "../../domain_service/download/download.js";
+import { exampleGraphTsv } from "../../assets/exampleGraphCSV.js";
+import { exampleMappingTsv } from "../../assets/exampleMappingCSV.js";
 import { exampleGraphRaw } from "../../assets/exampleGraphRawTSV.js";
 import {
   containsSitesDescription,
@@ -169,13 +169,13 @@ function UploadGraph() {
         <Button
           variant="popup"
           text={"Matrix Example Graph"}
-          onClick={() => downloadCsvFile(exampleGraphCsv.data, exampleGraphCsv.name)}
+          onClick={() => downloadTsvFile(exampleGraphTsv.data, exampleGraphTsv.name)}
           className="no-pad-top"
         />
         <Button
           variant="popup"
           text={"Raw Data Example Graph"}
-          onClick={() => downloadCsvFile(exampleGraphRaw.data, exampleGraphRaw.name)}
+          onClick={() => downloadTsvFile(exampleGraphRaw.data, exampleGraphRaw.name)}
           className="no-pad-top"
         />
       </div>
@@ -297,7 +297,7 @@ function UploadMapping() {
         <Button
           variant="popup"
           text={"Download Example Pathway Mapping"}
-          onClick={() => downloadCsvFile(exampleMappingCsv.data, exampleMappingCsv.name)}
+          onClick={() => downloadTsvFile(exampleMappingTsv.data, exampleMappingTsv.name)}
         />
         <Button
           variant="popup"

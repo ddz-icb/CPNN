@@ -1,5 +1,4 @@
 import log from "../../adapters/logging/logger.js";
-import Papa from "papaparse";
 import axios from "axios";
 import { getFileAsText, parseSVFile } from "./fileParsing.js";
 import {
