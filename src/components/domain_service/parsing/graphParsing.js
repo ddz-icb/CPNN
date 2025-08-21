@@ -10,7 +10,7 @@ import {
   filterNodesExist,
   filterTakeAbs,
 } from "../graph_calculations/filterGraph.js";
-import { isSymmMatrix, isTableData, verifyGraph } from "../verification/graphVerification.js";
+import { isCorrMatrix, isTableData, verifyGraph } from "../verification/graphVerification.js";
 import { sortGraph } from "../graph_calculations/graphUtils.js";
 
 function applyFilters(graphData, settings) {
@@ -54,15 +54,15 @@ async function parseGraphByFileType(name, content, takeSpearman) {
     const parsedData = parseSVFile(content);
     if (!parsedData || !parsedData.header) throw new Error("CSV/TSV file has a wrong or empty format.");
 
-    if (isSymmMatrix(parsedData)) {
+    if (isCorrMatrix(parsedData)) {
       log.info("Parsing symmetrical matrix (CSV/TSV)");
-      return convertSymmetricMatrixToGraph(parsedData, linkAttrib);
+      return convertCorrMatrixToGraph(parsedData, linkAttrib);
     }
 
     if (isTableData(parsedData)) {
       log.info("Parsing raw table data (CSV/TSV)");
       const corrMatrix = await convertRawTableToCorrMatrix(parsedData, takeSpearman);
-      return convertSymmetricMatrixToGraph(corrMatrix, linkAttrib);
+      return convertCorrMatrixToGraph(corrMatrix, linkAttrib);
     }
 
     throw new Error("File has an unknown format.");
@@ -72,7 +72,7 @@ async function parseGraphByFileType(name, content, takeSpearman) {
   }
 }
 
-function convertSymmetricMatrixToGraph(fileData, linkAttrib) {
+function convertCorrMatrixToGraph(fileData, linkAttrib) {
   const graphData = { nodes: [], links: [] };
   const { header, data } = fileData;
 

@@ -51,13 +51,26 @@ export function verifyGraph(graph) {
   }
 }
 
-export function isSymmMatrix(fileData) {
-  const { header, data } = fileData;
-  if (!header?.length || header.length !== data.length) {
-    return false;
+export function isCorrMatrix(fileData, tol = 1e-4) {
+  const { header, firstColumn, data } = fileData;
+
+  if (!header?.length || header.length !== data.length) return false;
+
+  for (let i = 0; i < data.length; i++) {
+    for (let j = i + 1; j < data.length; j++) {
+      if (Math.abs(data[i][j] - data[j][i]) > tol) return false;
+    }
+    if (Math.abs(data[i][i] - 1) > 1e-3) return false;
   }
-  const firstColumn = data.map((row) => row[0]);
-  return header.every((val, i) => val === firstColumn[i]);
+
+  let mismatches = 0;
+  header.forEach((val, i) => {
+    if (val !== firstColumn[i]) mismatches++;
+  });
+
+  if (mismatches / header.length > 0.1) return false;
+
+  return true;
 }
 
 export function isTableData(fileData) {
