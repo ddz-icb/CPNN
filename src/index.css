@@ -636,27 +636,6 @@ input[type="radio"]:checked:after {
   transition: var(--transition-speed);
 }
 
-.sidebar-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--button-size-sidebar);
-  height: var(--button-size-sidebar);
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.sidebar-button svg {
-  fill: var(--text-primary);
-  filter: grayscale(100%) opacity(0.7);
-}
-
-.sidebar-button:hover svg {
-  fill: var(--icon-color);
-  filter: grayscale(0%) opacity(1);
-  transition: var(--transition-speed);
-}
-
 .sidebar-button-rect {
   display: inline-block;
   min-width: 3.5rem;
