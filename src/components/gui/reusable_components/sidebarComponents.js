@@ -73,14 +73,12 @@ export function Button({ variant = "sidebar", onClick, onChange, linkRef, toolti
   const isPopup = variant === "popup";
 
   const wrapperClass = isPopup ? `popup-tooltip-wrapper justify-right pad-top-1 ${className || ""}` : "sidebar-tooltip-wrapper";
-  const buttonClass = isPopup ? "popup-button-rect" : "sidebar-button-rect";
-  const textClass = isPopup ? "popup-button-rect-text" : "sidebar-button-rect-text";
   const tooltipClass = isPopup ? "popup-tooltip" : "sidebar-tooltip";
 
   return (
     <div className={wrapperClass}>
-      <button className={buttonClass} data-tooltip-id={tooltipId} data-tooltip-content={tooltip} onClick={onClick}>
-        <span className={textClass}>{text}</span>
+      <button className={"button-rect"} data-tooltip-id={tooltipId} data-tooltip-content={tooltip} onClick={onClick}>
+        <span>{text}</span>
         <input type="file" style={{ display: "none" }} onChange={onChange} ref={linkRef} />
       </button>
       <Tooltip id={tooltipId} place="top" effect="solid" className={tooltipClass} />

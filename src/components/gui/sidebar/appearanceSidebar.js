@@ -219,7 +219,7 @@ export function ColorMappingSelect({ heading, colorschemeData, attribsToColorInd
                   }}
                 ></div>
                 <select
-                  className="popup-button-rect-small"
+                  className="button-select"
                   value={currentAttribute || ""}
                   onChange={(event) => handleColorChange(parseInt(colorIndex, 10), event.target.value)}
                 >
