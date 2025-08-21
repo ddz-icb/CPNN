@@ -10,8 +10,6 @@ export function HeaderBar() {
   return (
     <div className="headerbar">
       <HeaderButton
-        className="button"
-        innerClass="icon-button"
         onClick={() => setIsMappingActive(!isMappingActive)}
         icon={isMappingActive ? <XIcon /> : <EyeIcon />}
         tooltip={isMappingActive ? "Close" : "View Mapping"}
