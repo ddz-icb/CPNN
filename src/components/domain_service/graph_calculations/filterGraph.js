@@ -3,6 +3,7 @@ import {
   getIdsSeparateEntries,
   getNodeIdAndNameEntry,
   getNodeIdEntries,
+  getNodeIdNames,
   getNodeIdsAndIsoform,
   getPhosphositesNodeIdEntry,
   getPhosphositesProtIdEntry,
@@ -334,7 +335,7 @@ export function filterMergeProteins(graphData, mergeProteins) {
 
   const protIdToNodeMap = new Map();
   graphData.nodes.forEach((node) => {
-    const protIds = getNodeIdsAndIsoform(node.id);
+    const protIds = getNodeIdNames(node.id);
     protIds.forEach((protId) => {
       if (!protIdToNodeMap.has(protId)) {
         protIdToNodeMap.set(protId, []);
@@ -437,7 +438,6 @@ export function filterMergeProteins(graphData, mergeProteins) {
         }
       });
     } else {
-      // Kante ist neu: Füge sie zur Map hinzu
       mergedLinksMap.set(key, {
         source: sourceMergedId,
         target: targetMergedId,

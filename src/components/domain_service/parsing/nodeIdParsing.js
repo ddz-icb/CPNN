@@ -22,6 +22,10 @@ export function getNodeIdsAndIsoform(nodeId) {
   return nodeId.split(";").map((id) => id.split("_")[0].trim());
 }
 
+export function getNodeIdNames(nodeId) {
+  return nodeId.split(";").map((id) => id.split("_")[1].trim());
+}
+
 export function getNodeIdName(nodeId) {
   return nodeId.split("_")[1];
 }
