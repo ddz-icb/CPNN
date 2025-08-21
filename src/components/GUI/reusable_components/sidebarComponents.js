@@ -163,7 +163,7 @@ export function PopupTextField({ textInfront, textInside, inline }) {
     return (
       <>
         <div className={"popup-block pad-top-05 pad-bottom-05"}>
-          <label className="label-no-pad">{textInfront}</label>
+          <label className="label">{textInfront}</label>
           <div className="text-field pad-left-025 pad-right-025">{textInside}</div>
         </div>
       </>
@@ -171,7 +171,7 @@ export function PopupTextField({ textInfront, textInside, inline }) {
   } else {
     return (
       <>
-        <label className="label-no-pad">{textInfront}</label>
+        <label className="label">{textInfront}</label>
         <div className="text-field pad-left-025 pad-right-025 margin-bottom-025">{textInside}</div>
       </>
     );

@@ -32,7 +32,7 @@ function NavItem({ text, href, icon, onClick, children }) {
     <li className="nav-item">
       <a className="nav-link" {...(href && { href: href })} onClick={onClick}>
         <span className="fa-primary">{icon}</span>
-        <p className="link-text">{text}</p>
+        <span className="link-text">{text}</span>
       </a>
       {children}
     </li>
