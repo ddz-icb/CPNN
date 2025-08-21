@@ -38,7 +38,7 @@ export const maxCompSizeDescription = (
   </div>
 );
 
-export const minNeighborhoodSizeDescription = (
+export const minKCoreSizeDescription = (
   <div>
     <p className="margin-0">
       You can filter the graph by removing nodes with too few connections. The threshold defines the minimum number of neighbors a node must have to

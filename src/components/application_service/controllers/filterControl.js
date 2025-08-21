@@ -48,8 +48,8 @@ export function FilterControl() {
       filter.minCompSize,
       "\n    Maximum component size: ",
       filter.maxCompSize,
-      "\n    Minimum neighborhood size: ",
-      filter.minNeighborhoodSize,
+      "\n    Minimum k-Core size: ",
+      filter.minKCoreSize,
       "\n    Groups: ",
       filter.nodeFilter,
       "\n    Comp Density: ",
@@ -70,7 +70,7 @@ export function FilterControl() {
       filteredGraphData = filterByLinkAttribs(filteredGraphData, filter.linkFilter);
 
       filteredGraphData = filterCompDensity(filteredGraphData, filter.compDensity);
-      filteredGraphData = filterMinNeighborhood(filteredGraphData, filter.minNeighborhoodSize);
+      filteredGraphData = filterMinNeighborhood(filteredGraphData, filter.minKCoreSize);
       filteredGraphData = filterNodesExist(filteredGraphData);
 
       filteredGraphData = filterMinCompSize(filteredGraphData, filter.minCompSize);
@@ -94,7 +94,7 @@ export function FilterControl() {
     filter.minCompSize,
     filter.maxCompSize,
     filter.compDensity,
-    filter.minNeighborhoodSize,
+    filter.minKCoreSize,
     graphState.originGraph,
     pixiState.circles,
   ]);

@@ -12,7 +12,7 @@ import {
   filterInit,
   linkThresholdInit,
   maxCompSizeInit,
-  minNeighborhoodSizeInit,
+  minKCoreSizeInit,
   compDensityInit,
   minCompSizeInit,
 } from "../../adapters/state/filterState.js";
@@ -23,7 +23,7 @@ import {
   maxCompSizeDescription,
   mergeProteinsDescription,
   minCompSizeDescription,
-  minNeighborhoodSizeDescription,
+  minKCoreSizeDescription,
   nodeFilterDescription,
 } from "./descriptions/filterDescriptions.js";
 import { handleEditorChange, runCodeEditor } from "../handlers/buttonHandlerFunctions.js";
@@ -194,15 +194,15 @@ export function FilterSidebar() {
         infoDescription={maxCompSizeDescription}
       />
       <FieldBlock
-        valueText={filter.minNeighborhoodSizeText}
-        setValue={(value) => setFilter("minNeighborhoodSize", value)}
-        setValueText={(value) => setFilter("minNeighborhoodSizeText", value)}
-        fallbackValue={minNeighborhoodSizeInit}
+        valueText={filter.minKCoreSizeText}
+        setValue={(value) => setFilter("minKCoreSize", value)}
+        setValueText={(value) => setFilter("minKCoreSizeText", value)}
+        fallbackValue={minKCoreSizeInit}
         min={1}
         step={1}
         text={"Min k-Core Size"}
         infoHeading={"Filter by minimum k-Core Decomposition"}
-        infoDescription={minNeighborhoodSizeDescription}
+        infoDescription={minKCoreSizeDescription}
       />
       <FieldBlock
         valueText={filter.compDensityText}

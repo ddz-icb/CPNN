@@ -62,8 +62,8 @@ export function filterCompDensity(graphData, compDensity) {
   };
 }
 
-export function filterMinNeighborhood(graphData, minNeighborhoodSize) {
-  if (minNeighborhoodSize <= 0) return graphData;
+export function filterMinNeighborhood(graphData, minKCoreSize) {
+  if (minKCoreSize <= 0) return graphData;
 
   let prevNodeCount = -1;
   let filteredGraph = graphData;
@@ -75,7 +75,7 @@ export function filterMinNeighborhood(graphData, minNeighborhoodSize) {
 
     filteredGraph = {
       ...filteredGraph,
-      nodes: filteredGraph.nodes.filter((node) => idToNeighborCount.get(node.id) >= minNeighborhoodSize),
+      nodes: filteredGraph.nodes.filter((node) => idToNeighborCount.get(node.id) >= minKCoreSize),
     };
     filteredGraph = filterNodesExist(filteredGraph);
   }

@@ -7,7 +7,7 @@ export const nodeFilterInit = true;
 export const linkFilterInit = true;
 export const linkFilterTextInit = "";
 export const nodeFilterTextInit = "";
-export const minNeighborhoodSizeInit = 0;
+export const minKCoreSizeInit = 0;
 export const compDensityInit = 0;
 
 export const filterInit = {
@@ -23,8 +23,8 @@ export const filterInit = {
   maxCompSizeText: maxCompSizeInit,
   compDensity: compDensityInit,
   compDensityText: compDensityInit,
-  minNeighborhoodSize: minNeighborhoodSizeInit,
-  minNeighborhoodSizeText: minNeighborhoodSizeInit,
+  minKCoreSize: minKCoreSizeInit,
+  minKCoreSizeText: minKCoreSizeInit,
 };
 
 export const useFilter = create((set) => ({
