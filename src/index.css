@@ -7,10 +7,8 @@
   --border-size-border: 0.25rem;
   --border-size-slider: 1px;
   --border-size-tooltip: 0.1rem;
-  --button-height-rect: 1.75rem;
   --button-size: 3.5rem;
   --button-size-sidebar: 2rem;
-  --button-width-rect: 6rem;
 
   /* Typography */
   font-size: 16px;
@@ -36,39 +34,24 @@
 
   /* Colors - Extended Palette */
   --color0: #f8f8f8;
-  --color1: #dbe1e8;
-  --color2: #b2becd;
-  --color3: #6c7983;
   --color4: #454e56;
   --color5: #2a2e35;
   --color6: #12181b;
   --color8: #fcc600;
   --color9: #fc6100;
-  --color10: #006f0d;
-  --color12: #3f95ba;
   --color13: #153456;
   --color14: #013b79;
-  --color15: #074575;
   --color16: #074575;
-  --color17: #009de0;
   --color18: #07a7e3;
   --color19: #ffffff;
   --color20: #ffffff;
-  --color21: #dedede;
   --color22: #b5b5b5;
-  --color23: #ffffff;
   --color24: #505050;
   --color25: #c7c7c7;
   --color26: #c8f0ff;
-  --color27: #1a395a;
-  --color28: #1466be;
   --color29: #1f2429;
   --color30: #e8e8e8;
-  --color31: #7f7eff;
-  --color32: #dddddd;
-  --color33: #bbbbbb;
   --color34: #0683b0;
-  --color35: #0777bd;
   --color36: #2b5786;
 
   /* Transitions */
@@ -98,11 +81,9 @@ ul {
   --bg-secondary: var(--color16);
   --bg-canvas: white;
   --text-primary: black;
-  --text-secondary: var(--color15);
   --border-color: var(--color16);
   --icon-color: var(--color18);
   --icon-color-secondary: var(--color16);
-  --icon-color-tertiary: white;
   --box-shadow-color: var(--color13);
   --error-color: var(--color9);
 
