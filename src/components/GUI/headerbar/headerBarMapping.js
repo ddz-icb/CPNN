@@ -11,16 +11,16 @@ export function HeaderbarColorMapping() {
       if (color !== fallbackColor) {
         content.push(
           <div key={key} className="colorscheme-container">
-            <div className="color-square colorscheme-item" style={{ backgroundColor: color }}></div>
-            <span className="colorscheme-item">{key}</span>
+            <div className="color-square" style={{ backgroundColor: color }}></div>
+            <span>{key}</span>
           </div>
         );
       }
     }
     content.push(
       <div key="fallback" className="colorscheme-container">
-        <div className="color-square colorscheme-item" style={{ backgroundColor: fallbackColor }}></div>
-        <span className="colorscheme-item">No Value Available</span>
+        <div className="color-square" style={{ backgroundColor: fallbackColor }}></div>
+        <span>No Value Available</span>
       </div>
     );
     return content;
@@ -31,14 +31,14 @@ export function HeaderbarColorMapping() {
   const linkColorMapping = renderMapping(colorschemeState.linkAttribsToColorIndices, colorschemeState.linkColorscheme.data);
 
   return (
-    <div className={"dropdown min-width-400 margin-left-20"}>
-      <div className="dropdown-section-container pad-top-05">
-        <div className="dropdown-section">
-          <p className="heading-label-no-pad pad-left-1 margin-0">Nodes</p>
+    <div className={"dropdown"}>
+      <div className="dropdown-section-container">
+        <div>
+          <span className="heading">Nodes</span>
           {nodeColorMapping}
         </div>
-        <div className="dropdown-section">
-          <p className="heading-label-no-pad pad-left-1 margin-0">Links</p>
+        <div>
+          <span className="heading">Links</span>
           {linkColorMapping}
         </div>
       </div>

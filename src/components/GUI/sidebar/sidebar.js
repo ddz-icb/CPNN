@@ -26,8 +26,17 @@ export function Sidebar(props) {
 
   return (
     <Navbar short={isSelection}>
-      {!isSelection && <BackBar activeNavItem={activeNavItem} onClick={() => setActiveNavItem("Selection")} />}
-      <div className="pad-bottom-05 width-100">{currentSidebar}</div>
+      {isSelection ? (
+        <>
+          <LogoBar />
+          <div className="sidebar-selection">{currentSidebar}</div>
+        </>
+      ) : (
+        <>
+          <BackBar activeNavItem={activeNavItem} onClick={() => setActiveNavItem("Selection")} />
+          <div className="sidebar-main-body">{currentSidebar}</div>
+        </>
+      )}
     </Navbar>
   );
 }
@@ -35,8 +44,16 @@ export function Sidebar(props) {
 function Navbar({ short, children }) {
   return (
     <nav className={`navbar ${short && "short"}`}>
-      <ul className="navbar-nav">{children}</ul>
+      <ul>{children}</ul>
     </nav>
+  );
+}
+
+function LogoBar({ onClick }) {
+  return (
+    <li className="logo-container" onClick={onClick}>
+      <img src="./logos/ddz_logo_en.png" className="logo" />
+    </li>
   );
 }
 

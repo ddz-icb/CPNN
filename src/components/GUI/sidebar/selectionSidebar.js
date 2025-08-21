@@ -6,7 +6,6 @@ import { ReactComponent as FilterIcon } from "../../../icons/filter.svg";
 import { ReactComponent as PaletteIcon } from "../../../icons/colorPalette.svg";
 import { ReactComponent as DownloadIcon } from "../../../icons/download.svg";
 import { lightTheme, useTheme } from "../../adapters/state/themeState.js";
-import { useAppearance } from "../../adapters/state/appearanceState.js";
 import { themeService } from "../../application_service/services/themeService.js";
 
 export function SelectionSidebar({ handleNavItemClick }) {
@@ -14,7 +13,6 @@ export function SelectionSidebar({ handleNavItemClick }) {
 
   return (
     <>
-      <LogoBar />
       <NavItem text={"Data"} icon={<DataIcon />} onClick={() => handleNavItemClick("Data")} />
       <NavItem text={"Filter"} icon={<FilterIcon />} onClick={() => handleNavItemClick("Filter")} />
       <NavItem text={"Physics"} icon={<MagnetIcon />} onClick={() => handleNavItemClick("Physics")}></NavItem>
@@ -26,14 +24,6 @@ export function SelectionSidebar({ handleNavItemClick }) {
         onClick={() => themeService.handleChangeTheme()}
       />
     </>
-  );
-}
-
-function LogoBar({ onClick }) {
-  return (
-    <li className="logo-container" onClick={onClick}>
-      <img src="./logos/ddz_logo_en.png" className="logo" />
-    </li>
   );
 }
 

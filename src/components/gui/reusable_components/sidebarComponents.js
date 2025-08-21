@@ -7,12 +7,11 @@ import { handleFieldBlur, handleFieldChange, handleSliderChange } from "../handl
 export function SliderBlock({ variant = "sidebar", value, setValue, setValueText, min, max, step, text, infoHeading, infoDescription, ...props }) {
   const isPopup = variant === "popup";
   const wrapperClassName = isPopup ? "popup-block pad-bottom-05" : "sidebar-block";
-  const labelClassName = isPopup ? "label" : "label pad-left-1";
 
   return (
     <>
       <div className="inline">
-        <label className={labelClassName}>{text}</label>
+        <label className={"label"}>{text}</label>
         <span className="tooltip-button pad-left-05 pad-top-11">
           <InfoButtonPopup heading={infoHeading} description={infoDescription} widePopup={isPopup} />
         </span>
@@ -92,12 +91,12 @@ export function CodeEditorBlock({ text, onClick, compilerError, defaultValue, te
   return (
     <>
       <div className="inline">
-        <label className="label pad-left-1">{text}</label>
+        <label className="label">{text}</label>
         <span className="tooltip-button pad-left-05 pad-top-11">
           <InfoButtonPopup heading={infoHeading} description={infoDescription} />
         </span>
       </div>
-      <div className={`editor-sidebar-block ${compilerError ? "no-pad-bottom" : ""}`}>
+      <div className={`sidebar-block ${compilerError ? "no-pad-bottom" : ""}`}>
         <div className="custom-editor">
           <textarea ref={textareaRef} defaultValue={defaultValue}></textarea>
         </div>
@@ -194,22 +193,22 @@ export function TableList({
   dark,
 }) {
   return (
-    <>
-      <span className="heading-label">{heading}</span>
-      <table className={dark ? "dark-item-table" : "item-table"}>
+    <div>
+      <span className="heading">{heading}</span>
+      <table className={`item-table ${dark && "dark-item-table"}`}>
         <tbody>
           {data && data.length > 0 ? (
             data.map((item, index) => (
-              <tr key={`row-${item}-${index}`} className="item-table-entry item-table-entry-highlight">
+              <tr key={`row-${item}-${index}`} className="item-table-entry-highlight">
                 <td
-                  className={onItemClick ? "item-table-text-hoverable" : "item-table-text"}
+                  className={"item-table-text"}
                   onClick={() => onItemClick && onItemClick(item)}
                   {...(itemTooltipContent && {
                     "data-tooltip-id": `item-tooltip-${item}-${index}`,
                     "data-tooltip-content": itemTooltipContent(item),
                   })}
                 >
-                  <span className="pad-left-025">{displayKey ? item[displayKey] : item}</span>
+                  <span>{displayKey ? item[displayKey] : item}</span>
                 </td>
                 {ActionIcon && (
                   <td className="item-table-logo">
@@ -236,9 +235,9 @@ export function TableList({
               </tr>
             ))
           ) : (
-            <tr className="item-table-entry">
-              <td>
-                <span className="pad-left-025">None</span>
+            <tr>
+              <td className={"item-table-text"}>
+                <span>None</span>
               </td>
             </tr>
           )}
@@ -271,7 +270,7 @@ export function TableList({
             <Tooltip key={`action-tooltip-2-${item}-${index}`} id={`action-tooltip-2-${item}-${index}`} className="sidebar-tooltip" />
           </div>
         ))}
-    </>
+    </div>
   );
 }
 
