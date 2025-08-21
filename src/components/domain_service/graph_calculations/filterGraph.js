@@ -65,12 +65,22 @@ export function filterCompDensity(graphData, compDensity) {
 export function filterMinNeighborhood(graphData, minNeighborhoodSize) {
   if (minNeighborhoodSize <= 0) return graphData;
 
-  const idToNeighborCount = getAdjacentData(graphData);
+  let prevNodeCount = -1;
+  let filteredGraph = graphData;
 
-  return {
-    ...graphData,
-    nodes: graphData.nodes.filter((node) => idToNeighborCount.get(node.id) >= minNeighborhoodSize),
-  };
+  while (filteredGraph.nodes.length !== prevNodeCount) {
+    prevNodeCount = filteredGraph.nodes.length;
+
+    const idToNeighborCount = getAdjacentData(filteredGraph);
+
+    filteredGraph = {
+      ...filteredGraph,
+      nodes: filteredGraph.nodes.filter((node) => idToNeighborCount.get(node.id) >= minNeighborhoodSize),
+    };
+    filteredGraph = filterNodesExist(filteredGraph);
+  }
+
+  return filteredGraph;
 }
 
 export function filterNodesExist(graphData) {

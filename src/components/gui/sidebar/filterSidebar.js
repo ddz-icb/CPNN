@@ -200,8 +200,8 @@ export function FilterSidebar() {
         fallbackValue={minNeighborhoodSizeInit}
         min={1}
         step={1}
-        text={"Min Neighborhood Size"}
-        infoHeading={"Filter by Neighborhood Size"}
+        text={"Min k-Core Size"}
+        infoHeading={"Filter by minimum k-Core Decomposition"}
         infoDescription={minNeighborhoodSizeDescription}
       />
       <FieldBlock

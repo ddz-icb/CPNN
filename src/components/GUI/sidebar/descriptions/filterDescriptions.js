@@ -41,8 +41,9 @@ export const maxCompSizeDescription = (
 export const minNeighborhoodSizeDescription = (
   <div>
     <p className="margin-0">
-      You can filter the graph by setting a minimum neighborhood size. If a given node has less neighbors than the applied threshold, the node will
-      not be drawn. Increasing this value can significantly enhance performance by reducing the graph size.
+      You can filter the graph by removing nodes with too few connections. The threshold defines the minimum number of neighbors a node must have to
+      stay in the graph. Nodes below this value are removed step by step until only well-connected nodes remain. Increasing this value can
+      significantly enhance performance by reducing the graph size.
     </p>
   </div>
 );
