@@ -163,8 +163,8 @@ export function FilterSidebar() {
             filter.nodeFilterText,
             (value) => setFilter("nodeFilter", value),
             (value) => setFilter("nodeFilterText", value),
-            () => parseAttribsFilter(),
-            () => setCompilerErrorLinkFilter()
+            (input) => parseAttribsFilter(input),
+            (error) => setCompilerErrorLinkFilter(error)
           )
         }
         defaultValue={filter.nodeFilterText}
