@@ -15,7 +15,7 @@
   font-weight: 300;
   font-family: "pingFangSC", sans-serif;
   --text-primary: #b6b6b6;
-  --text-secondary: #ececec;
+  --text-secondary: #1e396f;
   --highlight-color-text: #131318;
 
   /* Colors - Base Palette */
@@ -132,7 +132,7 @@ ul {
   --bg-secondary: var(--color6);
   --bg-canvas: var(--color6);
   --text-primary: white;
-  --text-secondary: white;
+  --text-secondary: rgb(179, 179, 179);
   --border-color: var(--color18);
   --icon-color: var(--color18);
   --icon-color-secondary: var(--color26);
