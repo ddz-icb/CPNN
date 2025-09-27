@@ -10,6 +10,9 @@ import "./styles/themes.css";
 import "./styles/headerbar.css";
 import "./styles/sidebar_elements.css";
 import "./styles/layout.css";
+import "./styles/table.css";
+import "./styles/tooltip.css";
+import "./styles/popup.css";
 
 import { Sidebar } from "./components/gui/sidebar/sidebar.js";
 import { HeaderBar } from "./components/gui/headerbar/headerbar.js";
