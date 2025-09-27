@@ -1,4 +1,5 @@
 import "./index.css";
+import "./sidebar.css";
 
 import { Sidebar } from "./components/gui/sidebar/sidebar.js";
 import { HeaderBar } from "./components/gui/headerbar/headerbar.js";

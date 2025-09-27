@@ -1,4 +1,3 @@
-import "../../../index.css";
 import { useState } from "react";
 import { ReactComponent as BackArrowIcon } from "../../../icons/backArrow.svg";
 
