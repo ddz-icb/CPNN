@@ -1,0 +1,107 @@
+.light {
+  --bg-primary: white;
+  --bg-secondary: var(--color16);
+  --bg-canvas: white;
+  --text-primary: black;
+  --border-color: var(--color16);
+  --icon-color: var(--color18);
+  --icon-color-secondary: var(--color16);
+  --box-shadow-color: var(--color13);
+  --error-color: var(--color9);
+
+  /* Themed Elements */
+  --bg-logo: var(--bg-secondary);
+  --bg-slider: var(--color30);
+  --bg-button-sidebar: var(--color18);
+  --bg-button-sidebar-hover: var(--color34);
+  --bg-table-item-hover: var(--color30);
+  --bg-input-field: white;
+  --bg-input-field-focus: var(--color30);
+  --bg-sidebar-back: var(--color16);
+  --bg-icon-button: var(--color30);
+  --bg-switch: var(--color13);
+  --tooltip-background-color: white;
+  --tooltip-header-color: var(--color13);
+  --tooltip-text-color: var(--color14);
+  --bg-tooltip-sidebar: var(--color13);
+  --highlight-bg: var(--color18);
+  --highlight-color-text: var(--color13);
+  --tooltip-sidebar-text: white;
+  --sidebar-back-color: white;
+  --sidebar-button-color: white;
+  --back-icon-color: white;
+  --back-icon-color-hover: var(--color18);
+  --nav-link-hover-color: white;
+  --table-item-hover: var(--color14);
+  --dark-item-table-color: white;
+
+  /* Borders */
+  --border-tooltip-color: var(--color14);
+  --border-slider-color: var(--color30);
+  --border-slider-node-color: var(--color36);
+  --border-button-sidebar: var(--color22);
+  --border-button-sidebar-hover: var(--color24);
+  --border-table: var(--color22);
+  --border-bottom-logo: var(--color22);
+  --border-input-field-sidebar: var(--color22);
+  --border-input-field-sidebar-focus: var(--color24);
+  --border-switch-off: var(--color22);
+  --border-switch-on: var(--color22);
+}
+
+.dark {
+  --bg-primary: var(--color5);
+  --bg-secondary: var(--color6);
+  --bg-canvas: var(--color6);
+  --text-primary: white;
+  --text-secondary: rgb(179, 179, 179);
+  --border-color: var(--color18);
+  --icon-color: var(--color18);
+  --icon-color-secondary: var(--color26);
+  --icon-color-tertiary: var(--color26);
+  --box-shadow-color: var(--color24);
+  --error-color: var(--color8);
+
+  /* Themed Elements */
+  --bg-logo: var(--bg-secondary);
+  --bg-slider: var(--color6);
+  --bg-button-sidebar: var(--color6);
+  --bg-button-sidebar-hover: var(--color18);
+  --bg-table-item-hover: var(--color29);
+  --bg-input-field: var(--color6);
+  --bg-input-field-focus: var(--color6);
+  --bg-sidebar-back: var(--color6);
+  --bg-icon-button: var(--color5);
+  --bg-switch: var(--bg-secondary);
+  --tooltip-background-color: var(--color5);
+  --tooltip-header-color: var(--color0);
+  --tooltip-text-color: var(--color25);
+  --highlight-bg: var(--color18);
+  --highlight-color-text: var(--color13);
+  --tooltip-sidebar-text: var(--color0);
+  --sidebar-back-color: white;
+  --sidebar-button-color: var(--text-primary);
+  --back-icon-color: var(--icon-color);
+  --back-icon-color-hover: var(--color26);
+  --nav-link-hover-color: var(--color30);
+  --table-item-hover: var(--color18);
+  --dark-item-table-color: white;
+
+  /* Borders */
+  --border-tooltip-color: var(--color18);
+  --border-slider-color: var(--color6);
+  --border-slider-node-color: var(--color0);
+  --border-button-sidebar: var(--color18);
+  --border-button-sidebar-hover: white;
+  --border-table: var(--color24);
+  --border-bottom-logo: var(--color4);
+  --border-input-field-sidebar: var(--color18);
+  --border-input-field-sidebar-focus: white;
+  --border-switch-off: var(--color18);
+  --border-switch-on: var(--color18);
+}
+
+.light .logo,
+.dark .logo {
+  filter: invert(100%) brightness(2);
+}
