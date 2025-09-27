@@ -229,7 +229,7 @@ export function RenderControl() {
   return (
     <>
       <Tooltips />
-      <div ref={containerRef} className="container" />
+      <div ref={containerRef} className="canvas" />
     </>
   );
 }

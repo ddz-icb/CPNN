@@ -1,5 +1,6 @@
 import "./styles/index.css";
 import "./styles/sidebar.css";
+import "./styles/canvas.css";
 
 import { Sidebar } from "./components/gui/sidebar/sidebar.js";
 import { HeaderBar } from "./components/gui/headerbar/headerbar.js";
@@ -30,7 +31,7 @@ function App() {
       <main className={theme.name}>
         <HeaderBar />
         <Sidebar />
-        <div className="canvas">
+        <div className="canvas-container">
           <RenderControl />
           <Error />
         </div>
