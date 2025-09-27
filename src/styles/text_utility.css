@@ -1,0 +1,22 @@
+.no-wrap {
+  white-space: nowrap;
+}
+.text-primary {
+  color: var(--text-primary);
+}
+.text-secondary {
+  color: var(--text-secondary);
+}
+.heading {
+  display: block;
+  color: var(--text-primary);
+  font-size: 1.2rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+.warning {
+  color: var(--error-color);
+}
+.color-text-primary {
+  color: var(--text-primary);
+}

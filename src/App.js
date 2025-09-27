@@ -4,6 +4,7 @@ import "./styles/canvas.css";
 import "./styles/error.css";
 import "./styles/codeEditor.css";
 import "./styles/padding_utility.css";
+import "./styles/text_utility.css";
 
 import { Sidebar } from "./components/gui/sidebar/sidebar.js";
 import { HeaderBar } from "./components/gui/headerbar/headerbar.js";
