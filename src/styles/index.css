@@ -1,4 +1,3 @@
-/* --- 1. Root Variables --- */
 :root {
   /* Sizing & Dimensions */
   --border-radius: 0.15rem;
@@ -71,41 +70,4 @@ ul {
   margin: 0;
   padding: 0;
   list-style: none;
-}
-
-.colorscheme-container {
-  color: var(--text-primary);
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.5rem;
-}
-
-.color-square {
-  min-width: 25px;
-  min-height: 15px;
-  max-width: 25px;
-  max-height: 15px;
-  margin-right: 1rem;
-  border: 1px solid var(--border-button-sidebar);
-}
-
-.colormapping-selector {
-  display: grid;
-  grid-template-columns: auto auto;
-  gap: 5px;
-  align-items: center;
-}
-
-.color-mapping-select-table {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  width: 100%;
-}
-
-/* Icons */
-.small-icon svg {
-  width: 24px;
-  height: 24px;
-  margin-left: 8px;
-  margin-right: 8px;
 }

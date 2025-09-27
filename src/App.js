@@ -13,6 +13,7 @@ import "./styles/layout.css";
 import "./styles/table.css";
 import "./styles/tooltip.css";
 import "./styles/popup.css";
+import "./styles/colormapping.css";
 
 import { Sidebar } from "./components/gui/sidebar/sidebar.js";
 import { HeaderBar } from "./components/gui/headerbar/headerbar.js";

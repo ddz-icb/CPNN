@@ -1,0 +1,28 @@
+.colorscheme-container {
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.color-square {
+  min-width: 25px;
+  min-height: 15px;
+  max-width: 25px;
+  max-height: 15px;
+  margin-right: 1rem;
+  border: 1px solid var(--border-button-sidebar);
+}
+
+.colormapping-selector {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 5px;
+  align-items: center;
+}
+
+.color-mapping-select-table {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+}
