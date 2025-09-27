@@ -8,6 +8,8 @@ import "./styles/text_utility.css";
 import "./styles/pdb_viewer.css";
 import "./styles/themes.css";
 import "./styles/headerbar.css";
+import "./styles/sidebar_elements.css";
+import "./styles/layout.css";
 
 import { Sidebar } from "./components/gui/sidebar/sidebar.js";
 import { HeaderBar } from "./components/gui/headerbar/headerbar.js";
