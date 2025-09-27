@@ -72,7 +72,7 @@ export function FieldBlock({ variant = "sidebar", text, infoHeading, infoDescrip
 export function Button({ variant = "sidebar", onClick, onChange, linkRef, tooltip, tooltipId, text, className }) {
   const isPopup = variant === "popup";
 
-  const wrapperClass = isPopup ? `popup-tooltip-wrapper justify-right pad-top-1 ${className || ""}` : "sidebar-tooltip-wrapper";
+  const wrapperClass = isPopup ? `popup-tooltip-wrapper pad-top-1 ${className || ""}` : "sidebar-tooltip-wrapper";
   const tooltipClass = isPopup ? "popup-tooltip" : "sidebar-tooltip";
 
   return (
