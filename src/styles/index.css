@@ -1,5 +1,11 @@
 :root {
-  /* Sizing & Dimensions */
+  font-size: 16px;
+  font-weight: 300;
+  font-family: "pingFangSC", sans-serif;
+  --text-primary: #b6b6b6;
+  --text-secondary: #1e396f;
+  --highlight-color-text: #131318;
+
   --border-radius: 0.15rem;
   --border-radius-button: 0.15rem;
   --border-size: 0.15rem;
@@ -9,15 +15,6 @@
   --button-size: 3.5rem;
   --button-size-sidebar: 2rem;
 
-  /* Typography */
-  font-size: 16px;
-  font-weight: 300;
-  font-family: "pingFangSC", sans-serif;
-  --text-primary: #b6b6b6;
-  --text-secondary: #1e396f;
-  --highlight-color-text: #131318;
-
-  /* Colors - Base Palette */
   --bg-primary: #23232e;
   --bg-secondary: #131318;
   --bg-canvas: #12181b;
@@ -26,12 +23,9 @@
   --icon-color: #4878a5;
   --highlight-bg: #afafe4;
   --error-color: #cb3939;
-
-  /* Colors - Tooltip */
   --bg-tooltip-sidebar: #454e56;
-  --tooltip-sidebar-text: #ffffff;
+  --tooltip-sidebar-text: white;
 
-  /* Colors - Extended Palette */
   --color0: #f8f8f8;
   --color4: #454e56;
   --color5: #2a2e35;
@@ -51,11 +45,9 @@
   --color34: #0683b0;
   --color36: #2b5786;
 
-  /* Transitions */
   --transition-speed: 100ms;
 }
 
-/* --- 2. Global Styles & Resets --- */
 ::selection {
   background: var(--highlight-bg);
   color: var(--highlight-color-text);
