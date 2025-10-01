@@ -9,7 +9,7 @@ import { useContainer } from "../../adapters/state/containerState.js";
 import { useTooltipSettings } from "../../adapters/state/tooltipState.js";
 import { useTheme } from "../../adapters/state/themeState.js";
 import { getNodeIdEntries, parseNodeIdEntries } from "../../domain_service/parsing/nodeIdParsing.js";
-import { Tooltip, TooltipItem, TooltipLinkItem } from "../reusable_components/tooltipComponents.js";
+import { TooltipPopup, TooltipPopupItem, TooltipPopupLinkItem } from "../reusable_components/tooltipComponents.js";
 
 const fullNameInit = "";
 const descriptionInit = "";
@@ -128,19 +128,19 @@ export function ClickTooltip() {
   }, [tooltipSettings.isClickTooltipActive, tooltipSettings.clickTooltipData]);
 
   return (
-    <Tooltip
+    <TooltipPopup
       heading={gene}
       close={() => setTooltipSettings("isClickTooltipActive", false)}
       style={style}
       footer={
         <>
-          <TooltipLinkItem text={"To UniProt"} link={`https://www.uniprot.org/uniprotkb/${protIdNoIsoform}/`} />
-          <TooltipLinkItem text={"To RCSB PDB"} link={`https://www.rcsb.org/structure/${pdbId}/`} />
+          <TooltipPopupLinkItem text={"To UniProt"} link={`https://www.uniprot.org/uniprotkb/${protIdNoIsoform}/`} />
+          <TooltipPopupLinkItem text={"To RCSB PDB"} link={`https://www.rcsb.org/structure/${pdbId}/`} />
         </>
       }
     >
-      <TooltipItem heading={"Full Name"} value={fullName} />
-      <TooltipItem
+      <TooltipPopupItem heading={"Full Name"} value={fullName} />
+      <TooltipPopupItem
         heading={`Protein-IDs ${hasPhosphosites && "and Phosphosites"}`}
         value={isoforms.map(({ pepId, phosphosites }, i) => (
           <div key={`${pepId}-${i}`}>
@@ -149,9 +149,9 @@ export function ClickTooltip() {
           </div>
         ))}
       />
-      <TooltipItem heading={"Gene/Protein Annotations"} value={tooltipSettings?.clickTooltipData?.nodeGroups} />
-      <TooltipItem heading={"Description"} value={description} />
+      <TooltipPopupItem heading={"Gene/Protein Annotations"} value={tooltipSettings?.clickTooltipData?.nodeGroups} />
+      <TooltipPopupItem heading={"Description"} value={description} />
       <div className="pdb-viewer" ref={viewerRef} />
-    </Tooltip>
+    </TooltipPopup>
   );
 }

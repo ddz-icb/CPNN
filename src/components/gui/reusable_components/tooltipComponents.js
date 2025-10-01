@@ -1,24 +1,24 @@
 import { ReactComponent as XIcon } from "../../../icons/x.svg";
 
-export function Tooltip({ heading, close, children, style, footer }) {
+export function TooltipPopup({ heading, close, children, style, footer }) {
   return (
-    <div className="tooltip tooltip-click" style={style}>
-      <div className="tooltip-content">
-        <div className="tooltip-header">
-          <span className="tooltip-heading">{heading}</span>
-          <span className="tooltip-button" onClick={() => close()}>
+    <div className="tooltip tooltip-popup" style={style}>
+      <div className="tooltip-popup-content">
+        <div className="tooltip-popup-header">
+          <span className="tooltip-popup-heading">{heading}</span>
+          <span className="tooltip-popup-button" onClick={() => close()}>
             <XIcon />
           </span>
         </div>
-        <div className="tooltip-body">{children}</div>
+        <div className="tooltip-popup-body">{children}</div>
 
-        {footer && <div className="tooltip-footer">{footer}</div>}
+        {footer && <div className="tooltip-popup-footer">{footer}</div>}
       </div>
     </div>
   );
 }
 
-export function TooltipItem({ heading, value }) {
+export function TooltipPopupItem({ heading, value }) {
   return (
     <>
       {value && (
@@ -30,11 +30,11 @@ export function TooltipItem({ heading, value }) {
     </>
   );
 }
-export function TooltipLinkItem({ text, link }) {
+export function TooltipPopupLinkItem({ text, link }) {
   return (
     <>
       {text && (
-        <a className="tooltip-footer-item" href={link} target="_blank" rel="noreferrer">
+        <a className="tooltip-popup-footer-item" href={link} target="_blank" rel="noreferrer">
           <div>{text}</div>
         </a>
       )}
