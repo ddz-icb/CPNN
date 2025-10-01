@@ -157,7 +157,7 @@ function ColorSelection() {
   const { colorschemeState, setColorschemeState } = useColorschemeState();
 
   return (
-    <div className="color-mapping-select-table">
+    <div className="colormapping-select-container">
       <ColorMappingSelect
         heading={"Node Color Mapping"}
         colorschemeData={colorschemeState.nodeColorscheme?.data ? colorschemeState.nodeColorscheme.data : []}
@@ -206,14 +206,14 @@ export function ColorMappingSelect({ heading, colorschemeData, attribsToColorInd
     <div>
       <span className="heading">{heading}</span>
       <div className="sidebar-block">
-        <div className="colormapping-selector">
+        <div className="colormapping-select-table">
           {colorschemeData.map((color, colorIndex) => {
             const currentAttribute = Object.keys(attribsToColorIndices).find((key) => attribsToColorIndices[key] === parseInt(colorIndex, 10));
 
             return (
               <Fragment key={colorIndex}>
                 <div
-                  className="color-square colorscheme-item"
+                  className="color-square"
                   style={{
                     backgroundColor: color,
                   }}

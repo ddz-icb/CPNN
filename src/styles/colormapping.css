@@ -1,4 +1,4 @@
-.colorscheme-container {
+.colormapping-item {
   color: var(--text-primary);
   display: flex;
   align-items: center;
@@ -14,15 +14,15 @@
   border: 1px solid var(--border-button-sidebar);
 }
 
-.colormapping-selector {
+.colormapping-select-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+}
+
+.colormapping-select-table {
   display: grid;
   grid-template-columns: auto auto;
   gap: 5px;
   align-items: center;
-}
-
-.color-mapping-select-table {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  width: 100%;
 }

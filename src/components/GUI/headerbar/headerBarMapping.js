@@ -10,7 +10,7 @@ export function HeaderbarColorMapping() {
       const color = getColor(attribsToColorIndices[key], colorscheme);
       if (color !== fallbackColor) {
         content.push(
-          <div key={key} className="colorscheme-container">
+          <div key={key} className="colormapping-item">
             <div className="color-square" style={{ backgroundColor: color }}></div>
             <span>{key}</span>
           </div>
@@ -18,7 +18,7 @@ export function HeaderbarColorMapping() {
       }
     }
     content.push(
-      <div key="fallback" className="colorscheme-container">
+      <div key="fallback" className="colormapping-item">
         <div className="color-square" style={{ backgroundColor: fallbackColor }}></div>
         <span>No Value Available</span>
       </div>
