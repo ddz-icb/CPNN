@@ -8,12 +8,12 @@ export function HeaderBar() {
   const [isMappingActive, setIsMappingActive] = useState(false);
 
   return (
-    <div className="headerbar">
+    <div className="headerbar-overlay">
       <HeaderButton
         onClick={() => setIsMappingActive(!isMappingActive)}
         icon={isMappingActive ? <XIcon /> : <EyeIcon />}
         tooltip={isMappingActive ? "Close" : "View Mapping"}
-        tooltipId={isMappingActive ? "close-view-mapping-tooltip" : "view-mapping-tooltip"}
+        tooltipId={isMappingActive ? "close-colormapping-tooltip" : "open-colormapping-tooltip"}
       />
       {isMappingActive && <HeaderbarColorMapping />}
     </div>

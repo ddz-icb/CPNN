@@ -31,8 +31,8 @@ export function HeaderbarColorMapping() {
   const linkColorMapping = renderMapping(colorschemeState.linkAttribsToColorIndices, colorschemeState.linkColorscheme.data);
 
   return (
-    <div className={"headerbar-mapping"}>
-      <div className="mapping-container">
+    <div className={"headerbar-colormapping"}>
+      <div className="colormapping-container">
         <div>
           <span className="heading">Nodes</span>
           {nodeColorMapping}

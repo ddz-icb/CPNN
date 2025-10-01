@@ -1,4 +1,4 @@
-.headerbar {
+.headerbar-overlay {
   position: fixed;
   z-index: 10;
   top: 0;
@@ -6,7 +6,9 @@
   margin: 0.5rem;
 }
 
-.headerbar-mapping {
+/* colormapping section */
+
+.headerbar-colormapping {
   position: absolute;
   z-index: 10;
   top: 4rem;
@@ -20,7 +22,7 @@
   overflow: auto;
 }
 
-.mapping-container {
+.colormapping-container {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
