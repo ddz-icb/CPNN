@@ -102,7 +102,7 @@ export function CodeEditorBlock({ text, onClick, compilerError, defaultValue, te
       </div>
       {compilerError && (
         <div className="popup-block">
-          <span className="warning pad-left-1">{compilerError}</span>
+          <span className="text-warning pad-left-1">{compilerError}</span>
         </div>
       )}
     </>
@@ -122,7 +122,7 @@ export function Popup({ heading, description, isOpen, setIsOpen, widePopup, chil
               <XIcon />
             </span>
           </div>
-          <div className="popup-block color-text-primary">{description}</div>
+          <div className="popup-block text-primary">{description}</div>
           {children}
         </div>
       </div>

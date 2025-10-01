@@ -1,6 +1,3 @@
-.no-wrap {
-  white-space: nowrap;
-}
 .text-primary {
   color: var(--text-primary);
 }
@@ -14,9 +11,6 @@
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
 }
-.warning {
+.text-warning {
   color: var(--error-color);
-}
-.color-text-primary {
-  color: var(--text-primary);
 }
