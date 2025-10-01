@@ -1,4 +1,4 @@
-.custom-editor {
+.code-editor-container {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -6,6 +6,8 @@
   border-radius: var(--border-radius-button);
   overflow: hidden;
 }
+
+/* settings specific for code mirror */
 
 .CodeMirror {
   flex-grow: 1;

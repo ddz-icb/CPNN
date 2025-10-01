@@ -95,7 +95,7 @@ export function CodeEditorBlock({ text, onClick, compilerError, defaultValue, te
         </span>
       </div>
       <div className={`sidebar-block ${compilerError ? "no-pad-bottom" : ""}`}>
-        <div className="custom-editor">
+        <div className="code-editor-container">
           <textarea ref={textareaRef} defaultValue={defaultValue}></textarea>
         </div>
         <Button onClick={onClick} text="Run" />
