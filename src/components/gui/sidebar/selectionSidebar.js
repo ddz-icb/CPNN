@@ -1,16 +1,11 @@
-import { ReactComponent as SunIcon } from "../../../icons/sun.svg";
 import { ReactComponent as DataIcon } from "../../../icons/data.svg";
-import { ReactComponent as MoonIcon } from "../../../icons/moon.svg";
 import { ReactComponent as MagnetIcon } from "../../../icons/magnet.svg";
 import { ReactComponent as FilterIcon } from "../../../icons/filter.svg";
 import { ReactComponent as PaletteIcon } from "../../../icons/colorPalette.svg";
 import { ReactComponent as DownloadIcon } from "../../../icons/download.svg";
-import { lightTheme, useTheme } from "../../adapters/state/themeState.js";
-import { themeService } from "../../application_service/services/themeService.js";
+import { useTheme } from "../../adapters/state/themeState.js";
 
 export function SelectionSidebar({ handleNavItemClick }) {
-  const { theme } = useTheme();
-
   return (
     <>
       <NavItem text={"Data"} icon={<DataIcon />} onClick={() => handleNavItemClick("Data")} />
@@ -18,11 +13,6 @@ export function SelectionSidebar({ handleNavItemClick }) {
       <NavItem text={"Physics"} icon={<MagnetIcon />} onClick={() => handleNavItemClick("Physics")}></NavItem>
       <NavItem text={"Appearance"} icon={<PaletteIcon />} onClick={() => handleNavItemClick("Appearance")}></NavItem>
       <NavItem text={"Export"} icon={<DownloadIcon />} onClick={() => handleNavItemClick("Export")} />
-      <NavItem
-        text={"Change Theme"}
-        icon={theme.name === lightTheme.name ? <MoonIcon /> : <SunIcon />}
-        onClick={() => themeService.handleChangeTheme()}
-      />
     </>
   );
 }

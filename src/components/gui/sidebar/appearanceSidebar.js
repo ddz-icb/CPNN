@@ -8,11 +8,14 @@ import {
   linkWidthDescription,
   nodeLabelDescription,
   setColorschemeDescription,
+  themeDescription,
   uploadColorschemeDescription,
 } from "./descriptions/appearanceDescriptions.js";
 import { useAppearance, linkWidthInit } from "../../adapters/state/appearanceState.js";
 import { useColorschemeState } from "../../adapters/state/colorschemeState.js";
 import { colorschemeService } from "../../application_service/services/colorschemeService.js";
+import { useTheme } from "../../adapters/state/themeState.js";
+import { themeService } from "../../application_service/services/themeService.js";
 
 export function AppearanceSidebar() {
   return (
@@ -29,9 +32,17 @@ export function AppearanceSidebar() {
 
 export function AppearanceSettings() {
   const { appearance, setAppearance } = useAppearance();
+  const { theme } = useTheme();
 
   return (
     <>
+      <SwitchBlock
+        value={theme.theme}
+        setValue={() => themeService.handleChangeTheme()}
+        text={"Dark Mode"}
+        infoHeading={"Enabling Dark Appearance"}
+        infoDescription={themeDescription}
+      />
       <SwitchBlock
         value={appearance.showNodeLabels}
         setValue={() => setAppearance("showNodeLabels", !appearance.showNodeLabels)}

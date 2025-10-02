@@ -1,3 +1,9 @@
+export const themeDescription = (
+  <div>
+    <p>Changes the general appearance of the application to a darker version.</p>
+  </div>
+);
+
 export const nodeLabelDescription = (
   <div>
     <p>Shows the name of each node above itself in the graph.</p>
