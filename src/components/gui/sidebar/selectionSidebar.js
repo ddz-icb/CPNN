@@ -27,10 +27,10 @@ export function SelectionSidebar({ handleNavItemClick }) {
   );
 }
 
-function NavItem({ text, href, icon, onClick, children }) {
+function NavItem({ text, icon, onClick, children }) {
   return (
     <li className="nav-item">
-      <a className="nav-link" {...(href && { href: href })} onClick={onClick}>
+      <a className="nav-link" onClick={onClick}>
         <span className="navbar-item-logo">{icon}</span>
         <span className="link-text">{text}</span>
       </a>

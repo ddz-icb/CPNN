@@ -28,12 +28,12 @@ export function Sidebar(props) {
       {isSelection ? (
         <>
           <LogoBar />
-          <div className="sidebar-selection">{currentSidebar}</div>
+          <div className="navbar-main">{currentSidebar}</div>
         </>
       ) : (
         <>
           <BackBar activeNavItem={activeNavItem} onClick={() => setActiveNavItem("Selection")} />
-          <div className="sidebar-main-body">{currentSidebar}</div>
+          <div className="navbar-subsection">{currentSidebar}</div>
         </>
       )}
     </Navbar>
@@ -58,12 +58,12 @@ function LogoBar({ onClick }) {
 
 function BackBar({ activeNavItem, onClick }) {
   return (
-    <li className="back tooltip-wrapper">
-      <span data-tooltip-id={`back-tooltip`} data-tooltip-content="Go Back" className="back-icon" onClick={onClick}>
+    <li className="back-overlay">
+      <div className="back-icon" onClick={onClick}>
         <BackArrowIcon />
-      </span>
-      <div className="link-text-container">
-        <p className="link-text back-text">{activeNavItem}</p>
+      </div>
+      <div className="back-text">
+        <p className="link-text">{activeNavItem}</p>
       </div>
     </li>
   );
