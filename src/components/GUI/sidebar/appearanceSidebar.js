@@ -39,7 +39,7 @@ export function AppearanceSettings() {
       <SwitchBlock
         value={theme.theme}
         setValue={() => themeService.handleChangeTheme()}
-        text={"Dark Mode"}
+        text={"Dark Appearance"}
         infoHeading={"Enabling Dark Appearance"}
         infoDescription={themeDescription}
       />
