@@ -50,21 +50,32 @@
   width: 100%;
   color: var(--text-primary);
   font-size: 1.15rem;
+  flex-grow: 1;
+  margin: 0;
+  text-align: center;
 }
 
-.popup-header b,
-.popup-header p {
+.popup-heading {
   flex-grow: 1;
   text-align: center;
   margin: 0;
 }
 
-.sidebar-tooltip-wrapper .sidebar-tooltip,
-.popup-tooltip-wrapper .popup-tooltip {
-  z-index: 20;
+.popup-button {
   display: flex;
-  justify-content: flex-end;
-  background-color: var(--bg-tooltip-sidebar);
-  border-radius: var(--border-radius);
-  color: var(--tooltip-sidebar-text);
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.popup-button svg {
+  fill: var(--icon-color);
+}
+
+.popup-button:hover svg {
+  fill: var(--icon-color-secondary);
+  transition: var(--transition-speed);
 }

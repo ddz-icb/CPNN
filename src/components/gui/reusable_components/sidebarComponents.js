@@ -12,7 +12,7 @@ export function SliderBlock({ variant = "sidebar", value, setValue, setValueText
     <>
       <div className="inline">
         <label className={"label"}>{text}</label>
-        <span className="tooltip-button pad-left-05 pad-top-11">
+        <span className="popup-button pad-left-05 pad-top-11">
           <InfoButtonPopup heading={infoHeading} description={infoDescription} widePopup={isPopup} />
         </span>
       </div>
@@ -40,7 +40,7 @@ export function SwitchBlock({ variant = "sidebar", value, setValue, text, infoHe
     <div className={wrapperClassName}>
       <div className="inline">
         <label className="label">{text}</label>
-        <span className="tooltip-button pad-left-05 pad-top-11">
+        <span className="popup-button pad-left-05 pad-top-11">
           <InfoButtonPopup heading={infoHeading} description={infoDescription} widePopup={isPopup} />
         </span>
       </div>
@@ -60,7 +60,7 @@ export function FieldBlock({ variant = "sidebar", text, infoHeading, infoDescrip
     <div className={wrapperClassName}>
       <div className="inline">
         <label className="label">{text}</label>
-        <span className="tooltip-button pad-left-05 pad-top-11">
+        <span className="popup-button pad-left-05 pad-top-11">
           <InfoButtonPopup heading={infoHeading} description={infoDescription} widePopup={isPopup} />
         </span>
       </div>
@@ -72,8 +72,7 @@ export function FieldBlock({ variant = "sidebar", text, infoHeading, infoDescrip
 export function Button({ variant = "sidebar", onClick, onChange, linkRef, tooltip, tooltipId, text, className }) {
   const isPopup = variant === "popup";
 
-  const wrapperClass = isPopup ? `popup-tooltip-wrapper pad-top-1 ${className || ""}` : "sidebar-tooltip-wrapper";
-  const tooltipClass = isPopup ? "popup-tooltip" : "sidebar-tooltip";
+  const wrapperClass = isPopup ? `tooltip-wrapper pad-top-1 ${className || ""}` : "tooltip-wrapper";
 
   return (
     <div className={wrapperClass}>
@@ -81,7 +80,7 @@ export function Button({ variant = "sidebar", onClick, onChange, linkRef, toolti
         <span>{text}</span>
         <input type="file" style={{ display: "none" }} onChange={onChange} ref={linkRef} />
       </button>
-      <Tooltip id={tooltipId} place="top" effect="solid" className={tooltipClass} />
+      <Tooltip id={tooltipId} place="top" effect="solid" className="tooltip" />
     </div>
   );
 }
@@ -90,7 +89,7 @@ export function CodeEditorBlock({ text, onClick, compilerError, defaultValue, te
     <>
       <div className="inline">
         <label className="label">{text}</label>
-        <span className="tooltip-button pad-left-05 pad-top-11">
+        <span className="popup-button pad-left-05 pad-top-11">
           <InfoButtonPopup heading={infoHeading} description={infoDescription} />
         </span>
       </div>
@@ -117,8 +116,8 @@ export function Popup({ heading, description, isOpen, setIsOpen, widePopup, chil
       <div className="popup-overlay">
         <div className={popupContainer}>
           <div className="popup-header pad-bottom-1">
-            <p>{heading}</p>
-            <span className="tooltip-button" onClick={() => setIsOpen(false)}>
+            <span className="popup-heading">{heading}</span>
+            <span className="popup-button" onClick={() => setIsOpen(false)}>
               <XIcon />
             </span>
           </div>
@@ -246,8 +245,8 @@ export function TableList({
         data.length > 0 &&
         itemTooltipContent &&
         data.map((item, index) => (
-          <div key={`item-tooltip-wrapper-${item}-${index}`} className="sidebar-tooltip-wrapper">
-            <Tooltip key={`item-tooltip-${item}-${index}`} id={`item-tooltip-${item}-${index}`} className="sidebar-tooltip" />
+          <div key={`item-tooltip-wrapper-${item}-${index}`} className="tooltip-wrapper">
+            <Tooltip key={`item-tooltip-${item}-${index}`} id={`item-tooltip-${item}-${index}`} className="tooltip" />
           </div>
         ))}
 
@@ -255,8 +254,8 @@ export function TableList({
         data.length > 0 &&
         actionIconTooltipContent &&
         data.map((item, index) => (
-          <div key={`action-tooltip-wrapper-${item}-${index}`} className="sidebar-tooltip-wrapper">
-            <Tooltip key={`action-tooltip-${item}-${index}`} id={`action-tooltip-${item}-${index}`} className="sidebar-tooltip" />
+          <div key={`action-tooltip-wrapper-${item}-${index}`} className="tooltip-wrapper">
+            <Tooltip key={`action-tooltip-${item}-${index}`} id={`action-tooltip-${item}-${index}`} className="tooltip" />
           </div>
         ))}
 
@@ -264,8 +263,8 @@ export function TableList({
         data.length > 0 &&
         actionIcon2TooltipContent &&
         data.map((item, index) => (
-          <div key={`action-tooltip-2-wrapper-${item}-${index}`} className="sidebar-tooltip-wrapper">
-            <Tooltip key={`action-tooltip-2-${item}-${index}`} id={`action-tooltip-2-${item}-${index}`} className="sidebar-tooltip" />
+          <div key={`action-tooltip-2-wrapper-${item}-${index}`} className="tooltip-wrapper">
+            <Tooltip key={`action-tooltip-2-${item}-${index}`} id={`action-tooltip-2-${item}-${index}`} className="tooltip" />
           </div>
         ))}
     </div>

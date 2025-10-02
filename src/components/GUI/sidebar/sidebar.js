@@ -58,7 +58,7 @@ function LogoBar({ onClick }) {
 
 function BackBar({ activeNavItem, onClick }) {
   return (
-    <li className="back sidebar-tooltip-wrapper">
+    <li className="back tooltip-wrapper">
       <span data-tooltip-id={`back-tooltip`} data-tooltip-content="Go Back" className="back-icon" onClick={onClick}>
         <BackArrowIcon />
       </span>
