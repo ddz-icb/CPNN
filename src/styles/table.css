@@ -34,16 +34,6 @@
   fill: var(--icon-color);
 }
 
-.item-table-logo:hover svg {
-  fill: var(--icon-color-secondary);
-  transition: var(--transition-speed);
-}
-
-.dark-item-table .item-table-logo:hover svg {
-  fill: var(--icon-color-tertiary);
-  transition: var(--transition-speed);
-}
-
 .item-table-logo svg {
   display: block;
   width: 1.25rem;
@@ -52,7 +42,12 @@
   cursor: pointer;
 }
 
-.item-table-logo.saturated-logo svg {
-  fill: var(--icon-color);
-  filter: grayscale(0%) opacity(1);
+.item-table-logo:hover svg {
+  fill: var(--icon-color-secondary);
+  transition: var(--transition-speed);
+}
+
+.dark-item-table .item-table-logo:hover svg {
+  fill: var(--icon-color-tertiary);
+  transition: var(--transition-speed);
 }
