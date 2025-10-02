@@ -46,7 +46,7 @@ export function SwitchBlock({ variant = "sidebar", value, setValue, text, infoHe
       </div>
       <label className="switch">
         <input type="checkbox" checked={value} onChange={setValue} className="checkbox-input" />
-        <span className="slider round"></span>
+        <span className="switch-button"></span>
       </label>
     </div>
   );

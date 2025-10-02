@@ -1,3 +1,17 @@
+.text-field {
+  display: inline-block;
+  background-color: var(--bg-input-field);
+  border: 1px solid var(--border-input-field-sidebar-focus);
+  border-radius: var(--border-radius-button);
+  box-sizing: border-box;
+  color: var(--text-primary);
+  font-size: 1rem;
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 .text-primary {
   color: var(--text-primary);
 }

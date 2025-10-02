@@ -14,6 +14,7 @@ import "./styles/table.css";
 import "./styles/tooltip.css";
 import "./styles/popup.css";
 import "./styles/colormapping_select.css";
+import "./styles/buttons.css";
 
 import { Sidebar } from "./components/gui/sidebar/sidebar.js";
 import { HeaderBar } from "./components/gui/headerbar/headerbar.js";
