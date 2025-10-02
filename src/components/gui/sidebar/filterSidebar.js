@@ -113,7 +113,7 @@ export function FilterSidebar() {
 
   return (
     <>
-      <div className="sidebar-block">
+      <div className="block-section">
         <Button text={"Reset Filters"} onClick={handleResetFilters} />
       </div>
       <SwitchBlock

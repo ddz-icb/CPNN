@@ -4,19 +4,16 @@ import { ReactComponent as XIcon } from "../../../icons/x.svg";
 import { Tooltip } from "react-tooltip";
 import { handleFieldBlur, handleFieldChange, handleSliderChange } from "../handlers/buttonHandlerFunctions.js";
 
-export function SliderBlock({ variant = "sidebar", value, setValue, setValueText, min, max, step, text, infoHeading, infoDescription, ...props }) {
-  const isPopup = variant === "popup";
-  const wrapperClassName = isPopup ? "popup-block pad-bottom-05" : "sidebar-block";
-
+export function SliderBlock({ value, setValue, setValueText, min, max, step, text, infoHeading, infoDescription, ...props }) {
   return (
     <>
       <div className="inline">
         <label className={"label"}>{text}</label>
         <span className="popup-button pad-left-05 pad-top-11">
-          <InfoButtonPopup heading={infoHeading} description={infoDescription} widePopup={isPopup} />
+          <InfoButtonPopup heading={infoHeading} description={infoDescription} widePopup={true} />
         </span>
       </div>
-      <div className={wrapperClassName}>
+      <div className="block-section">
         <input
           className="sidebar-slider"
           type="range"
@@ -32,16 +29,13 @@ export function SliderBlock({ variant = "sidebar", value, setValue, setValueText
   );
 }
 
-export function SwitchBlock({ variant = "sidebar", value, setValue, text, infoHeading, infoDescription }) {
-  const isPopup = variant === "popup";
-  const wrapperClassName = isPopup ? "popup-block" : "sidebar-block";
-
+export function SwitchBlock({ value, setValue, text, infoHeading, infoDescription }) {
   return (
-    <div className={wrapperClassName}>
+    <div className="block-section">
       <div className="inline">
         <label className="label">{text}</label>
         <span className="popup-button pad-left-05 pad-top-11">
-          <InfoButtonPopup heading={infoHeading} description={infoDescription} widePopup={isPopup} />
+          <InfoButtonPopup heading={infoHeading} description={infoDescription} widePopup={true} />
         </span>
       </div>
       <label className="switch">
@@ -52,16 +46,13 @@ export function SwitchBlock({ variant = "sidebar", value, setValue, text, infoHe
   );
 }
 
-export function FieldBlock({ variant = "sidebar", text, infoHeading, infoDescription, ...props }) {
-  const isPopup = variant === "popup";
-  const wrapperClassName = isPopup ? "popup-block" : "sidebar-block";
-
+export function FieldBlock({ text, infoHeading, infoDescription, ...props }) {
   return (
-    <div className={wrapperClassName}>
+    <div className="block-section">
       <div className="inline">
         <label className="label">{text}</label>
         <span className="popup-button pad-left-05 pad-top-11">
-          <InfoButtonPopup heading={infoHeading} description={infoDescription} widePopup={isPopup} />
+          <InfoButtonPopup heading={infoHeading} description={infoDescription} widePopup={true} />
         </span>
       </div>
       <NumericInput {...props} />
@@ -69,21 +60,18 @@ export function FieldBlock({ variant = "sidebar", text, infoHeading, infoDescrip
   );
 }
 
-export function Button({ variant = "sidebar", onClick, onChange, linkRef, tooltip, tooltipId, text, className }) {
-  const isPopup = variant === "popup";
-
-  const wrapperClass = isPopup ? `tooltip-wrapper pad-top-1 ${className || ""}` : "tooltip-wrapper";
-
+export function Button({ onClick, onChange, linkRef, tooltip, tooltipId, text, className }) {
   return (
-    <div className={wrapperClass}>
+    <>
       <button className={"button-rect"} data-tooltip-id={tooltipId} data-tooltip-content={tooltip} onClick={onClick}>
         <span>{text}</span>
         <input type="file" style={{ display: "none" }} onChange={onChange} ref={linkRef} />
       </button>
       <Tooltip id={tooltipId} place="top" effect="solid" className="tooltip" />
-    </div>
+    </>
   );
 }
+
 export function CodeEditorBlock({ text, onClick, compilerError, defaultValue, textareaRef, infoHeading, infoDescription }) {
   return (
     <>
@@ -93,14 +81,14 @@ export function CodeEditorBlock({ text, onClick, compilerError, defaultValue, te
           <InfoButtonPopup heading={infoHeading} description={infoDescription} />
         </span>
       </div>
-      <div className={`sidebar-block ${compilerError ? "no-pad-bottom" : ""}`}>
+      <div className={`block-section ${compilerError ? "no-pad-bottom" : ""}`}>
         <div className="code-editor-container">
           <textarea ref={textareaRef} defaultValue={defaultValue}></textarea>
         </div>
         <Button onClick={onClick} text="Run" />
       </div>
       {compilerError && (
-        <div className="popup-block">
+        <div className="block-section">
           <span className="text-warning pad-left-1">{compilerError}</span>
         </div>
       )}
@@ -121,7 +109,7 @@ export function Popup({ heading, description, isOpen, setIsOpen, widePopup, chil
               <XIcon />
             </span>
           </div>
-          <div className="popup-block text-primary">{description}</div>
+          <div className="block-section text-primary">{description}</div>
           {children}
         </div>
       </div>
@@ -159,7 +147,7 @@ export function PopupTextField({ textInfront, textInside, inline }) {
   if (inline) {
     return (
       <>
-        <div className={"popup-block pad-top-05 pad-bottom-05"}>
+        <div className={"block-section pad-top-05 pad-bottom-05"}>
           <label className="label">{textInfront}</label>
           <div className="text-field pad-left-025 pad-right-025">{textInside}</div>
         </div>

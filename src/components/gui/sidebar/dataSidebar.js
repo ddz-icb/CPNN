@@ -43,7 +43,7 @@ export function DataSidebar() {
 export function TopDataButtons() {
   return (
     <>
-      <div className="sidebar-block">
+      <div className="block-section">
         <UploadGraph />
         <UploadMapping />
       </div>
@@ -159,7 +159,7 @@ function UploadGraph() {
       heading={"Uploading your Graph"}
       description={uploadGraphDescription}
     >
-      <div className="popup-block">
+      <div className="block-section">
         <Button
           variant="popup"
           text={"JSON Example Graph"}
@@ -203,7 +203,7 @@ function UploadGraph() {
         infoHeading={"Merge Proteins"}
         infoDescription={mergeProteinsDescription}
       />
-      <div className="popup-block"></div>
+      <div className="block-section"></div>
       <SliderBlock
         variant="popup"
         value={minEdgeCorr}
@@ -253,7 +253,7 @@ function UploadGraph() {
       <PopupTextField inline={true} textInfront={"Your Node ID format:"} textInside={nodeIdFormat} />
       <PopupTextField inline={true} textInfront={"Node ID examples:"} textInside={nodeIdExample1} />
       <PopupTextField inline={true} textInside={nodeIdExample2} />
-      <div className="popup-block flex-end">
+      <div className="block-section flex-end">
         <Button
           variant="popup"
           text={"Upload Own Graph File"}
@@ -293,7 +293,7 @@ function UploadMapping() {
     >
       <PopupTextField inline={true} textInfront={"Pathway Mapping format:"} textInside={mappingFormat} />
       <PopupTextField inline={true} textInfront={"Pathway Mapping example:"} textInside={mappingExample} />
-      <div className="popup-block">
+      <div className="block-section">
         <Button
           variant="popup"
           text={"Download Example Pathway Mapping"}

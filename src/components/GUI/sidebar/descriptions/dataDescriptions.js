@@ -49,7 +49,7 @@ export const maxCompSizeDescriptionUpload = (
 );
 
 export const uploadPathwayMappingDescription = (
-  <div className="popup-block text-primary">
+  <div className="block-section text-primary">
     Uploading pathway mappings can provide additional context to classify nodes, determining their color. By doing so, nodes −such as peptides− are
     associated with one or more pathways. Nodes belonging to the same pathway will then be colored accordingly.
     <br />

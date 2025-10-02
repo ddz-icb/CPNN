@@ -35,15 +35,6 @@
   max-width: 700px;
 }
 
-.popup-block {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  padding-top: 0.5rem;
-  box-sizing: border-box;
-}
-
 .popup-header {
   display: flex;
   justify-content: space-between;
