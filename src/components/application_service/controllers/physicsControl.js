@@ -29,7 +29,7 @@ export function PhysicsControl() {
 
   useEffect(() => {
     if (!renderState.simulation) return;
-    log.info("Chaning link force", physics.linkForce);
+    log.info("Changing link force", physics.linkForce);
 
     try {
       if (physics.linkForce == false) {
@@ -101,7 +101,7 @@ export function PhysicsControl() {
       errorService.setError(error.message);
       log.error("Error updating component force:", error);
     }
-  }, [physics.componentStrength, graphState.graph]);
+  }, [physics.componentStrength]);
 
   useEffect(() => {
     if (!renderState.simulation) return;
@@ -191,7 +191,7 @@ export function PhysicsControl() {
       errorService.setError(error.message);
       log.error("Error updating circular layout:", error);
     }
-  }, [physics.circleLayout, graphState.graph]);
+  }, [physics.circleLayout]);
 
   useEffect(() => {
     if (!renderState.simulation || !graphState.graph || !graphFlags.filteredAfterStart) return;
@@ -212,5 +212,5 @@ export function PhysicsControl() {
       errorService.setError(error.message);
       log.error("Error updating community force:", error);
     }
-  }, [physics.communityForceStrength, graphState.graph]);
+  }, [physics.communityForceStrength]);
 }
