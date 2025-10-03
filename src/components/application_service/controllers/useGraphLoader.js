@@ -8,7 +8,6 @@ import { graphService } from "../services/graphService.js";
 import { resetService } from "../services/resetService.js";
 import { filterMergeProteins } from "../../domain_service/graph_calculations/filterGraph.js";
 import { applyNodeMapping } from "../../domain_service/graph_calculations/applyMapping.js";
-import { usePhysics } from "../../adapters/state/physicsState.js";
 
 export const useGraphLoader = () => {
   const { graphState, setGraphState } = useGraphState();
