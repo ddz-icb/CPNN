@@ -14,11 +14,11 @@ import { sortGraph } from "../graph_calculations/graphUtils.js";
 
 function applyFilters(graphData, settings) {
   let filteredGraph = graphData;
+  filteredGraph = filterMergeProteins(filteredGraph, settings.mergeProteins);
+  filteredGraph = filterTakeAbs(filteredGraph, settings.takeAbs);
   filteredGraph = filterByThreshold(filteredGraph, settings.minEdgeCorr);
   filteredGraph = filterMinCompSize(filteredGraph, settings.minCompSize);
   filteredGraph = filterMaxCompSize(filteredGraph, settings.maxCompSize);
-  filteredGraph = filterTakeAbs(filteredGraph, settings.takeAbs);
-  filteredGraph = filterMergeProteins(filteredGraph, settings.mergeProteins);
 
   return filterNodesExist(filteredGraph);
 }
