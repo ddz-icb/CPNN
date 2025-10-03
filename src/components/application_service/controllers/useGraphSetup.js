@@ -10,6 +10,7 @@ import {
   getLinkWeightMinMax,
   getNodeAttribsToColorIndices,
 } from "../../domain_service/graph_calculations/graphUtils.js";
+import { usePhysics } from "../../adapters/state/physicsState.js";
 
 export const useGraphSetup = () => {
   const { setFilter } = useFilter();
@@ -17,6 +18,7 @@ export const useGraphSetup = () => {
   const { graphState, setGraphState } = useGraphState();
   const { graphFlags, setGraphFlags } = useGraphFlags();
   const { setGraphMetrics } = useGraphMetrics();
+  const { setAllPhysics } = usePhysics();
 
   useEffect(() => {
     if (!graphState.originGraph || !graphState.activeGraphNames || graphFlags.isPreprocessed) return;
@@ -38,6 +40,10 @@ export const useGraphSetup = () => {
 
     setColorschemeState("nodeAttribsToColorIndices", getNodeAttribsToColorIndices(graph.data));
     setColorschemeState("linkAttribsToColorIndices", getLinkAttribsToColorIndices(graph.data));
+
+    if (graph.data.physics) {
+      setAllPhysics(graph.data.physics);
+    }
 
     setGraphState("graph", graph);
     setGraphFlags("isPreprocessed", true);
