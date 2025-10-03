@@ -14,7 +14,7 @@ import {
 import { useAppearance, linkWidthInit } from "../../adapters/state/appearanceState.js";
 import { useColorschemeState } from "../../adapters/state/colorschemeState.js";
 import { colorschemeService } from "../../application_service/services/colorschemeService.js";
-import { useTheme } from "../../adapters/state/themeState.js";
+import { darkTheme, useTheme } from "../../adapters/state/themeState.js";
 import { themeService } from "../../application_service/services/themeService.js";
 
 export function AppearanceSidebar() {
@@ -37,7 +37,7 @@ export function AppearanceSettings() {
   return (
     <>
       <SwitchBlock
-        value={theme.theme}
+        value={theme.name == darkTheme.name}
         setValue={() => themeService.handleChangeTheme()}
         text={"Dark Appearance"}
         infoHeading={"Enabling Dark Appearance"}
