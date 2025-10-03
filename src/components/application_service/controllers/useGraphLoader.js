@@ -15,7 +15,6 @@ export const useGraphLoader = () => {
   const { setError } = useError();
   const { mappingState } = useMappingState();
   const { graphFlags } = useGraphFlags();
-  const { physics } = usePhysics();
 
   useEffect(() => {
     if (!graphState.activeGraphNames) return;
