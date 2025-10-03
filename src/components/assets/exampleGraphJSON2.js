@@ -260,4 +260,4 @@ const exampleGraph = JSON.stringify({
   ],
 });
 
-export const exampleGraphJson2 = { name: "ExampleGraph2.json", data: exampleGraph };
+export const exampleGraphJson2 = { name: "ExampleGraph2", data: exampleGraph };

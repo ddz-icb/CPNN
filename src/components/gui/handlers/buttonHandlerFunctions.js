@@ -1,34 +1,40 @@
 import log from "../../adapters/logging/logger.js";
 
 export const handleSliderChange = (event, setValue, setValueText, min = 0, max = Infinity) => {
-  const value = event.target.value;
+  const stringValue = event.target.value;
+  const value = Number(stringValue);
 
-  if (value >= min && value <= max) {
+  if (!isNaN(value) && value >= min && value <= max) {
     setValue(value);
-    setValueText(value);
+    setValueText(stringValue);
   }
 };
 
 export const handleFieldChange = (event, setValueText, min = 0, max = Infinity) => {
-  const value = event.target.value;
+  const stringValue = event.target.value;
 
-  if (value == "") {
+  if (stringValue === "") {
     setValueText("");
-  } else if (value >= min && value <= max) {
-    setValueText(value);
+  } else {
+    const value = Number(stringValue);
+    if (!isNaN(value) && value >= min && value <= max) {
+      setValueText(stringValue);
+    }
   }
 };
 
 export const handleFieldBlur = (event, setValue, setValueText, min = 0, max = Infinity, fallbackValue) => {
-  let value = event.target.value;
+  const stringValue = event.target.value;
 
-  if (value === "") {
+  if (stringValue === "") {
     setValue(fallbackValue);
-    setValueText(fallbackValue);
-  } else if (value >= min && value <= max) {
-    event.target.innerText = value;
-    setValue(value);
-    setValueText(value);
+    setValueText(String(fallbackValue));
+  } else {
+    const value = Number(stringValue);
+    if (!isNaN(value) && value >= min && value <= max) {
+      setValue(value);
+      setValueText(stringValue);
+    }
   }
 };
 

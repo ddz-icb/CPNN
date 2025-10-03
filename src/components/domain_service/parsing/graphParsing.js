@@ -1,6 +1,6 @@
 import log from "../../adapters/logging/logger.js";
 import axios from "axios";
-import { getFileAsText, parseSVFile } from "./fileParsing.js";
+import { getFileAsText, getFileNameWithoutExtension, parseSVFile } from "./fileParsing.js";
 import {
   filterByThreshold,
   filterMaxCompSize,
@@ -33,7 +33,7 @@ export async function parseGraphFile(file, settings) {
   graphData = applyFilters(graphData, settings);
   sortGraph(graphData);
 
-  const graph = { name: file.name, data: graphData };
+  const graph = { name: getFileNameWithoutExtension(file.name), data: graphData };
   verifyGraph(graph);
 
   return graph;

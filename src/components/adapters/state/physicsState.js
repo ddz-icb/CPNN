@@ -40,7 +40,7 @@ export const expectedPhysicTypes = {
   componentStrength: "number",
   nodeRepulsionStrength: "number",
   nodeCollision: "boolean",
-  linkForce: "number",
+  linkForce: "boolean",
   linkLength: "number",
   checkBorder: "boolean",
   borderWidth: "number",

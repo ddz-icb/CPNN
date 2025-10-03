@@ -1,6 +1,6 @@
 import log from "../../adapters/logging/logger.js";
 import Papa from "papaparse";
-import { getFileAsText } from "./fileParsing.js";
+import { getFileAsText, getFileNameWithoutExtension } from "./fileParsing.js";
 import { verifyMapping } from "../verification/mappingVerification.js";
 
 export async function parseMappingFile(file) {
@@ -13,7 +13,7 @@ export async function parseMappingFile(file) {
     if (fileExtension !== "csv" && fileExtension !== "tsv") throw new Error(`Wrong file extension. Only .csv and .tsv is allowed.`);
     const fileContent = await getFileAsText(file);
     const mappingData = parseMapping(fileContent);
-    const mapping = { name: file.name, data: mappingData };
+    const mapping = { name: getFileNameWithoutExtension(file.name), data: mappingData };
     verifyMapping(mapping);
     return mapping;
   } catch (error) {
