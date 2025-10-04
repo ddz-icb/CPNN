@@ -144,8 +144,7 @@ export function ClickTooltip() {
         heading={`Protein-IDs ${hasPhosphosites && "and Phosphosites"}`}
         value={isoforms.map(({ pepId, phosphosites }, i) => (
           <div key={`${pepId}-${i}`}>
-            {pepId}
-            {phosphosites}
+            {pepId} {phosphosites.join(", ")}
           </div>
         ))}
       />

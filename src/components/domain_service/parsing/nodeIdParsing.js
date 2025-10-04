@@ -40,7 +40,12 @@ export function parseNodeIdEntries(entries) {
   const isoforms = entries
     .map((entry) => {
       const [pepId, , phosphosites] = entry.split("_");
-      return pepId ? { pepId, phosphosites } : null;
+      return pepId
+        ? {
+            pepId,
+            phosphosites: phosphosites ? phosphosites.split(", ") : [],
+          }
+        : null;
     })
     .filter(Boolean);
 
