@@ -117,12 +117,12 @@ export function ClickTooltip() {
     if (!tooltipSettings.isClickTooltipActive) return;
 
     const { x, y } = tooltipSettings.clickTooltipData;
-    const left = x > container.width ? x - 15 : x + 15;
+    const left = x > container.width / 2 ? x - 15 : x + 15;
     const top = y;
     let transform = "";
 
     if (y > container.height / 2) transform += " translateY(-100%)";
-    if (x > container.width) transform += " translateX(-100%)";
+    if (x > container.width / 2) transform += " translateX(-100%)";
 
     setStyle({ left: `${left}px`, top: `${top}px`, transform });
   }, [tooltipSettings.isClickTooltipActive, tooltipSettings.clickTooltipData]);
