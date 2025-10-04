@@ -4,7 +4,7 @@ import { linkThresholdInit, useFilter } from "../../adapters/state/filterState.j
 import { useGraphFlags } from "../../adapters/state/graphFlagsState.js";
 import { useGraphMetrics } from "../../adapters/state/graphMetricsState.js";
 import { useGraphState } from "../../adapters/state/graphState.js";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   getLinkAttribsToColorIndices,
   getLinkWeightMinMax,
@@ -26,9 +26,7 @@ export const useGraphSetup = () => {
   const { setError } = useError();
   const { mappingState } = useMappingState();
   const { setGraphMetrics } = useGraphMetrics();
-  const { physics, setAllPhysics } = usePhysics();
-
-  // const [tempPhysics, setTempPhysics] = useState(null);
+  const { setAllPhysics } = usePhysics();
 
   // load graph
   useEffect(() => {
@@ -41,9 +39,6 @@ export const useGraphSetup = () => {
         graph.data = filterMergeProteins(graph.data, graphFlags.mergeProteins);
         graph.data = applyNodeMapping(graph.data, mappingState.mapping?.data);
         setGraphState("originGraph", graph);
-
-        // // retain physics in case of merge proteins
-        // setTempPhysics(physics);
 
         resetService.resetSimulation();
       } catch (error) {
@@ -85,14 +80,4 @@ export const useGraphSetup = () => {
     setGraphState("graph", graph);
     setGraphFlags("isPreprocessed", true);
   }, [graphState.originGraph]);
-
-  //   // reinstate settings in case of merge proteins
-  //   useEffect(() => {
-  //     if (!tempPhysics) return;
-  //     log.info("Reinstating physics and filter settings", tempPhysics);
-
-  //     // setAllPhysics(tempPhysics);
-
-  //     setTempPhysics(null);
-  //   }, [graphFlags.isPreprocessed]);
 };

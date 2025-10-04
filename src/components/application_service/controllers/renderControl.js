@@ -1,10 +1,10 @@
 import log from "../../adapters/logging/logger.js";
 import * as PIXI from "pixi.js";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 import { handleResize, initDragAndZoom, initTooltips } from "../../domain_service/canvas_interaction/interactiveCanvas.js";
 import { Tooltips } from "../../gui/tooltip/tooltips.js";
 import { radius, drawCircle, getTextStyle, getBitMapStyle, redraw, render, getNodeLabelOffsetY } from "../../domain_service/canvas_drawing/draw.js";
-import { gravityStrengthInit, linkLengthInit, nodeRepulsionStrengthInit } from "../../adapters/state/physicsState.js";
+import { linkLengthInit } from "../../adapters/state/physicsState.js";
 import { useAppearance } from "../../adapters/state/appearanceState.js";
 import { graphInit, useGraphState } from "../../adapters/state/graphState.js";
 import { useContainer } from "../../adapters/state/containerState.js";
@@ -157,7 +157,7 @@ export function RenderControl() {
     log.info("Init simulation");
 
     try {
-      const newSimulation = getSimulation(container.width, container.height, linkLengthInit, gravityStrengthInit, nodeRepulsionStrengthInit);
+      const newSimulation = getSimulation(linkLengthInit);
       initDragAndZoom(renderState.app, newSimulation, radius, setTooltipSettings, container.width, container.height);
       setRenderState("simulation", newSimulation);
     } catch (error) {
