@@ -270,6 +270,7 @@ function NumericInput({ valueText, setValue, setValueText, fallbackValue, min, m
     <input
       className="input-field"
       type="number"
+      lang="en"
       min={min}
       max={max}
       step={step}
