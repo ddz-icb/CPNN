@@ -63,8 +63,9 @@ export function ClickTooltip() {
 
         if (!protIdNoIsoform) return;
 
-        // const responseUniprot = await axios.get(`http://localhost:3001/uniprot/${protIdNoIsoform}`);
-        const responseUniprot = await axios.get(`https://cpnn.ddz.de/api/uniprot/${protIdNoIsoform}`);
+        const responseUniprot = await axios.get(`http://localhost:3001/uniprot/${protIdNoIsoform}`);
+        // const responseUniprot = await axios.get(`https://cpnn.ddz.de/api/uniprot/${protIdNoIsoform}`);
+
         const uniprotData = responseUniprot?.data;
         if (!uniprotData) return;
 
@@ -148,7 +149,7 @@ export function ClickTooltip() {
           </div>
         ))}
       />
-      <TooltipPopupItem heading={"Gene/Protein Annotations"} value={tooltipSettings?.clickTooltipData?.nodeGroups} />
+      <TooltipPopupItem heading={"Gene/Protein Annotations"} value={tooltipSettings?.clickTooltipData?.nodeGroups.join(", ")} />
       <TooltipPopupItem heading={"Description"} value={description} />
       <div className="pdb-viewer" ref={viewerRef} />
     </TooltipPopup>

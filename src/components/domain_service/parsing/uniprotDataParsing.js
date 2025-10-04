@@ -1,20 +1,30 @@
-export const getDescriptionUniprotData = (data) => {
-  const descriptionMatch = data.match(/-!- FUNCTION:\s*([^.\{(]+)[.\{(]/);
-  const description = descriptionMatch ? descriptionMatch[1] : null;
+export const getDescriptionUniprotData = (jsonData) => {
+  console.log("JSONDAT", jsonData); // NEXT: SHORTEN DESCRIPTION + FIND MORE USEFUL THINGS IN API SUCH AS 'DISEASE'?
+  const functionComment = jsonData.comments.find((comment) => comment.commentType === "FUNCTION");
 
-  return description;
+  if (functionComment && functionComment.texts && functionComment.texts.length > 0) {
+    return functionComment.texts[0].value;
+  }
+
+  return null;
 };
 
-export const getFullNameUniprotData = (data) => {
-  const fullNameMatch = data.match(/RecName:\s*Full=([^;\{(]+)[;\{(]/);
-  const fullName = fullNameMatch ? fullNameMatch[1] : null;
+export const getFullNameUniprotData = (jsonData) => {
+  const recommendedName = jsonData.proteinDescription?.recommendedName;
 
-  return fullName;
+  if (recommendedName && recommendedName.fullName) {
+    return recommendedName.fullName.value;
+  }
+
+  return null;
 };
 
-export const getPdbIdUniprotData = (data) => {
-  const pdbIdMatch = data.match(/DR   PDB; (\w+);/);
-  const pdbId = pdbIdMatch ? pdbIdMatch[1] : null;
+export const getPdbIdUniprotData = (jsonData) => {
+  const pdbReferences = jsonData.uniProtKBCrossReferences.filter((ref) => ref.database === "PDB");
 
-  return pdbId;
+  if (pdbReferences.length > 0) {
+    return pdbReferences[0].id;
+  }
+
+  return null;
 };

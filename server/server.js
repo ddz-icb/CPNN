@@ -21,7 +21,7 @@ app.use(express.json());
 app.get("/uniprot/:id", async (req, res) => {
   try {
     const uniprotID = req.params.id;
-    const response = await axios.get(`https://www.uniprot.org/uniprotkb/${uniprotID}.txt`);
+    const response = await axios.get(`https://rest.uniprot.org/uniprotkb/${uniprotID}.json`);
     res.send(response.data);
   } catch (error) {
     res.status(500).send("Error: fetching data from UniProt");
