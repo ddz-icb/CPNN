@@ -28,7 +28,7 @@ export function PhysicsControl() {
   const { renderState } = useRenderState();
 
   useEffect(() => {
-    if (!renderState.simulation) return;
+    if (!renderState.simulation || !graphFlags.isPreprocessed) return;
     log.info("Changing link force", physics.linkForce);
 
     try {
@@ -49,10 +49,10 @@ export function PhysicsControl() {
       errorService.setError(error.message);
       log.error("Error updating link force:", error);
     }
-  }, [physics.linkForce]);
+  }, [physics.linkForce]); // shouldn't be called on filteredAfterStart since all nodes of the graph are needed
 
   useEffect(() => {
-    if (!renderState.simulation || physics.linkForce == false) return;
+    if (!renderState.simulation || !graphFlags.isPreprocessed || physics.linkForce == false) return;
     log.info("Changing link length", physics.linkLength);
 
     try {
@@ -62,10 +62,10 @@ export function PhysicsControl() {
       errorService.setError(error.message);
       log.error("Error updating link length:", error);
     }
-  }, [physics.linkLength]);
+  }, [physics.linkLength, graphFlags.filteredAfterStart]);
 
   useEffect(() => {
-    if (!renderState.simulation) return;
+    if (!renderState.simulation || !graphFlags.isPreprocessed) return;
     log.info("Changing gravity", physics.gravityStrength);
 
     try {
@@ -80,10 +80,10 @@ export function PhysicsControl() {
       errorService.setError(error.message);
       log.error("Error updating gravity:", error);
     }
-  }, [physics.gravityStrength, container.width, container.height]);
+  }, [physics.gravityStrength, container.width, container.height, graphFlags.filteredAfterStart]);
 
   useEffect(() => {
-    if (!renderState.simulation || !graphState.graph || !graphFlags.filteredAfterStart) return;
+    if (!renderState.simulation || !graphFlags.isPreprocessed || !graphState.graph || !graphFlags.filteredAfterStart) return;
     log.info("Changing component strength", physics.componentStrength);
 
     try {
@@ -101,10 +101,10 @@ export function PhysicsControl() {
       errorService.setError(error.message);
       log.error("Error updating component force:", error);
     }
-  }, [physics.componentStrength]);
+  }, [physics.componentStrength, graphFlags.filteredAfterStart]);
 
   useEffect(() => {
-    if (!renderState.simulation) return;
+    if (!renderState.simulation || !graphFlags.isPreprocessed) return;
     log.info("Changing node repulsion strength", physics.nodeRepulsionStrength);
 
     try {
@@ -125,10 +125,10 @@ export function PhysicsControl() {
       errorService.setError(error.message);
       log.error("Error updating node repulsion:", error);
     }
-  }, [physics.nodeRepulsionStrength]);
+  }, [physics.nodeRepulsionStrength, graphFlags.filteredAfterStart]);
 
   useEffect(() => {
-    if (!renderState.simulation || physics.nodeCollision == null) return;
+    if (!renderState.simulation || !graphFlags.isPreprocessed || physics.nodeCollision == null) return;
     log.info("Changing node collision strength", physics.nodeCollision);
 
     try {
@@ -145,10 +145,10 @@ export function PhysicsControl() {
       errorService.setError(error.message);
       log.error("Error updating node collision:", error);
     }
-  }, [physics.nodeCollision]);
+  }, [physics.nodeCollision, graphFlags.filteredAfterStart]);
 
   useEffect(() => {
-    if (!renderState.simulation || !container.width || !container.height) return;
+    if (!renderState.simulation || !graphFlags.isPreprocessed || !container.width || !container.height) return;
     log.info("Changing graph border", physics.checkBorder, "\nwidth: ", physics.borderWidth, "\nheight: ", physics.borderHeight);
 
     try {
@@ -164,10 +164,10 @@ export function PhysicsControl() {
       errorService.setError(error.message);
       log.error("Error updating border force:", error);
     }
-  }, [physics.checkBorder, physics.borderHeight, physics.borderWidth, container.width, container.height]);
+  }, [physics.checkBorder, physics.borderHeight, physics.borderWidth, container.width, container.height, graphFlags.filteredAfterStart]);
 
   useEffect(() => {
-    if (!renderState.simulation || !graphState.graph || !graphFlags.filteredAfterStart) return;
+    if (!renderState.simulation || !graphFlags.isPreprocessed || !graphState.graph || !graphFlags.filteredAfterStart) return;
     log.info("Changing circular layout force", physics.circleLayout);
 
     try {
@@ -191,10 +191,10 @@ export function PhysicsControl() {
       errorService.setError(error.message);
       log.error("Error updating circular layout:", error);
     }
-  }, [physics.circleLayout]);
+  }, [physics.circleLayout, graphFlags.filteredAfterStart]);
 
   useEffect(() => {
-    if (!renderState.simulation || !graphState.graph || !graphFlags.filteredAfterStart) return;
+    if (!renderState.simulation || !graphFlags.isPreprocessed || !graphState.graph || !graphFlags.filteredAfterStart) return;
     log.info("Changing community strength", physics.communityForceStrength);
 
     try {
@@ -212,5 +212,5 @@ export function PhysicsControl() {
       errorService.setError(error.message);
       log.error("Error updating community force:", error);
     }
-  }, [physics.communityForceStrength]);
+  }, [physics.communityForceStrength, graphFlags.filteredAfterStart]);
 }

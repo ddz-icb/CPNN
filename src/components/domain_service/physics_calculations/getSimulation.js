@@ -5,14 +5,6 @@ export function getSimulation(width, height, linkLength, gravityStrength, nodeRe
   const simulation = d3
     .forceSimulation()
     .force(
-      "charge",
-      d3
-        .forceManyBody()
-        .theta(accuracyBarnesHut)
-        .distanceMax(maxDistanceChargeForce)
-        .strength(nodeRepulsionStrength * nodeRepulsionMultiplier)
-    )
-    .force(
       "link",
       d3
         .forceLink()

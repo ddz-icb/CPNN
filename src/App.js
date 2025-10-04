@@ -26,13 +26,11 @@ import { DownloadControl } from "./components/application_service/controllers/do
 import { FilterControl } from "./components/application_service/controllers/filterControl.js";
 import { AppearanceControl } from "./components/application_service/controllers/appearanceControl.js";
 import { Error } from "./components/gui/error/error.js";
-import { useGraphLoader } from "./components/application_service/controllers/useGraphLoader.js";
 import { useGraphSetup } from "./components/application_service/controllers/useGraphSetup.js";
 
 function App() {
   const { theme } = useTheme();
 
-  useGraphLoader();
   useGraphSetup();
 
   return (

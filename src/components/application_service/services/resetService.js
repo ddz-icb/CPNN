@@ -1,7 +1,6 @@
 import log from "../../adapters/logging/logger.js";
 import { graphService } from "./graphService.js";
 import { errorService } from "./errorService.js";
-import { filterInit, useFilter } from "../../adapters/state/filterState.js";
 import { physicsInit, usePhysics } from "../../adapters/state/physicsState.js";
 import { downloadInit, useDownload } from "../../adapters/state/downloadState.js";
 import { useReset } from "../../adapters/state/resetState.js";
@@ -13,9 +12,9 @@ export const resetService = {
     if (!graphService.getActiveGraphNames()) return;
     log.info("Resetting the simulation");
 
-    useFilter.getState().setAllFilter(filterInit);
+    // useFilter.getState().setAllFilter(filterInit); // resetting filters is not needed
+    // usePhysics.getState().setAllPhysics(physicsInit); // resetting physics is not needed
     useDownload.getState().setAllDownload(downloadInit);
-    usePhysics.getState().setAllPhysics(physicsInit);
 
     useGraphMetrics.getState().setAllGraphMetrics(graphMetricsInit);
 

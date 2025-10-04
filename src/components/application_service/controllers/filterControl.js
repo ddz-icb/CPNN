@@ -88,6 +88,7 @@ export function FilterControl() {
       log.error("Error while filtering graph:", error);
     }
   }, [
+    graphFlags.isPreprocessed,
     filter.linkThreshold,
     filter.linkFilter,
     filter.nodeFilter,
