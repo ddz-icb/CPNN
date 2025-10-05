@@ -1,7 +1,7 @@
 export function applyNodeMapping(graphData, mappingData) {
   if (!mappingData) return graphData;
 
-  const nodeMapping = mappingData.nodeMapping;
+  const nodeMapping = mappingData;
 
   graphData.nodes.forEach((node) => {
     const entries = node.id.split(";");

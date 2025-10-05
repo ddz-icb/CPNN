@@ -90,7 +90,7 @@ function drawLegendOnPdf(pdf, offsetX, offsetY, nodeColorscheme, nodeAttribsToCo
   [nodeAttribsToColorIndices, linkAttribsToColorIndices].forEach((attribs, index) => {
     for (const key in attribs) {
       if (Object.hasOwnProperty.call(attribs, key)) {
-        const label = index === 0 ? mapping?.data?.groupMapping?.[key]?.name || key : key;
+        const label = key;
         maxTextWidth = Math.max(maxTextWidth, tempPdf.getTextWidth(label));
       }
     }
@@ -125,7 +125,7 @@ function drawLegendOnPdf(pdf, offsetX, offsetY, nodeColorscheme, nodeAttribsToCo
     for (const key in attribs) {
       if (Object.hasOwnProperty.call(attribs, key)) {
         const color = colorscheme[attribs[key]];
-        const label = isNode ? mapping?.data?.groupMapping?.[key]?.name || key : key;
+        const label = key;
 
         pdf.setFillColor(color);
         pdf.rect(offsetX + padding, yPos, rectSize, rectSize, "F");

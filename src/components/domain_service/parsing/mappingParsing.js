@@ -37,7 +37,6 @@ export function parseMapping(content) {
   });
 
   const nodeMapping = {};
-  const groupMapping = {};
 
   for (let row of fileData.data) {
     const uniProtId = row["UniProt-ID"];
@@ -46,18 +45,7 @@ export function parseMapping(content) {
     nodeMapping[uniProtId] = {
       pathwayNames: pathwayNames,
     };
-
-    for (let i = 0; i < pathwayNames.length; i++) {
-      if (!groupMapping[pathwayNames[i]]) {
-        groupMapping[pathwayNames[i]] = {
-          name: pathwayNames[i],
-        };
-      }
-    }
   }
 
-  return {
-    nodeMapping: nodeMapping,
-    groupMapping: groupMapping,
-  };
+  return nodeMapping;
 }
