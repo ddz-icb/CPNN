@@ -246,9 +246,6 @@ function UploadGraph() {
 function UploadMapping() {
   const mappingRef = useRef(null);
 
-  const mappingFormat = "Uniprot-ID, Pathway Names";
-  const mappingExample = "O60306,mRNA Splicing";
-
   return (
     <ButtonPopup
       buttonText={"Upload Pathway Mappings"}
@@ -257,8 +254,6 @@ function UploadMapping() {
       heading={"Uploading Your Pathway Mapping"}
       description={uploadPathwayMappingDescription}
     >
-      <PopupTextField inline={true} textInfront={"Pathway Mapping format:"} textInside={mappingFormat} />
-      <PopupTextField inline={true} textInfront={"Pathway Mapping example:"} textInside={mappingExample} />
       <div className="block-section">
         <Button
           variant="popup"
