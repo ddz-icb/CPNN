@@ -86,10 +86,11 @@ export const colorschemeService = {
       errorService.setError("Cannot delete default color schemes");
       return;
     }
-    if (this.getNodeColorscheme()?.name == colorschemeName || this.getLinkColorscheme()?.name == colorschemeName) {
-      log.error("Cannot delete selected color scheme as it's still active");
-      errorService.setError("Cannot delete selected color scheme as it's still active");
-      return;
+    if (this.getLinkColorscheme()?.name == colorschemeName) {
+      this.handleSelectLinkColorscheme(ibmAntiBlindness.name);
+    }
+    if (this.getNodeColorscheme()?.name == colorschemeName) {
+      this.handleSelectNodeColorscheme(manyColors.name);
     }
     log.info("Deleting color scheme");
 
