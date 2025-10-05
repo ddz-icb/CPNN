@@ -63,9 +63,7 @@ export const mappingService = {
       return;
     }
     if (this.getMapping()?.name == mappingName) {
-      log.error("Cannot delete selected mapping as it's still active");
-      errorService.setError("Cannot delete selected mapping as it's still active");
-      return;
+      this.handleRemoveMapping();
     }
     log.info("Deleting mapping with name", mappingName);
 

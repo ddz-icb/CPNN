@@ -81,14 +81,14 @@ export const colorschemeService = {
       log.error("Selected invalid color scheme");
       return;
     }
-    if (this.getNodeColorscheme()?.name == colorschemeName || this.getLinkColorscheme()?.name == colorschemeName) {
-      log.error("Cannot delete selected color scheme as it's still active");
-      errorService.setError("Cannot delete selected color scheme as it's still active");
-      return;
-    }
     if (defaultColorschemeNames.some((name) => name === colorschemeName)) {
       log.error("Cannot delete default color schemes");
       errorService.setError("Cannot delete default color schemes");
+      return;
+    }
+    if (this.getNodeColorscheme()?.name == colorschemeName || this.getLinkColorscheme()?.name == colorschemeName) {
+      log.error("Cannot delete selected color scheme as it's still active");
+      errorService.setError("Cannot delete selected color scheme as it's still active");
       return;
     }
     log.info("Deleting color scheme");
