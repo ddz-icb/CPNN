@@ -246,7 +246,7 @@ function UploadGraph() {
 function UploadMapping() {
   const mappingRef = useRef(null);
 
-  const mappingFormat = "Uniprot-ID, Pathway Name";
+  const mappingFormat = "Uniprot-ID, Pathway Names";
   const mappingExample = "O60306,mRNA Splicing";
 
   return (
