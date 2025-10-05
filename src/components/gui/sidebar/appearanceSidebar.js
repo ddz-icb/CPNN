@@ -90,7 +90,7 @@ export function UploadColorscheme() {
         <PopupTextField inline={true} textInfront={"Color Scheme format:"} textInside={"Color1, Color2, Color3, ..."} />
         <PopupTextField inline={true} textInfront={"Color Scheme example:"} textInside={"#e69f00,#56b4e9,#009e73"} />
         <div className="block-section">
-          <Button variant="popup" text={"Download Example Color Scheme"} onClick={() => downloadCsvFile(colorschemeCsv, colorschemeCsv.name)} />
+          <Button variant="popup" text={"Download Example Color Scheme"} onClick={() => downloadCsvFile(colorschemeCsv.data, colorschemeCsv.name)} />
           <Button
             variant="popup"
             text={"Upload Own Color Scheme"}
