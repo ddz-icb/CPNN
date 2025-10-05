@@ -63,8 +63,8 @@ export function ClickTooltip() {
 
         if (!protIdNoIsoform) return;
 
-        const responseUniprot = await axios.get(`http://localhost:3001/uniprot/${protIdNoIsoform}`);
-        // const responseUniprot = await axios.get(`https://cpnn.ddz.de/api/uniprot/${protIdNoIsoform}`);
+        // const responseUniprot = await axios.get(`http://localhost:3001/uniprot/${protIdNoIsoform}`);
+        const responseUniprot = await axios.get(`https://cpnn.ddz.de/api/uniprot/${protIdNoIsoform}`);
 
         const uniprotData = responseUniprot?.data;
         if (!uniprotData) return;
