@@ -10,10 +10,9 @@ import { exampleGraphTsv } from "../../assets/exampleGraphCSV.js";
 import { exampleMappingTsv } from "../../assets/exampleMappingCSV.js";
 import { exampleGraphRaw } from "../../assets/exampleGraphRawTSV.js";
 import {
-  containsSitesDescription,
   maxCompSizeDescriptionUpload,
   minCompSizeDescriptionUpload,
-  minCorrForEdgeDescription as minLinkCorrDescription,
+  minLinkCorrDescription,
   spearmanCoefficientDescription,
   takeAbsDescription,
   uploadGraphDescription,
@@ -129,28 +128,6 @@ function UploadGraph() {
   const [maxCompSize, setMaxCompSize] = useState("");
   const [maxCompSizeText, setMaxCompSizeText] = useState("");
 
-  const [containsSites, setContainsSites] = useState(false);
-
-  const [nodeIdFormat, setNodeIdFormat] = useState("");
-  const [nodeIdExample1, setNodeIdExample1] = useState("");
-  const [nodeIdExample2, setNodeIdExample2] = useState("");
-
-  useEffect(() => {
-    const id = "UniprotID";
-    const name = "Name";
-    const sites = "SiteA, SiteB, ... SiteT";
-    const sites2 = "SiteU, SiteV, ... SiteW";
-
-    const idFormat = `${id}1_ ${name}1${containsSites ? "_" + sites : ""}; ${id}2_${name}2${containsSites ? "_" + sites2 : ""}; ...`;
-
-    const idExample1 = `P08590_MYL3${containsSites ? "_T165" : ""}`;
-    const idExample2 = `Q8WZ42_TTN${containsSites ? "_T719, S721" : ""}; Q8WZ42-12_TTN${containsSites ? "_T765, S767" : ""}`;
-
-    setNodeIdFormat(idFormat);
-    setNodeIdExample1(idExample1);
-    setNodeIdExample2(idExample2);
-  }, [containsSites]);
-
   return (
     <ButtonPopup
       buttonText={"Upload Graph"}
@@ -242,17 +219,6 @@ function UploadGraph() {
         infoHeading={"Maximum component/cluster size"}
         infoDescription={maxCompSizeDescriptionUpload}
       />
-      <SwitchBlock
-        variant="popup"
-        value={containsSites}
-        setValue={() => setContainsSites(!containsSites)}
-        text={"Include phosphosites"}
-        infoHeading={"Include phosphosites"}
-        infoDescription={containsSitesDescription}
-      />
-      <PopupTextField inline={true} textInfront={"Your Node ID format:"} textInside={nodeIdFormat} />
-      <PopupTextField inline={true} textInfront={"Node ID examples:"} textInside={nodeIdExample1} />
-      <PopupTextField inline={true} textInside={nodeIdExample2} />
       <div className="block-section flex-end">
         <Button
           variant="popup"

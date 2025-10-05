@@ -1,4 +1,7 @@
-export const minCorrForEdgeDescription = (
+import { nodeIdExample1, nodeIdExample2, nodeIdExample3, nodeIdExample4, nodeIdFormat } from "../../../assets/node-id_examples.js";
+import { PopupTextField } from "../../reusable_components/sidebarComponents.js";
+
+export const minLinkCorrDescription = (
   <div>
     <p>
       "Minimum (absolute) correlation value or link weight required for display as a link. Increasing this value can significantly improve
@@ -64,7 +67,20 @@ export const uploadGraphDescription = (
     <p>
       You can upload your graphs in JSON, CSV or TSV format. CSV and TSV files must be either structured as a symmetric matrix or raw table data,
       while JSON contains a list of nodes and links. You can download the example graphs below to take a closer look at the required format. When raw
-      table data is uploaded, a correlation matrix will be automatically computed. For this computation all NaN values will be ignored.
+      table data is uploaded, a correlation matrix will be automatically computed. For this computation all NaN values will be ignored. The node-id
+      format and example node-ids are shown below.
+      <div className="pad-bottom-025" />
+      <PopupTextField textInside={nodeIdFormat} />
+      <div className="pad-bottom-025" />
+      Examples:
+      <div className="pad-bottom-025" />
+      <PopupTextField textInside={nodeIdExample1} />
+      <div className="pad-bottom-025" />
+      <PopupTextField textInside={nodeIdExample2} />
+      <div className="pad-bottom-025" />
+      <PopupTextField textInside={nodeIdExample3} />
+      <div className="pad-bottom-025" />
+      <PopupTextField textInside={nodeIdExample4} />
     </p>
   </div>
 );
