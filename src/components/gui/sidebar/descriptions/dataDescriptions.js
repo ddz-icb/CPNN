@@ -81,23 +81,21 @@ export const uploadPathwayMappingDescription = (
 
 export const uploadGraphDescription = (
   <div>
-    <p>
-      You can upload your graphs in JSON, CSV or TSV format. CSV and TSV files must be either structured as a symmetric matrix or raw table data,
-      while JSON contains a list of nodes and links. You can download the example graphs below to take a closer look at the required format. When raw
-      table data is uploaded, a correlation matrix will be automatically computed. For this computation all NaN values will be ignored. The node-id
-      format and example node-ids are shown below.
-      <div className="pad-bottom-05" />
-      <PopupTextField textInside={nodeIdFormat} />
-      <div className="pad-bottom-05" />
-      Examples:
-      <div className="pad-bottom-025" />
-      <PopupTextField textInside={nodeIdExample1} />
-      <div className="pad-bottom-025" />
-      <PopupTextField textInside={nodeIdExample2} />
-      <div className="pad-bottom-025" />
-      <PopupTextField textInside={nodeIdExample3} />
-      <div className="pad-bottom-025" />
-      <PopupTextField textInside={nodeIdExample4} />
-    </p>
+    You can upload your graphs in JSON, CSV or TSV format. CSV and TSV files must be either structured as a symmetric matrix or raw table data, while
+    JSON contains a list of nodes and links. You can download the example graphs below to take a closer look at the required format. When raw table
+    data is uploaded, a correlation matrix will be automatically computed. For this computation all NaN values will be ignored. The node-id format and
+    example node-ids are shown below.
+    <div className="pad-bottom-05" />
+    <PopupTextField textInside={nodeIdFormat} />
+    <div className="pad-bottom-05" />
+    Examples:
+    <div className="pad-bottom-025" />
+    <PopupTextField textInside={nodeIdExample1} />
+    <div className="pad-bottom-025" />
+    <PopupTextField textInside={nodeIdExample2} />
+    <div className="pad-bottom-025" />
+    <PopupTextField textInside={nodeIdExample3} />
+    <div className="pad-bottom-025" />
+    <PopupTextField textInside={nodeIdExample4} />
   </div>
 );
