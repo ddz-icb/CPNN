@@ -60,7 +60,7 @@ export function FieldBlock({ text, infoHeading, infoDescription, ...props }) {
   );
 }
 
-export function Button({ onClick, onChange, linkRef, tooltip, tooltipId, text, className }) {
+export function Button({ onClick, onChange, linkRef, tooltip, tooltipId, text }) {
   return (
     <>
       <button className={"button-rect"} data-tooltip-id={tooltipId} data-tooltip-content={tooltip} onClick={onClick}>
@@ -241,29 +241,17 @@ export function TableList({
       {data &&
         data.length > 0 &&
         itemTooltipContent &&
-        data.map((item, index) => (
-          <div key={`item-tooltip-wrapper-${item}-${index}`} className="tooltip-wrapper">
-            <Tooltip key={`item-tooltip-${item}-${index}`} id={`item-tooltip-${item}-${index}`} className="tooltip" />
-          </div>
-        ))}
+        data.map((item, index) => <Tooltip key={`item-tooltip-${item}-${index}`} id={`item-tooltip-${item}-${index}`} className="tooltip" />)}
 
       {data &&
         data.length > 0 &&
         actionIconTooltipContent &&
-        data.map((item, index) => (
-          <div key={`action-tooltip-wrapper-${item}-${index}`} className="tooltip-wrapper">
-            <Tooltip key={`action-tooltip-${item}-${index}`} id={`action-tooltip-${item}-${index}`} className="tooltip" />
-          </div>
-        ))}
+        data.map((item, index) => <Tooltip key={`action-tooltip-${item}-${index}`} id={`action-tooltip-${item}-${index}`} className="tooltip" />)}
 
       {data &&
         data.length > 0 &&
         actionIcon2TooltipContent &&
-        data.map((item, index) => (
-          <div key={`action-tooltip-2-wrapper-${item}-${index}`} className="tooltip-wrapper">
-            <Tooltip key={`action-tooltip-2-${item}-${index}`} id={`action-tooltip-2-${item}-${index}`} className="tooltip" />
-          </div>
-        ))}
+        data.map((item, index) => <Tooltip key={`action-tooltip-2-${item}-${index}`} id={`action-tooltip-2-${item}-${index}`} className="tooltip" />)}
     </div>
   );
 }
