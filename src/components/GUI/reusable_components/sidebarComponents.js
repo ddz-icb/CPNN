@@ -240,18 +240,17 @@ export function TableList({
 
       {data &&
         data.length > 0 &&
-        itemTooltipContent &&
-        data.map((item, index) => <Tooltip key={`item-tooltip-${item}-${index}`} id={`item-tooltip-${item}-${index}`} className="tooltip" />)}
-
-      {data &&
-        data.length > 0 &&
-        actionIconTooltipContent &&
-        data.map((item, index) => <Tooltip key={`action-tooltip-${item}-${index}`} id={`action-tooltip-${item}-${index}`} className="tooltip" />)}
-
-      {data &&
-        data.length > 0 &&
-        actionIcon2TooltipContent &&
-        data.map((item, index) => <Tooltip key={`action-tooltip-2-${item}-${index}`} id={`action-tooltip-2-${item}-${index}`} className="tooltip" />)}
+        data.map((item, index) => (
+          <>
+            {itemTooltipContent && <Tooltip key={`item-tooltip-${item}-${index}`} id={`item-tooltip-${item}-${index}`} className="tooltip" />}
+            {actionIconTooltipContent && (
+              <Tooltip key={`action-tooltip-${item}-${index}`} id={`action-tooltip-${item}-${index}`} className="tooltip" />
+            )}
+            {actionIcon2TooltipContent && (
+              <Tooltip key={`action-tooltip-2-${item}-${index}`} id={`action-tooltip-2-${item}-${index}`} className="tooltip" />
+            )}
+          </>
+        ))}
     </div>
   );
 }
