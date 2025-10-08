@@ -96,12 +96,3 @@
   margin: 0;
   padding: 0;
 }
-
-.tooltip-wrapper .tooltip {
-  z-index: 20;
-  display: flex;
-  justify-content: flex-end;
-  background-color: var(--bg-tooltip-sidebar);
-  border-radius: var(--border-radius);
-  color: var(--tooltip-sidebar-text);
-}
