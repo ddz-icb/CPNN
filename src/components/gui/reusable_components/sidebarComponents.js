@@ -3,6 +3,7 @@ import { ReactComponent as InfoCircleIcon } from "../../../icons/infoCircle.svg"
 import { ReactComponent as XIcon } from "../../../icons/x.svg";
 import { Tooltip } from "react-tooltip";
 import { handleFieldBlur, handleFieldChange, handleSliderChange } from "../handlers/buttonHandlerFunctions.js";
+import { useId } from "react";
 
 export function SliderBlock({ value, setValue, setValueText, min, max, step, text, infoHeading, infoDescription, ...props }) {
   return (
@@ -178,6 +179,8 @@ export function TableList({
   actionIcon2TooltipContent,
   dark,
 }) {
+  const instanceId = useId();
+
   return (
     <div>
       <span className="heading">{heading}</span>
@@ -187,10 +190,10 @@ export function TableList({
             data.map((item, index) => (
               <tr key={`row-${item}-${index}`} className="item-table-entry-highlight">
                 <td
-                  className={"item-table-text"}
+                  className="item-table-text"
                   onClick={() => onItemClick && onItemClick(item)}
                   {...(itemTooltipContent && {
-                    "data-tooltip-id": `item-tooltip-${item}-${index}`,
+                    "data-tooltip-id": `item-tooltip-${instanceId}-${index}`,
                     "data-tooltip-content": itemTooltipContent(item),
                   })}
                 >
@@ -203,7 +206,7 @@ export function TableList({
                         <ActionIcon
                           onClick={() => onActionIconClick && onActionIconClick(item)}
                           {...(actionIconTooltipContent && {
-                            "data-tooltip-id": `action-tooltip-${item}-${index}`,
+                            "data-tooltip-id": `action-tooltip-${instanceId}-${index}`,
                             "data-tooltip-content": actionIconTooltipContent(item),
                           })}
                         />
@@ -220,7 +223,7 @@ export function TableList({
                     <ActionIcon2
                       onClick={() => onActionIcon2Click && onActionIcon2Click(item)}
                       {...(actionIcon2TooltipContent && {
-                        "data-tooltip-id": `action-tooltip-2-${item}-${index}`,
+                        "data-tooltip-id": `action-tooltip-2-${instanceId}-${index}`,
                         "data-tooltip-content": actionIcon2TooltipContent(item),
                       })}
                     />
@@ -230,7 +233,7 @@ export function TableList({
             ))
           ) : (
             <tr>
-              <td className={"item-table-text"}>
+              <td className="item-table-text">
                 <span>None</span>
               </td>
             </tr>
@@ -242,12 +245,14 @@ export function TableList({
         data.length > 0 &&
         data.map((item, index) => (
           <>
-            {itemTooltipContent && <Tooltip key={`item-tooltip-${item}-${index}`} id={`item-tooltip-${item}-${index}`} className="tooltip" />}
+            {itemTooltipContent && (
+              <Tooltip key={`item-tooltip-${instanceId}-${index}`} id={`item-tooltip-${instanceId}-${index}`} className="tooltip" />
+            )}
             {actionIconTooltipContent && (
-              <Tooltip key={`action-tooltip-${item}-${index}`} id={`action-tooltip-${item}-${index}`} className="tooltip" />
+              <Tooltip key={`action-tooltip-${instanceId}-${index}`} id={`action-tooltip-${instanceId}-${index}`} className="tooltip" />
             )}
             {actionIcon2TooltipContent && (
-              <Tooltip key={`action-tooltip-2-${item}-${index}`} id={`action-tooltip-2-${item}-${index}`} className="tooltip" />
+              <Tooltip key={`action-tooltip-2-${instanceId}-${index}`} id={`action-tooltip-2-${instanceId}-${index}`} className="tooltip" />
             )}
           </>
         ))}
