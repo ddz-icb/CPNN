@@ -32,7 +32,7 @@ export function DataSidebar() {
     <>
       <TopDataButtons />
       <ActiveGraphFiles activeGraphNames={graphState.activeGraphNames} />
-      <UploadedGraphFiles uploadedGraphNames={graphState.uploadedGraphNames} />
+      <UploadedGraphFiles uploadedGraphNames={graphState.uploadedGraphNames} activeGraphNames={graphState.activeGraphNames} />
       <Mapping mapping={mappingState.mapping} />
       <UploadedMappings uploadedMappingNames={mappingState.uploadedMappingNames} />
     </>
@@ -63,8 +63,10 @@ function ActiveGraphFiles({ activeGraphNames }) {
   );
 }
 
-function UploadedGraphFiles({ uploadedGraphNames }) {
+function UploadedGraphFiles({ uploadedGraphNames, activeGraphNames }) {
   let uploadedGraphNamesNoExample = uploadedGraphNames?.filter((name) => name !== exampleGraphJson.name);
+  let onlyExampleGraph = activeGraphNames && activeGraphNames.length === 1 && activeGraphNames[0] === exampleGraphJson.name;
+  const isActiveGraph = (graph) => activeGraphNames && activeGraphNames.includes(graph);
 
   return (
     <>
@@ -74,6 +76,7 @@ function UploadedGraphFiles({ uploadedGraphNames }) {
         onItemClick={(filename) => graphService.handleSelectGraph(filename)}
         itemTooltipContent={() => "Replace Active Graphs"}
         ActionIcon={PlusIcon}
+        showActionIconOn={(graph) => !onlyExampleGraph && !isActiveGraph(graph)}
         onActionIconClick={(filename) => graphService.handleAddActiveGraph(filename)}
         actionIconTooltipContent={() => "Add Graph to Currently Active Graphs"}
         ActionIcon2={TrashIcon}
