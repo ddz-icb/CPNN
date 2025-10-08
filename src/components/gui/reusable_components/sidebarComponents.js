@@ -196,20 +196,24 @@ export function TableList({
                 >
                   <span>{displayKey ? item[displayKey] : item}</span>
                 </td>
-                {(!showActionIconOn || showActionIconOn(item)) && ActionIcon ? (
-                  <td className="item-table-logo">
-                    <ActionIcon
-                      onClick={() => onActionIconClick && onActionIconClick(item)}
-                      {...(actionIconTooltipContent && {
-                        "data-tooltip-id": `action-tooltip-${item}-${index}`,
-                        "data-tooltip-content": actionIconTooltipContent(item),
-                      })}
-                    />
-                  </td>
-                ) : (
-                  <td className="item-table-empty-logo">
-                    <ActionIcon />
-                  </td>
+                {ActionIcon && (
+                  <>
+                    {!showActionIconOn || showActionIconOn(item) ? (
+                      <td className="item-table-logo">
+                        <ActionIcon
+                          onClick={() => onActionIconClick && onActionIconClick(item)}
+                          {...(actionIconTooltipContent && {
+                            "data-tooltip-id": `action-tooltip-${item}-${index}`,
+                            "data-tooltip-content": actionIconTooltipContent(item),
+                          })}
+                        />
+                      </td>
+                    ) : (
+                      <td className="item-table-empty-logo">
+                        <ActionIcon />
+                      </td>
+                    )}
+                  </>
                 )}
                 {ActionIcon2 && (
                   <td className="item-table-logo">
