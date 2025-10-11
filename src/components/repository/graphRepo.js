@@ -1,4 +1,3 @@
-import { exampleGraphJson } from "../assets/exampleGraphJSON.js";
 import log from "../adapters/logging/logger.js";
 import Dexie from "dexie";
 

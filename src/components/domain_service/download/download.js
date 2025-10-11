@@ -248,7 +248,7 @@ export function downloadGraphJson(graph, nodeMap, physics) {
   if (physics) data.physics = physics;
 
   const blob = new Blob([JSON.stringify(data, null, 4)], { type: "application/json" });
-  triggerDownload(blob, getFileNameWithoutExtension(graph.name));
+  triggerDownload(blob, `${getFileNameWithoutExtension(graph.name)}.json`);
 }
 
 export function downloadObjectAsFile(object, name) {
