@@ -1,10 +1,10 @@
 import log from "../../adapters/logging/logger.js";
-import { useColorschemeState } from "../../adapters/state/colorschemeState.js";
+import { linkAttribsToColorIndicesInit, nodeAttribsToColorIndicesInit, useColorschemeState } from "../../adapters/state/colorschemeState.js";
 import { linkThresholdInit, useFilter } from "../../adapters/state/filterState.js";
 import { useGraphFlags } from "../../adapters/state/graphFlagsState.js";
 import { useGraphMetrics } from "../../adapters/state/graphMetricsState.js";
 import { useGraphState } from "../../adapters/state/graphState.js";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   getLinkAttribsToColorIndices,
   getLinkWeightMinMax,
@@ -28,6 +28,8 @@ export const useGraphSetup = () => {
   const { setGraphMetrics } = useGraphMetrics();
   const { setAllPhysics } = usePhysics();
 
+  const [keepMapping, setKeepMapping] = useState(false);
+
   // load graph
   useEffect(() => {
     if (!graphState.activeGraphNames) return;
@@ -50,6 +52,13 @@ export const useGraphSetup = () => {
     reloadGraph();
   }, [graphFlags.mergeProteins, mappingState.mapping, graphState.activeGraphNames]);
 
+  // keep mapping if mergeProteins
+  useEffect(() => {
+    if (!graphFlags.mergeProteins) return;
+
+    setKeepMapping(true);
+  }, [graphFlags.mergeProteins]);
+
   // forward graph
   useEffect(() => {
     if (!graphState.originGraph || !graphState.activeGraphNames || graphFlags.isPreprocessed) return;
@@ -69,14 +78,17 @@ export const useGraphSetup = () => {
       setFilter("linkThresholdText", minWeight);
     }
 
-    setColorschemeState("nodeAttribsToColorIndices", getNodeAttribsToColorIndices(graph.data));
-    setColorschemeState("linkAttribsToColorIndices", getLinkAttribsToColorIndices(graph.data));
+    if (!keepMapping) {
+      setColorschemeState("nodeAttribsToColorIndices", getNodeAttribsToColorIndices(graph.data));
+      setColorschemeState("linkAttribsToColorIndices", getLinkAttribsToColorIndices(graph.data));
+    }
 
     // incase user uploaded graph including physics
     if (graph.data.physics) {
       setAllPhysics(graph.data.physics);
     }
 
+    setKeepMapping(false);
     setGraphState("graph", graph);
     setGraphFlags("isPreprocessed", true);
   }, [graphState.originGraph]);
