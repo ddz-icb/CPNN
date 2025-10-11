@@ -63,8 +63,8 @@ export function ClickTooltip() {
 
         if (!protIdNoIsoform) return;
 
-        // const responseUniprot = await axios.get(`http://localhost:3001/uniprot/${protIdNoIsoform}`);
-        const responseUniprot = await axios.get(`https://cpnn.ddz.de/api/uniprot/${protIdNoIsoform}`);
+        const responseUniprot = await axios.get(`http://localhost:3001/uniprot/${protIdNoIsoform}`);
+        // const responseUniprot = await axios.get(`https://cpnn.ddz.de/api/uniprot/${protIdNoIsoform}`);
 
         const uniprotData = responseUniprot?.data;
         if (!uniprotData) return;
@@ -129,17 +129,7 @@ export function ClickTooltip() {
   }, [tooltipSettings.isClickTooltipActive, tooltipSettings.clickTooltipData]);
 
   return (
-    <TooltipPopup
-      heading={gene}
-      close={() => setTooltipSettings("isClickTooltipActive", false)}
-      style={style}
-      footer={
-        <>
-          <TooltipPopupLinkItem text={"To UniProt"} link={`https://www.uniprot.org/uniprotkb/${protIdNoIsoform}/`} />
-          <TooltipPopupLinkItem text={"To RCSB PDB"} link={`https://www.rcsb.org/structure/${pdbId}/`} />
-        </>
-      }
-    >
+    <TooltipPopup heading={gene} close={() => setTooltipSettings("isClickTooltipActive", false)} style={style}>
       <TooltipPopupItem heading={"Full Name"} value={fullName} />
       <TooltipPopupItem
         heading={`Protein-IDs ${hasPhosphosites && "and Phosphosites"}`}
@@ -151,7 +141,11 @@ export function ClickTooltip() {
       />
       <TooltipPopupItem heading={"Gene/Protein Annotations"} value={tooltipSettings?.clickTooltipData?.nodeGroups.join(", ")} />
       <TooltipPopupItem heading={"Description"} value={description} />
-      <div className="pdb-viewer" ref={viewerRef} />
+      <div className="tooltip-popup-footer">
+        <TooltipPopupLinkItem text={"To UniProt"} link={`https://www.uniprot.org/uniprotkb/${protIdNoIsoform}/`} />
+        <TooltipPopupLinkItem text={"To RCSB PDB"} link={`https://www.rcsb.org/structure/${pdbId}/`} />
+      </div>
+      {responsePdb?.data && <div className="pdb-viewer" ref={viewerRef} />}
     </TooltipPopup>
   );
 }

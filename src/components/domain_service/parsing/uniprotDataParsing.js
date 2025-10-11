@@ -4,7 +4,7 @@ export const getDescriptionUniprotData = (jsonData) => {
   if (functionComment && functionComment.texts && functionComment.texts.length > 0) {
     const fullText = functionComment.texts[0].value;
 
-    const MAX_CHARS = 1000;
+    const MAX_CHARS = 700;
 
     if (fullText.length <= MAX_CHARS) {
       return fullText;
