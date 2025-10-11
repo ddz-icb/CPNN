@@ -211,6 +211,7 @@ export function PhysicsControl() {
         renderState.simulation.alpha(1).restart();
       } else {
         const [idToComm] = getCommunityData(graphState.graph.data);
+        if (!idToComm) return;
         const threshold = 3;
 
         renderState.simulation.force("community", groupRepulsionForce(idToComm, threshold).strength(physics.communityForceStrength));

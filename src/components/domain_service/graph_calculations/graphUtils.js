@@ -118,6 +118,9 @@ export function getLinkWeightMinMax(graphData) {
 }
 
 export function getCommunityData(graphData) {
+  if (graphData.nodes.length == 0) return [null, null];
+
+  console.log("GRAPHDATA", graphData);
   const newGraph = new Graph();
 
   graphData.nodes.forEach((node) => {
