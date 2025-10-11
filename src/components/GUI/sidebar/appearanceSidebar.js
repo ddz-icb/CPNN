@@ -12,7 +12,7 @@ import {
   uploadColorschemeDescription,
 } from "./descriptions/appearanceDescriptions.js";
 import { useAppearance, linkWidthInit } from "../../adapters/state/appearanceState.js";
-import { useColorschemeState } from "../../adapters/state/colorschemeState.js";
+import { defaultColorschemeNames, useColorschemeState } from "../../adapters/state/colorschemeState.js";
 import { colorschemeService } from "../../application_service/services/colorschemeService.js";
 import { darkTheme, useTheme } from "../../adapters/state/themeState.js";
 import { themeService } from "../../application_service/services/themeService.js";
@@ -140,6 +140,8 @@ function UploadedColorschemes() {
   const [selectColorschemePopup, setSelectSchemePopup] = useState(false);
   const [selectedColorschemeName, setSelectedScheme] = useState(null);
 
+  let isDefaultColorscheme = (colorschemeName) => defaultColorschemeNames.includes(colorschemeName);
+
   return (
     <>
       <TableList
@@ -151,6 +153,7 @@ function UploadedColorschemes() {
         }}
         itemTooltipContent={() => "Replace Node/Link Color Scheme"}
         ActionIcon={TrashIcon}
+        showActionIconOn={(colorschemeName) => !isDefaultColorscheme(colorschemeName)}
         onActionIconClick={(colorschemeName) => colorschemeService.handleDeleteColorscheme(colorschemeName)}
         actionIconTooltipContent={() => "Delete Color Scheme"}
       />
