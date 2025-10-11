@@ -241,7 +241,11 @@ export function downloadGraphJson(graph, nodeMap, physics, filter) {
 
   let nodes = graph.data.nodes;
   if (nodeMap) {
-    nodes = graph.data.nodes.map((node) => ({ ...node, x: nodeMap[node.id].circle.x, y: nodeMap[node.id].circle.y }));
+    nodes = graph.data.nodes.map((node) => ({
+      ...node,
+      x: Math.round(nodeMap[node.id].circle.x * 100) / 100,
+      y: Math.round(nodeMap[node.id].circle.y * 100) / 100,
+    }));
   }
 
   const data = { nodes, links: convertLinks(graph.data.links) };
