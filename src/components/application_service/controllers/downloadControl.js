@@ -12,9 +12,11 @@ import { lightTheme, themeInit, useTheme } from "../../adapters/state/themeState
 import { usePixiState } from "../../adapters/state/pixiState.js";
 import { useRenderState } from "../../adapters/state/canvasState.js";
 import { errorService } from "../services/errorService.js";
+import { useFilter } from "../../adapters/state/filterState.js";
 
 export function DownloadControl() {
   const { physics } = usePhysics();
+  const { filter } = useFilter();
   const { appearance } = useAppearance();
   const { theme } = useTheme();
   const { colorschemeState } = useColorschemeState();
@@ -43,7 +45,7 @@ export function DownloadControl() {
     log.info("Downloading graph as JSON with coordinates and physics");
 
     try {
-      downloadGraphJson(graphState.graph, pixiState.nodeMap, physics);
+      downloadGraphJson(graphState.graph, pixiState.nodeMap, physics, filter);
     } catch (error) {
       errorService.setError(error.message);
       log.error("Error downloading the graph as JSON with coordinates:", error);

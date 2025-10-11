@@ -236,7 +236,7 @@ export function downloadAsPDF(
   });
 }
 
-export function downloadGraphJson(graph, nodeMap, physics) {
+export function downloadGraphJson(graph, nodeMap, physics, filter) {
   const convertLinks = (links) => links.map(({ source, target, ...rest }) => ({ ...rest, source: source.id, target: target.id }));
 
   let nodes = graph.data.nodes;
@@ -246,6 +246,7 @@ export function downloadGraphJson(graph, nodeMap, physics) {
 
   const data = { nodes, links: convertLinks(graph.data.links) };
   if (physics) data.physics = physics;
+  if (filter) data.filter = filter;
 
   const blob = new Blob([JSON.stringify(data, null, 4)], { type: "application/json" });
   triggerDownload(blob, `${getFileNameWithoutExtension(graph.name)}.json`);

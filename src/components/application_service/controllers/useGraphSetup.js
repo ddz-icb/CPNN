@@ -27,6 +27,7 @@ export const useGraphSetup = () => {
   const { mappingState } = useMappingState();
   const { setGraphMetrics } = useGraphMetrics();
   const { setAllPhysics } = usePhysics();
+  const { setAllFilter } = useFilter();
 
   const [keepMapping, setKeepMapping] = useState(false);
 
@@ -86,6 +87,9 @@ export const useGraphSetup = () => {
     // incase user uploaded graph including physics
     if (graph.data.physics) {
       setAllPhysics(graph.data.physics);
+    }
+    if (graph.data.filter) {
+      setAllFilter(graph.data.filter);
     }
 
     setKeepMapping(false);
