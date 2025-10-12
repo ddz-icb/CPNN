@@ -1,3 +1,4 @@
+import { ButtonCN } from "./shadcn_blocks/buttonCN.jsx";
 import { useState } from "react";
 import { ReactComponent as InfoCircleIcon } from "../../../../assets/icons/infoCircle.svg";
 import { ReactComponent as XIcon } from "../../../../assets/icons/x.svg";
@@ -64,10 +65,10 @@ export function FieldBlock({ text, infoHeading, infoDescription, ...props }) {
 export function Button({ onClick, onChange, linkRef, tooltip, tooltipId, text }) {
   return (
     <>
-      <button className={"button-rect"} data-tooltip-id={tooltipId} data-tooltip-content={tooltip} onClick={onClick}>
+      <ButtonCN size="sm" data-tooltip-id={tooltipId} data-tooltip-content={tooltip} onClick={onClick}>
         <span>{text}</span>
         <input type="file" style={{ display: "none" }} onChange={onChange} ref={linkRef} />
-      </button>
+      </ButtonCN>
       <Tooltip id={tooltipId} place="top" effect="solid" className="tooltip" />
     </>
   );

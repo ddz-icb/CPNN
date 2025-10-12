@@ -25,25 +25,6 @@
   transition: var(--transition-speed);
 }
 
-.button-rect {
-  display: inline-block;
-  min-width: 3.5rem;
-  height: 1.7rem;
-  background-color: var(--bg-button-sidebar);
-  border: 1px solid var(--border-button-sidebar);
-  border-radius: var(--border-radius-button);
-  color: var(--sidebar-button-color);
-  font-size: 1rem;
-  line-height: 1.5rem;
-  cursor: pointer;
-}
-
-.button-rect:hover {
-  background-color: var(--bg-button-sidebar-hover);
-  border: 1px solid var(--border-button-sidebar-hover);
-  transition: var(--transition-speed);
-}
-
 .button-select {
   display: inline-block;
   width: 10rem;
