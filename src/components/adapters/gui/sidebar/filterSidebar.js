@@ -4,7 +4,7 @@ import CodeMirror from "codemirror";
 import "codemirror/lib/codemirror.css";
 import "codemirror/addon/mode/simple.js";
 import "codemirror/theme/material.css";
-import "../../../../config/editorSyntaxHighlighting.js";
+import "../../config/editorSyntaxHighlighting.js";
 
 import { Button, CodeEditorBlock, FieldBlock, SliderBlock, SwitchBlock } from "../reusable_components/sidebarComponents.js";
 import {
