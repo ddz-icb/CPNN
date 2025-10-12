@@ -1,6 +1,6 @@
 import log from "../../adapters/logging/logger.js";
 import { mappingInit, useMappingState } from "../../adapters/state/mappingState.js";
-import { createMapping, deleteMapping, loadMappingNames, getMapping } from "../../domain_model/mappingManager.js";
+import { createMapping, deleteMapping, loadMappingNames, getMapping } from "../../domain/models/mapping.js";
 import { errorService } from "./errorService.js";
 
 export const mappingService = {

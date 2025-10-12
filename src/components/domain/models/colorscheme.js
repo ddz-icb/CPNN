@@ -1,11 +1,11 @@
-import { parseColorschemeFile } from "../domain_service/parsing/colorschemeParsing.js";
+import { parseColorschemeFile } from "../../domain_service/parsing/colorschemeParsing.js";
 import {
   createColorschemeDB,
   createColorschemeIfNotExistsDB,
   getAllColorschemeNamesDB,
   getColorschemeDB,
   deleteColorschemeDB,
-} from "../repository/colorschemeRepo.js";
+} from "../../repository/colorschemeRepo.js";
 
 export async function loadColorschemeNames() {
   const colorschemeNames = await getAllColorschemeNamesDB();
