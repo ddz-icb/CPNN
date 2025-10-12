@@ -13,9 +13,9 @@ import {
 } from "./descriptions/appearanceDescriptions.js";
 import { useAppearance, linkWidthInit } from "../../adapters/state/appearanceState.js";
 import { defaultColorschemeNames, useColorschemeState } from "../../adapters/state/colorschemeState.js";
-import { colorschemeService } from "../../application_service/services/colorschemeService.js";
+import { colorschemeService } from "../../application/services/colorschemeService.js";
 import { darkTheme, useTheme } from "../../adapters/state/themeState.js";
-import { themeService } from "../../application_service/services/themeService.js";
+import { themeService } from "../../application/services/themeService.js";
 
 export function AppearanceSidebar() {
   return (

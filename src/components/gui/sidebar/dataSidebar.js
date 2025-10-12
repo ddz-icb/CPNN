@@ -19,9 +19,9 @@ import {
   uploadPathwayMappingDescription,
 } from "./descriptions/dataDescriptions.js";
 import { mergeProteinsDescription } from "./descriptions/filterDescriptions.js";
-import { graphService } from "../../application_service/services/graphService.js";
+import { graphService } from "../../application/services/graphService.js";
 import { useMappingState } from "../../adapters/state/mappingState.js";
-import { mappingService } from "../../application_service/services/mappingService.js";
+import { mappingService } from "../../application/services/mappingService.js";
 import { useGraphState } from "../../adapters/state/graphState.js";
 
 export function DataSidebar() {
