@@ -1,8 +1,8 @@
-import { ReactComponent as DataIcon } from "../../../../icons/data.svg";
-import { ReactComponent as MagnetIcon } from "../../../../icons/magnet.svg";
-import { ReactComponent as FilterIcon } from "../../../../icons/filter.svg";
-import { ReactComponent as PaletteIcon } from "../../../../icons/colorPalette.svg";
-import { ReactComponent as DownloadIcon } from "../../../../icons/download.svg";
+import { ReactComponent as DataIcon } from "../../../../assets/icons/data.svg";
+import { ReactComponent as MagnetIcon } from "../../../../assets/icons/magnet.svg";
+import { ReactComponent as FilterIcon } from "../../../../assets/icons/filter.svg";
+import { ReactComponent as PaletteIcon } from "../../../../assets/icons/colorPalette.svg";
+import { ReactComponent as DownloadIcon } from "../../../../assets/icons/download.svg";
 
 export function SelectionSidebar({ handleNavItemClick }) {
   return (

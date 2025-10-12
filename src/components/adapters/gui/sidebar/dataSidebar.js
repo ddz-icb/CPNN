@@ -1,6 +1,6 @@
-import { ReactComponent as DeleteIcon } from "../../../../icons/delete.svg";
-import { ReactComponent as TrashIcon } from "../../../../icons/trash.svg";
-import { ReactComponent as PlusIcon } from "../../../../icons/plus.svg";
+import { ReactComponent as DeleteIcon } from "../../../../assets/icons/delete.svg";
+import { ReactComponent as TrashIcon } from "../../../../assets/icons/trash.svg";
+import { ReactComponent as PlusIcon } from "../../../../assets/icons/plus.svg";
 import { useRef, useState } from "react";
 
 import { TableList, ButtonPopup, SwitchBlock, SliderBlock, FieldBlock, Button } from "../reusable_components/sidebarComponents.js";

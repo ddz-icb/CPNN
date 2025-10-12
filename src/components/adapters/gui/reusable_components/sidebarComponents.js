@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { ReactComponent as InfoCircleIcon } from "../../../../icons/infoCircle.svg";
-import { ReactComponent as XIcon } from "../../../../icons/x.svg";
+import { ReactComponent as InfoCircleIcon } from "../../../../assets/icons/infoCircle.svg";
+import { ReactComponent as XIcon } from "../../../../assets/icons/x.svg";
 import { Tooltip } from "react-tooltip";
 import { handleFieldBlur, handleFieldChange, handleSliderChange } from "../handlers/buttonHandlerFunctions.js";
 import { useId } from "react";

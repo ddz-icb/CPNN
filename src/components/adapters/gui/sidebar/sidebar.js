@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ReactComponent as BackArrowIcon } from "../../../../icons/backArrow.svg";
+import { ReactComponent as BackArrowIcon } from "../../../../assets/icons/backArrow.svg";
 
 import { FilterSidebar } from "./filterSidebar.js";
 import { PhysicsSidebar } from "./physicsSidebar.js";

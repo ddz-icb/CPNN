@@ -1,4 +1,4 @@
-import { ReactComponent as XIcon } from "../../../../icons/x.svg";
+import { ReactComponent as XIcon } from "../../../../assets/icons/x.svg";
 
 export function TooltipPopup({ heading, close, children, style, footer }) {
   return (

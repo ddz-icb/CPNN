@@ -1,4 +1,4 @@
-import { ReactComponent as DownloadIcon } from "../../../../icons/download.svg";
+import { ReactComponent as DownloadIcon } from "../../../../assets/icons/download.svg";
 import { useDownload } from "../../../adapters/state/downloadState.js";
 import { TableList } from "../reusable_components/sidebarComponents.js";
 

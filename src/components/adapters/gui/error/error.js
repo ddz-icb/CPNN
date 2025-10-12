@@ -1,4 +1,4 @@
-import { ReactComponent as XIcon } from "../../../../icons/x.svg";
+import { ReactComponent as XIcon } from "../../../../assets/icons/x.svg";
 import { useError } from "../../../adapters/state/errorState.js";
 
 export function Error() {
