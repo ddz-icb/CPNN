@@ -4,11 +4,11 @@ import { ReactComponent as PlusIcon } from "../../../../icons/plus.svg";
 import { useRef, useState } from "react";
 
 import { TableList, ButtonPopup, SwitchBlock, SliderBlock, FieldBlock, Button } from "../reusable_components/sidebarComponents.js";
-import { exampleGraphJson } from "../../../assets/exampleGraphJSON.js";
+import { exampleGraphJson } from "../../../../assets/exampleGraphJSON.js";
 import { downloadObjectAsFile, downloadTsvFile } from "../../../domain/service/download/download.js";
-import { exampleGraphTsv } from "../../../assets/exampleGraphCSV.js";
-import { exampleMappingTsv } from "../../../assets/exampleMappingCSV.js";
-import { exampleGraphRaw } from "../../../assets/exampleGraphRawTSV.js";
+import { exampleGraphTsv } from "../../../../assets/exampleGraphCSV.js";
+import { exampleMappingTsv } from "../../../../assets/exampleMappingCSV.js";
+import { exampleGraphRaw } from "../../../../assets/exampleGraphRawTSV.js";
 import {
   maxCompSizeDescriptionUpload,
   minCompSizeDescriptionUpload,

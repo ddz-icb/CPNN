@@ -7,7 +7,7 @@ import {
   nodeIdExample3,
   nodeIdExample4,
   nodeIdFormat,
-} from "../../../../assets/format_examples.js";
+} from "../../../../../assets/format_examples.js";
 import { PopupTextField } from "../../reusable_components/sidebarComponents.js";
 
 export const minLinkCorrDescription = (

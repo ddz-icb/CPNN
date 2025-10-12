@@ -1,6 +1,6 @@
 import log from "../../adapters/logging/logger.js";
 import { useGraphState } from "../../adapters/state/graphState.js";
-import { exampleGraphJson } from "../../assets/exampleGraphJSON.js";
+import { exampleGraphJson } from "../../../assets/exampleGraphJSON.js";
 import { createGraph, deleteGraph, loadGraphNames, getGraph } from "../../domain/models/graph.js";
 import { createGraphIfNotExistsDB, deleteGraphDB } from "../../repository/graphRepo.js";
 import { errorService } from "./errorService.js";
