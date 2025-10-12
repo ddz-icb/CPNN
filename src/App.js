@@ -16,8 +16,8 @@ import "./styles/popup.css";
 import "./styles/colormapping_select.css";
 import "./styles/buttons.css";
 
-import { Sidebar } from "./components/gui/sidebar/sidebar.js";
-import { HeaderBar } from "./components/gui/headerbar/headerbar.js";
+import { Sidebar } from "./components/adapters/gui/sidebar/sidebar.js";
+import { HeaderBar } from "./components/adapters/gui/headerbar/headerbar.js";
 import { useTheme } from "./components/adapters/state/themeState.js";
 import { RenderControl } from "./components/application/controllers/renderControl.js";
 import { PhysicsControl } from "./components/application/controllers/physicsControl.js";
@@ -25,7 +25,7 @@ import { InitControl } from "./components/application/controllers/initControl.js
 import { DownloadControl } from "./components/application/controllers/downloadControl.js";
 import { FilterControl } from "./components/application/controllers/filterControl.js";
 import { AppearanceControl } from "./components/application/controllers/appearanceControl.js";
-import { Error } from "./components/gui/error/error.js";
+import { Error } from "./components/adapters/gui/error/error.js";
 import { useGraphSetup } from "./components/application/controllers/useGraphSetup.js";
 
 function App() {

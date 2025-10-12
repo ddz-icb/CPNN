@@ -1,0 +1,284 @@
+import { useState } from "react";
+import { ReactComponent as InfoCircleIcon } from "../../../../icons/infoCircle.svg";
+import { ReactComponent as XIcon } from "../../../../icons/x.svg";
+import { Tooltip } from "react-tooltip";
+import { handleFieldBlur, handleFieldChange, handleSliderChange } from "../handlers/buttonHandlerFunctions.js";
+import { useId } from "react";
+
+export function SliderBlock({ value, setValue, setValueText, min, max, step, text, infoHeading, infoDescription, ...props }) {
+  return (
+    <>
+      <div className="inline">
+        <label className={"label"}>{text}</label>
+        <span className="popup-button pad-left-05 pad-top-11">
+          <InfoButtonPopup heading={infoHeading} description={infoDescription} widePopup={true} />
+        </span>
+      </div>
+      <div className="block-section">
+        <input
+          className="sidebar-slider"
+          type="range"
+          min={min}
+          max={max}
+          step={step}
+          value={value}
+          onChange={(event) => handleSliderChange(event, setValue, setValueText, min, max)}
+        />
+        <NumericInput setValue={setValue} setValueText={setValueText} min={min} max={max} step={step} {...props} />
+      </div>
+    </>
+  );
+}
+
+export function SwitchBlock({ value, setValue, text, infoHeading, infoDescription }) {
+  return (
+    <div className="block-section">
+      <div className="inline">
+        <label className="label">{text}</label>
+        <span className="popup-button pad-left-05 pad-top-11">
+          <InfoButtonPopup heading={infoHeading} description={infoDescription} widePopup={true} />
+        </span>
+      </div>
+      <label className="switch">
+        <input type="checkbox" checked={value} onChange={setValue} className="checkbox-input" />
+        <span className="switch-button"></span>
+      </label>
+    </div>
+  );
+}
+
+export function FieldBlock({ text, infoHeading, infoDescription, ...props }) {
+  return (
+    <div className="block-section">
+      <div className="inline">
+        <label className="label">{text}</label>
+        <span className="popup-button pad-left-05 pad-top-11">
+          <InfoButtonPopup heading={infoHeading} description={infoDescription} widePopup={true} />
+        </span>
+      </div>
+      <NumericInput {...props} />
+    </div>
+  );
+}
+
+export function Button({ onClick, onChange, linkRef, tooltip, tooltipId, text }) {
+  return (
+    <>
+      <button className={"button-rect"} data-tooltip-id={tooltipId} data-tooltip-content={tooltip} onClick={onClick}>
+        <span>{text}</span>
+        <input type="file" style={{ display: "none" }} onChange={onChange} ref={linkRef} />
+      </button>
+      <Tooltip id={tooltipId} place="top" effect="solid" className="tooltip" />
+    </>
+  );
+}
+
+export function CodeEditorBlock({ text, onClick, compilerError, defaultValue, textareaRef, infoHeading, infoDescription }) {
+  return (
+    <>
+      <div className="inline">
+        <label className="label">{text}</label>
+        <span className="popup-button pad-left-05 pad-top-11">
+          <InfoButtonPopup heading={infoHeading} description={infoDescription} />
+        </span>
+      </div>
+      <div className={`block-section ${compilerError ? "no-pad-bottom" : ""}`}>
+        <div className="code-editor-container">
+          <textarea ref={textareaRef} defaultValue={defaultValue}></textarea>
+        </div>
+        <Button onClick={onClick} text="Run" />
+      </div>
+      {compilerError && (
+        <div className="block-section">
+          <span className="text-warning pad-left-1">{compilerError}</span>
+        </div>
+      )}
+    </>
+  );
+}
+
+export function Popup({ heading, description, isOpen, setIsOpen, widePopup, children }) {
+  const popupContainer = widePopup ? "popup-container-wide" : "popup-container";
+
+  return (
+    isOpen && (
+      <div className="popup-overlay">
+        <div className={popupContainer}>
+          <div className="popup-header pad-bottom-1">
+            <span className="popup-heading">{heading}</span>
+            <span className="popup-button" onClick={() => setIsOpen(false)}>
+              <XIcon />
+            </span>
+          </div>
+          <div className="block-section text-primary">{description}</div>
+          {children}
+        </div>
+      </div>
+    )
+  );
+}
+
+export function ButtonPopup({ buttonText, tooltip, tooltipId, heading, description, widePopup, children }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <>
+      <Button onClick={() => setIsOpen(!isOpen)} tooltip={tooltip} tooltipId={tooltipId} text={buttonText} />
+      {isOpen && (
+        <Popup heading={heading} description={description} children={children} isOpen={isOpen} setIsOpen={setIsOpen} widePopup={widePopup} />
+      )}
+    </>
+  );
+}
+
+export function InfoButtonPopup({ heading, description, widePopup, children }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <>
+      <InfoCircleIcon onClick={() => setIsOpen(!isOpen)} />
+      {isOpen && (
+        <Popup heading={heading} description={description} children={children} isOpen={isOpen} setIsOpen={setIsOpen} widePopup={widePopup} />
+      )}
+    </>
+  );
+}
+
+export function PopupTextField({ textInfront, textInside, inline }) {
+  if (inline) {
+    return (
+      <>
+        <div className={"block-section pad-top-05 pad-bottom-05"}>
+          <label className="label">{textInfront}</label>
+          <div className="text-field pad-left-025 pad-right-025">{textInside}</div>
+        </div>
+      </>
+    );
+  } else {
+    return (
+      <>
+        <label className="label">{textInfront}</label>
+        <div className="text-field pad-left-025 pad-right-025 margin-bottom-025">{textInside}</div>
+      </>
+    );
+  }
+}
+
+export function TableList({
+  heading,
+  data,
+  displayKey,
+  onItemClick,
+  ActionIcon,
+  onActionIconClick,
+  showActionIconOn,
+  itemTooltipContent,
+  actionIconTooltipContent,
+  ActionIcon2,
+  onActionIcon2Click,
+  actionIcon2TooltipContent,
+  dark,
+}) {
+  const instanceId = useId();
+
+  return (
+    <div>
+      <span className="heading">{heading}</span>
+      <table className={`item-table ${dark && "dark-item-table"}`}>
+        <tbody>
+          {data && data.length > 0 ? (
+            data.map((item, index) => (
+              <tr key={`row-${item}-${index}`} className="item-table-entry-highlight">
+                <td
+                  className="item-table-text"
+                  onClick={() => onItemClick && onItemClick(item)}
+                  {...(itemTooltipContent && {
+                    "data-tooltip-id": `item-tooltip-${instanceId}-${index}`,
+                    "data-tooltip-content": itemTooltipContent(item),
+                  })}
+                >
+                  <span>{displayKey ? item[displayKey] : item}</span>
+                </td>
+                {ActionIcon && (
+                  <>
+                    {!showActionIconOn || showActionIconOn(item) ? (
+                      <td className="item-table-logo">
+                        <ActionIcon
+                          onClick={() => onActionIconClick && onActionIconClick(item)}
+                          {...(actionIconTooltipContent && {
+                            "data-tooltip-id": `action-tooltip-${instanceId}-${index}`,
+                            "data-tooltip-content": actionIconTooltipContent(item),
+                          })}
+                        />
+                      </td>
+                    ) : (
+                      <td className="item-table-empty-logo">
+                        <ActionIcon />
+                      </td>
+                    )}
+                  </>
+                )}
+                {ActionIcon2 && (
+                  <td className="item-table-logo">
+                    <ActionIcon2
+                      onClick={() => onActionIcon2Click && onActionIcon2Click(item)}
+                      {...(actionIcon2TooltipContent && {
+                        "data-tooltip-id": `action-tooltip-2-${instanceId}-${index}`,
+                        "data-tooltip-content": actionIcon2TooltipContent(item),
+                      })}
+                    />
+                  </td>
+                )}
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td className="item-table-text">
+                <span>None</span>
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+
+      {data &&
+        data.length > 0 &&
+        data.map((item, index) => (
+          <>
+            {itemTooltipContent && (
+              <Tooltip key={`item-tooltip-${instanceId}-${index}`} id={`item-tooltip-${instanceId}-${index}`} className="tooltip" />
+            )}
+            {actionIconTooltipContent && (
+              <Tooltip key={`action-tooltip-${instanceId}-${index}`} id={`action-tooltip-${instanceId}-${index}`} className="tooltip" />
+            )}
+            {actionIcon2TooltipContent && (
+              <Tooltip key={`action-tooltip-2-${instanceId}-${index}`} id={`action-tooltip-2-${instanceId}-${index}`} className="tooltip" />
+            )}
+          </>
+        ))}
+    </div>
+  );
+}
+
+function NumericInput({ valueText, setValue, setValueText, fallbackValue, min, max, step }) {
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      event.target.blur();
+    }
+  };
+
+  return (
+    <input
+      className="input-field"
+      type="number"
+      lang="en"
+      min={min}
+      max={max}
+      step={step}
+      value={valueText}
+      onChange={(event) => handleFieldChange(event, setValueText, min, max)}
+      onKeyDown={handleKeyDown}
+      onBlur={(event) => handleFieldBlur(event, setValue, setValueText, min, max, fallbackValue)}
+    />
+  );
+}
