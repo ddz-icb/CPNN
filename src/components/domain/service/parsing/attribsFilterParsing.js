@@ -1,4 +1,4 @@
-import log from "../../adapters/logging/logger.js";
+import log from "../../../adapters/logging/logger.js";
 
 const TOKENS = {
   ATTRIBUTE: /^(?!\{|}|not|and|or|<|>|\(|\)|,).*$/,

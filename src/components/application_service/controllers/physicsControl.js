@@ -2,8 +2,8 @@ import { useEffect } from "react";
 import log from "../../adapters/logging/logger.js";
 import * as d3 from "d3";
 
-import { radius } from "../../domain_service/canvas_drawing/draw.js";
-import { getAdjacentData, getComponentData, getCommunityData } from "../../domain_service/graph_calculations/graphUtils.js";
+import { radius } from "../../domain/service/canvas_drawing/draw.js";
+import { getAdjacentData, getComponentData, getCommunityData } from "../../domain/service/graph_calculations/graphUtils.js";
 import {
   accuracyBarnesHut,
   borderCheck,
@@ -12,7 +12,7 @@ import {
   gravityForce,
   maxDistanceChargeForce,
   nodeRepulsionMultiplier,
-} from "../../domain_service/physics_calculations/physicsGraph.js";
+} from "../../domain/service/physics_calculations/physicsGraph.js";
 import { usePhysics } from "../../adapters/state/physicsState.js";
 import { useContainer } from "../../adapters/state/containerState.js";
 import { useGraphState } from "../../adapters/state/graphState.js";

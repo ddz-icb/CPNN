@@ -1,9 +1,9 @@
 import log from "../../adapters/logging/logger.js";
 import * as PIXI from "pixi.js";
 import { useRef, useEffect } from "react";
-import { handleResize, initDragAndZoom, initTooltips } from "../../domain_service/canvas_interaction/interactiveCanvas.js";
+import { handleResize, initDragAndZoom, initTooltips } from "../../domain/service/canvas_interaction/interactiveCanvas.js";
 import { Tooltips } from "../../gui/tooltip/tooltips.js";
-import { radius, drawCircle, getTextStyle, getBitMapStyle, redraw, render, getNodeLabelOffsetY } from "../../domain_service/canvas_drawing/draw.js";
+import { radius, drawCircle, getTextStyle, getBitMapStyle, redraw, render, getNodeLabelOffsetY } from "../../domain/service/canvas_drawing/draw.js";
 import { linkLengthInit } from "../../adapters/state/physicsState.js";
 import { useAppearance } from "../../adapters/state/appearanceState.js";
 import { graphInit, useGraphState } from "../../adapters/state/graphState.js";
@@ -12,7 +12,7 @@ import { tooltipInit, useTooltipSettings } from "../../adapters/state/tooltipSta
 import { useError } from "../../adapters/state/errorState.js";
 import { useReset } from "../../adapters/state/resetState.js";
 import { useColorschemeState } from "../../adapters/state/colorschemeState.js";
-import { getSimulation } from "../../domain_service/physics_calculations/getSimulation.js";
+import { getSimulation } from "../../domain/service/physics_calculations/getSimulation.js";
 import { useTheme } from "../../adapters/state/themeState.js";
 import { circlesInit, linesInit, nodeMapInit, usePixiState } from "../../adapters/state/pixiState.js";
 import { filteredAfterStartInit, useGraphFlags } from "../../adapters/state/graphFlagsState.js";

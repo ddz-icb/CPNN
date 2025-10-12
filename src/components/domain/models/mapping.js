@@ -1,4 +1,4 @@
-import { parseMappingFile } from "../../domain_service/parsing/mappingParsing.js";
+import { parseMappingFile } from "../service/parsing/mappingParsing.js";
 import { createMappingDB, deleteMappingDB, getAllMappingNamesDB, getMappingDB } from "../../repository/mappingRepo.js";
 
 export async function loadMappingNames() {

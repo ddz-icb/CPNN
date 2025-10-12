@@ -4,7 +4,7 @@ import { exampleGraphJson } from "../../assets/exampleGraphJSON.js";
 import { createGraph, deleteGraph, loadGraphNames, getGraph } from "../../domain/models/graph.js";
 import { createGraphIfNotExistsDB, deleteGraphDB } from "../../repository/graphRepo.js";
 import { errorService } from "./errorService.js";
-import { joinGraphNames, joinGraphs } from "../../domain_service/graph_calculations/joinGraph.js";
+import { joinGraphNames, joinGraphs } from "../../domain/service/graph_calculations/joinGraph.js";
 import { useGraphFlags } from "../../adapters/state/graphFlagsState.js";
 
 export const graphService = {

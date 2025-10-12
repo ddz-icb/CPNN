@@ -28,7 +28,7 @@ import {
 import { handleEditorChange, runCodeEditor } from "../handlers/buttonHandlerFunctions.js";
 import { useFilter } from "../../adapters/state/filterState.js";
 import { useGraphState } from "../../adapters/state/graphState.js";
-import { parseAttribsFilter } from "../../domain_service/parsing/attribsFilterParsing.js";
+import { parseAttribsFilter } from "../../domain/service/parsing/attribsFilterParsing.js";
 import { useTheme } from "../../adapters/state/themeState.js";
 import { useGraphMetrics } from "../../adapters/state/graphMetricsState.js";
 import { useGraphFlags } from "../../adapters/state/graphFlagsState.js";

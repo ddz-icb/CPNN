@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTooltipSettings } from "../../adapters/state/tooltipState.js";
-import { getNodeIdName } from "../../domain_service/parsing/nodeIdParsing.js";
+import { getNodeIdName } from "../../domain/service/parsing/nodeIdParsing.js";
 
 export function HoverTooltip() {
   const { tooltipSettings } = useTooltipSettings();

@@ -1,4 +1,4 @@
-import { expectedPhysicTypes } from "../../adapters/state/physicsState.js";
+import { expectedPhysicTypes } from "../../../adapters/state/physicsState.js";
 
 export function verifyGraph(graph) {
   if (!graph.data || typeof graph.data !== "object") {

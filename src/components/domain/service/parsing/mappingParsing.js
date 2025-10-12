@@ -1,4 +1,4 @@
-import log from "../../adapters/logging/logger.js";
+import log from "../../../adapters/logging/logger.js";
 import Papa from "papaparse";
 import { getFileAsText, getFileNameWithoutExtension } from "./fileParsing.js";
 import { verifyMapping } from "../verification/mappingVerification.js";

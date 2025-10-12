@@ -11,7 +11,7 @@ import {
   filterMinCompSize,
   filterMinNeighborhood,
   filterNodesExist,
-} from "../../domain_service/graph_calculations/filterGraph.js";
+} from "../../domain/service/graph_calculations/filterGraph.js";
 import { useFilter } from "../../adapters/state/filterState.js";
 import { useAppearance } from "../../adapters/state/appearanceState.js";
 import { useGraphState } from "../../adapters/state/graphState.js";

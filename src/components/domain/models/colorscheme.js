@@ -1,4 +1,4 @@
-import { parseColorschemeFile } from "../../domain_service/parsing/colorschemeParsing.js";
+import { parseColorschemeFile } from "../service/parsing/colorschemeParsing.js";
 import {
   createColorschemeDB,
   createColorschemeIfNotExistsDB,

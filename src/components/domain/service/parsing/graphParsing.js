@@ -1,4 +1,4 @@
-import log from "../../adapters/logging/logger.js";
+import log from "../../../adapters/logging/logger.js";
 import axios from "axios";
 import { getFileAsText, getFileNameWithoutExtension, parseSVFile } from "./fileParsing.js";
 import {

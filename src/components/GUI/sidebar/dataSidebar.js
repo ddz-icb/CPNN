@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { TableList, ButtonPopup, SwitchBlock, SliderBlock, FieldBlock, Button, PopupTextField } from "../reusable_components/sidebarComponents.js";
 import { exampleGraphJson } from "../../assets/exampleGraphJSON.js";
-import { downloadObjectAsFile, downloadTsvFile } from "../../domain_service/download/download.js";
+import { downloadObjectAsFile, downloadTsvFile } from "../../domain/service/download/download.js";
 import { exampleGraphTsv } from "../../assets/exampleGraphCSV.js";
 import { exampleMappingTsv } from "../../assets/exampleMappingCSV.js";
 import { exampleGraphRaw } from "../../assets/exampleGraphRawTSV.js";

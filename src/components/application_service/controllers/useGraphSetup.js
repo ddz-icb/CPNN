@@ -9,14 +9,14 @@ import {
   getLinkAttribsToColorIndices,
   getLinkWeightMinMax,
   getNodeAttribsToColorIndices,
-} from "../../domain_service/graph_calculations/graphUtils.js";
+} from "../../domain/service/graph_calculations/graphUtils.js";
 import { usePhysics } from "../../adapters/state/physicsState.js";
 import { useError } from "../../adapters/state/errorState.js";
 import { useMappingState } from "../../adapters/state/mappingState.js";
 import { graphService } from "../services/graphService.js";
 import { resetService } from "../services/resetService.js";
-import { filterMergeProteins } from "../../domain_service/graph_calculations/filterGraph.js";
-import { applyNodeMapping } from "../../domain_service/graph_calculations/applyMapping.js";
+import { filterMergeProteins } from "../../domain/service/graph_calculations/filterGraph.js";
+import { applyNodeMapping } from "../../domain/service/graph_calculations/applyMapping.js";
 
 export const useGraphSetup = () => {
   const { setFilter } = useFilter();

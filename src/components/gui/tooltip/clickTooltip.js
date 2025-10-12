@@ -3,12 +3,12 @@ import axios from "axios";
 import * as $3Dmol from "3dmol/build/3Dmol.js";
 
 import log from "../../adapters/logging/logger.js";
-import { getDescriptionUniprotData, getFullNameUniprotData, getPdbIdUniprotData } from "../../domain_service/parsing/uniprotDataParsing.js";
+import { getDescriptionUniprotData, getFullNameUniprotData, getPdbIdUniprotData } from "../../domain/service/parsing/uniprotDataParsing.js";
 
 import { useContainer } from "../../adapters/state/containerState.js";
 import { useTooltipSettings } from "../../adapters/state/tooltipState.js";
 import { useTheme } from "../../adapters/state/themeState.js";
-import { getNodeIdEntries, parseNodeIdEntries } from "../../domain_service/parsing/nodeIdParsing.js";
+import { getNodeIdEntries, parseNodeIdEntries } from "../../domain/service/parsing/nodeIdParsing.js";
 import { TooltipPopup, TooltipPopupItem, TooltipPopupLinkItem } from "../reusable_components/tooltipComponents.js";
 
 const fullNameInit = "";
