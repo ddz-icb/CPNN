@@ -1,15 +1,15 @@
 import { useEffect } from "react";
-import log from "../../adapters/logging/logger.js";
+import log from "../logging/logger.js";
 
 import { changeCircleBorderColor, changeNodeColors, changeNodeLabelColor, redraw } from "../../domain/service/canvas_drawing/draw.js";
-import { useAppearance } from "../../adapters/state/appearanceState.js";
-import { useGraphState } from "../../adapters/state/graphState.js";
+import { useAppearance } from "../state/appearanceState.js";
+import { useGraphState } from "../state/graphState.js";
 
-import { useColorschemeState } from "../../adapters/state/colorschemeState.js";
-import { useTheme } from "../../adapters/state/themeState.js";
-import { usePixiState } from "../../adapters/state/pixiState.js";
-import { useRenderState } from "../../adapters/state/canvasState.js";
-import { errorService } from "../services/errorService.js";
+import { useColorschemeState } from "../state/colorschemeState.js";
+import { useTheme } from "../state/themeState.js";
+import { usePixiState } from "../state/pixiState.js";
+import { useRenderState } from "../state/canvasState.js";
+import { errorService } from "../../application/services/errorService.js";
 
 export function AppearanceControl() {
   const { appearance } = useAppearance();

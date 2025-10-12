@@ -1,20 +1,20 @@
-import log from "../../adapters/logging/logger.js";
-import { linkAttribsToColorIndicesInit, nodeAttribsToColorIndicesInit, useColorschemeState } from "../../adapters/state/colorschemeState.js";
-import { linkThresholdInit, useFilter } from "../../adapters/state/filterState.js";
-import { useGraphFlags } from "../../adapters/state/graphFlagsState.js";
-import { useGraphMetrics } from "../../adapters/state/graphMetricsState.js";
-import { useGraphState } from "../../adapters/state/graphState.js";
+import log from "../logging/logger.js";
+import { linkAttribsToColorIndicesInit, nodeAttribsToColorIndicesInit, useColorschemeState } from "../state/colorschemeState.js";
+import { linkThresholdInit, useFilter } from "../state/filterState.js";
+import { useGraphFlags } from "../state/graphFlagsState.js";
+import { useGraphMetrics } from "../state/graphMetricsState.js";
+import { useGraphState } from "../state/graphState.js";
 import { useEffect, useState } from "react";
 import {
   getLinkAttribsToColorIndices,
   getLinkWeightMinMax,
   getNodeAttribsToColorIndices,
 } from "../../domain/service/graph_calculations/graphUtils.js";
-import { usePhysics } from "../../adapters/state/physicsState.js";
-import { useError } from "../../adapters/state/errorState.js";
-import { useMappingState } from "../../adapters/state/mappingState.js";
-import { graphService } from "../services/graphService.js";
-import { resetService } from "../services/resetService.js";
+import { usePhysics } from "../state/physicsState.js";
+import { useError } from "../state/errorState.js";
+import { useMappingState } from "../state/mappingState.js";
+import { graphService } from "../../application/services/graphService.js";
+import { resetService } from "../../application/services/resetService.js";
 import { filterMergeProteins } from "../../domain/service/graph_calculations/filterGraph.js";
 import { applyNodeMapping } from "../../domain/service/graph_calculations/applyMapping.js";
 

@@ -1,22 +1,22 @@
-import log from "../../adapters/logging/logger.js";
+import log from "../logging/logger.js";
 import * as PIXI from "pixi.js";
 import { useRef, useEffect } from "react";
 import { handleResize, initDragAndZoom, initTooltips } from "../../domain/service/canvas_interaction/interactiveCanvas.js";
-import { Tooltips } from "../../adapters/gui/tooltip/tooltips.js";
+import { Tooltips } from "../gui/tooltip/tooltips.js";
 import { radius, drawCircle, getTextStyle, getBitMapStyle, redraw, render, getNodeLabelOffsetY } from "../../domain/service/canvas_drawing/draw.js";
-import { linkLengthInit } from "../../adapters/state/physicsState.js";
-import { useAppearance } from "../../adapters/state/appearanceState.js";
-import { graphInit, useGraphState } from "../../adapters/state/graphState.js";
-import { useContainer } from "../../adapters/state/containerState.js";
-import { tooltipInit, useTooltipSettings } from "../../adapters/state/tooltipState.js";
-import { useError } from "../../adapters/state/errorState.js";
-import { useReset } from "../../adapters/state/resetState.js";
-import { useColorschemeState } from "../../adapters/state/colorschemeState.js";
+import { linkLengthInit } from "../state/physicsState.js";
+import { useAppearance } from "../state/appearanceState.js";
+import { graphInit, useGraphState } from "../state/graphState.js";
+import { useContainer } from "../state/containerState.js";
+import { tooltipInit, useTooltipSettings } from "../state/tooltipState.js";
+import { useError } from "../state/errorState.js";
+import { useReset } from "../state/resetState.js";
+import { useColorschemeState } from "../state/colorschemeState.js";
 import { getSimulation } from "../../domain/service/physics_calculations/getSimulation.js";
-import { useTheme } from "../../adapters/state/themeState.js";
-import { circlesInit, linesInit, nodeMapInit, usePixiState } from "../../adapters/state/pixiState.js";
-import { filteredAfterStartInit, useGraphFlags } from "../../adapters/state/graphFlagsState.js";
-import { simulationInit, useRenderState } from "../../adapters/state/canvasState.js";
+import { useTheme } from "../state/themeState.js";
+import { circlesInit, linesInit, nodeMapInit, usePixiState } from "../state/pixiState.js";
+import { filteredAfterStartInit, useGraphFlags } from "../state/graphFlagsState.js";
+import { simulationInit, useRenderState } from "../state/canvasState.js";
 
 export function RenderControl() {
   const { appearance } = useAppearance();

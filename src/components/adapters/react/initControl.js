@@ -1,9 +1,9 @@
-import log from "../../adapters/logging/logger.js";
+import log from "../logging/logger.js";
 import { useEffect } from "react";
-import { graphService } from "../services/graphService.js";
-import { colorschemeService } from "../services/colorschemeService.js";
-import { themeService } from "../services/themeService.js";
-import { mappingService } from "../services/mappingService.js";
+import { graphService } from "../../application/services/graphService.js";
+import { colorschemeService } from "../../application/services/colorschemeService.js";
+import { themeService } from "../../application/services/themeService.js";
+import { mappingService } from "../../application/services/mappingService.js";
 
 export function InitControl() {
   useEffect(() => {

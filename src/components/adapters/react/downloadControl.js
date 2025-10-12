@@ -1,18 +1,18 @@
 import { useEffect } from "react";
-import log from "../../adapters/logging/logger.js";
-import { useAppearance } from "../../adapters/state/appearanceState.js";
-import { useColorschemeState } from "../../adapters/state/colorschemeState.js";
-import { useDownload } from "../../adapters/state/downloadState.js";
-import { useGraphState } from "../../adapters/state/graphState.js";
-import { useMappingState } from "../../adapters/state/mappingState.js";
-import { usePhysics } from "../../adapters/state/physicsState.js";
+import log from "../logging/logger.js";
+import { useAppearance } from "../state/appearanceState.js";
+import { useColorschemeState } from "../state/colorschemeState.js";
+import { useDownload } from "../state/downloadState.js";
+import { useGraphState } from "../state/graphState.js";
+import { useMappingState } from "../state/mappingState.js";
+import { usePhysics } from "../state/physicsState.js";
 import { downloadAsPDF, downloadAsPNG, downloadAsSVG, downloadGraphJson, downloadLegendPdf } from "../../domain/service/download/download.js";
 import { changeCircleBorderColor, changeNodeLabelColor } from "../../domain/service/canvas_drawing/draw.js";
-import { lightTheme, themeInit, useTheme } from "../../adapters/state/themeState.js";
-import { usePixiState } from "../../adapters/state/pixiState.js";
-import { useRenderState } from "../../adapters/state/canvasState.js";
-import { errorService } from "../services/errorService.js";
-import { useFilter } from "../../adapters/state/filterState.js";
+import { lightTheme, themeInit, useTheme } from "../state/themeState.js";
+import { usePixiState } from "../state/pixiState.js";
+import { useRenderState } from "../state/canvasState.js";
+import { errorService } from "../../application/services/errorService.js";
+import { useFilter } from "../state/filterState.js";
 
 export function DownloadControl() {
   const { physics } = usePhysics();

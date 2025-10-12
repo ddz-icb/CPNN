@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import log from "../../adapters/logging/logger.js";
+import log from "../logging/logger.js";
 import * as d3 from "d3";
 
 import { radius } from "../../domain/service/canvas_drawing/draw.js";
@@ -13,12 +13,12 @@ import {
   maxDistanceChargeForce,
   nodeRepulsionMultiplier,
 } from "../../domain/service/physics_calculations/physicsGraph.js";
-import { usePhysics } from "../../adapters/state/physicsState.js";
-import { useContainer } from "../../adapters/state/containerState.js";
-import { useGraphState } from "../../adapters/state/graphState.js";
-import { useRenderState } from "../../adapters/state/canvasState.js";
-import { errorService } from "../services/errorService.js";
-import { useGraphFlags } from "../../adapters/state/graphFlagsState.js";
+import { usePhysics } from "../state/physicsState.js";
+import { useContainer } from "../state/containerState.js";
+import { useGraphState } from "../state/graphState.js";
+import { useRenderState } from "../state/canvasState.js";
+import { errorService } from "../../application/services/errorService.js";
+import { useGraphFlags } from "../state/graphFlagsState.js";
 
 export function PhysicsControl() {
   const { physics, setPhysics } = usePhysics();
