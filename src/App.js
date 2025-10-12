@@ -15,6 +15,7 @@ import "./styles/tooltip.css";
 import "./styles/popup.css";
 import "./styles/colormapping_select.css";
 import "./styles/buttons.css";
+import "./styles/tailwind.css";
 
 import { Sidebar } from "./components/adapters/gui/sidebar/sidebar.js";
 import { HeaderBar } from "./components/adapters/gui/headerbar/headerbar.js";
