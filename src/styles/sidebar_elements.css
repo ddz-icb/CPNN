@@ -41,16 +41,7 @@
 
 /* Input Fields */
 .input-field {
-  display: inline-block;
-  width: 3.5rem;
-  height: 1.7rem;
   flex-shrink: 0;
-  background-color: var(--bg-input-field);
-  border: 1px solid var(--border-input-field-sidebar);
-  border-radius: var(--border-radius-button);
-  box-sizing: border-box;
-  color: var(--text-primary);
-  font-size: 1.2rem;
   text-align: center;
   -moz-appearance: textfield;
   appearance: none;

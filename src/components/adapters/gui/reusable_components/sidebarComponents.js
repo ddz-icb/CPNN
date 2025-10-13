@@ -5,6 +5,7 @@ import { ReactComponent as XIcon } from "../../../../assets/icons/x.svg";
 import { Tooltip } from "react-tooltip";
 import { handleFieldBlur, handleFieldChange, handleSliderChange } from "../handlers/buttonHandlerFunctions.js";
 import { useId } from "react";
+import { InputCN } from "./shadcn_blocks/inputFieldCN.jsx";
 
 export function SliderBlock({ value, setValue, setValueText, min, max, step, text, infoHeading, infoDescription, ...props }) {
   return (
@@ -65,7 +66,7 @@ export function FieldBlock({ text, infoHeading, infoDescription, ...props }) {
 export function Button({ onClick, onChange, linkRef, tooltip, tooltipId, text }) {
   return (
     <>
-      <ButtonCN size="sm" data-tooltip-id={tooltipId} data-tooltip-content={tooltip} onClick={onClick}>
+      <ButtonCN className="default-height default-min-width" data-tooltip-id={tooltipId} data-tooltip-content={tooltip} onClick={onClick}>
         <span>{text}</span>
         <input type="file" style={{ display: "none" }} onChange={onChange} ref={linkRef} />
       </ButtonCN>
@@ -269,17 +270,19 @@ function NumericInput({ valueText, setValue, setValueText, fallbackValue, min, m
   };
 
   return (
-    <input
-      className="input-field"
-      type="number"
-      lang="en"
-      min={min}
-      max={max}
-      step={step}
-      value={valueText}
-      onChange={(event) => handleFieldChange(event, setValueText, min, max)}
-      onKeyDown={handleKeyDown}
-      onBlur={(event) => handleFieldBlur(event, setValue, setValueText, min, max, fallbackValue)}
-    />
+    <>
+      <InputCN
+        className="input-field default-width default-height"
+        type="number"
+        lang="en"
+        min={min}
+        max={max}
+        step={step}
+        value={valueText}
+        onChange={(event) => handleFieldChange(event, setValueText, min, max)}
+        onKeyDown={handleKeyDown}
+        onBlur={(event) => handleFieldBlur(event, setValue, setValueText, min, max, fallbackValue)}
+      />
+    </>
   );
 }

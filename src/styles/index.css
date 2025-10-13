@@ -35,6 +35,8 @@ ul {
   --border-size-tooltip: 0.1rem;
   --button-size: 3.5rem;
   --button-size-sidebar: 2rem;
+  --default-element-width: 3.5rem;
+  --default-element-height: 1.8rem;
 
   --bg-primary: #23232e;
   --bg-secondary: #131318;

@@ -12,3 +12,12 @@
 .flex-end {
   justify-content: flex-end;
 }
+.default-min-width {
+  min-width: var(--default-element-width);
+}
+.default-width {
+  width: var(--default-element-width);
+}
+.default-height {
+  height: var(--default-element-height);
+}
