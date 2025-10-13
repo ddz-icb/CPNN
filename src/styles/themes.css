@@ -45,8 +45,8 @@
   --border-bottom-logo: var(--color22);
   --border-input-field-sidebar: var(--color22);
   --border-input-field-sidebar-focus: var(--color24);
-  --border-switch-off: var(--color22);
-  --border-switch-on: var(--color22);
+  --border-switch-off: var(--ring);
+  --border-switch-on: var(--ring);
 }
 
 .dark {

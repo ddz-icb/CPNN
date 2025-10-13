@@ -62,8 +62,6 @@
 /* Switch (Checkbox) */
 .switch {
   position: relative;
-  width: 3.5rem;
-  height: 1.7rem;
   margin-left: 1rem;
 }
 
@@ -84,7 +82,7 @@
   cursor: pointer;
   transition: 0.2s;
   -webkit-transition: 0.2s;
-  border-radius: 1.7rem;
+  border-radius: var(--default-element-height);
 }
 
 .switch-button:before {
@@ -92,8 +90,8 @@
   content: "";
   height: 1.3rem;
   width: 1.3rem;
-  left: 0.15rem;
-  bottom: 0.16rem;
+  left: 0.16rem;
+  bottom: 0.19rem;
   background-color: white;
   transition: 0.2s;
   -webkit-transition: 0.2s;

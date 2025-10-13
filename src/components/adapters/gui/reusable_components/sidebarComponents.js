@@ -41,7 +41,7 @@ export function SwitchBlock({ value, setValue, text, infoHeading, infoDescriptio
           <InfoButtonPopup heading={infoHeading} description={infoDescription} widePopup={true} />
         </span>
       </div>
-      <label className="switch">
+      <label className="switch default-height default-width">
         <input type="checkbox" checked={value} onChange={setValue} className="checkbox-input" />
         <span className="switch-button"></span>
       </label>
