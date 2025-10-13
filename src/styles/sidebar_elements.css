@@ -53,12 +53,6 @@
   height: 1.5rem;
 }
 
-.input-field:focus {
-  background-color: var(--bg-input-field-focus);
-  border: 1px solid var(--border-input-field-sidebar-focus);
-  outline: none;
-}
-
 .input-field::-webkit-inner-spin-button,
 .input-field::-webkit-outer-spin-button {
   margin: 0;
