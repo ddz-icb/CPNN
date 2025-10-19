@@ -107,8 +107,9 @@
   --color-input-border: color-mix(in srgb, var(--color-surface-contrast) 65%, var(--color-accent) 35%);
   --color-input-border-focus: color-mix(in srgb, var(--color-accent) 70%, var(--palette-violet-200) 30%);
   --color-button-surface: color-mix(in srgb, var(--color-surface) 55%, var(--color-accent) 45%);
+  --color-button-hover: color-mix(in srgb, var(--color-accent) 65%, var(--palette-violet-200) 35%);
   --color-switch-track: color-mix(in srgb, var(--color-surface-contrast) 35%, var(--color-accent) 65%);
-  --highlight-bg: color-mix(in srgb, var(--color-accent-soft) 70%, var(--palette-violet-200) 30%);
+  --highlight-bg: color-mix(in srgb, var(--color-accent-soft) 30%, var(--palette-violet-400) 30%);
   --highlight-color-text: var(--palette-charcoal-950);
 
   /* Derived tokens */
@@ -194,6 +195,7 @@
   --color-input-border: var(--color-border-subtle);
   --color-input-border-focus: color-mix(in srgb, var(--color-accent) 55%, var(--palette-white) 45%);
   --color-button-surface: color-mix(in srgb, var(--palette-white) 55%, var(--color-accent) 45%);
+  --color-button-hover: color-mix(in srgb, var(--color-accent) 60%, var(--palette-white) 40%);
   --color-switch-track: color-mix(in srgb, var(--palette-indigo-500) 55%, var(--color-accent) 45%);
   --shadow-soft: var(--shadow-soft-light);
   --shadow-floating: var(--shadow-floating-light);

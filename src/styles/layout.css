@@ -28,9 +28,7 @@ button svg,
 .tooltip-popup-button svg,
 .item-table-logo svg,
 .info-button-icon {
-  transition:
-    fill var(--motion-duration-fast) var(--motion-ease-standard),
-    filter var(--motion-duration-fast) var(--motion-ease-standard);
+  transition: fill var(--motion-duration-fast) var(--motion-ease-standard), filter var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
 button:hover svg,
@@ -47,4 +45,9 @@ button:hover svg,
 .tooltip-popup-button:hover,
 .info-button:hover {
   color: var(--color-icon-hover);
+}
+
+[data-slot="button"][data-variant="default"]:hover {
+  background-color: var(--color-button-hover);
+  color: var(--color-accent-contrast);
 }
