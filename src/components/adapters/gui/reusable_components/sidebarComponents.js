@@ -12,7 +12,7 @@ export function SliderBlock({ value, setValue, setValueText, min, max, step, tex
     <>
       <div className="inline">
         <label className={"label"}>{text}</label>
-        <span className="popup-button pad-left-05 pad-top-11">
+        <span className="info-button-container pad-left-05 pad-top-11">
           <InfoButtonPopup heading={infoHeading} description={infoDescription} widePopup={true} />
         </span>
       </div>
@@ -37,7 +37,7 @@ export function SwitchBlock({ value, setValue, text, infoHeading, infoDescriptio
     <div className="block-section">
       <div className="inline">
         <label className="label">{text}</label>
-        <span className="popup-button pad-left-05 pad-top-11">
+        <span className="info-button-container pad-left-05 pad-top-11">
           <InfoButtonPopup heading={infoHeading} description={infoDescription} widePopup={true} />
         </span>
       </div>
@@ -54,7 +54,7 @@ export function FieldBlock({ text, infoHeading, infoDescription, ...props }) {
     <div className="block-section">
       <div className="inline">
         <label className="label">{text}</label>
-        <span className="popup-button pad-left-05 pad-top-11">
+        <span className="info-button-container pad-left-05 pad-top-11">
           <InfoButtonPopup heading={infoHeading} description={infoDescription} widePopup={true} />
         </span>
       </div>
@@ -80,7 +80,7 @@ export function CodeEditorBlock({ text, onClick, compilerError, defaultValue, te
     <>
       <div className="inline">
         <label className="label">{text}</label>
-        <span className="popup-button pad-left-05 pad-top-11">
+        <span className="info-button-container pad-left-05 pad-top-11">
           <InfoButtonPopup heading={infoHeading} description={infoDescription} />
         </span>
       </div>
@@ -138,7 +138,9 @@ export function InfoButtonPopup({ heading, description, widePopup, children }) {
 
   return (
     <>
-      <InfoCircleIcon onClick={() => setIsOpen(!isOpen)} />
+      <button type="button" className="pad-bottom-08 info-button" onClick={() => setIsOpen(!isOpen)}>
+        <InfoCircleIcon className="info-button-icon" />
+      </button>
       {isOpen && (
         <Popup heading={heading} description={description} children={children} isOpen={isOpen} setIsOpen={setIsOpen} widePopup={widePopup} />
       )}

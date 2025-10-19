@@ -99,6 +99,34 @@
   fill: currentColor;
 }
 
+.info-button {
+  display: inline-flex;
+  align-items: center;
+  width: var(--default-element-height);
+  height: var(--default-element-height);
+  border: none;
+  background: transparent;
+  color: var(--color-icon-primary);
+  cursor: pointer;
+  transition: color var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.info-button-icon {
+  width: 0.8rem;
+  height: 0.8rem;
+  fill: currentColor;
+}
+
+.info-button:hover {
+  color: var(--color-icon-accent);
+}
+
+.info-button-container {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .logo-container {
   display: flex;
   align-items: center;
