@@ -2,16 +2,19 @@
   position: fixed;
   z-index: 5;
   display: block;
-  padding: 0.35rem 0.6rem;
   min-height: var(--default-element-height);
-  border-radius: calc(var(--radius-sm) * 1.5);
+  padding-top: 0.2rem;
+  padding-bottom: 0.2rem;
+  padding-right: 0.3rem;
+  padding-left: 0.3rem;
+  min-height: var(--default-element-height);
+  border-radius: var(--radius);
   background: var(--color-tooltip-surface);
   border: var(--border-thin) solid var(--color-tooltip-border);
   box-shadow: var(--shadow-floating);
   color: var(--color-tooltip-text);
   text-align: center;
   pointer-events: none;
-  white-space: nowrap;
 }
 
 .tooltip a {
