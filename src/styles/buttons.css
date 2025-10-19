@@ -1,9 +1,9 @@
 /* Buttons */
 
 .icon-button {
-  width: var(--button-size);
-  height: var(--button-size);
-  background-color: var(--bg-icon-button);
+  width: var(--button-lg);
+  height: var(--button-lg);
+  background-color: var(--color-button-surface);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -15,23 +15,23 @@
 .icon-button svg {
   min-width: 1.5rem;
   margin: 0 1.5rem;
-  fill: var(--text-primary);
+  fill: var(--color-text-primary);
   filter: grayscale(100%) opacity(0.7);
 }
 
 .icon-button:hover svg {
-  fill: var(--icon-color);
+  fill: var(--color-icon-accent);
   filter: grayscale(0%) opacity(1);
-  transition: var(--transition-speed);
+  transition: fill var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
 .button-select {
   display: inline-block;
   width: 10rem;
-  height: 1rem;
-  background-color: var(--bg-primary);
-  border: 1px solid var(--border-button-sidebar);
-  color: var(--text-primary);
-  font-size: 0.8rem;
+  min-height: var(--default-element-height);
+  padding: 0 0.6rem;
+  background-color: var(--color-surface);
+  border: var(--border-thin) solid var(--color-border-subtle);
+  color: var(--color-text-primary);
   cursor: pointer;
 }

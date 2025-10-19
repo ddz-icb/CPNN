@@ -1,11 +1,10 @@
 .text-field {
   display: inline-block;
-  background-color: var(--bg-input-field);
-  border: 1px solid var(--border-input-field-sidebar-focus);
-  border-radius: var(--border-radius-button);
+  background-color: var(--color-input-surface);
+  border: var(--border-thin) solid var(--color-border-subtle);
+  border-radius: var(--radius-xs);
   box-sizing: border-box;
-  color: var(--text-primary);
-  font-size: 1rem;
+  color: var(--color-text-primary);
   text-align: center;
   overflow: hidden;
   white-space: nowrap;
@@ -13,18 +12,18 @@
 }
 
 .text-primary {
-  color: var(--text-primary);
+  color: var(--color-text-primary);
 }
 .text-secondary {
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
 }
 .heading {
   display: block;
-  color: var(--text-primary);
-  font-size: 1.2rem;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-heading);
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
 }
 .text-warning {
-  color: var(--error-color);
+  color: var(--color-error);
 }

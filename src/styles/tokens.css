@@ -1,0 +1,215 @@
+:root {
+  /* Typography */
+  --font-size-base: 0.8rem;
+  font-family: "pingFangSC", sans-serif;
+  font-size: var(--font-size-base);
+  font-weight: 300;
+  --font-family-sans: "pingFangSC", sans-serif;
+  --font-family-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-weight-regular: 300;
+  --font-weight-medium: 500;
+  --font-size-xs: 0.7rem;
+  --font-size-heading: 1.1rem;
+
+  /* Layout & spacing */
+  --size-unit: 0.25rem;
+  --radius-xs: 0.15rem;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --control-width: 3.2rem;
+  --control-height: 1.6rem;
+  --button-lg: 3.5rem;
+  --button-md: 2rem;
+  --border-thin: 1px;
+  --border-thick: 2px;
+
+  /* Motion */
+  --motion-duration-fast: 200ms;
+  --motion-ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Shadows */
+  --shadow-soft: 0 0px 1.5px 0 rgba(81, 81, 81, 0.6);
+  --shadow-floating: 0 0.5rem 1.5rem -1rem rgba(17, 17, 17, 0.6);
+
+  /* Semantic colors – dark baseline */
+  --color-surface: #23232e;
+  --color-surface-contrast: #131318;
+  --color-surface-muted: #12181b;
+  --color-border: #131318;
+  --color-border-subtle: #454e56;
+  --color-border-accent: #07a7e3;
+  --color-text-primary: #b6b6b6;
+  --color-text-secondary: #1e396f;
+  --color-text-muted: #c7c7c7;
+  --color-text-inverse: #ffffff;
+  --color-icon-primary: #4878a5;
+  --color-icon-accent: #c8f0ff;
+  --color-icon-muted: #afafe4;
+  --color-accent: #154777;
+  --color-accent-contrast: #ffffff;
+  --color-accent-soft: #afafe4;
+  --color-accent-soft-contrast: #131318;
+  --color-error: #cb3939;
+  --color-hover: #1f2429;
+  --color-tooltip-surface: #454e56;
+  --color-tooltip-border: #07a7e3;
+  --color-tooltip-text: #ffffff;
+  --color-input-surface: #1c1f28;
+  --color-input-focus: #1c1f28;
+  --color-button-surface: #2a2e35;
+  --color-switch-track: #131318;
+  --highlight-bg: var(--color-accent-soft);
+  --highlight-color-text: var(--color-accent-soft-contrast);
+
+  /* Tailwind interoperability */
+  --font-sans: var(--font-family-sans);
+  --font-mono: var(--font-family-mono);
+  --default-transition-duration: var(--motion-duration-fast);
+  --default-transition-timing-function: var(--motion-ease-standard);
+  --text-sm: 0.8rem;
+  --text-sm--line-height: 1.4;
+  --spacing: var(--size-unit);
+  --radius: var(--radius-sm);
+  --button-size: var(--button-lg);
+  --button-size-sidebar: var(--button-md);
+  --default-element-width: var(--control-width);
+  --default-element-height: var(--control-height);
+  --border-size-slider: var(--border-thin);
+  --border-size-tooltip: var(--border-thin);
+  --color-red-500: oklch(63.7% 0.237 25.331);
+  --color-white: #ffffff;
+
+  /* Shadcn & chart aliases */
+  --background: var(--color-surface-muted);
+  --foreground: var(--color-text-primary);
+  --card: var(--color-surface);
+  --card-foreground: var(--color-text-primary);
+  --popover: var(--color-surface);
+  --popover-foreground: var(--color-text-primary);
+  --primary: var(--color-accent);
+  --primary-foreground: var(--color-accent-contrast);
+  --secondary: color-mix(in srgb, var(--color-accent) 15%, var(--color-surface) 85%);
+  --secondary-foreground: var(--color-text-primary);
+  --muted: var(--color-surface);
+  --muted-foreground: var(--color-text-secondary);
+  --accent: var(--color-accent-soft);
+  --accent-foreground: var(--color-accent-soft-contrast);
+  --destructive: #cb3939;
+  --border: var(--color-border-subtle);
+  --input: var(--color-input-surface);
+  --ring: var(--color-accent);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: var(--color-surface);
+  --sidebar-foreground: var(--color-text-primary);
+  --sidebar-primary: color-mix(in srgb, var(--color-accent) 60%, var(--color-surface) 40%);
+  --sidebar-primary-foreground: var(--color-text-inverse);
+  --sidebar-accent: var(--color-accent-soft);
+  --sidebar-accent-foreground: var(--color-accent-soft-contrast);
+  --sidebar-border: var(--color-border-subtle);
+  --sidebar-ring: var(--color-accent);
+}
+
+.light {
+  --color-surface: #ffffff;
+  --color-surface-contrast: #074575;
+  --color-surface-muted: #ffffff;
+  --color-border: #074575;
+  --color-border-subtle: #b5b5b5;
+  --color-border-accent: #154777;
+  --color-text-primary: #000000;
+  --color-text-secondary: #153456;
+  --color-text-muted: #505050;
+  --color-text-inverse: #ffffff;
+  --color-icon-primary: #07a7e3;
+  --color-icon-accent: #074575;
+  --color-icon-muted: #2b5786;
+  --color-accent: #154777;
+  --color-accent-contrast: #ffffff;
+  --color-accent-soft: #07a7e3;
+  --color-accent-soft-contrast: #153456;
+  --color-error: #fc6100;
+  --color-hover: oklch(0.92 0.004 286.32);
+  --color-tooltip-surface: #ffffff;
+  --color-tooltip-border: #013b79;
+  --color-tooltip-text: #013b79;
+  --color-input-surface: #ffffff;
+  --color-input-focus: oklch(0.92 0.004 286.32);
+  --color-button-surface: oklch(0.92 0.004 286.32);
+  --color-switch-track: #153456;
+  --shadow-soft: 0 0px 1.5px 0 rgba(21, 52, 86, 0.25);
+  --shadow-floating: 0 0.65rem 2rem -1rem rgba(7, 71, 117, 0.35);
+
+  --background: var(--color-surface-muted);
+  --foreground: var(--color-text-primary);
+  --card: var(--color-surface);
+  --card-foreground: var(--color-text-primary);
+  --popover: var(--color-surface);
+  --popover-foreground: var(--color-text-primary);
+  --muted: color-mix(in srgb, var(--color-surface) 70%, var(--color-hover) 30%);
+  --muted-foreground: var(--color-text-secondary);
+  --border: var(--color-border-subtle);
+  --input: var(--color-input-surface);
+  --ring: var(--color-accent);
+  --sidebar: var(--color-surface);
+  --sidebar-foreground: var(--color-text-primary);
+  --sidebar-primary: var(--color-accent);
+  --sidebar-primary-foreground: var(--color-text-inverse);
+  --sidebar-accent: var(--color-accent-soft);
+  --sidebar-accent-foreground: var(--color-accent-soft-contrast);
+  --sidebar-border: var(--color-border-subtle);
+  --sidebar-ring: var(--color-accent);
+}
+
+.dark {
+  --color-surface: #2a2e35;
+  --color-surface-contrast: color-mix(in srgb, #2a2e35 70%, #131318 30%);
+  --color-surface-muted: oklch(0.141 0.005 285.823);
+  --color-border: #07a7e3;
+  --color-border-subtle: #505050;
+  --color-border-accent: #07a7e3;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: rgb(179, 179, 179);
+  --color-text-muted: #c7c7c7;
+  --color-text-inverse: #ffffff;
+  --color-icon-primary: #07a7e3;
+  --color-icon-accent: #c8f0ff;
+  --color-icon-muted: #afafe4;
+  --color-accent: #24a4e9;
+  --color-accent-contrast: #ffffff;
+  --color-accent-soft: #afafe4;
+  --color-accent-soft-contrast: #153456;
+  --color-error: #cb3939;
+  --color-hover: #1f2429;
+  --color-tooltip-surface: #2a2e35;
+  --color-tooltip-border: #07a7e3;
+  --color-tooltip-text: #c7c7c7;
+  --color-input-surface: oklch(0.141 0.005 285.823);
+  --color-input-focus: oklch(0.141 0.005 285.823);
+  --color-switch-track: oklch(0.141 0.005 285.823);
+  --shadow-soft: 0 0px 1.5px 0 rgba(80, 80, 80, 0.6);
+  --shadow-floating: 0 0.5rem 1.5rem -1rem rgba(7, 167, 227, 0.25);
+
+  --background: var(--color-surface-muted);
+  --foreground: var(--color-text-primary);
+  --card: var(--color-surface);
+  --card-foreground: var(--color-text-primary);
+  --popover: var(--color-surface);
+  --popover-foreground: var(--color-text-primary);
+  --muted: color-mix(in srgb, var(--color-surface) 85%, var(--color-accent) 15%);
+  --muted-foreground: var(--color-text-secondary);
+  --border: var(--color-border-subtle);
+  --input: var(--color-input-surface);
+  --ring: var(--color-accent);
+  --sidebar: var(--color-surface);
+  --sidebar-foreground: var(--color-text-primary);
+  --sidebar-primary: color-mix(in srgb, var(--color-accent) 60%, var(--color-surface) 40%);
+  --sidebar-primary-foreground: var(--color-text-inverse);
+  --sidebar-accent: var(--color-accent-soft);
+  --sidebar-accent-foreground: var(--color-accent-soft-contrast);
+  --sidebar-border: var(--color-border-subtle);
+  --sidebar-ring: var(--color-accent);
+}

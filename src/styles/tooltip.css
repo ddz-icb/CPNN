@@ -2,20 +2,26 @@
   position: fixed;
   z-index: 5;
   display: block;
-  padding: 5px;
-  background: var(--tooltip-background-color);
-  border: var(--border-size-tooltip) solid var(--border-tooltip-color);
-  border-radius: var(--border-radius);
-  box-shadow: 0 0px 1.5px 0 var(--box-shadow-color);
-  color: var(--tooltip-text-color);
+  padding: 0.35rem 0.6rem;
+  min-height: var(--default-element-height);
+  max-width: 18rem;
+  border-radius: calc(var(--radius-sm) * 1.5);
+  background: var(--color-tooltip-surface);
+  border: var(--border-thin) solid var(--color-tooltip-border);
+  box-shadow: var(--shadow-floating);
+  color: var(--color-tooltip-text);
   text-align: center;
   pointer-events: none;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
 }
 
 .tooltip a {
-  color: var(--text-primary);
+  color: var(--color-text-primary);
   filter: grayscale(100%) opacity(0.7);
-  transition: filter var(--transition-speed);
+  transition: filter var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
 .tooltip a:hover {
@@ -44,8 +50,8 @@
   display: flex;
   justify-content: space-between;
   width: 100%;
-  color: var(--tooltip-header-color);
-  font-size: 1.15rem;
+  color: var(--color-tooltip-text);
+  font-size: var(--font-size-heading);
 }
 
 .tooltip-popup-heading {
@@ -65,12 +71,12 @@
 }
 
 .tooltip-popup-button svg {
-  fill: var(--icon-color);
+  fill: var(--color-icon-primary);
 }
 
 .tooltip-popup-button:hover svg {
-  fill: var(--icon-color-secondary);
-  transition: var(--transition-speed);
+  fill: var(--color-icon-accent);
+  transition: fill var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
 .tooltip-popup-body {
@@ -78,8 +84,7 @@
   flex-direction: column;
   width: 100%;
   margin: 0.75rem 0;
-  color: var(--text-primary);
-  font-size: 0.8rem;
+  color: var(--color-text-primary);
   text-align: left;
   flex: 1;
   overflow-y: auto;
@@ -90,7 +95,6 @@
   justify-content: space-between;
   align-items: flex-end;
   width: 100%;
-  font-size: 0.8rem;
   padding-top: 0.25rem;
 }
 

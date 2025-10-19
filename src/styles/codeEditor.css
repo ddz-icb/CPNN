@@ -3,7 +3,7 @@
   align-items: center;
   justify-content: center;
   width: calc(100% - 8rem);
-  border-radius: var(--border-radius-button);
+  border-radius: var(--radius-xs);
   overflow: hidden;
 }
 
@@ -13,10 +13,10 @@
   flex-grow: 1;
   width: 100%;
   height: auto;
-  border: 1px solid var(--border-input-field-sidebar);
+  border: var(--border-thin) solid var(--color-border-subtle);
   box-sizing: border-box;
 }
 
 .cm-s-material.CodeMirror {
-  background-color: var(--bg-input-field) !important;
+  background-color: var(--color-input-surface) !important;
 }

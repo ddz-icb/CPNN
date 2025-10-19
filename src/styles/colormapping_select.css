@@ -1,5 +1,5 @@
 .colormapping-item {
-  color: var(--text-primary);
+  color: var(--color-text-primary);
   display: flex;
   align-items: center;
   margin-bottom: 0.5rem;
@@ -11,7 +11,7 @@
   max-width: 25px;
   max-height: 15px;
   margin-right: 1rem;
-  border: 1px solid var(--border-button-sidebar);
+  border: var(--border-thin) solid var(--color-border-subtle);
 }
 
 .colormapping-select-container {

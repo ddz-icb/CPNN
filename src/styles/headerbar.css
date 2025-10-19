@@ -15,10 +15,10 @@
   right: 1rem;
   max-height: 1000px;
   min-width: 400px;
-  background-color: var(--bg-primary);
-  border: var(--border-size) solid var(--border-color);
-  border-radius: var(--border-radius);
-  box-shadow: 0 0px 1.5px 0 var(--box-shadow-color);
+  background-color: var(--color-surface);
+  border: var(--border-thin) solid var(--color-border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-soft);
   overflow: auto;
 }
 

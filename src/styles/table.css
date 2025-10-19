@@ -1,25 +1,25 @@
 .item-table {
   border-collapse: collapse;
   width: 100%;
-  color: var(--text-primary);
+  color: var(--color-text-primary);
 }
 
 .item-table th,
 .item-table td {
-  border: 1px solid var(--border-table);
+  border: var(--border-thin) solid var(--color-border-subtle);
   text-align: left;
   display: table-cell;
   height: 1.5rem;
 }
 
 .dark-item-table td {
-  background-color: var(--bg-secondary);
-  color: var(--dark-item-table-color);
+  background-color: var(--color-surface-contrast);
+  color: var(--color-text-inverse);
 }
 
 .item-table-entry-highlight:hover {
-  background-color: var(--bg-table-item-hover);
-  transition: var(--transition-speed);
+  background-color: var(--color-hover);
+  transition: background-color var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
 .item-table-text {
@@ -31,7 +31,7 @@
   display: block;
   width: 3rem;
   margin: auto;
-  fill: var(--icon-color);
+  fill: var(--color-icon-primary);
 }
 
 .item-table-logo svg {
@@ -58,11 +58,11 @@
 }
 
 .item-table-logo:hover svg {
-  fill: var(--icon-color-secondary);
-  transition: var(--transition-speed);
+  fill: var(--color-icon-accent);
+  transition: fill var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
 .dark-item-table .item-table-logo:hover svg {
-  fill: var(--icon-color-tertiary);
-  transition: var(--transition-speed);
+  fill: var(--color-icon-muted);
+  transition: fill var(--motion-duration-fast) var(--motion-ease-standard);
 }

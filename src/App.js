@@ -1,3 +1,4 @@
+import "./styles/tokens.css";
 import "./styles/index.css";
 import "./styles/sidebar.css";
 import "./styles/canvas.css";

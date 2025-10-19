@@ -2,10 +2,10 @@ import { ButtonCN } from "./shadcn_blocks/buttonCN.jsx";
 import { useState } from "react";
 import { ReactComponent as InfoCircleIcon } from "../../../../assets/icons/infoCircle.svg";
 import { ReactComponent as XIcon } from "../../../../assets/icons/x.svg";
-import { Tooltip } from "react-tooltip";
 import { handleFieldBlur, handleFieldChange, handleSliderChange } from "../handlers/buttonHandlerFunctions.js";
 import { useId } from "react";
 import { InputCN } from "./shadcn_blocks/inputFieldCN.jsx";
+import { Tooltip } from "react-tooltip";
 
 export function SliderBlock({ value, setValue, setValueText, min, max, step, text, infoHeading, infoDescription, ...props }) {
   return (
