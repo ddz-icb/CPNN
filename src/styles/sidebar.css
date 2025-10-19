@@ -11,7 +11,7 @@
 }
 
 .navbar.short {
-  width: 10.5rem;
+  width: 12rem;
 }
 
 .navbar-main {
@@ -66,11 +66,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
-  height: 3.5rem;
-  margin-bottom: 1rem;
+  width: calc(100% - 2rem);
+  height: 3.2rem;
+  margin: 0.8rem 1rem 1.1rem;
   padding: 0 1rem;
   background: var(--color-surface-contrast);
+  border: var(--border-thin) solid var(--color-border);
+  border-radius: var(--radius);
   text-decoration: none;
 }
 
@@ -81,24 +83,32 @@
   justify-content: center;
   color: var(--color-text-inverse);
   font-size: var(--font-size-big-heading);
-  letter-spacing: 0.5px;
+  letter-spacing: 0.35px;
 }
 
 .back-close {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1rem;
-  height: 1rem;
+  width: 1.2rem;
+  height: 1.2rem;
   margin-left: auto;
   border: none;
+  border-radius: var(--radius-xs);
   background: transparent;
   color: var(--color-icon-primary);
   cursor: pointer;
+  transition: color var(--motion-duration-fast) var(--motion-ease-standard), transform var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
 .back-close svg {
+  width: 1.25rem;
+  height: 1.25rem;
   fill: currentColor;
+}
+
+.back-close:hover {
+  color: var(--color-icon-hover);
 }
 
 .logo-container {
