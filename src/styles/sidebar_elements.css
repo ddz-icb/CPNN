@@ -74,7 +74,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: var(--color-switch-track);
+  background-color: var(--color-icon-primary);
   border: var(--border-thin) solid var(--color-border);
   cursor: pointer;
   transition: all var(--motion-duration-fast) var(--motion-ease-standard);
@@ -94,7 +94,7 @@
 }
 
 input:checked + .switch-button {
-  background-color: var(--color-icon-primary);
+  background-color: var(--color-switch-track);
   border: var(--border-thin) solid var(--color-icon-primary);
 }
 
