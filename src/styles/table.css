@@ -56,13 +56,3 @@
   height: 1.25rem;
   margin: auto;
 }
-
-.item-table-logo:hover svg {
-  fill: var(--color-icon-accent);
-  transition: fill var(--motion-duration-fast) var(--motion-ease-standard);
-}
-
-.dark-item-table .item-table-logo:hover svg {
-  fill: var(--color-icon-muted);
-  transition: fill var(--motion-duration-fast) var(--motion-ease-standard);
-}

@@ -82,7 +82,7 @@
   right: 0;
   bottom: 0;
   background-color: var(--color-switch-track);
-  border: var(--border-thin) solid var(--color-border);
+  border: var(--border-thin) solid var(--color-switch-track);
   cursor: pointer;
   transition: all var(--motion-duration-fast) var(--motion-ease-standard);
   border-radius: var(--default-element-height);
@@ -107,4 +107,29 @@ input:checked + .switch-button {
 
 input:checked + .switch-button:before {
   transform: translateX(1.7rem);
+}
+
+/* info button */
+.info-button {
+  display: inline-flex;
+  align-items: center;
+  width: var(--default-element-height);
+  height: var(--default-element-height);
+  border: none;
+  background: transparent;
+  color: var(--color-icon-primary);
+  cursor: pointer;
+  transition: color var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.info-button-icon {
+  width: 0.8rem;
+  height: 0.8rem;
+  fill: currentColor;
+}
+
+.info-button-container {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }

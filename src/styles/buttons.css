@@ -19,12 +19,6 @@
   filter: grayscale(100%) opacity(0.7);
 }
 
-.icon-button:hover svg {
-  fill: var(--color-icon-accent);
-  filter: grayscale(0%) opacity(1);
-  transition: fill var(--motion-duration-fast) var(--motion-ease-standard);
-}
-
 .button-select {
   display: inline-block;
   width: 10rem;

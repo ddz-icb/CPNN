@@ -73,11 +73,6 @@
   fill: var(--color-icon-primary);
 }
 
-.tooltip-popup-button:hover svg {
-  fill: var(--color-icon-accent);
-  transition: fill var(--motion-duration-fast) var(--motion-ease-standard);
-}
-
 .tooltip-popup-body {
   display: flex;
   flex-direction: column;

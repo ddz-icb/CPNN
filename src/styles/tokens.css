@@ -20,7 +20,7 @@
   --palette-sapphire-600: #1b1a55;
   --palette-navy-500: #1b1a55;
   --palette-indigo-500: #4c1fb8;
-  --palette-dark-violet: #4c1fb8;
+  --palette-dark-violet: #423771;
   --palette-violet-200: #b9a8ff;
   --palette-violet-300: #b9a8ff;
   --palette-violet-400: #4c1fb8;
@@ -86,6 +86,7 @@
   --color-text-inverse: var(--palette-white);
   --color-icon-primary: var(--palette-violet-300);
   --color-icon-accent: var(--palette-violet-200);
+  --color-icon-hover: color-mix(in srgb, var(--color-accent) 75%, var(--palette-violet-200) 25%);
   --color-icon-muted: color-mix(in srgb, var(--palette-violet-200) 60%, var(--palette-indigo-500) 40%);
   --color-accent: var(--palette-violet-400);
   --color-accent-contrast: var(--palette-white);
@@ -176,7 +177,8 @@
   --color-accent-soft: var(--palette-violet-300);
   --color-accent-soft-contrast: var(--palette-sapphire-600);
   --color-icon-primary: var(--color-accent);
-  --color-icon-accent: color-mix(in srgb, var(--palette-violet-200) 75%, var(--palette-white) 25%);
+  --color-icon-accent: color-mix(in srgb, var(--palette-violet-200) 80%, var(--palette-white) 20%);
+  --color-icon-hover: color-mix(in srgb, var(--color-accent) 70%, var(--palette-white) 30%);
   --color-icon-muted: color-mix(in srgb, var(--palette-violet-300) 60%, var(--palette-indigo-500) 40%);
   --highlight-bg: color-mix(in srgb, var(--palette-violet-200) 80%, var(--palette-white) 20%);
   --highlight-color-text: var(--palette-sapphire-600);

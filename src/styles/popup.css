@@ -65,8 +65,3 @@
 .popup-button svg {
   fill: var(--color-icon-primary);
 }
-
-.popup-button:hover svg {
-  fill: var(--color-icon-accent);
-  transition: fill var(--motion-duration-fast) var(--motion-ease-standard);
-}

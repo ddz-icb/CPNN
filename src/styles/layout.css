@@ -21,3 +21,30 @@
 .default-height {
   height: var(--default-element-height);
 }
+
+button svg,
+.icon-button svg,
+.popup-button svg,
+.tooltip-popup-button svg,
+.item-table-logo svg,
+.info-button-icon {
+  transition:
+    fill var(--motion-duration-fast) var(--motion-ease-standard),
+    filter var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+button:hover svg,
+.icon-button:hover svg,
+.popup-button:hover svg,
+.tooltip-popup-button:hover svg,
+.item-table-logo:hover svg,
+.info-button:hover .info-button-icon {
+  fill: var(--color-icon-hover);
+  filter: grayscale(0%) opacity(1);
+}
+
+.popup-button:hover,
+.tooltip-popup-button:hover,
+.info-button:hover {
+  color: var(--color-icon-hover);
+}
