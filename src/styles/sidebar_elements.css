@@ -6,7 +6,7 @@
 }
 
 .sidebar-slider {
-  width: calc(100% - 8rem);
+  width: 15rem;
   height: 0.1rem;
   background: var(--color-slider-track);
   border-radius: 1rem;
