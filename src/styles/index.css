@@ -5,7 +5,6 @@
 
 ::selection {
   background: var(--highlight-bg);
-  color: var(--highlight-color-text);
 }
 
 body {

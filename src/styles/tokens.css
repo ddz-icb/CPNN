@@ -42,7 +42,7 @@
   --color-text-secondary: #1e396f;
   --color-text-muted: #c7c7c7;
   --color-text-inverse: #ffffff;
-  --color-icon-primary: #4878a5;
+  --color-icon-primary: #07a7e3;
   --color-icon-accent: #c8f0ff;
   --color-icon-muted: #afafe4;
   --color-accent: #154777;
@@ -58,7 +58,7 @@
   --color-input-focus: #1c1f28;
   --color-button-surface: #2a2e35;
   --color-switch-track: #131318;
-  --highlight-bg: var(--color-accent-soft);
+  --highlight-bg: var(--color-icon-primary);
   --highlight-color-text: var(--color-accent-soft-contrast);
 
   /* Tailwind interoperability */

@@ -679,19 +679,6 @@
   inherits: false;
   initial-value: 0;
 }
-::selection {
-  background: var(--highlight-bg);
-  color: var(--highlight-color-text);
-}
-body {
-  margin: 0;
-  padding: 0;
-}
-ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
 @layer base {
   * {
     border-color: var(--border);
