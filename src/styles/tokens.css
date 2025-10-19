@@ -20,6 +20,7 @@
   --palette-sapphire-600: #1b1a55;
   --palette-navy-500: #1b1a55;
   --palette-indigo-500: #535c91;
+  --palette-dark-violet: #6c58cd;
   --palette-violet-200: #d3c0ff;
   --palette-violet-300: #b08cff;
   --palette-violet-400: #8a52ff;
@@ -76,8 +77,8 @@
   --color-surface: var(--palette-charcoal-950);
   --color-surface-contrast: var(--palette-steel-700);
   --color-surface-muted: color-mix(in srgb, var(--palette-charcoal-950) 80%, var(--palette-indigo-500) 20%);
-  --color-border: color-mix(in srgb, var(--palette-violet-500) 30%, var(--palette-charcoal-900) 70%);
-  --color-border-subtle: color-mix(in srgb, var(--palette-charcoal-950) 65%, var(--palette-violet-500) 35%);
+  --color-border: var(--palette-dark-violet);
+  --color-border-subtle: var(--palette-dark-violet);
   --color-border-accent: var(--palette-violet-400);
   --color-text-primary: #f0f1ff;
   --color-text-secondary: color-mix(in srgb, var(--palette-violet-200) 70%, var(--palette-lilac-200) 30%);
