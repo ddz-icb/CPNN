@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ReactComponent as BackArrowIcon } from "../../../../assets/icons/backArrow.svg";
+import { ReactComponent as CloseIcon } from "../../../../assets/icons/x.svg";
 
 import { FilterSidebar } from "./filterSidebar.js";
 import { PhysicsSidebar } from "./physicsSidebar.js";
@@ -59,12 +59,12 @@ function LogoBar({ onClick }) {
 function BackBar({ activeNavItem, onClick }) {
   return (
     <li className="back-overlay">
-      <div className="back-icon" onClick={onClick}>
-        <BackArrowIcon />
-      </div>
       <div className="back-text">
         <p className="link-text">{activeNavItem}</p>
       </div>
+      <button className="back-close" onClick={onClick} type="button" aria-label="Close sidebar">
+        <CloseIcon />
+      </button>
     </li>
   );
 }

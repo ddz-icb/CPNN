@@ -63,44 +63,41 @@
   position: relative;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   width: 100%;
   height: 3.5rem;
   margin-bottom: 1rem;
   padding: 0 1rem;
   background: var(--color-surface-contrast);
   text-decoration: none;
-  cursor: pointer;
 }
 
 .back-text {
   display: flex;
   flex-grow: 1;
   align-items: center;
-  justify-content: center;
-  transform: translateX(-3rem);
+  justify-content: flex-start;
   color: var(--color-text-inverse);
   font-size: var(--font-size-heading);
 }
 
-.back-icon {
-  display: flex;
+.back-close {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.5rem;
-  height: 1.5rem;
-  margin-right: 0.5rem;
-  fill: var(--color-icon-primary);
-  transition: all var(--motion-duration-fast) var(--motion-ease-standard);
-  border-radius: var(--radius-xs);
+  width: 1rem;
+  height: 1rem;
+  margin-left: auto;
+  border: none;
+  background: transparent;
+  color: var(--color-icon-primary);
+  cursor: pointer;
 }
 
-.back-icon:hover {
-  background-color: var(--color-surface);
-}
-
-.back-icon svg {
-  width: 1.25rem;
-  height: 1.25rem;
+.back-close svg {
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
 }
 
 .logo-container {
