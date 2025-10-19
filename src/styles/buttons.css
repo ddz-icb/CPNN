@@ -3,20 +3,30 @@
 .icon-button {
   width: var(--button-lg);
   height: var(--button-lg);
-  background-color: var(--color-button-surface);
+  background-color: var(--color-accent);
+  border: var(--border-thin) solid color-mix(in srgb, var(--color-accent) 60%, var(--color-accent-soft) 40%);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  transform: scale(0.8);
   cursor: pointer;
+  color: var(--color-accent-contrast);
+  box-shadow: 0 0 0.5rem color-mix(in srgb, var(--color-accent) 25%, transparent);
+  transition: background-color var(--motion-duration-fast) var(--motion-ease-standard),
+    border-color var(--motion-duration-fast) var(--motion-ease-standard), box-shadow var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
 .icon-button svg {
   min-width: 1.5rem;
   margin: 0 1.5rem;
-  fill: var(--color-text-primary);
-  filter: grayscale(100%) opacity(0.7);
+  fill: currentColor;
+}
+
+.icon-button:hover {
+  background-color: var(--color-button-hover);
+  border-color: color-mix(in srgb, var(--color-button-hover) 75%, var(--color-accent) 25%);
+  box-shadow: 0 0 0.75rem color-mix(in srgb, var(--color-button-hover) 40%, transparent);
+  color: var(--color-accent-contrast);
 }
 
 .button-select {
