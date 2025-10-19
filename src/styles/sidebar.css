@@ -18,7 +18,7 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding: 0.5rem 0;
+  padding: 0.75rem 0;
 }
 
 .navbar-subsection {
@@ -35,18 +35,20 @@
 .nav-link {
   display: flex;
   align-items: center;
-  height: 3rem;
-  padding: 0 1rem;
-  margin: 0.25rem 0.2rem;
+  height: 3.5rem;
+  padding: 0 1.25rem;
+  margin: 0.35rem 0.3rem;
   color: var(--color-text-primary);
   text-decoration: none;
   border-radius: var(--radius-sm);
   transition: all var(--motion-duration-fast) var(--motion-ease-standard);
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
 }
 
 .nav-link svg {
-  min-width: 1.1rem;
-  margin-right: 0.75rem;
+  min-width: 1.35rem;
+  margin-right: 1rem;
 }
 
 .nav-link:hover {

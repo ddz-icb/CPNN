@@ -9,7 +9,6 @@
   border: var(--border-thin) solid var(--color-border-subtle);
   text-align: left;
   display: table-cell;
-  height: 1.5rem;
   padding: 0.2rem 0.5rem;
 }
 
