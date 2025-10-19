@@ -4,7 +4,6 @@
   display: block;
   padding: 0.35rem 0.6rem;
   min-height: var(--default-element-height);
-  max-width: 18rem;
   border-radius: calc(var(--radius-sm) * 1.5);
   background: var(--color-tooltip-surface);
   border: var(--border-thin) solid var(--color-tooltip-border);
@@ -12,9 +11,6 @@
   color: var(--color-tooltip-text);
   text-align: center;
   pointer-events: none;
-  font-weight: 500;
-  line-height: 1.25;
-  letter-spacing: 0.01em;
   white-space: nowrap;
 }
 
