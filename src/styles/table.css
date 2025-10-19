@@ -1,12 +1,16 @@
 .item-table {
-  border-collapse: collapse;
+  border-collapse: separate;
   width: 100%;
   color: var(--color-text-primary);
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: var(--border-thin) solid var(--color-border-subtle);
+  background: color-mix(in srgb, var(--color-surface-contrast) 90%, transparent 10%);
 }
 
 .item-table th,
 .item-table td {
-  border: var(--border-thin) solid var(--color-border-subtle);
+  border: none;
   text-align: left;
   display: table-cell;
   padding: 0.2rem 0.5rem;
@@ -17,8 +21,12 @@
   color: var(--color-text-inverse);
 }
 
+.item-table-entry-highlight {
+  transition: background-color var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
 .item-table-entry-highlight:hover {
-  background-color: var(--color-hover);
+  background-color: color-mix(in srgb, var(--color-accent) 20%, var(--color-hover) 80%);
   transition: background-color var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
