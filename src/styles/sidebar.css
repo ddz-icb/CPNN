@@ -76,9 +76,10 @@
   display: flex;
   flex-grow: 1;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   color: var(--color-text-inverse);
-  font-size: var(--font-size-heading);
+  font-size: var(--font-size-big-heading);
+  letter-spacing: 0.5px;
 }
 
 .back-close {
