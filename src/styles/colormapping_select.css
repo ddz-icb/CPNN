@@ -1,28 +1,80 @@
 .colormapping-item {
-  color: var(--color-text-primary);
   display: flex;
   align-items: center;
+  gap: 0.75rem;
+  padding: 0.35rem 0.5rem;
   margin-bottom: 0.5rem;
+  color: var(--color-text-primary);
 }
 
 .color-square {
-  min-width: 25px;
-  min-height: 15px;
-  max-width: 25px;
-  max-height: 15px;
-  margin-right: 1rem;
+  min-width: 1.5rem;
+  min-height: 1rem;
+  max-width: 1.5rem;
+  max-height: 1rem;
   border: var(--border-thin) solid var(--color-border-subtle);
+  border-radius: var(--radius-xs);
 }
 
 .colormapping-select-container {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 1.25rem;
   width: 100%;
 }
 
+.colormapping-select-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: var(--color-surface-contrast);
+  border: var(--border-thin) solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
+}
+
+.colormapping-select-heading {
+  padding: 0;
+  font-size: var(--font-size-heading);
+  color: var(--color-text-primary);
+}
+
 .colormapping-select-table {
-  display: grid;
-  grid-template-columns: auto auto;
-  gap: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.colormapping-select-row {
+  display: flex;
   align-items: center;
+  gap: 0.75rem;
+  padding: 0.45rem 0.65rem;
+  background: var(--color-surface);
+  border: var(--border-thin) solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  transition: background var(--motion-duration-fast) var(--motion-ease-standard),
+    border var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.colormapping-select-row:hover {
+  background: var(--color-surface-muted);
+  border-color: var(--color-border);
+}
+
+.colormapping-select-swatch {
+  margin-right: 0;
+  box-shadow: 0 0 0 1px var(--color-border) inset;
+}
+
+.colormapping-select-input {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+}
+
+.colormapping-select-empty {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
 }

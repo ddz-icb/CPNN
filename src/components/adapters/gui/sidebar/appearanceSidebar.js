@@ -1,4 +1,4 @@
-import { useRef, useState, Fragment } from "react";
+import { useRef, useState } from "react";
 import { ReactComponent as TrashIcon } from "../../../../assets/icons/trash.svg";
 import { SwitchBlock, Popup, TableList, SliderBlock, Button, PopupTextField } from "../reusable_components/sidebarComponents.js";
 import { colorschemeCsv } from "../../../../assets/exampleColorschemeCSV.js";
@@ -216,23 +216,23 @@ export function ColorMappingSelect({ heading, colorschemeData, attribsToColorInd
   };
 
   return (
-    <div>
-      <span className="heading">{heading}</span>
-      <div className="block-section">
+    <div className="colormapping-select-card">
+      <span className="heading colormapping-select-heading">{heading}</span>
+      {colorschemeData.length ? (
         <div className="colormapping-select-table">
           {colorschemeData.map((color, colorIndex) => {
             const currentAttribute = Object.keys(attribsToColorIndices).find((key) => attribsToColorIndices[key] === parseInt(colorIndex, 10));
 
             return (
-              <Fragment key={colorIndex}>
+              <div className="colormapping-select-row" key={colorIndex}>
                 <div
-                  className="color-square"
+                  className="color-square colormapping-select-swatch"
                   style={{
                     backgroundColor: color,
                   }}
                 ></div>
                 <select
-                  className="button-select"
+                  className="button-select colormapping-select-input"
                   value={currentAttribute || ""}
                   onChange={(event) => handleColorChange(parseInt(colorIndex, 10), event.target.value)}
                 >
@@ -244,11 +244,13 @@ export function ColorMappingSelect({ heading, colorschemeData, attribsToColorInd
                     </option>
                   ))}
                 </select>
-              </Fragment>
+              </div>
             );
           })}
         </div>
-      </div>
+      ) : (
+        <span className="colormapping-select-empty">No colors available. Upload or select a scheme to begin.</span>
+      )}
     </div>
   );
 }
