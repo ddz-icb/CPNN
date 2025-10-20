@@ -43,7 +43,7 @@
   appearance: none;
   -webkit-appearance: none;
   border: var(--border-thin) solid var(--color-input-border);
-  border-radius: var(--radius-xs);
+  border-radius: var(--radius);
   color: var(--color-text-primary);
 }
 

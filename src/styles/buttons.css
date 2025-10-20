@@ -33,6 +33,10 @@
   cursor: pointer;
 }
 
+.button-rect {
+  border-radius: var(--radius);
+}
+
 button svg,
 .popup-button svg,
 .tooltip-popup-button svg,

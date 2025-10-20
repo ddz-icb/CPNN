@@ -66,7 +66,7 @@ export function FieldBlock({ text, infoHeading, infoDescription, ...props }) {
 export function Button({ onClick, onChange, linkRef, tooltip, tooltipId, text }) {
   return (
     <>
-      <ButtonCN className="default-height default-min-width" data-tooltip-id={tooltipId} data-tooltip-content={tooltip} onClick={onClick}>
+      <ButtonCN className="button-rect default-height default-min-width" data-tooltip-id={tooltipId} data-tooltip-content={tooltip} onClick={onClick}>
         <span>{text}</span>
         <input type="file" style={{ display: "none" }} onChange={onChange} ref={linkRef} />
       </ButtonCN>
