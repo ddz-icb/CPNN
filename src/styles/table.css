@@ -1,19 +1,24 @@
 .item-table {
   border-collapse: separate;
+  color: var(--color-text-primary);
+  border: var(--border-thin) solid var(--color-border-subtle);
+  border-spacing: 0;
   width: 100%;
   color: var(--color-text-primary);
   border-radius: var(--radius);
   overflow: hidden;
-  border: var(--border-thin) solid var(--color-border-subtle);
   background: color-mix(in srgb, var(--color-surface-contrast) 90%, transparent 10%);
 }
 
 .item-table th,
 .item-table td {
-  border: none;
+  border-bottom: var(--border-thin) solid var(--color-border-subtle);
   text-align: left;
   display: table-cell;
   padding: 0.2rem 0.5rem;
+}
+.item-table tr:last-child td {
+  border-bottom: none;
 }
 
 .dark-item-table td {
