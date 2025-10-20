@@ -2,7 +2,7 @@
   /* Palette */
   --palette-white: #eef0ff;
   --palette-black: #050714;
-  --palette-charcoal-950: #050714;
+  --palette-charcoal-950: #0f1229;
   --palette-charcoal-900: #050714;
   --palette-charcoal-800: #0e1130;
   --palette-charcoal-700: #1b1a55;
@@ -99,8 +99,8 @@
   --color-tooltip-text: var(--palette-white);
   --color-tooltip-close: var(--color-accent-soft);
   --color-tooltip-close-hover: var(--palette-white);
-  --color-slider-track: color-mix(in srgb, var(--color-surface-contrast) 30%, var(--color-accent) 70%);
-  --color-slider-thumb: var(--color-accent);
+  --color-slider-track: color-mix(in srgb, var(--palette-violet-300) 65%, var(--color-accent) 35%);
+  --color-slider-thumb: var(--palette-violet-400);
   --color-slider-thumb-border: var(--palette-violet-200);
   --color-input-surface: color-mix(in srgb, var(--color-surface) 75%, var(--color-accent) 25%);
   --color-input-focus: color-mix(in srgb, var(--color-surface) 60%, var(--color-accent) 40%);
