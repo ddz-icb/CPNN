@@ -17,11 +17,11 @@
   padding: 10px;
   min-height: 50px;
   max-height: 800px;
-  background: var(--color-tooltip-surface);
-  border: var(--border-thin) solid var(--color-tooltip-border);
+  background: var(--color-surface);
+  border: var(--border-thin) solid var(--color-border);
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-soft);
-  color: var(--color-tooltip-text);
+  color: var(--color-text-primary);
   pointer-events: auto;
 }
 

@@ -8,10 +8,10 @@
   padding-right: 0.3rem;
   padding-left: 0.3rem;
   border-radius: var(--radius);
-  background: var(--color-tooltip-surface);
-  border: var(--border-thin) solid var(--color-tooltip-border);
+  background: var(--color-surface);
+  border: var(--border-thin) solid var(--color-border);
   box-shadow: var(--shadow-floating);
-  color: var(--color-tooltip-text);
+  color: var(--color-text-primary);
   text-align: center;
   pointer-events: none;
 }
@@ -22,8 +22,9 @@
   z-index: 5;
   display: block;
   border-radius: var(--radius);
-  border: var(--border-thin) solid var(--color-tooltip-border);
-  color: var(--color-tooltip-text);
+  background: var(--color-surface);
+  border: var(--border-thin) solid var(--color-border);
+  color: var(--color-text-primary);
   text-align: center;
   pointer-events: none;
 }
@@ -62,7 +63,7 @@
   display: flex;
   justify-content: space-between;
   width: 100%;
-  color: var(--color-tooltip-text);
+  color: var(--color-text-primary);
   font-size: var(--font-size-heading);
   padding-bottom: 0.25rem;
 }
