@@ -7,11 +7,22 @@
   padding-bottom: 0.2rem;
   padding-right: 0.3rem;
   padding-left: 0.3rem;
-  min-height: var(--default-element-height);
   border-radius: var(--radius);
   background: var(--color-tooltip-surface);
   border: var(--border-thin) solid var(--color-tooltip-border);
   box-shadow: var(--shadow-floating);
+  color: var(--color-tooltip-text);
+  text-align: center;
+  pointer-events: none;
+}
+
+.tooltip-sidebar {
+  position: fixed;
+  padding: 0.2rem !important;
+  z-index: 5;
+  display: block;
+  border-radius: var(--radius);
+  border: var(--border-thin) solid var(--color-tooltip-border);
   color: var(--color-tooltip-text);
   text-align: center;
   pointer-events: none;

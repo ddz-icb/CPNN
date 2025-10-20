@@ -70,7 +70,7 @@ export function Button({ onClick, onChange, linkRef, tooltip, tooltipId, text })
         <span>{text}</span>
         <input type="file" style={{ display: "none" }} onChange={onChange} ref={linkRef} />
       </ButtonCN>
-      <Tooltip id={tooltipId} place="top" effect="solid" className="tooltip" />
+      <Tooltip id={tooltipId} place="top" effect="solid" className="tooltip-sidebar" />
     </>
   );
 }
