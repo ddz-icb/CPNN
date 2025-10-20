@@ -86,7 +86,7 @@
   --color-text-inverse: var(--palette-white);
   --color-icon-primary: var(--palette-violet-300);
   --color-icon-accent: var(--palette-violet-200);
-  --color-icon-hover: color-mix(in srgb, var(--color-accent) 75%, var(--palette-violet-200) 25%);
+  --color-icon-hover: color-mix(in srgb, white 10%, var(--palette-violet-200) 90%);
   --color-icon-muted: color-mix(in srgb, var(--palette-violet-200) 60%, var(--palette-indigo-500) 40%);
   --color-accent: var(--palette-violet-400);
   --color-accent-contrast: var(--palette-white);
