@@ -35,6 +35,7 @@
 
 .button-rect {
   border-radius: var(--radius);
+  background-color: var(--color-switch-track);
 }
 
 button svg,
