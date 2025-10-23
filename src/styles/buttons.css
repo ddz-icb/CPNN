@@ -26,7 +26,7 @@
   display: inline-block;
   width: 10rem;
   min-height: var(--default-element-height);
-  padding: 0 0.6rem;
+  padding-inline: var(--sidebar-control-padding-x);
   background-color: var(--color-surface);
   border: var(--border-thin) solid var(--color-border-subtle);
   color: var(--color-text-primary);
@@ -36,6 +36,11 @@
 .button-rect {
   border-radius: var(--radius);
   background-color: var(--color-switch-track);
+}
+
+button.button-rect,
+[data-slot="button"].button-rect {
+  padding-inline: var(--sidebar-control-padding-x);
 }
 
 button svg,

@@ -217,7 +217,7 @@ export function ColorMappingSelect({ heading, colorschemeData, attribsToColorInd
 
   return (
     <div className="colormapping-select-card">
-      <span className="heading colormapping-select-heading">{heading}</span>
+      <div className="table-list-heading colormapping-select-heading">{heading}</div>
       {colorschemeData.length ? (
         <div className="colormapping-select-list">
           {colorschemeData.map((color, colorIndex) => {

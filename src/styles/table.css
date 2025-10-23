@@ -18,8 +18,8 @@
   font-weight: var(--font-weight-medium);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  padding: 0.35rem 0.5rem;
-  margin-bottom: 0.35rem;
+  padding: 0.25rem var(--sidebar-control-padding-x) 0.35rem;
+  margin-bottom: 0.4rem;
   border-bottom: var(--border-thin) solid var(--color-border-subtle);
 }
 
@@ -28,7 +28,9 @@
   border-bottom: var(--border-thin) solid var(--color-border-subtle);
   text-align: left;
   display: table-cell;
-  padding: 0.2rem 0.5rem;
+  padding: 0 var(--sidebar-control-padding-x);
+  vertical-align: middle;
+  height: var(--default-element-height);
 }
 .item-table tr:last-child td {
   border-bottom: none;
@@ -50,7 +52,6 @@
 
 .item-table-text {
   cursor: pointer;
-  padding-left: 0.25rem;
 }
 
 .item-table-logo {
