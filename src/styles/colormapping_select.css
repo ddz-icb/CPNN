@@ -18,54 +18,54 @@
 
 .colormapping-select-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
-  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  gap: 1rem;
   width: 100%;
 }
 
 .colormapping-select-card {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  padding: 1rem;
-  background: var(--color-surface-contrast);
-  border: var(--border-thin) solid var(--color-border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-soft);
+  gap: 0.5rem;
 }
 
 .colormapping-select-heading {
   padding: 0;
-  font-size: var(--font-size-heading);
   color: var(--color-text-primary);
+  font-size: 0.85rem;
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
-.colormapping-select-table {
+.colormapping-select-list {
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  background: var(--color-surface);
+  border: var(--border-thin) solid var(--color-border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
 }
 
 .colormapping-select-row {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.45rem 0.65rem;
-  background: var(--color-surface);
-  border: var(--border-thin) solid var(--color-border-subtle);
-  border-radius: var(--radius-sm);
-  transition: background var(--motion-duration-fast) var(--motion-ease-standard),
-    border var(--motion-duration-fast) var(--motion-ease-standard);
+  padding: 0.4rem 0.75rem;
+  border-bottom: var(--border-thin) solid var(--color-border-subtle);
 }
 
-.colormapping-select-row:hover {
-  background: var(--color-surface-muted);
-  border-color: var(--color-border);
+.colormapping-select-row:last-child {
+  border-bottom: none;
 }
 
 .colormapping-select-swatch {
-  margin-right: 0;
-  box-shadow: 0 0 0 1px var(--color-border) inset;
+  width: 1.2rem;
+  height: 1.2rem;
+  flex-shrink: 0;
+  border-radius: var(--radius);
+  border: none;
+  box-shadow: none;
 }
 
 .colormapping-select-input {
@@ -75,6 +75,10 @@
 }
 
 .colormapping-select-empty {
+  padding: 0.75rem;
   color: var(--color-text-muted);
   font-size: var(--text-sm);
+  border: var(--border-thin) solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
 }

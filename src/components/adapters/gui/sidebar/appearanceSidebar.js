@@ -219,7 +219,7 @@ export function ColorMappingSelect({ heading, colorschemeData, attribsToColorInd
     <div className="colormapping-select-card">
       <span className="heading colormapping-select-heading">{heading}</span>
       {colorschemeData.length ? (
-        <div className="colormapping-select-table">
+        <div className="colormapping-select-list">
           {colorschemeData.map((color, colorIndex) => {
             const currentAttribute = Object.keys(attribsToColorIndices).find((key) => attribsToColorIndices[key] === parseInt(colorIndex, 10));
 

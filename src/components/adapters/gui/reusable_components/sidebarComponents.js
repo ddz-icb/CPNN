@@ -187,7 +187,7 @@ export function TableList({
 
   return (
     <div>
-      <span className="heading">{heading}</span>
+      <div className="table-list-heading">{heading}</div>
       <table className={`item-table ${dark && "dark-item-table"}`}>
         <tbody>
           {data && data.length > 0 ? (
