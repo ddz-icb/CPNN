@@ -36,7 +36,6 @@
 .headerbar-colormapping-section {
   display: flex;
   flex-direction: column;
-  gap: var(--sidebar-card-gap-y);
 }
 
 .headerbar-colormapping-list {
