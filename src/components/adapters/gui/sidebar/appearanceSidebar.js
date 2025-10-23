@@ -170,7 +170,7 @@ function ColorSelection() {
   const { colorschemeState, setColorschemeState } = useColorschemeState();
 
   return (
-    <div className="colormapping-select-container">
+    <div>
       <ColorMappingSelect
         heading={"Node Color Mapping"}
         colorschemeData={colorschemeState.nodeColorscheme?.data ? colorschemeState.nodeColorscheme.data : []}
@@ -216,41 +216,43 @@ export function ColorMappingSelect({ heading, colorschemeData, attribsToColorInd
   };
 
   return (
-    <div className="colormapping-select-card">
-      <div className="table-list-heading colormapping-select-heading">{heading}</div>
-      {colorschemeData.length ? (
-        <div className="colormapping-select-list">
-          {colorschemeData.map((color, colorIndex) => {
-            const currentAttribute = Object.keys(attribsToColorIndices).find((key) => attribsToColorIndices[key] === parseInt(colorIndex, 10));
+    <>
+      <div className="table-list-heading">{heading}</div>
+      <div className="colormapping-select-card">
+        {colorschemeData.length ? (
+          <div className="colormapping-select-list">
+            {colorschemeData.map((color, colorIndex) => {
+              const currentAttribute = Object.keys(attribsToColorIndices).find((key) => attribsToColorIndices[key] === parseInt(colorIndex, 10));
 
-            return (
-              <div className="colormapping-select-row" key={colorIndex}>
-                <div
-                  className="color-square colormapping-select-swatch"
-                  style={{
-                    backgroundColor: color,
-                  }}
-                ></div>
-                <select
-                  className="button-select colormapping-select-input"
-                  value={currentAttribute || ""}
-                  onChange={(event) => handleColorChange(parseInt(colorIndex, 10), event.target.value)}
-                >
-                  {!currentAttribute && <option value="">None</option>}
+              return (
+                <div className="colormapping-select-row" key={colorIndex}>
+                  <div
+                    className="color-square colormapping-select-swatch"
+                    style={{
+                      backgroundColor: color,
+                    }}
+                  ></div>
+                  <select
+                    className="button-select colormapping-select-input"
+                    value={currentAttribute || ""}
+                    onChange={(event) => handleColorChange(parseInt(colorIndex, 10), event.target.value)}
+                  >
+                    {!currentAttribute && <option value="">None</option>}
 
-                  {Object.keys(attribsToColorIndices || {}).map((attribute) => (
-                    <option key={attribute} value={attribute}>
-                      {attribute}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            );
-          })}
-        </div>
-      ) : (
-        <span className="colormapping-select-empty">No colors available. Upload or select a scheme to begin.</span>
-      )}
-    </div>
+                    {Object.keys(attribsToColorIndices || {}).map((attribute) => (
+                      <option key={attribute} value={attribute}>
+                        {attribute}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <span className="colormapping-select-empty">No colors available. Upload or select a scheme to begin.</span>
+        )}
+      </div>
+    </>
   );
 }
