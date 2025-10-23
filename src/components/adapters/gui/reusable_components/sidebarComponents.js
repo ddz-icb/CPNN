@@ -134,7 +134,7 @@ export function InfoButtonPopup({ heading, description, widePopup, children }) {
 
   return (
     <>
-      <button type="button" className="pad-bottom-12 info-button" onClick={() => setIsOpen(!isOpen)}>
+      <button type="button" className="info-button" onClick={() => setIsOpen(!isOpen)}>
         <InfoCircleIcon className="info-button-icon" />
       </button>
       {isOpen && (

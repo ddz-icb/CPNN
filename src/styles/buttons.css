@@ -43,6 +43,12 @@ button.button-rect,
   padding-inline: var(--sidebar-control-padding-x);
 }
 
+.block-section .button-select,
+.block-section button.button-rect,
+.block-section [data-slot="button"].button-rect {
+  margin-bottom: var(--sidebar-card-row-gap-y);
+}
+
 button svg,
 .popup-button svg,
 .tooltip-popup-button svg,

@@ -49,7 +49,7 @@
 }
 
 .sidebar-slider {
-  width: 15rem;
+  width: var(--sidebar-control-main-width);
   height: 0.1rem;
   background: var(--color-slider-track);
   border-radius: 1rem;
