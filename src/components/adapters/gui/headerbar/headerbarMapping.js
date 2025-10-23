@@ -32,11 +32,11 @@ export function HeaderbarColorMapping() {
     <div className={"headerbar-colormapping"}>
       <div className="colormapping-container">
         <div className="headerbar-colormapping-section">
-          <span className="heading headerbar-colormapping-heading">Nodes</span>
+          <div className="table-list-heading">Nodes</div>
           <div className="headerbar-colormapping-list">{nodeColorMapping}</div>
         </div>
         <div className="headerbar-colormapping-section">
-          <span className="heading headerbar-colormapping-heading">Links</span>
+          <div className="table-list-heading">Links</div>
           <div className="headerbar-colormapping-list">{linkColorMapping}</div>
         </div>
       </div>
