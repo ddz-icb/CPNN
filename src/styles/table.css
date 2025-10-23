@@ -39,6 +39,7 @@
 .dark-item-table td {
   background-color: var(--color-surface-contrast);
   color: var(--color-text-inverse);
+  cursor: auto;
 }
 
 .item-table-entry-highlight {
