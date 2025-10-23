@@ -18,14 +18,14 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding: 0.75rem 0;
+  padding: var(--sidebar-card-gap-y) 0;
 }
 
 .navbar-subsection {
   display: flex;
   flex-direction: column;
-  padding: 1rem;
-  gap: 0.25rem;
+  padding: var(--sidebar-card-padding-y) var(--sidebar-control-padding-x);
+  gap: var(--sidebar-card-row-gap-y);
 }
 
 .nav-item {

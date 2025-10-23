@@ -63,6 +63,13 @@
   --button-lg: 3rem;
   --button-md: 2rem;
   --sidebar-control-padding-x: 0.65rem;
+  --sidebar-section-gap-y: 0.5rem;
+  --sidebar-heading-padding-y: 0.3rem;
+  --sidebar-card-padding-y: 0.75rem;
+  --sidebar-card-padding-top: var(--sidebar-card-padding-y);
+  --sidebar-card-padding-bottom: var(--sidebar-card-padding-y);
+  --sidebar-card-gap-y: 0.5rem;
+  --sidebar-card-row-gap-y: 0.35rem;
   --border-thin: 1px;
   --border-thick: 2px;
 

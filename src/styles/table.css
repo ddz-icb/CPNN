@@ -18,8 +18,8 @@
   font-weight: var(--font-weight-medium);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  padding: 0.25rem var(--sidebar-control-padding-x) 0.35rem;
-  margin-bottom: 0.4rem;
+  padding: var(--sidebar-heading-padding-y) var(--sidebar-control-padding-x);
+  margin-bottom: var(--sidebar-card-gap-y);
   border-bottom: var(--border-thin) solid var(--color-border-subtle);
 }
 

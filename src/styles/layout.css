@@ -4,7 +4,7 @@
   justify-content: space-between;
   box-sizing: border-box;
   width: 100%;
-  padding-bottom: 0.5rem;
+  padding-bottom: var(--sidebar-section-gap-y);
 }
 .inline {
   display: inline-flex;
