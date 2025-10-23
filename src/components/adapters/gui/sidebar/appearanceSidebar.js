@@ -233,7 +233,7 @@ export function ColorMappingSelect({ heading, colorschemeData, attribsToColorInd
                     }}
                   ></div>
                   <select
-                    className="button-select colormapping-select-input"
+                    className="colormapping-select-input"
                     value={currentAttribute || ""}
                     onChange={(event) => handleColorChange(parseInt(colorIndex, 10), event.target.value)}
                   >

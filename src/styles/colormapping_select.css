@@ -69,8 +69,12 @@
 
 .colormapping-select-input {
   flex: 1;
-  min-width: 0;
   width: 100%;
+  height: calc(var(--default-element-height) - 0.5rem);
+  padding-right: 1.7rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .colormapping-select-empty {
