@@ -18,7 +18,7 @@
 
 .tooltip-sidebar {
   position: fixed;
-  padding: 0.2rem !important;
+  padding: 0.25rem !important;
   z-index: 5;
   display: block;
   border-radius: var(--radius);
