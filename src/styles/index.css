@@ -7,6 +7,24 @@
   background: var(--highlight-bg);
 }
 
+* {
+  scrollbar-color: var(--palette-violet-200) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 0.2rem;
+  height: 0.2rem;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--palette-violet-200);
+  border-radius: var(--radius);
+}
+
 body {
   margin: 0;
   padding: 0;
