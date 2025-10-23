@@ -1,8 +1,51 @@
 .label {
-  padding-top: 0.75rem;
-  padding-bottom: 0.5rem;
+  display: block;
+  margin: 0;
   color: var(--color-text-primary);
   text-align: left;
+}
+
+.sidebar-control-header {
+  display: flex;
+  align-items: center;
+  gap: var(--sidebar-control-gap-y);
+  margin-bottom: var(--sidebar-control-header-gap-y);
+}
+
+.sidebar-control-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sidebar-control-gap-y);
+  width: 100%;
+}
+
+.sidebar-control-body--code {
+  align-items: flex-start;
+  gap: var(--sidebar-control-gap-y);
+  justify-content: space-between;
+}
+
+.sidebar-control-body--code .code-editor-container {
+  width: var(--sidebar-control-main-width);
+}
+
+.sidebar-control-body--code .button-rect {
+  align-self: flex-start;
+}
+
+.sidebar-control-body .sidebar-slider {
+  width: var(--sidebar-control-main-width);
+  min-width: var(--sidebar-control-main-width);
+}
+
+.sidebar-control-helper {
+  display: block;
+  margin-top: var(--sidebar-control-gap-y);
+}
+
+.sidebar-control-header .info-button-container {
+  margin-left: var(--sidebar-control-gap-y);
 }
 
 .sidebar-slider {

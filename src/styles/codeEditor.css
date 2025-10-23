@@ -1,8 +1,7 @@
 .code-editor-container {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  width: calc(100% - 8rem);
+  align-items: stretch;
+  width: var(--sidebar-control-main-width);
   border-radius: var(--radius-xs);
   overflow: hidden;
 }

@@ -70,6 +70,9 @@
   --sidebar-card-padding-bottom: var(--sidebar-card-padding-y);
   --sidebar-card-gap-y: 0.5rem;
   --sidebar-card-row-gap-y: 0.35rem;
+  --sidebar-control-gap-y: 0.25rem;
+  --sidebar-control-header-gap-y: 0.15rem;
+  --sidebar-control-main-width: 15rem;
   --border-thin: 1px;
   --border-thick: 2px;
 

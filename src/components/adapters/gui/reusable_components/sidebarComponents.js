@@ -9,14 +9,14 @@ import { Tooltip } from "react-tooltip";
 
 export function SliderBlock({ value, setValue, setValueText, min, max, step, text, infoHeading, infoDescription, ...props }) {
   return (
-    <>
-      <div className="inline">
-        <label className={"label"}>{text}</label>
-        <span className="info-button-container pad-left-05 pad-top-11">
+    <div className="block-section block-section-stack">
+      <div className="sidebar-control-header">
+        <label className="label">{text}</label>
+        <span className="info-button-container">
           <InfoButtonPopup heading={infoHeading} description={infoDescription} widePopup={true} />
         </span>
       </div>
-      <div className="block-section">
+      <div className="sidebar-control-body">
         <input
           className="sidebar-slider"
           type="range"
@@ -28,16 +28,16 @@ export function SliderBlock({ value, setValue, setValueText, min, max, step, tex
         />
         <NumericInput setValue={setValue} setValueText={setValueText} min={min} max={max} step={step} {...props} />
       </div>
-    </>
+    </div>
   );
 }
 
 export function SwitchBlock({ value, setValue, text, infoHeading, infoDescription }) {
   return (
     <div className="block-section">
-      <div className="inline">
+      <div className="sidebar-control-header">
         <label className="label">{text}</label>
-        <span className="info-button-container pad-left-05 pad-top-11">
+        <span className="info-button-container">
           <InfoButtonPopup heading={infoHeading} description={infoDescription} widePopup={true} />
         </span>
       </div>
@@ -52,9 +52,9 @@ export function SwitchBlock({ value, setValue, text, infoHeading, infoDescriptio
 export function FieldBlock({ text, infoHeading, infoDescription, ...props }) {
   return (
     <div className="block-section">
-      <div className="inline">
+      <div className="sidebar-control-header">
         <label className="label">{text}</label>
-        <span className="info-button-container pad-left-05 pad-top-11">
+        <span className="info-button-container">
           <InfoButtonPopup heading={infoHeading} description={infoDescription} widePopup={true} />
         </span>
       </div>
@@ -77,25 +77,21 @@ export function Button({ onClick, onChange, linkRef, tooltip, tooltipId, text })
 
 export function CodeEditorBlock({ text, onClick, compilerError, defaultValue, textareaRef, infoHeading, infoDescription }) {
   return (
-    <>
-      <div className="inline">
+    <div className="block-section block-section-stack">
+      <div className="sidebar-control-header">
         <label className="label">{text}</label>
-        <span className="info-button-container pad-left-05 pad-top-11">
+        <span className="info-button-container">
           <InfoButtonPopup heading={infoHeading} description={infoDescription} />
         </span>
       </div>
-      <div className={`block-section ${compilerError ? "no-pad-bottom" : ""}`}>
+      <div className="sidebar-control-body sidebar-control-body--code">
         <div className="code-editor-container">
           <textarea ref={textareaRef} defaultValue={defaultValue}></textarea>
         </div>
         <Button onClick={onClick} text="Run" />
       </div>
-      {compilerError && (
-        <div className="block-section">
-          <span className="text-warning pad-left-1">{compilerError}</span>
-        </div>
-      )}
-    </>
+      {compilerError && <span className="sidebar-control-helper text-warning">{compilerError}</span>}
+    </div>
   );
 }
 
