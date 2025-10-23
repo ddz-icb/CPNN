@@ -12,7 +12,7 @@ export function HeaderBar() {
       <HeaderButton
         onClick={() => setIsMappingActive(!isMappingActive)}
         icon={isMappingActive ? <XIcon /> : <EyeIcon />}
-        tooltip={isMappingActive ? "Close" : "View Mapping"}
+        tooltip={isMappingActive ? "" : "View Mapping"}
         tooltipId={isMappingActive ? "close-colormapping-tooltip" : "open-colormapping-tooltip"}
       />
       {isMappingActive && <HeaderbarColorMapping />}
