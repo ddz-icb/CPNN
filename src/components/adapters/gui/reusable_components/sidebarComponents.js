@@ -70,7 +70,7 @@ export function Button({ onClick, onChange, linkRef, tooltip, tooltipId, text })
         <span>{text}</span>
         <input type="file" style={{ display: "none" }} onChange={onChange} ref={linkRef} />
       </ButtonCN>
-      <Tooltip id={tooltipId} place="top" effect="solid" className="tooltip-sidebar" />
+      <Tooltip id={tooltipId} place="top" effect="solid" className="tooltip-gui" />
     </>
   );
 }
@@ -246,13 +246,13 @@ export function TableList({
         data.map((item, index) => (
           <>
             {itemTooltipContent && (
-              <Tooltip key={`item-tooltip-${instanceId}-${index}`} id={`item-tooltip-${instanceId}-${index}`} className="tooltip-sidebar" />
+              <Tooltip key={`item-tooltip-${instanceId}-${index}`} id={`item-tooltip-${instanceId}-${index}`} className="tooltip-gui" />
             )}
             {actionIconTooltipContent && (
-              <Tooltip key={`action-tooltip-${instanceId}-${index}`} id={`action-tooltip-${instanceId}-${index}`} className="tooltip-sidebar" />
+              <Tooltip key={`action-tooltip-${instanceId}-${index}`} id={`action-tooltip-${instanceId}-${index}`} className="tooltip-gui" />
             )}
             {actionIcon2TooltipContent && (
-              <Tooltip key={`action-tooltip-2-${instanceId}-${index}`} id={`action-tooltip-2-${instanceId}-${index}`} className="tooltip-sidebar" />
+              <Tooltip key={`action-tooltip-2-${instanceId}-${index}`} id={`action-tooltip-2-${instanceId}-${index}`} className="tooltip-gui" />
             )}
           </>
         ))}

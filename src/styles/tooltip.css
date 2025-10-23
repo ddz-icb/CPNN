@@ -16,7 +16,7 @@
   pointer-events: none;
 }
 
-.tooltip-sidebar {
+.tooltip-gui {
   position: fixed;
   padding: 0.25rem !important;
   z-index: 5;
