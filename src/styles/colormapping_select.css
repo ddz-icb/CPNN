@@ -56,9 +56,18 @@
   border-bottom: none;
 }
 
+.light .colormapping-select-row {
+  background: color-mix(in srgb, var(--color-accent) 6%, var(--color-surface) 94%);
+}
+
 .colormapping-select-row:hover {
   background: color-mix(in srgb, var(--color-accent) 20%, var(--color-accent-soft) 80%);
   color: var(--color-text-primary);
+}
+
+.light .colormapping-select-row:hover {
+  background: color-mix(in srgb, var(--color-accent) 28%, #ffffff 72%);
+  border-left-color: var(--color-accent);
 }
 
 .colormapping-select-swatch {
