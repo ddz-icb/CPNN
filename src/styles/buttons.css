@@ -36,11 +36,11 @@
 .button-rect {
   border-radius: var(--radius);
   background-color: var(--color-switch-track);
+  color: var(--color-accent-contrast);
 }
 
 .light .button-rect {
   background-color: var(--color-button-surface);
-  color: var(--color-accent-contrast);
   box-shadow: var(--shadow-soft);
 }
 

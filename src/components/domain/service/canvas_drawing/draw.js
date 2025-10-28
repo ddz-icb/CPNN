@@ -30,6 +30,7 @@ export function getTextStyle(textColor) {
     fill: textColor,
     resolution: 2,
     align: "center",
+    fontWeight: "300",
   });
 }
 
