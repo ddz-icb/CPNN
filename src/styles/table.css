@@ -50,9 +50,19 @@
   transition: background-color var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
+.light .item-table-entry-highlight {
+  background-color: color-mix(in srgb, var(--color-accent) 6%, var(--color-surface) 94%);
+  border-left: var(--border-thin) solid color-mix(in srgb, var(--color-accent) 25%, transparent 75%);
+}
+
 .item-table-entry-highlight:hover {
   background-color: color-mix(in srgb, var(--color-accent) 20%, var(--color-hover) 80%);
   transition: background-color var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.light .item-table-entry-highlight:hover {
+  background-color: color-mix(in srgb, var(--color-accent) 28%, #ffffff 72%);
+  border-left-color: var(--color-accent);
 }
 
 .item-table-text {

@@ -139,9 +139,9 @@
   --color-surface: #0f1229;
   --color-surface-contrast: #10183f;
   --color-surface-muted: color-mix(in srgb, #0f1229 80%, #1632c9 20%);
-  --color-border: #182159;
-  --color-border-subtle: #182159;
-  --color-border-accent: #1632c9;
+  --color-border: var(--color-accent);
+  --color-border-subtle: color-mix(in srgb, var(--color-accent) 45%, transparent 55%);
+  --color-border-accent: color-mix(in srgb, var(--color-accent) 75%, #c7d2ff 25%);
   --color-text-primary: #f0f1ff;
   --color-text-secondary: color-mix(in srgb, #8298ff 70%, #eef0ff 30%);
   --color-text-muted: color-mix(in srgb, #52629b 45%, #050714 55%);
@@ -180,9 +180,9 @@
   --color-surface: #f8f9ff;
   --color-surface-contrast: #ffffff;
   --color-surface-muted: #eef2ff;
-  --color-border: #d7dbe6;
-  --color-border-subtle: #e4e8f3;
-  --color-border-accent: #6366f1;
+  --color-border: color-mix(in srgb, var(--color-accent) 50%, #e4e8f3 50%);
+  --color-border-subtle: color-mix(in srgb, var(--color-accent) 18%, #e9edf9 82%);
+  --color-border-accent: color-mix(in srgb, var(--color-accent) 75%, #c5d5ff 25%);
   --color-text-primary: #0f172a;
   --color-text-secondary: #111827;
   --color-text-muted: #334155;
