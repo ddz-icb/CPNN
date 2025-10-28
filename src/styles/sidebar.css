@@ -138,15 +138,15 @@
   transition: color var(--motion-duration-fast) var(--motion-ease-standard), transform var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
-.light .back-close {
-  color: var(--color-text-secondary);
-}
-
 .back-close svg {
   width: 1.25rem;
   height: 1.25rem;
   fill: currentColor;
   margin-right: -0.8rem;
+}
+
+.light .back-close svg {
+  color: var(--color-icon-primary);
 }
 
 .back-close:hover {

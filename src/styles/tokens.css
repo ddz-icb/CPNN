@@ -190,7 +190,7 @@
   --color-accent-soft-contrast: #312e81;
   --color-icon-primary: var(--color-accent);
   --color-icon-accent: color-mix(in srgb, var(--color-accent) 70%, #ffffff 30%);
-  --color-icon-hover: color-mix(in srgb, var(--color-accent) 50%, #ffffff 50%);
+  --color-icon-hover: var(--color-switch-track);
   --color-icon-muted: color-mix(in srgb, var(--color-accent-soft) 50%, #334155 50%);
   --highlight-bg: #ecf0ff;
   --highlight-color-text: #312e81;
@@ -206,7 +206,7 @@
   --color-input-border: var(--color-border-subtle);
   --color-input-border-focus: color-mix(in srgb, var(--color-accent) 55%, #ffffff 45%);
   --color-button-surface: var(--color-accent);
-  --color-button-hover: color-mix(in srgb, var(--color-accent) 60%, #ffffff 40%);
+  --color-button-hover: color-mix(in srgb, var(--color-accent) 65%, #312e81 35%);
   --color-switch-track: color-mix(in srgb, var(--color-accent) 60%, #dce1ff 40%);
   --shadow-soft: var(--shadow-soft-light);
   --shadow-floating: var(--shadow-floating-light);
