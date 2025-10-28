@@ -114,7 +114,7 @@ function drawLegendOnPdf(pdf, offsetX, offsetY, nodeColorscheme, nodeAttribsToCo
   let yPos = offsetY + padding;
   pdf.setTextColor(50, 50, 50);
 
-  const drawSection = (title, attribs, colorscheme, isNode) => {
+  const drawSection = (title, attribs, colorscheme) => {
     pdf.setFont("helvetica", "normal");
     pdf.setFontSize(headerFontSize);
     pdf.text(title, offsetX + padding, yPos + 10);
@@ -125,14 +125,16 @@ function drawLegendOnPdf(pdf, offsetX, offsetY, nodeColorscheme, nodeAttribsToCo
     for (const key in attribs) {
       if (Object.hasOwnProperty.call(attribs, key)) {
         const color = colorscheme[attribs[key]];
-        const label = key;
+        if (color) {
+          const label = key;
 
-        pdf.setFillColor(color);
-        pdf.rect(offsetX + padding, yPos, rectSize, rectSize, "F");
-        pdf.setDrawColor(0, 0, 0);
-        pdf.rect(offsetX + padding, yPos, rectSize, rectSize);
-        pdf.text(label, offsetX + padding + rectSize + rectSpacing, yPos + rectSize * 0.75);
-        yPos += lineHeight;
+          pdf.setFillColor(color);
+          pdf.rect(offsetX + padding, yPos, rectSize, rectSize, "F");
+          pdf.setDrawColor(0, 0, 0);
+          pdf.rect(offsetX + padding, yPos, rectSize, rectSize);
+          pdf.text(label, offsetX + padding + rectSize + rectSpacing, yPos + rectSize * 0.75);
+          yPos += lineHeight;
+        }
       }
     }
 
@@ -144,9 +146,9 @@ function drawLegendOnPdf(pdf, offsetX, offsetY, nodeColorscheme, nodeAttribsToCo
     yPos += lineHeight;
   };
 
-  drawSection("Nodes", nodeAttribsToColorIndices, nodeColorscheme, true);
+  drawSection("Nodes", nodeAttribsToColorIndices, nodeColorscheme);
   yPos += sectionSpacing;
-  drawSection("Links", linkAttribsToColorIndices, linkColorscheme, false);
+  drawSection("Links", linkAttribsToColorIndices, linkColorscheme);
 
   return { legendWidth, legendHeight };
 }
