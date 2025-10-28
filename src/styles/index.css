@@ -9,21 +9,7 @@
 }
 
 * {
-  scrollbar-color: var(--color-accent) transparent;
-}
-
-*::-webkit-scrollbar {
-  width: 0.2rem;
-  height: 0.2rem;
-}
-
-*::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-*::-webkit-scrollbar-thumb {
-  background: var(--color-accent);
-  border-radius: var(--radius);
+  scrollbar-width: none;
 }
 
 body {
