@@ -136,7 +136,7 @@
   content: "";
   height: 1.4rem;
   width: 1.4rem;
-  left: 0.1rem;
+  left: 0.2rem;
   bottom: 0.22rem;
   background-color: var(--color-text-inverse);
   transition: all var(--motion-duration-fast) var(--motion-ease-standard);
@@ -149,7 +149,7 @@ input:checked + .switch-button {
 }
 
 input:checked + .switch-button:before {
-  transform: translateX(1.45rem);
+  transform: translateX(1.15rem);
 }
 
 /* info button */
