@@ -79,49 +79,7 @@
   /* Motion */
   --motion-duration-fast: 50ms;
   --motion-ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
-
-  /* Shadows (defaults: dark theme) */
-  --shadow-soft: var(--shadow-soft-dark);
-  --shadow-floating: var(--shadow-floating-dark);
-
-  /* Semantic tokens – dark baseline */
-  --color-surface: var(--palette-charcoal-950);
-  --color-surface-contrast: var(--palette-steel-700);
-  --color-surface-muted: color-mix(in srgb, var(--palette-charcoal-950) 80%, var(--palette-indigo-500) 20%);
-  --color-border: var(--palette-dark-violet);
-  --color-border-subtle: var(--palette-dark-violet);
-  --color-border-accent: var(--palette-violet-400);
-  --color-text-primary: #f0f1ff;
-  --color-text-secondary: color-mix(in srgb, var(--palette-violet-200) 70%, var(--palette-lilac-200) 30%);
-  --color-text-muted: color-mix(in srgb, var(--palette-violet-200) 45%, var(--palette-charcoal-900) 55%);
-  --color-text-inverse: var(--palette-white);
-  --color-icon-primary: var(--palette-violet-300);
-  --color-icon-accent: var(--palette-violet-200);
-  --color-icon-hover: color-mix(in srgb, white 10%, var(--palette-violet-200) 90%);
-  --color-icon-muted: color-mix(in srgb, var(--palette-violet-200) 60%, var(--palette-indigo-500) 40%);
-  --color-accent: var(--palette-violet-400);
-  --color-accent-contrast: var(--palette-white);
-  --color-accent-soft: color-mix(in srgb, var(--palette-violet-300) 70%, var(--palette-violet-200) 30%);
-  --color-accent-soft-contrast: var(--palette-charcoal-950);
   --color-error: var(--palette-red-500);
-  --color-hover: color-mix(in srgb, var(--color-surface-contrast) 50%, var(--color-accent) 50%);
-  --color-tooltip-surface: color-mix(in srgb, var(--color-surface) 65%, var(--color-accent) 35%);
-  --color-tooltip-border: var(--color-accent);
-  --color-tooltip-text: var(--palette-white);
-  --color-tooltip-close: var(--color-accent-soft);
-  --color-tooltip-close-hover: var(--palette-white);
-  --color-slider-track: color-mix(in srgb, var(--palette-violet-300) 65%, var(--color-accent) 35%);
-  --color-slider-thumb: var(--palette-violet-400);
-  --color-slider-thumb-border: var(--palette-violet-200);
-  --color-input-surface: color-mix(in srgb, var(--color-surface) 75%, var(--color-accent) 25%);
-  --color-input-focus: color-mix(in srgb, var(--color-surface) 60%, var(--color-accent) 40%);
-  --color-input-border: color-mix(in srgb, var(--color-surface-contrast) 65%, var(--color-accent) 35%);
-  --color-input-border-focus: color-mix(in srgb, var(--color-accent) 70%, var(--palette-violet-200) 30%);
-  --color-button-surface: color-mix(in srgb, var(--color-surface) 55%, var(--color-accent) 45%);
-  --color-button-hover: color-mix(in srgb, var(--color-accent) 65%, var(--palette-violet-200) 35%);
-  --color-switch-track: color-mix(in srgb, var(--color-surface-contrast) 35%, var(--color-accent) 65%);
-  --highlight-bg: color-mix(in srgb, var(--color-accent-soft) 30%, var(--palette-violet-400) 30%);
-  --highlight-color-text: var(--palette-charcoal-950);
 
   /* Derived tokens */
   --font-sans: var(--font-family-sans);
@@ -175,6 +133,49 @@
   --sidebar-ring: var(--color-accent);
 }
 
+.dark {
+  --shadow-soft: var(--shadow-soft-dark);
+  --shadow-floating: var(--shadow-floating-dark);
+  --color-surface: #0f1229;
+  --color-surface-contrast: #1b1a55;
+  --color-surface-muted: color-mix(in srgb, #0f1229 80%, #4c1fb8 20%);
+  --color-border: #423771;
+  --color-border-subtle: #423771;
+  --color-border-accent: #4c1fb8;
+  --color-text-primary: #f0f1ff;
+  --color-text-secondary: color-mix(in srgb, #b9a8ff 70%, #eef0ff 30%);
+  --color-text-muted: color-mix(in srgb, #b9a8ff 45%, #050714 55%);
+  --color-text-inverse: #eef0ff;
+  --color-accent: #4c1fb8;
+  --color-accent-contrast: #eef0ff;
+  --color-accent-soft: color-mix(in srgb, var(--color-accent) 65%, #b9a8ff 35%);
+  --color-accent-soft-contrast: #0f1229;
+  --color-icon-primary: color-mix(in srgb, var(--color-accent) 80%, #d7ccff 20%);
+  --color-icon-accent: color-mix(in srgb, var(--color-accent) 60%, #ede7ff 40%);
+  --color-icon-hover: color-mix(in srgb, var(--color-accent) 35%, #ffffff 65%);
+  --color-icon-muted: color-mix(in srgb, var(--color-accent) 30%, #1b1a55 70%);
+  --color-hover: color-mix(in srgb, var(--color-surface-contrast) 50%, var(--color-accent) 50%);
+  --color-tooltip-surface: color-mix(in srgb, var(--color-surface) 65%, var(--color-accent) 35%);
+  --color-tooltip-border: var(--color-accent);
+  --color-tooltip-text: var(--color-accent-contrast);
+  --color-tooltip-close: var(--color-accent-soft);
+  --color-tooltip-close-hover: var(--color-accent-contrast);
+  --color-slider-track: color-mix(in srgb, var(--color-accent) 45%, var(--color-surface-contrast) 55%);
+  --color-slider-thumb: var(--color-accent);
+  --color-slider-thumb-border: color-mix(in srgb, var(--color-accent) 35%, #ede7ff 65%);
+  --color-input-surface: color-mix(in srgb, var(--color-surface) 75%, var(--color-accent) 25%);
+  --color-input-focus: color-mix(in srgb, var(--color-surface) 60%, var(--color-accent) 40%);
+  --color-input-border: color-mix(in srgb, var(--color-surface-contrast) 65%, var(--color-accent) 35%);
+  --color-input-border-focus: color-mix(in srgb, var(--color-accent) 70%, #ede7ff 30%);
+  --color-button-surface: color-mix(in srgb, var(--color-surface) 55%, var(--color-accent) 45%);
+  --color-button-hover: color-mix(in srgb, var(--color-accent) 70%, #c9bdff 30%);
+  --color-switch-track: color-mix(in srgb, var(--color-surface-contrast) 30%, var(--color-accent) 70%);
+  --highlight-bg: color-mix(in srgb, var(--color-accent-soft) 35%, var(--color-accent) 30%);
+  --highlight-color-text: #0f1229;
+  --muted: color-mix(in srgb, var(--color-surface) 82%, var(--color-accent) 18%);
+  --sidebar-primary: color-mix(in srgb, var(--color-accent) 60%, var(--color-surface) 40%);
+}
+
 .light {
   --color-surface: #f8f9ff;
   --color-surface-contrast: #ffffff;
@@ -185,19 +186,23 @@
   --color-text-primary: #0f172a;
   --color-text-secondary: #111827;
   --color-text-muted: #334155;
+  --color-text-inverse: #eef0ff;
   --color-accent: #5561e8;
   --color-accent-soft: #e0e7ff;
   --color-accent-soft-contrast: #312e81;
+  --color-accent-contrast: #ffffff;
   --color-icon-primary: var(--color-accent);
   --color-icon-accent: color-mix(in srgb, var(--color-accent) 70%, #ffffff 30%);
   --color-icon-hover: var(--color-switch-track);
   --color-icon-muted: color-mix(in srgb, var(--color-accent-soft) 50%, #334155 50%);
-  --highlight-bg: color-mix(in srgb, var(--color-accent) 35%, #ffffff 65%);
-  --highlight-color-text: var(--color-text-primary);
+  --highlight-bg: #ecf0ff;
+  --highlight-color-text: #312e81;
   --color-hover: color-mix(in srgb, var(--color-accent) 25%, #ffffff 75%);
   --color-tooltip-surface: #ffffff;
   --color-tooltip-border: var(--color-accent);
   --color-tooltip-text: var(--color-text-primary);
+  --color-tooltip-close: var(--color-accent-soft);
+  --color-tooltip-close-hover: var(--color-accent-contrast);
   --color-slider-track: color-mix(in srgb, var(--color-accent) 35%, #dde3ff 65%);
   --color-slider-thumb: var(--color-accent);
   --color-slider-thumb-border: color-mix(in srgb, var(--color-accent) 25%, #312e81 75%);
