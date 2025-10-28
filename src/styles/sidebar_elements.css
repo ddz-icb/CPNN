@@ -144,8 +144,8 @@
 }
 
 input:checked + .switch-button {
-  background-color: var(--color-icon-primary);
-  border: var(--border-thin) solid var(--color-icon-primary);
+  background-color: var(--color-button-hover);
+  border: var(--border-thin) solid var(--color-button-hover);
 }
 
 input:checked + .switch-button:before {
