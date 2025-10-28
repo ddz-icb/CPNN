@@ -1,4 +1,7 @@
-.light .logo,
+.light .logo {
+  filter: none;
+}
+
 .dark .logo {
   filter: invert(100%) brightness(2);
 }

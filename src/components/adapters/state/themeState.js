@@ -1,13 +1,13 @@
 import { create } from "zustand";
 
-const darkBlue = "#0d3b66";
+const indigo = "#4f46e5";
 const lightGrey = "#b2becd";
-const black = "#000000";
+const deepNavy = "#0f172a";
 
 export const lightTheme = {
   name: "light",
-  circleBorderColor: darkBlue,
-  textColor: black,
+  circleBorderColor: indigo,
+  textColor: deepNavy,
 };
 
 export const darkTheme = {

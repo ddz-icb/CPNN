@@ -42,6 +42,10 @@
   cursor: auto;
 }
 
+.light .dark-item-table td {
+  color: var(--color-text-primary);
+}
+
 .item-table-entry-highlight {
   transition: background-color var(--motion-duration-fast) var(--motion-ease-standard);
 }

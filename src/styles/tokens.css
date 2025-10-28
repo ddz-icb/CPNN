@@ -77,7 +77,7 @@
   --border-thick: 2px;
 
   /* Motion */
-  --motion-duration-fast: 200ms;
+  --motion-duration-fast: 50ms;
   --motion-ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
 
   /* Shadows (defaults: dark theme) */
@@ -176,40 +176,40 @@
 }
 
 .light {
-  --color-surface: var(--palette-white);
-  --color-surface-contrast: var(--palette-sapphire-600);
-  --color-surface-muted: var(--palette-white);
-  --color-border: var(--palette-indigo-500);
-  --color-border-subtle: var(--palette-gray-200);
-  --color-border-accent: var(--palette-indigo-500);
-  --color-text-primary: var(--palette-black);
-  --color-text-secondary: var(--palette-indigo-500);
-  --color-text-muted: var(--palette-gray-500);
-  --color-accent: var(--palette-violet-500);
-  --color-accent-soft: var(--palette-violet-300);
-  --color-accent-soft-contrast: var(--palette-sapphire-600);
+  --color-surface: #f8f9ff;
+  --color-surface-contrast: #ffffff;
+  --color-surface-muted: #eef2ff;
+  --color-border: #d7dbe6;
+  --color-border-subtle: #e4e8f3;
+  --color-border-accent: #6366f1;
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #111827;
+  --color-text-muted: #334155;
+  --color-accent: #4f46e5;
+  --color-accent-soft: #e0e7ff;
+  --color-accent-soft-contrast: #312e81;
   --color-icon-primary: var(--color-accent);
-  --color-icon-accent: color-mix(in srgb, var(--palette-violet-200) 80%, var(--palette-white) 20%);
-  --color-icon-hover: color-mix(in srgb, var(--color-accent) 70%, var(--palette-white) 30%);
-  --color-icon-muted: color-mix(in srgb, var(--palette-violet-300) 60%, var(--palette-indigo-500) 40%);
-  --highlight-bg: color-mix(in srgb, var(--palette-violet-200) 80%, var(--palette-white) 20%);
-  --highlight-color-text: var(--palette-sapphire-600);
-  --color-hover: var(--tone-light-hover);
-  --color-tooltip-surface: var(--palette-white);
+  --color-icon-accent: color-mix(in srgb, var(--color-accent) 70%, #ffffff 30%);
+  --color-icon-hover: color-mix(in srgb, var(--color-accent) 50%, #ffffff 50%);
+  --color-icon-muted: color-mix(in srgb, var(--color-accent-soft) 50%, #334155 50%);
+  --highlight-bg: #ecf0ff;
+  --highlight-color-text: #312e81;
+  --color-hover: color-mix(in srgb, var(--color-accent) 25%, #ffffff 75%);
+  --color-tooltip-surface: #ffffff;
   --color-tooltip-border: var(--color-accent);
-  --color-tooltip-text: var(--palette-sapphire-600);
-  --color-slider-track: color-mix(in srgb, var(--color-border-subtle) 60%, var(--color-accent) 40%);
+  --color-tooltip-text: var(--color-text-primary);
+  --color-slider-track: color-mix(in srgb, var(--color-accent) 35%, #dde3ff 65%);
   --color-slider-thumb: var(--color-accent);
-  --color-slider-thumb-border: color-mix(in srgb, var(--color-accent) 35%, var(--palette-indigo-500) 65%);
-  --color-input-surface: var(--palette-white);
-  --color-input-focus: color-mix(in srgb, var(--palette-white) 70%, var(--color-accent) 30%);
+  --color-slider-thumb-border: color-mix(in srgb, var(--color-accent) 25%, #312e81 75%);
+  --color-input-surface: #ffffff;
+  --color-input-focus: color-mix(in srgb, #ffffff 65%, var(--color-accent) 35%);
   --color-input-border: var(--color-border-subtle);
-  --color-input-border-focus: color-mix(in srgb, var(--color-accent) 55%, var(--palette-white) 45%);
-  --color-button-surface: color-mix(in srgb, var(--palette-white) 55%, var(--color-accent) 45%);
-  --color-button-hover: color-mix(in srgb, var(--color-accent) 60%, var(--palette-white) 40%);
-  --color-switch-track: color-mix(in srgb, var(--palette-indigo-500) 55%, var(--color-accent) 45%);
+  --color-input-border-focus: color-mix(in srgb, var(--color-accent) 55%, #ffffff 45%);
+  --color-button-surface: var(--color-accent);
+  --color-button-hover: color-mix(in srgb, var(--color-accent) 60%, #ffffff 40%);
+  --color-switch-track: color-mix(in srgb, var(--color-accent) 60%, #dce1ff 40%);
   --shadow-soft: var(--shadow-soft-light);
   --shadow-floating: var(--shadow-floating-light);
-  --muted: color-mix(in srgb, var(--color-surface) 70%, var(--color-hover) 30%);
+  --muted: color-mix(in srgb, var(--color-surface) 80%, var(--color-accent-soft) 20%);
   --sidebar-primary: var(--color-accent);
 }

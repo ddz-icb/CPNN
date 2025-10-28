@@ -61,6 +61,8 @@
 .nav-link svg {
   min-width: 1.35rem;
   margin-right: 1rem;
+  fill: currentColor;
+  transition: fill var(--motion-duration-fast) var(--motion-ease-standard), color var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
 .nav-link:hover {
@@ -68,9 +70,24 @@
   color: var(--color-text-inverse);
 }
 
+.light .nav-link:hover {
+  background-color: color-mix(in srgb, var(--color-accent) 20%, var(--color-accent-soft) 80%);
+  color: var(--color-text-primary);
+}
+
+.light .nav-link:hover .navbar-item-logo {
+  color: var(--color-accent);
+  fill: var(--color-accent);
+}
+
 .navbar-item-logo {
-  fill: var(--color-icon-primary);
+  display: inline-flex;
+  color: var(--color-icon-primary);
   transition: all var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.navbar-item-logo svg {
+  fill: currentColor;
 }
 
 .back-overlay {
@@ -87,6 +104,11 @@
   text-decoration: none;
 }
 
+.light .back-overlay {
+  background: color-mix(in srgb, var(--color-accent-soft) 70%, #ffffff 30%);
+  border-color: var(--color-border);
+}
+
 .back-text {
   display: flex;
   flex-grow: 1;
@@ -95,6 +117,10 @@
   color: var(--color-text-inverse);
   font-size: var(--font-size-big-heading);
   letter-spacing: 0.35px;
+}
+
+.light .back-text {
+  color: var(--color-text-primary);
 }
 
 .back-close {
@@ -112,6 +138,10 @@
   transition: color var(--motion-duration-fast) var(--motion-ease-standard), transform var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
+.light .back-close {
+  color: var(--color-text-secondary);
+}
+
 .back-close svg {
   width: 1.25rem;
   height: 1.25rem;
@@ -121,6 +151,10 @@
 
 .back-close:hover {
   color: var(--color-icon-hover);
+}
+
+.light .back-close:hover {
+  color: var(--color-accent);
 }
 
 .logo-container {
