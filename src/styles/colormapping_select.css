@@ -49,7 +49,6 @@
   height: var(--default-element-height);
   border-bottom: var(--border-thin) solid var(--color-border-subtle);
   color: var(--color-text-primary);
-  border-left: var(--border-thin) solid transparent;
   transition: background-color var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
@@ -59,12 +58,10 @@
 
 .light .colormapping-select-row {
   background: color-mix(in srgb, var(--color-accent) 6%, var(--color-surface) 94%);
-  border-left-color: color-mix(in srgb, var(--color-accent) 25%, transparent 75%);
 }
 
 .dark .colormapping-select-row {
   background: color-mix(in srgb, var(--color-surface-contrast) 70%, var(--color-accent) 30%);
-  border-left-color: color-mix(in srgb, var(--color-accent) 45%, transparent 55%);
   color: var(--color-text-primary);
 }
 
@@ -75,12 +72,10 @@
 
 .light .colormapping-select-row:hover {
   background: color-mix(in srgb, var(--color-accent) 28%, #ffffff 72%);
-  border-left-color: var(--color-accent);
 }
 
 .dark .colormapping-select-row:hover {
   background: color-mix(in srgb, var(--color-surface-contrast) 55%, var(--color-accent) 45%);
-  border-left-color: var(--color-accent);
   color: var(--color-text-primary);
 }
 
