@@ -74,84 +74,121 @@ function createGraphSvgElement(
   return { svgElement, width, height };
 }
 
-function drawLegendOnPdf(pdf, offsetX, offsetY, nodeColorscheme, nodeAttribsToColorIndices, linkColorscheme, linkAttribsToColorIndices, mapping) {
-  const padding = 15;
-  const rectSize = 10;
+function drawLegendOnPdf(pdf, offsetX, offsetY, nodeColorscheme, nodeAttribsToColorIndices, linkColorscheme, linkAttribsToColorIndices, mapping, section = "both") {
+  const padding = 20;
+  const rectSize = 12;
   const rectSpacing = 8;
-  const headerFontSize = 12;
-  const labelFontSize = 10;
-  const lineHeight = 20;
-  const headerSpacing = 20;
+  const labelFontSize = 11;
+  const rowSpacing = 6;
+  const groupSpacing = 16;
+
+  const sectionsConfig = [
+    {
+      key: "nodes",
+      attribs: nodeAttribsToColorIndices ?? {},
+      colorscheme: nodeColorscheme ?? {},
+    },
+    {
+      key: "links",
+      attribs: linkAttribsToColorIndices ?? {},
+      colorscheme: linkColorscheme ?? {},
+    },
+  ];
+
+  const normalizedSection = typeof section === "string" ? section.toLowerCase() : "both";
+  let sections =
+    normalizedSection === "both"
+      ? sectionsConfig
+      : sectionsConfig.filter(({ key }) => key === normalizedSection);
+
+  sections = sections.map((sectionConfig) => {
+    const { attribs, colorscheme } = sectionConfig;
+    const validKeys = Object.keys(attribs).filter((key) => {
+      if (!Object.hasOwnProperty.call(attribs, key)) return false;
+      const colorIndex = attribs[key];
+      return Boolean(colorscheme[colorIndex]);
+    });
+    return { ...sectionConfig, validKeys };
+  });
+
+  if (!sections.length) return { legendWidth: 0, legendHeight: 0 };
 
   const tempPdf = new jsPDF({ unit: "pt" });
   tempPdf.setFontSize(labelFontSize);
-  let maxTextWidth = 0;
+  let maxTextWidth = tempPdf.getTextWidth("No Value Available");
 
-  [nodeAttribsToColorIndices, linkAttribsToColorIndices].forEach((attribs, index) => {
-    for (const key in attribs) {
-      if (Object.hasOwnProperty.call(attribs, key)) {
-        const label = key;
-        maxTextWidth = Math.max(maxTextWidth, tempPdf.getTextWidth(label));
-      }
-    }
+  sections.forEach(({ validKeys }) => {
+    validKeys.forEach((key) => {
+      maxTextWidth = Math.max(maxTextWidth, tempPdf.getTextWidth(key));
+    });
   });
-  maxTextWidth = Math.max(maxTextWidth, tempPdf.getTextWidth("No Value Available"));
-  tempPdf.setFontSize(headerFontSize);
-  maxTextWidth = Math.max(maxTextWidth, tempPdf.getTextWidth("Nodes"), tempPdf.getTextWidth("Links"));
+
   const legendWidth = padding * 2 + rectSize + rectSpacing + maxTextWidth;
 
-  const nodeCount = Object.keys(nodeAttribsToColorIndices).length;
-  const linkCount = Object.keys(linkAttribsToColorIndices).length;
-  const sectionSpacing = 10;
-  const totalItemsHeight = (nodeCount + 1 + linkCount + 1) * lineHeight;
-  const legendHeight = padding * 2 + headerSpacing * 2 + sectionSpacing + totalItemsHeight;
+  const sectionHeights = sections.map(({ validKeys }) => {
+    const rowCount = validKeys.length + 1;
+    return rowCount * rectSize + rowSpacing * Math.max(rowCount - 1, 0);
+  });
+  const legendHeight =
+    padding * 2 +
+    sectionHeights.reduce((height, sectionHeight) => height + sectionHeight, 0) +
+    groupSpacing * Math.max(sections.length - 1, 0);
 
   pdf.setFillColor(255, 255, 255);
   pdf.rect(offsetX, offsetY, legendWidth, legendHeight, "F");
-  pdf.setDrawColor(200, 200, 200);
+  pdf.setDrawColor(220, 220, 220);
   pdf.rect(offsetX, offsetY, legendWidth, legendHeight);
 
   let yPos = offsetY + padding;
-  pdf.setTextColor(50, 50, 50);
+  pdf.setTextColor(60, 60, 60);
+  pdf.setFont("helvetica", "normal");
+  pdf.setFontSize(labelFontSize);
 
-  const drawSection = (title, attribs, colorscheme) => {
-    pdf.setFont("helvetica", "normal");
-    pdf.setFontSize(headerFontSize);
-    pdf.text(title, offsetX + padding, yPos + 10);
-    yPos += headerSpacing;
+  const metricsSample =
+    typeof pdf.getTextDimensions === "function" ? pdf.getTextDimensions("Ag") : null;
+  const sampleHeight = metricsSample?.h ?? labelFontSize;
+  const sampleBaseline = metricsSample?.baseline ?? sampleHeight * 0.8;
+  const labelBaselineOffset = rectSize / 2 + sampleBaseline - sampleHeight / 2;
 
-    pdf.setFontSize(labelFontSize);
-
-    for (const key in attribs) {
-      if (Object.hasOwnProperty.call(attribs, key)) {
-        const color = colorscheme[attribs[key]];
-        if (color) {
-          const label = key;
-
-          pdf.setFillColor(color);
-          pdf.rect(offsetX + padding, yPos, rectSize, rectSize, "F");
-          pdf.setDrawColor(0, 0, 0);
-          pdf.rect(offsetX + padding, yPos, rectSize, rectSize);
-          pdf.text(label, offsetX + padding + rectSize + rectSpacing, yPos + rectSize * 0.75);
-          yPos += lineHeight;
-        }
-      }
-    }
-
-    pdf.setFillColor("#cccccc");
+  const drawRow = (label, color, isLastRow) => {
+    const fillColor = color ?? "#f3f3f3";
+    pdf.setFillColor(fillColor);
     pdf.rect(offsetX + padding, yPos, rectSize, rectSize, "F");
-    pdf.setDrawColor(0, 0, 0);
+    pdf.setDrawColor(230, 230, 230);
     pdf.rect(offsetX + padding, yPos, rectSize, rectSize);
-    pdf.text("No Value Available", offsetX + padding + rectSize + rectSpacing, yPos + rectSize * 0.75);
-    yPos += lineHeight;
+    pdf.setDrawColor(0, 0, 0);
+
+    const baseline = yPos + labelBaselineOffset;
+    pdf.text(label, offsetX + padding + rectSize + rectSpacing, baseline);
+
+    yPos += rectSize;
+    if (!isLastRow) {
+      yPos += rowSpacing;
+    }
   };
 
-  drawSection("Nodes", nodeAttribsToColorIndices, nodeColorscheme);
-  yPos += sectionSpacing;
-  drawSection("Links", linkAttribsToColorIndices, linkColorscheme);
+  sections.forEach(({ validKeys, attribs, colorscheme }, sectionIndex) => {
+    const rows = validKeys
+      .map((key) => ({
+        label: key,
+        color: colorscheme[attribs[key]],
+      }))
+      .concat({ label: "No Value Available", color: "#f3f3f3" });
+
+    rows.forEach((row, rowIndex) => {
+      const isLastRow = rowIndex === rows.length - 1;
+      drawRow(row.label, row.color, isLastRow);
+    });
+
+    if (sectionIndex < sections.length - 1) {
+      yPos += groupSpacing;
+    }
+  });
 
   return { legendWidth, legendHeight };
 }
+
+
 
 export function downloadAsPNG(app, document, graphName) {
   app.renderer.extract
@@ -275,24 +312,45 @@ export function downloadTsvFile(tsvContent, fileName) {
 }
 
 export function downloadLegendPdf(graphName, linkColorscheme, linkAttribsToColorIndices, nodeColorscheme, nodeAttribsToColorIndices, mapping) {
-  const tempPdf = new jsPDF();
-  const { legendWidth, legendHeight } = drawLegendOnPdf(
-    tempPdf,
-    0,
-    0,
-    nodeColorscheme,
-    nodeAttribsToColorIndices,
-    linkColorscheme,
-    linkAttribsToColorIndices,
-    mapping
-  );
+  const baseFileName = getFileNameWithoutExtension(graphName);
+  const sectionsToDownload = [
+    { section: "nodes", suffix: "nodes" },
+    { section: "links", suffix: "links" },
+  ];
 
-  const pdf = new jsPDF({
-    orientation: legendWidth > legendHeight ? "landscape" : "portrait",
-    unit: "pt",
-    format: [legendWidth, legendHeight],
+  sectionsToDownload.forEach(({ section, suffix }) => {
+    const tempPdf = new jsPDF({ unit: "pt" });
+    const { legendWidth, legendHeight } = drawLegendOnPdf(
+      tempPdf,
+      0,
+      0,
+      nodeColorscheme,
+      nodeAttribsToColorIndices,
+      linkColorscheme,
+      linkAttribsToColorIndices,
+      mapping,
+      section
+    );
+
+    if (!legendWidth || !legendHeight) return;
+
+    const pdf = new jsPDF({
+      orientation: legendWidth > legendHeight ? "landscape" : "portrait",
+      unit: "pt",
+      format: [legendWidth, legendHeight],
+    });
+
+    drawLegendOnPdf(
+      pdf,
+      0,
+      0,
+      nodeColorscheme,
+      nodeAttribsToColorIndices,
+      linkColorscheme,
+      linkAttribsToColorIndices,
+      mapping,
+      section
+    );
+    pdf.save(`${baseFileName}_legend_${suffix}.pdf`);
   });
-
-  drawLegendOnPdf(pdf, 0, 0, nodeColorscheme, nodeAttribsToColorIndices, linkColorscheme, linkAttribsToColorIndices, mapping);
-  pdf.save(`${getFileNameWithoutExtension(graphName)}_legend.pdf`);
 }
