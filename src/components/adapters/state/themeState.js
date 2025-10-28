@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-const indigo = "#5561e8";
+const indigo = "#1836baff";
 const lightGrey = "#b2becd";
 const deepNavy = "#0f172a";
 
