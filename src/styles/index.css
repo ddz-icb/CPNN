@@ -5,10 +5,11 @@
 
 ::selection {
   background: var(--highlight-bg);
+  color: var(--highlight-color-text);
 }
 
 * {
-  scrollbar-color: var(--palette-violet-200) transparent;
+  scrollbar-color: var(--color-accent) transparent;
 }
 
 *::-webkit-scrollbar {
@@ -21,7 +22,7 @@
 }
 
 *::-webkit-scrollbar-thumb {
-  background: var(--palette-violet-200);
+  background: var(--color-accent);
   border-radius: var(--radius);
 }
 
