@@ -1,5 +1,5 @@
 import { ButtonCN } from "./shadcn_blocks/buttonCN.jsx";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { ReactComponent as InfoCircleIcon } from "../../../../assets/icons/infoCircle.svg";
 import { ReactComponent as XIcon } from "../../../../assets/icons/x.svg";
 import { handleFieldBlur, handleFieldChange, handleSliderChange } from "../handlers/buttonHandlerFunctions.js";
@@ -188,7 +188,7 @@ export function TableList({
         <tbody>
           {data && data.length > 0 ? (
             data.map((item, index) => (
-              <tr key={`row-${item}-${index}`} className="item-table-entry-highlight">
+              <tr key={`row-${instanceId}-${index}`} className="item-table-entry-highlight">
                 <td
                   className="item-table-text"
                   onClick={() => onItemClick && onItemClick(item)}
@@ -199,11 +199,13 @@ export function TableList({
                 >
                   <span>{displayKey ? item[displayKey] : item}</span>
                 </td>
+
                 {ActionIcon && (
                   <>
                     {!showActionIconOn || showActionIconOn(item) ? (
                       <td className="item-table-logo">
                         <ActionIcon
+                          key={`action-icon-${instanceId}-${index}`}
                           onClick={() => onActionIconClick && onActionIconClick(item)}
                           {...(actionIconTooltipContent && {
                             "data-tooltip-id": `action-tooltip-${instanceId}-${index}`,
@@ -213,14 +215,16 @@ export function TableList({
                       </td>
                     ) : (
                       <td className="item-table-empty-logo">
-                        <ActionIcon />
+                        <ActionIcon key={`action-icon-empty-${instanceId}-${index}`} />
                       </td>
                     )}
                   </>
                 )}
+
                 {ActionIcon2 && (
                   <td className="item-table-logo">
                     <ActionIcon2
+                      key={`action-icon-2-${instanceId}-${index}`}
                       onClick={() => onActionIcon2Click && onActionIcon2Click(item)}
                       {...(actionIcon2TooltipContent && {
                         "data-tooltip-id": `action-tooltip-2-${instanceId}-${index}`,
@@ -244,17 +248,11 @@ export function TableList({
       {data &&
         data.length > 0 &&
         data.map((item, index) => (
-          <>
-            {itemTooltipContent && (
-              <Tooltip key={`item-tooltip-${instanceId}-${index}`} id={`item-tooltip-${instanceId}-${index}`} className="tooltip-gui" />
-            )}
-            {actionIconTooltipContent && (
-              <Tooltip key={`action-tooltip-${instanceId}-${index}`} id={`action-tooltip-${instanceId}-${index}`} className="tooltip-gui" />
-            )}
-            {actionIcon2TooltipContent && (
-              <Tooltip key={`action-tooltip-2-${instanceId}-${index}`} id={`action-tooltip-2-${instanceId}-${index}`} className="tooltip-gui" />
-            )}
-          </>
+          <Fragment key={`tooltip-set-${instanceId}-${index}`}>
+            {itemTooltipContent && <Tooltip id={`item-tooltip-${instanceId}-${index}`} className="tooltip-gui" />}
+            {actionIconTooltipContent && <Tooltip id={`action-tooltip-${instanceId}-${index}`} className="tooltip-gui" />}
+            {actionIcon2TooltipContent && <Tooltip id={`action-tooltip-2-${instanceId}-${index}`} className="tooltip-gui" />}
+          </Fragment>
         ))}
     </div>
   );
