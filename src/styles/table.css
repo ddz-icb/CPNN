@@ -10,6 +10,11 @@
   background: color-mix(in srgb, var(--color-surface-contrast) 90%, transparent 10%);
 }
 
+.dark .item-table {
+  border: var(--border-thin) solid color-mix(in srgb, var(--color-accent) 45%, var(--color-surface) 55%);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-accent) 20%, transparent 80%);
+}
+
 .table-list-heading {
   display: flex;
   align-items: center;
@@ -23,6 +28,10 @@
   border-bottom: var(--border-thin) solid var(--color-border-subtle);
 }
 
+.dark .table-list-heading {
+  border-bottom: var(--border-thin) solid color-mix(in srgb, var(--color-accent) 35%, var(--color-surface) 65%);
+}
+
 .item-table th,
 .item-table td {
   border-bottom: var(--border-thin) solid var(--color-border-subtle);
@@ -32,6 +41,12 @@
   vertical-align: middle;
   height: var(--default-element-height);
 }
+
+.dark .item-table th,
+.dark .item-table td {
+  border-bottom: var(--border-thin) solid color-mix(in srgb, var(--color-accent) 35%, var(--color-surface) 65%);
+}
+
 .item-table tr:last-child td {
   border-bottom: none;
 }
@@ -47,12 +62,19 @@
 }
 
 .item-table-entry-highlight {
+  border-left: var(--border-thin) solid transparent;
   transition: background-color var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
 .light .item-table-entry-highlight {
   background-color: color-mix(in srgb, var(--color-accent) 6%, var(--color-surface) 94%);
-  border-left: var(--border-thin) solid color-mix(in srgb, var(--color-accent) 25%, transparent 75%);
+  border-left-color: color-mix(in srgb, var(--color-accent) 25%, transparent 75%);
+}
+
+.dark .item-table-entry-highlight {
+  background-color: color-mix(in srgb, var(--color-surface-contrast) 70%, var(--color-accent) 30%);
+  border-left-color: color-mix(in srgb, var(--color-accent) 45%, transparent 55%);
+  color: var(--color-text-primary);
 }
 
 .item-table-entry-highlight:hover {
@@ -63,6 +85,12 @@
 .light .item-table-entry-highlight:hover {
   background-color: color-mix(in srgb, var(--color-accent) 28%, #ffffff 72%);
   border-left-color: var(--color-accent);
+}
+
+.dark .item-table-entry-highlight:hover {
+  background-color: color-mix(in srgb, var(--color-surface-contrast) 55%, var(--color-accent) 45%);
+  border-left-color: var(--color-accent);
+  color: var(--color-text-primary);
 }
 
 .item-table-text {
