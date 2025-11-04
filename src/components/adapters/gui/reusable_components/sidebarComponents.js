@@ -75,6 +75,20 @@ export function Button({ onClick, onChange, linkRef, tooltip, tooltipId, text })
   );
 }
 
+export function LassoSelectionBlock({ selectionCount, onClearSelection }) {
+  const hasSelection = selectionCount > 0;
+  const message = hasSelection ? `${selectionCount} node${selectionCount === 1 ? "" : "s"} selected` : "Draw a shape on the canvas to select nodes.";
+
+  return (
+    <div className="block-section block-section-stack">
+      <div className="sidebar-control-body">
+        <span className="text-secondary">{message}</span>
+        {hasSelection && <Button text={"Clear Lasso Selection"} onClick={onClearSelection} />}
+      </div>
+    </div>
+  );
+}
+
 export function CodeEditorBlock({ text, onClick, compilerError, defaultValue, textareaRef, infoHeading, infoDescription }) {
   return (
     <div className="block-section block-section-stack">

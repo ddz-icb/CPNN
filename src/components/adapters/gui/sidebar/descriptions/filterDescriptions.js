@@ -115,6 +115,13 @@ export const nodeFilterDescription = (
 
 export const lassoDescription = (
   <div>
-    <div className="margin-0">HIHI</div>
+    <p className="margin-0">
+      Enable the lasso filter to sketch a freehand shape directly on the graph canvas. Nodes that fall inside the finished shape become the active
+      selection and the graph instantly filters down to them.
+    </p>
+    <p className="margin-0 pad-top-05">
+      Use the clear button below the switch to discard the current selection and redraw, or simply toggle the lasso off to return to the regular
+      filter set.
+    </p>
   </div>
 );

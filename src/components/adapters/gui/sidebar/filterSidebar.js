@@ -6,7 +6,7 @@ import "codemirror/addon/mode/simple.js";
 import "codemirror/theme/material.css";
 import "../../config/editorSyntaxHighlighting.js";
 
-import { Button, CodeEditorBlock, FieldBlock, SliderBlock, SwitchBlock } from "../reusable_components/sidebarComponents.js";
+import { Button, CodeEditorBlock, FieldBlock, SliderBlock, SwitchBlock, LassoSelectionBlock } from "../reusable_components/sidebarComponents.js";
 import {
   filterInit,
   linkThresholdInit,
@@ -47,6 +47,12 @@ export function FilterSidebar() {
 
   const [compilerErrorLinkFilter, setCompilerErrorLinkFilter] = useState(null);
   const [compilerErrorNodeFilter, setCompilerErrorNodeFilter] = useState(null);
+
+  const lassoSelectionCount = Array.isArray(filter.lassoSelection) ? filter.lassoSelection.length : 0;
+
+  const handleClearLassoSelection = () => {
+    setFilter("lassoSelection", []);
+  };
 
   const handleResetFilters = () => {
     setAllFilter(filterInit);
@@ -220,6 +226,7 @@ export function FilterSidebar() {
         infoHeading={"Lasso Filter"}
         infoDescription={lassoDescription}
       />
+      {filter.lasso && <LassoSelectionBlock selectionCount={lassoSelectionCount} onClearSelection={handleClearLassoSelection} />}
     </>
   );
 }

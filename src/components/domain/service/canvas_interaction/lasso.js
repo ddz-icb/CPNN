@@ -11,7 +11,8 @@ const DEFAULT_GAP_LENGTH = 8;
 const MIN_POINT_DISTANCE = 6;
 
 function defaultOnSelect(selection) {
-  log.info("Lasso selection", selection);
+  const nodes = Array.isArray(selection?.nodes) ? selection.nodes.length : 0;
+  log.info(`Lasso selection captured ${nodes} node(s).`, selection);
 }
 
 function normalizeColor(color, fallback) {
@@ -357,7 +358,7 @@ export function enableLasso({
   window.addEventListener("pointercancel", handlePointerCancel, true);
   window.addEventListener("pointerleave", handlePointerCancel, true);
 
-  return () => {
+  const cleanup = () => {
     state.isDrawing = false;
     state.points = [];
     state.hasSelection = false;
@@ -375,4 +376,11 @@ export function enableLasso({
     selectionFill.destroy({ children: true });
     previewOutline.destroy({ children: true });
   };
+
+  cleanup.clearSelection = () => {
+    applySelectionFill(null, true);
+    previewOutline.clear();
+  };
+
+  return cleanup;
 }
