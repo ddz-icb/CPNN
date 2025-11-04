@@ -185,7 +185,7 @@ export function enableLasso({
   const previousCursor = canvas.style.cursor;
   canvas.style.cursor = "crosshair";
 
-  const drawOutline = (polygonPoints, closePath = false) => {
+  const drawOutline = (polygonPoints, { closePath = false, dashed = true } = {}) => {
     previewOutline.clear();
 
     if (!polygonPoints || polygonPoints.length < 2) {
@@ -197,14 +197,26 @@ export function enableLasso({
     const dashLength = DEFAULT_DASH_LENGTH / scale;
     const gapLength = DEFAULT_GAP_LENGTH / scale;
 
-    previewOutline.beginPath();
     previewOutline.setStrokeStyle({
       width: lineWidth,
       color: normalizedLineColor,
       alpha: DEFAULT_LINE_ALPHA,
       alignment: 0.5,
     });
-    drawDashedOutline(previewOutline, polygonPoints, dashLength, gapLength, closePath);
+    previewOutline.beginPath();
+
+    if (dashed) {
+      drawDashedOutline(previewOutline, polygonPoints, dashLength, gapLength, closePath);
+    } else {
+      previewOutline.moveTo(polygonPoints[0].x, polygonPoints[0].y);
+      for (let i = 1; i < polygonPoints.length; i += 1) {
+        previewOutline.lineTo(polygonPoints[i].x, polygonPoints[i].y);
+      }
+      if (closePath) {
+        previewOutline.closePath();
+      }
+    }
+
     previewOutline.stroke();
   };
 
@@ -252,7 +264,7 @@ export function enableLasso({
     isDrawing = true;
     const startPoint = mapPointerToWorld(app, event);
     points = [startPoint];
-    drawOutline(points, false);
+    drawOutline(points);
   };
 
   const handlePointerMove = (event) => {
@@ -270,7 +282,7 @@ export function enableLasso({
 
     if (distance >= minDistance) {
       points = [...points, currentPoint];
-      drawOutline(points, points.length >= 3);
+      drawOutline(points, { closePath: points.length >= 3, dashed: true });
     }
   };
 
@@ -303,7 +315,7 @@ export function enableLasso({
     const finalPolygon = points.map((point) => ({ x: point.x, y: point.y }));
 
     updateSelectionFill(finalPolygon);
-    drawOutline(finalPolygon, true);
+    drawOutline(finalPolygon, { closePath: true, dashed: false });
 
     const selectedNodes = collectNodesWithinPolygon(nodeMap, finalPolygon);
     onSelect({
