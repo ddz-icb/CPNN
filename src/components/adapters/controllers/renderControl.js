@@ -242,7 +242,6 @@ export function RenderControl() {
       app: renderState.app,
       nodeMap: pixiState.nodeMap,
       lineColor: theme.circleBorderColor,
-      selectedFillColor: theme.circleBorderColor,
       onSelect: ({ nodes }) => {
         setFilter("lassoSelection", Array.isArray(nodes) ? nodes : []);
       },

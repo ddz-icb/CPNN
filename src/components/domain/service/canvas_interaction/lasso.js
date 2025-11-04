@@ -2,8 +2,6 @@ import log from "../../../adapters/logging/logger.js";
 import * as PIXI from "pixi.js";
 
 const DEFAULT_LINE_COLOR = 0x3b82f6;
-const DEFAULT_SELECTED_FILL_COLOR = 0x3b82f6;
-const DEFAULT_SELECTED_FILL_ALPHA = 0.2;
 const DEFAULT_LINE_ALPHA = 0.85;
 const DEFAULT_LINE_WIDTH = 2;
 const DEFAULT_DASH_LENGTH = 12;
@@ -164,35 +162,23 @@ export function enableLasso({
   nodeMap,
   onSelect = defaultOnSelect,
   lineColor = DEFAULT_LINE_COLOR,
-  selectedFillColor = DEFAULT_SELECTED_FILL_COLOR,
-  selectedFillAlpha = DEFAULT_SELECTED_FILL_ALPHA,
 } = {}) {
   if (!app?.renderer?.canvas) {
     return () => {};
   }
 
   const normalizedLineColor = normalizeColor(lineColor, DEFAULT_LINE_COLOR);
-  const normalizedSelectedFillColor = normalizeColor(selectedFillColor, DEFAULT_SELECTED_FILL_COLOR);
 
   const state = {
     isDrawing: false,
     points: [],
-    hasSelection: false,
-    lastPolygon: null,
   };
-
-  const selectionFill = new PIXI.Graphics();
-  selectionFill.zIndex = 999;
-  selectionFill.alpha = selectedFillAlpha;
-  selectionFill.visible = false;
-  selectionFill.eventMode = "none";
 
   const previewOutline = new PIXI.Graphics();
   previewOutline.zIndex = 1000;
   previewOutline.eventMode = "none";
 
   app.stage.sortableChildren = true;
-  app.stage.addChild(selectionFill);
   app.stage.addChild(previewOutline);
 
   const canvas = app.renderer.canvas;
@@ -228,33 +214,10 @@ export function enableLasso({
     previewOutline.stroke();
   };
 
-  const applySelectionFill = (polygonPoints, remember = true) => {
-    selectionFill.clear();
-
-    if (!polygonPoints || polygonPoints.length < 3) {
-      selectionFill.visible = false;
-      if (remember) {
-        state.hasSelection = false;
-        state.lastPolygon = null;
-      }
-      return;
-    }
-
-    selectionFill.visible = true;
-    selectionFill.beginPath();
-    tracePolygonPath(selectionFill, polygonPoints, true);
-    selectionFill.fill({ color: normalizedSelectedFillColor, alpha: 1 });
-
-    state.hasSelection = remember;
-    state.lastPolygon = remember ? polygonPoints.map((point) => ({ x: point.x, y: point.y })) : state.lastPolygon;
-  };
-
-  const finishDrawing = (preserveOutline = false) => {
+  const finishDrawing = () => {
     state.isDrawing = false;
     state.points = [];
-    if (!preserveOutline) {
-      previewOutline.clear();
-    }
+    previewOutline.clear();
   };
 
   const handlePointerDown = (event) => {
@@ -266,10 +229,6 @@ export function enableLasso({
     event.stopPropagation();
     if (event.stopImmediatePropagation) {
       event.stopImmediatePropagation();
-    }
-
-    if (state.hasSelection && state.lastPolygon) {
-      applySelectionFill(null, false);
     }
 
     state.isDrawing = true;
@@ -316,19 +275,11 @@ export function enableLasso({
     }
 
     if (state.points.length < 3) {
-      if (state.lastPolygon) {
-        applySelectionFill(state.lastPolygon, true);
-        drawOutline(state.lastPolygon, { closePath: true, dashed: false });
-        finishDrawing(true);
-      } else {
-        finishDrawing();
-      }
+      finishDrawing();
       return;
     }
 
     const polygon = state.points.map((point) => ({ x: point.x, y: point.y }));
-    applySelectionFill(polygon, true);
-    drawOutline(polygon, { closePath: true, dashed: false });
 
     const selectedNodes = collectNodesWithinPolygon(nodeMap, polygon);
     onSelect({
@@ -336,7 +287,7 @@ export function enableLasso({
       nodes: selectedNodes,
     });
 
-    finishDrawing(true);
+    finishDrawing();
   };
 
   const handlePointerCancel = () => {
@@ -345,11 +296,6 @@ export function enableLasso({
     }
 
     finishDrawing();
-
-    if (state.lastPolygon) {
-      applySelectionFill(state.lastPolygon, true);
-      drawOutline(state.lastPolygon, { closePath: true, dashed: false });
-    }
   };
 
   canvas.addEventListener("pointerdown", handlePointerDown, true);
@@ -361,9 +307,6 @@ export function enableLasso({
   const cleanup = () => {
     state.isDrawing = false;
     state.points = [];
-    state.hasSelection = false;
-    state.lastPolygon = null;
-
     canvas.style.cursor = previousCursor;
 
     canvas.removeEventListener("pointerdown", handlePointerDown, true);
@@ -372,13 +315,10 @@ export function enableLasso({
     window.removeEventListener("pointercancel", handlePointerCancel, true);
     window.removeEventListener("pointerleave", handlePointerCancel, true);
 
-    selectionFill.visible = false;
-    selectionFill.destroy({ children: true });
     previewOutline.destroy({ children: true });
   };
 
   cleanup.clearSelection = () => {
-    applySelectionFill(null, true);
     previewOutline.clear();
   };
 
