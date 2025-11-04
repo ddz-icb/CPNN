@@ -1,3 +1,4 @@
+import log from "../../../adapters/logging/logger.js";
 import * as PIXI from "pixi.js";
 
 const DEFAULT_LINE_COLOR = 0x3b82f6;
@@ -10,8 +11,7 @@ const DEFAULT_GAP_LENGTH = 8;
 const MIN_POINT_DISTANCE = 6;
 
 function defaultOnSelect(selection) {
-  // Log selection for now so feature can be verified quickly.
-  console.info("Lasso selection", selection);
+  log.info("Lasso selection", selection);
 }
 
 function normalizeColor(color, fallback) {
@@ -148,7 +148,14 @@ function drawDashedOutline(graphics, points, dashLength, gapLength, closePath = 
   }
 }
 
-export function enableLasso({ app, nodeMap, onSelect = defaultOnSelect, lineColor = DEFAULT_LINE_COLOR, selectedFillColor = DEFAULT_SELECTED_FILL_COLOR, selectedFillAlpha = DEFAULT_SELECTED_FILL_ALPHA } = {}) {
+export function enableLasso({
+  app,
+  nodeMap,
+  onSelect = defaultOnSelect,
+  lineColor = DEFAULT_LINE_COLOR,
+  selectedFillColor = DEFAULT_SELECTED_FILL_COLOR,
+  selectedFillAlpha = DEFAULT_SELECTED_FILL_ALPHA,
+} = {}) {
   if (!app || !app.renderer || !app.renderer.canvas) {
     return () => {};
   }
@@ -158,20 +165,28 @@ export function enableLasso({ app, nodeMap, onSelect = defaultOnSelect, lineColo
 
   let isDrawing = false;
   let points = [];
+  let hasSelection = false;
 
-  const overlay = new PIXI.Graphics();
-  overlay.zIndex = 1000;
-  overlay.eventMode = "none";
+  const selectionFill = new PIXI.Graphics();
+  selectionFill.zIndex = 999;
+  selectionFill.alpha = selectedFillAlpha;
+  selectionFill.visible = false;
+  selectionFill.eventMode = "none";
+
+  const previewOutline = new PIXI.Graphics();
+  previewOutline.zIndex = 1000;
+  previewOutline.eventMode = "none";
 
   app.stage.sortableChildren = true;
-  app.stage.addChild(overlay);
+  app.stage.addChild(selectionFill);
+  app.stage.addChild(previewOutline);
 
   const canvas = app.renderer.canvas;
   const previousCursor = canvas.style.cursor;
   canvas.style.cursor = "crosshair";
 
-  const drawLassoPreview = (polygonPoints, closePath = false) => {
-    overlay.clear();
+  const drawOutline = (polygonPoints, closePath = false) => {
+    previewOutline.clear();
 
     if (!polygonPoints || polygonPoints.length < 2) {
       return;
@@ -182,22 +197,45 @@ export function enableLasso({ app, nodeMap, onSelect = defaultOnSelect, lineColo
     const dashLength = DEFAULT_DASH_LENGTH / scale;
     const gapLength = DEFAULT_GAP_LENGTH / scale;
 
-    if (polygonPoints.length >= 3) {
-      const polygonPath = polygonPoints.flatMap((point) => [point.x, point.y]);
-
-      overlay.lineStyle(0);
-      overlay.beginFill(normalizedSelectedFillColor, selectedFillAlpha);
-      overlay.drawPolygon(polygonPath);
-      overlay.endFill();
-    }
-
-    overlay.lineStyle({
+    previewOutline.beginPath();
+    previewOutline.setStrokeStyle({
       width: lineWidth,
       color: normalizedLineColor,
       alpha: DEFAULT_LINE_ALPHA,
       alignment: 0.5,
     });
-    drawDashedOutline(overlay, polygonPoints, dashLength, gapLength, closePath);
+    drawDashedOutline(previewOutline, polygonPoints, dashLength, gapLength, closePath);
+    previewOutline.stroke();
+  };
+
+  const updateSelectionFill = (polygonPoints) => {
+    if (!polygonPoints || polygonPoints.length < 3) {
+      if (!hasSelection) {
+        selectionFill.clear();
+        selectionFill.visible = false;
+      }
+      return;
+    }
+
+    selectionFill.clear();
+    selectionFill.visible = true;
+    selectionFill.beginPath();
+    selectionFill.moveTo(polygonPoints[0].x, polygonPoints[0].y);
+    for (let i = 1; i < polygonPoints.length; i += 1) {
+      selectionFill.lineTo(polygonPoints[i].x, polygonPoints[i].y);
+    }
+    selectionFill.closePath();
+    selectionFill.fill({ color: normalizedSelectedFillColor, alpha: 1 });
+
+    hasSelection = true;
+  };
+
+  const finishDrawing = ({ preserveOutline = false } = {}) => {
+    isDrawing = false;
+    points = [];
+    if (!preserveOutline) {
+      previewOutline.clear();
+    }
   };
 
   const handlePointerDown = (event) => {
@@ -214,7 +252,7 @@ export function enableLasso({ app, nodeMap, onSelect = defaultOnSelect, lineColo
     isDrawing = true;
     const startPoint = mapPointerToWorld(app, event);
     points = [startPoint];
-    drawLassoPreview(points, false);
+    drawOutline(points, false);
   };
 
   const handlePointerMove = (event) => {
@@ -232,14 +270,8 @@ export function enableLasso({ app, nodeMap, onSelect = defaultOnSelect, lineColo
 
     if (distance >= minDistance) {
       points = [...points, currentPoint];
-      drawLassoPreview(points, points.length >= 3);
+      drawOutline(points, points.length >= 3);
     }
-  };
-
-  const finishDrawing = () => {
-    isDrawing = false;
-    points = [];
-    drawLassoPreview([]);
   };
 
   const handlePointerUp = (event) => {
@@ -270,7 +302,8 @@ export function enableLasso({ app, nodeMap, onSelect = defaultOnSelect, lineColo
 
     const finalPolygon = points.map((point) => ({ x: point.x, y: point.y }));
 
-    drawLassoPreview(finalPolygon, true);
+    updateSelectionFill(finalPolygon);
+    drawOutline(finalPolygon, true);
 
     const selectedNodes = collectNodesWithinPolygon(nodeMap, finalPolygon);
     onSelect({
@@ -278,7 +311,7 @@ export function enableLasso({ app, nodeMap, onSelect = defaultOnSelect, lineColo
       nodes: selectedNodes,
     });
 
-    finishDrawing();
+    finishDrawing({ preserveOutline: true });
   };
 
   const handlePointerCancel = () => {
@@ -298,6 +331,7 @@ export function enableLasso({ app, nodeMap, onSelect = defaultOnSelect, lineColo
   return () => {
     isDrawing = false;
     points = [];
+    hasSelection = false;
 
     canvas.style.cursor = previousCursor;
 
@@ -307,6 +341,8 @@ export function enableLasso({ app, nodeMap, onSelect = defaultOnSelect, lineColo
     window.removeEventListener("pointercancel", handlePointerCancel, true);
     window.removeEventListener("pointerleave", handlePointerCancel, true);
 
-    overlay.destroy({ children: true });
+    selectionFill.visible = false;
+    selectionFill.destroy({ children: true });
+    previewOutline.destroy({ children: true });
   };
 }
