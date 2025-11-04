@@ -10,6 +10,7 @@ export const nodeFilterTextInit = "";
 export const minKCoreSizeInit = 0;
 export const compDensityInit = 0;
 export const lassoInit = false;
+export const lassoSelectionInit = [];
 
 export const filterInit = {
   linkThreshold: linkThresholdInit,
@@ -27,6 +28,7 @@ export const filterInit = {
   minKCoreSize: minKCoreSizeInit,
   minKCoreSizeText: minKCoreSizeInit,
   lasso: lassoInit,
+  lassoSelection: lassoSelectionInit,
 };
 
 export const useFilter = create((set) => ({

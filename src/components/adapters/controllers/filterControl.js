@@ -11,6 +11,7 @@ import {
   filterMinCompSize,
   filterMinNeighborhood,
   filterNodesExist,
+  filterLasso,
 } from "../../domain/service/graph_calculations/filterGraph.js";
 import { useFilter } from "../state/filterState.js";
 import { useAppearance } from "../state/appearanceState.js";
@@ -53,7 +54,10 @@ export function FilterControl() {
       "\n    Groups: ",
       filter.nodeFilter,
       "\n    Comp Density: ",
-      filter.compDensity
+      filter.compDensity,
+      "\n    Lasso: ",
+      filter.lasso,
+      filter.lassoSelection
     );
 
     try {
@@ -63,6 +67,7 @@ export function FilterControl() {
         links: graphState.originGraph.data.links,
       };
 
+      filteredGraphData = filterLasso(filteredGraphData, filter.lassoSelection);
       filteredGraphData = filterNodeAttribs(filteredGraphData, filter.nodeFilter);
       filteredGraphData = filterNodesExist(filteredGraphData);
 
@@ -96,6 +101,8 @@ export function FilterControl() {
     filter.maxCompSize,
     filter.compDensity,
     filter.minKCoreSize,
+    filter.lasso,
+    filter.lassoSelection,
     graphState.originGraph,
     pixiState.circles,
   ]);

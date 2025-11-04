@@ -455,6 +455,12 @@ export function filterTakeAbs(graphData, takeAbs) {
   return graphData;
 }
 
-// filterLasso function:
-// receives area of coordinates (from lasso function) and graph.nodes (with .x and .y)
-// maps the area onto the graph nodes contained within that area and returns
+export function filterLasso(graphData, selectedNodeIds) {
+  if (!Array.isArray(selectedNodeIds) || selectedNodeIds.length === 0) {
+    return graphData;
+  }
+  const selectedNodesSet = new Set(selectedNodeIds);
+  graphData.nodes = graphData.nodes.filter((node) => selectedNodesSet.has(node.id));
+  graphData.links = graphData.links.filter((link) => selectedNodesSet.has(link.source) && selectedNodesSet.has(link.target));
+  return graphData;
+}

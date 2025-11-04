@@ -31,7 +31,7 @@ function normalizeColor(color, fallback) {
   return fallback;
 }
 
-function mapClientToWorld(app, clientX, clientY) {
+function toWorldPoint(app, clientX, clientY) {
   const globalPoint = new PIXI.Point();
   app.renderer.events.mapPositionToPoint(globalPoint, clientX, clientY);
 
@@ -41,63 +41,18 @@ function mapClientToWorld(app, clientX, clientY) {
   return worldPoint;
 }
 
-function mapPointerToWorld(app, pointerEvent) {
-  return mapClientToWorld(app, pointerEvent.clientX, pointerEvent.clientY);
+function pointerToWorld(app, pointerEvent) {
+  return toWorldPoint(app, pointerEvent.clientX, pointerEvent.clientY);
 }
 
-function isPointInPolygon(point, polygon) {
-  let isInside = false;
-  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i, i += 1) {
-    const xi = polygon[i].x;
-    const yi = polygon[i].y;
-    const xj = polygon[j].x;
-    const yj = polygon[j].y;
-
-    const intersects = yi > point.y !== yj > point.y && point.x < ((xj - xi) * (point.y - yi)) / (yj - yi + Number.EPSILON) + xi;
-    if (intersects) {
-      isInside = !isInside;
-    }
+function tracePolygonPath(graphics, polygonPoints, closePath = true) {
+  graphics.moveTo(polygonPoints[0].x, polygonPoints[0].y);
+  for (let i = 1; i < polygonPoints.length; i += 1) {
+    graphics.lineTo(polygonPoints[i].x, polygonPoints[i].y);
   }
-
-  return isInside;
-}
-
-function collectNodesWithinPolygon(nodeMap, polygon) {
-  if (!nodeMap || !polygon || polygon.length < 3) {
-    return [];
+  if (closePath) {
+    graphics.closePath();
   }
-
-  let minX = Infinity;
-  let maxX = -Infinity;
-  let minY = Infinity;
-  let maxY = -Infinity;
-
-  polygon.forEach((point) => {
-    minX = Math.min(minX, point.x);
-    maxX = Math.max(maxX, point.x);
-    minY = Math.min(minY, point.y);
-    maxY = Math.max(maxY, point.y);
-  });
-
-  const nodes = [];
-
-  Object.values(nodeMap).forEach((entry) => {
-    if (!entry || !entry.node || !entry.circle || entry.circle.visible === false) {
-      return;
-    }
-
-    const nodePoint = { x: entry.circle.x, y: entry.circle.y };
-
-    if (nodePoint.x < minX || nodePoint.x > maxX || nodePoint.y < minY || nodePoint.y > maxY) {
-      return;
-    }
-
-    if (isPointInPolygon(nodePoint, polygon)) {
-      nodes.push(entry.node.id);
-    }
-  });
-
-  return nodes;
 }
 
 function drawDashedOutline(graphics, points, dashLength, gapLength, closePath = false) {
@@ -148,6 +103,61 @@ function drawDashedOutline(graphics, points, dashLength, gapLength, closePath = 
   }
 }
 
+function isPointInPolygon(point, polygon) {
+  let inside = false;
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i, i += 1) {
+    const xi = polygon[i].x;
+    const yi = polygon[i].y;
+    const xj = polygon[j].x;
+    const yj = polygon[j].y;
+
+    const intersects = yi > point.y !== yj > point.y && point.x < ((xj - xi) * (point.y - yi)) / (yj - yi + Number.EPSILON) + xi;
+    if (intersects) {
+      inside = !inside;
+    }
+  }
+
+  return inside;
+}
+
+function collectNodesWithinPolygon(nodeMap, polygon) {
+  if (!nodeMap || !polygon || polygon.length < 3) {
+    return [];
+  }
+
+  let minX = Infinity;
+  let maxX = -Infinity;
+  let minY = Infinity;
+  let maxY = -Infinity;
+
+  polygon.forEach((point) => {
+    minX = Math.min(minX, point.x);
+    maxX = Math.max(maxX, point.x);
+    minY = Math.min(minY, point.y);
+    maxY = Math.max(maxY, point.y);
+  });
+
+  const nodes = [];
+
+  Object.values(nodeMap).forEach((entry) => {
+    if (!entry || !entry.node || !entry.circle || entry.circle.visible === false) {
+      return;
+    }
+
+    const { x, y } = entry.circle;
+
+    if (x < minX || x > maxX || y < minY || y > maxY) {
+      return;
+    }
+
+    if (isPointInPolygon({ x, y }, polygon)) {
+      nodes.push(entry.node.id);
+    }
+  });
+
+  return nodes;
+}
+
 export function enableLasso({
   app,
   nodeMap,
@@ -156,16 +166,19 @@ export function enableLasso({
   selectedFillColor = DEFAULT_SELECTED_FILL_COLOR,
   selectedFillAlpha = DEFAULT_SELECTED_FILL_ALPHA,
 } = {}) {
-  if (!app || !app.renderer || !app.renderer.canvas) {
+  if (!app?.renderer?.canvas) {
     return () => {};
   }
 
   const normalizedLineColor = normalizeColor(lineColor, DEFAULT_LINE_COLOR);
   const normalizedSelectedFillColor = normalizeColor(selectedFillColor, DEFAULT_SELECTED_FILL_COLOR);
 
-  let isDrawing = false;
-  let points = [];
-  let hasSelection = false;
+  const state = {
+    isDrawing: false,
+    points: [],
+    hasSelection: false,
+    lastPolygon: null,
+  };
 
   const selectionFill = new PIXI.Graphics();
   selectionFill.zIndex = 999;
@@ -193,12 +206,12 @@ export function enableLasso({
     }
 
     const scale = app.stage.scale?.x || 1;
-    const lineWidth = DEFAULT_LINE_WIDTH / scale;
+    const strokeWidth = DEFAULT_LINE_WIDTH / scale;
     const dashLength = DEFAULT_DASH_LENGTH / scale;
     const gapLength = DEFAULT_GAP_LENGTH / scale;
 
     previewOutline.setStrokeStyle({
-      width: lineWidth,
+      width: strokeWidth,
       color: normalizedLineColor,
       alpha: DEFAULT_LINE_ALPHA,
       alignment: 0.5,
@@ -208,43 +221,36 @@ export function enableLasso({
     if (dashed) {
       drawDashedOutline(previewOutline, polygonPoints, dashLength, gapLength, closePath);
     } else {
-      previewOutline.moveTo(polygonPoints[0].x, polygonPoints[0].y);
-      for (let i = 1; i < polygonPoints.length; i += 1) {
-        previewOutline.lineTo(polygonPoints[i].x, polygonPoints[i].y);
-      }
-      if (closePath) {
-        previewOutline.closePath();
-      }
+      tracePolygonPath(previewOutline, polygonPoints, closePath);
     }
 
     previewOutline.stroke();
   };
 
-  const updateSelectionFill = (polygonPoints) => {
+  const applySelectionFill = (polygonPoints, remember = true) => {
+    selectionFill.clear();
+
     if (!polygonPoints || polygonPoints.length < 3) {
-      if (!hasSelection) {
-        selectionFill.clear();
-        selectionFill.visible = false;
+      selectionFill.visible = false;
+      if (remember) {
+        state.hasSelection = false;
+        state.lastPolygon = null;
       }
       return;
     }
 
-    selectionFill.clear();
     selectionFill.visible = true;
     selectionFill.beginPath();
-    selectionFill.moveTo(polygonPoints[0].x, polygonPoints[0].y);
-    for (let i = 1; i < polygonPoints.length; i += 1) {
-      selectionFill.lineTo(polygonPoints[i].x, polygonPoints[i].y);
-    }
-    selectionFill.closePath();
+    tracePolygonPath(selectionFill, polygonPoints, true);
     selectionFill.fill({ color: normalizedSelectedFillColor, alpha: 1 });
 
-    hasSelection = true;
+    state.hasSelection = remember;
+    state.lastPolygon = remember ? polygonPoints.map((point) => ({ x: point.x, y: point.y })) : state.lastPolygon;
   };
 
-  const finishDrawing = ({ preserveOutline = false } = {}) => {
-    isDrawing = false;
-    points = [];
+  const finishDrawing = (preserveOutline = false) => {
+    state.isDrawing = false;
+    state.points = [];
     if (!preserveOutline) {
       previewOutline.clear();
     }
@@ -261,33 +267,35 @@ export function enableLasso({
       event.stopImmediatePropagation();
     }
 
-    isDrawing = true;
-    const startPoint = mapPointerToWorld(app, event);
-    points = [startPoint];
-    drawOutline(points);
+    if (state.hasSelection && state.lastPolygon) {
+      applySelectionFill(null, false);
+    }
+
+    state.isDrawing = true;
+    state.points = [pointerToWorld(app, event)];
+    drawOutline(state.points, { dashed: true, closePath: false });
   };
 
   const handlePointerMove = (event) => {
-    if (!isDrawing || points.length === 0) {
+    if (!state.isDrawing || state.points.length === 0) {
       return;
     }
 
     event.preventDefault();
 
-    const currentPoint = mapPointerToWorld(app, event);
-    const lastPoint = points[points.length - 1];
+    const current = pointerToWorld(app, event);
+    const last = state.points[state.points.length - 1];
     const scale = app.stage.scale?.x || 1;
     const minDistance = MIN_POINT_DISTANCE / scale;
-    const distance = Math.hypot(currentPoint.x - lastPoint.x, currentPoint.y - lastPoint.y);
 
-    if (distance >= minDistance) {
-      points = [...points, currentPoint];
-      drawOutline(points, { closePath: points.length >= 3, dashed: true });
+    if (Math.hypot(current.x - last.x, current.y - last.y) >= minDistance) {
+      state.points = [...state.points, current];
+      drawOutline(state.points, { dashed: true, closePath: state.points.length >= 3 });
     }
   };
 
   const handlePointerUp = (event) => {
-    if (!isDrawing || points.length === 0) {
+    if (!state.isDrawing || state.points.length === 0) {
       return;
     }
 
@@ -297,41 +305,50 @@ export function enableLasso({
       event.stopImmediatePropagation();
     }
 
-    const endPoint = mapPointerToWorld(app, event);
-    const lastPoint = points[points.length - 1];
+    const endPoint = pointerToWorld(app, event);
+    const last = state.points[state.points.length - 1];
     const scale = app.stage.scale?.x || 1;
     const minDistance = MIN_POINT_DISTANCE / scale;
-    const distance = Math.hypot(endPoint.x - lastPoint.x, endPoint.y - lastPoint.y);
 
-    if (distance >= minDistance) {
-      points = [...points, endPoint];
+    if (Math.hypot(endPoint.x - last.x, endPoint.y - last.y) >= minDistance) {
+      state.points = [...state.points, endPoint];
     }
 
-    if (points.length < 3) {
-      finishDrawing();
+    if (state.points.length < 3) {
+      if (state.lastPolygon) {
+        applySelectionFill(state.lastPolygon, true);
+        drawOutline(state.lastPolygon, { closePath: true, dashed: false });
+        finishDrawing(true);
+      } else {
+        finishDrawing();
+      }
       return;
     }
 
-    const finalPolygon = points.map((point) => ({ x: point.x, y: point.y }));
+    const polygon = state.points.map((point) => ({ x: point.x, y: point.y }));
+    applySelectionFill(polygon, true);
+    drawOutline(polygon, { closePath: true, dashed: false });
 
-    updateSelectionFill(finalPolygon);
-    drawOutline(finalPolygon, { closePath: true, dashed: false });
-
-    const selectedNodes = collectNodesWithinPolygon(nodeMap, finalPolygon);
+    const selectedNodes = collectNodesWithinPolygon(nodeMap, polygon);
     onSelect({
-      polygon: finalPolygon,
+      polygon,
       nodes: selectedNodes,
     });
 
-    finishDrawing({ preserveOutline: true });
+    finishDrawing(true);
   };
 
   const handlePointerCancel = () => {
-    if (!isDrawing) {
+    if (!state.isDrawing) {
       return;
     }
 
     finishDrawing();
+
+    if (state.lastPolygon) {
+      applySelectionFill(state.lastPolygon, true);
+      drawOutline(state.lastPolygon, { closePath: true, dashed: false });
+    }
   };
 
   canvas.addEventListener("pointerdown", handlePointerDown, true);
@@ -341,9 +358,10 @@ export function enableLasso({
   window.addEventListener("pointerleave", handlePointerCancel, true);
 
   return () => {
-    isDrawing = false;
-    points = [];
-    hasSelection = false;
+    state.isDrawing = false;
+    state.points = [];
+    state.hasSelection = false;
+    state.lastPolygon = null;
 
     canvas.style.cursor = previousCursor;
 
