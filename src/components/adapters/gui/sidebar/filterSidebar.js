@@ -17,6 +17,7 @@ import {
 } from "../../../adapters/state/filterState.js";
 import {
   compDensityDescription,
+  lassoDescription,
   linkFilterDescription,
   linkThresholdDescription,
   maxCompSizeDescription,
@@ -27,7 +28,6 @@ import {
 } from "./descriptions/filterDescriptions.js";
 import { handleEditorChange, runCodeEditor } from "../handlers/buttonHandlerFunctions.js";
 import { useFilter } from "../../state/filterState.js";
-import { useGraphState } from "../../state/graphState.js";
 import { parseAttribsFilter } from "../../../domain/service/parsing/attribsFilterParsing.js";
 import { useTheme } from "../../state/themeState.js";
 import { useGraphMetrics } from "../../state/graphMetricsState.js";
@@ -36,7 +36,6 @@ import { useGraphFlags } from "../../state/graphFlagsState.js";
 export function FilterSidebar() {
   const { filter, setFilter, setAllFilter } = useFilter();
   const { theme } = useTheme();
-  const { graphState, setGraphState } = useGraphState();
   const { graphFlags, setGraphFlags } = useGraphFlags();
   const { graphMetrics } = useGraphMetrics();
 
@@ -213,6 +212,13 @@ export function FilterSidebar() {
         text={"Component Density"}
         infoHeading={"Filter by Component Density"}
         infoDescription={compDensityDescription}
+      />
+      <SwitchBlock
+        value={filter.lasso}
+        setValue={() => setFilter("lasso", !filter.lasso)}
+        text={"Lasso Filter"}
+        infoHeading={"Lasso Filter"}
+        infoDescription={lassoDescription}
       />
     </>
   );

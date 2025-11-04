@@ -112,3 +112,9 @@ export const nodeFilterDescription = (
     <PopupTextField textInside={'(not "mRNA splicing" or not VEGF)'} />
   </div>
 );
+
+export const lassoDescription = (
+  <div>
+    <div className="margin-0">HIHI</div>
+  </div>
+);

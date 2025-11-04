@@ -2,6 +2,7 @@ import log from "../logging/logger.js";
 import * as PIXI from "pixi.js";
 import { useRef, useEffect } from "react";
 import { handleResize, initDragAndZoom, initTooltips } from "../../domain/service/canvas_interaction/interactiveCanvas.js";
+import { enableLasso } from "../../domain/service/canvas_interaction/lasso.js";
 import { Tooltips } from "../gui/tooltip/tooltips.js";
 import { radius, drawCircle, getTextStyle, getBitMapStyle, redraw, render, getNodeLabelOffsetY } from "../../domain/service/canvas_drawing/draw.js";
 import { linkLengthInit } from "../state/physicsState.js";
@@ -17,6 +18,7 @@ import { useTheme } from "../state/themeState.js";
 import { circlesInit, linesInit, nodeMapInit, usePixiState } from "../state/pixiState.js";
 import { filteredAfterStartInit, useGraphFlags } from "../state/graphFlagsState.js";
 import { simulationInit, useRenderState } from "../state/canvasState.js";
+import { useFilter } from "../state/filterState.js";
 
 export function RenderControl() {
   const { appearance } = useAppearance();
@@ -30,6 +32,7 @@ export function RenderControl() {
   const { setError } = useError();
   const { reset, setReset } = useReset();
   const { renderState, setRenderState } = useRenderState();
+  const { filter } = useFilter();
 
   const containerRef = useRef(null);
 
@@ -225,6 +228,25 @@ export function RenderControl() {
       window.removeEventListener("resize", () => handleResize(containerRef, renderState.app));
     };
   }, [renderState.app]);
+
+  useEffect(() => {
+    if (!filter.lasso || !renderState.app || !pixiState.nodeMap) {
+      return;
+    }
+
+    const disableLasso = enableLasso({
+      app: renderState.app,
+      nodeMap: pixiState.nodeMap,
+      lineColor: theme.circleBorderColor,
+      selectedFillColor: theme.circleBorderColor,
+    });
+
+    return () => {
+      if (typeof disableLasso === "function") {
+        disableLasso();
+      }
+    };
+  }, [filter.lasso, renderState.app, pixiState.nodeMap, theme]);
 
   return (
     <>

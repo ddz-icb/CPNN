@@ -3,9 +3,9 @@ import log from "../logging/logger.js";
 
 import {
   filterActiveNodesForPixi,
-  filterByLinkAttribs,
-  filterByNodeAttribs,
-  filterByThreshold,
+  filterLinkAttribs,
+  filterNodeAttribs,
+  filterThreshold,
   filterCompDensity,
   filterMaxCompSize,
   filterMinCompSize,
@@ -63,11 +63,11 @@ export function FilterControl() {
         links: graphState.originGraph.data.links,
       };
 
-      filteredGraphData = filterByNodeAttribs(filteredGraphData, filter.nodeFilter);
+      filteredGraphData = filterNodeAttribs(filteredGraphData, filter.nodeFilter);
       filteredGraphData = filterNodesExist(filteredGraphData);
 
-      filteredGraphData = filterByThreshold(filteredGraphData, filter.linkThreshold);
-      filteredGraphData = filterByLinkAttribs(filteredGraphData, filter.linkFilter);
+      filteredGraphData = filterThreshold(filteredGraphData, filter.linkThreshold);
+      filteredGraphData = filterLinkAttribs(filteredGraphData, filter.linkFilter);
 
       filteredGraphData = filterCompDensity(filteredGraphData, filter.compDensity);
       filteredGraphData = filterMinNeighborhood(filteredGraphData, filter.minKCoreSize);

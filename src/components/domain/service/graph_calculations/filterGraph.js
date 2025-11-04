@@ -1,18 +1,8 @@
 import UnionFind from "union-find";
-import {
-  getIdsSeparateEntries,
-  getNodeIdAndNameEntry,
-  getNodeIdEntries,
-  getNodeIdNames,
-  getNodeIdsAndIsoform,
-  getPhosphositesNodeIdEntry,
-  getPhosphositesProtIdEntry,
-  getProtIdAndNameEntry,
-  getProtIdsWithIsoform,
-} from "../parsing/nodeIdParsing.js";
+import { getNodeIdAndNameEntry, getNodeIdEntries, getNodeIdNames, getPhosphositesNodeIdEntry } from "../parsing/nodeIdParsing.js";
 import { getAdjacentData, getComponentData } from "./graphUtils.js";
 
-export function filterByThreshold(graphData, linkThreshold) {
+export function filterThreshold(graphData, linkThreshold) {
   if (linkThreshold === 0) return graphData;
 
   graphData = {
@@ -115,7 +105,7 @@ export function filterMaxCompSize(graphData, maxCompSize) {
   };
 }
 
-export function filterByLinkAttribs(graphData, filterRequest) {
+export function filterLinkAttribs(graphData, filterRequest) {
   // linkAttribs is true if the filterRequest was empty
   if (filterRequest === true) return graphData;
 
@@ -215,7 +205,7 @@ export function filterByLinkAttribs(graphData, filterRequest) {
   return graphData;
 }
 
-export function filterByNodeAttribs(graphData, filterRequest) {
+export function filterNodeAttribs(graphData, filterRequest) {
   // filterRequest is true if the filter is empty
   if (filterRequest === true) return graphData;
 
@@ -464,3 +454,7 @@ export function filterTakeAbs(graphData, takeAbs) {
   }
   return graphData;
 }
+
+// filterLasso function:
+// receives area of coordinates (from lasso function) and graph.nodes (with .x and .y)
+// maps the area onto the graph nodes contained within that area and returns

@@ -2,7 +2,7 @@ import log from "../../../adapters/logging/logger.js";
 import axios from "axios";
 import { getFileAsText, getFileNameWithoutExtension, parseSVFile } from "./fileParsing.js";
 import {
-  filterByThreshold,
+  filterThreshold,
   filterMaxCompSize,
   filterMergeProteins,
   filterMinCompSize,
@@ -16,7 +16,7 @@ function applyFilters(graphData, settings) {
   let filteredGraph = graphData;
   filteredGraph = filterMergeProteins(filteredGraph, settings.mergeProteins);
   filteredGraph = filterTakeAbs(filteredGraph, settings.takeAbs);
-  filteredGraph = filterByThreshold(filteredGraph, settings.minEdgeCorr);
+  filteredGraph = filterThreshold(filteredGraph, settings.minEdgeCorr);
   filteredGraph = filterMinCompSize(filteredGraph, settings.minCompSize);
   filteredGraph = filterMaxCompSize(filteredGraph, settings.maxCompSize);
 
