@@ -109,8 +109,8 @@ export function PhysicsSidebar({}) {
           setValueText={(value) => setPhysics("linkLengthText", value)}
           fallbackValue={communityForceStrengthInit}
           min={0}
-          max={300}
-          step={10}
+          max={1000}
+          step={50}
           text={"Link Length"}
           infoHeading={"Adjusting the Link Length"}
           infoDescription={linkLengthDescription}
