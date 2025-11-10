@@ -6,7 +6,14 @@ import { useDownload } from "../state/downloadState.js";
 import { useGraphState } from "../state/graphState.js";
 import { useMappingState } from "../state/mappingState.js";
 import { usePhysics } from "../state/physicsState.js";
-import { downloadAsPDF, downloadAsPNG, downloadAsSVG, downloadGraphJson, downloadLegendPdf } from "../../domain/service/download/download.js";
+import {
+  downloadAsPDF,
+  downloadAsPNG,
+  downloadAsSVG,
+  downloadGraphJson,
+  downloadLegendPdf,
+  downloadNodeIdsCsv,
+} from "../../domain/service/download/download.js";
 import { changeCircleBorderColor, changeNodeLabelColor } from "../../domain/service/canvas_drawing/draw.js";
 import { lightTheme, themeInit, useTheme } from "../state/themeState.js";
 import { usePixiState } from "../state/pixiState.js";
@@ -136,4 +143,17 @@ export function DownloadControl() {
       log.error("Error downloading the legend as PDF:", error);
     }
   }, [download.legendPdf]);
+
+  // download legend as pdf //
+  useEffect(() => {
+    if (!(download.nodeIds != null && graphState.graph)) return;
+    log.info("Downloading node ids as CSV");
+
+    try {
+      downloadNodeIdsCsv(graphState.graph);
+    } catch (error) {
+      errorService.setError(error.message);
+      log.error("Error downloading the node ids as CSV:", error);
+    }
+  }, [download.nodeIds]);
 }

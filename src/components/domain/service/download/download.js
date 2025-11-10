@@ -331,6 +331,13 @@ export function downloadTsvFile(tsvContent, fileName) {
   triggerDownload(blob, `${getFileNameWithoutExtension(fileName)}.tsv`);
 }
 
+export function downloadNodeIdsCsv(graph) {
+  const nodes = graph?.data?.nodes ?? [];
+  const rows = nodes.map((node) => node.id ?? "");
+  const baseName = getFileNameWithoutExtension(graph?.name ?? "graph");
+  downloadCsvFile(rows.join(","), `${baseName}_node_ids`);
+}
+
 export function downloadLegendPdf(graphName, linkColorscheme, linkAttribsToColorIndices, nodeColorscheme, nodeAttribsToColorIndices, mapping) {
   const baseFileName = getFileNameWithoutExtension(graphName);
   const sectionsToDownload = [

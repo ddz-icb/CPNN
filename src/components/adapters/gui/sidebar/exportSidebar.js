@@ -12,6 +12,7 @@ export function ExportSidebar() {
     { id: "pdf", text: "Graph as Vector Graphic (PDF File)", type: "pdf" },
     { id: "svg", text: "Graph as Vector Graphic (SVG File)", type: "svg" },
     { id: "legendPdf", text: "Graph legend (PDF File)", type: "legendPdf" },
+    { id: "nodeIds", text: "Node-IDs (CSV File)", type: "nodeIds" },
   ];
 
   return (

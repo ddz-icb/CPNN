@@ -8,6 +8,7 @@ export const downloadInit = {
   svg: null,
   pdf: null,
   legendPdf: null,
+  nodeIds: null,
 };
 
 export const useDownload = create((set) => ({
