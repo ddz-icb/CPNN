@@ -1,9 +1,11 @@
-import { getCentroid, groupBy } from "../graph_calculations/graphUtils.js";
+import { getCentroid, getLinkWeight } from "../graph_calculations/graphUtils.js";
 
 export const accuracyBarnesHut = 0.1;
 export const maxDistanceChargeForce = 300;
 export const nodeRepulsionMultiplier = -300;
 export const borderMultiplier = 10;
+
+const minLinkLengthFactor = 0.15;
 
 export function borderCheck(radius, borderHeight, borderWidth, center) {
   let nodes;
@@ -224,4 +226,15 @@ export function gravityForce(x, y) {
   };
   force.strength = (_) => (_ === undefined ? strength : ((strength = _), force));
   return force;
+}
+
+export function getLinkDistance(baseLength, link) {
+  const weight = getLinkWeight(link);
+  if (!Number.isFinite(weight)) {
+    return baseLength;
+  }
+
+  const normalized = Math.min(Math.max(weight, 0), 1);
+  const scaledLength = baseLength * (1 - normalized);
+  return Math.max(scaledLength, baseLength * minLinkLengthFactor);
 }

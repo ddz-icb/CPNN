@@ -12,6 +12,7 @@ import {
   gravityForce,
   maxDistanceChargeForce,
   nodeRepulsionMultiplier,
+  getLinkDistance,
 } from "../../domain/service/physics_calculations/physicsGraph.js";
 import { usePhysics } from "../state/physicsState.js";
 import { useContainer } from "../state/containerState.js";
@@ -40,7 +41,7 @@ export function PhysicsControl() {
           d3
             .forceLink(graphState.graph.data.links)
             .id((d) => d.id)
-            .distance(physics.linkLength)
+            .distance((link) => getLinkDistance(physics.linkLength, link))
         );
         setPhysics("circleLayout", false);
         renderState.simulation.alpha(1).restart();
@@ -56,7 +57,7 @@ export function PhysicsControl() {
     log.info("Changing link length", physics.linkLength);
 
     try {
-      renderState.simulation.force("link").distance(physics.linkLength);
+      renderState.simulation.force("link").distance((link) => getLinkDistance(physics.linkLength, link));
       renderState.simulation.alpha(1).restart();
     } catch (error) {
       errorService.setError(error.message);

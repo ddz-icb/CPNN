@@ -156,3 +156,15 @@ export function sortGraph(graph) {
   graph.nodes.sort((a, b) => a.id.localeCompare(b.id));
   graph.links.sort((a, b) => a.source.localeCompare(b.source) || a.target.localeCompare(b.target));
 }
+
+export function getLinkWeight(link) {
+  // if multilink: take max value
+
+  if (Array.isArray(link.weights) && link.weights.length > 0) {
+    return link.weights.reduce((maxWeight, current) => {
+      const candidate = Math.abs(current);
+      return candidate > maxWeight ? candidate : maxWeight;
+    }, 0);
+  }
+  return Math.abs(link.weight);
+}
