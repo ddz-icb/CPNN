@@ -150,7 +150,7 @@ export function DownloadControl() {
     log.info("Downloading node ids as CSV");
 
     try {
-      downloadNodeIdsCsv(graphState.graph);
+      downloadNodeIdsCsv(graphState.graph.data.nodes, graphState.graph.name);
     } catch (error) {
       errorService.setError(error.message);
       log.error("Error downloading the node ids as CSV:", error);

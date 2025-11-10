@@ -17,7 +17,6 @@
   align-items: stretch;
   gap: var(--sidebar-control-gap-y);
 }
-
 .inline {
   display: inline-flex;
 }

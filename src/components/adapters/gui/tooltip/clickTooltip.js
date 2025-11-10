@@ -14,6 +14,7 @@ import { useGraphState } from "../../state/graphState.js";
 import { useColorschemeState } from "../../state/colorschemeState.js";
 import { TooltipPopup, TooltipPopupItem, TooltipPopupLinkItem } from "../reusable_components/tooltipComponents.js";
 import { getColor } from "../../../domain/service/canvas_drawing/draw.js";
+import { downloadNodeIdsCsv } from "../../../domain/service/download/download.js";
 
 const fullNameInit = "";
 const descriptionInit = "";
@@ -78,13 +79,11 @@ export function ClickTooltip() {
       const neighborNode = nodeMap.get(neighborId);
       if (!neighborNode) return;
 
-      const entry =
-        adjacencyMap.get(neighborId) ??
-        {
-          node: neighborNode,
-          connections: [],
-          maxWeight: 0,
-        };
+      const entry = adjacencyMap.get(neighborId) ?? {
+        node: neighborNode,
+        connections: [],
+        maxWeight: 0,
+      };
       const attribs = Array.isArray(link.attribs) ? link.attribs : [];
       const weights = Array.isArray(link.weights) ? link.weights : [];
       attribs.forEach((attrib, index) => {
@@ -107,12 +106,29 @@ export function ClickTooltip() {
     });
   }, [graphState.graph, nodeId]);
 
+  const adjacentNodeList = useMemo(() => adjacentNodes.map(({ node }) => node), [adjacentNodes]);
+
+  const handleExportAdjacent = useCallback(() => {
+    if (!adjacentNodeList.length) return;
+    const baseName = nodeId ? `${nodeId}_adjacent` : "adjacent_nodes";
+    downloadNodeIdsCsv(adjacentNodeList, baseName);
+  }, [adjacentNodeList, nodeId]);
+
   const footerContent = useMemo(() => {
     if (isAdjacentView) {
       return (
-        <button className="tooltip-popup-action" onClick={() => setIsAdjacentView(false)}>
-          Back to node details
-        </button>
+        <>
+          <button
+            className="tooltip-popup-action button-rect tooltip-popup-footer-fill"
+            onClick={handleExportAdjacent}
+            disabled={!adjacentNodeList.length}
+          >
+            Export adjacent nodes
+          </button>
+          <button className="tooltip-popup-action button-rect" onClick={() => setIsAdjacentView(false)}>
+            Back to node details
+          </button>
+        </>
       );
     }
 
@@ -120,12 +136,12 @@ export function ClickTooltip() {
       <>
         <TooltipPopupLinkItem text={"To UniProt"} link={`https://www.uniprot.org/uniprotkb/${protIdNoIsoform}/`} />
         <TooltipPopupLinkItem text={"To RCSB PDB"} link={`https://www.rcsb.org/structure/${pdbId}/`} />
-        <button className="tooltip-popup-action" onClick={() => setIsAdjacentView(true)}>
+        <button className="tooltip-popup-action button-rect" onClick={() => setIsAdjacentView(true)}>
           See adjacent nodes
         </button>
       </>
     );
-  }, [isAdjacentView, pdbId, protIdNoIsoform]);
+  }, [adjacentNodeList.length, handleExportAdjacent, isAdjacentView, pdbId, protIdNoIsoform]);
 
   const showDetails = !isAdjacentView;
   const has3dModel = Boolean(responsePdb?.data);

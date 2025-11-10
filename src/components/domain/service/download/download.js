@@ -74,7 +74,17 @@ function createGraphSvgElement(
   return { svgElement, width, height };
 }
 
-function drawLegendOnPdf(pdf, offsetX, offsetY, nodeColorscheme, nodeAttribsToColorIndices, linkColorscheme, linkAttribsToColorIndices, mapping, section = "both") {
+function drawLegendOnPdf(
+  pdf,
+  offsetX,
+  offsetY,
+  nodeColorscheme,
+  nodeAttribsToColorIndices,
+  linkColorscheme,
+  linkAttribsToColorIndices,
+  mapping,
+  section = "both"
+) {
   const padding = 20;
   const rectSize = 12;
   const rectSpacing = 8;
@@ -98,10 +108,7 @@ function drawLegendOnPdf(pdf, offsetX, offsetY, nodeColorscheme, nodeAttribsToCo
   ];
 
   const normalizedSection = typeof section === "string" ? section.toLowerCase() : "both";
-  let sections =
-    normalizedSection === "both"
-      ? sectionsConfig
-      : sectionsConfig.filter(({ key }) => key === normalizedSection);
+  let sections = normalizedSection === "both" ? sectionsConfig : sectionsConfig.filter(({ key }) => key === normalizedSection);
 
   sections = sections.map((sectionConfig) => {
     const { attribs, colorscheme } = sectionConfig;
@@ -128,8 +135,7 @@ function drawLegendOnPdf(pdf, offsetX, offsetY, nodeColorscheme, nodeAttribsToCo
   const legendWidth = padding * 2 + rectSize + rectSpacing + maxTextWidth;
 
   tempPdf.setFontSize(headerFontSize);
-  const headerMetricsSample =
-    typeof tempPdf.getTextDimensions === "function" ? tempPdf.getTextDimensions("Ag") : null;
+  const headerMetricsSample = typeof tempPdf.getTextDimensions === "function" ? tempPdf.getTextDimensions("Ag") : null;
   const headerSampleHeight = headerMetricsSample?.h ?? headerFontSize;
   const headerSampleBaseline = headerMetricsSample?.baseline ?? headerSampleHeight * 0.8;
   const headerBlockHeight = headerSampleBaseline + headerBottomSpacing;
@@ -140,9 +146,7 @@ function drawLegendOnPdf(pdf, offsetX, offsetY, nodeColorscheme, nodeAttribsToCo
     return headerBlockHeight + rowsHeight;
   });
   const legendHeight =
-    padding * 2 +
-    sectionHeights.reduce((height, sectionHeight) => height + sectionHeight, 0) +
-    groupSpacing * Math.max(sections.length - 1, 0);
+    padding * 2 + sectionHeights.reduce((height, sectionHeight) => height + sectionHeight, 0) + groupSpacing * Math.max(sections.length - 1, 0);
 
   pdf.setFillColor(255, 255, 255);
   pdf.rect(offsetX, offsetY, legendWidth, legendHeight, "F");
@@ -154,8 +158,7 @@ function drawLegendOnPdf(pdf, offsetX, offsetY, nodeColorscheme, nodeAttribsToCo
   pdf.setFont("helvetica", "normal");
   pdf.setFontSize(labelFontSize);
 
-  const metricsSample =
-    typeof pdf.getTextDimensions === "function" ? pdf.getTextDimensions("Ag") : null;
+  const metricsSample = typeof pdf.getTextDimensions === "function" ? pdf.getTextDimensions("Ag") : null;
   const sampleHeight = metricsSample?.h ?? labelFontSize;
   const sampleBaseline = metricsSample?.baseline ?? sampleHeight * 0.8;
   const labelBaselineOffset = rectSize / 2 + sampleBaseline - sampleHeight / 2;
@@ -207,8 +210,6 @@ function drawLegendOnPdf(pdf, offsetX, offsetY, nodeColorscheme, nodeAttribsToCo
 
   return { legendWidth, legendHeight };
 }
-
-
 
 export function downloadAsPNG(app, document, graphName) {
   app.renderer.extract
@@ -331,10 +332,11 @@ export function downloadTsvFile(tsvContent, fileName) {
   triggerDownload(blob, `${getFileNameWithoutExtension(fileName)}.tsv`);
 }
 
-export function downloadNodeIdsCsv(graph) {
-  const nodes = graph?.data?.nodes ?? [];
+export function downloadNodeIdsCsv(nodes, fileName) {
+  if (!nodes) return;
+
   const rows = nodes.map((node) => node.id ?? "");
-  const baseName = getFileNameWithoutExtension(graph?.name ?? "graph");
+  const baseName = getFileNameWithoutExtension(fileName);
   downloadCsvFile(rows.join(","), `${baseName}_node_ids`);
 }
 
@@ -367,17 +369,7 @@ export function downloadLegendPdf(graphName, linkColorscheme, linkAttribsToColor
       format: [legendWidth, legendHeight],
     });
 
-    drawLegendOnPdf(
-      pdf,
-      0,
-      0,
-      nodeColorscheme,
-      nodeAttribsToColorIndices,
-      linkColorscheme,
-      linkAttribsToColorIndices,
-      mapping,
-      section
-    );
+    drawLegendOnPdf(pdf, 0, 0, nodeColorscheme, nodeAttribsToColorIndices, linkColorscheme, linkAttribsToColorIndices, mapping, section);
     pdf.save(`${baseFileName}_legend_${suffix}.pdf`);
   });
 }
