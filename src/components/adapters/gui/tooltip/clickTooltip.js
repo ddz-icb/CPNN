@@ -13,6 +13,7 @@ import { getLinkWeight } from "../../../domain/service/graph_calculations/graphU
 import { useGraphState } from "../../state/graphState.js";
 import { useColorschemeState } from "../../state/colorschemeState.js";
 import { TooltipPopup, TooltipPopupItem, TooltipPopupLinkItem } from "../reusable_components/tooltipComponents.js";
+import { Button } from "../reusable_components/sidebarComponents.js";
 import { getColor } from "../../../domain/service/canvas_drawing/draw.js";
 import { downloadNodeIdsCsv } from "../../../domain/service/download/download.js";
 
@@ -118,16 +119,13 @@ export function ClickTooltip() {
     if (isAdjacentView) {
       return (
         <>
-          <button
-            className="tooltip-popup-action button-rect tooltip-popup-footer-fill"
+          <Button
+            className="tooltip-popup-action tooltip-popup-footer-fill"
+            text="Export adjacent nodes"
             onClick={handleExportAdjacent}
             disabled={!adjacentNodeList.length}
-          >
-            Export adjacent nodes
-          </button>
-          <button className="tooltip-popup-action button-rect" onClick={() => setIsAdjacentView(false)}>
-            Back to node details
-          </button>
+          />
+          <Button className="tooltip-popup-action" text="Back to node details" onClick={() => setIsAdjacentView(false)} />
         </>
       );
     }
@@ -136,9 +134,7 @@ export function ClickTooltip() {
       <>
         <TooltipPopupLinkItem text={"To UniProt"} link={`https://www.uniprot.org/uniprotkb/${protIdNoIsoform}/`} />
         <TooltipPopupLinkItem text={"To RCSB PDB"} link={`https://www.rcsb.org/structure/${pdbId}/`} />
-        <button className="tooltip-popup-action button-rect" onClick={() => setIsAdjacentView(true)}>
-          See adjacent nodes
-        </button>
+        <Button className="tooltip-popup-action" text="See adjacent nodes" onClick={() => setIsAdjacentView(true)} />
       </>
     );
   }, [adjacentNodeList.length, handleExportAdjacent, isAdjacentView, pdbId, protIdNoIsoform]);
