@@ -100,10 +100,11 @@
 
 .tooltip-popup-footer {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
+  justify-content: flex-start;
+  align-items: center;
   width: 100%;
   padding-top: 0.5rem;
+  gap: 0.5rem;
 }
 
 .tooltip-popup-footer-item {
@@ -111,4 +112,100 @@
   align-items: flex-end;
   margin: 0;
   padding: 0;
+}
+
+.tooltip-popup-action {
+  margin-left: auto;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius);
+  border: var(--border-thin) solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: background-color var(--motion-duration-fast) var(--motion-ease-standard), color var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.tooltip-popup-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.tooltip-popup-action:not(:disabled):hover,
+.tooltip-popup-action:not(:disabled):focus-visible {
+  background: var(--color-button-hover);
+  color: var(--color-accent-contrast);
+}
+
+.tooltip-adjacent-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tooltip-adjacent-card {
+  border: var(--border-hairline) solid var(--color-border-subtle);
+  border-radius: var(--radius);
+  padding: 0.5rem 0.6rem;
+  background: color-mix(in srgb, var(--color-surface) 92%, var(--color-text-primary) 8%);
+  color: var(--color-text-primary);
+}
+
+.tooltip-adjacent-card-header {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.35rem;
+}
+
+.tooltip-node-preview {
+  flex-shrink: 0;
+}
+
+.tooltip-adjacent-card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.tooltip-adjacent-node-id {
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+}
+
+.tooltip-adjacent-node-groups {
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--color-text-secondary);
+}
+
+.tooltip-adjacent-connection-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.tooltip-adjacent-connection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.15rem 0.4rem;
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  border: var(--border-hairline) solid var(--color-border-subtle);
+  font-size: var(--font-size-xs, 0.75rem);
+}
+
+.tooltip-adjacent-connection-type {
+  font-weight: 600;
+}
+
+.tooltip-adjacent-connection-weight {
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-secondary);
+}
+
+.tooltip-adjacent-empty {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: var(--color-text-secondary);
 }
