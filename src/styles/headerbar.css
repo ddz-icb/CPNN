@@ -29,7 +29,7 @@
 
 .colormapping-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
   gap: 1rem;
 }
 
@@ -38,26 +38,15 @@
   flex-direction: column;
 }
 
-.headerbar-colormapping-list {
-  display: flex;
-  flex-direction: column;
-  border: var(--border-thin) solid var(--color-border-subtle);
-  border-radius: var(--radius);
-  overflow: hidden;
-  background: transparent;
+.headerbar-colormapping-section .item-table {
+  width: 100%;
+  table-layout: fixed;
 }
 
-.headerbar-colormapping-item {
-  display: flex;
-  align-items: center;
+.headerbar-colormapping-row {
+  display: inline-flex;
   gap: var(--sidebar-control-gap-y);
-  padding: 0 var(--sidebar-control-padding-x);
-  height: var(--default-element-height);
-  border-bottom: var(--border-thin) solid var(--color-border-subtle);
-}
-
-.headerbar-colormapping-item:last-child {
-  border-bottom: none;
+  width: 100%;
 }
 
 .headerbar-colormapping-label {

@@ -1,43 +1,45 @@
 import { useColorschemeState } from "../../../adapters/state/colorschemeState.js";
 import { fallbackColor, getColor } from "../../../domain/service/canvas_drawing/draw.js";
+import { TableList } from "../reusable_components/sidebarComponents.js";
 
 export function HeaderbarColorMapping() {
   const { colorschemeState } = useColorschemeState();
 
-  const renderItem = (key, color, label) => (
-    <div key={key} className="headerbar-colormapping-item">
-      <div className="color-square headerbar-colormapping-swatch" style={{ backgroundColor: color }}></div>
-      <span className="headerbar-colormapping-label">{label}</span>
-    </div>
-  );
-
-  const renderMapping = (attribsToColorIndices = {}, colorscheme = []) => {
+  const createTableData = (attribsToColorIndices = {}, colorscheme = []) => {
     const keys = Object.keys(attribsToColorIndices).sort((a, b) => a.localeCompare(b));
     const entries = keys
       .map((key) => {
         const color = getColor(attribsToColorIndices[key], colorscheme);
-        return color !== fallbackColor ? renderItem(key, color, key) : null;
+        if (color === fallbackColor) return null;
+        return (
+          <span className="headerbar-colormapping-row">
+            <span className="color-square headerbar-colormapping-swatch" style={{ backgroundColor: color }}></span>
+            <span className="headerbar-colormapping-label">{key}</span>
+          </span>
+        );
       })
       .filter(Boolean);
 
-    entries.push(renderItem("fallback", fallbackColor, "No Value Available"));
+    entries.push(
+      <span className="headerbar-colormapping-row">
+        <span className="color-square headerbar-colormapping-swatch" style={{ backgroundColor: fallbackColor }}></span>
+        <span className="headerbar-colormapping-label">No Value Available</span>
+      </span>
+    );
     return entries;
   };
 
-  const nodeColorMapping = renderMapping(colorschemeState.nodeAttribsToColorIndices, colorschemeState.nodeColorscheme?.data);
-
-  const linkColorMapping = renderMapping(colorschemeState.linkAttribsToColorIndices, colorschemeState.linkColorscheme?.data);
+  const nodeTableData = createTableData(colorschemeState.nodeAttribsToColorIndices, colorschemeState.nodeColorscheme?.data);
+  const linkTableData = createTableData(colorschemeState.linkAttribsToColorIndices, colorschemeState.linkColorscheme?.data);
 
   return (
     <div className={"headerbar-colormapping"}>
       <div className="colormapping-container">
         <div className="headerbar-colormapping-section">
-          <div className="table-list-heading">Nodes</div>
-          <div className="headerbar-colormapping-list">{nodeColorMapping}</div>
+          <TableList heading={"Nodes"} data={nodeTableData} displayKey={null} dark={true} />
         </div>
         <div className="headerbar-colormapping-section">
-          <div className="table-list-heading">Links</div>
-          <div className="headerbar-colormapping-list">{linkColorMapping}</div>
+          <TableList heading={"Links"} data={linkTableData} displayKey={null} dark={true} />
         </div>
       </div>
     </div>
