@@ -62,24 +62,24 @@ button.button-rect,
 }
 
 button svg,
-.popup-button svg,
-.tooltip-popup-button svg,
+.svg-button svg,
+.svg-button svg,
 .item-table-logo svg,
 .info-button-icon {
   transition: fill var(--motion-duration-fast) var(--motion-ease-standard), filter var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
 button:hover svg,
-.popup-button:hover svg,
-.tooltip-popup-button:hover svg,
+.svg-button:hover svg,
+.svg-button:hover svg,
 .item-table-logo:hover svg,
 .info-button:hover .info-button-icon {
   fill: var(--color-icon-hover);
   filter: grayscale(0%) opacity(1);
 }
 
-.popup-button:hover,
-.tooltip-popup-button:hover,
+.svg-button:hover,
+.svg-button:hover,
 .info-button:hover {
   color: var(--color-icon-hover);
 }
@@ -87,4 +87,18 @@ button:hover svg,
 [data-slot="button"][data-variant="default"]:hover {
   background-color: var(--color-button-hover);
   color: var(--color-accent-contrast);
+}
+
+.svg-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.svg-button svg {
+  fill: var(--color-icon-primary);
 }

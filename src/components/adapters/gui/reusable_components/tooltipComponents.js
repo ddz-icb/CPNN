@@ -6,7 +6,7 @@ export function TooltipPopup({ heading, close, children, style, footer }) {
       <div className="tooltip-popup-content">
         <div className="tooltip-popup-header">
           <span className="tooltip-popup-heading">{heading}</span>
-          <span className="tooltip-popup-button" onClick={() => close()}>
+          <span className="svg-button" onClick={() => close()}>
             <XIcon />
           </span>
         </div>

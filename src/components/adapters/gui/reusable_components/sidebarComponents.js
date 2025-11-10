@@ -118,7 +118,7 @@ export function Popup({ heading, description, isOpen, setIsOpen, widePopup, chil
         <div className={popupContainer}>
           <div className="popup-header pad-bottom-1">
             <span className="popup-heading">{heading}</span>
-            <span className="popup-button" onClick={() => setIsOpen(false)}>
+            <span className="svg-button" onClick={() => setIsOpen(false)}>
               <XIcon />
             </span>
           </div>

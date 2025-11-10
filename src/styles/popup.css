@@ -52,7 +52,7 @@
   margin: 0;
 }
 
-.popup-button {
+.svg-button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -62,6 +62,6 @@
   cursor: pointer;
 }
 
-.popup-button svg {
+.svg-button svg {
   fill: var(--color-icon-primary);
 }
