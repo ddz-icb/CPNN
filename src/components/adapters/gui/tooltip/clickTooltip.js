@@ -9,6 +9,7 @@ import { useContainer } from "../../state/containerState.js";
 import { useTooltipSettings } from "../../state/tooltipState.js";
 import { useTheme } from "../../state/themeState.js";
 import { getNodeIdEntries, parseNodeIdEntries } from "../../../domain/service/parsing/nodeIdParsing.js";
+import { getLinkWeight } from "../../../domain/service/graph_calculations/graphUtils.js";
 import { useGraphState } from "../../state/graphState.js";
 import { useColorschemeState } from "../../state/colorschemeState.js";
 import { TooltipPopup, TooltipPopupItem, TooltipPopupLinkItem } from "../reusable_components/tooltipComponents.js";
@@ -77,7 +78,13 @@ export function ClickTooltip() {
       const neighborNode = nodeMap.get(neighborId);
       if (!neighborNode) return;
 
-      const entry = adjacencyMap.get(neighborId) ?? { node: neighborNode, connections: [] };
+      const entry =
+        adjacencyMap.get(neighborId) ??
+        {
+          node: neighborNode,
+          connections: [],
+          maxWeight: 0,
+        };
       const attribs = Array.isArray(link.attribs) ? link.attribs : [];
       const weights = Array.isArray(link.weights) ? link.weights : [];
       attribs.forEach((attrib, index) => {
@@ -86,10 +93,14 @@ export function ClickTooltip() {
           weight: weights[index],
         });
       });
+      entry.maxWeight = Math.max(entry.maxWeight, getLinkWeight(link) ?? 0);
       adjacencyMap.set(neighborId, entry);
     });
 
     return Array.from(adjacencyMap.values()).sort((a, b) => {
+      if (b.maxWeight !== a.maxWeight) {
+        return (b.maxWeight ?? 0) - (a.maxWeight ?? 0);
+      }
       const labelA = a.node?.id ?? "";
       const labelB = b.node?.id ?? "";
       return labelA.localeCompare(labelB);
@@ -304,8 +315,8 @@ function AdjacentNodesList({ adjacentNodes, nodeAttribsToColorIndices, nodeColor
           <div className="tooltip-adjacent-connection-list">
             {connections.map((connection, index) => (
               <div className="tooltip-adjacent-connection" key={`${node.id}-${connection.type}-${index}`}>
-                <span className="tooltip-adjacent-connection-type">{connection.type}</span>
-                <span className="tooltip-adjacent-connection-weight">{formatWeight(connection.weight)}</span>
+                <span>{connection.type}</span>
+                <span className="tooltip-adjacent-connection-weight">weight: {formatWeight(connection.weight)}</span>
               </div>
             ))}
           </div>
@@ -315,7 +326,7 @@ function AdjacentNodesList({ adjacentNodes, nodeAttribsToColorIndices, nodeColor
   );
 }
 
-function NodePreview({ node, nodeAttribsToColorIndices, nodeColors, borderColor, size = 48 }) {
+function NodePreview({ node, nodeAttribsToColorIndices, nodeColors, borderColor, size = 24 }) {
   if (!node) return null;
   const groups = Array.isArray(node.groups) && node.groups.length > 0 ? node.groups : [null];
   const radius = size / 2 - 2;

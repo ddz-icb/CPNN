@@ -121,7 +121,7 @@
   border: var(--border-thin) solid var(--color-border);
   background: var(--color-surface);
   color: var(--color-text-primary);
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-s);
   cursor: pointer;
   transition: background-color var(--motion-duration-fast) var(--motion-ease-standard), color var(--motion-duration-fast) var(--motion-ease-standard);
 }
@@ -169,8 +169,8 @@
 }
 
 .tooltip-adjacent-node-id {
-  font-weight: 600;
-  font-size: var(--font-size-sm);
+  font-weight: 300;
+  font-size: var(--font-size-s);
 }
 
 .tooltip-adjacent-node-groups {
@@ -193,10 +193,6 @@
   background: var(--color-surface);
   border: var(--border-hairline) solid var(--color-border-subtle);
   font-size: var(--font-size-xs, 0.75rem);
-}
-
-.tooltip-adjacent-connection-type {
-  font-weight: 600;
 }
 
 .tooltip-adjacent-connection-weight {
