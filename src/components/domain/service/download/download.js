@@ -79,6 +79,8 @@ function drawLegendOnPdf(pdf, offsetX, offsetY, nodeColorscheme, nodeAttribsToCo
   const rectSize = 12;
   const rectSpacing = 8;
   const labelFontSize = 11;
+  const headerFontSize = 13;
+  const headerBottomSpacing = 10;
   const rowSpacing = 6;
   const groupSpacing = 16;
 
@@ -125,9 +127,17 @@ function drawLegendOnPdf(pdf, offsetX, offsetY, nodeColorscheme, nodeAttribsToCo
 
   const legendWidth = padding * 2 + rectSize + rectSpacing + maxTextWidth;
 
+  tempPdf.setFontSize(headerFontSize);
+  const headerMetricsSample =
+    typeof tempPdf.getTextDimensions === "function" ? tempPdf.getTextDimensions("Ag") : null;
+  const headerSampleHeight = headerMetricsSample?.h ?? headerFontSize;
+  const headerSampleBaseline = headerMetricsSample?.baseline ?? headerSampleHeight * 0.8;
+  const headerBlockHeight = headerSampleBaseline + headerBottomSpacing;
+
   const sectionHeights = sections.map(({ validKeys }) => {
     const rowCount = validKeys.length + 1;
-    return rowCount * rectSize + rowSpacing * Math.max(rowCount - 1, 0);
+    const rowsHeight = rowCount * rectSize + rowSpacing * Math.max(rowCount - 1, 0);
+    return headerBlockHeight + rowsHeight;
   });
   const legendHeight =
     padding * 2 +
@@ -150,6 +160,8 @@ function drawLegendOnPdf(pdf, offsetX, offsetY, nodeColorscheme, nodeAttribsToCo
   const sampleBaseline = metricsSample?.baseline ?? sampleHeight * 0.8;
   const labelBaselineOffset = rectSize / 2 + sampleBaseline - sampleHeight / 2;
 
+  const headerBaselineOffset = headerSampleBaseline;
+
   const drawRow = (label, color, isLastRow) => {
     const fillColor = color ?? "#f3f3f3";
     pdf.setFillColor(fillColor);
@@ -167,7 +179,15 @@ function drawLegendOnPdf(pdf, offsetX, offsetY, nodeColorscheme, nodeAttribsToCo
     }
   };
 
-  sections.forEach(({ validKeys, attribs, colorscheme }, sectionIndex) => {
+  sections.forEach(({ key, validKeys, attribs, colorscheme }, sectionIndex) => {
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(headerFontSize);
+    const headerLabel = key === "nodes" ? "Nodes" : "Links";
+    pdf.text(headerLabel, offsetX + padding, yPos + headerBaselineOffset);
+    yPos += headerBlockHeight;
+
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(labelFontSize);
     const rows = validKeys
       .map((key) => ({
         label: key,
