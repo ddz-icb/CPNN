@@ -13,7 +13,7 @@ export function HeaderbarColorMapping() {
         if (color === fallbackColor) return null;
         return (
           <span className="headerbar-colormapping-row">
-            <span className="color-square headerbar-colormapping-swatch" style={{ backgroundColor: color }}></span>
+            <span className="color-square" style={{ backgroundColor: color }}></span>
             <span className="headerbar-colormapping-label">{key}</span>
           </span>
         );
@@ -22,7 +22,7 @@ export function HeaderbarColorMapping() {
 
     entries.push(
       <span className="headerbar-colormapping-row">
-        <span className="color-square headerbar-colormapping-swatch" style={{ backgroundColor: fallbackColor }}></span>
+        <span className="color-square" style={{ backgroundColor: fallbackColor }}></span>
         <span className="headerbar-colormapping-label">No Value Available</span>
       </span>
     );

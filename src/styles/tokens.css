@@ -88,7 +88,7 @@
   --default-transition-duration: var(--motion-duration-fast);
   --default-transition-timing-function: var(--motion-ease-standard);
   --text-sm: 0.8rem;
-  --text-sm--line-height: 1.4;
+  --text-sm--line-height: 1.7;
   --spacing: var(--size-unit);
   --radius: var(--radius-sm);
   --button-size: var(--button-lg);
