@@ -9,31 +9,26 @@ import { useContainer } from "../../state/containerState.js";
 import { useTooltipSettings } from "../../state/tooltipState.js";
 import { useTheme } from "../../state/themeState.js";
 import { getNodeIdEntries, parseNodeIdEntries } from "../../../domain/service/parsing/nodeIdParsing.js";
-import { getLinkWeight } from "../../../domain/service/graph_calculations/graphUtils.js";
 import { useGraphState } from "../../state/graphState.js";
 import { useColorschemeState } from "../../state/colorschemeState.js";
 import { TooltipPopup, TooltipPopupItem, TooltipPopupLinkItem } from "../reusable_components/tooltipComponents.js";
 import { Button } from "../reusable_components/sidebarComponents.js";
-import { getColor } from "../../../domain/service/canvas_drawing/draw.js";
+import { describeSector, getColor } from "../../../domain/service/canvas_drawing/draw.js";
 import { downloadNodeIdsCsv } from "../../../domain/service/download/download.js";
+import { getAdjacentNodes } from "../../../domain/service/physics_calculations/physicsGraph.js";
+import { usePixiState } from "../../state/pixiState.js";
+import { useRenderState } from "../../state/canvasState.js";
+import { getNodeScreenPosition } from "../../../domain/service/graph_calculations/graphUtils.js";
 
-const fullNameInit = "";
-const descriptionInit = "";
-const pdbIdInit = "";
-const protIdNoIsoformInit = "";
-const geneInit = "";
-const isoformsInit = [];
-const hasPhosphositesInit = false;
-const responsePdbInit = null;
 const proteinDetailsInit = {
-  fullName: fullNameInit,
-  description: descriptionInit,
-  pdbId: pdbIdInit,
-  protIdNoIsoform: protIdNoIsoformInit,
-  gene: geneInit,
-  isoforms: isoformsInit,
-  hasPhosphosites: hasPhosphositesInit,
-  responsePdb: responsePdbInit,
+  fullName: "",
+  description: "",
+  pdbId: "",
+  protIdNoIsoform: "",
+  gene: "",
+  isoforms: [],
+  hasPhosphosites: false,
+  responsePdb: null,
 };
 
 export function ClickTooltip() {
@@ -42,6 +37,8 @@ export function ClickTooltip() {
   const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
   const { graphState } = useGraphState();
   const { colorschemeState } = useColorschemeState();
+  const { pixiState } = usePixiState();
+  const { renderState } = useRenderState();
 
   const viewerRef = useRef(null);
   const [isAdjacentView, setIsAdjacentView] = useState(false);
@@ -63,49 +60,7 @@ export function ClickTooltip() {
   const nodeColors = colorschemeState.nodeColorscheme?.data ?? [];
   const nodeAttribsToColorIndices = colorschemeState.nodeAttribsToColorIndices ?? [];
 
-  const adjacentNodes = useMemo(() => {
-    if (!graphState.graph?.data || !nodeId) return [];
-    const { nodes, links } = graphState.graph.data;
-    const currentNodeId = nodeId;
-    const nodeMap = new Map(nodes.map((node) => [node.id, node]));
-    const adjacencyMap = new Map();
-
-    links.forEach((link) => {
-      const sourceId = getEndpointId(link.source);
-      const targetId = getEndpointId(link.target);
-      if (sourceId !== currentNodeId && targetId !== currentNodeId) return;
-      const neighborId = sourceId === currentNodeId ? targetId : sourceId;
-      if (!neighborId || neighborId === currentNodeId) return;
-
-      const neighborNode = nodeMap.get(neighborId);
-      if (!neighborNode) return;
-
-      const entry = adjacencyMap.get(neighborId) ?? {
-        node: neighborNode,
-        connections: [],
-        maxWeight: 0,
-      };
-      const attribs = Array.isArray(link.attribs) ? link.attribs : [];
-      const weights = Array.isArray(link.weights) ? link.weights : [];
-      attribs.forEach((attrib, index) => {
-        entry.connections.push({
-          type: attrib,
-          weight: weights[index],
-        });
-      });
-      entry.maxWeight = Math.max(entry.maxWeight, getLinkWeight(link) ?? 0);
-      adjacencyMap.set(neighborId, entry);
-    });
-
-    return Array.from(adjacencyMap.values()).sort((a, b) => {
-      if (b.maxWeight !== a.maxWeight) {
-        return (b.maxWeight ?? 0) - (a.maxWeight ?? 0);
-      }
-      const labelA = a.node?.id ?? "";
-      const labelB = b.node?.id ?? "";
-      return labelA.localeCompare(labelB);
-    });
-  }, [graphState.graph, nodeId]);
+  const adjacentNodes = useMemo(() => getAdjacentNodes(graphState.graph?.data, nodeId), [graphState.graph, nodeId]);
 
   const adjacentNodeList = useMemo(() => adjacentNodes.map(({ node }) => node), [adjacentNodes]);
 
@@ -114,6 +69,21 @@ export function ClickTooltip() {
     const baseName = nodeId ? `${nodeId}_adjacent` : "adjacent_nodes";
     downloadNodeIdsCsv(adjacentNodeList, baseName);
   }, [adjacentNodeList, nodeId]);
+
+  const handleViewAdjacentNode = useCallback(
+    (node) => {
+      if (!node) return;
+      const position = getNodeScreenPosition(node.id, renderState?.app, pixiState?.nodeMap);
+      setIsAdjacentView(false);
+      setTooltipSettings("clickTooltipData", {
+        node: node.id,
+        nodeGroups: node.groups ?? [],
+        x: position?.x ?? tooltipSettings.clickTooltipData?.x ?? 0,
+        y: position?.y ?? tooltipSettings.clickTooltipData?.y ?? 0,
+      });
+    },
+    [pixiState?.nodeMap, renderState?.app, setIsAdjacentView, setTooltipSettings, tooltipSettings.clickTooltipData]
+  );
 
   const footerContent = useMemo(() => {
     if (isAdjacentView) {
@@ -160,6 +130,7 @@ export function ClickTooltip() {
           nodeAttribsToColorIndices={nodeAttribsToColorIndices}
           nodeColors={nodeColors}
           borderColor={theme.circleBorderColor}
+          onViewNode={handleViewAdjacentNode}
         />
       )}
     </TooltipPopup>
@@ -308,7 +279,7 @@ function usePdbViewer(viewerRef, responsePdb, themeName, isTooltipActive) {
   }, [viewer, responsePdb, isTooltipActive]);
 }
 
-function AdjacentNodesList({ adjacentNodes, nodeAttribsToColorIndices, nodeColors, borderColor }) {
+function AdjacentNodesList({ adjacentNodes, nodeAttribsToColorIndices, nodeColors, borderColor, onViewNode }) {
   if (!adjacentNodes.length) {
     return <div className="tooltip-adjacent-empty">No adjacent nodes available.</div>;
   }
@@ -320,15 +291,20 @@ function AdjacentNodesList({ adjacentNodes, nodeAttribsToColorIndices, nodeColor
           <div className="tooltip-adjacent-card-header">
             <NodePreview node={node} nodeAttribsToColorIndices={nodeAttribsToColorIndices} nodeColors={nodeColors} borderColor={borderColor} />
             <div className="tooltip-adjacent-card-meta">
-              <div className="tooltip-adjacent-node-id">{node.id}</div>
+              <div className="tooltip-adjacent-node-id-row">
+                <div className="tooltip-adjacent-node-id">{node.id}</div>
+                {onViewNode && (
+                  <Button className="tooltip-popup-action tooltip-adjacent-view-button" text="View node" onClick={() => onViewNode(node)} />
+                )}
+              </div>
               <div className="tooltip-adjacent-node-groups">{node.groups?.join(", ")}</div>
             </div>
           </div>
           <div className="tooltip-adjacent-connection-list">
             {connections.map((connection, index) => (
               <div className="tooltip-adjacent-connection" key={`${node.id}-${connection.type}-${index}`}>
-                <span>{connection.type}</span>
-                <span className="tooltip-adjacent-connection-weight">weight: {formatWeight(connection.weight)}</span>
+                <span className="tooltip-adjacent-connection-type">{connection.type}</span>
+                <span className="tooltip-adjacent-connection-weight">{formatWeight(connection.weight)}</span>
               </div>
             ))}
           </div>
@@ -367,31 +343,8 @@ function NodePreview({ node, nodeAttribsToColorIndices, nodeColors, borderColor,
   );
 }
 
-function describeSector(cx, cy, r, startAngle, endAngle) {
-  const start = polarToCartesian(cx, cy, r, startAngle);
-  const end = polarToCartesian(cx, cy, r, endAngle);
-  const largeArcFlag = endAngle - startAngle <= Math.PI ? 0 : 1;
-  return ["M", cx, cy, "L", start.x, start.y, "A", r, r, 0, largeArcFlag, 1, end.x, end.y, "Z"].join(" ");
-}
-
-function polarToCartesian(cx, cy, r, angle) {
-  return {
-    x: cx + r * Math.cos(angle),
-    y: cy + r * Math.sin(angle),
-  };
-}
-
 function formatWeight(value) {
   if (typeof value !== "number" || Number.isNaN(value)) return "n/a";
   if (Math.abs(value) >= 1) return value.toFixed(2);
   return value.toPrecision(2);
-}
-
-function getEndpointId(endpoint) {
-  if (endpoint == null) return null;
-  if (typeof endpoint === "object") {
-    if (endpoint.id != null) return endpoint.id;
-    if (endpoint.data?.id != null) return endpoint.data.id;
-  }
-  return endpoint;
 }

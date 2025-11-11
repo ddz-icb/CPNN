@@ -1,6 +1,6 @@
 .tooltip {
   position: fixed;
-  z-index: 5;
+  z-index: 100;
   display: block;
   min-height: var(--default-element-height);
   padding-top: 0.25rem;
@@ -19,7 +19,7 @@
 .tooltip-gui {
   position: fixed;
   padding: 0.25rem !important;
-  z-index: 5;
+  z-index: 100;
   display: block;
   border-radius: var(--radius);
   background: var(--color-surface);
@@ -145,6 +145,7 @@
   display: flex;
   gap: 0.5rem;
   align-items: center;
+  justify-content: space-between;
   margin-bottom: 0.35rem;
 }
 
@@ -156,11 +157,19 @@
   display: flex;
   flex-direction: column;
   gap: 0.1rem;
+  width: 100%;
+}
+
+.tooltip-adjacent-node-id-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
 }
 
 .tooltip-adjacent-node-id {
-  font-weight: 300;
   font-size: var(--font-size-s);
+  flex: 1;
 }
 
 .tooltip-adjacent-node-groups {
@@ -185,6 +194,10 @@
   font-size: var(--font-size-xs, 0.75rem);
 }
 
+.tooltip-adjacent-connection-type {
+  font-weight: 600;
+}
+
 .tooltip-adjacent-connection-weight {
   font-variant-numeric: tabular-nums;
   color: var(--color-text-secondary);
@@ -194,4 +207,11 @@
   text-align: center;
   padding: 2rem 1rem;
   color: var(--color-text-secondary);
+}
+
+.tooltip-adjacent-view-button {
+  min-height: unset;
+  height: 1.5rem;
+  padding: 0 0.5rem;
+  font-size: var(--font-size-xs, 0.75rem);
 }
