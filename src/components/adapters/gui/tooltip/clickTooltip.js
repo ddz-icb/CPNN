@@ -293,9 +293,7 @@ function AdjacentNodesList({ adjacentNodes, nodeAttribsToColorIndices, nodeColor
             <div className="tooltip-adjacent-card-meta">
               <div className="tooltip-adjacent-node-id-row">
                 <div className="tooltip-adjacent-node-id">{node.id}</div>
-                {onViewNode && (
-                  <Button className="tooltip-popup-action tooltip-adjacent-view-button" text="View node" onClick={() => onViewNode(node)} />
-                )}
+                {onViewNode && <Button className="tooltip-popup-action" text="View node" onClick={() => onViewNode(node)} />}
               </div>
               <div className="tooltip-adjacent-node-groups">{node.groups?.join(", ")}</div>
             </div>

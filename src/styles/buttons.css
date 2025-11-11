@@ -22,21 +22,11 @@
   background-color: var(--color-button-hover);
 }
 
-.button-select {
-  display: inline-block;
-  width: 10rem;
-  min-height: var(--default-element-height);
-  padding-inline: var(--sidebar-control-padding-x);
-  background-color: var(--color-surface);
-  border: var(--border-thin) solid var(--color-border-subtle);
-  color: var(--color-text-primary);
-  cursor: pointer;
-}
-
 .button-rect {
   border-radius: var(--radius);
   background-color: var(--color-switch-track);
   color: var(--color-accent-contrast);
+  padding-inline: 0.4rem;
 }
 
 .light .button-rect {
@@ -48,17 +38,6 @@
 .light .button-rect:focus-visible {
   background-color: var(--color-button-hover);
   color: var(--color-accent-contrast);
-}
-
-button.button-rect,
-[data-slot="button"].button-rect {
-  padding-inline: var(--sidebar-control-padding-x);
-}
-
-.block-section .button-select,
-.block-section button.button-rect,
-.block-section [data-slot="button"].button-rect {
-  margin-bottom: var(--sidebar-card-row-gap-y);
 }
 
 button svg,
@@ -82,11 +61,6 @@ button:hover svg,
 .svg-button:hover,
 .info-button:hover {
   color: var(--color-icon-hover);
-}
-
-[data-slot="button"][data-variant="default"]:hover {
-  background-color: var(--color-button-hover);
-  color: var(--color-accent-contrast);
 }
 
 .svg-button {
