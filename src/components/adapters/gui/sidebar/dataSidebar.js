@@ -140,24 +140,9 @@ function UploadGraph() {
       description={uploadGraphDescription}
     >
       <div className="block-section">
-        <Button
-          variant="popup"
-          text={"JSON Example Graph"}
-          onClick={() => downloadObjectAsFile(exampleGraphJson.data, exampleGraphJson.name)}
-          className="no-pad-top"
-        />
-        <Button
-          variant="popup"
-          text={"Matrix Example Graph"}
-          onClick={() => downloadTsvFile(exampleGraphTsv.data, exampleGraphTsv.name)}
-          className="no-pad-top"
-        />
-        <Button
-          variant="popup"
-          text={"Raw Data Example Graph"}
-          onClick={() => downloadTsvFile(exampleGraphRaw.data, exampleGraphRaw.name)}
-          className="no-pad-top"
-        />
+        <Button variant="popup" text={"JSON Example Graph"} onClick={() => downloadObjectAsFile(exampleGraphJson.data, exampleGraphJson.name)} />
+        <Button variant="popup" text={"Matrix Example Graph"} onClick={() => downloadTsvFile(exampleGraphTsv.data, exampleGraphTsv.name)} />
+        <Button variant="popup" text={"Raw Data Example Graph"} onClick={() => downloadTsvFile(exampleGraphRaw.data, exampleGraphRaw.name)} />
       </div>
       <SwitchBlock
         variant="popup"
