@@ -53,7 +53,15 @@ export function NodeIdFilterBlock() {
   const handleRunNodeIdFilter = () => {
     runCodeEditor(
       nodeIdFilterText,
-      (parsedFilters) => setFilter("nodeIdFilters", mapFiltersWithCounts(parsedFilters, nodes)),
+      (parsedFilters) => {
+        if (!parsedFilters.length) {
+          setFilter("nodeIdFilters", []);
+          return;
+        }
+
+        const mergedFilters = mergeNodeIdFilters(nodeIdFilters, parsedFilters);
+        setFilter("nodeIdFilters", mapFiltersWithCounts(mergedFilters, nodes));
+      },
       (value) => setFilter("nodeIdFilterText", value),
       parseNodeIdFilters,
       (error) => setCompilerError(error)
@@ -116,4 +124,21 @@ function computeNodeIdFilterCount(normalizedValue, nodes) {
 
 function formatNodeIdFilterLabel(count) {
   return `Removed nodes: ${count}`;
+}
+
+function mergeNodeIdFilters(existingFilters = [], newFilters = []) {
+  const mergedMap = new Map();
+
+  const addEntry = (entry) => {
+    if (!entry) return;
+    const normalizedValue = (entry.normalizedValue ?? entry.value ?? entry.label ?? "").toString().toLowerCase();
+    if (!normalizedValue || mergedMap.has(normalizedValue)) return;
+    const value = entry.value ?? entry.label ?? entry.normalizedValue ?? normalizedValue;
+    mergedMap.set(normalizedValue, { value, normalizedValue });
+  };
+
+  existingFilters.forEach(addEntry);
+  newFilters.forEach(addEntry);
+
+  return Array.from(mergedMap.values());
 }
