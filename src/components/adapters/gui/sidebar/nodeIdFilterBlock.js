@@ -108,7 +108,7 @@ function mapFiltersWithCounts(filters, nodes) {
       value,
       normalizedValue,
       count,
-      label: value,
+      label: value.toString().toUpperCase(),
       countLabel: formatNodeIdFilterLabel(count),
     };
   });
