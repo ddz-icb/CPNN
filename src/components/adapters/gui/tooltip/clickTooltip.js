@@ -116,6 +116,7 @@ export function ClickTooltip() {
     <TooltipPopup heading={heading} close={() => setTooltipSettings("isClickTooltipActive", false)} style={tooltipStyle} footer={footerContent}>
       {showDetails ? (
         <NodeDetails
+          nodeId={nodeId}
           fullName={fullName}
           hasPhosphosites={hasPhosphosites}
           isoforms={isoforms}
@@ -137,9 +138,10 @@ export function ClickTooltip() {
   );
 }
 
-function NodeDetails({ fullName, hasPhosphosites, isoforms, nodeGroups, description, showStructure, viewerRef }) {
+function NodeDetails({ nodeId, fullName, hasPhosphosites, isoforms, nodeGroups, description, showStructure, viewerRef }) {
   return (
     <>
+      <TooltipPopupItem heading={"Node ID"} value={nodeId} />
       <TooltipPopupItem heading={"Full Name"} value={fullName} />
       <TooltipPopupItem
         heading={`Protein-IDs ${hasPhosphosites && "and Phosphosites"}`}
