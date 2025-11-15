@@ -302,7 +302,7 @@ function AdjacentNodesList({ adjacentNodes, nodeAttribsToColorIndices, nodeColor
             {connections.map((connection, index) => (
               <div className="tooltip-adjacent-connection" key={`${node.id}-${connection.type}-${index}`}>
                 <span className="tooltip-adjacent-connection-type">{connection.type}</span>
-                <span className="tooltip-adjacent-connection-weight">{formatWeight(connection.weight)}</span>
+                <span className="tooltip-adjacent-connection-weight">weight: {formatWeight(connection.weight)}</span>
               </div>
             ))}
           </div>
