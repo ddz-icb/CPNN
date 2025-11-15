@@ -5,6 +5,7 @@ import {
   filterActiveNodesForPixi,
   filterLinkAttribs,
   filterNodeAttribs,
+  filterNodeIds,
   filterThreshold,
   filterCompDensity,
   filterMaxCompSize,
@@ -45,6 +46,8 @@ export function FilterControl() {
       filter.linkFilter,
       "\n    Node Attributes: ",
       filter.nodeFilter,
+      "\n    Node ID Filters: ",
+      filter.nodeIdFilters,
       "\n    Mininum component size: ",
       filter.minCompSize,
       "\n    Maximum component size: ",
@@ -69,6 +72,7 @@ export function FilterControl() {
 
       filteredGraphData = filterLasso(filteredGraphData, filter.lassoSelection);
       filteredGraphData = filterNodeAttribs(filteredGraphData, filter.nodeFilter);
+      filteredGraphData = filterNodeIds(filteredGraphData, filter.nodeIdFilters);
       filteredGraphData = filterNodesExist(filteredGraphData);
 
       filteredGraphData = filterThreshold(filteredGraphData, filter.linkThreshold);
@@ -97,6 +101,7 @@ export function FilterControl() {
     filter.linkThreshold,
     filter.linkFilter,
     filter.nodeFilter,
+    filter.nodeIdFilters,
     filter.minCompSize,
     filter.maxCompSize,
     filter.compDensity,

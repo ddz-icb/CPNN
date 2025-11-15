@@ -7,6 +7,8 @@ export const nodeFilterInit = true;
 export const linkFilterInit = true;
 export const linkFilterTextInit = "";
 export const nodeFilterTextInit = "";
+export const nodeIdFiltersInit = [];
+export const nodeIdFilterTextInit = "";
 export const minKCoreSizeInit = 0;
 export const compDensityInit = 0;
 export const lassoInit = false;
@@ -19,6 +21,8 @@ export const filterInit = {
   linkFilterText: linkFilterTextInit,
   nodeFilter: nodeFilterInit,
   nodeFilterText: nodeFilterTextInit,
+  nodeIdFilters: nodeIdFiltersInit,
+  nodeIdFilterText: nodeIdFilterTextInit,
   minCompSize: minCompSizeInit,
   minCompSizeText: minCompSizeInit,
   maxCompSize: maxCompSizeInit,

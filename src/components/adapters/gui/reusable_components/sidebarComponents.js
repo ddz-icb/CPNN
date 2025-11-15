@@ -107,7 +107,7 @@ export function CodeEditorBlock({ text, onClick, compilerError, defaultValue, te
         <div className="code-editor-container">
           <textarea ref={textareaRef} defaultValue={defaultValue}></textarea>
         </div>
-        <Button onClick={onClick} text="Run" />
+        <Button onClick={onClick} text="Apply" />
       </div>
       {compilerError && <span className="sidebar-control-helper text-warning">{compilerError}</span>}
     </div>

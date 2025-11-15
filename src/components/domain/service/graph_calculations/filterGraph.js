@@ -307,6 +307,32 @@ export function filterNodeAttribs(graphData, filterRequest) {
   return graphData;
 }
 
+export function filterNodeIds(graphData, nodeIdFilters) {
+  if (!Array.isArray(nodeIdFilters) || nodeIdFilters.length === 0) return graphData;
+
+  const normalizedFilters = nodeIdFilters
+    .map((filter) => {
+      if (!filter) return null;
+      if (typeof filter === "string") return filter.toLowerCase();
+      if (typeof filter === "object" && filter.normalizedValue) return filter.normalizedValue;
+      if (typeof filter === "object" && filter.value) return filter.value.toString().toLowerCase();
+      return null;
+    })
+    .filter((value) => typeof value === "string" && value.length > 0);
+
+  if (normalizedFilters.length === 0) return graphData;
+
+  const filteredNodes = graphData.nodes.filter((node) => {
+    const nodeId = node?.id?.toString().toLowerCase() || "";
+    return !normalizedFilters.some((normalizedValue) => nodeId.includes(normalizedValue));
+  });
+
+  return {
+    ...graphData,
+    nodes: filteredNodes,
+  };
+}
+
 export function filterActiveNodesForPixi(circles, nodeLabels, showNodeLabels, graphData, nodeMap) {
   circles.children.forEach((circle) => (circle.visible = false));
   nodeLabels.children.forEach((label) => (label.visible = false));
