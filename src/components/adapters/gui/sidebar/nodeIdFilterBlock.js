@@ -68,12 +68,12 @@ export function NodeIdFilterBlock() {
   return (
     <>
       <CodeEditorBlock
-        text={"Filter Nodes by ID"}
+        text={"Filter Nodes by Name / ID"}
         textareaRef={textareaRef}
         compilerError={compilerError}
         onClick={handleRunNodeIdFilter}
         defaultValue={nodeIdFilterText}
-        infoHeading={"Filter Nodes by Node ID"}
+        infoHeading={"Filter Nodes by Name / ID"}
         infoDescription={nodeIdFilterDescription}
       />
       {nodeIdFilters.length > 0 && (
@@ -81,6 +81,7 @@ export function NodeIdFilterBlock() {
           heading={"Applied Node ID Filters"}
           data={nodeIdFilters}
           displayKey={"label"}
+          secondaryKey={"countLabel"}
           ActionIcon={DeleteIcon}
           onActionIconClick={handleRemoveNodeIdFilter}
           actionIconTooltipContent={() => "Remove node id filter"}
@@ -99,7 +100,8 @@ function mapFiltersWithCounts(filters, nodes) {
       value,
       normalizedValue,
       count,
-      label: formatNodeIdFilterLabel(value, count),
+      label: value,
+      countLabel: formatNodeIdFilterLabel(count),
     };
   });
 }
@@ -112,6 +114,6 @@ function computeNodeIdFilterCount(normalizedValue, nodes) {
   }, 0);
 }
 
-function formatNodeIdFilterLabel(value, count) {
-  return `${value} – ${count} node${count === 1 ? "" : "s"}`;
+function formatNodeIdFilterLabel(count) {
+  return `Removed nodes: ${count}`;
 }

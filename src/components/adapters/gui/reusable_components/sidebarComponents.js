@@ -187,6 +187,7 @@ export function TableList({
   heading,
   data,
   displayKey,
+  secondaryKey,
   onItemClick,
   ActionIcon,
   onActionIconClick,
@@ -216,7 +217,8 @@ export function TableList({
                     "data-tooltip-content": itemTooltipContent(item),
                   })}
                 >
-                  <span>{displayKey ? item[displayKey] : item}</span>
+                  <span className="item-table-primary-text">{displayKey ? item[displayKey] : item}</span>
+                  {secondaryKey && item[secondaryKey] && <span className="item-table-secondary-text">{item[secondaryKey]}</span>}
                 </td>
 
                 {ActionIcon && (

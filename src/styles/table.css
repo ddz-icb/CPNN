@@ -81,6 +81,25 @@
 
 .item-table-text {
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sidebar-card-gap-y);
+}
+
+.item-table-primary-text {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+.item-table-secondary-text {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  background-color: color-mix(in srgb, var(--color-accent) 12%, transparent 88%);
+  border-radius: var(--radius);
+  padding: 0.1rem 0.5rem;
+  white-space: nowrap;
+  margin-left: 1rem;
 }
 
 .item-table-logo {
