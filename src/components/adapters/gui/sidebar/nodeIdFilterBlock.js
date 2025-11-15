@@ -93,6 +93,7 @@ export function NodeIdFilterBlock() {
           ActionIcon={DeleteIcon}
           onActionIconClick={handleRemoveNodeIdFilter}
           actionIconTooltipContent={() => "Remove node id filter"}
+          dark={true}
         />
       )}
     </>
