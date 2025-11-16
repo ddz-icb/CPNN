@@ -27,17 +27,18 @@
   background-color: var(--color-switch-track);
   color: var(--color-accent-contrast);
   padding-inline: 0.4rem;
+  transition: background-color var(--motion-duration-fast) var(--motion-ease-standard), color var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.button-rect:hover,
+.button-rect:focus-visible {
+  background-color: var(--color-button-hover);
+  color: var(--color-accent-contrast);
 }
 
 .light .button-rect {
   background-color: var(--color-button-surface);
   box-shadow: var(--shadow-soft);
-}
-
-.light .button-rect:hover,
-.light .button-rect:focus-visible {
-  background-color: var(--color-button-hover);
-  color: var(--color-accent-contrast);
 }
 
 button svg,
