@@ -90,11 +90,6 @@
   color: var(--color-text-primary);
 }
 
-.input-field.large {
-  width: 20rem;
-  height: 1.5rem;
-}
-
 .input-field:focus-visible,
 [data-slot="input"].input-field:focus-visible {
   border-color: var(--color-input-border-focus);
