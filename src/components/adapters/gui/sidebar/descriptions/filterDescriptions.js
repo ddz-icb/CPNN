@@ -117,8 +117,7 @@ export const nodeIdFilterDescription = (
   <div>
     <p className="margin-0">
       Provide one node id substring per line (or separate them by commas) to remove every node whose id contains the substring. For example,
-      entering <PopupTextField textInside={"TTN"} /> hides all nodes containing "TTN" anywhere in their id. Leave the editor empty and run it to
-      clear the filter.
+      entering <PopupTextField textInside={"TTN"} /> hides all nodes containing "TTN" anywhere in their id.
     </p>
   </div>
 );
