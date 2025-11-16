@@ -2,7 +2,7 @@
   display: flex;
   align-items: stretch;
   width: var(--sidebar-control-main-width);
-  border-radius: var(--radius-xs);
+  border-radius: var(--radius);
   overflow: hidden;
 }
 
@@ -13,6 +13,7 @@
   width: 100%;
   height: auto;
   border: var(--border-thin) solid var(--color-border-subtle);
+  border-radius: var(--radius);
   box-sizing: border-box;
   padding: 0;
   font-size: 12px;
