@@ -5,6 +5,7 @@ import { FilterSidebar } from "./filterSidebar.js";
 import { PhysicsSidebar } from "./physicsSidebar.js";
 import { DataSidebar } from "./dataSidebar.js";
 import { SelectionSidebar } from "./selectionSidebar.js";
+import { SearchSidebar } from "./searchSidebar.js";
 import { AppearanceSidebar } from "./appearanceSidebar.js";
 import { ExportSidebar } from "./exportSidebar.js";
 
@@ -14,6 +15,7 @@ export function Sidebar(props) {
   const sidebarComponents = {
     Selection: <SelectionSidebar handleNavItemClick={(item) => setActiveNavItem(item)} />,
     Data: <DataSidebar {...props} />,
+    Search: <SearchSidebar />,
     Filter: <FilterSidebar />,
     Physics: <PhysicsSidebar />,
     Appearance: <AppearanceSidebar {...props} />,

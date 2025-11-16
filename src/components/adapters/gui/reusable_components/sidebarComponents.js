@@ -94,7 +94,16 @@ export function LassoSelectionBlock({ selectionCount, onClearSelection }) {
   );
 }
 
-export function CodeEditorBlock({ text, onClick, compilerError, defaultValue, textareaRef, infoHeading, infoDescription }) {
+export function CodeEditorBlock({
+  text,
+  onClick,
+  compilerError,
+  defaultValue,
+  textareaRef,
+  infoHeading,
+  infoDescription,
+  buttonText = "Apply",
+}) {
   return (
     <div className="block-section block-section-stack">
       <div className="sidebar-control-header">
@@ -107,7 +116,7 @@ export function CodeEditorBlock({ text, onClick, compilerError, defaultValue, te
         <div className="code-editor-container">
           <textarea ref={textareaRef} defaultValue={defaultValue}></textarea>
         </div>
-        <Button onClick={onClick} text="Apply" />
+        <Button onClick={onClick} text={buttonText} />
       </div>
       {compilerError && <span className="sidebar-control-helper text-warning">{compilerError}</span>}
     </div>

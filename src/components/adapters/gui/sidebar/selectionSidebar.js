@@ -3,11 +3,13 @@ import { ReactComponent as MagnetIcon } from "../../../../assets/icons/magnet.sv
 import { ReactComponent as FilterIcon } from "../../../../assets/icons/filter.svg";
 import { ReactComponent as PaletteIcon } from "../../../../assets/icons/colorPalette.svg";
 import { ReactComponent as DownloadIcon } from "../../../../assets/icons/download.svg";
+import { ReactComponent as SearchIcon } from "../../../../assets/icons/search.svg";
 
 export function SelectionSidebar({ handleNavItemClick }) {
   return (
     <>
       <NavItem text={"Data"} icon={<DataIcon />} onClick={() => handleNavItemClick("Data")} />
+      <NavItem text={"Search"} icon={<SearchIcon />} onClick={() => handleNavItemClick("Search")} />
       <NavItem text={"Filter"} icon={<FilterIcon />} onClick={() => handleNavItemClick("Filter")} />
       <NavItem text={"Physics"} icon={<MagnetIcon />} onClick={() => handleNavItemClick("Physics")}></NavItem>
       <NavItem text={"Appearance"} icon={<PaletteIcon />} onClick={() => handleNavItemClick("Appearance")}></NavItem>
