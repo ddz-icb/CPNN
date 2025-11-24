@@ -54,7 +54,6 @@
     "pandas-js": "^0.2.4",
     "papaparse": "^5.5.2",
     "path-browserify": "^1.0.1",
-    "pixi-sdf-text": "^1.0.0",
     "pixi-viewport": "^6.0.3",
     "pixi.js": "^8.9.1",
     "polyfills": "^2.1.1",
