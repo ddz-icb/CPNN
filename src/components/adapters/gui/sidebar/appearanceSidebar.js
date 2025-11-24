@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
-import { ReactComponent as TrashIcon } from "../../../../assets/icons/trash.svg";
+import { SvgIcon } from "../reusable_components/SvgIcon.jsx";
+import trashSvg from "../../../../assets/icons/trash.svg?raw";
 import { SwitchBlock, Popup, TableList, SliderBlock, Button, PopupTextField } from "../reusable_components/sidebarComponents.js";
 import { colorschemeCsv } from "../../../../assets/exampleColorschemeCSV.js";
 import { downloadCsvFile } from "../../../domain/service/download/download.js";
@@ -151,7 +152,7 @@ function UploadedColorschemes() {
           setSelectSchemePopup(true);
         }}
         itemTooltipContent={() => "Replace Node/Link Color Scheme"}
-        ActionIcon={TrashIcon}
+        ActionIcon={(props) => <SvgIcon svg={trashSvg} {...props} />}
         showActionIconOn={(colorschemeName) => !isDefaultColorscheme(colorschemeName)}
         onActionIconClick={(colorschemeName) => colorschemeService.handleDeleteColorscheme(colorschemeName)}
         actionIconTooltipContent={() => "Delete Color Scheme"}

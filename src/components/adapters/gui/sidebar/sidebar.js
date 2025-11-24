@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { ReactComponent as CloseIcon } from "../../../../assets/icons/x.svg";
+import { SvgIcon } from "../reusable_components/SvgIcon.jsx";
+import xSvg from "../../../../assets/icons/x.svg?raw";
 
 import { FilterSidebar } from "./filterSidebar.js";
 import { PhysicsSidebar } from "./physicsSidebar.js";
@@ -65,7 +66,7 @@ function BackBar({ activeNavItem, onClick }) {
         <p className="link-text">{activeNavItem}</p>
       </div>
       <button className="back-close" onClick={onClick} type="button" aria-label="Close sidebar">
-        <CloseIcon />
+        <SvgIcon svg={xSvg} />
       </button>
     </li>
   );

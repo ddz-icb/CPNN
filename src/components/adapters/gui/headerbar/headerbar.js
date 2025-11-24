@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { ReactComponent as EyeIcon } from "../../../../assets/icons/eye.svg";
-import { ReactComponent as XIcon } from "../../../../assets/icons/x.svg";
+import { SvgIcon } from "../reusable_components/SvgIcon.jsx";
+import eyeSvg from "../../../../assets/icons/eye.svg?raw";
+import xSvg from "../../../../assets/icons/x.svg?raw";
 import { HeaderButton } from "../reusable_components/headerbarComponents.js";
 import { HeaderbarColorMapping } from "./headerbarMapping.js";
 
@@ -11,7 +12,7 @@ export function HeaderBar() {
     <div className="headerbar-overlay">
       <HeaderButton
         onClick={() => setIsMappingActive(!isMappingActive)}
-        icon={isMappingActive ? <XIcon /> : <EyeIcon />}
+        icon={isMappingActive ? <SvgIcon svg={xSvg} /> : <SvgIcon svg={eyeSvg} />}
         tooltip={isMappingActive ? "" : "View Mapping"}
         tooltipId={isMappingActive ? "close-colormapping-tooltip" : "open-colormapping-tooltip"}
       />

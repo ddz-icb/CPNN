@@ -1,4 +1,5 @@
-import { ReactComponent as XIcon } from "../../../../assets/icons/x.svg";
+import { SvgIcon } from "../reusable_components/SvgIcon.jsx";
+import xSvg from "../../../../assets/icons/x.svg?raw";
 import { useError } from "../../../adapters/state/errorState.js";
 
 export function Error() {
@@ -12,7 +13,7 @@ export function Error() {
             <div className="error-header pad-bottom-1">
               <b>Warning</b>
               <span className="error-button" onClick={() => clearError()}>
-                <XIcon />
+                <SvgIcon svg={xSvg} />
               </span>
             </div>
             <div>{error}</div>

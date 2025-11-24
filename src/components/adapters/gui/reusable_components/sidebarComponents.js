@@ -1,7 +1,8 @@
 import { ButtonCN } from "./shadcn_blocks/buttonCN.jsx";
 import { Fragment, useState } from "react";
-import { ReactComponent as InfoCircleIcon } from "../../../../assets/icons/infoCircle.svg";
-import { ReactComponent as XIcon } from "../../../../assets/icons/x.svg";
+import { SvgIcon } from "./SvgIcon.jsx";
+import infoCircleSvg from "../../../../assets/icons/infoCircle.svg?raw";
+import xSvg from "../../../../assets/icons/x.svg?raw";
 import { handleFieldBlur, handleFieldChange, handleSliderChange } from "../handlers/buttonHandlerFunctions.js";
 import { useId } from "react";
 import { InputCN } from "./shadcn_blocks/inputFieldCN.jsx";
@@ -133,7 +134,7 @@ export function Popup({ heading, description, isOpen, setIsOpen, widePopup, chil
           <div className="popup-header pad-bottom-1">
             <span className="popup-heading">{heading}</span>
             <span className="svg-button" onClick={() => setIsOpen(false)}>
-              <XIcon />
+              <SvgIcon svg={xSvg} className="popup-close-icon" />
             </span>
           </div>
           <div className="block-section text-primary">{description}</div>
@@ -163,7 +164,7 @@ export function InfoButtonPopup({ heading, description, widePopup, children }) {
   return (
     <>
       <button type="button" className="info-button" onClick={() => setIsOpen(!isOpen)}>
-        <InfoCircleIcon className="info-button-icon" />
+        <SvgIcon svg={infoCircleSvg} className="info-button-icon" />
       </button>
       {isOpen && (
         <Popup heading={heading} description={description} children={children} isOpen={isOpen} setIsOpen={setIsOpen} widePopup={widePopup} />

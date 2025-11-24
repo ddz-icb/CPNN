@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ReactComponent as DeleteIcon } from "../../../../assets/icons/delete.svg";
+import { SvgIcon } from "../reusable_components/SvgIcon.jsx";
+import deleteSvg from "../../../../assets/icons/delete.svg?raw";
+
+const DeleteIcon = (props) => <SvgIcon svg={deleteSvg} {...props} />;
 
 import { CodeEditorBlock, TableList } from "../reusable_components/sidebarComponents.js";
 import { handleEditorChange, runCodeEditor } from "../handlers/buttonHandlerFunctions.js";

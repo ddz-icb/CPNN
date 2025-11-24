@@ -1,4 +1,5 @@
-import { ReactComponent as XIcon } from "../../../../assets/icons/x.svg";
+import { SvgIcon } from "./SvgIcon.jsx";
+import xSvg from "../../../../assets/icons/x.svg?raw";
 
 export function TooltipPopup({ heading, close, children, style, footer }) {
   return (
@@ -7,7 +8,7 @@ export function TooltipPopup({ heading, close, children, style, footer }) {
         <div className="tooltip-popup-header">
           <span className="tooltip-popup-heading">{heading}</span>
           <span className="svg-button" onClick={() => close()}>
-            <XIcon />
+            <SvgIcon svg={xSvg} />
           </span>
         </div>
         <div className="tooltip-popup-body">{children}</div>

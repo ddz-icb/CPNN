@@ -1,4 +1,5 @@
-import { ReactComponent as DownloadIcon } from "../../../../assets/icons/download.svg";
+import { SvgIcon } from "../reusable_components/SvgIcon.jsx";
+import downloadSvg from "../../../../assets/icons/download.svg?raw";
 import { useDownload } from "../../../adapters/state/downloadState.js";
 import { TableList } from "../reusable_components/sidebarComponents.js";
 
@@ -20,7 +21,7 @@ export function ExportSidebar() {
       heading={"Choose your preferred export"}
       data={exportData}
       displayKey={"text"}
-      ActionIcon={DownloadIcon}
+      ActionIcon={(props) => <SvgIcon svg={downloadSvg} {...props} />}
       onActionIconClick={(item) => setDownload(item.type, !download[item.type])}
       actionIconTooltipContent={() => "Download"}
       dark={true}
