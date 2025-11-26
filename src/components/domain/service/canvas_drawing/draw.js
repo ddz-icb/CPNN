@@ -122,9 +122,6 @@ export function highlightNode(node, color) {
   overlay.circle(0, 0, radius + 6).stroke({ color: highlightColor, width: 3, alpha: 0.6, alignment: 0.5 });
   overlay.circle(0, 0, radius + 10).stroke({ color: highlightColor, width: 2, alpha: 0.35, alignment: 0.5 });
   overlay.circle(0, 0, radius + 14).stroke({ color: highlightColor, width: 1, alpha: 0.25, alignment: 0.5 });
-  const scaleX = circle.parent?.worldTransform?.a || 1;
-  const scaleY = circle.parent?.worldTransform?.d || 1;
-  overlay.scale.set(1 / scaleX, 1 / scaleY);
 
   const parent = circle.parent;
   if (parent?.addChild) {
@@ -147,10 +144,6 @@ function updateHighlightOverlay(circle) {
   const overlay = circle.highlightOverlay;
   overlay.x = circle.x;
   overlay.y = circle.y;
-
-  const scaleX = circle.parent?.worldTransform?.a || 1;
-  const scaleY = circle.parent?.worldTransform?.d || 1;
-  overlay.scale.set(1 / scaleX, 1 / scaleY);
 }
 
 export function updateHighlightOverlays(nodeMap) {
