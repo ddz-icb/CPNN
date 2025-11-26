@@ -20,7 +20,7 @@ export function SearchSidebar() {
   const [query, setQuery] = useState("");
   const highlightedNodesRef = useRef([]);
 
-  const nodes = graphState.originGraph?.data?.nodes ?? [];
+  const nodes = graphState.graph?.data?.nodes ?? [];
   const normalizedQuery = query.trim().toLowerCase();
 
   const handleEditorChange = useCallback((editor) => {
@@ -77,6 +77,7 @@ export function SearchSidebar() {
   const { nodeResults, nodeTotal } = useMemo(() => {
     return {
       nodeResults: matchingNodes.slice(0, MAX_RESULTS).map((node) => ({
+        nodeId: node.id,
         primaryText: getNodeLabel(node),
         secondaryText: formatNodeSecondary(node),
       })),
@@ -102,6 +103,15 @@ export function SearchSidebar() {
   const nodeOverflow = nodeTotal > MAX_RESULTS;
   const hasActiveSearch = showResults;
 
+  const handleResultClick = useCallback(
+    (item) => {
+      const node = matchingNodes.find((n) => n.id === item?.nodeId);
+      if (!node) return;
+      applySearchHighlights([node]);
+    },
+    [applySearchHighlights, matchingNodes]
+  );
+
   return (
     <>
       <CodeEditorBlock
@@ -114,7 +124,13 @@ export function SearchSidebar() {
         buttonText={hasActiveSearch ? "Clear" : "Search"}
       />
       <>
-        <TableList heading={`Node Matches (${nodeTotal})`} data={nodeResults} displayKey={"primaryText"} secondaryKey={"secondaryText"} />
+        <TableList
+          heading={`Node Matches (${nodeTotal})`}
+          data={nodeResults}
+          displayKey={"primaryText"}
+          secondaryKey={"secondaryText"}
+          onItemClick={handleResultClick}
+        />
         {nodeOverflow && <OverflowHint total={nodeTotal} />}
       </>
     </>
