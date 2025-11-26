@@ -92,8 +92,15 @@ export function SearchSidebar() {
     applySearchHighlights(matches);
   }, [applySearchHighlights, nodes, searchValue]);
 
+  const handleClear = useCallback(() => {
+    clearSearchHighlights();
+    setQuery("");
+    setSearchValue("");
+  }, [clearSearchHighlights]);
+
   const showResults = Boolean(normalizedQuery);
   const nodeOverflow = nodeTotal > MAX_RESULTS;
+  const hasActiveSearch = showResults;
 
   return (
     <>
@@ -101,10 +108,10 @@ export function SearchSidebar() {
         text={"Search Graph Data"}
         textareaRef={textareaRef}
         defaultValue={searchValue}
-        onClick={handleSearch}
+        onClick={hasActiveSearch ? handleClear : handleSearch}
         infoHeading={"Search Graph Data"}
         infoDescription={"Search for nodes in the current graph by their name / ID."}
-        buttonText={"Search"}
+        buttonText={hasActiveSearch ? "Clear" : "Search"}
       />
       <>
         <TableList heading={`Node Matches (${nodeTotal})`} data={nodeResults} displayKey={"primaryText"} secondaryKey={"secondaryText"} />
