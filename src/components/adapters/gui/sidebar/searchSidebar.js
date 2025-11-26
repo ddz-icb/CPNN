@@ -1,18 +1,24 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { useGraphState } from "../../state/graphState.js";
+import { useRenderState } from "../../state/canvasState.js";
 import { useTheme } from "../../state/themeState.js";
+import { usePixiState } from "../../state/pixiState.js";
 import { useSidebarCodeEditor } from "../reusable_components/useSidebarCodeEditor.js";
 import { CodeEditorBlock, TableList } from "../reusable_components/sidebarComponents.js";
+import { clearNodeHighlight, highlightNode, render as renderStage } from "../../../domain/service/canvas_drawing/draw.js";
 
 const MAX_RESULTS = 20;
 
 export function SearchSidebar() {
   const { graphState } = useGraphState();
   const { theme } = useTheme();
+  const { pixiState } = usePixiState();
+  const { renderState } = useRenderState();
   const textareaRef = useRef(null);
   const [searchValue, setSearchValue] = useState("");
   const [query, setQuery] = useState("");
+  const highlightedNodesRef = useRef([]);
 
   const nodes = graphState.originGraph?.data?.nodes ?? [];
   const normalizedQuery = query.trim().toLowerCase();
@@ -28,30 +34,63 @@ export function SearchSidebar() {
     themeName: theme.name,
   });
 
-  const { nodeResults, nodeTotal } = useMemo(() => {
-    if (!normalizedQuery) {
-      return {
-        nodeResults: [],
-        nodeTotal: 0,
-      };
-    }
+  const clearSearchHighlights = useCallback(() => {
+    if (!pixiState?.nodeMap || highlightedNodesRef.current.length === 0) return;
 
-    const filteredNodes = nodes
-      .filter((node) => nodeMatchesQuery(node, normalizedQuery))
-      .map((node) => ({
+    highlightedNodesRef.current.forEach((nodeId) => {
+      const entry = pixiState.nodeMap[nodeId];
+      if (!entry?.circle) return;
+      clearNodeHighlight(entry);
+    });
+    highlightedNodesRef.current = [];
+
+    if (renderState?.app) {
+      renderStage(renderState.app);
+    }
+  }, [pixiState?.nodeMap, renderState?.app]);
+
+  useEffect(() => {
+    return () => clearSearchHighlights();
+  }, [clearSearchHighlights]);
+
+  const applySearchHighlights = useCallback(
+    (matchingNodes) => {
+      clearSearchHighlights();
+
+      if (!pixiState?.nodeMap || !matchingNodes?.length) return;
+
+      matchingNodes.forEach((node) => {
+        const entry = pixiState.nodeMap[node.id];
+        if (!entry?.circle) return;
+        highlightNode(entry, theme.circleBorderColor);
+        highlightedNodesRef.current.push(node.id);
+      });
+
+      if (renderState?.app) {
+        renderStage(renderState.app);
+      }
+    },
+    [clearSearchHighlights, pixiState?.nodeMap, renderState?.app, theme.circleBorderColor]
+  );
+
+  const matchingNodes = useMemo(() => getMatchingNodes(nodes, normalizedQuery), [nodes, normalizedQuery]);
+  const { nodeResults, nodeTotal } = useMemo(() => {
+    return {
+      nodeResults: matchingNodes.slice(0, MAX_RESULTS).map((node) => ({
         primaryText: getNodeLabel(node),
         secondaryText: formatNodeSecondary(node),
-      }));
-
-    return {
-      nodeResults: filteredNodes.slice(0, MAX_RESULTS),
-      nodeTotal: filteredNodes.length,
+      })),
+      nodeTotal: matchingNodes.length,
     };
-  }, [nodes, normalizedQuery]);
+  }, [matchingNodes]);
 
-  const handleSearch = () => {
+  const handleSearch = useCallback(() => {
+    const normalizedSearch = searchValue.trim().toLowerCase();
+    const matches = getMatchingNodes(nodes, normalizedSearch);
+
     setQuery(searchValue);
-  };
+    applySearchHighlights(matches);
+  }, [applySearchHighlights, nodes, searchValue]);
 
   const showResults = Boolean(normalizedQuery);
   const nodeOverflow = nodeTotal > MAX_RESULTS;
@@ -77,6 +116,14 @@ export function SearchSidebar() {
 
 function OverflowHint({ total }) {
   return <div className="text-secondary pad-top-05">Showing the first {MAX_RESULTS} of {total} matches.</div>;
+}
+
+function getMatchingNodes(nodes, normalizedQuery) {
+  if (!normalizedQuery) {
+    return [];
+  }
+
+  return nodes.filter((node) => nodeMatchesQuery(node, normalizedQuery));
 }
 
 function nodeMatchesQuery(node, query) {

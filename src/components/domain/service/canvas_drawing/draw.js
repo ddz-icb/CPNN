@@ -48,6 +48,8 @@ export function redraw(graphData, lines, linkWidth, linkColorscheme, linkAttribs
     drawLine(lines, link, linkWidth, linkColorscheme.data, linkAttribsToColorIndices);
   }
 
+  updateHighlightOverlays(nodeMap);
+
   if (showNodeLabels) {
     graphData.nodes.forEach((n) => {
       const { node, circle, nodeLabel } = nodeMap[n.id];
@@ -81,6 +83,79 @@ export function drawCircle(circle, node, circleBorderColor, colorscheme, nodeAtt
       });
   }
   return circle;
+}
+
+export function clearNodeHighlight(node) {
+  if (!node) return;
+  const circle = node.circle ?? node;
+  if (!circle?.highlightOverlay) return;
+
+  const overlay = circle.highlightOverlay;
+  if (overlay && !overlay.destroyed) {
+    if (overlay.parent) {
+      overlay.parent.removeChild(overlay);
+    }
+    overlay.destroy();
+  }
+  circle.highlightOverlay = null;
+}
+
+export function highlightNode(node, color) {
+  if (!node) return null;
+
+  const circle = node.circle ?? node;
+  if (!circle) return null;
+  if (circle.visible === false) {
+    clearNodeHighlight(circle);
+    return null;
+  }
+
+  clearNodeHighlight(circle);
+
+  const highlightColor = color || "#ffd400";
+  const overlay = new PIXI.Graphics();
+  overlay.eventMode = "none";
+  overlay.alpha = 0.7;
+  overlay.blendMode = "add";
+  overlay.x = circle.x;
+  overlay.y = circle.y;
+  overlay.circle(0, 0, radius + 6).stroke({ color: highlightColor, width: 3, alpha: 0.6, alignment: 0.5 });
+  overlay.circle(0, 0, radius + 10).stroke({ color: highlightColor, width: 2, alpha: 0.35, alignment: 0.5 });
+  overlay.circle(0, 0, radius + 14).stroke({ color: highlightColor, width: 1, alpha: 0.25, alignment: 0.5 });
+  const scaleX = circle.parent?.worldTransform?.a || 1;
+  const scaleY = circle.parent?.worldTransform?.d || 1;
+  overlay.scale.set(1 / scaleX, 1 / scaleY);
+
+  const parent = circle.parent;
+  if (parent?.addChild) {
+    parent.addChild(overlay);
+  } else {
+    circle.addChild?.(overlay);
+  }
+  circle.highlightOverlay = overlay;
+
+  return overlay;
+}
+
+function updateHighlightOverlay(circle) {
+  if (!circle?.highlightOverlay || circle.highlightOverlay.destroyed) return;
+  if (circle.visible === false) {
+    clearNodeHighlight(circle);
+    return;
+  }
+
+  const overlay = circle.highlightOverlay;
+  overlay.x = circle.x;
+  overlay.y = circle.y;
+
+  const scaleX = circle.parent?.worldTransform?.a || 1;
+  const scaleY = circle.parent?.worldTransform?.d || 1;
+  overlay.scale.set(1 / scaleX, 1 / scaleY);
+}
+
+export function updateHighlightOverlays(nodeMap) {
+  if (!nodeMap) return;
+  Object.values(nodeMap).forEach(({ circle }) => updateHighlightOverlay(circle));
 }
 
 export function drawCircleCanvas(ctx, node, circle, circleBorderColor, colorscheme, nodeAttribsToColorIndices) {
