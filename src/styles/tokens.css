@@ -185,7 +185,7 @@
   --color-border-subtle: color-mix(in srgb, var(--color-accent) 18%, #e9edf9 82%);
   --color-border-accent: color-mix(in srgb, var(--color-accent) 75%, #c5d5ff 25%);
   --color-text-primary: #0f172a;
-  --color-text-secondary: #111827;
+  --color-text-secondary: #1d3aa0;
   --color-text-muted: #334155;
   --color-text-inverse: #eef0ff;
   --color-accent: #0162d7;
