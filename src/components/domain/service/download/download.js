@@ -337,7 +337,7 @@ export function downloadNodeIdsCsv(nodes, fileName) {
 
   const rows = nodes.map((node) => node.id ?? "");
   const baseName = getFileNameWithoutExtension(fileName);
-  downloadCsvFile(rows.join(","), `${baseName}_node_ids`);
+  downloadCsvFile(rows.join("\n"), `${baseName}_node_ids`);
 }
 
 export function downloadLegendPdf(graphName, linkColorscheme, linkAttribsToColorIndices, nodeColorscheme, nodeAttribsToColorIndices, mapping) {
