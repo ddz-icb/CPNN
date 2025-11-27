@@ -7,7 +7,7 @@ export function TooltipPopup({ heading, close, children, style, footer }) {
       <div className="tooltip-popup-content">
         <div className="tooltip-popup-header">
           <span className="tooltip-popup-heading">{heading}</span>
-          <button className="back-close" type="button" onClick={() => close()}>
+          <button className="back-close" type="button" onClick={() => close()} aria-label="Close tooltip">
             <SvgIcon svg={xSvg} />
           </button>
         </div>

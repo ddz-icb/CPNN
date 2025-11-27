@@ -82,6 +82,7 @@
 .input-field {
   flex-shrink: 0;
   text-align: center;
+  font-size: var(--font-size-m);
   -moz-appearance: textfield;
   appearance: none;
   -webkit-appearance: none;
