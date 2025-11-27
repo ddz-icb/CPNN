@@ -1,9 +1,10 @@
-import { useRef } from "react";
+import { useCallback, useRef } from "react";
 
 import { useSearchState, searchStateInit } from "../../state/searchState.js";
 import { useSidebarCodeEditor } from "../reusable_components/useSidebarCodeEditor.js";
 import { CodeEditorBlock, TableList } from "../reusable_components/sidebarComponents.js";
 import { useTheme } from "../../state/themeState.js";
+import { handleEditorChange as handleEditorChangeHelper } from "../handlers/buttonHandlerFunctions.js";
 
 const MAX_RESULTS = 30;
 
@@ -14,7 +15,10 @@ export function SearchSidebar() {
 
   const textareaRef = useRef(null);
 
-  const handleEditorChange = (editor) => setSearchState("searchValue", editor.getValue());
+  const handleEditorChange = useCallback(
+    (editor) => handleEditorChangeHelper(editor, (value) => setSearchState("searchValue", value)),
+    [setSearchState]
+  );
 
   const handleSearch = () => {
     setSearchState("query", searchValue.trim().toLowerCase());
