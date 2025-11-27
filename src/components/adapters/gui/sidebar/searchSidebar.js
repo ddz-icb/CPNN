@@ -75,7 +75,7 @@ export function SearchSidebar() {
     });
 
     setSearchState("highlightedNodeIds", newHighlightedIds);
-  }, [matchingNodes, nodeMap, query, setSearchState, theme.highlightColor]);
+  }, [matchingNodes, theme.highlightColor]);
 
   const nodeResults = (matchingNodes ?? []).slice(0, MAX_RESULTS).map((node) => ({
     nodeId: node.id,
