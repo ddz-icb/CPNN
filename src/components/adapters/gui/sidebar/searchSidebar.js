@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useMemo, useRef } from "react";
 
 import { useGraphState } from "../../state/graphState.js";
 import { useRenderState } from "../../state/canvasState.js";
@@ -86,11 +86,10 @@ export function SearchSidebar() {
   const hasActiveSearch = showResults;
 
   const handleSearch = useCallback(() => {
-    console.log("HHEE?", nodes)
     const normalizedSearch = searchValue.trim().toLowerCase();
     const matches = getMatchingNodes(nodes, normalizedSearch);
 
-    setSearchState("query", searchValue.trim().toLowerCase());
+    setSearchState("query", normalizedSearch);
     applySearchHighlights(matches);
   }, [applySearchHighlights, nodes, searchValue, setSearchState]);
 
