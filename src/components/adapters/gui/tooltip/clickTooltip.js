@@ -110,7 +110,6 @@ export function ClickTooltip() {
   }, [adjacentNodeList.length, handleExportAdjacent, isAdjacentView, pdbId, protIdNoIsoform]);
 
   const showDetails = !isAdjacentView;
-  const has3dModel = Boolean(responsePdb?.data);
 
   return (
     <TooltipPopup heading={heading} close={() => setTooltipSettings("isClickTooltipActive", false)} style={tooltipStyle} footer={footerContent}>
@@ -122,7 +121,6 @@ export function ClickTooltip() {
           isoforms={isoforms}
           nodeGroups={nodeGroups}
           description={description}
-          showStructure={has3dModel}
           viewerRef={viewerRef}
         />
       ) : (
@@ -138,7 +136,7 @@ export function ClickTooltip() {
   );
 }
 
-function NodeDetails({ nodeId, fullName, hasPhosphosites, isoforms, nodeGroups, description, showStructure, viewerRef }) {
+function NodeDetails({ nodeId, fullName, hasPhosphosites, isoforms, nodeGroups, description, viewerRef }) {
   return (
     <>
       <TooltipPopupItem heading={"Node ID"} value={nodeId} />
@@ -153,7 +151,7 @@ function NodeDetails({ nodeId, fullName, hasPhosphosites, isoforms, nodeGroups, 
       />
       <TooltipPopupItem heading={"Gene/Protein Annotations"} value={nodeGroups.join(", ")} />
       <TooltipPopupItem heading={"Description"} value={description} />
-      {showStructure && <div className="pdb-viewer" ref={viewerRef} />}
+      <div className="pdb-viewer" ref={viewerRef} />
     </>
   );
 }
@@ -210,7 +208,7 @@ function useProteinDetails(nodeId) {
 
         if (!parsedEntries.protIdNoIsoform) return;
 
-        // const responseUniprot = await axios.get("http://localhost:3001/api/uniprot/${parsedEntries.protIdNoIsoform}`);
+        // const responseUniprot = await axios.get(`http://localhost:3001/uniprot/${parsedEntries.protIdNoIsoform}`);
         const responseUniprot = await axios.get(`https://cpnn.ddz.de/api/uniprot/${parsedEntries.protIdNoIsoform}`);
         if (isCancelled) return;
 
@@ -258,22 +256,38 @@ function useProteinDetails(nodeId) {
 function usePdbViewer(viewerRef, responsePdb, themeName, isTooltipActive) {
   const [viewer, setViewer] = useState(null);
 
+  const getTooltipBackground = useCallback(() => {
+    const tooltipEl = viewerRef.current?.closest(".tooltip") ?? viewerRef.current;
+    if (!tooltipEl) return null;
+    const { backgroundColor } = getComputedStyle(tooltipEl);
+    const match = backgroundColor?.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
+    if (!match) return backgroundColor || null;
+
+    const [, r, g, b] = match;
+    const toHex = (value) => Number(value).toString(16).padStart(2, "0");
+    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+  }, [viewerRef]);
+
   useEffect(() => {
     if (!viewerRef.current || viewer) return;
     try {
-      const config = { backgroundColor: themeName === "light" ? "0xffffff" : "0x2a2e35" };
+      const backgroundColor = getTooltipBackground() ?? (themeName === "light" ? "#ffffff" : "#2a2e35");
+      const config = { backgroundColor };
       setViewer($3Dmol.createViewer(viewerRef.current, config));
     } catch (error) {
       log.error(error);
     }
-  }, [themeName, viewerRef, viewer]);
+  }, [getTooltipBackground, themeName, viewer]);
 
   useEffect(() => {
-    if (viewer) viewer.setBackgroundColor(themeName === "light" ? "0xffffff" : "0x2a2e35");
-  }, [themeName, viewer]);
+    if (!viewer) return;
+    const backgroundColor = getTooltipBackground() ?? (themeName === "light" ? "#ffffff" : "#2a2e35");
+    viewer.setBackgroundColor(backgroundColor);
+  }, [getTooltipBackground, themeName, viewer]);
 
   useEffect(() => {
     if (!viewer || !responsePdb || !isTooltipActive) return;
+
     viewer.clear();
     viewer.addModel(responsePdb.data, "pdb");
     viewer.setStyle({}, { cartoon: { color: "spectrum" } });
