@@ -46,23 +46,14 @@ export function SearchSidebar() {
       if (circle) clearNodeHighlight(circle);
     });
     setSearchState("highlightedNodeIds", highlightedNodeIdsInit);
-
-    if (app) renderStage(app);
   };
 
   useEffect(() => {
-    const normalizedQuery = query?.trim().toLowerCase();
-    const matches = normalizedQuery ? getMatchingNodes(nodes, normalizedQuery) : matchingNodesInit;
+    if (!query || !nodes) return;
+    console.log("applying query")
 
-    const sameLength = matches.length === (matchingNodes?.length ?? 0);
-    const sameOrder = sameLength && matches.every((m, idx) => m.id === matchingNodes?.[idx]?.id);
-    if (!sameOrder) {
-      setSearchState("matchingNodes", matches);
-    }
-
-    if (!normalizedQuery) {
-      clearSearchHighlights();
-    }
+    const matches = getMatchingNodes(nodes, query);
+    setSearchState("matchingNodes", matches);
   }, [nodes, query, setSearchState]);
 
   useEffect(() => {
@@ -71,6 +62,7 @@ export function SearchSidebar() {
       return;
     }
     if (!nodeMap) return;
+    console.log("applying search highlights")
 
     clearSearchHighlights();
 
@@ -83,8 +75,6 @@ export function SearchSidebar() {
     });
 
     setSearchState("highlightedNodeIds", newHighlightedIds);
-
-    if (app) renderStage(app);
   }, [matchingNodes, nodeMap, query, setSearchState, theme.highlightColor]);
 
   const nodeResults = (matchingNodes ?? []).slice(0, MAX_RESULTS).map((node) => ({
@@ -104,7 +94,7 @@ export function SearchSidebar() {
     setAllSearchState(searchStateInit);
   };
 
-  const handleResultClick = (item) => {
+  const handleEntryHighlight = (item) => {
     const node = matchingNodes?.find((n) => n.id === item?.nodeId);
     if (!node) return;
 
@@ -129,7 +119,7 @@ export function SearchSidebar() {
         buttonText={hasActiveSearch ? "Clear" : "Search"}
       />
       <>
-        <TableList heading={`Node Matches (${nodeTotal})`} data={nodeResults} displayKey={"primaryText"} onItemClick={handleResultClick} />
+        <TableList heading={`Node Matches (${nodeTotal})`} data={nodeResults} displayKey={"primaryText"} onItemClick={handleEntryHighlight} />
         {nodeOverflow && <OverflowHint total={nodeTotal} />}
       </>
     </>
