@@ -1,15 +1,14 @@
-import { useCallback, useMemo, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 import { useGraphState } from "../../state/graphState.js";
 import { useRenderState } from "../../state/canvasState.js";
 import { useTheme } from "../../state/themeState.js";
 import { usePixiState } from "../../state/pixiState.js";
-import { useSearchState, searchStateInit, highlightedNodeIdsInit } from "../../state/searchState.js";
+import { useSearchState, searchStateInit, highlightedNodeIdsInit, matchingNodesInit } from "../../state/searchState.js";
 import { useSidebarCodeEditor } from "../reusable_components/useSidebarCodeEditor.js";
 import { CodeEditorBlock, TableList } from "../reusable_components/sidebarComponents.js";
 import { clearNodeHighlight, highlightNode, render as renderStage } from "../../../domain/service/canvas_drawing/draw.js";
-import { getMatchingNodes} from "../../../domain/service/search/search.js";
-import { getNodeIdName } from "../../../domain/service/parsing/nodeIdParsing.js";
+import { getMatchingNodes } from "../../../domain/service/search/search.js";
 
 const MAX_RESULTS = 30;
 
@@ -19,93 +18,92 @@ export function SearchSidebar() {
   const { pixiState } = usePixiState();
   const { renderState } = useRenderState();
   const { searchState, setSearchState, setAllSearchState } = useSearchState();
-  const { searchValue, query, highlightedNodeIds } = searchState;
+  const { searchValue, query, highlightedNodeIds, matchingNodes } = searchState;
 
   const textareaRef = useRef(null);
 
   const nodes = graphState.graph?.data?.nodes ?? [];
-
-  const handleEditorChange = useCallback((editor) => {
-    setSearchState("searchValue", editor.getValue());
-  }, [setSearchState]);
+  const nodeMap = pixiState?.nodeMap;
+  const app = renderState?.app;
 
   useSidebarCodeEditor({
     textareaRef,
     value: searchValue,
-    onChange: handleEditorChange,
+    onChange: (editor) => setSearchState("searchValue", editor.getValue()),
     themeName: theme.name,
   });
 
-  const clearSearchHighlights = useCallback(() => {
-    if (!pixiState?.nodeMap || highlightedNodeIds.length === 0) return;
+  const clearSearchHighlights = () => {
+    if (!nodeMap || highlightedNodeIds.length === 0) return;
 
     highlightedNodeIds.forEach((nodeId) => {
-      const {circle} = pixiState?.nodeMap[nodeId];
-      clearNodeHighlight(circle);
+      const circle = nodeMap[nodeId]?.circle;
+      if (circle) clearNodeHighlight(circle);
     });
     setSearchState("highlightedNodeIds", highlightedNodeIdsInit);
 
-    if (renderState?.app) {
-      renderStage(renderState.app);
+    if (app) renderStage(app);
+  };
+
+  useEffect(() => {
+    const normalizedQuery = query?.trim().toLowerCase();
+    const matches = normalizedQuery ? getMatchingNodes(nodes, normalizedQuery) : matchingNodesInit;
+
+    const sameLength = matches.length === (matchingNodes?.length ?? 0);
+    const sameOrder = sameLength && matches.every((m, idx) => m.id === matchingNodes?.[idx]?.id);
+    if (!sameOrder) {
+      setSearchState("matchingNodes", matches);
     }
-  }, [renderState?.app, pixiState?.nodeMap, highlightedNodeIds]);
 
-  const applySearchHighlights = useCallback(
-    (matchingNodes) => {
+    if (!normalizedQuery) {
       clearSearchHighlights();
+    }
+  }, [nodes, query, matchingNodes, setSearchState]);
 
-      if (!pixiState?.nodeMap || !matchingNodes?.length) return;
+  useEffect(() => {
+    if (!query) {
+      clearSearchHighlights();
+      return;
+    }
+    if (!nodeMap) return;
 
-      const newHighlightedIds = [];
-      matchingNodes.forEach((node) => {
-        const {circle} = pixiState?.nodeMap[node.id];
-        highlightNode(circle, theme.highlightColor);
-        newHighlightedIds.push(node.id);
-      });
-      setSearchState("highlightedNodeIds", newHighlightedIds);
+    clearSearchHighlights();
 
-      if (renderState?.app) {
-        renderStage(renderState.app);
-      }
-    },
-    [renderState?.app, clearSearchHighlights, pixiState?.nodeMap, setSearchState, theme.highlightColor, graphState.graph]
-  );
+    const newHighlightedIds = [];
+    matchingNodes?.forEach((node) => {
+      const circle = nodeMap[node.id]?.circle;
+      if (!circle) return;
+      highlightNode(circle, theme.highlightColor);
+      newHighlightedIds.push(node.id);
+    });
 
-  const matchingNodes = useMemo(() => getMatchingNodes(nodes, query), [nodes, query]);
-  const { nodeResults, nodeTotal } = useMemo(() => {
-    return {
-      nodeResults: matchingNodes.slice(0, MAX_RESULTS).map((node) => ({
-        nodeId: node.id,
-        primaryText: node.id,
-      })),
-      nodeTotal: matchingNodes.length,
-    };
-  }, [matchingNodes]);
-  const showResults = Boolean(query);
+    setSearchState("highlightedNodeIds", newHighlightedIds);
+
+    if (app) renderStage(app);
+  }, [matchingNodes, nodeMap, query, setSearchState, theme.highlightColor]);
+
+  const nodeResults = (matchingNodes ?? []).slice(0, MAX_RESULTS).map((node) => ({
+    nodeId: node.id,
+    primaryText: node.id,
+  }));
+  const nodeTotal = matchingNodes?.length ?? 0;
   const nodeOverflow = nodeTotal > MAX_RESULTS;
-  const hasActiveSearch = showResults;
+  const hasActiveSearch = Boolean(query);
 
-  const handleSearch = useCallback(() => {
-    const normalizedSearch = searchValue.trim().toLowerCase();
-    const matches = getMatchingNodes(nodes, normalizedSearch);
+  const handleSearch = () => {
+    setSearchState("query", searchValue.trim().toLowerCase());
+  };
 
-    setSearchState("query", normalizedSearch);
-    applySearchHighlights(matches);
-  }, [applySearchHighlights, nodes, searchValue, setSearchState]);
-
-  const handleClear = useCallback(() => {
+  const handleClear = () => {
     clearSearchHighlights();
     setAllSearchState(searchStateInit);
-  }, [clearSearchHighlights, setAllSearchState]);
+  };
 
-  const handleResultClick = useCallback(
-    (item) => {
-      const node = matchingNodes.find((n) => n.id === item?.nodeId);
-      if (!node) return;
-      applySearchHighlights([node]);
-    },
-    [applySearchHighlights, matchingNodes]
-  );
+  const handleResultClick = (item) => {
+    const node = matchingNodes?.find((n) => n.id === item?.nodeId);
+    if (!node) return;
+    setSearchState("matchingNodes", [node]);
+  };
 
   return (
     <>
@@ -119,12 +117,7 @@ export function SearchSidebar() {
         buttonText={hasActiveSearch ? "Clear" : "Search"}
       />
       <>
-        <TableList
-          heading={`Node Matches (${nodeTotal})`}
-          data={nodeResults}
-          displayKey={"primaryText"}
-          onItemClick={handleResultClick}
-        />
+        <TableList heading={`Node Matches (${nodeTotal})`} data={nodeResults} displayKey={"primaryText"} onItemClick={handleResultClick} />
         {nodeOverflow && <OverflowHint total={nodeTotal} />}
       </>
     </>

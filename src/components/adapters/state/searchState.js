@@ -1,13 +1,15 @@
 import { create } from "zustand";
 
-export const searchValueInit = ""
-export const queryInit = ""
-export const highlightedNodeIdsInit = []
+export const searchValueInit = "";
+export const queryInit = "";
+export const highlightedNodeIdsInit = [];
+export const matchingNodesInit = [];
 
 export const searchStateInit = {
-  value: "",
-  query: "",
-  highlightedNodeIds: [],
+  searchValue: searchValueInit,
+  query: queryInit,
+  highlightedNodeIds: highlightedNodeIdsInit,
+  matchingNodes: matchingNodesInit,
 };
 
 export const useSearchState = create((set) => ({
