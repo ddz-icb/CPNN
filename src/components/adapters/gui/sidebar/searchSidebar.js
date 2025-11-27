@@ -60,7 +60,7 @@ export function SearchSidebar() {
 
       matchingNodes.forEach((node) => {
         const {circle} = pixiState.nodeMap[node.id];
-        highlightNode(circle, theme.circleBorderColor, theme.name);
+        highlightNode(circle, theme.highlightColor);
         highlightedNodesRef.current.push(node.id);
       });
 

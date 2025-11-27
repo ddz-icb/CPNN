@@ -99,7 +99,7 @@ export function clearNodeHighlight(circle) {
   circle.highlightOverlay = null;
 }
 
-export function highlightNode(circle, color, themeName) {
+export function highlightNode(circle, highlightColor) {
   if (!circle) return null;
 
   if (circle.visible === false) {
@@ -109,16 +109,15 @@ export function highlightNode(circle, color, themeName) {
 
   clearNodeHighlight(circle);
 
-  const highlightColor = themeName === "dark" ? "#ffd400" : color || "#ffd400";
   const overlay = new PIXI.Graphics();
   overlay.eventMode = "none";
   overlay.alpha = 0.7;
   overlay.blendMode = "add";
   overlay.x = circle.x;
   overlay.y = circle.y;
-  overlay.circle(0, 0, radius + 6).stroke({ color: highlightColor, width: 3, alpha: 0.6, alignment: 0.5 });
-  overlay.circle(0, 0, radius + 10).stroke({ color: highlightColor, width: 2, alpha: 0.35, alignment: 0.5 });
-  overlay.circle(0, 0, radius + 14).stroke({ color: highlightColor, width: 1, alpha: 0.25, alignment: 0.5 });
+  overlay.circle(0, 0, radius + 4).stroke({ color: highlightColor, width: 3, alpha: 0.7, alignment: 0.5 });
+  overlay.circle(0, 0, radius + 8).stroke({ color: highlightColor, width: 2, alpha: 0.5, alignment: 0.5 });
+  overlay.circle(0, 0, radius + 12).stroke({ color: highlightColor, width: 1, alpha: 0.35, alignment: 0.5 });
 
   const parent = circle.parent;
   if (parent?.addChild) {
