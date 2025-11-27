@@ -29,6 +29,7 @@ import { FilterControl } from "./components/adapters/controllers/filterControl.j
 import { AppearanceControl } from "./components/adapters/controllers/appearanceControl.js";
 import { Error } from "./components/adapters/gui/error/error.js";
 import { useGraphSetup } from "./components/adapters/controllers/useGraphSetup.js";
+import { SearchControl } from "./components/adapters/controllers/searchControl.js";
 
 function App() {
   const { theme } = useTheme();
@@ -42,6 +43,7 @@ function App() {
       <FilterControl />
       <PhysicsControl />
       <InitControl />
+      <SearchControl />
       <main className={theme.name}>
         <HeaderBar />
         <Sidebar />

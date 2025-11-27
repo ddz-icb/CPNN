@@ -16,3 +16,11 @@ function matchesQuery(values, query) {
     return value.toString().toLowerCase().includes(query);
   });
 }
+
+export function applySearch(query, nodes) {
+  if (!query) return;
+
+  const matches = getMatchingNodes(nodes ?? [], query);
+
+  return matches
+}
