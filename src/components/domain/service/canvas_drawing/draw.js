@@ -85,9 +85,8 @@ export function drawCircle(circle, node, circleBorderColor, colorscheme, nodeAtt
   return circle;
 }
 
-export function clearNodeHighlight(node) {
-  if (!node) return;
-  const circle = node.circle ?? node;
+export function clearNodeHighlight(circle) {
+  if (!circle) return;
   if (!circle?.highlightOverlay) return;
 
   const overlay = circle.highlightOverlay;
@@ -100,11 +99,9 @@ export function clearNodeHighlight(node) {
   circle.highlightOverlay = null;
 }
 
-export function highlightNode(node, color) {
-  if (!node) return null;
-
-  const circle = node.circle ?? node;
+export function highlightNode(circle, color, themeName) {
   if (!circle) return null;
+
   if (circle.visible === false) {
     clearNodeHighlight(circle);
     return null;
@@ -112,7 +109,7 @@ export function highlightNode(node, color) {
 
   clearNodeHighlight(circle);
 
-  const highlightColor = color || "#ffd400";
+  const highlightColor = themeName === "dark" ? "#ffd400" : color || "#ffd400";
   const overlay = new PIXI.Graphics();
   overlay.eventMode = "none";
   overlay.alpha = 0.7;

@@ -38,9 +38,8 @@ export function SearchSidebar() {
     if (!pixiState?.nodeMap || highlightedNodesRef.current.length === 0) return;
 
     highlightedNodesRef.current.forEach((nodeId) => {
-      const entry = pixiState.nodeMap[nodeId];
-      if (!entry?.circle) return;
-      clearNodeHighlight(entry);
+      const {circle} = pixiState.nodeMap[nodeId];
+      clearNodeHighlight(circle);
     });
     highlightedNodesRef.current = [];
 
@@ -60,9 +59,8 @@ export function SearchSidebar() {
       if (!pixiState?.nodeMap || !matchingNodes?.length) return;
 
       matchingNodes.forEach((node) => {
-        const entry = pixiState.nodeMap[node.id];
-        if (!entry?.circle) return;
-        highlightNode(entry, theme.circleBorderColor);
+        const {circle} = pixiState.nodeMap[node.id];
+        highlightNode(circle, theme.circleBorderColor, theme.name);
         highlightedNodesRef.current.push(node.id);
       });
 
@@ -70,7 +68,7 @@ export function SearchSidebar() {
         renderStage(renderState.app);
       }
     },
-    [clearSearchHighlights, pixiState?.nodeMap, renderState?.app, theme.circleBorderColor]
+    [clearSearchHighlights, pixiState?.nodeMap, renderState?.app, theme.circleBorderColor, theme.name]
   );
 
   const matchingNodes = useMemo(() => getMatchingNodes(nodes, normalizedQuery), [nodes, normalizedQuery]);
