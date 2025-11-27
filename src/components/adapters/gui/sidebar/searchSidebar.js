@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 import { useGraphState } from "../../state/graphState.js";
 import { useRenderState } from "../../state/canvasState.js";
@@ -26,10 +26,17 @@ export function SearchSidebar() {
   const nodeMap = pixiState?.nodeMap;
   const app = renderState?.app;
 
+  const handleEditorChange = useCallback(
+    (editor) => {
+      setSearchState("searchValue", editor.getValue());
+    },
+    [setSearchState]
+  );
+
   useSidebarCodeEditor({
     textareaRef,
     value: searchValue,
-    onChange: (editor) => setSearchState("searchValue", editor.getValue()),
+    onChange: handleEditorChange,
     themeName: theme.name,
   });
 
