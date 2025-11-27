@@ -8,6 +8,8 @@ import { useSearchState, searchStateInit, highlightedNodeIdsInit } from "../../s
 import { useSidebarCodeEditor } from "../reusable_components/useSidebarCodeEditor.js";
 import { CodeEditorBlock, TableList } from "../reusable_components/sidebarComponents.js";
 import { clearNodeHighlight, highlightNode, render as renderStage } from "../../../domain/service/canvas_drawing/draw.js";
+import { getMatchingNodes} from "../../../domain/service/search/search.js";
+import { getNodeIdName } from "../../../domain/service/parsing/nodeIdParsing.js";
 
 const MAX_RESULTS = 30;
 
@@ -22,9 +24,6 @@ export function SearchSidebar() {
   const textareaRef = useRef(null);
 
   const nodes = graphState.graph?.data?.nodes ?? [];
-  const showResults = Boolean(query);
-  const nodeOverflow = nodeTotal > MAX_RESULTS;
-  const hasActiveSearch = showResults;
 
   const handleEditorChange = useCallback((editor) => {
     setSearchState("searchValue", editor.getValue());
@@ -77,12 +76,14 @@ export function SearchSidebar() {
     return {
       nodeResults: matchingNodes.slice(0, MAX_RESULTS).map((node) => ({
         nodeId: node.id,
-        primaryText: getNodeLabel(node),
-        secondaryText: formatNodeSecondary(node),
+        primaryText: node.id,
       })),
       nodeTotal: matchingNodes.length,
     };
   }, [matchingNodes]);
+  const showResults = Boolean(query);
+  const nodeOverflow = nodeTotal > MAX_RESULTS;
+  const hasActiveSearch = showResults;
 
   const handleSearch = useCallback(() => {
     console.log("HHEE?", nodes)
@@ -123,7 +124,6 @@ export function SearchSidebar() {
           heading={`Node Matches (${nodeTotal})`}
           data={nodeResults}
           displayKey={"primaryText"}
-          secondaryKey={"secondaryText"}
           onItemClick={handleResultClick}
         />
         {nodeOverflow && <OverflowHint total={nodeTotal} />}
@@ -134,46 +134,4 @@ export function SearchSidebar() {
 
 function OverflowHint({ total }) {
   return <div className="text-secondary pad-top-05">Showing the first {MAX_RESULTS} of {total} matches.</div>;
-}
-
-function getMatchingNodes(nodes, query) {
-  if (!query) {
-    return [];
-  }
-
-  return nodes.filter((node) => nodeMatchesQuery(node, query));
-}
-
-function nodeMatchesQuery(node, query) {
-  return matchesQuery([node?.label, node?.id, node?.group, node?.type], query);
-}
-
-function matchesQuery(values, query) {
-  return values.some((value) => {
-    if (value === undefined || value === null) return false;
-    return value.toString().toLowerCase().includes(query);
-  });
-}
-
-function getNodeLabel(node) {
-  return (node?.label ?? node?.id ?? "Unnamed node").toString();
-}
-
-function formatNodeSecondary(node) {
-  const id = node?.id?.toString();
-  const label = node?.label?.toString();
-
-  if (id && label && label !== id) {
-    return `ID: ${id}`;
-  }
-
-  if (node?.group !== undefined) {
-    return `Group: ${node.group}`;
-  }
-
-  if (node?.type) {
-    return node.type.toString();
-  }
-
-  return "";
 }
