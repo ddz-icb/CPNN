@@ -22,6 +22,9 @@ export function SearchSidebar() {
   const textareaRef = useRef(null);
 
   const nodes = graphState.graph?.data?.nodes ?? [];
+  const showResults = Boolean(query);
+  const nodeOverflow = nodeTotal > MAX_RESULTS;
+  const hasActiveSearch = showResults;
 
   const handleEditorChange = useCallback((editor) => {
     setSearchState("searchValue", editor.getValue());
@@ -82,6 +85,7 @@ export function SearchSidebar() {
   }, [matchingNodes]);
 
   const handleSearch = useCallback(() => {
+    console.log("HHEE?", nodes)
     const normalizedSearch = searchValue.trim().toLowerCase();
     const matches = getMatchingNodes(nodes, normalizedSearch);
 
@@ -93,10 +97,6 @@ export function SearchSidebar() {
     clearSearchHighlights();
     setAllSearchState(searchStateInit);
   }, [clearSearchHighlights, setAllSearchState]);
-
-  const showResults = Boolean(query);
-  const nodeOverflow = nodeTotal > MAX_RESULTS;
-  const hasActiveSearch = showResults;
 
   const handleResultClick = useCallback(
     (item) => {
