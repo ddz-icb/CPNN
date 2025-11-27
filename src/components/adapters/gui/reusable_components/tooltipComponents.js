@@ -7,9 +7,9 @@ export function TooltipPopup({ heading, close, children, style, footer }) {
       <div className="tooltip-popup-content">
         <div className="tooltip-popup-header">
           <span className="tooltip-popup-heading">{heading}</span>
-          <span className="svg-button" onClick={() => close()}>
+          <button className="back-close" type="button" onClick={() => close()}>
             <SvgIcon svg={xSvg} />
-          </span>
+          </button>
         </div>
         <div className="tooltip-popup-body">{children}</div>
 
