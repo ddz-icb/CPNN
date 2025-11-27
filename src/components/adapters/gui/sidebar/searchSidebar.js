@@ -1,31 +1,36 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 
 import { useGraphState } from "../../state/graphState.js";
 import { useRenderState } from "../../state/canvasState.js";
 import { useTheme } from "../../state/themeState.js";
 import { usePixiState } from "../../state/pixiState.js";
+import { useSearchState, searchStateInit, highlightedNodeIdsInit } from "../../state/searchState.js";
 import { useSidebarCodeEditor } from "../reusable_components/useSidebarCodeEditor.js";
 import { CodeEditorBlock, TableList } from "../reusable_components/sidebarComponents.js";
 import { clearNodeHighlight, highlightNode, render as renderStage } from "../../../domain/service/canvas_drawing/draw.js";
 
-const MAX_RESULTS = 20;
+const MAX_RESULTS = 30;
 
 export function SearchSidebar() {
   const { graphState } = useGraphState();
   const { theme } = useTheme();
   const { pixiState } = usePixiState();
   const { renderState } = useRenderState();
+  const { searchState, setSearchState, setAllSearchState } = useSearchState();
+  const { searchValue, query, highlightedNodeIds } = searchState;
+
   const textareaRef = useRef(null);
-  const [searchValue, setSearchValue] = useState("");
-  const [query, setQuery] = useState("");
-  const highlightedNodesRef = useRef([]);
+  const highlightedNodesRef = useRef(highlightedNodeIds ?? []);
 
   const nodes = graphState.graph?.data?.nodes ?? [];
-  const normalizedQuery = query.trim().toLowerCase();
+
+  useEffect(() => {
+    highlightedNodesRef.current = highlightedNodeIds ?? [];
+  }, [highlightedNodeIds]);
 
   const handleEditorChange = useCallback((editor) => {
-    setSearchValue(editor.getValue());
-  }, []);
+    setSearchState("searchValue", editor.getValue());
+  }, [setSearchState]);
 
   useSidebarCodeEditor({
     textareaRef,
@@ -38,19 +43,16 @@ export function SearchSidebar() {
     if (!pixiState?.nodeMap || highlightedNodesRef.current.length === 0) return;
 
     highlightedNodesRef.current.forEach((nodeId) => {
-      const {circle} = pixiState.nodeMap[nodeId];
+      const {circle} = pixiState?.nodeMap[nodeId];
       clearNodeHighlight(circle);
     });
     highlightedNodesRef.current = [];
+    setSearchState("highlightedNodeIds", highlightedNodeIdsInit);
 
     if (renderState?.app) {
       renderStage(renderState.app);
     }
-  }, [pixiState?.nodeMap, renderState?.app]);
-
-  useEffect(() => {
-    return () => clearSearchHighlights();
-  }, [clearSearchHighlights]);
+  }, [renderState?.app, pixiState?.nodeMap, setSearchState]);
 
   const applySearchHighlights = useCallback(
     (matchingNodes) => {
@@ -58,20 +60,23 @@ export function SearchSidebar() {
 
       if (!pixiState?.nodeMap || !matchingNodes?.length) return;
 
+      const newHighlightedIds = [];
       matchingNodes.forEach((node) => {
-        const {circle} = pixiState.nodeMap[node.id];
+        const {circle} = pixiState?.nodeMap[node.id];
         highlightNode(circle, theme.highlightColor);
-        highlightedNodesRef.current.push(node.id);
+        newHighlightedIds.push(node.id);
       });
+      highlightedNodesRef.current = newHighlightedIds;
+      setSearchState("highlightedNodeIds", newHighlightedIds);
 
       if (renderState?.app) {
         renderStage(renderState.app);
       }
     },
-    [clearSearchHighlights, pixiState?.nodeMap, renderState?.app, theme.circleBorderColor, theme.name]
+    [renderState?.app, clearSearchHighlights, pixiState?.nodeMap, setSearchState, theme.highlightColor, graphState.graph]
   );
 
-  const matchingNodes = useMemo(() => getMatchingNodes(nodes, normalizedQuery), [nodes, normalizedQuery]);
+  const matchingNodes = useMemo(() => getMatchingNodes(nodes, query), [nodes, query]);
   const { nodeResults, nodeTotal } = useMemo(() => {
     return {
       nodeResults: matchingNodes.slice(0, MAX_RESULTS).map((node) => ({
@@ -87,17 +92,16 @@ export function SearchSidebar() {
     const normalizedSearch = searchValue.trim().toLowerCase();
     const matches = getMatchingNodes(nodes, normalizedSearch);
 
-    setQuery(searchValue);
+    setSearchState("query", searchValue.trim().toLowerCase());
     applySearchHighlights(matches);
-  }, [applySearchHighlights, nodes, searchValue]);
+  }, [applySearchHighlights, nodes, searchValue, setSearchState]);
 
   const handleClear = useCallback(() => {
     clearSearchHighlights();
-    setQuery("");
-    setSearchValue("");
-  }, [clearSearchHighlights]);
+    setAllSearchState(searchStateInit);
+  }, [clearSearchHighlights, setAllSearchState]);
 
-  const showResults = Boolean(normalizedQuery);
+  const showResults = Boolean(query);
   const nodeOverflow = nodeTotal > MAX_RESULTS;
   const hasActiveSearch = showResults;
 
@@ -139,12 +143,12 @@ function OverflowHint({ total }) {
   return <div className="text-secondary pad-top-05">Showing the first {MAX_RESULTS} of {total} matches.</div>;
 }
 
-function getMatchingNodes(nodes, normalizedQuery) {
-  if (!normalizedQuery) {
+function getMatchingNodes(nodes, query) {
+  if (!query) {
     return [];
   }
 
-  return nodes.filter((node) => nodeMatchesQuery(node, normalizedQuery));
+  return nodes.filter((node) => nodeMatchesQuery(node, query));
 }
 
 function nodeMatchesQuery(node, query) {
