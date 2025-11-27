@@ -27,9 +27,7 @@ export function SearchSidebar() {
   const app = renderState?.app;
 
   const handleEditorChange = useCallback(
-    (editor) => {
-      setSearchState("searchValue", editor.getValue());
-    },
+    (editor) => setSearchState("searchValue", editor.getValue()),
     [setSearchState]
   );
 
@@ -65,7 +63,7 @@ export function SearchSidebar() {
     if (!normalizedQuery) {
       clearSearchHighlights();
     }
-  }, [nodes, query, matchingNodes, setSearchState]);
+  }, [nodes, query, setSearchState]);
 
   useEffect(() => {
     if (!query) {
@@ -109,7 +107,14 @@ export function SearchSidebar() {
   const handleResultClick = (item) => {
     const node = matchingNodes?.find((n) => n.id === item?.nodeId);
     if (!node) return;
-    setSearchState("matchingNodes", [node]);
+
+    if (!nodeMap || !nodeMap[node.id]?.circle) return;
+
+    clearSearchHighlights();
+    const circle = nodeMap[node.id].circle;
+    highlightNode(circle, theme.highlightColor);
+    setSearchState("highlightedNodeIds", [node.id]);
+    if (app) renderStage(app);
   };
 
   return (
