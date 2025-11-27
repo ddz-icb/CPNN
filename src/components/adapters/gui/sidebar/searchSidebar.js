@@ -20,13 +20,8 @@ export function SearchSidebar() {
   const { searchValue, query, highlightedNodeIds } = searchState;
 
   const textareaRef = useRef(null);
-  const highlightedNodesRef = useRef(highlightedNodeIds ?? []);
 
   const nodes = graphState.graph?.data?.nodes ?? [];
-
-  useEffect(() => {
-    highlightedNodesRef.current = highlightedNodeIds ?? [];
-  }, [highlightedNodeIds]);
 
   const handleEditorChange = useCallback((editor) => {
     setSearchState("searchValue", editor.getValue());
@@ -40,19 +35,18 @@ export function SearchSidebar() {
   });
 
   const clearSearchHighlights = useCallback(() => {
-    if (!pixiState?.nodeMap || highlightedNodesRef.current.length === 0) return;
+    if (!pixiState?.nodeMap || highlightedNodeIds.length === 0) return;
 
-    highlightedNodesRef.current.forEach((nodeId) => {
+    highlightedNodeIds.forEach((nodeId) => {
       const {circle} = pixiState?.nodeMap[nodeId];
       clearNodeHighlight(circle);
     });
-    highlightedNodesRef.current = [];
     setSearchState("highlightedNodeIds", highlightedNodeIdsInit);
 
     if (renderState?.app) {
       renderStage(renderState.app);
     }
-  }, [renderState?.app, pixiState?.nodeMap, setSearchState]);
+  }, [renderState?.app, pixiState?.nodeMap, highlightedNodeIds]);
 
   const applySearchHighlights = useCallback(
     (matchingNodes) => {
@@ -66,7 +60,6 @@ export function SearchSidebar() {
         highlightNode(circle, theme.highlightColor);
         newHighlightedIds.push(node.id);
       });
-      highlightedNodesRef.current = newHighlightedIds;
       setSearchState("highlightedNodeIds", newHighlightedIds);
 
       if (renderState?.app) {
