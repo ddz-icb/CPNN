@@ -122,7 +122,9 @@ export function RenderControl() {
     try {
       const newLines = new PIXI.Graphics();
       const newCircles = new PIXI.Container();
+      newCircles.sortableChildren = true;
       const newNodeLabels = new PIXI.Container();
+      newNodeLabels.sortableChildren = true;
       renderState.app.stage.addChild(newLines);
       renderState.app.stage.addChild(newCircles);
       renderState.app.stage.addChild(newNodeLabels);

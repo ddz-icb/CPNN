@@ -61,18 +61,20 @@ function projectNode(node, params) {
 
   const dx = rotated.x - cameraX;
   const dy = rotated.y - cameraY;
-  const dz = rotated.z - cameraZ;
+  let dz = rotated.z - cameraZ;
 
   if (dz <= 0.0001) {
     return null;
   }
 
-  const scale = fov / dz;
+  const depth = Math.abs(dz);
+  const scale = fov / depth;
 
   return {
     x: centerX + dx * scale,
     y: centerY + dy * scale,
     scale,
+    depth,
   };
 }
 
@@ -110,12 +112,14 @@ function updateNodes3D(nodes, nodeMap, showNodeLabels, projections) {
     circle.x = proj.x;
     circle.y = proj.y;
     circle.scale.set(proj.scale);
+    circle.zIndex = -(proj.depth ?? 0);
 
     if (showNodeLabels) {
       nodeLabel.visible = true;
       nodeLabel.x = proj.x;
       nodeLabel.y = proj.y + getNodeLabelOffsetY(node.id) * proj.scale;
       nodeLabel.scale.set(proj.scale);
+      nodeLabel.zIndex = -(proj.depth ?? 0);
     } else {
       nodeLabel.visible = false;
     }
@@ -127,6 +131,7 @@ function updateLines3D(links, lines, linkWidth, linkColorscheme, linkAttribsToCo
 
   lines.clear();
 
+  const linksWithDepth = [];
   for (const link of links) {
     const srcId = typeof link.source === "object" ? link.source.id : link.source;
     const tgtId = typeof link.target === "object" ? link.target.id : link.target;
@@ -135,6 +140,15 @@ function updateLines3D(links, lines, linkWidth, linkColorscheme, linkAttribsToCo
     const tgt = projections[tgtId];
 
     if (!src || !tgt) continue;
+
+    const depth = Math.max(src.depth ?? 0, tgt.depth ?? 0);
+    linksWithDepth.push({ link, src, tgt, depth });
+  }
+
+  // draw farthest first so nearer links overlay them
+  linksWithDepth.sort((a, b) => b.depth - a.depth);
+
+  for (const { link, src, tgt } of linksWithDepth) {
 
     const widthScaled = linkWidth * ((src.scale + tgt.scale) / 2);
 
