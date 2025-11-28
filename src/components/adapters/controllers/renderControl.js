@@ -183,7 +183,6 @@ export function RenderControl() {
 
     try {
       const newSimulation = getSimulation(linkLengthInit, appearance.threeD);
-      renderState.simulation.alpha(0).restart();
       initDragAndZoom(renderState.app, newSimulation, radius, setTooltipSettings, container.width, container.height, appearance.threeD, cameraRef);
       setRenderState("simulation", newSimulation);
     } catch (error) {
