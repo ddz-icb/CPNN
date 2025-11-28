@@ -2,7 +2,6 @@ import log from "../logging/logger.js";
 import * as PIXI from "pixi.js";
 import { useRef, useEffect } from "react";
 import { handleResize, initDragAndZoom, initTooltips } from "../../domain/service/canvas_interaction/interactiveCanvas.js";
-import { Tooltips } from "../gui/tooltip/tooltips.js";
 import { radius, drawCircle, getTextStyle, getBitMapStyle, redraw, render, getNodeLabelOffsetY } from "../../domain/service/canvas_drawing/draw.js";
 import { linkLengthInit } from "../state/physicsState.js";
 import { useAppearance } from "../state/appearanceState.js";
@@ -17,7 +16,6 @@ import { useTheme } from "../state/themeState.js";
 import { circlesInit, linesInit, nodeMapInit, usePixiState } from "../state/pixiState.js";
 import { filteredAfterStartInit, useGraphFlags } from "../state/graphFlagsState.js";
 import { simulationInit, useRenderState } from "../state/canvasState.js";
-import { Lasso } from "./lassoControl.js";
 
 export function RenderControl() {
   const { appearance } = useAppearance();
@@ -235,8 +233,6 @@ export function RenderControl() {
 
   return (
     <>
-      <Tooltips />
-      <Lasso />
       <div ref={containerRef} className="canvas" />
     </>
   );

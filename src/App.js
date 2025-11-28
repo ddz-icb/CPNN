@@ -30,6 +30,8 @@ import { AppearanceControl } from "./components/adapters/controllers/appearanceC
 import { Error } from "./components/adapters/gui/error/error.js";
 import { useGraphSetup } from "./components/adapters/controllers/useGraphSetup.js";
 import { SearchControl } from "./components/adapters/controllers/searchControl.js";
+import { Lasso } from "./components/adapters/controllers/lassoControl.js";
+import { Tooltips } from "./components/adapters/gui/tooltip/tooltips.js";
 
 function App() {
   const { theme } = useTheme();
@@ -45,6 +47,8 @@ function App() {
       <InitControl />
       <SearchControl />
       <main className={theme.name}>
+        <Lasso />
+        <Tooltips />
         <HeaderBar />
         <Sidebar />
         <div className="canvas-container">
