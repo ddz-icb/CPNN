@@ -6,59 +6,58 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, width, he
     startX: 0,
     startY: 0,
     distanceDragged: 0,
+    baseZ: cameraRef.current?.z ?? defaultCamera.z,
   };
 
   const ROT_SPEED = 0.005;
-  const BASE_Z = cameraRef.current.z ?? defaultCamera.z;
 
-  // --- Drag: Kamera rotieren ---
-  const dragRotate = d3
-    .drag()
-    .on("start", (event) => {
-      state.startX = event.x;
-      state.startY = event.y;
-      state.distanceDragged = 0;
+  function handleDragStart(event) {
+    state.startX = event.x;
+    state.startY = event.y;
+    state.distanceDragged = 0;
 
-      if (!event.active) simulation.alphaTarget(0.1).restart();
-      setTooltipSettings("isHoverTooltipActive", false);
-    })
-    .on("drag", (event) => {
-      const dx = event.x - state.startX;
-      const dy = event.y - state.startY;
-      state.startX = event.x;
-      state.startY = event.y;
+    if (!event.active) {
+      simulation.alphaTarget(0.1).restart();
+    }
 
-      const camera = cameraRef.current;
-      camera.rotY += dx * ROT_SPEED; // horizontaler Drag
-      camera.rotX += dy * ROT_SPEED; // vertikaler Drag
+    setTooltipSettings("isHoverTooltipActive", false);
+  }
 
-      state.distanceDragged += Math.sqrt(dx * dx + dy * dy);
-      // kein direktes Render hier – redraw3D läuft über d3-force tick
-    })
-    .on("end", (event) => {
-      if (!event.active) simulation.alphaTarget(0);
-      if (state.distanceDragged > 10) {
-        setTooltipSettings("isClickTooltipActive", false);
-      }
-      setTooltipSettings("isHoverTooltipActive", false);
-    });
+  function handleDrag(event) {
+    const dx = event.x - state.startX;
+    const dy = event.y - state.startY;
 
-  // --- Zoom: Kamera z verschieben ---
-  const zoom = d3.zoom().on("zoom", (event) => {
+    state.startX = event.x;
+    state.startY = event.y;
+
+    const camera = cameraRef.current;
+    camera.rotY += dx * ROT_SPEED; // horizontal turn
+    camera.rotX += dy * ROT_SPEED; // vertical turn
+
+    state.distanceDragged += Math.sqrt(dx * dx + dy * dy);
+  }
+
+  function handleDragEnd(event) {
+    if (!event.active) {
+      simulation.alphaTarget(0);
+    }
+
+    if (state.distanceDragged > 10) {
+      setTooltipSettings("isClickTooltipActive", false);
+    }
+    setTooltipSettings("isHoverTooltipActive", false);
+  }
+
+  function handleZoom(event) {
     const k = event.transform.k;
     const camera = cameraRef.current;
 
-    // k=1 → BASE_Z, k>1 näher ran, k<1 weiter weg
-    camera.z = BASE_Z / k;
+    camera.z = state.baseZ / k;
+  }
 
-    // force a tick so the new camera position is rendered even if the simulation cooled down
-    simulation.restart();
+  const dragRotate = d3.drag().on("start", handleDragStart).on("drag", handleDrag).on("end", handleDragEnd);
 
-    // Bühne bleibt zentriert und unskaliert
-    app.stage.x = 0;
-    app.stage.y = 0;
-    app.stage.scale.set(1);
-  });
+  const zoom = d3.zoom().on("zoom", handleZoom);
 
   const canvas = d3.select(app.renderer.canvas);
 

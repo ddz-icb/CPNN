@@ -1,4 +1,3 @@
-// render3D.js
 import { getColor, getNodeLabelOffsetY, updateHighlights } from "./draw.js";
 
 export const defaultCamera = {
