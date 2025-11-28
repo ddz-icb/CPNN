@@ -74,7 +74,7 @@ export function PhysicsControl() {
         renderState.simulation.force("gravity", null);
         renderState.simulation.alpha(1).restart();
       } else {
-        renderState.simulation.force("gravity", gravityForce(container.width / 2, container.height / 2).strength(physics.gravityStrength));
+        renderState.simulation.force("gravity", gravityForce(container.width / 2, container.height / 2, 0).strength(physics.gravityStrength));
         renderState.simulation.alpha(1).restart();
       }
     } catch (error) {

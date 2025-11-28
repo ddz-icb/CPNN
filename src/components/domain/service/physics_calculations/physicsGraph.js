@@ -210,7 +210,7 @@ export function circularForce(IdToComp, adjacentCountMap, minCircleSize) {
   return force;
 }
 
-export function gravityForce(x, y) {
+export function gravityForce(x, y, z) {
   let nodes;
   let strength = 0.1;
 
@@ -218,6 +218,10 @@ export function gravityForce(x, y) {
     for (const node of nodes) {
       node.vx += (x - node.x) * strength * alpha;
       node.vy += (y - node.y) * strength * alpha;
+
+      if (node.vz != null && node.z != null) {
+        node.vz += (z - node.z) * strength * alpha;
+      }
     }
   }
 
@@ -265,12 +269,11 @@ export function getAdjacentNodes(graphData, nodeId) {
     const neighborNode = nodeMap.get(neighborId);
     if (!neighborNode) return;
 
-    const entry =
-      adjacencyMap.get(neighborId) ?? {
-        node: neighborNode,
-        connections: [],
-        maxWeight: 0,
-      };
+    const entry = adjacencyMap.get(neighborId) ?? {
+      node: neighborNode,
+      connections: [],
+      maxWeight: 0,
+    };
 
     const attribs = Array.isArray(link.attribs) ? link.attribs : [];
     const weights = Array.isArray(link.weights) ? link.weights : [];
