@@ -95,7 +95,8 @@ export function mountRedraw(
   threeD
 ) {
   const drawFunc = threeD
-    ? () => redraw3D(graphData, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, showNodeLabels, nodeMap, app, container, cameraRef)
+    ? () =>
+        redraw3D(graphData, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, showNodeLabels, nodeMap, app, container, cameraRef.current)
     : () => redraw(graphData, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, showNodeLabels, nodeMap, app);
 
   simulation.on("tick.redraw", drawFunc);

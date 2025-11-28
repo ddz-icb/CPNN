@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import { defaultCamera } from "../canvas_drawing/render3D.js";
 
 export function initDragAndZoom3D(app, simulation, setTooltipSettings, width, height, cameraRef) {
   const state = {
@@ -8,9 +9,7 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, width, he
   };
 
   const ROT_SPEED = 0.005;
-  const BASE_Z = cameraRef.current.z || -800;
-  const MIN_Z = -2000;
-  const MAX_Z = -200;
+  const BASE_Z = cameraRef.current.z ?? defaultCamera.z;
 
   // --- Drag: Kamera rotieren ---
   const dragRotate = d3
@@ -50,8 +49,10 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, width, he
     const camera = cameraRef.current;
 
     // k=1 → BASE_Z, k>1 näher ran, k<1 weiter weg
-    const z = BASE_Z / k;
-    camera.z = Math.max(MIN_Z, Math.min(MAX_Z, z));
+    camera.z = BASE_Z / k;
+
+    // force a tick so the new camera position is rendered even if the simulation cooled down
+    simulation.restart();
 
     // Bühne bleibt zentriert und unskaliert
     app.stage.x = 0;

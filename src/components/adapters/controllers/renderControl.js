@@ -18,7 +18,7 @@ import { filteredAfterStartInit, useGraphFlags } from "../state/graphFlagsState.
 import { simulationInit, useRenderState } from "../state/canvasState.js";
 
 export function RenderControl() {
-  const { appearance } = useAppearance();
+  const { appearance, setAppearance } = useAppearance();
   const { theme } = useTheme();
   const { colorschemeState } = useColorschemeState();
   const { graphState, setGraphState } = useGraphState();
@@ -31,7 +31,12 @@ export function RenderControl() {
   const { renderState, setRenderState } = useRenderState();
 
   const containerRef = useRef(null);
-  const cameraRef = useRef(appearance.camera); // for 3D
+  const cameraRef = useRef({ ...appearance.cameraRef }); // for 3D
+
+  useEffect(() => {
+    // share the live camera reference with subscribers (e.g., redraw bindings)
+    setAppearance("cameraRef", cameraRef);
+  }, [setAppearance, cameraRef]);
 
   // reset simulation //
   useEffect(() => {
@@ -166,7 +171,7 @@ export function RenderControl() {
 
     try {
       const newSimulation = getSimulation(linkLengthInit, appearance.threeD);
-      initDragAndZoom(renderState.app, newSimulation, radius, setTooltipSettings, container.width, container.height, appearance.threeD);
+      initDragAndZoom(renderState.app, newSimulation, radius, setTooltipSettings, container.width, container.height, appearance.threeD, cameraRef);
       setRenderState("simulation", newSimulation);
     } catch (error) {
       setError(error.message);
