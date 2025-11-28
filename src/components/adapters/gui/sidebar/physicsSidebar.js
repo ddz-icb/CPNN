@@ -4,6 +4,7 @@ import { communityForceStrengthInit, componentStrengthInit, gravityStrengthInit,
 import {
   borderHeightDescription,
   borderWidthDescription,
+  borderDepthDescription,
   communityForceStrengthDescription,
   componentStrengthDescription,
   linkLengthDescription,
@@ -15,9 +16,11 @@ import {
   linkForceDescription,
 } from "./descriptions/physicsDescriptions.js";
 import { usePhysics } from "../../../adapters/state/physicsState.js";
+import { useAppearance } from "../../../adapters/state/appearanceState.js";
 
 export function PhysicsSidebar({}) {
   const { physics, setPhysics, setAllPhysics } = usePhysics();
+  const { appearance } = useAppearance();
 
   return (
     <>
@@ -131,9 +134,9 @@ export function PhysicsSidebar({}) {
             setValue={(value) => setPhysics("borderHeight", value)}
             setValueText={(value) => setPhysics("borderHeightText", value)}
             fallbackValue={communityForceStrengthInit}
-            min={25}
+            min={50}
             max={5000}
-            step={5}
+            step={50}
             text={"Border Height"}
             infoHeading={"Adjusting the Border Height"}
             infoDescription={borderHeightDescription}
@@ -144,13 +147,28 @@ export function PhysicsSidebar({}) {
             setValue={(value) => setPhysics("borderWidth", value)}
             setValueText={(value) => setPhysics("borderWidthText", value)}
             fallbackValue={communityForceStrengthInit}
-            min={25}
+            min={50}
             max={5000}
-            step={5}
+            step={50}
             text={"Border Width"}
             infoHeading={"Adjusting the Border Width"}
             infoDescription={borderWidthDescription}
           />
+          {appearance.threeD && (
+            <SliderBlock
+              value={physics.borderDepth}
+              valueText={physics.borderDepthText}
+              setValue={(value) => setPhysics("borderDepth", value)}
+              setValueText={(value) => setPhysics("borderDepthText", value)}
+              fallbackValue={communityForceStrengthInit}
+              min={50}
+              max={5000}
+              step={50}
+              text={"Border Depth"}
+              infoHeading={"Adjusting the Border Depth"}
+              infoDescription={borderDepthDescription}
+            />
+          )}
         </>
       )}
     </>

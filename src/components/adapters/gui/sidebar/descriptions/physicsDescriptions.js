@@ -50,6 +50,12 @@ export const borderWidthDescription = (
   </div>
 );
 
+export const borderDepthDescription = (
+  <div>
+    <p className="margin-0">Sets the depth of the 3D border, keeping nodes within a front/back range.</p>
+  </div>
+);
+
 export const checkBorderDescription = (
   <div>
     <p className="margin-0">The border force can be used to contain the graph within an adjustable rectangle.</p>

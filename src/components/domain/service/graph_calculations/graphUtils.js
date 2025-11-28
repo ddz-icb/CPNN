@@ -13,14 +13,16 @@ export function groupBy(nodes, keyFn) {
 }
 
 export function getCentroid(nodes) {
-  if (!nodes.length) return { x: 0, y: 0, size: 0 };
+  if (!nodes.length) return { x: 0, y: 0, z: 0, size: 0 };
   let x = 0,
-    y = 0;
+    y = 0,
+    z = 0;
   for (const n of nodes) {
     x += n.x;
     y += n.y;
+    z += n.z ?? 0;
   }
-  return { x: x / nodes.length, y: y / nodes.length, size: nodes.length };
+  return { x: x / nodes.length, y: y / nodes.length, z: z / nodes.length, size: nodes.length };
 }
 
 export function getComponentData(graphData) {

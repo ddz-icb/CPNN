@@ -149,7 +149,6 @@ function updateLines3D(links, lines, linkWidth, linkColorscheme, linkAttribsToCo
   linksWithDepth.sort((a, b) => b.depth - a.depth);
 
   for (const { link, src, tgt } of linksWithDepth) {
-
     const widthScaled = linkWidth * ((src.scale + tgt.scale) / 2);
 
     if (link.attribs.length === 1) {
