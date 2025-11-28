@@ -7,10 +7,6 @@ export const defaultCamera = {
   fov: 600,
   rotX: 0,
   rotY: 0,
-  near: 50,
-  far: 2000,
-  minScale: 0.3,
-  maxScale: 3,
 };
 
 function rotateNode(node, camera) {
@@ -35,11 +31,7 @@ function project3D(node, camera, width, height) {
   let dy = r.y - camera.y;
   let dz = r.z - camera.z;
 
-  if (dz < camera.near) dz = camera.near;
-  if (dz > camera.far) dz = camera.far;
-
-  const rawScale = camera.fov / dz;
-  const scale = Math.max(camera.minScale, Math.min(camera.maxScale, rawScale));
+  const scale = camera.fov / dz;
 
   return {
     x: width / 2 + dx * scale,
