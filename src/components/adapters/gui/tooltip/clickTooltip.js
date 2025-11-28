@@ -76,7 +76,7 @@ export function ClickTooltip() {
       setTooltipSettings("clickTooltipData", {
         node: node.id,
         nodeGroups: node.groups ?? [],
-        x: node.x + 60, // i don't know why the offset is needed :c
+        x: node.x + 70, // offset needed, as the tooltip is quite large :c
         y: node.y,
       });
     },
