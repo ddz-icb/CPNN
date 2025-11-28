@@ -44,9 +44,8 @@ export function getColor(index, colorscheme) {
 export function redraw(graphData, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, showNodeLabels, nodeMap, app) {
 
   updateLines(graphData.links, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices);
-
   updateHighlightOverlays(nodeMap);
-  updateLabels(graphData, nodeMap, showNodeLabels);
+  updateLabels(graphData.nodes, nodeMap, showNodeLabels);
 
   app.renderer.render(app.stage);
 }
@@ -137,9 +136,9 @@ export function updateHighlightOverlays(nodeMap) {
   Object.values(nodeMap).forEach(({ circle }) => updateHighlightOverlay(circle));
 }
 
-function updateLabels(graphData, nodeMap, showNodeLabels) {
+function updateLabels(nodes, nodeMap, showNodeLabels) {
   if (showNodeLabels) {
-    graphData.nodes.forEach((n) => {
+    nodes.forEach((n) => {
       const { node, circle, nodeLabel } = nodeMap[n.id];
       nodeLabel.x = circle.x;
       nodeLabel.y = circle.y + getNodeLabelOffsetY(node.id);
