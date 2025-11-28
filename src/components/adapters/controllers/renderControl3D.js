@@ -4,7 +4,7 @@ import { useRef, useEffect } from "react";
 import { handleResize, initDragAndZoom, initTooltips } from "../../domain/service/canvas_interaction/interactiveCanvas.js";
 import { enableLasso } from "../../domain/service/canvas_interaction/lasso.js";
 import { Tooltips } from "../gui/tooltip/tooltips.js";
-import { radius, drawCircle, getTextStyle, getBitMapStyle, redraw, render, getNodeLabelOffsetY } from "../../domain/service/canvas_drawing/draw.js";
+import { radius, drawCircle, getTextStyle, getBitMapStyle, render, getNodeLabelOffsetY } from "../../domain/service/canvas_drawing/draw.js";
 import { linkLengthInit } from "../state/physicsState.js";
 import { useAppearance } from "../state/appearanceState.js";
 import { graphInit, useGraphState } from "../state/graphState.js";
@@ -19,8 +19,10 @@ import { filteredAfterStartInit, useGraphFlags } from "../state/graphFlagsState.
 import { simulationInit, useRenderState } from "../state/canvasState.js";
 import { useFilter } from "../state/filterState.js";
 import { getSimulation3D } from "../../domain/service/physics_calculations/getSimulation3D.js";
+import { defaultCamera, redraw3D } from "../../domain/service/canvas_drawing/draw3D.js";
+import { initDragAndRotate3D } from "../../domain/service/canvas_interaction/interactiveCanvas3D.js";
 
-export function RenderControl() {
+export function RenderControl3D() {
   const { appearance } = useAppearance();
   const { theme } = useTheme();
   const { colorschemeState } = useColorschemeState();
@@ -35,7 +37,10 @@ export function RenderControl() {
   const { filter, setFilter } = useFilter();
 
   const containerRef = useRef(null);
-  const lassoApiRef = useRef(null);
+  const lassoRef = useRef(null);
+  const cameraRef = useRef({ ...defaultCamera });
+
+  console.log("graph", graphState?.graph?.data?.nodes)
 
   // reset simulation //
   useEffect(() => {
@@ -122,6 +127,17 @@ export function RenderControl() {
       const offsetSpawnValue = graphState.graph.data.nodes.length * 10;
       const newNodeMap = {};
       for (const node of graphState.graph.data.nodes) {
+        if (node.x == null) {
+          node.x = Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
+        }
+        if (node.y == null) {
+          node.y = Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
+        }
+        if (node.z == null) {
+          node.z = (Math.random() - 0.5) * 100;
+        }
+
+
         let circle = new PIXI.Graphics();
         circle = drawCircle(circle, node, theme.circleBorderColor, colorschemeState.nodeColorscheme.data, colorschemeState.nodeAttribsToColorIndices);
         circle.id = node.id;
@@ -162,7 +178,7 @@ export function RenderControl() {
 
     try {
       const newSimulation = getSimulation3D(linkLengthInit);
-      initDragAndZoom(renderState.app, newSimulation, radius, setTooltipSettings, container.width, container.height);
+      initDragAndRotate3D(renderState.app, newSimulation, setTooltipSettings, container.width, container.height, cameraRef)
       setRenderState("simulation", newSimulation);
     } catch (error) {
       setError(error.message);
@@ -180,7 +196,7 @@ export function RenderControl() {
 
       renderState.simulation
         .on("tick.redraw", () =>
-          redraw(
+          redraw3D(
             graphState.graph.data,
             pixiState.lines,
             appearance.linkWidth,
@@ -188,11 +204,13 @@ export function RenderControl() {
             colorschemeState.linkAttribsToColorIndices,
             appearance.showNodeLabels,
             pixiState.nodeMap,
-            renderState.app
+            renderState.app,
+            container,
+            cameraRef.current,
           )
         )
         .on("end", () => render(renderState.app))
-        .nodes(activeCircles)
+        .nodes(graphState.graph.data.nodes)
         .force("link")
         .links(graphState.graph.data.links);
 
@@ -246,11 +264,11 @@ export function RenderControl() {
         setFilter("lassoSelection", Array.isArray(nodes) ? nodes : []);
       },
     });
-    lassoApiRef.current = disableLasso;
+    lassoRef.current = disableLasso;
 
     return () => {
-      if (lassoApiRef.current === disableLasso) {
-        lassoApiRef.current = null;
+      if (lassoRef.current === disableLasso) {
+        lassoRef.current = null;
       }
       if (typeof disableLasso === "function") {
         disableLasso();
@@ -260,8 +278,8 @@ export function RenderControl() {
 
   useEffect(() => {
     if (!filter.lasso) {
-      lassoApiRef.current?.clearSelection?.();
-      lassoApiRef.current = null;
+      lassoRef.current?.clearSelection?.();
+      lassoRef.current = null;
       if (Array.isArray(filter.lassoSelection) && filter.lassoSelection.length === 0) {
         return;
       }
@@ -273,7 +291,7 @@ export function RenderControl() {
       return;
     }
 
-    lassoApiRef.current?.clearSelection?.();
+    lassoRef.current?.clearSelection?.();
   }, [filter.lasso, filter.lassoSelection, setFilter]);
 
   return (

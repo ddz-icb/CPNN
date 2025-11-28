@@ -30,6 +30,7 @@ import { AppearanceControl } from "./components/adapters/controllers/appearanceC
 import { Error } from "./components/adapters/gui/error/error.js";
 import { useGraphSetup } from "./components/adapters/controllers/useGraphSetup.js";
 import { SearchControl } from "./components/adapters/controllers/searchControl.js";
+import { RenderControl3D } from "./components/adapters/controllers/renderControl3D.js";
 
 function App() {
   const { theme } = useTheme();
@@ -48,7 +49,8 @@ function App() {
         <HeaderBar />
         <Sidebar />
         <div className="canvas-container">
-          <RenderControl />
+          {/* <RenderControl /> */}
+          <RenderControl3D />
           <Error />
         </div>
       </main>

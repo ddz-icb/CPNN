@@ -35,7 +35,7 @@ export function RenderControl() {
   const { filter, setFilter } = useFilter();
 
   const containerRef = useRef(null);
-  const lassoApiRef = useRef(null);
+  const lassoRef = useRef(null);
 
   // reset simulation //
   useEffect(() => {
@@ -246,11 +246,11 @@ export function RenderControl() {
         setFilter("lassoSelection", Array.isArray(nodes) ? nodes : []);
       },
     });
-    lassoApiRef.current = disableLasso;
+    lassoRef.current = disableLasso;
 
     return () => {
-      if (lassoApiRef.current === disableLasso) {
-        lassoApiRef.current = null;
+      if (lassoRef.current === disableLasso) {
+        lassoRef.current = null;
       }
       if (typeof disableLasso === "function") {
         disableLasso();
@@ -260,8 +260,8 @@ export function RenderControl() {
 
   useEffect(() => {
     if (!filter.lasso) {
-      lassoApiRef.current?.clearSelection?.();
-      lassoApiRef.current = null;
+      lassoRef.current?.clearSelection?.();
+      lassoRef.current = null;
       if (Array.isArray(filter.lassoSelection) && filter.lassoSelection.length === 0) {
         return;
       }
@@ -273,7 +273,7 @@ export function RenderControl() {
       return;
     }
 
-    lassoApiRef.current?.clearSelection?.();
+    lassoRef.current?.clearSelection?.();
   }, [filter.lasso, filter.lassoSelection, setFilter]);
 
   return (
