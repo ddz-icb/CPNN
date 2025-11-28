@@ -136,6 +136,9 @@ export function RenderControl() {
         if (node.y == null) {
           node.y = container.height / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
         }
+        if (node.z == null) {
+          node.z = container.height / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
+        }
 
         let circle = new PIXI.Graphics();
         circle = drawCircle(circle, node, theme.circleBorderColor, colorschemeState.nodeColorscheme.data, colorschemeState.nodeAttribsToColorIndices);
