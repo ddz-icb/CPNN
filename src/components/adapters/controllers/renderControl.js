@@ -2,7 +2,6 @@ import log from "../logging/logger.js";
 import * as PIXI from "pixi.js";
 import { useRef, useEffect } from "react";
 import { handleResize, initDragAndZoom, initTooltips } from "../../domain/service/canvas_interaction/interactiveCanvas.js";
-import { enableLasso } from "../../domain/service/canvas_interaction/lasso.js";
 import { Tooltips } from "../gui/tooltip/tooltips.js";
 import { radius, drawCircle, getTextStyle, getBitMapStyle, redraw, render, getNodeLabelOffsetY } from "../../domain/service/canvas_drawing/draw.js";
 import { linkLengthInit } from "../state/physicsState.js";
@@ -18,7 +17,7 @@ import { useTheme } from "../state/themeState.js";
 import { circlesInit, linesInit, nodeMapInit, usePixiState } from "../state/pixiState.js";
 import { filteredAfterStartInit, useGraphFlags } from "../state/graphFlagsState.js";
 import { simulationInit, useRenderState } from "../state/canvasState.js";
-import { useFilter } from "../state/filterState.js";
+import { Lasso } from "./lassoControl.js";
 
 export function RenderControl() {
   const { appearance } = useAppearance();
@@ -32,10 +31,8 @@ export function RenderControl() {
   const { setError } = useError();
   const { reset, setReset } = useReset();
   const { renderState, setRenderState } = useRenderState();
-  const { filter, setFilter } = useFilter();
 
   const containerRef = useRef(null);
-  const lassoRef = useRef(null);
 
   // reset simulation //
   useEffect(() => {
@@ -236,55 +233,10 @@ export function RenderControl() {
     };
   }, [renderState.app]);
 
-  // lasso function
-  useEffect(() => {
-    if (!filter.lasso || !renderState.app || !pixiState.nodeMap) {
-      return;
-    }
-
-    setFilter("lassoSelection", []);
-
-    const disableLasso = enableLasso({
-      app: renderState.app,
-      nodeMap: pixiState.nodeMap,
-      lineColor: theme.circleBorderColor,
-      onSelect: ({ nodes }) => {
-        setFilter("lassoSelection", Array.isArray(nodes) ? nodes : []);
-      },
-    });
-    lassoRef.current = disableLasso;
-
-    return () => {
-      if (lassoRef.current === disableLasso) {
-        lassoRef.current = null;
-      }
-      if (typeof disableLasso === "function") {
-        disableLasso();
-      }
-    };
-  }, [filter.lasso, renderState.app, pixiState.nodeMap, theme, setFilter]);
-
-  useEffect(() => {
-    if (!filter.lasso) {
-      lassoRef.current?.clearSelection?.();
-      lassoRef.current = null;
-      if (Array.isArray(filter.lassoSelection) && filter.lassoSelection.length === 0) {
-        return;
-      }
-      setFilter("lassoSelection", []);
-      return;
-    }
-
-    if (!Array.isArray(filter.lassoSelection) || filter.lassoSelection.length > 0) {
-      return;
-    }
-
-    lassoRef.current?.clearSelection?.();
-  }, [filter.lasso, filter.lassoSelection, setFilter]);
-
   return (
     <>
       <Tooltips />
+      <Lasso />
       <div ref={containerRef} className="canvas" />
     </>
   );
