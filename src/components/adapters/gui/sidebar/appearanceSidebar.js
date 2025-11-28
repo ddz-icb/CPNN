@@ -9,6 +9,7 @@ import {
   nodeLabelDescription,
   setColorschemeDescription,
   themeDescription,
+  threeDDescription,
   uploadColorschemeDescription,
 } from "./descriptions/appearanceDescriptions.js";
 import { useAppearance, linkWidthInit } from "../../../adapters/state/appearanceState.js";
@@ -54,8 +55,8 @@ export function AppearanceSettings() {
         value={appearance.threeD}
         setValue={() => setAppearance("threeD", !appearance.threeD)}
         text={"3D Graph"}
-        infoHeading={"Make the graph 3D"}
-        infoDescription={"HEHEHAHA"}
+        infoHeading={"Enable 3D Graph"}
+        infoDescription={threeDDescription}
       />
       <SliderBlock
         value={appearance.linkWidth}
