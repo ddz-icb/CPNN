@@ -12,6 +12,10 @@ export const defaultCamera = {
 export function redraw3D(graphData, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, showNodeLabels, nodeMap, app, container, camera) {
   const projections = computeProjections(graphData.nodes, camera, container.width, container.height);
 
+  if (camera) {
+    camera.projections = projections;
+  }
+
   updateNodes3D(graphData.nodes, nodeMap, showNodeLabels, projections);
   updateLines3D(graphData.links, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, projections);
   updateHighlights(nodeMap);
