@@ -1,4 +1,4 @@
-import { getColor, getNodeLabelOffsetY, updateHighlightOverlays } from "./draw.js";
+import { getColor, getNodeLabelOffsetY, updateHighlights } from "./draw.js";
 
 export const defaultCamera = {
   x: 0,
@@ -48,18 +48,7 @@ function project3D(node, camera, width, height) {
   };
 }
 
-export function redraw3D(
-  graphData,
-  lines,
-  linkWidth,
-  linkColorscheme,
-  linkAttribsToColorIndices,
-  showNodeLabels,
-  nodeMap,
-  app,
-  container,
-  camera
-) {
+export function redraw3D(graphData, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, showNodeLabels, nodeMap, app, container, camera) {
   const { nodes, links } = graphData;
   const { width, height } = container;
 
@@ -83,7 +72,7 @@ export function redraw3D(
         .lineTo(tgt.x, tgt.y)
         .stroke({
           color: getColor(linkAttribsToColorIndices[link.attribs[0]], linkColorscheme.data),
-          width: linkWidth
+          width: linkWidth,
         });
     } else {
       const dx = tgt.x - src.x;
@@ -101,7 +90,7 @@ export function redraw3D(
           .lineTo(tgt.x + offsetX, tgt.y + offsetY)
           .stroke({
             color: getColor(linkAttribsToColorIndices[link.attribs[i]], linkColorscheme.data),
-            width: linkWidth
+            width: linkWidth,
           });
       }
     }
@@ -128,6 +117,6 @@ export function redraw3D(
     }
   }
 
-  updateHighlightOverlays(nodeMap);
+  updateHighlights(nodeMap);
   app.renderer.render(app.stage);
 }

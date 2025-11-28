@@ -49,8 +49,8 @@ function App() {
         <HeaderBar />
         <Sidebar />
         <div className="canvas-container">
-          {/* <RenderControl /> */}
-          <RenderControl3D />
+          <RenderControl />
+          {/* <RenderControl3D /> */}
           <Error />
         </div>
       </main>

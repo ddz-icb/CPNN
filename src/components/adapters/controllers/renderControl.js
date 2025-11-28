@@ -122,13 +122,20 @@ export function RenderControl() {
       const offsetSpawnValue = graphState.graph.data.nodes.length * 10;
       const newNodeMap = {};
       for (const node of graphState.graph.data.nodes) {
+        if (node.x == null) {
+          node.x = container.width / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
+        }
+        if (node.y == null) {
+          node.y = container.height / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
+        }
+
         let circle = new PIXI.Graphics();
         circle = drawCircle(circle, node, theme.circleBorderColor, colorschemeState.nodeColorscheme.data, colorschemeState.nodeAttribsToColorIndices);
         circle.id = node.id;
         circle.interactive = true;
         circle.buttonMode = true;
-        circle.x = node.x || container.width / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
-        circle.y = node.y || container.height / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
+        circle.x = node.x;
+        circle.y = node.y;
         newCircles.addChild(circle);
         initTooltips(circle, node, setTooltipSettings);
 
@@ -176,8 +183,6 @@ export function RenderControl() {
     log.info("Running simulation with the following graph:", graphState.graph);
 
     try {
-      let activeCircles = pixiState.circles.children.filter((circle) => circle.visible);
-
       renderState.simulation
         .on("tick.redraw", () =>
           redraw(
@@ -192,7 +197,7 @@ export function RenderControl() {
           )
         )
         .on("end", () => render(renderState.app))
-        .nodes(activeCircles)
+        .nodes(graphState.graph.data.nodes)
         .force("link")
         .links(graphState.graph.data.links);
 

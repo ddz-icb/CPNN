@@ -42,10 +42,11 @@ export function getColor(index, colorscheme) {
 }
 
 export function redraw(graphData, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, showNodeLabels, nodeMap, app) {
+  const { nodes, links } = graphData;
 
-  updateLines(graphData.links, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices);
-  updateHighlightOverlays(nodeMap);
-  updateLabels(graphData.nodes, nodeMap, showNodeLabels);
+  updateNodes(nodes, nodeMap, showNodeLabels);
+  updateLines(links, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices);
+  updateHighlights(nodeMap);
 
   app.renderer.render(app.stage);
 }
@@ -119,6 +120,28 @@ export function highlightNode(circle, highlightColor) {
   return overlay;
 }
 
+function updateNodes(nodes, nodeMap, showNodeLabels) {
+  if (!nodes || !nodeMap) return;
+
+  for (const node of nodes) {
+    const { circle, nodeLabel } = nodeMap[node.id];
+    if (!circle || !nodeLabel) continue;
+
+    circle.x = node.x;
+    circle.y = node.y;
+
+    if (nodeLabel) {
+      if (showNodeLabels) {
+        nodeLabel.visible = true;
+        nodeLabel.x = node.x;
+        nodeLabel.y = node.y + getNodeLabelOffsetY(node.id);
+      } else {
+        nodeLabel.visible = false;
+      }
+    }
+  }
+}
+
 function updateHighlightOverlay(circle) {
   if (!circle?.highlightOverlay || circle.highlightOverlay.destroyed) return;
   if (circle.visible === false) {
@@ -131,19 +154,9 @@ function updateHighlightOverlay(circle) {
   overlay.y = circle.y;
 }
 
-export function updateHighlightOverlays(nodeMap) {
+export function updateHighlights(nodeMap) {
   if (!nodeMap) return;
   Object.values(nodeMap).forEach(({ circle }) => updateHighlightOverlay(circle));
-}
-
-function updateLabels(nodes, nodeMap, showNodeLabels) {
-  if (showNodeLabels) {
-    nodes.forEach((n) => {
-      const { node, circle, nodeLabel } = nodeMap[n.id];
-      nodeLabel.x = circle.x;
-      nodeLabel.y = circle.y + getNodeLabelOffsetY(node.id);
-    });
-  }
 }
 
 function updateLines(links, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices) {
