@@ -38,6 +38,13 @@ export function RenderControl() {
     setAppearance("cameraRef", cameraRef);
   }, [setAppearance, cameraRef]);
 
+  useEffect(() => {
+    if (!container.width || !container.height) return;
+
+    cameraRef.current.x = container.width / 2;
+    cameraRef.current.y = container.height / 2;
+  }, [container.width, container.height]);
+
   // reset simulation //
   useEffect(() => {
     if (!reset) return;

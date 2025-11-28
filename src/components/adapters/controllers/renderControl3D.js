@@ -40,7 +40,7 @@ export function RenderControl3D() {
   const lassoRef = useRef(null);
   const cameraRef = useRef({ ...defaultCamera });
 
-  console.log("graph", graphState?.graph?.data?.nodes)
+  console.log("graph", graphState?.graph?.data?.nodes);
 
   // reset simulation //
   useEffect(() => {
@@ -128,30 +128,29 @@ export function RenderControl3D() {
       const newNodeMap = {};
       for (const node of graphState.graph.data.nodes) {
         if (node.x == null) {
-          node.x = Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
+          node.x = container.width / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
         }
         if (node.y == null) {
-          node.y = Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
+          node.y = container.height / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
         }
         if (node.z == null) {
-          node.z = (Math.random() - 0.5) * 100;
+          node.z = Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
         }
-
 
         let circle = new PIXI.Graphics();
         circle = drawCircle(circle, node, theme.circleBorderColor, colorschemeState.nodeColorscheme.data, colorschemeState.nodeAttribsToColorIndices);
         circle.id = node.id;
         circle.interactive = true;
         circle.buttonMode = true;
-        circle.x = node.x || container.width / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
-        circle.y = node.y || container.height / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
+        circle.x = node.x;
+        circle.y = node.y;
         newCircles.addChild(circle);
         initTooltips(circle, node, setTooltipSettings);
 
         let nodeLabel = new PIXI.BitmapText(getBitMapStyle(node.id));
         nodeLabel.style = getTextStyle(theme.textColor);
-        nodeLabel.x = circle.x;
-        nodeLabel.y = circle.y + getNodeLabelOffsetY(node.id);
+        nodeLabel.x = node.x;
+        nodeLabel.y = node.y + getNodeLabelOffsetY(node.id);
         nodeLabel.pivot.x = nodeLabel.width / 2;
         nodeLabel.visible = false;
         newNodeLabels.addChild(nodeLabel);
@@ -178,7 +177,7 @@ export function RenderControl3D() {
 
     try {
       const newSimulation = getSimulation3D(linkLengthInit);
-      initDragAndRotate3D(renderState.app, newSimulation, setTooltipSettings, container.width, container.height, cameraRef)
+      initDragAndRotate3D(renderState.app, newSimulation, setTooltipSettings, container.width, container.height, cameraRef);
       setRenderState("simulation", newSimulation);
     } catch (error) {
       setError(error.message);
@@ -206,7 +205,7 @@ export function RenderControl3D() {
             pixiState.nodeMap,
             renderState.app,
             container,
-            cameraRef.current,
+            cameraRef.current
           )
         )
         .on("end", () => render(renderState.app))

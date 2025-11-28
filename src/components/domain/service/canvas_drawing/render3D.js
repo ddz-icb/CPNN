@@ -1,41 +1,54 @@
 import { getColor, getNodeLabelOffsetY, updateHighlights } from "./draw.js";
 
 export const defaultCamera = {
-  x: 0,
-  y: 0,
+  x: null,
+  y: null,
   z: -600,
   fov: 600,
   rotX: 0,
   rotY: 0,
 };
 
-function rotateNode(node, camera) {
-  const { rotX, rotY } = camera;
+function rotateNode(node, rotX, rotY, centerX, centerY) {
   const cosY = Math.cos(rotY);
   const sinY = Math.sin(rotY);
   const cosX = Math.cos(rotX);
   const sinX = Math.sin(rotX);
 
-  let x = node.x * cosY - node.z * sinY;
-  let z = node.x * sinY + node.z * cosY;
+  const shiftedX = node.x - centerX;
+  const shiftedY = node.y - centerY;
+  const zBase = node.z ?? 0;
 
-  let y = node.y * cosX - z * sinX;
-  z = node.y * sinX + z * cosX;
+  let x = shiftedX * cosY - zBase * sinY;
+  let z = shiftedX * sinY + zBase * cosY;
 
-  return { x, y, z };
+  let y = shiftedY * cosX - z * sinX;
+  z = shiftedY * sinX + z * cosX;
+
+  return { x: x + centerX, y: y + centerY, z };
 }
 
 function project3D(node, camera, width, height) {
-  const r = rotateNode(node, camera);
-  let dx = r.x - camera.x;
-  let dy = r.y - camera.y;
-  let dz = r.z - camera.z;
+  const centerX = width / 2;
+  const centerY = height / 2;
 
-  const scale = camera.fov / dz;
+  const rotX = camera?.rotX ?? defaultCamera.rotX;
+  const rotY = camera?.rotY ?? defaultCamera.rotY;
+  const cameraX = camera?.x ?? centerX;
+  const cameraY = camera?.y ?? centerY;
+  const cameraZ = camera?.z ?? defaultCamera.z;
+  const fov = camera?.fov ?? defaultCamera.fov;
+
+  const r = rotateNode(node, rotX, rotY, centerX, centerY);
+  const dx = r.x - cameraX;
+  const dy = r.y - cameraY;
+  const dz = r.z - cameraZ;
+
+  const scale = fov / dz;
 
   return {
-    x: width / 2 + dx * scale,
-    y: height / 2 + dy * scale,
+    x: centerX + dx * scale,
+    y: centerY + dy * scale,
     scale,
   };
 }
