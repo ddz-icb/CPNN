@@ -141,8 +141,9 @@ export function RenderControl() {
 
         let nodeLabel = new PIXI.BitmapText(getBitMapStyle(node.id));
         nodeLabel.style = getTextStyle(theme.textColor);
-        nodeLabel.x = circle.x;
-        nodeLabel.y = circle.y + getNodeLabelOffsetY(node.id);
+        nodeLabel.x = node.x;
+        nodeLabel.y = node.y;
+        +getNodeLabelOffsetY(node.id);
         nodeLabel.pivot.x = nodeLabel.width / 2;
         nodeLabel.visible = false;
         newNodeLabels.addChild(nodeLabel);

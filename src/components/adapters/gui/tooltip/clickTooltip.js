@@ -18,7 +18,6 @@ import { downloadNodeIdsCsv } from "../../../domain/service/download/download.js
 import { getAdjacentNodes } from "../../../domain/service/physics_calculations/physicsGraph.js";
 import { usePixiState } from "../../state/pixiState.js";
 import { useRenderState } from "../../state/canvasState.js";
-import { getNodeScreenPosition } from "../../../domain/service/graph_calculations/graphUtils.js";
 
 const proteinDetailsInit = {
   fullName: "",
@@ -73,13 +72,12 @@ export function ClickTooltip() {
   const handleViewAdjacentNode = useCallback(
     (node) => {
       if (!node) return;
-      const position = getNodeScreenPosition(node.id, renderState?.app, pixiState?.nodeMap);
       setIsAdjacentView(false);
       setTooltipSettings("clickTooltipData", {
         node: node.id,
         nodeGroups: node.groups ?? [],
-        x: position?.x ?? tooltipSettings.clickTooltipData?.x ?? 0,
-        y: position?.y ?? tooltipSettings.clickTooltipData?.y ?? 0,
+        x: node.x + 60, // i don't know why the offset is needed :c
+        y: node.y,
       });
     },
     [pixiState?.nodeMap, renderState?.app, setIsAdjacentView, setTooltipSettings, tooltipSettings.clickTooltipData]

@@ -168,17 +168,3 @@ export function getLinkWeight(link) {
   }
   return Math.abs(link.weight);
 }
-
-export function getNodeScreenPosition(nodeId, app, nodeMap) {
-  if (!nodeId || !app || !nodeMap?.[nodeId]) return null;
-  const circle = nodeMap[nodeId]?.circle;
-  const canvas = app.renderer?.view;
-  if (!circle || !canvas) return null;
-
-  const globalPosition = typeof circle.getGlobalPosition === "function" ? circle.getGlobalPosition() : { x: circle.x, y: circle.y };
-
-  return {
-    x: globalPosition.x + 60, // i don't know why the offset is needed :c
-    y: globalPosition.y,
-  };
-}
