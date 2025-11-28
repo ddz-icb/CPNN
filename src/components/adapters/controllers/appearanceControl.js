@@ -1,15 +1,17 @@
 import { useEffect } from "react";
 import log from "../logging/logger.js";
 
-import { changeCircleBorderColor, changeNodeColors, changeNodeLabelColor, redraw } from "../../domain/service/canvas_drawing/draw.js";
+import { changeCircleBorderColor, changeNodeColors, changeNodeLabelColor } from "../../domain/service/canvas_drawing/draw.js";
 import { useAppearance } from "../state/appearanceState.js";
 import { useGraphState } from "../state/graphState.js";
 
 import { useColorschemeState } from "../state/colorschemeState.js";
-import { useTheme } from "../state/themeState.js";
 import { usePixiState } from "../state/pixiState.js";
 import { useRenderState } from "../state/canvasState.js";
 import { errorService } from "../../application/services/errorService.js";
+import { mountRedraw } from "../../domain/service/physics_calculations/simulation.js";
+import { useContainer } from "../state/containerState.js";
+import { useTheme } from "../state/themeState.js";
 
 export function AppearanceControl() {
   const { appearance } = useAppearance();
@@ -18,6 +20,7 @@ export function AppearanceControl() {
   const { graphState } = useGraphState();
   const { pixiState } = usePixiState();
   const { renderState } = useRenderState();
+  const { container } = useContainer();
 
   // rebind redraw function and run one cycle
   useEffect(() => {
@@ -35,19 +38,8 @@ export function AppearanceControl() {
     log.info("Updating redraw function");
 
     try {
-      renderState.simulation.on("tick.redraw", () =>
-        redraw(
-          graphState.graph.data,
-          pixiState.lines,
-          appearance.linkWidth,
-          colorschemeState.linkColorscheme,
-          colorschemeState.linkAttribsToColorIndices,
-          appearance.showNodeLabels,
-          pixiState.nodeMap,
-          renderState.app
-        )
-      );
-      redraw(
+      const redraw = mountRedraw(
+        renderState.simulation,
         graphState.graph.data,
         pixiState.lines,
         appearance.linkWidth,
@@ -55,8 +47,12 @@ export function AppearanceControl() {
         colorschemeState.linkAttribsToColorIndices,
         appearance.showNodeLabels,
         pixiState.nodeMap,
-        renderState.app
+        renderState.app,
+        container,
+        appearance.cameraRef,
+        appearance.threeD
       );
+      redraw();
     } catch (error) {
       errorService.setError(error.message);
       log.error(error);

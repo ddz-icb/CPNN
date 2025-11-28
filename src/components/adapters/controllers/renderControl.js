@@ -2,7 +2,7 @@ import log from "../logging/logger.js";
 import * as PIXI from "pixi.js";
 import { useRef, useEffect } from "react";
 import { handleResize, initDragAndZoom, initTooltips } from "../../domain/service/canvas_interaction/interactiveCanvas.js";
-import { radius, drawCircle, getTextStyle, getBitMapStyle, redraw, render, getNodeLabelOffsetY } from "../../domain/service/canvas_drawing/draw.js";
+import { radius, drawCircle, getTextStyle, getBitMapStyle, getNodeLabelOffsetY } from "../../domain/service/canvas_drawing/draw.js";
 import { linkLengthInit } from "../state/physicsState.js";
 import { useAppearance } from "../state/appearanceState.js";
 import { graphInit, useGraphState } from "../state/graphState.js";
@@ -11,7 +11,7 @@ import { tooltipInit, useTooltipSettings } from "../state/tooltipState.js";
 import { useError } from "../state/errorState.js";
 import { useReset } from "../state/resetState.js";
 import { useColorschemeState } from "../state/colorschemeState.js";
-import { getSimulation } from "../../domain/service/physics_calculations/getSimulation.js";
+import { getSimulation, mountSimulation } from "../../domain/service/physics_calculations/simulation.js";
 import { useTheme } from "../state/themeState.js";
 import { circlesInit, linesInit, nodeMapInit, usePixiState } from "../state/pixiState.js";
 import { filteredAfterStartInit, useGraphFlags } from "../state/graphFlagsState.js";
@@ -31,6 +31,7 @@ export function RenderControl() {
   const { renderState, setRenderState } = useRenderState();
 
   const containerRef = useRef(null);
+  const cameraRef = useRef(appearance.camera); // for 3D
 
   // reset simulation //
   useEffect(() => {
@@ -138,7 +139,7 @@ export function RenderControl() {
         nodeLabel.style = getTextStyle(theme.textColor);
         nodeLabel.x = node.x;
         nodeLabel.y = node.y;
-        +getNodeLabelOffsetY(node.id);
+        getNodeLabelOffsetY(node.id);
         nodeLabel.pivot.x = nodeLabel.width / 2;
         nodeLabel.visible = false;
         newNodeLabels.addChild(nodeLabel);
@@ -164,8 +165,8 @@ export function RenderControl() {
     log.info("Init simulation");
 
     try {
-      const newSimulation = getSimulation(linkLengthInit);
-      initDragAndZoom(renderState.app, newSimulation, radius, setTooltipSettings, container.width, container.height);
+      const newSimulation = getSimulation(linkLengthInit, appearance.threeD);
+      initDragAndZoom(renderState.app, newSimulation, radius, setTooltipSettings, container.width, container.height, appearance.threeD);
       setRenderState("simulation", newSimulation);
     } catch (error) {
       setError(error.message);
@@ -173,35 +174,45 @@ export function RenderControl() {
     }
   }, [renderState.app, graphState.graph]);
 
+  // change 2D <-> 3D
+  useEffect(() => {
+    if (!renderState.app || !graphState.graph || !renderState.simulation) return;
+    log.info(`Switch simulation to ${appearance.threeD ? "3D" : "2D"}`);
+
+    renderState.simulation.stop();
+
+    try {
+      const newSimulation = getSimulation(linkLengthInit, appearance.threeD);
+      renderState.simulation.alpha(0).restart();
+      initDragAndZoom(renderState.app, newSimulation, radius, setTooltipSettings, container.width, container.height, appearance.threeD, cameraRef);
+      setRenderState("simulation", newSimulation);
+    } catch (error) {
+      setError(error.message);
+      log.error(error.message);
+    }
+  }, [appearance.threeD]);
+
   // running simulation //
   useEffect(() => {
     if (!pixiState.circles || !graphState.graph || !renderState.simulation || !graphFlags.filteredAfterStart || !pixiState.lines) return;
     log.info("Running simulation with the following graph:", graphState.graph);
 
     try {
-      renderState.simulation
-        .on("tick.redraw", () =>
-          redraw(
-            graphState.graph.data,
-            pixiState.lines,
-            appearance.linkWidth,
-            colorschemeState.linkColorscheme,
-            colorschemeState.linkAttribsToColorIndices,
-            appearance.showNodeLabels,
-            pixiState.nodeMap,
-            renderState.app
-          )
-        )
-        .on("end", () => render(renderState.app))
-        .nodes(graphState.graph.data.nodes)
-        .force("link")
-        .links(graphState.graph.data.links);
-
-      // restart the simulation and reheat if necessary to make sure everything is being rerendered correctly
-      renderState.simulation.restart();
-      if (renderState.simulation.alpha() < 0.5) {
-        renderState.simulation.alpha(0.5);
-      }
+      const redraw = mountSimulation(
+        renderState.simulation,
+        graphState.graph.data,
+        pixiState.lines,
+        appearance.linkWidth,
+        colorschemeState.linkColorscheme,
+        colorschemeState.linkAttribsToColorIndices,
+        appearance.showNodeLabels,
+        pixiState.nodeMap,
+        renderState.app,
+        container,
+        cameraRef,
+        appearance.threeD
+      );
+      redraw();
 
       setRenderState(renderState.simulation);
     } catch (error) {
