@@ -42,21 +42,11 @@ export function getColor(index, colorscheme) {
 }
 
 export function redraw(graphData, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, showNodeLabels, nodeMap, app) {
-  lines.clear();
 
-  for (const link of graphData.links) {
-    drawLine(lines, link, linkWidth, linkColorscheme.data, linkAttribsToColorIndices);
-  }
+  updateLines(graphData.links, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices);
 
   updateHighlightOverlays(nodeMap);
-
-  if (showNodeLabels) {
-    graphData.nodes.forEach((n) => {
-      const { node, circle, nodeLabel } = nodeMap[n.id];
-      nodeLabel.x = circle.x;
-      nodeLabel.y = circle.y + getNodeLabelOffsetY(node.id);
-    });
-  }
+  updateLabels(graphData, nodeMap, showNodeLabels);
 
   app.renderer.render(app.stage);
 }
@@ -145,6 +135,24 @@ function updateHighlightOverlay(circle) {
 export function updateHighlightOverlays(nodeMap) {
   if (!nodeMap) return;
   Object.values(nodeMap).forEach(({ circle }) => updateHighlightOverlay(circle));
+}
+
+function updateLabels(graphData, nodeMap, showNodeLabels) {
+  if (showNodeLabels) {
+    graphData.nodes.forEach((n) => {
+      const { node, circle, nodeLabel } = nodeMap[n.id];
+      nodeLabel.x = circle.x;
+      nodeLabel.y = circle.y + getNodeLabelOffsetY(node.id);
+    });
+  }
+}
+
+function updateLines(links, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices) {
+  lines.clear();
+
+  for (const link of links) {
+    drawLine(lines, link, linkWidth, linkColorscheme.data, linkAttribsToColorIndices);
+  }
 }
 
 export function drawCircleCanvas(ctx, node, circle, circleBorderColor, colorscheme, nodeAttribsToColorIndices) {

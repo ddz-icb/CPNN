@@ -50,6 +50,13 @@ export function AppearanceSettings() {
         infoHeading={"Enabling Node Labels"}
         infoDescription={nodeLabelDescription}
       />
+      <SwitchBlock
+        value={appearance.threeD}
+        setValue={() => setAppearance("threeD", !appearance.threeD)}
+        text={"3D Graph"}
+        infoHeading={"Make the graph 3D"}
+        infoDescription={"HEHEHAHA"}
+      />
       <SliderBlock
         value={appearance.linkWidth}
         valueText={appearance.linkWidthText}
