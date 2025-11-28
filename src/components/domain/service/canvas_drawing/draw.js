@@ -240,3 +240,12 @@ function polarToCartesian(cx, cy, r, angle) {
     y: cy + r * Math.sin(angle),
   };
 }
+
+export function resetNodeScales(nodeMap, threeD) {
+  if (!nodeMap || threeD) return;
+
+  Object.values(nodeMap).forEach(({ circle, nodeLabel }) => {
+    circle?.scale?.set?.(1);
+    nodeLabel?.scale?.set?.(1);
+  });
+}

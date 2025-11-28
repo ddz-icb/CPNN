@@ -2,7 +2,7 @@ import log from "../logging/logger.js";
 import * as PIXI from "pixi.js";
 import { useRef, useEffect } from "react";
 import { handleResize, initDragAndZoom, initTooltips } from "../../domain/service/canvas_interaction/interactiveCanvas.js";
-import { radius, drawCircle, getTextStyle, getBitMapStyle, getNodeLabelOffsetY } from "../../domain/service/canvas_drawing/draw.js";
+import { radius, drawCircle, getTextStyle, getBitMapStyle, getNodeLabelOffsetY, resetNodeScales } from "../../domain/service/canvas_drawing/draw.js";
 import { linkLengthInit } from "../state/physicsState.js";
 import { useAppearance } from "../state/appearanceState.js";
 import { graphInit, useGraphState } from "../state/graphState.js";
@@ -199,6 +199,7 @@ export function RenderControl() {
     try {
       const newSimulation = getSimulation(linkLengthInit, appearance.threeD);
       initDragAndZoom(renderState.app, newSimulation, radius, setTooltipSettings, container.width, container.height, appearance.threeD, cameraRef);
+      resetNodeScales(pixiState.nodeMap, appearance.threeD);
       setRenderState("simulation", newSimulation);
     } catch (error) {
       setError(error.message);
