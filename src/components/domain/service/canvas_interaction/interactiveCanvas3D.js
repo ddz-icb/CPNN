@@ -53,6 +53,9 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, width, he
     const camera = cameraRef.current;
 
     camera.z = state.baseZ / k;
+
+    // ensure camera changes are immediately reflected even if the simulation is idle
+    camera?.redraw?.();
   }
 
   const dragRotate = d3.drag().on("start", handleDragStart).on("drag", handleDrag).on("end", handleDragEnd);

@@ -137,7 +137,7 @@ export function RenderControl() {
           node.y = container.height / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
         }
         if (node.z == null) {
-          node.z = container.height / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
+          node.z = (Math.random() - 0.5) * offsetSpawnValue;
         }
 
         let circle = new PIXI.Graphics();

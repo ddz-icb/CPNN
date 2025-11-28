@@ -99,6 +99,11 @@ export function mountRedraw(
         redraw3D(graphData, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, showNodeLabels, nodeMap, app, container, cameraRef.current)
     : () => redraw(graphData, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, showNodeLabels, nodeMap, app);
 
+  // expose the redraw function so interactions (e.g. zooming) can trigger re-projection without relying on simulation ticks
+  if (threeD && cameraRef?.current) {
+    cameraRef.current.redraw = drawFunc;
+  }
+
   simulation.on("tick.redraw", drawFunc);
 
   return drawFunc;

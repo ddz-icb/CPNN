@@ -132,13 +132,15 @@ function updateLines3D(links, lines, linkWidth, linkColorscheme, linkAttribsToCo
 
     if (!src || !tgt) continue;
 
+    const widthScaled = linkWidth * ((src.scale + tgt.scale) / 2);
+
     if (link.attribs.length === 1) {
       lines
         .moveTo(src.x, src.y)
         .lineTo(tgt.x, tgt.y)
         .stroke({
           color: getColor(linkAttribsToColorIndices[link.attribs[0]], linkColorscheme.data),
-          width: linkWidth,
+          width: widthScaled,
         });
       continue;
     }
@@ -149,7 +151,7 @@ function updateLines3D(links, lines, linkWidth, linkColorscheme, linkAttribsToCo
     const normedPerp = { x: -dy / length, y: dx / length };
 
     for (let i = 0; i < link.attribs.length; i++) {
-      const shift = (i - (link.attribs.length - 1) / 2) * linkWidth;
+      const shift = (i - (link.attribs.length - 1) / 2) * widthScaled;
       const offsetX = shift * normedPerp.x;
       const offsetY = shift * normedPerp.y;
 
@@ -158,7 +160,7 @@ function updateLines3D(links, lines, linkWidth, linkColorscheme, linkAttribsToCo
         .lineTo(tgt.x + offsetX, tgt.y + offsetY)
         .stroke({
           color: getColor(linkAttribsToColorIndices[link.attribs[i]], linkColorscheme.data),
-          width: linkWidth,
+          width: widthScaled,
         });
     }
   }
