@@ -52,7 +52,7 @@ export function DownloadControl() {
     log.info("Downloading graph as JSON with coordinates and physics");
 
     try {
-      downloadGraphJson(graphState.graph, pixiState.nodeMap, physics, filter);
+      downloadGraphJson(graphState.graph, physics, filter);
     } catch (error) {
       errorService.setError(error.message);
       log.error("Error downloading the graph as JSON with coordinates:", error);
