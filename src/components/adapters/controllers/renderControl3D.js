@@ -102,6 +102,13 @@ export function RenderControl3D() {
     initPIXI();
   }, [containerRef, graphState.graph]);
 
+  useEffect(() => {
+    if (!container.width || !container.height) return;
+
+    cameraRef.current.x = container.width / 2;
+    cameraRef.current.y = container.height / 2;
+  }, [container.width, container.height]);
+
   // set stage //
   useEffect(() => {
     if (
@@ -134,7 +141,7 @@ export function RenderControl3D() {
           node.y = container.height / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
         }
         if (node.z == null) {
-          node.z = Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
+          node.z = ((container.height + container.width) / 4) * Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
         }
 
         let circle = new PIXI.Graphics();
