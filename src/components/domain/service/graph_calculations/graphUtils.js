@@ -168,3 +168,9 @@ export function getLinkWeight(link) {
   }
   return Math.abs(link.weight);
 }
+
+export function formatWeight(value) {
+  if (typeof value !== "number" || Number.isNaN(value)) return "n/a";
+  if (Math.abs(value) >= 1) return value.toFixed(2);
+  return value.toPrecision(2);
+}

@@ -18,6 +18,7 @@ import { downloadNodeIdsCsv } from "../../../domain/service/download/download.js
 import { getAdjacentNodes } from "../../../domain/service/physics_calculations/physicsGraph.js";
 import { usePixiState } from "../../state/pixiState.js";
 import { useRenderState } from "../../state/canvasState.js";
+import { formatWeight } from "../../../domain/service/graph_calculations/graphUtils.js";
 
 const proteinDetailsInit = {
   fullName: "",
@@ -354,10 +355,4 @@ function NodePreview({ node, nodeAttribsToColorIndices, nodeColors, borderColor,
       ))}
     </svg>
   );
-}
-
-function formatWeight(value) {
-  if (typeof value !== "number" || Number.isNaN(value)) return "n/a";
-  if (Math.abs(value) >= 1) return value.toFixed(2);
-  return value.toPrecision(2);
 }
