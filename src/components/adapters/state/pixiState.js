@@ -1,12 +1,12 @@
 import { create } from "zustand";
 
 export const nodeMapInit = null;
-export const circlesInit = null;
+export const nodeContainersInit = null;
 export const linesInit = null;
 
 export const pixiStateInit = {
   nodeMap: nodeMapInit,
-  circles: circlesInit,
+  nodeContainers: nodeContainersInit,
   lines: linesInit,
 };
 

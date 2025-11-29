@@ -13,7 +13,7 @@ import { useReset } from "../state/resetState.js";
 import { useColorschemeState } from "../state/colorschemeState.js";
 import { getSimulation, mountSimulation } from "../../domain/service/physics_calculations/simulation.js";
 import { useTheme } from "../state/themeState.js";
-import { circlesInit, linesInit, nodeMapInit, usePixiState } from "../state/pixiState.js";
+import { nodeContainersInit, linesInit, nodeMapInit, usePixiState } from "../state/pixiState.js";
 import { filteredAfterStartInit, useGraphFlags } from "../state/graphFlagsState.js";
 import { simulationInit, useRenderState } from "../state/canvasState.js";
 
@@ -52,7 +52,7 @@ export function RenderControl() {
     setGraphState("graph", graphInit);
     setGraphFlags("filteredAfterStart", filteredAfterStartInit);
     setPixiState("nodeMap", nodeMapInit);
-    setPixiState("circles", circlesInit);
+    setPixiState("nodeContainers", nodeContainersInit);
     setPixiState("lines", linesInit);
 
     setAllTooltipSettings(tooltipInit);
@@ -108,7 +108,7 @@ export function RenderControl() {
   // set stage //
   useEffect(() => {
     if (
-      pixiState.circles ||
+      pixiState.nodeContainers ||
       !renderState.app ||
       !graphState.graph ||
       !container.width ||
@@ -121,10 +121,10 @@ export function RenderControl() {
 
     try {
       const newLines = new PIXI.Graphics();
-      const newCircles = new PIXI.Container();
-      newCircles.sortableChildren = true;
+      const newNodeContainers = new PIXI.Container();
+      newNodeContainers.sortableChildren = true;
       renderState.app.stage.addChild(newLines);
-      renderState.app.stage.addChild(newCircles);
+      renderState.app.stage.addChild(newNodeContainers);
 
       const offsetSpawnValue = graphState.graph.data.nodes.length * 10;
       const newNodeMap = {};
@@ -146,7 +146,7 @@ export function RenderControl() {
         circle.buttonMode = true;
         circle.x = node.x;
         circle.y = node.y;
-        newCircles.addChild(circle);
+        newNodeContainers.addChild(circle);
         initTooltips(circle, node, setTooltipSettings);
 
         let nodeLabel = new PIXI.BitmapText(getBitMapStyle(node.id));
@@ -156,12 +156,12 @@ export function RenderControl() {
         getNodeLabelOffsetY(node.id);
         nodeLabel.pivot.x = nodeLabel.width / 2;
         nodeLabel.visible = false;
-        newCircles.addChild(nodeLabel);
+        newNodeContainers.addChild(nodeLabel);
 
         newNodeMap[node.id] = { node, circle, nodeLabel };
       }
 
-      setPixiState("circles", newCircles);
+      setPixiState("nodeContainers", newNodeContainers);
       setPixiState("lines", newLines);
       setPixiState("nodeMap", newNodeMap);
     } catch (error) {
@@ -207,7 +207,7 @@ export function RenderControl() {
 
   // running simulation //
   useEffect(() => {
-    if (!pixiState.circles || !graphState.graph || !renderState.simulation || !graphFlags.filteredAfterStart || !pixiState.lines) return;
+    if (!pixiState.nodeContainers || !graphState.graph || !renderState.simulation || !graphFlags.filteredAfterStart || !pixiState.lines) return;
     log.info("Running simulation with the following graph:", graphState.graph);
 
     try {
@@ -242,7 +242,7 @@ export function RenderControl() {
         renderState.simulation.stop();
       }
     };
-  }, [graphState.graph, pixiState.circles, pixiState.lines, renderState.simulation, graphFlags.filteredAfterStart]);
+  }, [graphState.graph, pixiState.nodeContainers, pixiState.lines, renderState.simulation, graphFlags.filteredAfterStart]);
 
   // resize the canvas on window resize //
   useEffect(() => {

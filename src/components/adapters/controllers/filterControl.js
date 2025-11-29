@@ -33,7 +33,7 @@ export function FilterControl() {
     if (
       !graphState.graph ||
       !graphState.originGraph ||
-      !(pixiState?.circles?.children?.length > 0) ||
+      !(pixiState?.nodeContainers?.children?.length > 0) ||
       !pixiState.nodeMap ||
       !graphFlags.isPreprocessed
     ) {
@@ -109,7 +109,7 @@ export function FilterControl() {
     filter.lasso,
     filter.lassoSelection,
     graphState.originGraph,
-    pixiState.circles,
+    pixiState.nodeContainers,
     pixiState.nodeMap,
   ]);
 }
