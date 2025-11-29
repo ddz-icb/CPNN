@@ -123,11 +123,8 @@ export function RenderControl() {
       const newLines = new PIXI.Graphics();
       const newCircles = new PIXI.Container();
       newCircles.sortableChildren = true;
-      const newNodeLabels = new PIXI.Container();
-      newNodeLabels.sortableChildren = true;
       renderState.app.stage.addChild(newLines);
       renderState.app.stage.addChild(newCircles);
-      renderState.app.stage.addChild(newNodeLabels);
 
       const offsetSpawnValue = graphState.graph.data.nodes.length * 10;
       const newNodeMap = {};
@@ -159,12 +156,11 @@ export function RenderControl() {
         getNodeLabelOffsetY(node.id);
         nodeLabel.pivot.x = nodeLabel.width / 2;
         nodeLabel.visible = false;
-        newNodeLabels.addChild(nodeLabel);
+        newCircles.addChild(nodeLabel);
 
         newNodeMap[node.id] = { node, circle, nodeLabel };
       }
 
-      setPixiState("nodeLabels", newNodeLabels);
       setPixiState("circles", newCircles);
       setPixiState("lines", newLines);
       setPixiState("nodeMap", newNodeMap);

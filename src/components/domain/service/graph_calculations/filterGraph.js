@@ -333,14 +333,22 @@ export function filterNodeIds(graphData, nodeIdFilters) {
   };
 }
 
-export function filterActiveNodesForPixi(circles, nodeLabels, showNodeLabels, graphData, nodeMap) {
-  circles.children.forEach((circle) => (circle.visible = false));
-  nodeLabels.children.forEach((label) => (label.visible = false));
+export function filterActiveNodesForPixi(showNodeLabels, graphData, nodeMap) {
+  if (!nodeMap || !graphData?.nodes) return;
+
+  Object.values(nodeMap).forEach(({ circle, nodeLabel }) => {
+    if (circle) circle.visible = false;
+    if (nodeLabel) nodeLabel.visible = false;
+  });
 
   graphData.nodes.forEach((n) => {
-    const { node, circle, nodeLabel } = nodeMap[n.id];
-    circle.visible = true;
-    if (showNodeLabels) {
+    const entry = nodeMap[n.id];
+    if (!entry) return;
+    const { circle, nodeLabel } = entry;
+    if (circle) {
+      circle.visible = true;
+    }
+    if (showNodeLabels && nodeLabel) {
       nodeLabel.visible = true;
     }
   });

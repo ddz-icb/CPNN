@@ -61,17 +61,23 @@ export function AppearanceControl() {
 
   // enable/disable node labels
   useEffect(() => {
-    if (!pixiState.circles) return;
+    if (!pixiState.nodeMap) return;
     log.info("Enabling/Disabling node labels");
 
     try {
       if (appearance.showNodeLabels === true) {
-        graphState.graph.data.nodes.forEach((n) => {
-          const { nodeLabel } = pixiState.nodeMap[n.id];
-          nodeLabel.visible = true;
+        graphState.graph?.data?.nodes.forEach((n) => {
+          const { nodeLabel } = pixiState.nodeMap[n.id] || {};
+          if (nodeLabel) {
+            nodeLabel.visible = true;
+          }
         });
       } else {
-        pixiState.nodeLabels.children.forEach((label) => (label.visible = false));
+        Object.values(pixiState.nodeMap).forEach(({ nodeLabel }) => {
+          if (nodeLabel) {
+            nodeLabel.visible = false;
+          }
+        });
       }
     } catch (error) {
       errorService.setError(error.message);
@@ -81,12 +87,12 @@ export function AppearanceControl() {
 
   // switch colors upon changing theme
   useEffect(() => {
-    if (!pixiState.circles) return;
+    if (!pixiState.nodeMap) return;
     log.info("Switching colors", theme);
 
     try {
-      changeCircleBorderColor(pixiState.circles, theme.circleBorderColor);
-      changeNodeLabelColor(pixiState.nodeLabels, theme.textColor);
+      changeCircleBorderColor(pixiState.nodeMap, theme.circleBorderColor);
+      changeNodeLabelColor(pixiState.nodeMap, theme.textColor);
     } catch (error) {
       errorService.setError(error.message);
       log.error(error);
@@ -95,17 +101,11 @@ export function AppearanceControl() {
 
   // switch node color scheme
   useEffect(() => {
-    if (!pixiState.circles) return;
+    if (!pixiState.nodeMap) return;
     log.info("Changing node color scheme");
 
     try {
-      changeNodeColors(
-        pixiState.circles,
-        pixiState.nodeMap,
-        theme.circleBorderColor,
-        colorschemeState.nodeColorscheme.data,
-        colorschemeState.nodeAttribsToColorIndices
-      );
+      changeNodeColors(pixiState.nodeMap, theme.circleBorderColor, colorschemeState.nodeColorscheme.data, colorschemeState.nodeAttribsToColorIndices);
     } catch (error) {
       errorService.setError(error.message);
       log.error(error);

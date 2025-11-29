@@ -88,7 +88,7 @@ export function FilterControl() {
 
       const filteredGraph = { name: graphState.graph.name, data: filteredGraphData };
 
-      filterActiveNodesForPixi(pixiState.circles, pixiState.nodeLabels, appearance.showNodeLabels, filteredGraphData, pixiState.nodeMap);
+      filterActiveNodesForPixi(appearance.showNodeLabels, filteredGraphData, pixiState.nodeMap);
 
       setGraphFlags("filteredAfterStart", true);
       setGraphState("graph", filteredGraph);
@@ -110,5 +110,6 @@ export function FilterControl() {
     filter.lassoSelection,
     graphState.originGraph,
     pixiState.circles,
+    pixiState.nodeMap,
   ]);
 }

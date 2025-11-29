@@ -145,24 +145,29 @@ export function drawCircleCanvas(ctx, node, circle, circleBorderColor, colorsche
   }
 }
 
-export function changeCircleBorderColor(circles, newColor) {
-  for (const circle of circles.children) {
+export function changeCircleBorderColor(nodeMap, newColor) {
+  if (!nodeMap) return;
+  Object.values(nodeMap).forEach(({ circle }) => {
+    if (!circle) return;
     circle.circle(0, 0, radius).stroke({ color: newColor, width: 2 });
-  }
+  });
 }
 
-export function changeNodeLabelColor(nodeLabels, textColor) {
-  for (const label of nodeLabels.children) {
-    label.style = getTextStyle(textColor);
-  }
+export function changeNodeLabelColor(nodeMap, textColor) {
+  if (!nodeMap) return;
+  Object.values(nodeMap).forEach(({ nodeLabel }) => {
+    if (!nodeLabel) return;
+    nodeLabel.style = getTextStyle(textColor);
+  });
 }
 
-export function changeNodeColors(circles, nodeMap, circleBorderColor, colorscheme, nodeAttribsToColorIndices) {
-  for (const circle of circles.children) {
-    const { node } = nodeMap[circle.id];
+export function changeNodeColors(nodeMap, circleBorderColor, colorscheme, nodeAttribsToColorIndices) {
+  if (!nodeMap) return;
+  Object.values(nodeMap).forEach(({ node, circle }) => {
+    if (!node || !circle) return;
     circle.clear();
     drawCircle(circle, node, circleBorderColor, colorscheme, nodeAttribsToColorIndices);
-  }
+  });
 }
 
 export function drawLine(lines, link, linkWidth, colorscheme, linkAttribsToColorIndices) {
