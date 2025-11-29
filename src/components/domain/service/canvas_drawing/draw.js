@@ -246,11 +246,22 @@ function polarToCartesian(cx, cy, r, angle) {
   };
 }
 
-export function resetNodeScales(nodeMap, threeD) {
+export function resetNodeState(nodeMap, threeD) {
   if (!nodeMap || threeD) return;
 
   Object.values(nodeMap).forEach(({ circle, nodeLabel }) => {
     circle?.scale?.set?.(1);
     nodeLabel?.scale?.set?.(1);
+    circle.tint = 0xffffff;
   });
+}
+
+export function computeLightingTint(scale) {
+  // depth based shading
+  const normalized = Math.max(0, Math.min(1, (scale - 0.4) / 0.8));
+
+  const eased = Math.pow(normalized, 1.2);
+  const factor = 0.4 + 0.6 * eased;
+  const channel = Math.round(255 * factor);
+  return (channel << 16) | (channel << 8) | channel;
 }
