@@ -343,8 +343,8 @@ export function updateSphereShading(circle, scale = 1) {
   const normalized = Math.max(0, Math.min(1, (scale - 0.4) / 0.9));
   const intensity = 0.3 + 0.5 * Math.pow(normalized, 0.8);
 
-  highlight.alpha = 0.4 + intensity * 0.4;
-  shadow.alpha = 0.3 + intensity * 0.35;
+  highlight.alpha = 0.35 + intensity * 0.25;
+  shadow.alpha = 0.25 + intensity * 0.2;
 }
 
 export function computeLightingTint(scale) {
@@ -352,7 +352,7 @@ export function computeLightingTint(scale) {
   const normalized = Math.max(0, Math.min(1, (scale - 0.4) / 0.8));
 
   const eased = Math.pow(normalized, 1.2);
-  const factor = 0.4 + 0.6 * eased;
+  const factor = 0.7 + 0.3 * eased;
   const channel = Math.round(255 * factor);
   return (channel << 16) | (channel << 8) | channel;
 }
