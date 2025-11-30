@@ -246,14 +246,105 @@ function polarToCartesian(cx, cy, r, angle) {
   };
 }
 
-export function resetNodeState(nodeMap, threeD) {
+function setSphereShadingVisibility(circle, visible) {
+  const shading = ensureSphereShading(circle);
+  if (!shading) return;
+
+  shading.highlight.visible = visible;
+  shading.shadow.visible = visible;
+}
+
+export function setNode3DState(nodeMap, threeD) {
+  if (!nodeMap || !threeD) return;
+
+  Object.values(nodeMap).forEach(({ circle }) => setSphereShadingVisibility(circle, true));
+}
+
+export function resetNode3DState(nodeMap, threeD) {
   if (!nodeMap || threeD) return;
 
   Object.values(nodeMap).forEach(({ circle, nodeLabel }) => {
     circle?.scale?.set?.(1);
     nodeLabel?.scale?.set?.(1);
     circle.tint = 0xffffff;
+    setSphereShadingVisibility(circle, false);
   });
+}
+
+export function applyNode3DState(nodeMap, threeD) {
+  if (threeD) {
+    setNode3DState(nodeMap, true);
+  } else {
+    resetNode3DState(nodeMap, false);
+  }
+}
+
+function ensureSphereShading(circle) {
+  if (!circle) return null;
+  if (circle.sphereShading) return circle.sphereShading;
+
+  const rimRadiusFactor = 1.05;
+  const rimWidthFactor = 0.15;
+
+  const highlight = new PIXI.Graphics();
+  highlight.eventMode = "none";
+  highlight.visible = false;
+  highlight.blendMode = "add";
+
+  const hiStart = -Math.PI * 0.9;
+  const hiEnd = -Math.PI * 0.1;
+
+  highlight.arc(0, 0, radius * rimRadiusFactor, hiStart, hiEnd).stroke({
+    color: 0xffffff,
+    width: radius * rimWidthFactor,
+    alpha: 0.55,
+  });
+
+  highlight.circle(radius * 0.22, -radius * 0.26, radius * 0.4).fill({
+    color: 0xffffff,
+    alpha: 0.3,
+  });
+
+  const shadow = new PIXI.Graphics();
+  shadow.eventMode = "none";
+  shadow.visible = false;
+  shadow.blendMode = "multiply";
+
+  const shStart = Math.PI * 0.1;
+  const shEnd = Math.PI * 0.9;
+
+  shadow.arc(0, 0, radius * rimRadiusFactor, shStart, shEnd).stroke({
+    color: 0x000000,
+    width: radius * rimWidthFactor,
+    alpha: 0.45,
+  });
+
+  shadow.circle(-radius * 0.24, radius * 0.28, radius * 0.55).fill({
+    color: 0x000000,
+    alpha: 0.24,
+  });
+
+  circle.addChild(shadow);
+  circle.addChild(highlight);
+
+  circle.sphereShading = { highlight, shadow };
+  return circle.sphereShading;
+}
+
+export function updateSphereShading(circle, scale = 1) {
+  const shading = ensureSphereShading(circle);
+  if (!shading) return;
+
+  const { highlight, shadow } = shading;
+
+  if (!highlight.visible || !shadow.visible) return;
+
+  // based on depth
+  const normalized = Math.max(0, Math.min(1, (scale - 0.4) / 0.9));
+  const intensity = 0.3 + 0.5 * Math.pow(normalized, 0.8);
+
+  highlight.alpha = 0.4 + intensity * 0.4;
+  shadow.alpha = 0.3 + intensity * 0.35;
 }
 
 export function computeLightingTint(scale) {

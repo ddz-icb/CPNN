@@ -1,4 +1,4 @@
-import { computeLightingTint, getColor, getNodeLabelOffsetY, updateHighlights } from "./draw.js";
+import { computeLightingTint, getColor, getNodeLabelOffsetY, updateHighlights, updateSphereShading } from "./draw.js";
 
 export const defaultCamera = {
   x: null,
@@ -113,6 +113,7 @@ function updateNodes3D(nodes, nodeMap, showNodeLabels, projections) {
     circle.y = proj.y;
     circle.scale.set(proj.scale);
     circle.tint = computeLightingTint(proj.scale);
+    updateSphereShading(circle, proj.scale);
     circle.zIndex = -(proj.depth ?? 0);
 
     if (showNodeLabels) {
