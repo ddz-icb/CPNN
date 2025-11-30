@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import log from "../logging/logger.js";
 
-import { changeCircleBorderColor, changeNodeColors, changeNodeLabelColor } from "../../domain/service/canvas_drawing/draw.js";
+import { applyNode3DState, changeCircleBorderColor, changeNodeColors, changeNodeLabelColor } from "../../domain/service/canvas_drawing/draw.js";
 import { useAppearance } from "../state/appearanceState.js";
 import { useGraphState } from "../state/graphState.js";
 
@@ -111,4 +111,12 @@ export function AppearanceControl() {
       log.error(error);
     }
   }, [colorschemeState.nodeColorscheme, colorschemeState.nodeAttribsToColorIndices]);
+
+  // toggle shading in 3D
+  useEffect(() => {
+    if (!appearance.threeD || !pixiState.nodeMap) return;
+    log.info("Toggling shading in 3D", appearance.enable3DShading);
+
+    applyNode3DState(pixiState.nodeMap, true, appearance.enable3DShading);
+  }, [appearance.enable3DShading, appearance.threeD, pixiState.nodeMap]);
 }

@@ -10,6 +10,7 @@ import {
   setColorschemeDescription,
   themeDescription,
   threeDDescription,
+  threeDShadingDescription,
   uploadColorschemeDescription,
 } from "./descriptions/appearanceDescriptions.js";
 import { useAppearance, linkWidthInit } from "../../../adapters/state/appearanceState.js";
@@ -58,6 +59,15 @@ export function AppearanceSettings() {
         infoHeading={"Enable 3D Graph"}
         infoDescription={threeDDescription}
       />
+      {appearance.threeD && (
+        <SwitchBlock
+          value={appearance.enable3DShading}
+          setValue={() => setAppearance("enable3DShading", !appearance.enable3DShading)}
+          text={"3D Node Shading"}
+          infoHeading={"Toggle 3D Node Shading"}
+          infoDescription={threeDShadingDescription}
+        />
+      )}
       <SliderBlock
         value={appearance.linkWidth}
         valueText={appearance.linkWidthText}

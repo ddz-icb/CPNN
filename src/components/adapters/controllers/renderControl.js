@@ -197,7 +197,7 @@ export function RenderControl() {
     try {
       const newSimulation = getSimulation(linkLengthInit, appearance.threeD);
       initDragAndZoom(renderState.app, newSimulation, radius, setTooltipSettings, container.width, container.height, appearance.threeD, cameraRef);
-      applyNode3DState(pixiState.nodeMap, appearance.threeD);
+      applyNode3DState(pixiState.nodeMap, appearance.threeD, appearance.enable3DShading);
       setRenderState("simulation", newSimulation);
     } catch (error) {
       setError(error.message);

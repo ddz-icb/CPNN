@@ -22,6 +22,12 @@ export const threeDDescription = (
   </div>
 );
 
+export const threeDShadingDescription = (
+  <div>
+    <p className="margin-0">Enables depth shading on 3D nodes.</p>
+  </div>
+);
+
 export const uploadColorschemeDescription = (
   <div>
     <p>

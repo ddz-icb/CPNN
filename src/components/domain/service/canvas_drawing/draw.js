@@ -254,10 +254,10 @@ function setSphereShadingVisibility(circle, visible) {
   shading.shadow.visible = visible;
 }
 
-export function setNode3DState(nodeMap, threeD) {
+export function setNode3DState(nodeMap, threeD, enableShading = true) {
   if (!nodeMap || !threeD) return;
 
-  Object.values(nodeMap).forEach(({ circle }) => setSphereShadingVisibility(circle, true));
+  Object.values(nodeMap).forEach(({ circle }) => setSphereShadingVisibility(circle, !!enableShading));
 }
 
 export function resetNode3DState(nodeMap, threeD) {
@@ -271,9 +271,9 @@ export function resetNode3DState(nodeMap, threeD) {
   });
 }
 
-export function applyNode3DState(nodeMap, threeD) {
+export function applyNode3DState(nodeMap, threeD, enableShading = true) {
   if (threeD) {
-    setNode3DState(nodeMap, true);
+    setNode3DState(nodeMap, true, enableShading);
   } else {
     resetNode3DState(nodeMap, false);
   }
