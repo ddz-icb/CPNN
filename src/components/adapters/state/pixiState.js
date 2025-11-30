@@ -3,11 +3,15 @@ import { create } from "zustand";
 export const nodeMapInit = null;
 export const nodeContainersInit = null;
 export const linesInit = null;
+export const lines2DInit = null;
+export const lines3DInit = null;
 
 export const pixiStateInit = {
   nodeMap: nodeMapInit,
   nodeContainers: nodeContainersInit,
   lines: linesInit,
+  lines2D: lines2DInit,
+  lines3D: lines3DInit,
 };
 
 export const usePixiState = create((set) => ({

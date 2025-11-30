@@ -3,8 +3,8 @@ import { drawLine, getNodeLabelOffsetY, updateHighlights } from "./draw.js";
 export function redraw(graphData, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, showNodeLabels, nodeMap, app) {
   const { nodes, links } = graphData;
 
-  updateNodes(nodes, nodeMap, showNodeLabels);
   updateLines(links, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices);
+  updateNodes(nodes, nodeMap, showNodeLabels);
   updateHighlights(nodeMap);
 
   app.renderer.render(app.stage);
@@ -36,10 +36,29 @@ function updateNodes(nodes, nodeMap, showNodeLabels) {
   }
 }
 
-function updateLines(links, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices) {
-  lines.clear();
+function updateLines(links, lineGraphics, linkWidth, linkColorscheme, linkAttribsToColorIndices) {
+  if (!lineGraphics || !links) return;
 
+  if (Array.isArray(lineGraphics)) {
+    for (let i = 0; i < lineGraphics.length; i++) {
+      const link = links[i];
+      const graphic = lineGraphics[i];
+      if (!graphic) continue;
+      graphic.clear();
+      if (!link) {
+        graphic.visible = false;
+        continue;
+      }
+      drawLine(graphic, link, linkWidth, linkColorscheme.data, linkAttribsToColorIndices);
+      graphic.visible = true;
+      graphic.zIndex = 0;
+    }
+    return;
+  }
+
+  lineGraphics.clear();
+  lineGraphics.visible = true;
   for (const link of links) {
-    drawLine(lines, link, linkWidth, linkColorscheme.data, linkAttribsToColorIndices);
+    drawLine(lineGraphics, link, linkWidth, linkColorscheme.data, linkAttribsToColorIndices);
   }
 }

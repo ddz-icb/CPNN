@@ -88,11 +88,9 @@ function rotateNode(node, rotX, rotY, centerX, centerY) {
   const shiftedY = node.y - centerY;
   const zBase = node.z ?? 0;
 
-  // Rotation um Y (horizontales Drehen)
   let x = shiftedX * cosY - zBase * sinY;
   let z = shiftedX * sinY + zBase * cosY;
 
-  // Rotation um X (vertikales Drehen)
   let y = shiftedY * cosX - z * sinX;
   z = shiftedY * sinX + z * cosX;
 
@@ -128,10 +126,13 @@ function updateNodes3D(nodes, nodeMap, showNodeLabels, projections) {
   }
 }
 
-function updateLines3D(links, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, projections) {
-  if (!links) return;
+function updateLines3D(links, lineGraphics, linkWidth, linkColorscheme, linkAttribsToColorIndices, projections) {
+  if (!links || !lineGraphics || !Array.isArray(lineGraphics)) return;
 
-  lines.clear();
+  for (const graphic of lineGraphics) {
+    graphic?.clear();
+    if (graphic) graphic.visible = false;
+  }
 
   const linksWithDepth = [];
   for (const link of links) {
@@ -144,43 +145,49 @@ function updateLines3D(links, lines, linkWidth, linkColorscheme, linkAttribsToCo
     if (!src || !tgt) continue;
 
     const depth = Math.max(src.depth ?? 0, tgt.depth ?? 0);
-    linksWithDepth.push({ link, src, tgt, depth });
+    const lineIdx = link.__lineIdx ?? linksWithDepth.length;
+    linksWithDepth.push({ link, src, tgt, depth, lineIdx });
   }
 
   // draw farthest first so nearer links overlay them
   linksWithDepth.sort((a, b) => b.depth - a.depth);
 
-  for (const { link, src, tgt } of linksWithDepth) {
+  for (const { link, src, tgt, depth, lineIdx } of linksWithDepth) {
+    const graphic = lineGraphics[lineIdx];
+    if (!graphic) continue;
+
+    graphic.visible = true;
     const widthScaled = linkWidth * ((src.scale + tgt.scale) / 2);
 
     if (link.attribs.length === 1) {
-      lines
+      graphic
         .moveTo(src.x, src.y)
         .lineTo(tgt.x, tgt.y)
         .stroke({
           color: getColor(linkAttribsToColorIndices[link.attribs[0]], linkColorscheme.data),
           width: widthScaled,
         });
-      continue;
+    } else {
+      const dx = tgt.x - src.x;
+      const dy = tgt.y - src.y;
+      const length = Math.sqrt(dx * dx + dy * dy) || 1e-6;
+      const normedPerp = { x: -dy / length, y: dx / length };
+
+      for (let i = 0; i < link.attribs.length; i++) {
+        const shift = (i - (link.attribs.length - 1) / 2) * widthScaled;
+        const offsetX = shift * normedPerp.x;
+        const offsetY = shift * normedPerp.y;
+
+        graphic
+          .moveTo(src.x + offsetX, src.y + offsetY)
+          .lineTo(tgt.x + offsetX, tgt.y + offsetY)
+          .stroke({
+            color: getColor(linkAttribsToColorIndices[link.attribs[i]], linkColorscheme.data),
+            width: widthScaled,
+          });
+      }
     }
 
-    const dx = tgt.x - src.x;
-    const dy = tgt.y - src.y;
-    const length = Math.sqrt(dx * dx + dy * dy) || 1e-6;
-    const normedPerp = { x: -dy / length, y: dx / length };
-
-    for (let i = 0; i < link.attribs.length; i++) {
-      const shift = (i - (link.attribs.length - 1) / 2) * widthScaled;
-      const offsetX = shift * normedPerp.x;
-      const offsetY = shift * normedPerp.y;
-
-      lines
-        .moveTo(src.x + offsetX, src.y + offsetY)
-        .lineTo(tgt.x + offsetX, tgt.y + offsetY)
-        .stroke({
-          color: getColor(linkAttribsToColorIndices[link.attribs[i]], linkColorscheme.data),
-          width: widthScaled,
-        });
-    }
+    graphic.zIndex = -(depth ?? 0);
   }
 }

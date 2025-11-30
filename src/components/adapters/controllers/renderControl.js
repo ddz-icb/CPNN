@@ -3,6 +3,7 @@ import * as PIXI from "pixi.js";
 import { useRef, useEffect } from "react";
 import { handleResize, initDragAndZoom, initTooltips } from "../../domain/service/canvas_interaction/interactiveCanvas.js";
 import { radius, drawCircle, getTextStyle, getBitMapStyle, getNodeLabelOffsetY, applyNode3DState } from "../../domain/service/canvas_drawing/draw.js";
+import { applyLineGraphicsState } from "../../domain/service/canvas_drawing/lineGraphics.js";
 import { linkLengthInit } from "../state/physicsState.js";
 import { useAppearance } from "../state/appearanceState.js";
 import { graphInit, useGraphState } from "../state/graphState.js";
@@ -54,6 +55,8 @@ export function RenderControl() {
     setPixiState("nodeMap", nodeMapInit);
     setPixiState("nodeContainers", nodeContainersInit);
     setPixiState("lines", linesInit);
+    setPixiState("lines2D", linesInit);
+    setPixiState("lines3D", linesInit);
 
     setAllTooltipSettings(tooltipInit);
 
@@ -120,14 +123,16 @@ export function RenderControl() {
     log.info("Setting stage");
 
     try {
-      const newLines = new PIXI.Graphics();
+      const newLines2D = new PIXI.Graphics();
+      renderState.app.stage.addChild(newLines2D);
+
       const newNodeContainers = new PIXI.Container();
       newNodeContainers.sortableChildren = true;
-      renderState.app.stage.addChild(newLines);
       renderState.app.stage.addChild(newNodeContainers);
 
       const offsetSpawnValue = graphState.graph.data.nodes.length * 10;
       const newNodeMap = {};
+
       for (const node of graphState.graph.data.nodes) {
         if (node.x == null) {
           node.x = container.width / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
@@ -162,7 +167,9 @@ export function RenderControl() {
       }
 
       setPixiState("nodeContainers", newNodeContainers);
-      setPixiState("lines", newLines);
+      setPixiState("lines2D", newLines2D);
+      setPixiState("lines3D", null);
+      setPixiState("lines", newLines2D);
       setPixiState("nodeMap", newNodeMap);
     } catch (error) {
       setError(error.message);
@@ -195,6 +202,13 @@ export function RenderControl() {
     renderState.simulation.stop();
 
     try {
+      applyLineGraphicsState(appearance.threeD, {
+        graph: graphState.graph,
+        nodeContainers: pixiState.nodeContainers,
+        lines2D: pixiState.lines2D,
+        lines3D: pixiState.lines3D,
+        setPixiState,
+      });
       const newSimulation = getSimulation(linkLengthInit, appearance.threeD);
       initDragAndZoom(renderState.app, newSimulation, radius, setTooltipSettings, container.width, container.height, appearance.threeD, cameraRef);
       applyNode3DState(pixiState.nodeMap, appearance.threeD, appearance.enable3DShading);
