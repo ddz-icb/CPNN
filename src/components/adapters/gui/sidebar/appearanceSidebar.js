@@ -9,6 +9,8 @@ import {
   nodeLabelDescription,
   setColorschemeDescription,
   themeDescription,
+  threeDDescription,
+  threeDShadingDescription,
   uploadColorschemeDescription,
 } from "./descriptions/appearanceDescriptions.js";
 import { useAppearance, linkWidthInit } from "../../../adapters/state/appearanceState.js";
@@ -54,9 +56,18 @@ export function AppearanceSettings() {
         value={appearance.threeD}
         setValue={() => setAppearance("threeD", !appearance.threeD)}
         text={"3D Graph"}
-        infoHeading={"Make the graph 3D"}
-        infoDescription={"HEHEHAHA"}
+        infoHeading={"Enable 3D Graph"}
+        infoDescription={threeDDescription}
       />
+      {appearance.threeD && (
+        <SwitchBlock
+          value={appearance.enable3DShading}
+          setValue={() => setAppearance("enable3DShading", !appearance.enable3DShading)}
+          text={"3D Node Shading"}
+          infoHeading={"Toggle 3D Node Shading"}
+          infoDescription={threeDShadingDescription}
+        />
+      )}
       <SliderBlock
         value={appearance.linkWidth}
         valueText={appearance.linkWidthText}
@@ -230,7 +241,9 @@ export function ColorMappingSelect({ heading, colorschemeData, attribsToColorInd
         {colorschemeData.length ? (
           <div className="colormapping-select-list">
             {colorschemeData.map((color, colorIndex) => {
-              const currentAttribute = Object.keys(attribsToColorIndices).find((key) => attribsToColorIndices[key] === parseInt(colorIndex, 10));
+              const currentAttribute = attribsToColorIndices
+                ? Object.keys(attribsToColorIndices).find((key) => attribsToColorIndices[key] === parseInt(colorIndex, 10))
+                : undefined;
 
               return (
                 <div className="colormapping-select-row" key={colorIndex}>

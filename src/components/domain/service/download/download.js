@@ -5,6 +5,47 @@ import { svg2pdf } from "svg2pdf.js";
 import { drawCircleCanvas, drawLineCanvas } from "../canvas_drawing/draw.js";
 import { getFileNameWithoutExtension } from "../parsing/fileParsing.js";
 
+const round2 = (v) => Math.round(v * 100) / 100;
+
+export function cleanNodes(nodes) {
+  return nodes.map((node) => {
+    const { vx, vy, vz, fx, fy, fz, index, ...rest } = node;
+
+    const result = { ...rest };
+
+    if (typeof node.x === "number") result.x = round2(node.x);
+    if (typeof node.y === "number") result.y = round2(node.y);
+    if (typeof node.z === "number") result.z = round2(node.z);
+
+    return result;
+  });
+}
+
+export function cleanNodesNoCoords(nodes) {
+  return nodes.map((node) => {
+    const { x, y, z, vx, vy, vz, fx, fy, fz, index, ...rest } = node;
+
+    const result = { ...rest };
+
+    return result;
+  });
+}
+
+export function cleanLinks(links) {
+  return links.map((link) => {
+    const sourceId = typeof link.source === "object" ? link.source.id : link.source;
+    const targetId = typeof link.target === "object" ? link.target.id : link.target;
+
+    const { source, target, index, ...rest } = link;
+
+    return {
+      ...rest,
+      source: sourceId,
+      target: targetId,
+    };
+  });
+}
+
 function triggerDownload(blob, filename) {
   log.info(`Downloading ${filename}`);
   const url = URL.createObjectURL(blob);
@@ -35,17 +76,17 @@ function createGraphSvgElement(
   const tempCtx = document.createElement("canvas").getContext("2d");
 
   for (const node of graphData.nodes) {
-    const { circle, nodeLabel } = nodeMap[node.id];
+    const { nodeLabel } = nodeMap[node.id];
     if (nodeLabel?.visible) tempCtx.font = `${nodeLabel._fontSize || 12}px sans-serif`;
     const textWidth = nodeLabel?.visible ? tempCtx.measureText(nodeLabel.text).width : 0;
-    const labelXMin = nodeLabel?.visible ? nodeLabel.x - textWidth / 2 : circle.x;
-    const labelXMax = nodeLabel?.visible ? nodeLabel.x + textWidth / 2 : circle.x;
-    const labelY = nodeLabel?.visible ? nodeLabel.y + 10 : circle.y;
+    const labelXMin = nodeLabel?.visible ? nodeLabel.x - textWidth / 2 : node.x;
+    const labelXMax = nodeLabel?.visible ? nodeLabel.x + textWidth / 2 : node.x;
+    const labelY = nodeLabel?.visible ? nodeLabel.y + 10 : node.y;
 
-    minX = Math.min(minX, circle.x - 10, labelXMin - 10);
-    maxX = Math.max(maxX, circle.x + 10, labelXMax + 10);
-    minY = Math.min(minY, circle.y - 10, labelY - 10);
-    maxY = Math.max(maxY, circle.y + 10, labelY + 10);
+    minX = Math.min(minX, node.x - 10, labelXMin - 10);
+    maxX = Math.max(maxX, node.x + 10, labelXMax + 10);
+    minY = Math.min(minY, node.y - 10, labelY - 10);
+    maxY = Math.max(maxY, node.y + 10, labelY + 10);
   }
 
   const width = maxX - minX;
@@ -296,23 +337,19 @@ export function downloadAsPDF(
   });
 }
 
-export function downloadGraphJson(graph, nodeMap, physics, filter) {
-  const convertLinks = (links) => links.map(({ source, target, ...rest }) => ({ ...rest, source: source.id, target: target.id }));
+export function downloadGraphJson(graph, physics, filter) {
+  const nodes = physics ? cleanNodes(graph.data.nodes) : cleanNodesNoCoords(graph.data.nodes);
+  const links = cleanLinks(graph.data.links);
 
-  let nodes = graph.data.nodes;
-  if (nodeMap) {
-    nodes = graph.data.nodes.map((node) => ({
-      ...node,
-      x: Math.round(nodeMap[node.id].circle.x * 100) / 100,
-      y: Math.round(nodeMap[node.id].circle.y * 100) / 100,
-    }));
-  }
+  const data = { nodes, links };
 
-  const data = { nodes, links: convertLinks(graph.data.links) };
   if (physics) data.physics = physics;
   if (filter) data.filter = filter;
 
-  const blob = new Blob([JSON.stringify(data, null, 4)], { type: "application/json" });
+  const blob = new Blob([JSON.stringify(data, null, 4)], {
+    type: "application/json",
+  });
+
   triggerDownload(blob, `${getFileNameWithoutExtension(graph.name)}.json`);
 }
 

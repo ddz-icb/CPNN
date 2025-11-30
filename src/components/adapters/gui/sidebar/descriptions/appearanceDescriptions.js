@@ -16,6 +16,18 @@ export const linkWidthDescription = (
   </div>
 );
 
+export const threeDDescription = (
+  <div>
+    <p className="margin-0">Switches the graph rendering to a 3D perspective. Toggle back to return to the classic 2D canvas.</p>
+  </div>
+);
+
+export const threeDShadingDescription = (
+  <div>
+    <p className="margin-0">Enables depth shading on 3D nodes.</p>
+  </div>
+);
+
 export const uploadColorschemeDescription = (
   <div>
     <p>

@@ -18,7 +18,10 @@
   width: 90%;
   max-width: 350px;
   max-height: 250px;
-  padding: 10px;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  padding-right: 0.5rem;
+  padding-left: 0.5rem;
   background: var(--color-tooltip-surface);
   border: var(--border-thin) solid var(--color-error);
   border-radius: var(--radius-sm);
@@ -37,18 +40,4 @@
 .error-header b {
   flex-grow: 1;
   text-align: center;
-}
-
-.error-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 1rem;
-  height: 1rem;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.error-button svg {
-  fill: var(--color-error);
 }

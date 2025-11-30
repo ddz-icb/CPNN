@@ -52,7 +52,7 @@ export function DownloadControl() {
     log.info("Downloading graph as JSON with coordinates and physics");
 
     try {
-      downloadGraphJson(graphState.graph, pixiState.nodeMap, physics, filter);
+      downloadGraphJson(graphState.graph, physics, filter);
     } catch (error) {
       errorService.setError(error.message);
       log.error("Error downloading the graph as JSON with coordinates:", error);
@@ -65,13 +65,13 @@ export function DownloadControl() {
     log.info("Downloading graph as PNG");
 
     try {
-      changeCircleBorderColor(pixiState.circles, lightTheme.circleBorderColor);
-      changeNodeLabelColor(pixiState.nodeLabels, lightTheme.textColor);
+      changeCircleBorderColor(pixiState.nodeMap, lightTheme.circleBorderColor);
+      changeNodeLabelColor(pixiState.nodeMap, lightTheme.textColor);
 
       downloadAsPNG(renderState.app, document, graphState.graph.name);
 
-      changeCircleBorderColor(pixiState.circles, theme.circleBorderColor);
-      changeNodeLabelColor(pixiState.nodeLabels, theme.textColor);
+      changeCircleBorderColor(pixiState.nodeMap, theme.circleBorderColor);
+      changeNodeLabelColor(pixiState.nodeMap, theme.textColor);
     } catch (error) {
       errorService.setError(error.message);
       log.error("Error downloading the graph as PNG:", error);

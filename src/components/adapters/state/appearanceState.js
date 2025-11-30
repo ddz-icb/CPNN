@@ -1,14 +1,19 @@
 import { create } from "zustand";
+import { defaultCamera } from "../../domain/service/canvas_drawing/render3D";
 
 export const showNodeLabelsInit = true;
 export const linkWidthInit = 2;
 export const threeDInit = false;
+export const threeDShadingInit = true;
+export const cameraRefInit = { ...defaultCamera };
 
 export const appearanceInit = {
   showNodeLabels: true,
   linkWidth: linkWidthInit,
   linkWidthText: linkWidthInit,
-  threeD: threeDInit
+  threeD: threeDInit,
+  enable3DShading: threeDShadingInit,
+  cameraRef: cameraRefInit,
 };
 
 export const useAppearance = create((set) => ({

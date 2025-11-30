@@ -7,7 +7,7 @@ export const borderMultiplier = 10;
 
 const minLinkLengthFactor = 0.15;
 
-export function borderCheck(radius, borderHeight, borderWidth, center) {
+export function borderCheck(radius, borderHeight, borderWidth, center, borderDepth = Math.min(borderHeight, borderWidth)) {
   let nodes;
   let strength = 1;
 
@@ -15,6 +15,9 @@ export function borderCheck(radius, borderHeight, borderWidth, center) {
   const rightBorder = center.x + (borderWidth * strength) / 2;
   const topBorder = center.y - (borderHeight * strength) / 2;
   const bottomBorder = center.y + (borderHeight * strength) / 2;
+  const centerZ = center?.z ?? 0;
+  const nearBorder = centerZ - (borderDepth * strength) / 2;
+  const farBorder = centerZ + (borderDepth * strength) / 2;
 
   function force(alpha) {
     for (const node of nodes) {
@@ -28,6 +31,14 @@ export function borderCheck(radius, borderHeight, borderWidth, center) {
 
       node.vx += dx * alpha;
       node.vy += dy * alpha;
+
+      if (node.z != null) {
+        let dz = 0;
+        if (node.z < nearBorder + radius) dz += (nearBorder + radius - node.z) * strength;
+        else if (node.z > farBorder - radius) dz += (farBorder - radius - node.z) * strength;
+
+        node.vz = (node.vz ?? 0) + dz * alpha;
+      }
     }
   }
 
@@ -62,7 +73,7 @@ export function groupRepulsionForce(IdToGroup, centroidThreshold) {
 
     const groupSums = new Map();
     for (const compId of groupIds) {
-      groupSums.set(compId, { x: 0, y: 0, count: 0 });
+      groupSums.set(compId, { x: 0, y: 0, z: 0, count: 0 });
     }
 
     for (const node of nodes) {
@@ -70,16 +81,18 @@ export function groupRepulsionForce(IdToGroup, centroidThreshold) {
       const acc = groupSums.get(compId);
       acc.x += node.x;
       acc.y += node.y;
+      acc.z += node.z ?? 0;
       acc.count++;
     }
 
     const centroids = [];
-    for (const [compId, { x, y, count }] of groupSums) {
+    for (const [compId, { x, y, z, count }] of groupSums) {
       if (count >= centroidThreshold) {
         centroids.push({
           compId,
           x: x / count,
           y: y / count,
+          z: z / count,
         });
       }
     }
@@ -94,13 +107,17 @@ export function groupRepulsionForce(IdToGroup, centroidThreshold) {
 
         const dx = centroid.x - node.x;
         const dy = centroid.y - node.y;
-        const distSq = dx * dx + dy * dy;
+        const dz = (centroid.z ?? 0) - (node.z ?? 0);
+        const distSq = dx * dx + dy * dy + dz * dz;
         if (distSq < 1e-4) continue;
         const inverseDist = 1 / Math.sqrt(distSq);
         const f = strengthFactor * inverseDist;
 
         node.vx -= dx * f;
         node.vy -= dy * f;
+        if (node.vz != null) {
+          node.vz -= dz * f;
+        }
       }
     }
   }
@@ -154,8 +171,11 @@ export function circularForce(IdToComp, adjacentCountMap, minCircleSize) {
         const targetY = centroid.y + radius * Math.sin(angle);
         const dx = targetX - group[i].x;
         const dy = targetY - group[i].y;
+        const targetZ = centroid.z ?? 0;
+        const dz = targetZ - (group[i].z ?? 0);
         group[i].vx += dx * alpha * strength;
         group[i].vy += dy * alpha * strength;
+        group[i].vz = (group[i].vz ?? 0) + dz * alpha * strength;
       }
     }
 
@@ -173,7 +193,8 @@ export function circularForce(IdToComp, adjacentCountMap, minCircleSize) {
 
         const dx = c2.x - c1.x;
         const dy = c2.y - c1.y;
-        const distSq = dx * dx + dy * dy;
+        const dz = (c2.z ?? 0) - (c1.z ?? 0);
+        const distSq = dx * dx + dy * dy + dz * dz;
 
         const minDist = radius1 + radius2 + 10;
         const minDistSq = minDist * minDist;
@@ -186,16 +207,19 @@ export function circularForce(IdToComp, adjacentCountMap, minCircleSize) {
 
           const forceX = dx * force;
           const forceY = dy * force;
+          const forceZ = dz * force;
 
           const nodes2 = groupIdToNodes.get(id2);
 
           for (const n of nodes1) {
             n.vx -= forceX;
             n.vy -= forceY;
+            n.vz = (n.vz ?? 0) - forceZ;
           }
           for (const n of nodes2) {
             n.vx += forceX;
             n.vy += forceY;
+            n.vz = (n.vz ?? 0) + forceZ;
           }
         }
       }
@@ -210,7 +234,7 @@ export function circularForce(IdToComp, adjacentCountMap, minCircleSize) {
   return force;
 }
 
-export function gravityForce(x, y) {
+export function gravityForce(x, y, z) {
   let nodes;
   let strength = 0.1;
 
@@ -218,6 +242,10 @@ export function gravityForce(x, y) {
     for (const node of nodes) {
       node.vx += (x - node.x) * strength * alpha;
       node.vy += (y - node.y) * strength * alpha;
+
+      if (node.z != null) {
+        node.vz = (node.vz ?? 0) + (z - node.z) * strength * alpha;
+      }
     }
   }
 
@@ -265,12 +293,11 @@ export function getAdjacentNodes(graphData, nodeId) {
     const neighborNode = nodeMap.get(neighborId);
     if (!neighborNode) return;
 
-    const entry =
-      adjacencyMap.get(neighborId) ?? {
-        node: neighborNode,
-        connections: [],
-        maxWeight: 0,
-      };
+    const entry = adjacencyMap.get(neighborId) ?? {
+      node: neighborNode,
+      connections: [],
+      maxWeight: 0,
+    };
 
     const attribs = Array.isArray(link.attribs) ? link.attribs : [];
     const weights = Array.isArray(link.weights) ? link.weights : [];

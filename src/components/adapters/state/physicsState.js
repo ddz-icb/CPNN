@@ -12,6 +12,7 @@ export const communityForceStrengthInit = 0;
 export const checkBorderInit = false;
 export const borderWidthInit = 200;
 export const borderHeightInit = 200;
+export const borderDepthInit = 200;
 
 export const physicsInit = {
   circleLayout: circleLayoutInit,
@@ -28,6 +29,8 @@ export const physicsInit = {
   borderHeight: borderHeightInit,
   borderHeightText: borderHeightInit,
   borderWidthText: borderWidthInit,
+  borderDepth: borderDepthInit,
+  borderDepthText: borderDepthInit,
   componentStrengthText: componentStrengthInit,
   nodeRepulsionStrengthText: nodeRepulsionStrengthInit,
   communityForceStrength: communityForceStrengthInit,
@@ -45,6 +48,7 @@ export const expectedPhysicTypes = {
   checkBorder: "boolean",
   borderWidth: "number",
   borderHeight: "number",
+  borderDepth: "number",
   gravityAdvanced: "boolean",
   communityForceStrength: "number",
 };

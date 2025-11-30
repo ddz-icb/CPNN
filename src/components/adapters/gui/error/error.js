@@ -12,9 +12,9 @@ export function Error() {
           <div className="error-container">
             <div className="error-header pad-bottom-1">
               <b>Warning</b>
-              <span className="error-button" onClick={() => clearError()}>
+              <button className="back-close" onClick={() => clearError()}>
                 <SvgIcon svg={xSvg} />
-              </span>
+              </button>
             </div>
             <div>{error}</div>
           </div>

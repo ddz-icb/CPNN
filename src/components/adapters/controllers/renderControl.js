@@ -2,9 +2,8 @@ import log from "../logging/logger.js";
 import * as PIXI from "pixi.js";
 import { useRef, useEffect } from "react";
 import { handleResize, initDragAndZoom, initTooltips } from "../../domain/service/canvas_interaction/interactiveCanvas.js";
-import { enableLasso } from "../../domain/service/canvas_interaction/lasso.js";
-import { Tooltips } from "../gui/tooltip/tooltips.js";
-import { radius, drawCircle, getTextStyle, getBitMapStyle, redraw, render, getNodeLabelOffsetY } from "../../domain/service/canvas_drawing/draw.js";
+import { radius, drawCircle, getTextStyle, getBitMapStyle, getNodeLabelOffsetY, applyNode3DState } from "../../domain/service/canvas_drawing/draw.js";
+import { applyLineGraphicsState } from "../../domain/service/canvas_drawing/lineGraphics.js";
 import { linkLengthInit } from "../state/physicsState.js";
 import { useAppearance } from "../state/appearanceState.js";
 import { graphInit, useGraphState } from "../state/graphState.js";
@@ -13,15 +12,14 @@ import { tooltipInit, useTooltipSettings } from "../state/tooltipState.js";
 import { useError } from "../state/errorState.js";
 import { useReset } from "../state/resetState.js";
 import { useColorschemeState } from "../state/colorschemeState.js";
-import { getSimulation } from "../../domain/service/physics_calculations/getSimulation.js";
+import { getSimulation, mountSimulation } from "../../domain/service/physics_calculations/simulation.js";
 import { useTheme } from "../state/themeState.js";
-import { circlesInit, linesInit, nodeMapInit, usePixiState } from "../state/pixiState.js";
+import { nodeContainersInit, linesInit, nodeMapInit, usePixiState } from "../state/pixiState.js";
 import { filteredAfterStartInit, useGraphFlags } from "../state/graphFlagsState.js";
 import { simulationInit, useRenderState } from "../state/canvasState.js";
-import { useFilter } from "../state/filterState.js";
 
 export function RenderControl() {
-  const { appearance } = useAppearance();
+  const { appearance, setAppearance } = useAppearance();
   const { theme } = useTheme();
   const { colorschemeState } = useColorschemeState();
   const { graphState, setGraphState } = useGraphState();
@@ -32,10 +30,21 @@ export function RenderControl() {
   const { setError } = useError();
   const { reset, setReset } = useReset();
   const { renderState, setRenderState } = useRenderState();
-  const { filter, setFilter } = useFilter();
 
   const containerRef = useRef(null);
-  const lassoApiRef = useRef(null);
+  const cameraRef = useRef({ ...appearance.cameraRef }); // for 3D
+
+  useEffect(() => {
+    // share the live camera reference with subscribers (e.g., redraw bindings)
+    setAppearance("cameraRef", cameraRef);
+  }, [setAppearance, cameraRef]);
+
+  useEffect(() => {
+    if (!container.width || !container.height) return;
+
+    cameraRef.current.x = container.width / 2;
+    cameraRef.current.y = container.height / 2;
+  }, [container.width, container.height]);
 
   // reset simulation //
   useEffect(() => {
@@ -44,8 +53,10 @@ export function RenderControl() {
     setGraphState("graph", graphInit);
     setGraphFlags("filteredAfterStart", filteredAfterStartInit);
     setPixiState("nodeMap", nodeMapInit);
-    setPixiState("circles", circlesInit);
+    setPixiState("nodeContainers", nodeContainersInit);
     setPixiState("lines", linesInit);
+    setPixiState("lines2D", linesInit);
+    setPixiState("lines3D", linesInit);
 
     setAllTooltipSettings(tooltipInit);
 
@@ -100,7 +111,7 @@ export function RenderControl() {
   // set stage //
   useEffect(() => {
     if (
-      pixiState.circles ||
+      pixiState.nodeContainers ||
       !renderState.app ||
       !graphState.graph ||
       !container.width ||
@@ -112,40 +123,53 @@ export function RenderControl() {
     log.info("Setting stage");
 
     try {
-      const newLines = new PIXI.Graphics();
-      const newCircles = new PIXI.Container();
-      const newNodeLabels = new PIXI.Container();
-      renderState.app.stage.addChild(newLines);
-      renderState.app.stage.addChild(newCircles);
-      renderState.app.stage.addChild(newNodeLabels);
+      const newLines2D = new PIXI.Graphics();
+      renderState.app.stage.addChild(newLines2D);
+
+      const newNodeContainers = new PIXI.Container();
+      newNodeContainers.sortableChildren = true;
+      renderState.app.stage.addChild(newNodeContainers);
 
       const offsetSpawnValue = graphState.graph.data.nodes.length * 10;
       const newNodeMap = {};
+
       for (const node of graphState.graph.data.nodes) {
+        if (node.x == null) {
+          node.x = container.width / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
+        }
+        if (node.y == null) {
+          node.y = container.height / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
+        }
+        if (node.z == null) {
+          node.z = (Math.random() - 0.5) * offsetSpawnValue;
+        }
+
         let circle = new PIXI.Graphics();
         circle = drawCircle(circle, node, theme.circleBorderColor, colorschemeState.nodeColorscheme.data, colorschemeState.nodeAttribsToColorIndices);
         circle.id = node.id;
         circle.interactive = true;
         circle.buttonMode = true;
-        circle.x = node.x || container.width / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
-        circle.y = node.y || container.height / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
-        newCircles.addChild(circle);
+        circle.x = node.x;
+        circle.y = node.y;
+        newNodeContainers.addChild(circle);
         initTooltips(circle, node, setTooltipSettings);
 
         let nodeLabel = new PIXI.BitmapText(getBitMapStyle(node.id));
         nodeLabel.style = getTextStyle(theme.textColor);
-        nodeLabel.x = circle.x;
-        nodeLabel.y = circle.y + getNodeLabelOffsetY(node.id);
+        nodeLabel.x = node.x;
+        nodeLabel.y = node.y;
+        getNodeLabelOffsetY(node.id);
         nodeLabel.pivot.x = nodeLabel.width / 2;
         nodeLabel.visible = false;
-        newNodeLabels.addChild(nodeLabel);
+        newNodeContainers.addChild(nodeLabel);
 
         newNodeMap[node.id] = { node, circle, nodeLabel };
       }
 
-      setPixiState("nodeLabels", newNodeLabels);
-      setPixiState("circles", newCircles);
-      setPixiState("lines", newLines);
+      setPixiState("nodeContainers", newNodeContainers);
+      setPixiState("lines2D", newLines2D);
+      setPixiState("lines3D", null);
+      setPixiState("lines", newLines2D);
       setPixiState("nodeMap", newNodeMap);
     } catch (error) {
       setError(error.message);
@@ -161,8 +185,8 @@ export function RenderControl() {
     log.info("Init simulation");
 
     try {
-      const newSimulation = getSimulation(linkLengthInit);
-      initDragAndZoom(renderState.app, newSimulation, radius, setTooltipSettings, container.width, container.height);
+      const newSimulation = getSimulation(linkLengthInit, appearance.threeD);
+      initDragAndZoom(renderState.app, newSimulation, radius, setTooltipSettings, container.width, container.height, appearance.threeD, cameraRef);
       setRenderState("simulation", newSimulation);
     } catch (error) {
       setError(error.message);
@@ -170,37 +194,52 @@ export function RenderControl() {
     }
   }, [renderState.app, graphState.graph]);
 
+  // change 2D <-> 3D
+  useEffect(() => {
+    if (!renderState.app || !graphState.graph || !renderState.simulation) return;
+    log.info(`Switch simulation to ${appearance.threeD ? "3D" : "2D"}`);
+
+    renderState.simulation.stop();
+
+    try {
+      applyLineGraphicsState(appearance.threeD, {
+        graph: graphState.graph,
+        nodeContainers: pixiState.nodeContainers,
+        lines2D: pixiState.lines2D,
+        lines3D: pixiState.lines3D,
+        setPixiState,
+      });
+      const newSimulation = getSimulation(linkLengthInit, appearance.threeD);
+      initDragAndZoom(renderState.app, newSimulation, radius, setTooltipSettings, container.width, container.height, appearance.threeD, cameraRef);
+      applyNode3DState(pixiState.nodeMap, appearance.threeD, appearance.enable3DShading);
+      setRenderState("simulation", newSimulation);
+    } catch (error) {
+      setError(error.message);
+      log.error(error.message);
+    }
+  }, [appearance.threeD]);
+
   // running simulation //
   useEffect(() => {
-    if (!pixiState.circles || !graphState.graph || !renderState.simulation || !graphFlags.filteredAfterStart || !pixiState.lines) return;
+    if (!pixiState.nodeContainers || !graphState.graph || !renderState.simulation || !graphFlags.filteredAfterStart || !pixiState.lines) return;
     log.info("Running simulation with the following graph:", graphState.graph);
 
     try {
-      let activeCircles = pixiState.circles.children.filter((circle) => circle.visible);
-
-      renderState.simulation
-        .on("tick.redraw", () =>
-          redraw(
-            graphState.graph.data,
-            pixiState.lines,
-            appearance.linkWidth,
-            colorschemeState.linkColorscheme,
-            colorschemeState.linkAttribsToColorIndices,
-            appearance.showNodeLabels,
-            pixiState.nodeMap,
-            renderState.app
-          )
-        )
-        .on("end", () => render(renderState.app))
-        .nodes(activeCircles)
-        .force("link")
-        .links(graphState.graph.data.links);
-
-      // restart the simulation and reheat if necessary to make sure everything is being rerendered correctly
-      renderState.simulation.restart();
-      if (renderState.simulation.alpha() < 0.5) {
-        renderState.simulation.alpha(0.5);
-      }
+      const redraw = mountSimulation(
+        renderState.simulation,
+        graphState.graph.data,
+        pixiState.lines,
+        appearance.linkWidth,
+        colorschemeState.linkColorscheme,
+        colorschemeState.linkAttribsToColorIndices,
+        appearance.showNodeLabels,
+        pixiState.nodeMap,
+        renderState.app,
+        container,
+        cameraRef,
+        appearance.threeD
+      );
+      redraw();
 
       setRenderState(renderState.simulation);
     } catch (error) {
@@ -217,7 +256,7 @@ export function RenderControl() {
         renderState.simulation.stop();
       }
     };
-  }, [graphState.graph, pixiState.circles, pixiState.lines, renderState.simulation, graphFlags.filteredAfterStart]);
+  }, [graphState.graph, pixiState.nodeContainers, pixiState.lines, renderState.simulation, graphFlags.filteredAfterStart]);
 
   // resize the canvas on window resize //
   useEffect(() => {
@@ -230,55 +269,8 @@ export function RenderControl() {
     };
   }, [renderState.app]);
 
-  // lasso function
-  useEffect(() => {
-    if (!filter.lasso || !renderState.app || !pixiState.nodeMap) {
-      return;
-    }
-
-    setFilter("lassoSelection", []);
-
-    const disableLasso = enableLasso({
-      app: renderState.app,
-      nodeMap: pixiState.nodeMap,
-      lineColor: theme.circleBorderColor,
-      onSelect: ({ nodes }) => {
-        setFilter("lassoSelection", Array.isArray(nodes) ? nodes : []);
-      },
-    });
-    lassoApiRef.current = disableLasso;
-
-    return () => {
-      if (lassoApiRef.current === disableLasso) {
-        lassoApiRef.current = null;
-      }
-      if (typeof disableLasso === "function") {
-        disableLasso();
-      }
-    };
-  }, [filter.lasso, renderState.app, pixiState.nodeMap, theme, setFilter]);
-
-  useEffect(() => {
-    if (!filter.lasso) {
-      lassoApiRef.current?.clearSelection?.();
-      lassoApiRef.current = null;
-      if (Array.isArray(filter.lassoSelection) && filter.lassoSelection.length === 0) {
-        return;
-      }
-      setFilter("lassoSelection", []);
-      return;
-    }
-
-    if (!Array.isArray(filter.lassoSelection) || filter.lassoSelection.length > 0) {
-      return;
-    }
-
-    lassoApiRef.current?.clearSelection?.();
-  }, [filter.lasso, filter.lassoSelection, setFilter]);
-
   return (
     <>
-      <Tooltips />
       <div ref={containerRef} className="canvas" />
     </>
   );

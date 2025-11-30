@@ -1,15 +1,17 @@
 import { useEffect } from "react";
 import log from "../logging/logger.js";
 
-import { changeCircleBorderColor, changeNodeColors, changeNodeLabelColor, redraw } from "../../domain/service/canvas_drawing/draw.js";
+import { applyNode3DState, changeCircleBorderColor, changeNodeColors, changeNodeLabelColor } from "../../domain/service/canvas_drawing/draw.js";
 import { useAppearance } from "../state/appearanceState.js";
 import { useGraphState } from "../state/graphState.js";
 
 import { useColorschemeState } from "../state/colorschemeState.js";
-import { useTheme } from "../state/themeState.js";
 import { usePixiState } from "../state/pixiState.js";
 import { useRenderState } from "../state/canvasState.js";
 import { errorService } from "../../application/services/errorService.js";
+import { mountRedraw } from "../../domain/service/physics_calculations/simulation.js";
+import { useContainer } from "../state/containerState.js";
+import { useTheme } from "../state/themeState.js";
 
 export function AppearanceControl() {
   const { appearance } = useAppearance();
@@ -18,6 +20,7 @@ export function AppearanceControl() {
   const { graphState } = useGraphState();
   const { pixiState } = usePixiState();
   const { renderState } = useRenderState();
+  const { container } = useContainer();
 
   // rebind redraw function and run one cycle
   useEffect(() => {
@@ -35,19 +38,8 @@ export function AppearanceControl() {
     log.info("Updating redraw function");
 
     try {
-      renderState.simulation.on("tick.redraw", () =>
-        redraw(
-          graphState.graph.data,
-          pixiState.lines,
-          appearance.linkWidth,
-          colorschemeState.linkColorscheme,
-          colorschemeState.linkAttribsToColorIndices,
-          appearance.showNodeLabels,
-          pixiState.nodeMap,
-          renderState.app
-        )
-      );
-      redraw(
+      const redraw = mountRedraw(
+        renderState.simulation,
         graphState.graph.data,
         pixiState.lines,
         appearance.linkWidth,
@@ -55,8 +47,12 @@ export function AppearanceControl() {
         colorschemeState.linkAttribsToColorIndices,
         appearance.showNodeLabels,
         pixiState.nodeMap,
-        renderState.app
+        renderState.app,
+        container,
+        appearance.cameraRef,
+        appearance.threeD
       );
+      redraw();
     } catch (error) {
       errorService.setError(error.message);
       log.error(error);
@@ -65,17 +61,23 @@ export function AppearanceControl() {
 
   // enable/disable node labels
   useEffect(() => {
-    if (!pixiState.circles) return;
+    if (!pixiState.nodeMap) return;
     log.info("Enabling/Disabling node labels");
 
     try {
       if (appearance.showNodeLabels === true) {
-        graphState.graph.data.nodes.forEach((n) => {
-          const { nodeLabel } = pixiState.nodeMap[n.id];
-          nodeLabel.visible = true;
+        graphState.graph?.data?.nodes.forEach((n) => {
+          const { nodeLabel } = pixiState.nodeMap[n.id] || {};
+          if (nodeLabel) {
+            nodeLabel.visible = true;
+          }
         });
       } else {
-        pixiState.nodeLabels.children.forEach((label) => (label.visible = false));
+        Object.values(pixiState.nodeMap).forEach(({ nodeLabel }) => {
+          if (nodeLabel) {
+            nodeLabel.visible = false;
+          }
+        });
       }
     } catch (error) {
       errorService.setError(error.message);
@@ -85,12 +87,12 @@ export function AppearanceControl() {
 
   // switch colors upon changing theme
   useEffect(() => {
-    if (!pixiState.circles) return;
+    if (!pixiState.nodeMap) return;
     log.info("Switching colors", theme);
 
     try {
-      changeCircleBorderColor(pixiState.circles, theme.circleBorderColor);
-      changeNodeLabelColor(pixiState.nodeLabels, theme.textColor);
+      changeCircleBorderColor(pixiState.nodeMap, theme.circleBorderColor);
+      changeNodeLabelColor(pixiState.nodeMap, theme.textColor);
     } catch (error) {
       errorService.setError(error.message);
       log.error(error);
@@ -99,20 +101,22 @@ export function AppearanceControl() {
 
   // switch node color scheme
   useEffect(() => {
-    if (!pixiState.circles) return;
+    if (!pixiState.nodeMap) return;
     log.info("Changing node color scheme");
 
     try {
-      changeNodeColors(
-        pixiState.circles,
-        pixiState.nodeMap,
-        theme.circleBorderColor,
-        colorschemeState.nodeColorscheme.data,
-        colorschemeState.nodeAttribsToColorIndices
-      );
+      changeNodeColors(pixiState.nodeMap, theme.circleBorderColor, colorschemeState.nodeColorscheme.data, colorschemeState.nodeAttribsToColorIndices);
     } catch (error) {
       errorService.setError(error.message);
       log.error(error);
     }
   }, [colorschemeState.nodeColorscheme, colorschemeState.nodeAttribsToColorIndices]);
+
+  // toggle shading in 3D
+  useEffect(() => {
+    if (!appearance.threeD || !pixiState.nodeMap) return;
+    log.info("Toggling shading in 3D", appearance.enable3DShading);
+
+    applyNode3DState(pixiState.nodeMap, true, appearance.enable3DShading);
+  }, [appearance.enable3DShading, appearance.threeD, pixiState.nodeMap]);
 }

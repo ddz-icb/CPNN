@@ -13,14 +13,16 @@ export function groupBy(nodes, keyFn) {
 }
 
 export function getCentroid(nodes) {
-  if (!nodes.length) return { x: 0, y: 0, size: 0 };
+  if (!nodes.length) return { x: 0, y: 0, z: 0, size: 0 };
   let x = 0,
-    y = 0;
+    y = 0,
+    z = 0;
   for (const n of nodes) {
     x += n.x;
     y += n.y;
+    z += n.z ?? 0;
   }
-  return { x: x / nodes.length, y: y / nodes.length, size: nodes.length };
+  return { x: x / nodes.length, y: y / nodes.length, z: z / nodes.length, size: nodes.length };
 }
 
 export function getComponentData(graphData) {
@@ -169,16 +171,8 @@ export function getLinkWeight(link) {
   return Math.abs(link.weight);
 }
 
-export function getNodeScreenPosition(nodeId, app, nodeMap) {
-  if (!nodeId || !app || !nodeMap?.[nodeId]) return null;
-  const circle = nodeMap[nodeId]?.circle;
-  const canvas = app.renderer?.view;
-  if (!circle || !canvas) return null;
-
-  const globalPosition = typeof circle.getGlobalPosition === "function" ? circle.getGlobalPosition() : { x: circle.x, y: circle.y };
-
-  return {
-    x: globalPosition.x + 60, // i don't know why the offset is needed :c
-    y: globalPosition.y,
-  };
+export function formatWeight(value) {
+  if (typeof value !== "number" || Number.isNaN(value)) return "n/a";
+  if (Math.abs(value) >= 1) return value.toFixed(2);
+  return value.toPrecision(2);
 }

@@ -41,19 +41,6 @@ export function getColor(index, colorscheme) {
   return colorscheme[index];
 }
 
-export function redraw(graphData, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, showNodeLabels, nodeMap, app) {
-
-  updateLines(graphData.links, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices);
-  updateHighlightOverlays(nodeMap);
-  updateLabels(graphData.nodes, nodeMap, showNodeLabels);
-
-  app.renderer.render(app.stage);
-}
-
-export function render(app) {
-  app.renderer.render(app.stage);
-}
-
 export function drawCircle(circle, node, circleBorderColor, colorscheme, nodeAttribsToColorIndices) {
   circle
     .circle(0, 0, radius)
@@ -131,27 +118,9 @@ function updateHighlightOverlay(circle) {
   overlay.y = circle.y;
 }
 
-export function updateHighlightOverlays(nodeMap) {
+export function updateHighlights(nodeMap) {
   if (!nodeMap) return;
   Object.values(nodeMap).forEach(({ circle }) => updateHighlightOverlay(circle));
-}
-
-function updateLabels(nodes, nodeMap, showNodeLabels) {
-  if (showNodeLabels) {
-    nodes.forEach((n) => {
-      const { node, circle, nodeLabel } = nodeMap[n.id];
-      nodeLabel.x = circle.x;
-      nodeLabel.y = circle.y + getNodeLabelOffsetY(node.id);
-    });
-  }
-}
-
-function updateLines(links, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices) {
-  lines.clear();
-
-  for (const link of links) {
-    drawLine(lines, link, linkWidth, linkColorscheme.data, linkAttribsToColorIndices);
-  }
 }
 
 export function drawCircleCanvas(ctx, node, circle, circleBorderColor, colorscheme, nodeAttribsToColorIndices) {
@@ -176,24 +145,29 @@ export function drawCircleCanvas(ctx, node, circle, circleBorderColor, colorsche
   }
 }
 
-export function changeCircleBorderColor(circles, newColor) {
-  for (const circle of circles.children) {
+export function changeCircleBorderColor(nodeMap, newColor) {
+  if (!nodeMap) return;
+  Object.values(nodeMap).forEach(({ circle }) => {
+    if (!circle) return;
     circle.circle(0, 0, radius).stroke({ color: newColor, width: 2 });
-  }
+  });
 }
 
-export function changeNodeLabelColor(nodeLabels, textColor) {
-  for (const label of nodeLabels.children) {
-    label.style = getTextStyle(textColor);
-  }
+export function changeNodeLabelColor(nodeMap, textColor) {
+  if (!nodeMap) return;
+  Object.values(nodeMap).forEach(({ nodeLabel }) => {
+    if (!nodeLabel) return;
+    nodeLabel.style = getTextStyle(textColor);
+  });
 }
 
-export function changeNodeColors(circles, nodeMap, circleBorderColor, colorscheme, nodeAttribsToColorIndices) {
-  for (const circle of circles.children) {
-    const { node } = nodeMap[circle.id];
+export function changeNodeColors(nodeMap, circleBorderColor, colorscheme, nodeAttribsToColorIndices) {
+  if (!nodeMap) return;
+  Object.values(nodeMap).forEach(({ node, circle }) => {
+    if (!node || !circle) return;
     circle.clear();
     drawCircle(circle, node, circleBorderColor, colorscheme, nodeAttribsToColorIndices);
-  }
+  });
 }
 
 export function drawLine(lines, link, linkWidth, colorscheme, linkAttribsToColorIndices) {
@@ -270,4 +244,115 @@ function polarToCartesian(cx, cy, r, angle) {
     x: cx + r * Math.cos(angle),
     y: cy + r * Math.sin(angle),
   };
+}
+
+function setSphereShadingVisibility(circle, visible) {
+  const shading = ensureSphereShading(circle);
+  if (!shading) return;
+
+  shading.highlight.visible = visible;
+  shading.shadow.visible = visible;
+}
+
+export function setNode3DState(nodeMap, threeD, enableShading = true) {
+  if (!nodeMap || !threeD) return;
+
+  Object.values(nodeMap).forEach(({ circle }) => setSphereShadingVisibility(circle, !!enableShading));
+}
+
+export function resetNode3DState(nodeMap, threeD) {
+  if (!nodeMap || threeD) return;
+
+  Object.values(nodeMap).forEach(({ circle, nodeLabel }) => {
+    circle?.scale?.set?.(1);
+    nodeLabel?.scale?.set?.(1);
+    circle.tint = 0xffffff;
+    setSphereShadingVisibility(circle, false);
+  });
+}
+
+export function applyNode3DState(nodeMap, threeD, enableShading = true) {
+  if (threeD) {
+    setNode3DState(nodeMap, true, enableShading);
+  } else {
+    resetNode3DState(nodeMap, false);
+  }
+}
+
+function ensureSphereShading(circle) {
+  if (!circle) return null;
+  if (circle.sphereShading) return circle.sphereShading;
+
+  const rimRadiusFactor = 1.05;
+  const rimWidthFactor = 0.15;
+
+  const highlight = new PIXI.Graphics();
+  highlight.eventMode = "none";
+  highlight.visible = false;
+  highlight.blendMode = "add";
+
+  const hiStart = -Math.PI * 0.9;
+  const hiEnd = -Math.PI * 0.1;
+
+  highlight.arc(0, 0, radius * rimRadiusFactor, hiStart, hiEnd).stroke({
+    color: 0xffffff,
+    width: radius * rimWidthFactor,
+    alpha: 0.55,
+  });
+
+  highlight.circle(radius * 0.22, -radius * 0.26, radius * 0.4).fill({
+    color: 0xffffff,
+    alpha: 0.3,
+  });
+
+  const shadow = new PIXI.Graphics();
+  shadow.eventMode = "none";
+  shadow.visible = false;
+  shadow.blendMode = "multiply";
+
+  const shStart = Math.PI * 0.1;
+  const shEnd = Math.PI * 0.9;
+
+  shadow.arc(0, 0, radius * rimRadiusFactor, shStart, shEnd).stroke({
+    color: 0x000000,
+    width: radius * rimWidthFactor,
+    alpha: 0.45,
+  });
+
+  shadow.circle(-radius * 0.24, radius * 0.28, radius * 0.55).fill({
+    color: 0x000000,
+    alpha: 0.24,
+  });
+
+  circle.addChild(shadow);
+  circle.addChild(highlight);
+
+  circle.sphereShading = { highlight, shadow };
+  return circle.sphereShading;
+}
+
+export function updateSphereShading(circle, scale = 1) {
+  const shading = ensureSphereShading(circle);
+  if (!shading) return;
+
+  const { highlight, shadow } = shading;
+
+  if (!highlight.visible || !shadow.visible) return;
+
+  // based on depth
+  const normalized = Math.max(0, Math.min(1, (scale - 0.4) / 0.9));
+  const intensity = 0.3 + 0.5 * Math.pow(normalized, 0.8);
+
+  highlight.alpha = 0.35 + intensity * 0.25;
+  shadow.alpha = 0.25 + intensity * 0.2;
+}
+
+export function computeLightingTint(scale) {
+  // depth based shading
+  const normalized = Math.max(0, Math.min(1, (scale - 0.4) / 0.8));
+
+  const eased = Math.pow(normalized, 1.2);
+  const factor = 0.7 + 0.3 * eased;
+  const channel = Math.round(255 * factor);
+  return (channel << 16) | (channel << 8) | channel;
 }
