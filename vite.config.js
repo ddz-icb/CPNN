@@ -42,10 +42,12 @@ export default defineConfig(({ mode }) => ({
   server: {
     port: 3000,
     strictPort: true,
+    allowedHosts: ["cpnn.ddz.de"],
   },
   preview: {
     port: 3000,
     strictPort: true,
+    allowedHosts: ["cpnn.ddz.de"],
   },
   build: {
     // Keep the CRA-style output directory so downstream scripts (serve, etc.) still work.
