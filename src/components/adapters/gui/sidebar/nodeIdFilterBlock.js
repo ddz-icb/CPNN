@@ -79,12 +79,12 @@ export function NodeIdFilterBlock() {
   return (
     <>
       <CodeEditorBlock
-        text={"Filter Nodes by Name / ID"}
+        text={"Exclude Nodes by Name / ID"}
         textareaRef={textareaRef}
         compilerError={compilerError}
         onClick={handleRunNodeIdFilter}
         defaultValue={nodeIdFilterText}
-        infoHeading={"Filter Nodes by Name / ID"}
+        infoHeading={"Exclude Nodes by Name / ID"}
         infoDescription={nodeIdFilterDescription}
       />
       {nodeIdFilters.length > 0 && (
