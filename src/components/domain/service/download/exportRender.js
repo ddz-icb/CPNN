@@ -1,5 +1,5 @@
 import canvasToSvg from "canvas-to-svg";
-import { computeLightingTint, drawCircleCanvas, drawLineCanvas, radius } from "../canvas_drawing/draw.js";
+import { computeLightingTint, drawCircleCanvas, drawLineCanvas, radius, rimRadiusFactor, rimWidthFactor } from "../canvas_drawing/draw.js";
 
 function computeNodeBounds(node, mapEntry, tempCtx) {
   const labelVisible = node.labelVisible ?? mapEntry?.nodeLabel?.visible ?? false;
@@ -9,6 +9,9 @@ function computeNodeBounds(node, mapEntry, tempCtx) {
   const fontSize = mapEntry?.nodeLabel?._fontSize || 12;
   const scale = node.scale ?? mapEntry?.circle?.scale?.x ?? 1;
   const nodeRadius = radius * scale;
+  const rimOuterRadius = nodeRadius * (rimRadiusFactor + rimWidthFactor);
+  const highlightRadius = nodeRadius * 0.65;
+  const paddedRadius = Math.max(nodeRadius, rimOuterRadius, highlightRadius) + 2;
   const labelDrawY = labelY + 10;
 
   if (labelVisible) tempCtx.font = `${fontSize}px sans-serif`;
@@ -17,10 +20,10 @@ function computeNodeBounds(node, mapEntry, tempCtx) {
   const labelXMax = labelVisible ? labelX + textWidth / 2 : node.x;
 
   return {
-    minX: Math.min(node.x - nodeRadius - 2, labelXMin - 10),
-    maxX: Math.max(node.x + nodeRadius + 2, labelXMax + 10),
-    minY: Math.min(node.y - nodeRadius - 2, labelDrawY - 10),
-    maxY: Math.max(node.y + nodeRadius + 2, labelDrawY + 10),
+    minX: Math.min(node.x - paddedRadius, labelXMin - 10),
+    maxX: Math.max(node.x + paddedRadius, labelXMax + 10),
+    minY: Math.min(node.y - paddedRadius, labelDrawY - 10),
+    maxY: Math.max(node.y + paddedRadius, labelDrawY + 10),
   };
 }
 
@@ -109,7 +112,7 @@ export function render3DQueue(ctx, items, drawParams) {
     } else if (item.type === "node") {
       const { node, mapEntry } = item;
       const scale = node.scale ?? mapEntry?.circle?.scale?.x ?? 1;
-      const tint = enableShading ? computeLightingTint(scale) : null;
+      const tint = computeLightingTint(scale);
       drawCircleCanvas(ctx, node, mapEntry?.circle, circleBorderColor, nodeColorscheme, nodeAttribsToColorIndices, {
         scale,
         tint,

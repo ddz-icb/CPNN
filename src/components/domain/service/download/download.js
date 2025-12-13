@@ -6,6 +6,9 @@ import { buildExportGraphData } from "./exportGraph.js";
 import { build3DRenderQueue, createSvgContext, measureGraphBounds, render2DGraph, render3DQueue } from "./exportRender.js";
 
 const round2 = (v) => Math.round(v * 100) / 100;
+const pdfPadding = 10;
+
+const serializeSvgElement = (svgElement) => new XMLSerializer().serializeToString(svgElement);
 
 export function cleanNodes(nodes) {
   return nodes.map((node) => {
@@ -289,12 +292,12 @@ export function downloadAsSVG(
     nodeAttribsToColorIndices,
     options
   );
-  const svgString = new XMLSerializer().serializeToString(svgElement);
+  const svgString = serializeSvgElement(svgElement);
   const blob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
   triggerDownload(blob, `${getFileNameWithoutExtension(graph.name)}.svg`);
 }
 
-export function downloadAsPDF(
+export async function downloadAsPDF(
   graph,
   linkWidth,
   linkColorscheme,
@@ -325,12 +328,16 @@ export function downloadAsPDF(
   const pdf = new jsPDF({
     orientation: width > height ? "landscape" : "portrait",
     unit: "px",
-    format: [width + 20, height + 20],
+    format: [width + pdfPadding * 2, height + pdfPadding * 2],
   });
 
-  svg2pdf(svgElement, pdf, { xOffset: 10, yOffset: 10 }).then(() => {
-    pdf.save(`${getFileNameWithoutExtension(graph.name)}.pdf`);
-  });
+  svg2pdf(svgElement, pdf, { xOffset: pdfPadding, yOffset: pdfPadding })
+    .then(() => {
+      pdf.save(`${getFileNameWithoutExtension(graph.name)}.pdf`);
+    })
+    .catch((error) => {
+      log.error("Error generating PDF export:", error);
+    });
 }
 
 export function downloadGraphJson(graph, physics, filter) {

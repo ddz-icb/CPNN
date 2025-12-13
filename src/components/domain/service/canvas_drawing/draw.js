@@ -126,7 +126,9 @@ export function updateHighlights(nodeMap) {
 const toRgb = (color) => {
   if (typeof color === "number") return { r: (color >> 16) & 0xff, g: (color >> 8) & 0xff, b: color & 0xff };
   if (typeof color === "string" && color.startsWith("#")) {
-    const int = parseInt(color.slice(1), 16);
+    const hex = color.slice(1);
+    const rgbHex = hex.length === 8 ? hex.slice(0, 6) : hex;
+    const int = parseInt(rgbHex, 16);
     return { r: (int >> 16) & 0xff, g: (int >> 8) & 0xff, b: int & 0xff };
   }
   return null;
@@ -144,36 +146,27 @@ const applyTintToColor = (color, tint) => {
   return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, "0")}`;
 };
 
-const adjustColor = (color, factor) => {
-  const base = toRgb(color);
-  if (!base) return color;
-  const r = Math.min(255, Math.round(base.r * factor));
-  const g = Math.min(255, Math.round(base.g * factor));
-  const b = Math.min(255, Math.round(base.b * factor));
-  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, "0")}`;
-};
-
-const createNodeGradient = (ctx, { x, y, radius, baseColor, enableShading }) => {
-  if (!enableShading) return baseColor;
-  const gradient = ctx.createRadialGradient(x - radius * 0.3, y - radius * 0.3, radius * 0.1, x, y, radius);
-  gradient.addColorStop(0, adjustColor(baseColor, 1.2));
-  gradient.addColorStop(0.5, baseColor);
-  gradient.addColorStop(1, adjustColor(baseColor, 0.7));
-  return gradient;
-};
+export const rimRadiusFactor = 1.06;
+export const rimWidthFactor = 0.18;
+const pixiRimRadiusFactor = 1.05;
+const pixiRimWidthFactor = 0.15;
+const pixiRimHighlightAngles = { start: -Math.PI * 0.9, end: -Math.PI * 0.1 };
+const pixiRimShadowAngles = { start: Math.PI * 0.1, end: Math.PI * 0.9 };
 
 export function drawCircleCanvas(ctx, node, circle, circleBorderColor, colorscheme, nodeAttribsToColorIndices, options = {}) {
   const { scale = 1, tint = null, enableShading = false } = options;
+  const centerX = circle?.x ?? node.x ?? 0;
+  const centerY = circle?.y ?? node.y ?? 0;
   const effectiveRadius = radius * scale;
   const strokeWidth = 2 * scale;
   ctx.beginPath();
-  ctx.arc(circle.x, circle.y, effectiveRadius, 0, 2 * Math.PI);
+  ctx.arc(centerX, centerY, effectiveRadius, 0, 2 * Math.PI);
   const baseColor = getColor(nodeAttribsToColorIndices[node.groups[0]], colorscheme);
   const tintedBase = tint ? applyTintToColor(baseColor, tint) : baseColor;
-  ctx.fillStyle = createNodeGradient(ctx, { x: circle.x, y: circle.y, radius: effectiveRadius, baseColor: tintedBase, enableShading });
+  ctx.fillStyle = tintedBase;
   ctx.fill();
   ctx.lineWidth = strokeWidth;
-  ctx.strokeStyle = circleBorderColor;
+  ctx.strokeStyle = tint ? applyTintToColor(circleBorderColor, tint) : circleBorderColor;
   ctx.stroke();
 
   for (let i = 1; i < node.groups.length; i++) {
@@ -181,13 +174,17 @@ export function drawCircleCanvas(ctx, node, circle, circleBorderColor, colorsche
     let endAngle = ((i + 1) * 2 * Math.PI) / node.groups.length;
 
     ctx.beginPath();
-    ctx.moveTo(circle.x, circle.y);
-    ctx.arc(circle.x, circle.y, effectiveRadius - 1 * scale, startAngle, endAngle);
+    ctx.moveTo(centerX, centerY);
+    ctx.arc(centerX, centerY, effectiveRadius - 1 * scale, startAngle, endAngle);
     ctx.closePath();
     const segmentColor = getColor(nodeAttribsToColorIndices[node.groups[i]], colorscheme);
     const tintedSegment = tint ? applyTintToColor(segmentColor, tint) : segmentColor;
-    ctx.fillStyle = createNodeGradient(ctx, { x: circle.x, y: circle.y, radius: effectiveRadius, baseColor: tintedSegment, enableShading });
+    ctx.fillStyle = tintedSegment;
     ctx.fill();
+  }
+
+  if (enableShading) {
+    drawCanvasSphereShading(ctx, centerX, centerY, effectiveRadius, scale);
   }
 }
 
@@ -331,20 +328,14 @@ function ensureSphereShading(circle) {
   if (!circle) return null;
   if (circle.sphereShading) return circle.sphereShading;
 
-  const rimRadiusFactor = 1.05;
-  const rimWidthFactor = 0.15;
-
   const highlight = new PIXI.Graphics();
   highlight.eventMode = "none";
   highlight.visible = false;
   highlight.blendMode = "add";
 
-  const hiStart = -Math.PI * 0.9;
-  const hiEnd = -Math.PI * 0.1;
-
-  highlight.arc(0, 0, radius * rimRadiusFactor, hiStart, hiEnd).stroke({
+  highlight.arc(0, 0, radius * pixiRimRadiusFactor, pixiRimHighlightAngles.start, pixiRimHighlightAngles.end).stroke({
     color: 0xffffff,
-    width: radius * rimWidthFactor,
+    width: radius * pixiRimWidthFactor,
     alpha: 0.55,
   });
 
@@ -358,12 +349,9 @@ function ensureSphereShading(circle) {
   shadow.visible = false;
   shadow.blendMode = "multiply";
 
-  const shStart = Math.PI * 0.1;
-  const shEnd = Math.PI * 0.9;
-
-  shadow.arc(0, 0, radius * rimRadiusFactor, shStart, shEnd).stroke({
+  shadow.arc(0, 0, radius * pixiRimRadiusFactor, pixiRimShadowAngles.start, pixiRimShadowAngles.end).stroke({
     color: 0x000000,
-    width: radius * rimWidthFactor,
+    width: radius * pixiRimWidthFactor,
     alpha: 0.45,
   });
 
@@ -387,12 +375,9 @@ export function updateSphereShading(circle, scale = 1) {
 
   if (!highlight.visible || !shadow.visible) return;
 
-  // based on depth
-  const normalized = Math.max(0, Math.min(1, (scale - 0.4) / 0.9));
-  const intensity = 0.3 + 0.5 * Math.pow(normalized, 0.8);
-
-  highlight.alpha = 0.35 + intensity * 0.25;
-  shadow.alpha = 0.25 + intensity * 0.2;
+  const { highlightAlpha, shadowAlpha } = computeSphereShadingAlpha(scale);
+  highlight.alpha = highlightAlpha;
+  shadow.alpha = shadowAlpha;
 }
 
 export function computeLightingTint(scale) {
@@ -403,4 +388,52 @@ export function computeLightingTint(scale) {
   const factor = 0.7 + 0.3 * eased;
   const channel = Math.round(255 * factor);
   return (channel << 16) | (channel << 8) | channel;
+}
+
+function computeSphereShadingAlpha(scale) {
+  const normalized = Math.max(0, Math.min(1, (scale - 0.4) / 0.9));
+  const intensity = 0.3 + 0.5 * Math.pow(normalized, 0.8);
+
+  return {
+    highlightAlpha: 0.35 + intensity * 0.25,
+    shadowAlpha: 0.25 + intensity * 0.2,
+  };
+}
+
+function drawCanvasSphereShading(ctx, x, y, baseRadius, scale) {
+  const { highlightAlpha, shadowAlpha } = computeSphereShadingAlpha(scale);
+  const rimRadius = baseRadius * pixiRimRadiusFactor;
+  const rimWidth = baseRadius * pixiRimWidthFactor;
+
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.globalCompositeOperation = "multiply";
+  ctx.globalAlpha = shadowAlpha;
+  ctx.lineCap = "round";
+  ctx.lineWidth = rimWidth;
+  ctx.strokeStyle = "rgba(0,0,0,0.45)";
+  ctx.beginPath();
+  ctx.arc(0, 0, rimRadius, pixiRimShadowAngles.start, pixiRimShadowAngles.end);
+  ctx.stroke();
+  ctx.fillStyle = "rgba(0,0,0,0.24)";
+  ctx.beginPath();
+  ctx.arc(-baseRadius * 0.24, baseRadius * 0.28, baseRadius * 0.55, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.globalCompositeOperation = "lighter";
+  ctx.globalAlpha = highlightAlpha;
+  ctx.lineCap = "round";
+  ctx.lineWidth = rimWidth;
+  ctx.strokeStyle = "rgba(255,255,255,0.55)";
+  ctx.beginPath();
+  ctx.arc(0, 0, rimRadius, pixiRimHighlightAngles.start, pixiRimHighlightAngles.end);
+  ctx.stroke();
+  ctx.fillStyle = "rgba(255,255,255,0.3)";
+  ctx.beginPath();
+  ctx.arc(baseRadius * 0.22, -baseRadius * 0.26, baseRadius * 0.4, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
 }
