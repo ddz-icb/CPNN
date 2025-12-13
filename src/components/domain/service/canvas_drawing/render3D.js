@@ -102,11 +102,17 @@ function updateNodes3D(nodes, nodeMap, showNodeLabels, projections) {
 
   for (const node of nodes) {
     const proj = projections[node.id];
-    if (!proj) continue;
-
-    const { circle, nodeLabel } = nodeMap[node.id] || {};
+    const entry = nodeMap[node.id] || {};
+    const { circle, nodeLabel } = entry;
     if (!circle || !nodeLabel) continue;
 
+    if (!proj) {
+      circle.visible = false;
+      nodeLabel.visible = false;
+      continue;
+    }
+
+    circle.visible = true;
     circle.x = proj.x;
     circle.y = proj.y;
     circle.scale.set(proj.scale);
