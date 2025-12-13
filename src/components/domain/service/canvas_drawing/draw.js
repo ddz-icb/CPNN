@@ -123,12 +123,56 @@ export function updateHighlights(nodeMap) {
   Object.values(nodeMap).forEach(({ circle }) => updateHighlightOverlay(circle));
 }
 
-export function drawCircleCanvas(ctx, node, circle, circleBorderColor, colorscheme, nodeAttribsToColorIndices) {
+const toRgb = (color) => {
+  if (typeof color === "number") return { r: (color >> 16) & 0xff, g: (color >> 8) & 0xff, b: color & 0xff };
+  if (typeof color === "string" && color.startsWith("#")) {
+    const int = parseInt(color.slice(1), 16);
+    return { r: (int >> 16) & 0xff, g: (int >> 8) & 0xff, b: int & 0xff };
+  }
+  return null;
+};
+
+const applyTintToColor = (color, tint) => {
+  const base = toRgb(color);
+  const tintRgb = toRgb(tint);
+  if (!base || !tintRgb) return color;
+
+  const r = Math.min(255, Math.round((base.r * tintRgb.r) / 255));
+  const g = Math.min(255, Math.round((base.g * tintRgb.g) / 255));
+  const b = Math.min(255, Math.round((base.b * tintRgb.b) / 255));
+
+  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, "0")}`;
+};
+
+const adjustColor = (color, factor) => {
+  const base = toRgb(color);
+  if (!base) return color;
+  const r = Math.min(255, Math.round(base.r * factor));
+  const g = Math.min(255, Math.round(base.g * factor));
+  const b = Math.min(255, Math.round(base.b * factor));
+  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, "0")}`;
+};
+
+const createNodeGradient = (ctx, { x, y, radius, baseColor, enableShading }) => {
+  if (!enableShading) return baseColor;
+  const gradient = ctx.createRadialGradient(x - radius * 0.3, y - radius * 0.3, radius * 0.1, x, y, radius);
+  gradient.addColorStop(0, adjustColor(baseColor, 1.2));
+  gradient.addColorStop(0.5, baseColor);
+  gradient.addColorStop(1, adjustColor(baseColor, 0.7));
+  return gradient;
+};
+
+export function drawCircleCanvas(ctx, node, circle, circleBorderColor, colorscheme, nodeAttribsToColorIndices, options = {}) {
+  const { scale = 1, tint = null, enableShading = false } = options;
+  const effectiveRadius = radius * scale;
+  const strokeWidth = 2 * scale;
   ctx.beginPath();
-  ctx.arc(circle.x, circle.y, radius, 0, 2 * Math.PI);
-  ctx.fillStyle = getColor(nodeAttribsToColorIndices[node.groups[0]], colorscheme);
+  ctx.arc(circle.x, circle.y, effectiveRadius, 0, 2 * Math.PI);
+  const baseColor = getColor(nodeAttribsToColorIndices[node.groups[0]], colorscheme);
+  const tintedBase = tint ? applyTintToColor(baseColor, tint) : baseColor;
+  ctx.fillStyle = createNodeGradient(ctx, { x: circle.x, y: circle.y, radius: effectiveRadius, baseColor: tintedBase, enableShading });
   ctx.fill();
-  ctx.lineWidth = 2;
+  ctx.lineWidth = strokeWidth;
   ctx.strokeStyle = circleBorderColor;
   ctx.stroke();
 
@@ -138,9 +182,11 @@ export function drawCircleCanvas(ctx, node, circle, circleBorderColor, colorsche
 
     ctx.beginPath();
     ctx.moveTo(circle.x, circle.y);
-    ctx.arc(circle.x, circle.y, radius - 1, startAngle, endAngle);
+    ctx.arc(circle.x, circle.y, effectiveRadius - 1 * scale, startAngle, endAngle);
     ctx.closePath();
-    ctx.fillStyle = getColor(nodeAttribsToColorIndices[node.groups[i]], colorscheme);
+    const segmentColor = getColor(nodeAttribsToColorIndices[node.groups[i]], colorscheme);
+    const tintedSegment = tint ? applyTintToColor(segmentColor, tint) : segmentColor;
+    ctx.fillStyle = createNodeGradient(ctx, { x: circle.x, y: circle.y, radius: effectiveRadius, baseColor: tintedSegment, enableShading });
     ctx.fill();
   }
 }
@@ -201,8 +247,10 @@ export function drawLine(lines, link, linkWidth, colorscheme, linkAttribsToColor
   }
 }
 
-export function drawLineCanvas(ctx, link, linkWidth, colorscheme, attribToColorIndex) {
-  ctx.lineWidth = linkWidth;
+export function drawLineCanvas(ctx, link, linkWidth, colorscheme, attribToColorIndex, options = {}) {
+  const widthScale = options.widthScale ?? 1;
+  const adjustedWidth = linkWidth * widthScale;
+  ctx.lineWidth = adjustedWidth;
 
   if (link.attribs.length === 1) {
     ctx.beginPath();
@@ -218,7 +266,7 @@ export function drawLineCanvas(ctx, link, linkWidth, colorscheme, attribToColorI
     const normedPerpendicularVector = { x: -dy / length, y: dx / length };
 
     for (let i = 0; i < link.attribs.length; i++) {
-      const shift = (i - (link.attribs.length - 1) / 2) * linkWidth;
+      const shift = (i - (link.attribs.length - 1) / 2) * adjustedWidth;
       const offsetX = shift * normedPerpendicularVector.x;
       const offsetY = shift * normedPerpendicularVector.y;
 

@@ -1,9 +1,9 @@
 import log from "../../../adapters/logging/logger.js";
-import canvasToSvg from "canvas-to-svg";
 import { jsPDF } from "jspdf";
 import { svg2pdf } from "svg2pdf.js";
-import { drawCircleCanvas, drawLineCanvas } from "../canvas_drawing/draw.js";
 import { getFileNameWithoutExtension } from "../parsing/fileParsing.js";
+import { buildExportGraphData } from "./exportGraph.js";
+import { build3DRenderQueue, createSvgContext, measureGraphBounds, render2DGraph, render3DQueue } from "./exportRender.js";
 
 const round2 = (v) => Math.round(v * 100) / 100;
 
@@ -67,52 +67,38 @@ function createGraphSvgElement(
   circleBorderColor,
   textColor,
   nodeColorscheme,
-  nodeAttribsToColorIndices
+  nodeAttribsToColorIndices,
+  options = {}
 ) {
-  let minX = Infinity,
-    maxX = -Infinity,
-    minY = Infinity,
-    maxY = -Infinity;
-  const tempCtx = document.createElement("canvas").getContext("2d");
+  const { threeD = false, enableShading = true } = options;
+  const bounds = measureGraphBounds(graphData, nodeMap);
+  const { ctx, svgElement } = createSvgContext(bounds);
 
-  for (const node of graphData.nodes) {
-    const { nodeLabel } = nodeMap[node.id];
-    if (nodeLabel?.visible) tempCtx.font = `${nodeLabel._fontSize || 12}px sans-serif`;
-    const textWidth = nodeLabel?.visible ? tempCtx.measureText(nodeLabel.text).width : 0;
-    const labelXMin = nodeLabel?.visible ? nodeLabel.x - textWidth / 2 : node.x;
-    const labelXMax = nodeLabel?.visible ? nodeLabel.x + textWidth / 2 : node.x;
-    const labelY = nodeLabel?.visible ? nodeLabel.y + 10 : node.y;
-
-    minX = Math.min(minX, node.x - 10, labelXMin - 10);
-    maxX = Math.max(maxX, node.x + 10, labelXMax + 10);
-    minY = Math.min(minY, node.y - 10, labelY - 10);
-    maxY = Math.max(maxY, node.y + 10, labelY + 10);
+  if (threeD) {
+    const queue = build3DRenderQueue(graphData, nodeMap);
+    render3DQueue(ctx, queue, {
+      linkWidth,
+      linkColorscheme,
+      linkAttribsToColorIndices,
+      circleBorderColor,
+      nodeColorscheme,
+      nodeAttribsToColorIndices,
+      textColor,
+      enableShading,
+    });
+  } else {
+    render2DGraph(ctx, graphData, nodeMap, {
+      linkWidth,
+      linkColorscheme,
+      linkAttribsToColorIndices,
+      circleBorderColor,
+      nodeColorscheme,
+      nodeAttribsToColorIndices,
+      textColor,
+    });
   }
 
-  const width = maxX - minX;
-  const height = maxY - minY;
-  const ctx = new canvasToSvg(width, height);
-  const svgElement = ctx.getSvg();
-  svgElement.setAttribute("viewBox", `${minX} ${minY} ${width} ${height}`);
-  svgElement.setAttribute("width", width);
-  svgElement.setAttribute("height", height);
-
-  for (const link of graphData.links) {
-    drawLineCanvas(ctx, link, linkWidth, linkColorscheme, linkAttribsToColorIndices);
-  }
-
-  for (const node of graphData.nodes) {
-    const { circle, nodeLabel } = nodeMap[node.id];
-    drawCircleCanvas(ctx, node, circle, circleBorderColor, nodeColorscheme, nodeAttribsToColorIndices);
-    if (nodeLabel?.visible) {
-      ctx.font = `${nodeLabel._fontSize || 12}px sans-serif`;
-      ctx.fillStyle = textColor;
-      const textWidth = ctx.measureText(nodeLabel.text).width;
-      ctx.fillText(nodeLabel.text, nodeLabel.x - textWidth / 2, nodeLabel.y + 10);
-    }
-  }
-
-  return { svgElement, width, height };
+  return { svgElement, width: bounds.width, height: bounds.height };
 }
 
 function drawLegendOnPdf(
@@ -285,10 +271,14 @@ export function downloadAsSVG(
   textColor,
   nodeColorscheme,
   nodeAttribsToColorIndices,
-  nodeMap
+  nodeMap,
+  options = {}
 ) {
+  const exportGraph = buildExportGraphData(graph.data, nodeMap, { threeD: options.threeD });
+  if (!exportGraph) return;
+
   const { svgElement } = createGraphSvgElement(
-    graph.data,
+    exportGraph,
     nodeMap,
     linkWidth,
     linkColorscheme,
@@ -296,7 +286,8 @@ export function downloadAsSVG(
     circleBorderColor,
     textColor,
     nodeColorscheme,
-    nodeAttribsToColorIndices
+    nodeAttribsToColorIndices,
+    options
   );
   const svgString = new XMLSerializer().serializeToString(svgElement);
   const blob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
@@ -312,10 +303,14 @@ export function downloadAsPDF(
   textColor,
   nodeColorscheme,
   nodeAttribsToColorIndices,
-  nodeMap
+  nodeMap,
+  options = {}
 ) {
+  const exportGraph = buildExportGraphData(graph.data, nodeMap, { threeD: options.threeD });
+  if (!exportGraph) return;
+
   const { svgElement, width, height } = createGraphSvgElement(
-    graph.data,
+    exportGraph,
     nodeMap,
     linkWidth,
     linkColorscheme,
@@ -323,7 +318,8 @@ export function downloadAsPDF(
     circleBorderColor,
     textColor,
     nodeColorscheme,
-    nodeAttribsToColorIndices
+    nodeAttribsToColorIndices,
+    options
   );
 
   const pdf = new jsPDF({

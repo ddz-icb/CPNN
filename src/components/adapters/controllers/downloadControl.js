@@ -93,7 +93,8 @@ export function DownloadControl() {
         themeInit.textColor,
         colorschemeState.nodeColorscheme.data,
         colorschemeState.nodeAttribsToColorIndices,
-        pixiState.nodeMap
+        pixiState.nodeMap,
+        { threeD: appearance.threeD, enableShading: appearance.enable3DShading }
       );
     } catch (error) {
       errorService.setError(error.message);
@@ -116,7 +117,8 @@ export function DownloadControl() {
         themeInit.textColor,
         colorschemeState.nodeColorscheme.data,
         colorschemeState.nodeAttribsToColorIndices,
-        pixiState.nodeMap
+        pixiState.nodeMap,
+        { threeD: appearance.threeD, enableShading: appearance.enable3DShading }
       );
     } catch (error) {
       errorService.setError(error.message);
