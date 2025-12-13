@@ -1,8 +1,8 @@
 import log from "../logging/logger.js";
 import * as PIXI from "pixi.js";
 import { useRef, useEffect } from "react";
-import { handleResize, initDragAndZoom, initTooltips } from "../../domain/service/canvas_interaction/interactiveCanvas.js";
-import { radius, drawCircle, getTextStyle, getBitMapStyle, getNodeLabelOffsetY, applyNode3DState } from "../../domain/service/canvas_drawing/draw.js";
+import { handleResize, initDragAndZoom } from "../../domain/service/canvas_interaction/interactiveCanvas.js";
+import { radius, applyNode3DState } from "../../domain/service/canvas_drawing/draw.js";
 import { applyLineGraphicsState } from "../../domain/service/canvas_drawing/lineGraphics.js";
 import { linkLengthInit } from "../state/physicsState.js";
 import { useAppearance } from "../state/appearanceState.js";
@@ -17,6 +17,7 @@ import { useTheme } from "../state/themeState.js";
 import { nodeContainersInit, linesInit, nodeMapInit, usePixiState } from "../state/pixiState.js";
 import { filteredAfterStartInit, useGraphFlags } from "../state/graphFlagsState.js";
 import { simulationInit, useRenderState } from "../state/canvasState.js";
+import { setupStage } from "../../domain/service/canvas_drawing/stageSetup.js";
 
 export function RenderControl() {
   const { appearance, setAppearance } = useAppearance();
@@ -123,59 +124,28 @@ export function RenderControl() {
     log.info("Setting stage");
 
     try {
-      const newLines2D = new PIXI.Graphics();
-      renderState.app.stage.addChild(newLines2D);
+      const stage = setupStage({
+        app: renderState.app,
+        graph: graphState.graph,
+        container,
+        theme,
+        colorschemeState,
+        setTooltipSettings,
+        threeD: appearance.threeD,
+      });
 
-      const newNodeContainers = new PIXI.Container();
-      newNodeContainers.sortableChildren = true;
-      renderState.app.stage.addChild(newNodeContainers);
+      if (!stage) return;
 
-      const offsetSpawnValue = graphState.graph.data.nodes.length * 10;
-      const newNodeMap = {};
-
-      for (const node of graphState.graph.data.nodes) {
-        if (node.x == null) {
-          node.x = container.width / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
-        }
-        if (node.y == null) {
-          node.y = container.height / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
-        }
-        if (node.z == null) {
-          node.z = (Math.random() - 0.5) * offsetSpawnValue;
-        }
-
-        let circle = new PIXI.Graphics();
-        circle = drawCircle(circle, node, theme.circleBorderColor, colorschemeState.nodeColorscheme.data, colorschemeState.nodeAttribsToColorIndices);
-        circle.id = node.id;
-        circle.interactive = true;
-        circle.buttonMode = true;
-        circle.x = node.x;
-        circle.y = node.y;
-        newNodeContainers.addChild(circle);
-        initTooltips(circle, node, setTooltipSettings);
-
-        let nodeLabel = new PIXI.BitmapText(getBitMapStyle(node.id));
-        nodeLabel.style = getTextStyle(theme.textColor);
-        nodeLabel.x = node.x;
-        nodeLabel.y = node.y;
-        getNodeLabelOffsetY(node.id);
-        nodeLabel.pivot.x = nodeLabel.width / 2;
-        nodeLabel.visible = false;
-        newNodeContainers.addChild(nodeLabel);
-
-        newNodeMap[node.id] = { node, circle, nodeLabel };
-      }
-
-      setPixiState("nodeContainers", newNodeContainers);
-      setPixiState("lines2D", newLines2D);
-      setPixiState("lines3D", null);
-      setPixiState("lines", newLines2D);
-      setPixiState("nodeMap", newNodeMap);
+      setPixiState("nodeContainers", stage.nodeContainers);
+      setPixiState("lines2D", stage.lines2D);
+      setPixiState("lines3D", stage.lines3D);
+      setPixiState("lines", stage.lines);
+      setPixiState("nodeMap", stage.nodeMap);
     } catch (error) {
       setError(error.message);
       log.error(error.message);
     }
-  }, [renderState.app, graphState.graph, colorschemeState.nodeColorscheme, container.width, container.height, theme]);
+  }, [renderState.app, graphState.graph, colorschemeState.nodeColorscheme, container.width, container.height, theme, appearance.threeD]);
 
   // init simulation //
   useEffect(() => {
