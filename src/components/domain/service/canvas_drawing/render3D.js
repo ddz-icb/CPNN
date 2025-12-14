@@ -1,5 +1,4 @@
 import { computeLightingTint, getColor, getNodeLabelOffsetY, updateHighlights, updateSphereShading } from "./draw.js";
-import { buildGridProjection, computeGridBounds, drawGrid, ensureGridGraphic } from "./grid3D.js";
 
 export const defaultCamera = {
   x: null,
@@ -11,29 +10,10 @@ export const defaultCamera = {
 };
 
 export function redraw3D(graphData, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, showNodeLabels, nodeMap, app, container, camera) {
-  const baseParams = buildProjectionParams(camera, container.width, container.height);
-  const bounds = computeGridBounds(graphData.nodes, baseParams);
-  const clampedParams = clampCameraToBounds(baseParams, bounds);
-  const projectionParams = { ...baseParams, ...clampedParams };
-  const projections = computeProjections(graphData.nodes, projectionParams);
-  const gridGraphic = ensureGridGraphic(app);
-  const projectedGrid = gridGraphic ? buildGridProjection(graphData.nodes, projectionParams, projectPoint) : [];
+  const projections = computeProjections(graphData.nodes, camera, container.width, container.height);
 
   if (camera) {
     camera.projections = projections;
-    camera.gridLines2D = projectedGrid.map(({ start, end, depth, edge, width }) => ({
-      x1: start.x,
-      y1: start.y,
-      x2: end.x,
-      y2: end.y,
-      depth,
-      edge,
-      width,
-    }));
-  }
-
-  if (gridGraphic) {
-    drawGrid(graphData.nodes, gridGraphic, projectedGrid);
   }
 
   updateNodes3D(graphData.nodes, nodeMap, showNodeLabels, projections);
@@ -43,27 +23,29 @@ export function redraw3D(graphData, lines, linkWidth, linkColorscheme, linkAttri
   app.renderer.render(app.stage);
 }
 
-function buildProjectionParams(camera, width, height) {
+function computeProjections(nodes, camera, width, height) {
+  const result = {};
   const centerX = width / 2;
   const centerY = height / 2;
 
-  return {
-    rotX: camera?.rotX ?? defaultCamera.rotX,
-    rotY: camera?.rotY ?? defaultCamera.rotY,
-    cameraX: camera?.x ?? centerX,
-    cameraY: camera?.y ?? centerY,
-    cameraZ: camera?.z ?? defaultCamera.z,
-    fov: camera?.fov ?? defaultCamera.fov,
-    centerX,
-    centerY,
-  };
-}
-
-function computeProjections(nodes, params) {
-  const result = {};
+  const rotX = camera?.rotX ?? defaultCamera.rotX;
+  const rotY = camera?.rotY ?? defaultCamera.rotY;
+  const cameraX = camera?.x ?? centerX;
+  const cameraY = camera?.y ?? centerY;
+  const cameraZ = camera?.z ?? defaultCamera.z;
+  const fov = camera?.fov ?? defaultCamera.fov;
 
   for (const node of nodes) {
-    const proj = projectNode(node, params);
+    const proj = projectNode(node, {
+      rotX,
+      rotY,
+      cameraX,
+      cameraY,
+      cameraZ,
+      fov,
+      centerX,
+      centerY,
+    });
     if (proj) {
       result[node.id] = proj;
     }
@@ -72,33 +54,10 @@ function computeProjections(nodes, params) {
   return result;
 }
 
-function clampCameraToBounds(params, bounds) {
-  const spanX = bounds.maxX - bounds.minX;
-  const spanY = bounds.maxY - bounds.minY;
-  const spanZ = bounds.maxZ - bounds.minZ;
-  const margin = Math.max(Math.min(spanX, spanY, spanZ) * 0.1, 20);
-
-  const clampAxis = (value, min, max) => {
-    if (!Number.isFinite(value)) return (min + max) / 2;
-    if (max - min < margin * 2) return (min + max) / 2;
-    return Math.min(Math.max(value, min + margin), max - margin);
-  };
-
-  return {
-    cameraX: clampAxis(params.cameraX, bounds.minX, bounds.maxX),
-    cameraY: clampAxis(params.cameraY, bounds.minY, bounds.maxY),
-    cameraZ: clampAxis(params.cameraZ, bounds.minZ, bounds.maxZ),
-  };
-}
-
 function projectNode(node, params) {
-  return projectPoint(node, params);
-}
-
-function projectPoint(point, params) {
   const { rotX, rotY, cameraX, cameraY, cameraZ, fov, centerX, centerY } = params;
 
-  const rotated = rotatePoint(point, rotX, rotY, centerX, centerY);
+  const rotated = rotateNode(node, rotX, rotY, centerX, centerY);
 
   const dx = rotated.x - cameraX;
   const dy = rotated.y - cameraY;
@@ -119,15 +78,15 @@ function projectPoint(point, params) {
   };
 }
 
-function rotatePoint(point, rotX, rotY, centerX, centerY) {
+function rotateNode(node, rotX, rotY, centerX, centerY) {
   const cosY = Math.cos(rotY);
   const sinY = Math.sin(rotY);
   const cosX = Math.cos(rotX);
   const sinX = Math.sin(rotX);
 
-  const shiftedX = (point?.x ?? 0) - centerX;
-  const shiftedY = (point?.y ?? 0) - centerY;
-  const zBase = point?.z ?? 0;
+  const shiftedX = node.x - centerX;
+  const shiftedY = node.y - centerY;
+  const zBase = node.z ?? 0;
 
   let x = shiftedX * cosY - zBase * sinY;
   let z = shiftedX * sinY + zBase * cosY;

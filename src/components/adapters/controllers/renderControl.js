@@ -183,10 +183,6 @@ export function RenderControl() {
       initDragAndZoom(renderState.app, newSimulation, radius, setTooltipSettings, container.width, container.height, appearance.threeD, cameraRef);
       applyNode3DState(pixiState.nodeMap, appearance.threeD, appearance.enable3DShading);
       setRenderState("simulation", newSimulation);
-      if (!appearance.threeD && renderState.app?.stage?.gridGraphics) {
-        renderState.app.stage.gridGraphics.clear();
-        renderState.app.stage.gridGraphics.visible = false;
-      }
     } catch (error) {
       setError(error.message);
       log.error(error.message);
