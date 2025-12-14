@@ -26,7 +26,22 @@ function getNodeVisual(node, nodeMapEntry, threeD) {
   };
 }
 
-export function buildExportGraphData(graphData, nodeMap, { threeD } = {}) {
+function getGridLines(camera) {
+  const gridLines = camera?.current?.gridLines2D ?? camera?.gridLines2D;
+  if (!Array.isArray(gridLines)) return [];
+
+  return gridLines.map((line) => ({
+    x1: line.x1 ?? 0,
+    y1: line.y1 ?? 0,
+    x2: line.x2 ?? 0,
+    y2: line.y2 ?? 0,
+    depth: line.depth ?? 0,
+    edge: !!line.edge,
+    width: line.width ?? 1,
+  }));
+}
+
+export function buildExportGraphData(graphData, nodeMap, { threeD, camera } = {}) {
   if (!graphData?.nodes || !graphData?.links) return null;
 
   const nodes = [];
@@ -59,5 +74,7 @@ export function buildExportGraphData(graphData, nodeMap, { threeD } = {}) {
     })
     .filter(Boolean);
 
-  return { nodes, links };
+  const gridLines = threeD ? getGridLines(camera) : [];
+
+  return { nodes, links, gridLines };
 }

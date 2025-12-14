@@ -94,7 +94,7 @@ export function DownloadControl() {
         colorschemeState.nodeColorscheme.data,
         colorschemeState.nodeAttribsToColorIndices,
         pixiState.nodeMap,
-        { threeD: appearance.threeD, enableShading: appearance.enable3DShading }
+        { threeD: appearance.threeD, enableShading: appearance.enable3DShading, camera: appearance.cameraRef }
       );
     } catch (error) {
       errorService.setError(error.message);
@@ -118,7 +118,7 @@ export function DownloadControl() {
         colorschemeState.nodeColorscheme.data,
         colorschemeState.nodeAttribsToColorIndices,
         pixiState.nodeMap,
-        { threeD: appearance.threeD, enableShading: appearance.enable3DShading }
+        { threeD: appearance.threeD, enableShading: appearance.enable3DShading, camera: appearance.cameraRef }
       );
     } catch (error) {
       errorService.setError(error.message);

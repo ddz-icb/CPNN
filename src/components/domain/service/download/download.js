@@ -277,7 +277,7 @@ export function downloadAsSVG(
   nodeMap,
   options = {}
 ) {
-  const exportGraph = buildExportGraphData(graph.data, nodeMap, { threeD: options.threeD });
+  const exportGraph = buildExportGraphData(graph.data, nodeMap, { threeD: options.threeD, camera: options.camera });
   if (!exportGraph) return;
 
   const { svgElement } = createGraphSvgElement(
@@ -309,7 +309,7 @@ export async function downloadAsPDF(
   nodeMap,
   options = {}
 ) {
-  const exportGraph = buildExportGraphData(graph.data, nodeMap, { threeD: options.threeD });
+  const exportGraph = buildExportGraphData(graph.data, nodeMap, { threeD: options.threeD, camera: options.camera });
   if (!exportGraph) return;
 
   const { svgElement, width, height } = createGraphSvgElement(

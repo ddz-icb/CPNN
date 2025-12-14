@@ -42,6 +42,15 @@ export function measureGraphBounds(graphData, nodeMap) {
     maxY = Math.max(maxY, nY);
   }
 
+  if (graphData.gridLines?.length) {
+    for (const line of graphData.gridLines) {
+      minX = Math.min(minX, line.x1, line.x2);
+      maxX = Math.max(maxX, line.x1, line.x2);
+      minY = Math.min(minY, line.y1, line.y2);
+      maxY = Math.max(maxY, line.y1, line.y2);
+    }
+  }
+
   return { minX, maxX, minY, maxY, width: maxX - minX, height: maxY - minY };
 }
 
@@ -57,6 +66,11 @@ export function createSvgContext(bounds, canvasFactory) {
 
 export function build3DRenderQueue(graphData, nodeMap) {
   const items = [];
+  if (graphData.gridLines?.length) {
+    for (const line of graphData.gridLines) {
+      items.push({ type: "grid", depth: line.depth ?? 0, line });
+    }
+  }
   for (const link of graphData.links) {
     items.push({ type: "link", depth: link.depth ?? 0, link });
   }
@@ -69,7 +83,7 @@ export function build3DRenderQueue(graphData, nodeMap) {
     }
   }
 
-  const priority = { link: 0, node: 1, label: 2 };
+  const priority = { grid: -1, link: 0, node: 1, label: 2 };
   items.sort((a, b) => (b.depth ?? 0) - (a.depth ?? 0) || (priority[a.type] ?? 0) - (priority[b.type] ?? 0));
   return items;
 }
@@ -103,7 +117,9 @@ export function render3DQueue(ctx, items, drawParams) {
   } = drawParams;
 
   for (const item of items) {
-    if (item.type === "link") {
+    if (item.type === "grid") {
+      drawGridLine(ctx, item.line);
+    } else if (item.type === "link") {
       const link = item.link;
       const sourceScale = link.source?.scale ?? 1;
       const targetScale = link.target?.scale ?? 1;
@@ -139,4 +155,17 @@ export function render2DGraph(ctx, graphData, nodeMap, params) {
       drawLabel(ctx, node, mapEntry, textColor);
     }
   }
+}
+
+function drawGridLine(ctx, line) {
+  if (!line) return;
+  ctx.save();
+  ctx.globalAlpha = line.edge ? 0.65 : 0.35;
+  ctx.lineWidth = line.width ?? 1;
+  ctx.strokeStyle = line.edge ? "#a7b4c9" : "#d7dde8";
+  ctx.beginPath();
+  ctx.moveTo(line.x1, line.y1);
+  ctx.lineTo(line.x2, line.y2);
+  ctx.stroke();
+  ctx.restore();
 }
