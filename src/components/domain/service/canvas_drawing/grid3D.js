@@ -1,5 +1,7 @@
 import * as PIXI from "pixi.js";
 
+const GRID_TARGET_SPACING = 120;
+
 function computeGridBounds(nodes, centerX, centerY) {
   let minX = Infinity;
   let maxX = -Infinity;
@@ -64,9 +66,14 @@ function linspace(min, max, steps) {
 }
 
 function buildGridSegments(bounds, divisions = 5) {
-  const xs = linspace(bounds.minX, bounds.maxX, divisions);
-  const ys = linspace(bounds.minY, bounds.maxY, divisions);
-  const zs = linspace(bounds.minZ, bounds.maxZ, divisions);
+  const toSteps = (min, max) => {
+    const span = Math.max(Math.abs(max - min), 1);
+    return Math.max(1, Math.round(span / GRID_TARGET_SPACING));
+  };
+
+  const xs = linspace(bounds.minX, bounds.maxX, toSteps(bounds.minX, bounds.maxX));
+  const ys = linspace(bounds.minY, bounds.maxY, toSteps(bounds.minY, bounds.maxY));
+  const zs = linspace(bounds.minZ, bounds.maxZ, toSteps(bounds.minZ, bounds.maxZ));
 
   const planes = {
     minZ: () => [
