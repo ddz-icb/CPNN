@@ -1,5 +1,5 @@
 import { computeLightingTint, getColor, getNodeLabelOffsetY, updateHighlights, updateSphereShading } from "./draw.js";
-import { buildGridProjection, drawGrid, ensureGridGraphic } from "./grid3D.js";
+import { buildGridProjection, computeGridBounds, drawGrid, ensureGridGraphic } from "./grid3D.js";
 
 export const defaultCamera = {
   x: null,
@@ -11,7 +11,10 @@ export const defaultCamera = {
 };
 
 export function redraw3D(graphData, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, showNodeLabels, nodeMap, app, container, camera) {
-  const projectionParams = buildProjectionParams(camera, container.width, container.height);
+  const baseParams = buildProjectionParams(camera, container.width, container.height);
+  const bounds = computeGridBounds(graphData.nodes, baseParams);
+  const clampedParams = clampCameraToBounds(baseParams, bounds);
+  const projectionParams = { ...baseParams, ...clampedParams };
   const projections = computeProjections(graphData.nodes, projectionParams);
   const gridGraphic = ensureGridGraphic(app);
   const projectedGrid = gridGraphic ? buildGridProjection(graphData.nodes, projectionParams, projectPoint) : [];
@@ -67,6 +70,25 @@ function computeProjections(nodes, params) {
   }
 
   return result;
+}
+
+function clampCameraToBounds(params, bounds) {
+  const spanX = bounds.maxX - bounds.minX;
+  const spanY = bounds.maxY - bounds.minY;
+  const spanZ = bounds.maxZ - bounds.minZ;
+  const margin = Math.max(Math.min(spanX, spanY, spanZ) * 0.1, 20);
+
+  const clampAxis = (value, min, max) => {
+    if (!Number.isFinite(value)) return (min + max) / 2;
+    if (max - min < margin * 2) return (min + max) / 2;
+    return Math.min(Math.max(value, min + margin), max - margin);
+  };
+
+  return {
+    cameraX: clampAxis(params.cameraX, bounds.minX, bounds.maxX),
+    cameraY: clampAxis(params.cameraY, bounds.minY, bounds.maxY),
+    cameraZ: clampAxis(params.cameraZ, bounds.minZ, bounds.maxZ),
+  };
 }
 
 function projectNode(node, params) {

@@ -1,8 +1,12 @@
 import * as PIXI from "pixi.js";
 
 const GRID_TARGET_SPACING = 120;
+const BASE_HALF_SIZE = 1100;
+const BASE_PADDING = 160;
 
-function computeGridBounds(nodes, centerX, centerY) {
+export function computeGridBounds(nodes, params) {
+  const centerX = params?.centerX ?? 0;
+  const centerY = params?.centerY ?? 0;
   let minX = Infinity;
   let maxX = -Infinity;
   let minY = Infinity;
@@ -35,7 +39,7 @@ function computeGridBounds(nodes, centerX, centerY) {
   const spanY = maxY - minY;
   const spanZ = maxZ - minZ;
   const largestSpan = Math.max(spanX, spanY, spanZ, 1);
-  const padding = Math.max(largestSpan * 0.15, 40);
+  const padding = Math.max(largestSpan * 0.15, BASE_PADDING);
 
   const center = {
     x: (minX + maxX) / 2,
@@ -43,7 +47,7 @@ function computeGridBounds(nodes, centerX, centerY) {
     z: (minZ + maxZ) / 2,
   };
 
-  const half = largestSpan / 2 + padding;
+  const half = Math.max(largestSpan / 2 + padding, BASE_HALF_SIZE);
 
   return {
     minX: center.x - half,
@@ -170,7 +174,7 @@ function buildGridSegments(bounds, divisions = 5) {
 }
 
 export function buildGridProjection(nodes, params, projectPointFn) {
-  const bounds = computeGridBounds(nodes, params.centerX, params.centerY);
+  const bounds = computeGridBounds(nodes, params);
   const segments = buildGridSegments(bounds);
 
   const projected = [];
@@ -219,9 +223,9 @@ export function drawGrid(nodes, graphic, projectedSegments) {
       .moveTo(start.x, start.y)
       .lineTo(end.x, end.y)
       .stroke({
-        color: edge ? 0xa7b4c9 : 0xd7dde8,
-        width,
-        alpha: edge ? 0.65 : 0.35,
+        color: edge ? 0x8fa2bd : 0xbec8d8,
+        width: Math.min(width * 1.15, 3.5),
+        alpha: edge ? 0.8 : 0.5,
       });
   });
 

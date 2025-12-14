@@ -12,6 +12,8 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, width, he
   };
 
   const ROT_SPEED = 0.005;
+  const ZOOM_MIN = 0.7;
+  const ZOOM_MAX = 10;
   const ZOOM_DEPTH_UNIT = Math.abs(state.baseZ || defaultCamera.z || 600);
   const DRAG_HIT_RADIUS = 20;
 
@@ -141,7 +143,7 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, width, he
   }
 
   function handleZoom(event) {
-    const k = event.transform.k;
+    const k = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, event.transform.k));
     const camera = cameraRef.current;
 
     camera.z = state.baseZ / k;
@@ -151,7 +153,7 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, width, he
 
   const dragRotate = d3.drag().on("start", handleDragStart).on("drag", handleDrag).on("end", handleDragEnd);
 
-  const zoom = d3.zoom().on("zoom", handleZoom);
+  const zoom = d3.zoom().scaleExtent([ZOOM_MIN, ZOOM_MAX]).on("zoom", handleZoom);
 
   const canvas = d3.select(app.renderer.canvas);
 
