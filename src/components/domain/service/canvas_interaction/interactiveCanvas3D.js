@@ -61,11 +61,6 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, width, he
 
     state.startX = event.x;
     state.startY = event.y;
-
-    if (!event.active) {
-      simulation.alphaTarget(0.1).restart();
-    }
-
     setTooltipSettings("isHoverTooltipActive", false);
   }
 
@@ -115,6 +110,7 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, width, he
     camera.rotX += dy * ROT_SPEED; // vertical turn
 
     state.distanceDragged += Math.sqrt(dx * dx + dy * dy);
+    camera?.redraw?.();
   }
 
   function handleDragEnd(event) {
