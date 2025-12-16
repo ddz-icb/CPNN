@@ -122,10 +122,13 @@ function updateNodes3D(nodes, nodeMap, showNodeLabels, projections) {
     if (!proj) {
       circle.visible = false;
       nodeLabel.visible = false;
+      circle.__hiddenByProjection = true;
+      nodeLabel.__hiddenByProjection = true;
       continue;
     }
 
     circle.visible = true;
+    circle.__hiddenByProjection = false;
     circle.x = proj.x;
     circle.y = proj.y;
     circle.scale.set(proj.scale);
@@ -135,6 +138,7 @@ function updateNodes3D(nodes, nodeMap, showNodeLabels, projections) {
 
     if (showNodeLabels) {
       nodeLabel.visible = true;
+      nodeLabel.__hiddenByProjection = false;
       nodeLabel.x = proj.x;
       nodeLabel.y = proj.y + getNodeLabelOffsetY(node.id) * proj.scale;
       nodeLabel.scale.set(proj.scale);
