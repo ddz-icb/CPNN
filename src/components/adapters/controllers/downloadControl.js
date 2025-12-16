@@ -20,6 +20,7 @@ import { usePixiState } from "../state/pixiState.js";
 import { useRenderState } from "../state/canvasState.js";
 import { errorService } from "../../application/services/errorService.js";
 import { useFilter } from "../state/filterState.js";
+import { useContainer } from "../state/containerState.js";
 
 export function DownloadControl() {
   const { physics } = usePhysics();
@@ -32,6 +33,7 @@ export function DownloadControl() {
   const { mappingState } = useMappingState();
   const { download } = useDownload();
   const { renderState } = useRenderState();
+  const { container } = useContainer();
 
   // download graph data as json //
   useEffect(() => {
@@ -94,7 +96,14 @@ export function DownloadControl() {
         colorschemeState.nodeColorscheme.data,
         colorschemeState.nodeAttribsToColorIndices,
         pixiState.nodeMap,
-        { threeD: appearance.threeD, enableShading: appearance.enable3DShading }
+        {
+          threeD: appearance.threeD,
+          enableShading: appearance.enable3DShading,
+          showGrid: appearance.show3DGrid,
+          camera: appearance.cameraRef?.current,
+          gridLines: pixiState.grid3D?.__gridLines,
+          container,
+        }
       );
     } catch (error) {
       errorService.setError(error.message);
@@ -118,7 +127,14 @@ export function DownloadControl() {
         colorschemeState.nodeColorscheme.data,
         colorschemeState.nodeAttribsToColorIndices,
         pixiState.nodeMap,
-        { threeD: appearance.threeD, enableShading: appearance.enable3DShading }
+        {
+          threeD: appearance.threeD,
+          enableShading: appearance.enable3DShading,
+          showGrid: appearance.show3DGrid,
+          camera: appearance.cameraRef?.current,
+          gridLines: pixiState.grid3D?.__gridLines,
+          container,
+        }
       );
     } catch (error) {
       errorService.setError(error.message);

@@ -1,5 +1,6 @@
 import canvasToSvg from "canvas-to-svg";
 import { computeLightingTint, drawCircleCanvas, drawLineCanvas, radius, rimRadiusFactor, rimWidthFactor } from "../canvas_drawing/draw.js";
+import { defaultCamera } from "../canvas_drawing/render3D.js";
 
 function computeNodeBounds(node, mapEntry, tempCtx) {
   const labelVisible = node.labelVisible ?? mapEntry?.nodeLabel?.visible ?? false;
@@ -27,7 +28,7 @@ function computeNodeBounds(node, mapEntry, tempCtx) {
   };
 }
 
-export function measureGraphBounds(graphData, nodeMap) {
+export function measureGraphBounds(graphData, nodeMap, { extraSegments = [] } = {}) {
   let minX = Infinity,
     maxX = -Infinity,
     minY = Infinity,
@@ -40,6 +41,18 @@ export function measureGraphBounds(graphData, nodeMap) {
     maxX = Math.max(maxX, nX);
     minY = Math.min(minY, ny);
     maxY = Math.max(maxY, nY);
+  }
+
+  for (const seg of extraSegments) {
+    if (!seg) continue;
+    const points = [seg.p1, seg.p2].filter(Boolean);
+    for (const p of points) {
+      if (!Number.isFinite(p?.x) || !Number.isFinite(p?.y)) continue;
+      minX = Math.min(minX, p.x);
+      maxX = Math.max(maxX, p.x);
+      minY = Math.min(minY, p.y);
+      maxY = Math.max(maxY, p.y);
+    }
   }
 
   return { minX, maxX, minY, maxY, width: maxX - minX, height: maxY - minY };
@@ -90,7 +103,7 @@ export function drawLabel(ctx, node, mapEntry, textColor) {
   ctx.fillText(labelText, labelX - textWidth / 2, labelY);
 }
 
-export function render3DQueue(ctx, items, drawParams) {
+export function render3DQueue(ctx, items, drawParams, gridOptions) {
   const {
     linkWidth,
     linkColorscheme,
@@ -101,6 +114,10 @@ export function render3DQueue(ctx, items, drawParams) {
     textColor,
     enableShading,
   } = drawParams;
+
+  if (gridOptions?.showGrid && Array.isArray(gridOptions.segments)) {
+    drawGridExport(ctx, gridOptions.segments, textColor);
+  }
 
   for (const item of items) {
     if (item.type === "link") {
@@ -139,4 +156,101 @@ export function render2DGraph(ctx, graphData, nodeMap, params) {
       drawLabel(ctx, node, mapEntry, textColor);
     }
   }
+}
+
+function drawGridExport(ctx, segments, color) {
+  ctx.save();
+  ctx.strokeStyle = color ?? "#6b7280";
+  ctx.globalAlpha = 1;
+
+  for (const seg of segments) {
+    const { p1, p2, axis } = seg || {};
+    if (!p1 || !p2) continue;
+    ctx.beginPath();
+    ctx.lineWidth = axis ? 3 : 1.5;
+    ctx.globalAlpha = axis ? 0.45 : 0.25;
+    ctx.moveTo(p1.x, p1.y);
+    ctx.lineTo(p2.x, p2.y);
+    ctx.stroke();
+  }
+
+  ctx.restore();
+}
+
+export function projectGridLines(gridLines, camera, container) {
+  if (!Array.isArray(gridLines) || !container) return [];
+  const view = getViewParams(camera, container.width, container.height);
+  const segments = [];
+
+  for (const line of gridLines) {
+    const p1 = projectPoint(line.start, view);
+    const p2 = projectPoint(line.end, view);
+    if (p1 && p2) {
+      segments.push({ p1, p2, axis: line.axis });
+    }
+  }
+  return segments;
+}
+
+function projectPoint(node, params) {
+  const { rotX, rotY, cameraX, cameraY, cameraZ, fov, centerX, centerY } = params;
+
+  const rotated = rotatePoint(node, rotX, rotY, centerX, centerY);
+
+  const dx = rotated.x - cameraX;
+  const dy = rotated.y - cameraY;
+  let dz = rotated.z - cameraZ;
+
+  if (dz <= 0.000001) {
+    return null;
+  }
+
+  const depth = Math.abs(dz);
+  const scale = fov / depth;
+
+  return {
+    x: centerX + dx * scale,
+    y: centerY + dy * scale,
+    scale,
+    depth,
+  };
+}
+
+function rotatePoint(node, rotX, rotY, centerX, centerY) {
+  const cosY = Math.cos(rotY);
+  const sinY = Math.sin(rotY);
+  const cosX = Math.cos(rotX);
+  const sinX = Math.sin(rotX);
+
+  const shiftedX = node.x - centerX;
+  const shiftedY = node.y - centerY;
+  const zBase = node.z ?? 0;
+
+  let x = shiftedX * cosY - zBase * sinY;
+  let z = shiftedX * sinY + zBase * cosY;
+
+  let y = shiftedY * cosX - z * sinX;
+  z = shiftedY * sinX + z * cosX;
+
+  return { x: x + centerX, y: y + centerY, z };
+}
+
+function getViewParams(camera, width, height) {
+  const centerX = width / 2;
+  const centerY = height / 2;
+
+  return {
+    rotX: camera?.rotX ?? defaultCamera.rotX,
+    rotY: camera?.rotY ?? defaultCamera.rotY,
+    cameraX: camera?.x ?? centerX,
+    cameraY: camera?.y ?? centerY,
+    cameraZ: camera?.z ?? defaultCamera.z,
+    fov: camera?.fov ?? defaultCamera.fov,
+    centerX,
+    centerY,
+  };
+}
+
+function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max);
 }

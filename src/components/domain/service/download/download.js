@@ -3,7 +3,8 @@ import { jsPDF } from "jspdf";
 import { svg2pdf } from "svg2pdf.js";
 import { getFileNameWithoutExtension } from "../parsing/fileParsing.js";
 import { buildExportGraphData } from "./exportGraph.js";
-import { build3DRenderQueue, createSvgContext, measureGraphBounds, render2DGraph, render3DQueue } from "./exportRender.js";
+import { build3DRenderQueue, createSvgContext, measureGraphBounds, projectGridLines, render2DGraph, render3DQueue } from "./exportRender.js";
+import { buildExportGridLines } from "./exportGrid.js";
 
 const round2 = (v) => Math.round(v * 100) / 100;
 const pdfPadding = 10;
@@ -73,22 +74,27 @@ function createGraphSvgElement(
   nodeAttribsToColorIndices,
   options = {}
 ) {
-  const { threeD = false, enableShading = true } = options;
-  const bounds = measureGraphBounds(graphData, nodeMap);
+  const { threeD = false, enableShading = true, showGrid = false, gridSegments = [] } = options;
+  const bounds = measureGraphBounds(graphData, nodeMap, { extraSegments: gridSegments });
   const { ctx, svgElement } = createSvgContext(bounds);
 
   if (threeD) {
     const queue = build3DRenderQueue(graphData, nodeMap);
-    render3DQueue(ctx, queue, {
-      linkWidth,
-      linkColorscheme,
-      linkAttribsToColorIndices,
-      circleBorderColor,
-      nodeColorscheme,
-      nodeAttribsToColorIndices,
-      textColor,
-      enableShading,
-    });
+    render3DQueue(
+      ctx,
+      queue,
+      {
+        linkWidth,
+        linkColorscheme,
+        linkAttribsToColorIndices,
+        circleBorderColor,
+        nodeColorscheme,
+        nodeAttribsToColorIndices,
+        textColor,
+        enableShading,
+      },
+      { showGrid, segments: gridSegments }
+    );
   } else {
     render2DGraph(ctx, graphData, nodeMap, {
       linkWidth,
@@ -280,6 +286,10 @@ export function downloadAsSVG(
   const exportGraph = buildExportGraphData(graph.data, nodeMap, { threeD: options.threeD });
   if (!exportGraph) return;
 
+  const gridLines = options.showGrid ? options.gridLines ?? buildExportGridLines(graph.data, options.container) : [];
+  const gridSegments =
+    options.threeD && options.showGrid ? projectGridLines(gridLines, options.camera, options.container) : [];
+
   const { svgElement } = createGraphSvgElement(
     exportGraph,
     nodeMap,
@@ -290,7 +300,7 @@ export function downloadAsSVG(
     textColor,
     nodeColorscheme,
     nodeAttribsToColorIndices,
-    options
+    { ...options, gridSegments }
   );
   const svgString = serializeSvgElement(svgElement);
   const blob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
@@ -312,6 +322,10 @@ export async function downloadAsPDF(
   const exportGraph = buildExportGraphData(graph.data, nodeMap, { threeD: options.threeD });
   if (!exportGraph) return;
 
+  const gridLines = options.showGrid ? options.gridLines ?? buildExportGridLines(graph.data, options.container) : [];
+  const gridSegments =
+    options.threeD && options.showGrid ? projectGridLines(gridLines, options.camera, options.container) : [];
+
   const { svgElement, width, height } = createGraphSvgElement(
     exportGraph,
     nodeMap,
@@ -322,7 +336,7 @@ export async function downloadAsPDF(
     textColor,
     nodeColorscheme,
     nodeAttribsToColorIndices,
-    options
+    { ...options, gridSegments }
   );
 
   const pdf = new jsPDF({
