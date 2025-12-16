@@ -8,6 +8,7 @@ import { getDescriptionUniprotData, getFullNameUniprotData, getPdbIdUniprotData 
 import { useContainer } from "../../state/containerState.js";
 import { useTooltipSettings } from "../../state/tooltipState.js";
 import { useTheme } from "../../state/themeState.js";
+import { useAppearance } from "../../state/appearanceState.js";
 import { getNodeIdEntries, parseNodeIdEntries } from "../../../domain/service/parsing/nodeIdParsing.js";
 import { useGraphState } from "../../state/graphState.js";
 import { useColorschemeState } from "../../state/colorschemeState.js";
@@ -39,6 +40,7 @@ export function ClickTooltip() {
   const { colorschemeState } = useColorschemeState();
   const { pixiState } = usePixiState();
   const { renderState } = useRenderState();
+  const { appearance } = useAppearance();
 
   const viewerRef = useRef(null);
   const [isAdjacentView, setIsAdjacentView] = useState(false);
@@ -64,6 +66,21 @@ export function ClickTooltip() {
 
   const adjacentNodeList = useMemo(() => adjacentNodes.map(({ node }) => node), [adjacentNodes]);
 
+  const getNodeScreenPosition = useCallback(
+    (node) => {
+      if (!node) return null;
+      const mapEntry = pixiState.nodeMap?.[node.id];
+      if (appearance.threeD) {
+        const proj = appearance.cameraRef?.current?.projections?.[node.id];
+        if (proj) return { x: proj.x, y: proj.y };
+      }
+      const fallbackX = mapEntry?.circle?.x ?? node.x ?? 0;
+      const fallbackY = mapEntry?.circle?.y ?? node.y ?? 0;
+      return { x: fallbackX, y: fallbackY };
+    },
+    [appearance.cameraRef, appearance.threeD, pixiState.nodeMap]
+  );
+
   const handleExportAdjacent = useCallback(() => {
     if (!adjacentNodeList.length) return;
     const baseName = nodeId ? `${nodeId}_adjacent` : "adjacent_nodes";
@@ -73,15 +90,17 @@ export function ClickTooltip() {
   const handleViewAdjacentNode = useCallback(
     (node) => {
       if (!node) return;
+      const pos = getNodeScreenPosition(node);
+      if (!pos) return;
       setIsAdjacentView(false);
       setTooltipSettings("clickTooltipData", {
         node: node.id,
         nodeGroups: node.groups ?? [],
-        x: node.x + 70, // offset needed, as the tooltip is quite large :c
-        y: node.y,
+        x: pos.x + 70, // offset needed, as the tooltip is quite large :c
+        y: pos.y,
       });
     },
-    [pixiState?.nodeMap, renderState?.app, setIsAdjacentView, setTooltipSettings, tooltipSettings.clickTooltipData]
+    [getNodeScreenPosition, setIsAdjacentView, setTooltipSettings, tooltipSettings.clickTooltipData]
   );
 
   const footerContent = useMemo(() => {
