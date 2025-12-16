@@ -109,7 +109,9 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, width, he
     state.startY = event.y;
 
     const camera = cameraRef.current;
-    camera.rotY += dx * ROT_SPEED; // horizontal turn
+    const pitch = camera?.rotX ?? 0;
+    const yawDir = Math.cos(pitch) >= 0 ? 1 : -1; // keep left/right consistent when inverted
+    camera.rotY += yawDir * dx * ROT_SPEED; // horizontal turn
     camera.rotX += dy * ROT_SPEED; // vertical turn
 
     state.distanceDragged += Math.sqrt(dx * dx + dy * dy);
