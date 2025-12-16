@@ -51,6 +51,7 @@ export function mountSimulation(
   linkAttribsToColorIndices,
   showNodeLabels,
   nodeMap,
+  grid3D,
   app,
   container,
   cameraRef,
@@ -65,6 +66,7 @@ export function mountSimulation(
     linkAttribsToColorIndices,
     showNodeLabels,
     nodeMap,
+    grid3D,
     app,
     container,
     cameraRef,
@@ -89,6 +91,7 @@ export function mountRedraw(
   linkAttribsToColorIndices,
   showNodeLabels,
   nodeMap,
+  grid3D,
   app,
   container,
   cameraRef,
@@ -96,7 +99,7 @@ export function mountRedraw(
 ) {
   const drawFunc = threeD
     ? () =>
-        redraw3D(graphData, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, showNodeLabels, nodeMap, app, container, cameraRef.current)
+        redraw3D(graphData, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, showNodeLabels, nodeMap, grid3D, app, container, cameraRef.current)
     : () => redraw(graphData, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, showNodeLabels, nodeMap, app);
 
   // expose the redraw function so interactions (e.g. zooming) can trigger re-projection without relying on simulation ticks

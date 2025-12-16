@@ -437,3 +437,11 @@ function drawCanvasSphereShading(ctx, x, y, baseRadius, scale) {
   ctx.fill();
   ctx.restore();
 }
+
+export function toColorNumber(color) {
+  if (typeof color === "number") return color;
+  if (typeof color !== "string") return 0x6b7280;
+  const cleaned = color.replace("#", "");
+  const parsed = parseInt(cleaned, 16);
+  return Number.isNaN(parsed) ? 0x6b7280 : parsed;
+}

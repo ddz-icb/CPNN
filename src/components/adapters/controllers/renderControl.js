@@ -14,7 +14,7 @@ import { useReset } from "../state/resetState.js";
 import { useColorschemeState } from "../state/colorschemeState.js";
 import { getSimulation, mountSimulation } from "../../domain/service/physics_calculations/simulation.js";
 import { useTheme } from "../state/themeState.js";
-import { nodeContainersInit, linesInit, nodeMapInit, usePixiState } from "../state/pixiState.js";
+import { nodeContainersInit, linesInit, lines2DInit, lines3DInit, nodeMapInit, grid3DInit, usePixiState } from "../state/pixiState.js";
 import { filteredAfterStartInit, useGraphFlags } from "../state/graphFlagsState.js";
 import { simulationInit, useRenderState } from "../state/canvasState.js";
 import { setupStage } from "../../domain/service/canvas_drawing/stageSetup.js";
@@ -56,8 +56,9 @@ export function RenderControl() {
     setPixiState("nodeMap", nodeMapInit);
     setPixiState("nodeContainers", nodeContainersInit);
     setPixiState("lines", linesInit);
-    setPixiState("lines2D", linesInit);
-    setPixiState("lines3D", linesInit);
+    setPixiState("lines2D", lines2DInit);
+    setPixiState("lines3D", lines3DInit);
+    setPixiState("grid3D", grid3DInit);
 
     setAllTooltipSettings(tooltipInit);
 
@@ -140,6 +141,7 @@ export function RenderControl() {
       setPixiState("lines2D", stage.lines2D);
       setPixiState("lines3D", stage.lines3D);
       setPixiState("lines", stage.lines);
+      setPixiState("grid3D", stage.grid3D);
       setPixiState("nodeMap", stage.nodeMap);
     } catch (error) {
       setError(error.message);
@@ -179,6 +181,10 @@ export function RenderControl() {
         lines3D: pixiState.lines3D,
         setPixiState,
       });
+      if (pixiState.grid3D) {
+        pixiState.grid3D.visible = appearance.threeD;
+        pixiState.grid3D.clear();
+      }
       const newSimulation = getSimulation(linkLengthInit, appearance.threeD);
       initDragAndZoom(renderState.app, newSimulation, radius, setTooltipSettings, container.width, container.height, appearance.threeD, cameraRef);
       applyNode3DState(pixiState.nodeMap, appearance.threeD, appearance.enable3DShading);
@@ -191,7 +197,7 @@ export function RenderControl() {
 
   // running simulation //
   useEffect(() => {
-    if (!pixiState.nodeContainers || !graphState.graph || !renderState.simulation || !graphFlags.filteredAfterStart || !pixiState.lines) return;
+    if (!pixiState.nodeContainers || !graphState.graph || !renderState.simulation || !graphFlags.filteredAfterStart || !pixiState.lines || !pixiState.grid3D) return;
     log.info("Running simulation with the following graph:", graphState.graph);
 
     try {
@@ -204,6 +210,7 @@ export function RenderControl() {
         colorschemeState.linkAttribsToColorIndices,
         appearance.showNodeLabels,
         pixiState.nodeMap,
+        pixiState.grid3D,
         renderState.app,
         container,
         cameraRef,
@@ -226,7 +233,7 @@ export function RenderControl() {
         renderState.simulation.stop();
       }
     };
-  }, [graphState.graph, pixiState.nodeContainers, pixiState.lines, renderState.simulation, graphFlags.filteredAfterStart]);
+  }, [graphState.graph, pixiState.nodeContainers, pixiState.lines, pixiState.grid3D, renderState.simulation, graphFlags.filteredAfterStart]);
 
   // resize the canvas on window resize //
   useEffect(() => {

@@ -1,7 +1,13 @@
 import { useEffect } from "react";
 import log from "../logging/logger.js";
 
-import { applyNode3DState, changeCircleBorderColor, changeNodeColors, changeNodeLabelColor } from "../../domain/service/canvas_drawing/draw.js";
+import {
+  applyNode3DState,
+  changeCircleBorderColor,
+  changeNodeColors,
+  changeNodeLabelColor,
+  toColorNumber,
+} from "../../domain/service/canvas_drawing/draw.js";
 import { useAppearance } from "../state/appearanceState.js";
 import { useGraphState } from "../state/graphState.js";
 
@@ -47,6 +53,7 @@ export function AppearanceControl() {
         colorschemeState.linkAttribsToColorIndices,
         appearance.showNodeLabels,
         pixiState.nodeMap,
+        pixiState.grid3D,
         renderState.app,
         container,
         appearance.cameraRef,
@@ -93,6 +100,9 @@ export function AppearanceControl() {
     try {
       changeCircleBorderColor(pixiState.nodeMap, theme.circleBorderColor);
       changeNodeLabelColor(pixiState.nodeMap, theme.textColor);
+      if (pixiState.grid3D) {
+        pixiState.grid3D.__gridColor = toColorNumber(theme.textColor);
+      }
     } catch (error) {
       errorService.setError(error.message);
       log.error(error);

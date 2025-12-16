@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 import { initTooltips } from "../canvas_interaction/interactiveCanvas.js";
-import { drawCircle, getBitMapStyle, getNodeLabelOffsetY, getTextStyle } from "./draw.js";
+import { drawCircle, getBitMapStyle, getNodeLabelOffsetY, getTextStyle, toColorNumber } from "./draw.js";
 
 function seedNodePositions(nodes, container) {
   const offsetSpawnValue = nodes.length * 10;
@@ -71,13 +71,26 @@ function buildLineLayers(graph, nodeContainers, isThreeD) {
   return { lines2D, lines3D, activeLines };
 }
 
+function buildGridGraphics(container, theme, show) {
+  const grid = new PIXI.Graphics();
+  grid.sortableChildren = false;
+  grid.eventMode = "none";
+  grid.visible = !!show;
+
+  grid.__gridColor = toColorNumber(theme?.textColor);
+
+  return grid;
+}
+
 export function setupStage({ app, graph, container, theme, colorschemeState, setTooltipSettings, threeD }) {
   if (!app || !graph?.data?.nodes?.length) return null;
 
   seedNodePositions(graph.data.nodes, container);
 
+  const grid3D = buildGridGraphics(container, theme, threeD);
   const { nodeContainers, nodeMap } = buildNodeGraphics(graph.data.nodes, theme, colorschemeState, setTooltipSettings);
   const { lines2D, lines3D, activeLines } = buildLineLayers(graph, nodeContainers, threeD);
+  app.stage.addChild(grid3D);
   app.stage.addChild(lines2D);
   app.stage.addChild(nodeContainers);
 
@@ -87,5 +100,6 @@ export function setupStage({ app, graph, container, theme, colorschemeState, set
     lines2D,
     lines3D,
     lines: activeLines,
+    grid3D,
   };
 }

@@ -5,6 +5,7 @@ export const nodeContainersInit = null;
 export const linesInit = null;
 export const lines2DInit = null;
 export const lines3DInit = null;
+export const grid3DInit = null;
 
 export const pixiStateInit = {
   nodeMap: nodeMapInit,
@@ -12,6 +13,7 @@ export const pixiStateInit = {
   lines: linesInit,
   lines2D: lines2DInit,
   lines3D: lines3DInit,
+  grid3D: grid3DInit,
 };
 
 export const usePixiState = create((set) => ({
