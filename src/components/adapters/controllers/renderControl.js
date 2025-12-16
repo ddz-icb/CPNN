@@ -133,6 +133,7 @@ export function RenderControl() {
         colorschemeState,
         setTooltipSettings,
         threeD: appearance.threeD,
+        show3DGrid: appearance.show3DGrid,
       });
 
       if (!stage) return;
@@ -182,7 +183,7 @@ export function RenderControl() {
         setPixiState,
       });
       if (pixiState.grid3D) {
-        pixiState.grid3D.visible = appearance.threeD;
+        pixiState.grid3D.visible = appearance.threeD && appearance.show3DGrid;
         pixiState.grid3D.clear();
       }
       const newSimulation = getSimulation(linkLengthInit, appearance.threeD);

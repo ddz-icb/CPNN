@@ -129,4 +129,15 @@ export function AppearanceControl() {
 
     applyNode3DState(pixiState.nodeMap, true, appearance.enable3DShading);
   }, [appearance.enable3DShading, appearance.threeD, pixiState.nodeMap]);
+
+  // toggle grid visibility in 3D
+  useEffect(() => {
+    if (!pixiState.grid3D) return;
+    const visible = appearance.threeD && appearance.show3DGrid;
+    pixiState.grid3D.visible = visible;
+    if (!visible) {
+      pixiState.grid3D.clear();
+    }
+    appearance.cameraRef?.current?.redraw?.();
+  }, [appearance.show3DGrid, appearance.threeD, pixiState.grid3D, appearance.cameraRef]);
 }

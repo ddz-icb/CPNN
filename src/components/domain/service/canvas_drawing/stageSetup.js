@@ -82,12 +82,12 @@ function buildGridGraphics(container, theme, show) {
   return grid;
 }
 
-export function setupStage({ app, graph, container, theme, colorschemeState, setTooltipSettings, threeD }) {
+export function setupStage({ app, graph, container, theme, colorschemeState, setTooltipSettings, threeD, show3DGrid }) {
   if (!app || !graph?.data?.nodes?.length) return null;
 
   seedNodePositions(graph.data.nodes, container);
 
-  const grid3D = buildGridGraphics(container, theme, threeD);
+  const grid3D = buildGridGraphics(container, theme, threeD && show3DGrid);
   const { nodeContainers, nodeMap } = buildNodeGraphics(graph.data.nodes, theme, colorschemeState, setTooltipSettings);
   const { lines2D, lines3D, activeLines } = buildLineLayers(graph, nodeContainers, threeD);
   app.stage.addChild(grid3D);

@@ -28,6 +28,12 @@ export const threeDShadingDescription = (
   </div>
 );
 
+export const threeDGridDescription = (
+  <div>
+    <p className="margin-0">Shows a helper grid in 3D mode</p>
+  </div>
+);
+
 export const uploadColorschemeDescription = (
   <div>
     <p>

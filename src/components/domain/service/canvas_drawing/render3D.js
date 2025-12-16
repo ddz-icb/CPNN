@@ -46,7 +46,7 @@ function projectNode(node, params) {
   const dy = rotated.y - cameraY;
   let dz = rotated.z - cameraZ;
 
-  if (dz <= 0.0001) {
+  if (dz <= 0.000001) {
     return null;
   }
 
@@ -207,12 +207,12 @@ function computeGridLayout(nodes, container) {
 
   const halfX = Math.max(Math.abs(maxX - centerX), Math.abs(minX - centerX));
   const halfZ = Math.max(Math.abs(maxZ - centerZ), Math.abs(minZ - centerZ));
-  const largestHalf = Math.max(halfX, halfZ, container.width * 0.4);
-  const pad = Math.max(largestHalf * 0.15, 60);
+  const largestHalf = Math.max(halfX, halfZ, container.width * 0.15);
+  const pad = Math.max(largestHalf * 0.1, 10);
 
   const extent = largestHalf + pad;
   const size = extent * 2;
-  const targetStep = clamp(size / 16, 40, 220);
+  const targetStep = clamp(size / 16, 12, 220);
   const cells = Math.max(6, Math.round(size / targetStep));
   const step = size / cells;
 

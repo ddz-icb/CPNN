@@ -5,6 +5,7 @@ export const showNodeLabelsInit = true;
 export const linkWidthInit = 2;
 export const threeDInit = false;
 export const threeDShadingInit = true;
+export const threeDGridInit = true;
 export const cameraRefInit = { ...defaultCamera };
 
 export const appearanceInit = {
@@ -13,6 +14,7 @@ export const appearanceInit = {
   linkWidthText: linkWidthInit,
   threeD: threeDInit,
   enable3DShading: threeDShadingInit,
+  show3DGrid: threeDGridInit,
   cameraRef: cameraRefInit,
 };
 

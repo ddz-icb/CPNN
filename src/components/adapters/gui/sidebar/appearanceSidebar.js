@@ -11,6 +11,7 @@ import {
   themeDescription,
   threeDDescription,
   threeDShadingDescription,
+  threeDGridDescription,
   uploadColorschemeDescription,
 } from "./descriptions/appearanceDescriptions.js";
 import { useAppearance, linkWidthInit } from "../../../adapters/state/appearanceState.js";
@@ -66,6 +67,15 @@ export function AppearanceSettings() {
           text={"3D Node Shading"}
           infoHeading={"Toggle 3D Node Shading"}
           infoDescription={threeDShadingDescription}
+        />
+      )}
+      {appearance.threeD && (
+        <SwitchBlock
+          value={appearance.show3DGrid}
+          setValue={() => setAppearance("show3DGrid", !appearance.show3DGrid)}
+          text={"3D Grid"}
+          infoHeading={"Toggle 3D Grid"}
+          infoDescription={threeDGridDescription}
         />
       )}
       <SliderBlock
