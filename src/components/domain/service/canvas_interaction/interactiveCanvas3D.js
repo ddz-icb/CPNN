@@ -2,17 +2,21 @@ import * as d3 from "d3";
 import { defaultCamera } from "../canvas_drawing/render3D.js";
 
 export function initDragAndZoom3D(app, simulation, setTooltipSettings, width, height, cameraRef) {
+  const baseZ = cameraRef.current?.z ?? defaultCamera.z;
+
   const state = {
     startX: 0,
     startY: 0,
     distanceDragged: 0,
-    baseZ: cameraRef.current?.z ?? defaultCamera.z,
+    baseZ,
+    zoomK: 1,
     isNodeDrag: false,
     dragNode: null,
   };
 
   const ROT_SPEED = 0.005;
-  const ZOOM_DEPTH_UNIT = Math.abs(state.baseZ || defaultCamera.z || 600);
+  const ZOOM_DEPTH_UNIT = Math.abs(baseZ || defaultCamera.z || 600);
+  const MIN_ZOOM_SCALE = 1e-4;
   const DRAG_HIT_RADIUS = 20;
 
   function findNodeAtPointer(event) {
@@ -141,10 +145,18 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, width, he
   }
 
   function handleZoom(event) {
-    const k = event.transform.k;
     const camera = cameraRef.current;
 
-    camera.z = state.baseZ / k;
+    if (!camera) return;
+
+    // translate multiplicative zoom input into a continuous z-offset so we can pass through origin without flipping view
+    const nextK = Math.max(event.transform.k, MIN_ZOOM_SCALE);
+    const zoomRatio = nextK / (state.zoomK || 1);
+
+    if (!Number.isFinite(zoomRatio) || zoomRatio <= 0) return;
+
+    camera.z += Math.log(zoomRatio) * ZOOM_DEPTH_UNIT;
+    state.zoomK = nextK;
 
     camera?.redraw?.();
   }
