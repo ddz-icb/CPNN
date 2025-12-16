@@ -18,6 +18,7 @@ import { nodeContainersInit, linesInit, lines2DInit, lines3DInit, nodeMapInit, g
 import { filteredAfterStartInit, useGraphFlags } from "../state/graphFlagsState.js";
 import { simulationInit, useRenderState } from "../state/canvasState.js";
 import { setupStage } from "../../domain/service/canvas_drawing/stageSetup.js";
+import { resetGridVisibility, resetStageTransform } from "../../domain/service/canvas_drawing/stageTransforms.js";
 
 export function RenderControl() {
   const { appearance, setAppearance } = useAppearance();
@@ -182,10 +183,8 @@ export function RenderControl() {
         lines3D: pixiState.lines3D,
         setPixiState,
       });
-      if (pixiState.grid3D) {
-        pixiState.grid3D.visible = appearance.threeD && appearance.show3DGrid;
-        pixiState.grid3D.clear();
-      }
+      resetGridVisibility(pixiState.grid3D, appearance.threeD && appearance.show3DGrid);
+      resetStageTransform(renderState.app?.stage);
       const newSimulation = getSimulation(linkLengthInit, appearance.threeD);
       initDragAndZoom(renderState.app, newSimulation, radius, setTooltipSettings, container.width, container.height, appearance.threeD, cameraRef);
       applyNode3DState(pixiState.nodeMap, appearance.threeD, appearance.enable3DShading);
