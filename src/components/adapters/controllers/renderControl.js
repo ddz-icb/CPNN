@@ -98,10 +98,11 @@ export function RenderControl() {
           resolution: window.devicePixelRatio || 2,
           backgroundAlpha: 0,
           autoDensity: true,
+          preference: "webgpu",
         });
         containerRef.current.appendChild(app.canvas);
         setRenderState("app", app);
-        log.info("PIXI Initialized successfully");
+        log.info(`PIXI Initialized successfully using ${app.renderer.type === PIXI.RendererType.WEBGPU ? "WebGPU" : "WebGL"} renderer`);
       } catch (error) {
         setError(error.message);
         log.error(error.message);
