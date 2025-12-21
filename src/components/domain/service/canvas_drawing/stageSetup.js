@@ -57,12 +57,16 @@ function buildLineLayers(graph, nodeContainers, isThreeD) {
   let activeLines = lines2D;
 
   if (isThreeD && graph?.data?.links) {
-    lines3D = graph.data.links.map((link, idx) => {
-      const lineGraphic = new PIXI.Graphics();
-      lineGraphic.zIndex = 0;
-      link.__lineIdx = idx;
-      nodeContainers.addChild(lineGraphic);
-      return lineGraphic;
+    lines3D = graph.data.links.map((link) => {
+      if (!link?.attribs) return [];
+      return link.attribs.map(() => {
+        const sprite = new PIXI.Sprite(PIXI.Texture.WHITE);
+        sprite.anchor.set(0.5);
+        sprite.eventMode = "none";
+        sprite.zIndex = 0;
+        nodeContainers.addChild(sprite);
+        return sprite;
+      });
     });
     lines2D.visible = false;
     activeLines = lines3D;

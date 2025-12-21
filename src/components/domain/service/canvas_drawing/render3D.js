@@ -151,60 +151,62 @@ function updateNodes3D(nodes, nodeMap, showNodeLabels, projections) {
 }
 
 function updateLines3D(links, lineGraphics, linkWidth, linkColorscheme, linkAttribsToColorIndices, projections) {
-  if (!links || !lineGraphics || !Array.isArray(lineGraphics)) return;
+  if (!links || !Array.isArray(lineGraphics)) return;
 
-  for (const graphic of lineGraphics) {
-    graphic?.clear();
-    if (graphic) graphic.visible = false;
-  }
+  const lineSprites = lineGraphics;
+  const linkCount = Math.min(links.length, lineSprites.length);
 
-  let fallbackLineIdx = 0;
-  for (const link of links) {
+  for (let linkIdx = 0; linkIdx < linkCount; linkIdx++) {
+    const link = links[linkIdx];
+    const sprites = lineSprites[linkIdx];
+    if (!link || !Array.isArray(sprites)) continue;
+
     const srcId = typeof link.source === "object" ? link.source.id : link.source;
     const tgtId = typeof link.target === "object" ? link.target.id : link.target;
 
     const src = projections[srcId];
     const tgt = projections[tgtId];
 
-    if (!src || !tgt || src.visible === false || tgt.visible === false) continue;
-
-    const depth = Math.max(src.depth ?? 0, tgt.depth ?? 0);
-    const lineIdx = link.__lineIdx ?? fallbackLineIdx++;
-    const graphic = lineGraphics[lineIdx];
-    if (!graphic) continue;
-
-    graphic.visible = true;
-    const widthScaled = linkWidth * ((src.scale + tgt.scale) / 2);
-
-    if (link.attribs.length === 1) {
-      graphic
-        .moveTo(src.x, src.y)
-        .lineTo(tgt.x, tgt.y)
-        .stroke({
-          color: getColor(linkAttribsToColorIndices[link.attribs[0]], linkColorscheme.data),
-          width: widthScaled,
-        });
-    } else {
-      const dx = tgt.x - src.x;
-      const dy = tgt.y - src.y;
-      const length = Math.sqrt(dx * dx + dy * dy) || 1e-6;
-      const normedPerp = { x: -dy / length, y: dx / length };
-
-      for (let i = 0; i < link.attribs.length; i++) {
-        const shift = (i - (link.attribs.length - 1) / 2) * widthScaled;
-        const offsetX = shift * normedPerp.x;
-        const offsetY = shift * normedPerp.y;
-
-        graphic
-          .moveTo(src.x + offsetX, src.y + offsetY)
-          .lineTo(tgt.x + offsetX, tgt.y + offsetY)
-          .stroke({
-            color: getColor(linkAttribsToColorIndices[link.attribs[i]], linkColorscheme.data),
-            width: widthScaled,
-          });
+    if (!src || !tgt || src.visible === false || tgt.visible === false) {
+      for (const sprite of sprites) {
+        if (sprite) sprite.visible = false;
       }
+      continue;
     }
 
-    graphic.zIndex = -(depth ?? 0);
+    const depth = Math.max(src.depth ?? 0, tgt.depth ?? 0);
+    const widthScaled = linkWidth * ((src.scale + tgt.scale) / 2);
+
+    const dx = tgt.x - src.x;
+    const dy = tgt.y - src.y;
+    const length = Math.sqrt(dx * dx + dy * dy) || 1e-6;
+    const angle = Math.atan2(dy, dx);
+    const midX = (src.x + tgt.x) / 2;
+    const midY = (src.y + tgt.y) / 2;
+    const normedPerp = { x: -dy / length, y: dx / length };
+
+    const attribs = Array.isArray(link.attribs) ? link.attribs : [];
+    const attribCount = attribs.length;
+
+    for (let i = 0; i < sprites.length; i++) {
+      const sprite = sprites[i];
+      if (!sprite) continue;
+      if (i >= attribCount) {
+        sprite.visible = false;
+        continue;
+      }
+
+      const shift = (i - (attribCount - 1) / 2) * widthScaled;
+      const offsetX = shift * normedPerp.x;
+      const offsetY = shift * normedPerp.y;
+
+      sprite.visible = true;
+      sprite.position.set(midX + offsetX, midY + offsetY);
+      sprite.rotation = angle;
+      sprite.width = length;
+      sprite.height = widthScaled;
+      sprite.tint = getColor(linkAttribsToColorIndices[attribs[i]], linkColorscheme.data);
+      sprite.zIndex = -(depth ?? 0);
+    }
   }
 }
