@@ -33,7 +33,7 @@ export function redraw3D(
   drawGrid3D(grid3D, view, graphData.nodes, container, (point) => projectNode(point, view));
   updateNodes3D(graphData.nodes, nodeMap, showNodeLabels, projections);
   updateLines3D(graphData.links, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, projections);
-  updateHighlights(nodeMap);
+  updateHighlights();
 
   app.renderer.render(app.stage);
 }
@@ -157,7 +157,7 @@ function updateLines3D(links, lineGraphics, linkWidth, linkColorscheme, linkAttr
     if (graphic) graphic.visible = false;
   }
 
-  const linksWithDepth = [];
+  let fallbackLineIdx = 0;
   for (const link of links) {
     const srcId = typeof link.source === "object" ? link.source.id : link.source;
     const tgtId = typeof link.target === "object" ? link.target.id : link.target;
@@ -168,14 +168,7 @@ function updateLines3D(links, lineGraphics, linkWidth, linkColorscheme, linkAttr
     if (!src || !tgt) continue;
 
     const depth = Math.max(src.depth ?? 0, tgt.depth ?? 0);
-    const lineIdx = link.__lineIdx ?? linksWithDepth.length;
-    linksWithDepth.push({ link, src, tgt, depth, lineIdx });
-  }
-
-  // draw farthest first so nearer links overlay them
-  linksWithDepth.sort((a, b) => b.depth - a.depth);
-
-  for (const { link, src, tgt, depth, lineIdx } of linksWithDepth) {
+    const lineIdx = link.__lineIdx ?? fallbackLineIdx++;
     const graphic = lineGraphics[lineIdx];
     if (!graphic) continue;
 

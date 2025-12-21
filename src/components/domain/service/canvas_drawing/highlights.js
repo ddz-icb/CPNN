@@ -1,8 +1,11 @@
 import * as PIXI from "pixi.js";
 import { radius } from "./nodes.js";
 
+const activeHighlights = new Set();
+
 export function clearNodeHighlight(circle) {
   if (!circle) return;
+  activeHighlights.delete(circle);
   if (!circle?.highlightOverlay) return;
 
   const overlay = circle.highlightOverlay;
@@ -42,6 +45,7 @@ export function highlightNode(circle, highlightColor) {
     circle.addChild?.(overlay);
   }
   circle.highlightOverlay = overlay;
+  activeHighlights.add(circle);
 
   return overlay;
 }
@@ -58,8 +62,12 @@ function updateHighlightOverlay(circle) {
   overlay.y = circle.y;
 }
 
-export function updateHighlights(nodeMap) {
-  if (!nodeMap) return;
-  Object.values(nodeMap).forEach(({ circle }) => updateHighlightOverlay(circle));
+export function updateHighlights() {
+  for (const circle of activeHighlights) {
+    if (!circle || circle.destroyed) {
+      activeHighlights.delete(circle);
+      continue;
+    }
+    updateHighlightOverlay(circle);
+  }
 }
-

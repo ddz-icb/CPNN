@@ -5,7 +5,7 @@ export function redraw(graphData, lines, linkWidth, linkColorscheme, linkAttribs
 
   updateLines(links, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices);
   updateNodes(nodes, nodeMap, showNodeLabels);
-  updateHighlights(nodeMap);
+  updateHighlights();
 
   app.renderer.render(app.stage);
 }
