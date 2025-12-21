@@ -26,7 +26,7 @@ export function drawGrid3D(gridGraphic, view, nodes, container, project) {
   }
 
   const now = typeof performance !== "undefined" && performance.now ? performance.now() : Date.now();
-  const layoutInterval = 250;
+  const layoutInterval = 30; // ms inbetween grid updates
   const sizeChanged = cache.containerWidth !== container.width || cache.containerHeight !== container.height;
   const shouldUpdateLayout = !cache.layout || sizeChanged || now - (cache.layoutAt || 0) > layoutInterval;
 
