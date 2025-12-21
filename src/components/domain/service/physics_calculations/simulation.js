@@ -103,7 +103,12 @@ export function mountRedraw(
         redraw3D(graphData, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, showNodeLabels, nodeMap, grid3D, app, container, cameraRef.current)
     : () => redraw(graphData, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, showNodeLabels, nodeMap, app);
 
+  if (typeof simulation?.__cancelDraw === "function") {
+    simulation.__cancelDraw();
+  }
+
   const scheduleDraw = createFrameScheduler(drawImmediate);
+  simulation.__cancelDraw = scheduleDraw.cancel;
 
   // expose the redraw function so interactions (e.g. zooming) can trigger re-projection without relying on simulation ticks
   if (threeD && cameraRef?.current) {

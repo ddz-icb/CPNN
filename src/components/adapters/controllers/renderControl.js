@@ -64,6 +64,7 @@ export function RenderControl() {
     setAllTooltipSettings(tooltipInit);
 
     if (renderState.simulation) {
+      renderState.simulation.__cancelDraw?.();
       renderState.simulation.stop();
       setRenderState("simulation", simulationInit);
     }
@@ -174,6 +175,7 @@ export function RenderControl() {
     if (!renderState.app || !graphState.graph || !renderState.simulation) return;
     log.info(`Switch simulation to ${appearance.threeD ? "3D" : "2D"}`);
 
+    renderState.simulation.__cancelDraw?.();
     renderState.simulation.stop();
 
     try {
@@ -236,12 +238,14 @@ export function RenderControl() {
       log.error(error.message);
 
       if (renderState.simulation) {
+        renderState.simulation.__cancelDraw?.();
         renderState.simulation.stop();
       }
     }
 
     return () => {
       if (renderState.simulation) {
+        renderState.simulation.__cancelDraw?.();
         renderState.simulation.stop();
       }
     };
