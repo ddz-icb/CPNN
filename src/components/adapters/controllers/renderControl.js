@@ -186,6 +186,9 @@ export function RenderControl() {
         lines3D: pixiState.lines3D,
         setPixiState,
       });
+      if (pixiState.nodeContainers) {
+        pixiState.nodeContainers.sortableChildren = !!appearance.threeD;
+      }
       if (!appearance.threeD) {
         restoreProjectionHidden(pixiState.nodeMap);
       }
