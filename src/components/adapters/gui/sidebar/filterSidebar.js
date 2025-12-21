@@ -1,4 +1,4 @@
-import { Button, FieldBlock, SliderBlock, SwitchBlock, LassoSelectionBlock } from "../reusable_components/sidebarComponents.js";
+import { Button, FieldBlock, SliderBlock, SwitchBlock, LassoFilterBlock } from "../reusable_components/sidebarComponents.js";
 import {
   filterInit,
   linkThresholdInit,
@@ -31,6 +31,10 @@ export function FilterSidebar() {
 
   const handleClearLassoSelection = () => {
     setFilter("lassoSelection", []);
+  };
+
+  const handleToggleLasso = () => {
+    setFilter("lasso", !filter.lasso);
   };
 
   const handleResetFilters = () => {
@@ -110,14 +114,14 @@ export function FilterSidebar() {
         infoHeading={"Filter by Component Density"}
         infoDescription={compDensityDescription}
       />
-      <SwitchBlock
-        value={filter.lasso}
-        setValue={() => setFilter("lasso", !filter.lasso)}
-        text={"Lasso Filter"}
+      <LassoFilterBlock
+        isActive={filter.lasso}
+        selectionCount={lassoSelectionCount}
+        onToggle={handleToggleLasso}
+        onClearSelection={handleClearLassoSelection}
         infoHeading={"Lasso Filter"}
         infoDescription={lassoDescription}
       />
-      {filter.lasso && <LassoSelectionBlock selectionCount={lassoSelectionCount} onClearSelection={handleClearLassoSelection} />}
     </>
   );
 }

@@ -81,9 +81,13 @@ export function Button({ onClick, onChange, linkRef, tooltip, tooltipId, text, c
   );
 }
 
-export function LassoSelectionBlock({ selectionCount, onClearSelection }) {
+export function LassoSelectionBlock({ selectionCount, onClearSelection, isActive }) {
   const hasSelection = selectionCount > 0;
-  const message = hasSelection ? `${selectionCount} node${selectionCount === 1 ? "" : "s"} selected` : "Draw a shape on the canvas to select nodes.";
+  const message = hasSelection
+    ? `${selectionCount} node${selectionCount === 1 ? "" : "s"} selected`
+    : isActive
+      ? "Draw a shape on the canvas to select nodes."
+      : "Click \"Draw Lasso\" to select nodes.";
 
   return (
     <div className="block-section block-section-stack">
@@ -92,6 +96,27 @@ export function LassoSelectionBlock({ selectionCount, onClearSelection }) {
         {hasSelection && <Button text={"Clear Lasso Selection"} onClick={onClearSelection} />}
       </div>
     </div>
+  );
+}
+
+export function LassoFilterBlock({ isActive, selectionCount, onToggle, onClearSelection, infoHeading, infoDescription }) {
+  const showSelection = isActive || selectionCount > 0;
+
+  return (
+    <>
+      <div className="block-section">
+        <div className="sidebar-control-header">
+          <label className="label">Lasso Filter</label>
+          <span className="info-button-container">
+            <InfoButtonPopup heading={infoHeading} description={infoDescription} widePopup={true} />
+          </span>
+        </div>
+        <Button text={isActive ? "Cancel Lasso" : "Draw Lasso"} onClick={onToggle} />
+      </div>
+      {showSelection && (
+        <LassoSelectionBlock selectionCount={selectionCount} onClearSelection={onClearSelection} isActive={isActive} />
+      )}
+    </>
   );
 }
 

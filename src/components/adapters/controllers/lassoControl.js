@@ -19,14 +19,16 @@ export function Lasso() {
       return;
     }
 
-    setFilter("lassoSelection", []);
-
     const disableLasso = enableLasso({
       app: renderState.app,
       nodeMap: pixiState.nodeMap,
       lineColor: theme.circleBorderColor,
       onSelect: ({ nodes }) => {
-        setFilter("lassoSelection", Array.isArray(nodes) ? nodes : []);
+        const selectedNodes = Array.isArray(nodes) ? nodes : [];
+        if (selectedNodes.length > 0) {
+          setFilter("lassoSelection", selectedNodes);
+        }
+        setFilter("lasso", false);
       },
     });
     lassoRef.current = disableLasso;
@@ -40,22 +42,4 @@ export function Lasso() {
       }
     };
   }, [filter.lasso, renderState.app, pixiState.nodeMap, theme, setFilter]);
-
-  useEffect(() => {
-    if (!filter.lasso) {
-      lassoRef.current?.clearSelection?.();
-      lassoRef.current = null;
-      if (Array.isArray(filter.lassoSelection) && filter.lassoSelection.length === 0) {
-        return;
-      }
-      setFilter("lassoSelection", []);
-      return;
-    }
-
-    if (!Array.isArray(filter.lassoSelection) || filter.lassoSelection.length > 0) {
-      return;
-    }
-
-    lassoRef.current?.clearSelection?.();
-  }, [filter.lasso, filter.lassoSelection, setFilter]);
 }

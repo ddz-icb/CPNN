@@ -58,8 +58,7 @@ export function FilterControl() {
       filter.nodeFilter,
       "\n    Comp Density: ",
       filter.compDensity,
-      "\n    Lasso: ",
-      filter.lasso,
+      "\n    Lasso Selection: ",
       filter.lassoSelection
     );
 
@@ -106,7 +105,6 @@ export function FilterControl() {
     filter.maxCompSize,
     filter.compDensity,
     filter.minKCoreSize,
-    filter.lasso,
     filter.lassoSelection,
     graphState.originGraph,
     pixiState.nodeContainers,
