@@ -213,7 +213,7 @@ export function PhysicsControl() {
         const adjacentCountMap = getAdjacentData(graphState.graph.data);
         const minCircleSize = 6;
 
-        renderState.simulation.force("circleLayout", circularForce(IdToComp, adjacentCountMap, minCircleSize));
+        renderState.simulation.force("circleLayout", circularForce(IdToComp, adjacentCountMap, minCircleSize, appearance.threeD));
         renderState.simulation.alpha(1).restart();
       }
     } catch (error) {

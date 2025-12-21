@@ -127,12 +127,13 @@ export function groupRepulsionForce(IdToGroup, centroidThreshold) {
   return force;
 }
 
-export function circularForce(IdToComp, adjacentCountMap, minCircleSize) {
+export function circularForce(IdToComp, adjacentCountMap, minCircleSize, threeD = false) {
   let nodes;
   let strength = 1;
   let groupIdToNodes = new Map();
   let groupIdToNodesSorted = new Map();
   let groupIdToRadius = new Map();
+  const goldenAngle = Math.PI * (3 - Math.sqrt(5));
 
   function recomputeGroups() {
     groupIdToNodes.clear();
@@ -159,23 +160,41 @@ export function circularForce(IdToComp, adjacentCountMap, minCircleSize) {
       centroids.set(id, getCentroid(group));
     }
 
-    // circular layout
+    // circular layout in 2D, spherical layout in 3D
     for (const [id, centroid] of centroids) {
       const group = groupIdToNodesSorted.get(id);
       if (group.length < minCircleSize) continue;
       const radius = groupIdToRadius.get(id);
       const len = group.length;
       for (let i = 0; i < len; i++) {
-        const angle = (2 * Math.PI * i) / len - Math.PI / 2;
-        const targetX = centroid.x + radius * Math.cos(angle);
-        const targetY = centroid.y + radius * Math.sin(angle);
+        let targetX = centroid.x;
+        let targetY = centroid.y;
+        let targetZ = centroid.z ?? 0;
+
+        if (threeD) {
+          const t = (i + 0.5) / len;
+          const y = 1 - 2 * t;
+          const r = Math.sqrt(Math.max(0, 1 - y * y));
+          const theta = goldenAngle * i;
+          const x = Math.cos(theta) * r;
+          const z = Math.sin(theta) * r;
+          targetX = centroid.x + radius * x;
+          targetY = centroid.y + radius * y;
+          targetZ = (centroid.z ?? 0) + radius * z;
+        } else {
+          const angle = (2 * Math.PI * i) / len - Math.PI / 2;
+          targetX = centroid.x + radius * Math.cos(angle);
+          targetY = centroid.y + radius * Math.sin(angle);
+        }
+
         const dx = targetX - group[i].x;
         const dy = targetY - group[i].y;
-        const targetZ = centroid.z ?? 0;
         const dz = targetZ - (group[i].z ?? 0);
         group[i].vx += dx * alpha * strength;
         group[i].vy += dy * alpha * strength;
-        group[i].vz = (group[i].vz ?? 0) + dz * alpha * strength;
+        if (threeD) {
+          group[i].vz = (group[i].vz ?? 0) + dz * alpha * strength;
+        }
       }
     }
 

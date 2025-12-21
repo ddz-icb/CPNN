@@ -66,7 +66,7 @@ export const circleLayoutDescription = (
   <div>
     <p className="margin-0">
       Components/Clusters can be displayed in a circular layout, with the nodes arranged clockwise in descending order based on the number of adjacent
-      nodes. <br />
+      nodes. In 3D, the nodes are distributed on a sphere around the component centroid. <br />
       Activating this force automatically disables the link force, as they're incompatible.
     </p>
   </div>
