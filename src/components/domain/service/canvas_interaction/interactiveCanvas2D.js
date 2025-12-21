@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import { createFrameScheduler } from "../utils/frameScheduler.js";
 
 export function initDragAndZoom2D(app, simulation, radius, setTooltipSettings, width, height) {
   let state = {
@@ -6,6 +7,8 @@ export function initDragAndZoom2D(app, simulation, radius, setTooltipSettings, w
     distanceDragged: 0,
     startPosition: { x: 0, y: 0 },
   };
+
+  const scheduleRender = createFrameScheduler(() => app.renderer.render(app.stage));
 
   const zoomed = (event) => {
     state.transform = event.transform;
@@ -15,7 +18,7 @@ export function initDragAndZoom2D(app, simulation, radius, setTooltipSettings, w
     app.stage.scale.x = state.transform.k;
     app.stage.scale.y = state.transform.k;
 
-    app.renderer.render(app.stage);
+    scheduleRender();
   };
 
   const dragsubject = (event) => {

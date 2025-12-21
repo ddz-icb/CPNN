@@ -24,7 +24,7 @@ export function redraw3D(
   camera
 ) {
   const view = getViewParams(camera, container.width, container.height);
-  const projections = computeProjections(graphData.nodes, view);
+  const projections = computeProjections(graphData.nodes, view, camera?.projections);
 
   if (camera) {
     camera.projections = projections;
@@ -38,35 +38,8 @@ export function redraw3D(
   app.renderer.render(app.stage);
 }
 
-function projectNode(node, params) {
-  const { rotX, rotY, cameraX, cameraY, cameraZ, fov, centerX, centerY } = params;
-
-  const rotated = rotateNode(node, rotX, rotY, centerX, centerY);
-
-  const dx = rotated.x - cameraX;
-  const dy = rotated.y - cameraY;
-  let dz = rotated.z - cameraZ;
-
-  if (dz <= 0.000001) {
-    return null;
-  }
-
-  const depth = Math.abs(dz);
-  const scale = fov / depth;
-
-  return {
-    x: centerX + dx * scale,
-    y: centerY + dy * scale,
-    scale,
-    depth,
-  };
-}
-
-function rotateNode(node, rotX, rotY, centerX, centerY) {
-  const cosY = Math.cos(rotY);
-  const sinY = Math.sin(rotY);
-  const cosX = Math.cos(rotX);
-  const sinX = Math.sin(rotX);
+function projectNode(node, params, out) {
+  const { cameraX, cameraY, cameraZ, fov, centerX, centerY, cosX, sinX, cosY, sinY } = params;
 
   const shiftedX = node.x - centerX;
   const shiftedY = node.y - centerY;
@@ -78,16 +51,47 @@ function rotateNode(node, rotX, rotY, centerX, centerY) {
   let y = shiftedY * cosX - z * sinX;
   z = shiftedY * sinX + z * cosX;
 
-  return { x: x + centerX, y: y + centerY, z };
+  const dx = x + centerX - cameraX;
+  const dy = y + centerY - cameraY;
+  const dz = z - cameraZ;
+
+  const target = out || {};
+
+  if (dz <= 0.000001) {
+    if (!out) return null;
+    target.visible = false;
+    return target;
+  }
+
+  const depth = Math.abs(dz);
+  const scale = fov / depth;
+
+  target.x = centerX + dx * scale;
+  target.y = centerY + dy * scale;
+  target.scale = scale;
+  target.depth = depth;
+  target.visible = true;
+
+  return target;
 }
 
 function getViewParams(camera, width, height) {
   const centerX = width / 2;
   const centerY = height / 2;
+  const rotX = camera?.rotX ?? defaultCamera.rotX;
+  const rotY = camera?.rotY ?? defaultCamera.rotY;
+  const cosX = Math.cos(rotX);
+  const sinX = Math.sin(rotX);
+  const cosY = Math.cos(rotY);
+  const sinY = Math.sin(rotY);
 
   return {
-    rotX: camera?.rotX ?? defaultCamera.rotX,
-    rotY: camera?.rotY ?? defaultCamera.rotY,
+    rotX,
+    rotY,
+    cosX,
+    sinX,
+    cosY,
+    sinY,
     cameraX: camera?.x ?? centerX,
     cameraY: camera?.y ?? centerY,
     cameraZ: camera?.z ?? defaultCamera.z,
@@ -97,14 +101,11 @@ function getViewParams(camera, width, height) {
   };
 }
 
-function computeProjections(nodes, view) {
-  const result = {};
-
+function computeProjections(nodes, view, result = {}) {
   for (const node of nodes) {
-    const proj = projectNode(node, view);
-    if (proj) {
-      result[node.id] = proj;
-    }
+    const existing = result[node.id];
+    const proj = projectNode(node, view, existing && typeof existing === "object" ? existing : undefined);
+    result[node.id] = proj;
   }
 
   return result;
@@ -119,7 +120,7 @@ function updateNodes3D(nodes, nodeMap, showNodeLabels, projections) {
     const { circle, nodeLabel } = entry;
     if (!circle || !nodeLabel) continue;
 
-    if (!proj) {
+    if (!proj || proj.visible === false) {
       circle.visible = false;
       nodeLabel.visible = false;
       circle.__hiddenByProjection = true;
@@ -165,7 +166,7 @@ function updateLines3D(links, lineGraphics, linkWidth, linkColorscheme, linkAttr
     const src = projections[srcId];
     const tgt = projections[tgtId];
 
-    if (!src || !tgt) continue;
+    if (!src || !tgt || src.visible === false || tgt.visible === false) continue;
 
     const depth = Math.max(src.depth ?? 0, tgt.depth ?? 0);
     const lineIdx = link.__lineIdx ?? fallbackLineIdx++;

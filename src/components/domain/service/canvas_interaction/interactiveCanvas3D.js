@@ -1,5 +1,6 @@
 import * as d3 from "d3";
 import { defaultCamera } from "../canvas_drawing/render3D.js";
+import { createFrameScheduler } from "../utils/frameScheduler.js";
 
 export function initDragAndZoom3D(app, simulation, setTooltipSettings, width, height, cameraRef) {
   const baseZ = cameraRef.current?.z ?? defaultCamera.z;
@@ -18,6 +19,8 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, width, he
   const ZOOM_DEPTH_UNIT = Math.abs(baseZ || defaultCamera.z || 600);
   const DRAG_HIT_RADIUS = 20;
 
+  const scheduleRedraw = createFrameScheduler(() => cameraRef.current?.redraw?.());
+
   function findNodeAtPointer(event) {
     const projections = cameraRef.current?.projections;
     if (!projections) return null;
@@ -29,7 +32,7 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, width, he
     let closestDist = Infinity;
     for (const node of nodes) {
       const proj = projections[node.id];
-      if (!proj) continue;
+      if (!proj || proj.visible === false) continue;
       const dx = event.x - proj.x;
       const dy = event.y - proj.y;
       const dist = Math.sqrt(dx * dx + dy * dy);
@@ -110,7 +113,7 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, width, he
     camera.rotX += dy * ROT_SPEED; // vertical turn
 
     state.distanceDragged += Math.sqrt(dx * dx + dy * dy);
-    camera?.redraw?.();
+    scheduleRedraw();
   }
 
   function handleDragEnd(event) {
@@ -155,7 +158,7 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, width, he
     camera.z += Math.log(zoomRatio) * ZOOM_DEPTH_UNIT;
     state.zoomK = nextK;
 
-    camera?.redraw?.();
+    scheduleRedraw();
   }
 
   const dragRotate = d3.drag().on("start", handleDragStart).on("drag", handleDrag).on("end", handleDragEnd);

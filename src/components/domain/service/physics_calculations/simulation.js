@@ -3,6 +3,7 @@ import { forceSimulation, forceLink } from "d3-force-3d";
 import { getLinkDistance } from "./physicsGraph.js";
 import { redraw3D } from "../canvas_drawing/render3D.js";
 import { redraw } from "../canvas_drawing/render2D.js";
+import { createFrameScheduler } from "../utils/frameScheduler.js";
 
 export function getSimulation(linkLength, threeD) {
   if (threeD) {
@@ -102,18 +103,7 @@ export function mountRedraw(
         redraw3D(graphData, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, showNodeLabels, nodeMap, grid3D, app, container, cameraRef.current)
     : () => redraw(graphData, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, showNodeLabels, nodeMap, app);
 
-  let frameId = null;
-  const scheduleDraw = () => {
-    if (typeof requestAnimationFrame !== "function") {
-      drawImmediate();
-      return;
-    }
-    if (frameId !== null) return;
-    frameId = requestAnimationFrame(() => {
-      frameId = null;
-      drawImmediate();
-    });
-  };
+  const scheduleDraw = createFrameScheduler(drawImmediate);
 
   // expose the redraw function so interactions (e.g. zooming) can trigger re-projection without relying on simulation ticks
   if (threeD && cameraRef?.current) {

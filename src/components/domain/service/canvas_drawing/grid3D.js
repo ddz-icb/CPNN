@@ -3,8 +3,59 @@ import { toColorNumber } from "./draw.js";
 export function drawGrid3D(gridGraphic, view, nodes, container, project) {
   if (!gridGraphic?.visible || typeof project !== "function") return;
 
-  const layout = computeGridLayout(nodes, container);
+  const cache = gridGraphic.__gridCache || (gridGraphic.__gridCache = {});
+  const viewChanged =
+    cache.viewRotX !== view.rotX ||
+    cache.viewRotY !== view.rotY ||
+    cache.viewCameraX !== view.cameraX ||
+    cache.viewCameraY !== view.cameraY ||
+    cache.viewCameraZ !== view.cameraZ ||
+    cache.viewFov !== view.fov ||
+    cache.viewCenterX !== view.centerX ||
+    cache.viewCenterY !== view.centerY;
+
+  if (viewChanged) {
+    cache.viewRotX = view.rotX;
+    cache.viewRotY = view.rotY;
+    cache.viewCameraX = view.cameraX;
+    cache.viewCameraY = view.cameraY;
+    cache.viewCameraZ = view.cameraZ;
+    cache.viewFov = view.fov;
+    cache.viewCenterX = view.centerX;
+    cache.viewCenterY = view.centerY;
+  }
+
+  const now = typeof performance !== "undefined" && performance.now ? performance.now() : Date.now();
+  const layoutInterval = 250;
+  const sizeChanged = cache.containerWidth !== container.width || cache.containerHeight !== container.height;
+  const shouldUpdateLayout = !cache.layout || sizeChanged || now - (cache.layoutAt || 0) > layoutInterval;
+
+  let layout = cache.layout;
+  let layoutChanged = false;
+
+  if (shouldUpdateLayout) {
+    const nextLayout = computeGridLayout(nodes, container);
+    cache.layoutAt = now;
+    cache.containerWidth = container.width;
+    cache.containerHeight = container.height;
+
+    if (!nextLayout) {
+      cache.layout = null;
+      cache.layoutKey = null;
+      return;
+    }
+
+    const nextLayoutKey = `${nextLayout.centerX}|${nextLayout.centerY}|${nextLayout.extent}|${nextLayout.step}|${nextLayout.cells}`;
+    layoutChanged = nextLayoutKey !== cache.layoutKey;
+    if (layoutChanged) {
+      cache.layoutKey = nextLayoutKey;
+      cache.layout = nextLayout;
+    }
+    layout = cache.layout;
+  }
+
   if (!layout) return;
+  if (!viewChanged && !layoutChanged) return;
 
   const { centerX, centerY, extent, step, cells } = layout;
 
@@ -113,4 +164,3 @@ function computeGridLayout(nodes, container) {
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
-
