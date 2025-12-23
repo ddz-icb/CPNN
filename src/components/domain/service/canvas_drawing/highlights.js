@@ -32,8 +32,6 @@ export function highlightNode(circle, highlightColor) {
   overlay.eventMode = "none";
   overlay.alpha = 0.7;
   overlay.blendMode = "add";
-  overlay.x = circle.x;
-  overlay.y = circle.y;
   overlay.circle(0, 0, radius + 4).stroke({ color: highlightColor, width: 3, alpha: 0.7, alignment: 0.5 });
   overlay.circle(0, 0, radius + 8).stroke({ color: highlightColor, width: 2, alpha: 0.5, alignment: 0.5 });
   overlay.circle(0, 0, radius + 12).stroke({ color: highlightColor, width: 1, alpha: 0.35, alignment: 0.5 });
@@ -46,6 +44,7 @@ export function highlightNode(circle, highlightColor) {
   }
   circle.highlightOverlay = overlay;
   activeHighlights.add(circle);
+  updateHighlightOverlay(circle);
 
   return overlay;
 }
@@ -60,6 +59,10 @@ function updateHighlightOverlay(circle) {
   const overlay = circle.highlightOverlay;
   overlay.x = circle.x;
   overlay.y = circle.y;
+  const scaleX = circle.scale?.x ?? 1;
+  const scaleY = circle.scale?.y ?? scaleX;
+  overlay.scale?.set?.(scaleX, scaleY);
+  overlay.zIndex = circle.zIndex ?? 0;
 }
 
 export function updateHighlights() {
