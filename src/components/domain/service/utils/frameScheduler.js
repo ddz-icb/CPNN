@@ -1,19 +1,22 @@
 export function createFrameScheduler(callback) {
   let frameId = null;
+  const hasRAF = typeof requestAnimationFrame === "function";
+
+  const run = () => {
+    frameId = null;
+    callback();
+  };
 
   const schedule = () => {
-    if (typeof requestAnimationFrame !== "function") {
+    if (!hasRAF) {
       callback();
       return;
     }
     if (frameId !== null) return;
-    frameId = requestAnimationFrame(() => {
-      frameId = null;
-      callback();
-    });
+    frameId = requestAnimationFrame(run);
   };
 
-  schedule.cancel = () => {
+  const cancel = () => {
     if (frameId === null) return;
     if (typeof cancelAnimationFrame === "function") {
       cancelAnimationFrame(frameId);
@@ -21,5 +24,14 @@ export function createFrameScheduler(callback) {
     frameId = null;
   };
 
-  return schedule;
+  const flush = () => {
+    if (frameId !== null) {
+      cancel();
+    }
+    callback();
+  };
+
+  const isPending = () => frameId !== null;
+
+  return { schedule, cancel, flush, isPending };
 }

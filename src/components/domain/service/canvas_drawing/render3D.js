@@ -151,15 +151,22 @@ function updateNodes3D(nodes, nodeMap, showNodeLabels, projections) {
 }
 
 function updateLines3D(links, lineGraphics, linkWidth, linkColorscheme, linkAttribsToColorIndices, projections) {
-  if (!links || !Array.isArray(lineGraphics)) return;
+  if (!Array.isArray(lineGraphics)) return;
 
   const lineSprites = lineGraphics;
-  const linkCount = Math.min(links.length, lineSprites.length);
+  const linkCount = Array.isArray(links) ? links.length : 0;
 
-  for (let linkIdx = 0; linkIdx < linkCount; linkIdx++) {
-    const link = links[linkIdx];
+  for (let linkIdx = 0; linkIdx < lineSprites.length; linkIdx++) {
+    const link = linkIdx < linkCount ? links[linkIdx] : null;
     const sprites = lineSprites[linkIdx];
-    if (!link || !Array.isArray(sprites)) continue;
+    if (!Array.isArray(sprites)) continue;
+
+    if (!link) {
+      for (const sprite of sprites) {
+        if (sprite) sprite.visible = false;
+      }
+      continue;
+    }
 
     const srcId = typeof link.source === "object" ? link.source.id : link.source;
     const tgtId = typeof link.target === "object" ? link.target.id : link.target;

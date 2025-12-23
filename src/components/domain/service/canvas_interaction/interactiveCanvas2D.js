@@ -8,7 +8,7 @@ export function initDragAndZoom2D(app, simulation, radius, setTooltipSettings, w
     startPosition: { x: 0, y: 0 },
   };
 
-  const scheduleRender = createFrameScheduler(() => app.renderer.render(app.stage));
+  const renderScheduler = createFrameScheduler(() => app.renderer.render(app.stage));
 
   const zoomed = (event) => {
     state.transform = event.transform;
@@ -18,7 +18,7 @@ export function initDragAndZoom2D(app, simulation, radius, setTooltipSettings, w
     app.stage.scale.x = state.transform.k;
     app.stage.scale.y = state.transform.k;
 
-    scheduleRender();
+    renderScheduler.schedule();
   };
 
   const dragsubject = (event) => {

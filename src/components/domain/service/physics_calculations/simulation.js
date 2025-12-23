@@ -107,15 +107,16 @@ export function mountRedraw(
     simulation.__cancelDraw();
   }
 
-  const scheduleDraw = createFrameScheduler(drawImmediate);
-  simulation.__cancelDraw = scheduleDraw.cancel;
+  const drawScheduler = createFrameScheduler(drawImmediate);
+  const drawNow = drawScheduler.flush;
+  simulation.__cancelDraw = drawScheduler.cancel;
 
   // expose the redraw function so interactions (e.g. zooming) can trigger re-projection without relying on simulation ticks
   if (threeD && cameraRef?.current) {
-    cameraRef.current.redraw = drawImmediate;
+    cameraRef.current.redraw = drawNow;
   }
 
-  simulation.on("tick.redraw", scheduleDraw);
+  simulation.on("tick.redraw", drawScheduler.schedule);
 
-  return drawImmediate;
+  return drawNow;
 }
