@@ -1,4 +1,6 @@
 import * as d3 from "d3";
+import * as PIXI from "pixi.js";
+import { getNodeIdName } from "../parsing/nodeIdParsing.js";
 
 export const radiusColorScale = d3.scaleOrdinal(d3.schemeCategory10);
 export const fallbackColor = "#777777";
@@ -41,3 +43,44 @@ export function applyTintToColor(color, tint) {
   return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, "0")}`;
 }
 
+export function getNodeLabelOffsetY() {
+  return -25;
+}
+
+export function getBitMapStyle(nodeId) {
+  return {
+    text: getNodeIdName(nodeId),
+    style: {
+      chars: [["A", "Z"], ["a", "z"], ["0", "9"], " !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"],
+      padding: 4,
+      resolution: 4,
+      distanceField: { type: "sdf", range: 8 },
+      fontSize: 12,
+    },
+  };
+}
+
+export function getTextStyle(textColor) {
+  return new PIXI.TextStyle({
+    fontFamily: "Arial",
+    fontSize: 12,
+    fill: textColor,
+    resolution: 2,
+    align: "center",
+    fontWeight: "300",
+  });
+}
+
+export function describeSector(cx, cy, r, startAngle, endAngle) {
+  const start = polarToCartesian(cx, cy, r, startAngle);
+  const end = polarToCartesian(cx, cy, r, endAngle);
+  const largeArcFlag = endAngle - startAngle <= Math.PI ? 0 : 1;
+  return ["M", cx, cy, "L", start.x, start.y, "A", r, r, 0, largeArcFlag, 1, end.x, end.y, "Z"].join(" ");
+}
+
+function polarToCartesian(cx, cy, r, angle) {
+  return {
+    x: cx + r * Math.cos(angle),
+    y: cy + r * Math.sin(angle),
+  };
+}

@@ -16,10 +16,9 @@ import { TooltipPopup, TooltipPopupItem, TooltipPopupLinkItem } from "../reusabl
 import { Button } from "../reusable_components/sidebarComponents.js";
 import { describeSector, getColor } from "../../../domain/service/canvas_drawing/draw.js";
 import { downloadNodeIdsCsv } from "../../../domain/service/download/download.js";
-import { getAdjacentNodes } from "../../../domain/service/physics_calculations/physicsGraph.js";
 import { usePixiState } from "../../state/pixiState.js";
 import { useRenderState } from "../../state/canvasState.js";
-import { formatWeight } from "../../../domain/service/graph_calculations/graphUtils.js";
+import { formatWeight, getAdjacentNodes } from "../../../domain/service/graph_calculations/graphUtils.js";
 
 const proteinDetailsInit = {
   fullName: "",
@@ -226,8 +225,8 @@ function useProteinDetails(nodeId) {
 
         if (!parsedEntries.protIdNoIsoform) return;
 
-        // const responseUniprot = await axios.get(`http://localhost:3001/uniprot/${parsedEntries.protIdNoIsoform}`);
-        const responseUniprot = await axios.get(`https://cpnn.ddz.de/api/uniprot/${parsedEntries.protIdNoIsoform}`);
+        const responseUniprot = await axios.get(`http://localhost:3001/uniprot/${parsedEntries.protIdNoIsoform}`);
+        // const responseUniprot = await axios.get(`https://cpnn.ddz.de/api/uniprot/${parsedEntries.protIdNoIsoform}`);
         if (isCancelled) return;
 
         const uniprotData = responseUniprot?.data;
@@ -304,7 +303,13 @@ function usePdbViewer(viewerRef, responsePdb, themeName, isTooltipActive) {
   }, [getTooltipBackground, themeName, viewer]);
 
   useEffect(() => {
-    if (!viewer || !responsePdb || !isTooltipActive) return;
+    if (!viewer) return;
+
+    if (!isTooltipActive || !responsePdb) {
+      viewer.clear();
+      viewer.render();
+      return;
+    }
 
     viewer.clear();
     viewer.addModel(responsePdb.data, "pdb");

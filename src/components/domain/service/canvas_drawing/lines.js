@@ -1,4 +1,4 @@
-import { getColor } from "./colors.js";
+import { getColor } from "./drawingUtils.js";
 
 export function drawLine(lines, link, linkWidth, colorscheme, linkAttribsToColorIndices) {
   if (link.attribs.length === 1) {

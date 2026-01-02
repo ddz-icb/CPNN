@@ -1,10 +1,9 @@
-export { fallbackColor, getColor, radiusColorScale as color, toColorNumber } from "./colors.js";
-export { getBitMapStyle, getNodeLabelOffsetY, getTextStyle } from "./labels.js";
-export { drawCircle, changeCircleBorderColor, changeNodeLabelColor, changeNodeColors, radius } from "./nodes.js";
-export { drawCircleCanvas } from "./canvasNodes.js";
+export { fallbackColor, getColor, radiusColorScale as color, toColorNumber } from "./drawingUtils.js";
+export { getBitMapStyle, getNodeLabelOffsetY, getTextStyle } from "./drawingUtils.js";
+export { drawCircle, changeCircleBorderColor, changeNodeLabelColor, changeNodeColors, radius, drawCircleCanvas } from "./nodes.js";
 export { clearNodeHighlight, highlightNode, updateHighlights } from "./highlights.js";
 export { drawLine, drawLineCanvas } from "./lines.js";
-export { describeSector } from "./sectors.js";
+export { describeSector } from "./drawingUtils.js";
 export {
   applyNode3DState,
   resetNode3DState,

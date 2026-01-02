@@ -5,6 +5,10 @@ import { useSidebarCodeEditor } from "../reusable_components/useSidebarCodeEdito
 import { CodeEditorBlock, TableList } from "../reusable_components/sidebarComponents.js";
 import { useTheme } from "../../state/themeState.js";
 import { handleEditorChange as handleEditorChangeHelper } from "../handlers/buttonHandlerFunctions.js";
+import { useAppearance } from "../../state/appearanceState.js";
+import { useRenderState } from "../../state/canvasState.js";
+import { useContainer } from "../../state/containerState.js";
+import { centerOnNode } from "../../../domain/service/canvas_interaction/centerView.js";
 
 const MAX_RESULTS = 30;
 
@@ -12,6 +16,9 @@ export function SearchSidebar() {
   const { searchState, setSearchState, setAllSearchState } = useSearchState();
   const { searchValue, query, matchingNodes } = searchState;
   const { theme } = useTheme();
+  const { appearance } = useAppearance();
+  const { renderState } = useRenderState();
+  const { container } = useContainer();
 
   const textareaRef = useRef(null);
 
@@ -33,6 +40,11 @@ export function SearchSidebar() {
     if (!node) return;
 
     setSearchState("highlightedNodeIds", [node.id]);
+    centerOnNode(node, {
+      appearance,
+      renderState,
+      container,
+    });
   };
 
   useSidebarCodeEditor({
