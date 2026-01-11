@@ -1,4 +1,6 @@
-import { computeLightingTint, getColor, getNodeLabelOffsetY, updateHighlights, updateSphereShading } from "./draw.js";
+import { getColor, getNodeLabelOffsetY } from "./drawingUtils.js";
+import { updateHighlights } from "./highlights.js";
+import { computeLightingTint, updateSphereShading } from "./shading.js";
 import { drawGrid3D } from "./grid3D.js";
 
 export const defaultCamera = {

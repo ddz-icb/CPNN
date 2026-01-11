@@ -1,4 +1,4 @@
-import { toColorNumber } from "./draw.js";
+import { toColorNumber } from "./drawingUtils.js";
 
 export function drawGrid3D(gridGraphic, view, nodes, container, project) {
   if (!gridGraphic?.visible || typeof project !== "function") return;

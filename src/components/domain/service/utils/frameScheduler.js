@@ -1,37 +1,44 @@
 export function createFrameScheduler(callback) {
-  let frameId = null;
-  const hasRAF = typeof requestAnimationFrame === "function";
+  let taskId = null;
+  let pending = false;
+  let token = 0;
 
-  const run = () => {
-    frameId = null;
-    callback();
+  const scheduleTask = (runner) => {
+    if (typeof queueMicrotask === "function") {
+      queueMicrotask(runner);
+      return null;
+    }
+    return setTimeout(runner, 0);
   };
 
   const schedule = () => {
-    if (!hasRAF) {
+    if (pending) return;
+    pending = true;
+    const runToken = token;
+    taskId = scheduleTask(() => {
+      if (runToken !== token) return;
+      pending = false;
+      taskId = null;
       callback();
-      return;
-    }
-    if (frameId !== null) return;
-    frameId = requestAnimationFrame(run);
+    });
   };
 
   const cancel = () => {
-    if (frameId === null) return;
-    if (typeof cancelAnimationFrame === "function") {
-      cancelAnimationFrame(frameId);
+    token += 1;
+    if (!pending) return;
+    if (taskId !== null) {
+      clearTimeout(taskId);
     }
-    frameId = null;
+    taskId = null;
+    pending = false;
   };
 
   const flush = () => {
-    if (frameId !== null) {
-      cancel();
-    }
+    cancel();
     callback();
   };
 
-  const isPending = () => frameId !== null;
+  const isPending = () => pending;
 
   return { schedule, cancel, flush, isPending };
 }

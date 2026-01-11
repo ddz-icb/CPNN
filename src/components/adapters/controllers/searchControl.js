@@ -6,7 +6,7 @@ import { usePixiState } from "../state/pixiState.js";
 import { useTheme } from "../state/themeState.js";
 import { useSearchState } from "../state/searchState.js";
 import { getMatchingNodes } from "../../domain/service/search/search.js";
-import { clearNodeHighlight, highlightNode } from "../../domain/service/canvas_drawing/draw.js";
+import { clearNodeHighlight, highlightNode } from "../../domain/service/canvas_drawing/highlights.js";
 
 export function SearchControl() {
   const { graphState } = useGraphState();

@@ -1,4 +1,6 @@
-import { drawLine, getNodeLabelOffsetY, updateHighlights } from "./draw.js";
+import { getNodeLabelOffsetY } from "./drawingUtils.js";
+import { updateHighlights } from "./highlights.js";
+import { drawLine } from "./lines.js";
 
 export function redraw(graphData, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, showNodeLabels, nodeMap, app) {
   const { nodes, links } = graphData;

@@ -1,5 +1,7 @@
 import canvasToSvg from "canvas-to-svg";
-import { computeLightingTint, drawCircleCanvas, drawLineCanvas, radius, rimRadiusFactor, rimWidthFactor } from "../canvas_drawing/draw.js";
+import { drawCircleCanvas, radius } from "../canvas_drawing/nodes.js";
+import { drawLineCanvas } from "../canvas_drawing/lines.js";
+import { computeLightingTint, rimRadiusFactor, rimWidthFactor } from "../canvas_drawing/shading.js";
 import { defaultCamera } from "../canvas_drawing/render3D.js";
 
 function computeNodeBounds(node, mapEntry, tempCtx) {

@@ -14,7 +14,7 @@ import { useGraphState } from "../../state/graphState.js";
 import { useColorschemeState } from "../../state/colorschemeState.js";
 import { TooltipPopup, TooltipPopupItem, TooltipPopupLinkItem } from "../reusable_components/tooltipComponents.js";
 import { Button } from "../reusable_components/sidebarComponents.js";
-import { describeSector, getColor } from "../../../domain/service/canvas_drawing/draw.js";
+import { describeSector, getColor } from "../../../domain/service/canvas_drawing/drawingUtils.js";
 import { downloadNodeIdsCsv } from "../../../domain/service/download/download.js";
 import { usePixiState } from "../../state/pixiState.js";
 import { useRenderState } from "../../state/canvasState.js";

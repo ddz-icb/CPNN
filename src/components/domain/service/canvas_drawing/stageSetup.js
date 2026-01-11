@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
 import { initTooltips } from "../canvas_interaction/interactiveCanvas.js";
-import { drawCircle, getBitMapStyle, getNodeLabelOffsetY, getTextStyle, toColorNumber } from "./draw.js";
+import { getBitMapStyle, getNodeLabelOffsetY, getTextStyle, toColorNumber } from "./drawingUtils.js";
+import { drawCircle } from "./nodes.js";
 
 function seedNodePositions(nodes, container) {
   const offsetSpawnValue = nodes.length * 10;

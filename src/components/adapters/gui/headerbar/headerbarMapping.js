@@ -1,5 +1,5 @@
 import { useColorschemeState } from "../../../adapters/state/colorschemeState.js";
-import { fallbackColor, getColor } from "../../../domain/service/canvas_drawing/draw.js";
+import { fallbackColor, getColor } from "../../../domain/service/canvas_drawing/drawingUtils.js";
 import { TableList } from "../reusable_components/sidebarComponents.js";
 
 export function HeaderbarColorMapping() {

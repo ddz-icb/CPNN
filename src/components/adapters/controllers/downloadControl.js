@@ -14,7 +14,7 @@ import {
   downloadLegendPdf,
   downloadNodeIdsCsv,
 } from "../../domain/service/download/download.js";
-import { changeCircleBorderColor, changeNodeLabelColor } from "../../domain/service/canvas_drawing/draw.js";
+import { changeCircleBorderColor, changeNodeLabelColor } from "../../domain/service/canvas_drawing/nodes.js";
 import { lightTheme, themeInit, useTheme } from "../state/themeState.js";
 import { usePixiState } from "../state/pixiState.js";
 import { useRenderState } from "../state/canvasState.js";

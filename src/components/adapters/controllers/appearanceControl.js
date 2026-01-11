@@ -1,13 +1,9 @@
 import { useEffect } from "react";
 import log from "../logging/logger.js";
 
-import {
-  applyNode3DState,
-  changeCircleBorderColor,
-  changeNodeColors,
-  changeNodeLabelColor,
-  toColorNumber,
-} from "../../domain/service/canvas_drawing/draw.js";
+import { toColorNumber } from "../../domain/service/canvas_drawing/drawingUtils.js";
+import { changeCircleBorderColor, changeNodeColors, changeNodeLabelColor } from "../../domain/service/canvas_drawing/nodes.js";
+import { applyNode3DState } from "../../domain/service/canvas_drawing/shading.js";
 import { useAppearance } from "../state/appearanceState.js";
 import { useGraphState } from "../state/graphState.js";
 

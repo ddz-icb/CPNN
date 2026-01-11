@@ -3,7 +3,7 @@ import log from "../logging/logger.js";
 import * as d3 from "d3";
 import * as d3Force3d from "d3-force-3d";
 
-import { radius } from "../../domain/service/canvas_drawing/draw.js";
+import { radius } from "../../domain/service/canvas_drawing/nodes.js";
 import { getAdjacentData, getComponentData, getCommunityData } from "../../domain/service/graph_calculations/graphUtils.js";
 import {
   accuracyBarnesHut,
