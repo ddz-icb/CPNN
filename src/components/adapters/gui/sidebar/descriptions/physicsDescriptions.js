@@ -72,12 +72,6 @@ export const circleLayoutDescription = (
   </div>
 );
 
-export const nodeCollisionDescription = (
-  <div>
-    <p className="margin-0">The node collision force kicks nodes apart from each other upon impact.</p>
-  </div>
-);
-
 export const linkForceDescription = (
   <div>
     <p className="margin-0">

@@ -33,7 +33,6 @@ export function PhysicsControl() {
 
   const forceLinkFactory = appearance?.threeD ? d3Force3d.forceLink : d3.forceLink;
   const forceManyBodyFactory = appearance?.threeD ? d3Force3d.forceManyBody : d3.forceManyBody;
-  const forceCollideFactory = appearance?.threeD ? d3Force3d.forceCollide : d3.forceCollide;
 
   useEffect(() => {
     if (!renderState.simulation || !graphFlags.filteredAfterStart || !graphState.graph) return;
@@ -140,26 +139,6 @@ export function PhysicsControl() {
       log.error("Error updating node repulsion:", error);
     }
   }, [physics.nodeRepulsionStrength, graphFlags.filteredAfterStart, graphState.graph, renderState.simulation, appearance.threeD]);
-
-  useEffect(() => {
-    if (!renderState.simulation || !graphFlags.filteredAfterStart || physics.nodeCollision == null) return;
-    log.info("Changing node collision strength", physics.nodeCollision);
-
-    try {
-      if (physics.nodeCollision == false) {
-        renderState.simulation.force("collision", null);
-      } else {
-        renderState.simulation.force(
-          "collision",
-          forceCollideFactory((d) => radius + 1)
-        );
-        renderState.simulation.alpha(1).restart();
-      }
-    } catch (error) {
-      errorService.setError(error.message);
-      log.error("Error updating node collision:", error);
-    }
-  }, [physics.nodeCollision, graphFlags.filteredAfterStart, graphState.graph, renderState.simulation, appearance.threeD]);
 
   useEffect(() => {
     if (!renderState.simulation || !graphFlags.isPreprocessed || !container.width || !container.height) return;

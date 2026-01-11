@@ -12,7 +12,6 @@ import {
   gravityDescription,
   checkBorderDescription,
   circleLayoutDescription,
-  nodeCollisionDescription,
   linkForceDescription,
 } from "./descriptions/physicsDescriptions.js";
 import { usePhysics } from "../../../adapters/state/physicsState.js";
@@ -89,13 +88,6 @@ export function PhysicsSidebar({}) {
         text={"Node Repulsion Force"}
         infoHeading={"Adjusting the Node Repulsion Strength"}
         infoDescription={nodeRepulsionStrengthDescription}
-      />
-      <SwitchBlock
-        value={physics.nodeCollision}
-        setValue={() => setPhysics("nodeCollision", !physics.nodeCollision)}
-        text={"Node Collision"}
-        infoHeading={"Enabling the Node Collision Force"}
-        infoDescription={nodeCollisionDescription}
       />
       <SwitchBlock
         value={physics.linkForce}

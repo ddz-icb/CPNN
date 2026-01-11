@@ -5,7 +5,6 @@ export const linkLengthInit = 200;
 export const gravityStrengthInit = 0.05;
 export const componentStrengthInit = 0;
 export const nodeRepulsionStrengthInit = 1;
-export const nodeCollisionInit = true;
 export const circleLayoutInit = false;
 export const communityForceStrengthInit = 0;
 
@@ -20,7 +19,6 @@ export const physicsInit = {
   gravityStrengthText: gravityStrengthInit,
   componentStrength: componentStrengthInit,
   nodeRepulsionStrength: nodeRepulsionStrengthInit,
-  nodeCollision: nodeCollisionInit,
   linkForce: linkForceInit,
   linkLength: linkLengthInit,
   linkLengthText: linkLengthInit,
@@ -42,7 +40,6 @@ export const expectedPhysicTypes = {
   gravityStrength: "number",
   componentStrength: "number",
   nodeRepulsionStrength: "number",
-  nodeCollision: "boolean",
   linkForce: "boolean",
   linkLength: "number",
   checkBorder: "boolean",
