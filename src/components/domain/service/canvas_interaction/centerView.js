@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import { rotateCameraToNode } from "./camera3D.js";
 
 export function centerOnNode(node, { appearance, renderState, container }) {
   if (!node || !container?.width || !container?.height) return;
@@ -8,25 +9,7 @@ export function centerOnNode(node, { appearance, renderState, container }) {
     const camera = appearance?.cameraRef?.current;
     if (!camera) return;
 
-    const centerX = container.width / 2;
-    const centerY = container.height / 2;
-    const rotX = camera.rotX ?? 0;
-    const rotY = camera.rotY ?? 0;
-    const cosX = Math.cos(rotX);
-    const sinX = Math.sin(rotX);
-    const cosY = Math.cos(rotY);
-    const sinY = Math.sin(rotY);
-
-    const shiftedX = node.x - centerX;
-    const shiftedY = node.y - centerY;
-    const zBase = node.z ?? 0;
-
-    let x = shiftedX * cosY - zBase * sinY;
-    let z = shiftedX * sinY + zBase * cosY;
-    let y = shiftedY * cosX - z * sinX;
-
-    camera.x = x + centerX;
-    camera.y = y + centerY;
+    rotateCameraToNode(node, camera, container);
     camera.redraw?.();
     return;
   }
