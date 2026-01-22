@@ -17,9 +17,9 @@ export const componentStrengthDescription = (
 export const communityForceStrengthDescription = (
   <div>
     <p className="margin-0">
-      The community force helps to separate distinct communities from one another. A community is defined as a dense cluster of nodes, meaning that
-      even nodes within the same connected component can be pulled apart if they belong to different communities. As the force increases, the
-      separation between communities becomes more pronounced. The communities are built using the Louvain method for community detection.
+      The community force helps to separate distinct communities from one another. A community is defined as a group of densely connected nodes,
+      meaning that even nodes within the same connected component can be pulled apart if they belong to different communities. As the force increases,
+      the separation between communities becomes more pronounced. The communities are built using the Louvain method for community detection.
     </p>
   </div>
 );
