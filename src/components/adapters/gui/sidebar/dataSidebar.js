@@ -169,8 +169,8 @@ function UploadGraph() {
         variant="popup"
         value={mergeProteins}
         setValue={() => setMergeProtein(!mergeProteins)}
-        text={"Merge nodes of same protein"}
-        infoHeading={"Merge Proteins"}
+        text={"Merge nodes sharing the same name"}
+        infoHeading={"Merge by Name"}
         infoDescription={mergeProteinsDescription}
       />
       <div className="block-section"></div>
