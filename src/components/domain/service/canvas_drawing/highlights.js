@@ -30,11 +30,11 @@ export function highlightNode(circle, highlightColor) {
 
   const overlay = new PIXI.Graphics();
   overlay.eventMode = "none";
-  overlay.alpha = 0.7;
+  overlay.alpha = 1;
   overlay.blendMode = "add";
-  overlay.circle(0, 0, radius + 4).stroke({ color: highlightColor, width: 3, alpha: 0.8, alignment: 0.5 });
-  overlay.circle(0, 0, radius + 8).stroke({ color: highlightColor, width: 2, alpha: 0.6, alignment: 0.5 });
-  overlay.circle(0, 0, radius + 12).stroke({ color: highlightColor, width: 1, alpha: 0.4, alignment: 0.5 });
+  overlay.circle(0, 0, radius + 4).stroke({ color: highlightColor, width: 3, alpha: 1.0, alignment: 0.5 });
+  overlay.circle(0, 0, radius + 8).stroke({ color: highlightColor, width: 2, alpha: 0.7, alignment: 0.5 });
+  overlay.circle(0, 0, radius + 11).stroke({ color: highlightColor, width: 1, alpha: 0.4, alignment: 0.5 });
 
   const parent = circle.parent;
   if (parent?.addChild) {
