@@ -1,35 +1,37 @@
+import { timer } from "d3-timer";
+
 export function createFrameScheduler(callback) {
-  let taskId = null;
   let pending = false;
   let token = 0;
+  let timerRef = null;
 
-  const scheduleTask = (runner) => {
-    if (typeof queueMicrotask === "function") {
-      queueMicrotask(runner);
-      return null;
+  const stopTimer = () => {
+    if (timerRef) {
+      timerRef.stop();
+      timerRef = null;
     }
-    return setTimeout(runner, 0);
   };
 
   const schedule = () => {
     if (pending) return;
     pending = true;
     const runToken = token;
-    taskId = scheduleTask(() => {
-      if (runToken !== token) return;
+
+    stopTimer();
+    timerRef = timer(() => {
+      if (runToken !== token) {
+        stopTimer();
+        return;
+      }
       pending = false;
-      taskId = null;
+      stopTimer();
       callback();
     });
   };
 
   const cancel = () => {
     token += 1;
-    if (!pending) return;
-    if (taskId !== null) {
-      clearTimeout(taskId);
-    }
-    taskId = null;
+    stopTimer();
     pending = false;
   };
 
