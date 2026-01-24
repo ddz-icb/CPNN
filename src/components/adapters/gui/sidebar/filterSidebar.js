@@ -12,7 +12,7 @@ import {
   lassoDescription,
   linkThresholdDescription,
   maxCompSizeDescription,
-  mergeProteinsDescription,
+  mergeByNameDescription,
   minCompSizeDescription,
   minKCoreSizeDescription,
 } from "./descriptions/filterDescriptions.js";
@@ -39,7 +39,7 @@ export function FilterSidebar() {
 
   const handleResetFilters = () => {
     setAllFilter(filterInit);
-    setGraphFlags("mergeProteins", false);
+    setGraphFlags("mergeByName", false);
   };
 
   return (
@@ -48,11 +48,11 @@ export function FilterSidebar() {
         <Button text={"Reset Filters"} onClick={handleResetFilters} />
       </div>
       <SwitchBlock
-        value={graphFlags.mergeProteins}
-        setValue={() => setGraphFlags("mergeProteins", !graphFlags.mergeProteins)}
-        text={"Merge Proteins"}
-        infoHeading={"Merge nodes of same protein"}
-        infoDescription={mergeProteinsDescription}
+        value={graphFlags.mergeByName}
+        setValue={() => setGraphFlags("mergeByName", !graphFlags.mergeByName)}
+        text={"Merge by Name"}
+        infoHeading={"Merge nodes with the same Name"}
+        infoDescription={mergeByNameDescription}
       />
       <SliderBlock
         value={filter.linkThreshold}

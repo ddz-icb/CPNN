@@ -15,7 +15,7 @@ import { useError } from "../state/errorState.js";
 import { useMappingState } from "../state/mappingState.js";
 import { graphService } from "../../application/services/graphService.js";
 import { resetService } from "../../application/services/resetService.js";
-import { filterMergeProteins } from "../../domain/service/graph_calculations/filterGraph.js";
+import { filterMergeByName } from "../../domain/service/graph_calculations/filterGraph.js";
 import { applyNodeMapping } from "../../domain/service/graph_calculations/applyMapping.js";
 
 export const useGraphSetup = () => {
@@ -39,7 +39,7 @@ export const useGraphSetup = () => {
     async function reloadGraph() {
       try {
         let graph = await graphService.getJoinedGraph(graphState.activeGraphNames);
-        graph.data = filterMergeProteins(graph.data, graphFlags.mergeProteins);
+        graph.data = filterMergeByName(graph.data, graphFlags.mergeByName);
         graph.data = applyNodeMapping(graph.data, mappingState.mapping?.data);
         setGraphState("originGraph", graph);
 
@@ -51,14 +51,14 @@ export const useGraphSetup = () => {
     }
 
     reloadGraph();
-  }, [graphFlags.mergeProteins, mappingState.mapping, graphState.activeGraphNames]);
+  }, [graphFlags.mergeByName, mappingState.mapping, graphState.activeGraphNames]);
 
-  // keep mapping if mergeProteins
+  // keep mapping if mergeByName
   useEffect(() => {
-    if (!graphFlags.mergeProteins) return;
+    if (!graphFlags.mergeByName) return;
 
     setKeepMapping(true);
-  }, [graphFlags.mergeProteins]);
+  }, [graphFlags.mergeByName]);
 
   // forward graph
   useEffect(() => {

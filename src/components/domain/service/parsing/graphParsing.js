@@ -4,7 +4,7 @@ import { getFileAsText, getFileNameWithoutExtension, parseSVFile } from "./fileP
 import {
   filterThreshold,
   filterMaxCompSize,
-  filterMergeProteins,
+  filterMergeByName,
   filterMinCompSize,
   filterNodesExist,
   filterTakeAbs,
@@ -14,7 +14,7 @@ import { sortGraph } from "../graph_calculations/graphUtils.js";
 
 function applyFilters(graphData, settings) {
   let filteredGraph = graphData;
-  filteredGraph = filterMergeProteins(filteredGraph, settings.mergeProteins);
+  filteredGraph = filterMergeByName(filteredGraph, settings.mergeByName);
   filteredGraph = filterTakeAbs(filteredGraph, settings.takeAbs);
   filteredGraph = filterThreshold(filteredGraph, settings.minEdgeCorr);
   filteredGraph = filterMinCompSize(filteredGraph, settings.minCompSize);

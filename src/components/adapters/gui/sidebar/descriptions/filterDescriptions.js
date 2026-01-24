@@ -10,7 +10,7 @@ export const linkThresholdDescription = (
   </div>
 );
 
-export const mergeProteinsDescription = (
+export const mergeByNameDescription = (
   <div>
     <p>
       Nodes with the same name will be merged into a single node, along with their respective links. When multiple links to the same node are merged,
@@ -116,8 +116,8 @@ export const nodeFilterDescription = (
 export const nodeIdFilterDescription = (
   <div>
     <p className="margin-0">
-      Provide one node id substring per line (or separate them by commas) to remove every node whose id contains the substring. For example,
-      entering <PopupTextField textInside={"TTN"} /> hides all nodes containing "TTN" anywhere in their id.
+      Provide one node id substring per line (or separate them by commas) to remove every node whose id contains the substring. For example, entering{" "}
+      <PopupTextField textInside={"TTN"} /> hides all nodes containing "TTN" anywhere in their id.
     </p>
   </div>
 );
@@ -128,8 +128,8 @@ export const lassoDescription = (
       Click "Draw Lasso" to sketch a freehand shape directly on the graph canvas. Nodes that fall outside the finished shape will be filtered out.
     </p>
     <p className="margin-0 pad-top-05">
-      The lasso tool turns off automatically after a selection. Use "Clear Lasso Selection" to remove the lasso filter and return to the full
-      filter set.
+      The lasso tool turns off automatically after a selection. Use "Clear Lasso Selection" to remove the lasso filter and return to the full filter
+      set.
     </p>
   </div>
 );

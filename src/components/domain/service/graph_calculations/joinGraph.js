@@ -61,8 +61,8 @@ export function joinGraphNames(graphNames) {
   return graphNames.join("-");
 }
 
-export function filterMergeProteins(graphData, mergeProteins) {
-  if (!mergeProteins) return graphData;
+export function filterMergeByName(graphData, mergeByName) {
+  if (!mergeByName) return graphData;
 
   const protIdToNodeMap = new Map();
   graphData.nodes.forEach((node) => {

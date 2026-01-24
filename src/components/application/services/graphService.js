@@ -46,7 +46,7 @@ export const graphService = {
 
     try {
       this.setActiveGraphNames([filename]);
-      this.setMergeProteins(false);
+      this.setMergeByName(false);
     } catch (error) {
       errorService.setError(error.message);
       log.error(error);
@@ -182,11 +182,11 @@ export const graphService = {
   setOriginGraph(val) {
     this.setGraphState("originGraph", val);
   },
-  getMergeProteins() {
-    return this.getGraphFlags("mergeProteins");
+  getMergeByName() {
+    return this.getGraphFlags("mergeByName");
   },
-  setMergeProteins(val) {
-    this.setGraphFlags("mergeProteins", val);
+  setMergeByName(val) {
+    this.setGraphFlags("mergeByName", val);
   },
   getFilteredAfterStart() {
     return this.getGraphFlags("filteredAfterStart");

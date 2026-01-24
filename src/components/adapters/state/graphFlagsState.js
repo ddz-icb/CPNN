@@ -1,11 +1,11 @@
 import { create } from "zustand";
 
-export const mergeProteinsInit = false;
+export const mergeByNameInit = false;
 export const filteredAfterStartInit = false;
 export const isPreprocessedInit = false;
 
 const graphFlagsInit = {
-  mergeProteins: mergeProteinsInit,
+  mergeByName: mergeByNameInit,
   filteredAfterStart: filteredAfterStartInit,
   isPreprocessed: isPreprocessedInit,
 };

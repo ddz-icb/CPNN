@@ -23,7 +23,7 @@ import {
   uploadGraphDescription,
   uploadPathwayMappingDescription,
 } from "./descriptions/dataDescriptions.js";
-import { mergeProteinsDescription } from "./descriptions/filterDescriptions.js";
+import { mergeByNameDescription } from "./descriptions/filterDescriptions.js";
 import { graphService } from "../../../application/services/graphService.js";
 import { useMappingState } from "../../state/mappingState.js";
 import { mappingService } from "../../../application/services/mappingService.js";
@@ -124,7 +124,7 @@ function UploadGraph() {
   const graphFileRef = useRef(null);
 
   const [takeAbs, setTakeAbs] = useState(false);
-  const [mergeProteins, setMergeProtein] = useState(false);
+  const [mergeByName, setMergeProtein] = useState(false);
   const [takeSpearman, setTakeSpearman] = useState(false);
 
   const [minEdgeCorr, setMinEdgeCorr] = useState(0);
@@ -167,11 +167,11 @@ function UploadGraph() {
       />
       <SwitchBlock
         variant="popup"
-        value={mergeProteins}
-        setValue={() => setMergeProtein(!mergeProteins)}
+        value={mergeByName}
+        setValue={() => setMergeProtein(!mergeByName)}
         text={"Merge nodes sharing the same name"}
         infoHeading={"Merge by Name"}
-        infoDescription={mergeProteinsDescription}
+        infoDescription={mergeByNameDescription}
       />
       <div className="block-section"></div>
       <SliderBlock
@@ -225,7 +225,7 @@ function UploadGraph() {
               minCompSize: minCompSize,
               maxCompSize: maxCompSize,
               takeSpearman: takeSpearman,
-              mergeProteins: mergeProteins,
+              mergeByName: mergeByName,
             };
             graphService.handleCreateGraph(event, createGraphSettings);
             event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
