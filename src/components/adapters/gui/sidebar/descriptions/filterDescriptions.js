@@ -4,8 +4,7 @@ export const linkThresholdDescription = (
   <div>
     <p className="margin-0">
       You can filter the links by adjusting their threshold. Links will only be drawn, if their link weight is larger or equal to the set threshold.
-      For example, if the weight of a link is 0.75 and the threshold is set to 0.8, the link will not be drawn. Increasing this value can
-      significantly enhance performance by reducing the graph size.
+      Increasing this value can significantly enhance performance by reducing the graph size.
     </p>
   </div>
 );
@@ -65,7 +64,7 @@ export const linkFilterDescription = (
       with <PopupTextField textInside={"or"} /> (e.g., <PopupTextField textInside={"(A or B)"} /> ) are combined using{" "}
       <PopupTextField textInside={"and"} />. To address one (or multiple) attributes, parts of the attribute name can be used (e.g.{" "}
       <PopupTextField textInside={"lean"} /> includes all attributes that contain the word "lean"). If the attribute consists of more than one word,
-      quotation marks can be used (e.g. <PopupTextField textInside={'"lean group"'} /> ). To forbid an attribute from occuring the{" "}
+      quotation marks can be used (e.g. <PopupTextField textInside={'"lean group"'} /> ). To forbid an attribute from occuring, the{" "}
       <PopupTextField textInside={"not"} /> operator can be applied. To address multiple attributes simultaneously, you can group them as a set, for
       example: <PopupTextField textInside={"{lean, obese, t2d}"} />. To restrict the number of links, you can use the{" "}
       <PopupTextField textInside={">"} />, <PopupTextField textInside={">="} />, <PopupTextField textInside={"<"} />,{" "}
@@ -92,7 +91,7 @@ export const nodeFilterDescription = (
       with <PopupTextField textInside={"or"} /> (e.g., <PopupTextField textInside={"(A or B)"} /> ) are combined using{" "}
       <PopupTextField textInside={"and"} />. To address one (or multiple) attributes, parts of the attribute name can be used (e.g.{" "}
       <PopupTextField textInside={"signaling"} /> includes all attributes that contain the word "signaling"). If the attribute consists of more than
-      one word, quotation marks can be used (e.g. <PopupTextField textInside={'"mRNA splicing"'} /> ). To forbid an attribute from occuring the{" "}
+      one word, quotation marks can be used (e.g. <PopupTextField textInside={'"mRNA splicing"'} /> ). To forbid an attribute from occuring, the{" "}
       <PopupTextField textInside={"not"} /> operator can be applied. To address multiple attributes simultaneously, you can group them as a set, for
       example: <PopupTextField textInside={'{mRNA splicing, signaling, "glucose metabolism"}'} />. To restrict the number of attributes of a node, you
       can use the <PopupTextField textInside={">"} />, <PopupTextField textInside={">="} />, <PopupTextField textInside={"<"} />,{" "}
@@ -101,7 +100,7 @@ export const nodeFilterDescription = (
     </div>
     <div className="pad-top-1" />
     <div>
-      For example, with the link attributes <PopupTextField textInside={"mRNA splicing"} />, <PopupTextField textInside={"glucose metabolism"} />,{" "}
+      For example, with the node attributes <PopupTextField textInside={"mRNA splicing"} />, <PopupTextField textInside={"glucose metabolism"} />,{" "}
       <PopupTextField textInside={"VEGF signaling"} /> and <PopupTextField textInside={"MTOR signaling"} />, some valid queries could be:
     </div>
     <div className="pad-top-05" />
@@ -116,8 +115,8 @@ export const nodeFilterDescription = (
 export const nodeIdFilterDescription = (
   <div>
     <p className="margin-0">
-      Provide one node id substring per line (or separate them by commas) to remove every node whose id contains the substring. For example, entering{" "}
-      <PopupTextField textInside={"TTN"} /> hides all nodes containing "TTN" anywhere in their id.
+      Provide one substring per line (or separate them by commas) to remove every node whose id contains one of these substrings. For example,
+      entering <PopupTextField textInside={"TTN, NEB"} /> hides all nodes containing "TTN" or "NEB" anywhere in their id.
     </p>
   </div>
 );

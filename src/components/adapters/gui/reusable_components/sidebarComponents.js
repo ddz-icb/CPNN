@@ -87,7 +87,7 @@ export function LassoSelectionBlock({ selectionCount, onClearSelection, isActive
     ? `${selectionCount} node${selectionCount === 1 ? "" : "s"} selected`
     : isActive
       ? "Draw a shape on the canvas to select nodes."
-      : "Click \"Draw Lasso\" to select nodes.";
+      : 'Click "Draw Lasso" to select nodes.';
 
   return (
     <div className="block-section block-section-stack">
@@ -113,23 +113,12 @@ export function LassoFilterBlock({ isActive, selectionCount, onToggle, onClearSe
         </div>
         <Button text={isActive ? "Cancel Lasso" : "Draw Lasso"} onClick={onToggle} />
       </div>
-      {showSelection && (
-        <LassoSelectionBlock selectionCount={selectionCount} onClearSelection={onClearSelection} isActive={isActive} />
-      )}
+      {showSelection && <LassoSelectionBlock selectionCount={selectionCount} onClearSelection={onClearSelection} isActive={isActive} />}
     </>
   );
 }
 
-export function CodeEditorBlock({
-  text,
-  onClick,
-  compilerError,
-  defaultValue,
-  textareaRef,
-  infoHeading,
-  infoDescription,
-  buttonText = "Apply",
-}) {
+export function CodeEditorBlock({ text, onClick, compilerError, defaultValue, textareaRef, infoHeading, infoDescription, buttonText = "Apply" }) {
   return (
     <div className="block-section block-section-stack">
       <div className="sidebar-control-header">
@@ -202,16 +191,16 @@ export function PopupTextField({ textInfront, textInside, inline }) {
   if (inline) {
     return (
       <>
-        <div className={"block-section pad-top-05 pad-bottom-05"}>
-          <label className="label">{textInfront}</label>
-          <div className="text-field pad-left-025 pad-right-025">{textInside}</div>
+        <div className="popup-text-field-row pad-top-05 pad-bottom-05">
+          {textInfront && <span className="label">{textInfront}</span>}
+          <span className="text-field pad-left-025 pad-right-025">{textInside}</span>
         </div>
       </>
     );
   } else {
     return (
       <>
-        <label className="label">{textInfront}</label>
+        {textInfront && <label className="label">{textInfront}</label>}
         <div className="text-field pad-left-025 pad-right-025 margin-bottom-025">{textInside}</div>
       </>
     );

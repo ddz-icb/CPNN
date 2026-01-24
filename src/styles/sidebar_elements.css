@@ -5,6 +5,13 @@
   text-align: left;
 }
 
+.popup-text-field-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sidebar-control-gap-y);
+  width: 100%;
+}
+
 .sidebar-control-header {
   display: flex;
   align-items: center;
