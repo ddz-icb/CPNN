@@ -11,7 +11,7 @@ import {
   nodeRepulsionStrengthDescription,
   gravityDescription,
   checkBorderDescription,
-  circleLayoutDescription,
+  circleForceDescription,
   linkForceDescription,
 } from "./descriptions/physicsDescriptions.js";
 import { usePhysics } from "../../../adapters/state/physicsState.js";
@@ -27,11 +27,11 @@ export function PhysicsSidebar({}) {
         <Button text={"Set Phyiscs to Default"} onClick={() => setAllPhysics(physicsInit)} />
       </div>
       <SwitchBlock
-        value={physics.circleLayout}
-        setValue={() => setPhysics("circleLayout", !physics.circleLayout)}
-        text={"Circular Layout"}
-        infoHeading={"Enabling Circular layout"}
-        infoDescription={circleLayoutDescription}
+        value={physics.circleForce}
+        setValue={() => setPhysics("circleForce", !physics.circleForce)}
+        text={"Circular Force"}
+        infoHeading={"Enabling Circular Force"}
+        infoDescription={circleForceDescription}
       />
       <SliderBlock
         value={physics.gravityStrength}

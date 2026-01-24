@@ -147,7 +147,7 @@ export function circularForce(IdToComp, adjacentCountMap, minCircleSize, threeD 
     for (const [id, group] of groupIdToNodes) {
       groupIdToNodesSorted.set(
         id,
-        group.slice().sort((a, b) => adjacentCountMap.get(b.id) - adjacentCountMap.get(a.id))
+        group.slice().sort((a, b) => adjacentCountMap.get(b.id) - adjacentCountMap.get(a.id)),
       );
       groupIdToRadius.set(id, 50 * Math.sqrt(group.length));
     }
@@ -160,7 +160,7 @@ export function circularForce(IdToComp, adjacentCountMap, minCircleSize, threeD 
       centroids.set(id, getCentroid(group));
     }
 
-    // circular layout in 2D, spherical layout in 3D
+    // circular force in 2D, spherical layout in 3D
     for (const [id, centroid] of centroids) {
       const group = groupIdToNodesSorted.get(id);
       if (group.length < minCircleSize) continue;

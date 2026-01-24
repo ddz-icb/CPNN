@@ -46,9 +46,9 @@ export function PhysicsControl() {
           "link",
           forceLinkFactory(graphState.graph.data.links)
             .id((d) => d.id)
-            .distance((link) => getLinkDistance(physics.linkLength, link))
+            .distance((link) => getLinkDistance(physics.linkLength, link)),
         );
-        setPhysics("circleLayout", false);
+        setPhysics("circleForce", false);
         renderState.simulation.alpha(1).restart();
       }
     } catch (error) {
@@ -130,7 +130,7 @@ export function PhysicsControl() {
           forceManyBodyFactory()
             .theta(accuracyBarnesHut)
             .distanceMax(maxDistanceChargeForce)
-            .strength(physics.nodeRepulsionStrength * nodeRepulsionMultiplier)
+            .strength(physics.nodeRepulsionStrength * nodeRepulsionMultiplier),
         );
         renderState.simulation.alpha(1).restart();
       }
@@ -172,15 +172,15 @@ export function PhysicsControl() {
 
   useEffect(() => {
     if (!renderState.simulation || !graphFlags.filteredAfterStart || !graphState.graph) return;
-    log.info("Changing circular layout force", physics.circleLayout);
+    log.info("Changing circular force force", physics.circleForce);
 
     try {
-      if (physics.circleLayout == false) {
+      if (physics.circleForce == false) {
         // enabling link force by default
         if (physics.linkForce === false) {
           setPhysics("linkForce", true);
         }
-        renderState.simulation.force("circleLayout", null);
+        renderState.simulation.force("circleForce", null);
         renderState.simulation.alpha(1).restart();
       } else {
         // have to disable link force for this
@@ -192,14 +192,14 @@ export function PhysicsControl() {
         const adjacentCountMap = getAdjacentData(graphState.graph.data);
         const minCircleSize = 6;
 
-        renderState.simulation.force("circleLayout", circularForce(IdToComp, adjacentCountMap, minCircleSize, appearance.threeD));
+        renderState.simulation.force("circleForce", circularForce(IdToComp, adjacentCountMap, minCircleSize, appearance.threeD));
         renderState.simulation.alpha(1).restart();
       }
     } catch (error) {
       errorService.setError(error.message);
-      log.error("Error updating circular layout:", error);
+      log.error("Error updating circular force:", error);
     }
-  }, [physics.circleLayout, graphFlags.filteredAfterStart, graphState.graph, renderState.simulation, appearance.threeD]);
+  }, [physics.circleForce, graphFlags.filteredAfterStart, graphState.graph, renderState.simulation, appearance.threeD]);
 
   useEffect(() => {
     if (!renderState.simulation || !graphFlags.filteredAfterStart || !graphState.graph) return;

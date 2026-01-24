@@ -69,7 +69,7 @@ export const linkFilterDescription = (
       example: <PopupTextField textInside={"{lean, obese, t2d}"} />. To restrict the number of links, you can use the{" "}
       <PopupTextField textInside={">"} />, <PopupTextField textInside={">="} />, <PopupTextField textInside={"<"} />,{" "}
       <PopupTextField textInside={"<="} /> or <PopupTextField textInside={"="} /> operators (e.g., <PopupTextField textInside={">= 2"} /> filters for
-      multilinks of size at least 2).
+      multilinks of size at least 2). Using this setting to filter the graph can significantly enhance performance.
     </div>
     <div className="pad-top-1" />
     <div>
@@ -96,7 +96,7 @@ export const nodeFilterDescription = (
       example: <PopupTextField textInside={'{mRNA splicing, signaling, "glucose metabolism"}'} />. To restrict the number of attributes of a node, you
       can use the <PopupTextField textInside={">"} />, <PopupTextField textInside={">="} />, <PopupTextField textInside={"<"} />,{" "}
       <PopupTextField textInside={"<="} /> or <PopupTextField textInside={"="} /> operators (e.g., <PopupTextField textInside={">= 2"} /> filters for
-      nodes with at least 2 attributes).
+      nodes with at least 2 attributes). Using this setting to filter the graph can significantly enhance performance.
     </div>
     <div className="pad-top-1" />
     <div>
@@ -116,7 +116,8 @@ export const nodeIdFilterDescription = (
   <div>
     <p className="margin-0">
       Provide one substring per line (or separate them by commas) to remove every node whose id contains one of these substrings. For example,
-      entering <PopupTextField textInside={"TTN, NEB"} /> hides all nodes containing "TTN" or "NEB" anywhere in their id.
+      entering <PopupTextField textInside={"TTN, NEB"} /> hides all nodes containing "TTN" or "NEB" anywhere in their id. Using this setting to filter
+      the graph can significantly enhance performance.
     </p>
   </div>
 );
@@ -125,6 +126,7 @@ export const lassoDescription = (
   <div>
     <p className="margin-0">
       Click "Draw Lasso" to sketch a freehand shape directly on the graph canvas. Nodes that fall outside the finished shape will be filtered out.
+      Using this setting to filter the graph can significantly enhance performance.
     </p>
     <p className="margin-0 pad-top-05">
       The lasso tool turns off automatically after a selection. Use "Clear Lasso Selection" to remove the lasso filter and return to the full filter

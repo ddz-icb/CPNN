@@ -5,7 +5,7 @@ export const linkLengthInit = 200;
 export const gravityStrengthInit = 0.05;
 export const componentStrengthInit = 0;
 export const nodeRepulsionStrengthInit = 1;
-export const circleLayoutInit = false;
+export const circleForceInit = false;
 export const communityForceStrengthInit = 0;
 
 export const checkBorderInit = false;
@@ -14,7 +14,7 @@ export const borderHeightInit = 200;
 export const borderDepthInit = 200;
 
 export const physicsInit = {
-  circleLayout: circleLayoutInit,
+  circleForce: circleForceInit,
   gravityStrength: gravityStrengthInit,
   gravityStrengthText: gravityStrengthInit,
   componentStrength: componentStrengthInit,
@@ -36,7 +36,7 @@ export const physicsInit = {
 };
 
 export const expectedPhysicTypes = {
-  circleLayout: "boolean",
+  circleForce: "boolean",
   gravityStrength: "number",
   componentStrength: "number",
   nodeRepulsionStrength: "number",
