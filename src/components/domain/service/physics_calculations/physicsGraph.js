@@ -1,6 +1,6 @@
 import { getCentroid, getLinkWeight } from "../graph_calculations/graphUtils.js";
 
-export const accuracyBarnesHut = 0.1;
+export const accuracyBarnesHut = 0.3;
 export const maxDistanceChargeForce = 300;
 export const nodeRepulsionMultiplier = -300;
 export const borderMultiplier = 10;
