@@ -14,7 +14,7 @@ export function SliderBlock({ value, setValue, setValueText, min, max, step, tex
       <div className="sidebar-control-header">
         <label className="label">{text}</label>
         <span className="info-button-container">
-          <InfoButtonPopup heading={infoHeading} description={infoDescription} widePopup={true} />
+          <InfoButtonPopup heading={infoHeading} description={infoDescription} />
         </span>
       </div>
       <div className="sidebar-control-body">
@@ -39,7 +39,7 @@ export function SwitchBlock({ value, setValue, text, infoHeading, infoDescriptio
       <div className="sidebar-control-header">
         <label className="label">{text}</label>
         <span className="info-button-container">
-          <InfoButtonPopup heading={infoHeading} description={infoDescription} widePopup={true} />
+          <InfoButtonPopup heading={infoHeading} description={infoDescription} />
         </span>
       </div>
       <label className="switch default-height default-width">
@@ -56,7 +56,7 @@ export function FieldBlock({ text, infoHeading, infoDescription, ...props }) {
       <div className="sidebar-control-header">
         <label className="label">{text}</label>
         <span className="info-button-container">
-          <InfoButtonPopup heading={infoHeading} description={infoDescription} widePopup={true} />
+          <InfoButtonPopup heading={infoHeading} description={infoDescription} />
         </span>
       </div>
       <NumericInput {...props} />
@@ -108,7 +108,7 @@ export function LassoFilterBlock({ isActive, selectionCount, onToggle, onClearSe
         <div className="sidebar-control-header">
           <label className="label">Lasso Filter</label>
           <span className="info-button-container">
-            <InfoButtonPopup heading={infoHeading} description={infoDescription} widePopup={true} />
+            <InfoButtonPopup heading={infoHeading} description={infoDescription} />
           </span>
         </div>
         <Button text={isActive ? "Cancel Lasso" : "Draw Lasso"} onClick={onToggle} />
@@ -138,7 +138,7 @@ export function CodeEditorBlock({ text, onClick, compilerError, defaultValue, te
   );
 }
 
-export function Popup({ heading, description, isOpen, setIsOpen, widePopup, children }) {
+export function Popup({ heading, description, isOpen, setIsOpen, widePopup = false, children }) {
   const popupContainer = widePopup ? "popup-container-wide" : "popup-container";
 
   return (
@@ -172,7 +172,7 @@ export function ButtonPopup({ buttonText, tooltip, tooltipId, heading, descripti
   );
 }
 
-export function InfoButtonPopup({ heading, description, widePopup, children }) {
+export function InfoButtonPopup({ heading, description, children }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -181,7 +181,7 @@ export function InfoButtonPopup({ heading, description, widePopup, children }) {
         <SvgIcon svg={infoCircleSvg} className="info-button-icon" />
       </button>
       {isOpen && (
-        <Popup heading={heading} description={description} children={children} isOpen={isOpen} setIsOpen={setIsOpen} widePopup={widePopup} />
+        <Popup heading={heading} description={description} children={children} isOpen={isOpen} setIsOpen={setIsOpen} />
       )}
     </>
   );
