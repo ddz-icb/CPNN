@@ -2,7 +2,7 @@ import { useCallback, useRef } from "react";
 
 import { useSearchState, searchStateInit } from "../../state/searchState.js";
 import { useSidebarCodeEditor } from "../reusable_components/useSidebarCodeEditor.js";
-import { CodeEditorBlock, TableList } from "../reusable_components/sidebarComponents.js";
+import { CodeEditorBlock, SwitchBlock, TableList } from "../reusable_components/sidebarComponents.js";
 import { useTheme } from "../../state/themeState.js";
 import { handleEditorChange as handleEditorChangeHelper } from "../handlers/buttonHandlerFunctions.js";
 import { useAppearance } from "../../state/appearanceState.js";
@@ -14,7 +14,7 @@ const MAX_RESULTS = 30;
 
 export function SearchSidebar() {
   const { searchState, setSearchState, setAllSearchState } = useSearchState();
-  const { searchValue, query, matchingNodes } = searchState;
+  const { searchValue, query, matchingNodes, highlightedNodeIds } = searchState;
   const { theme } = useTheme();
   const { appearance } = useAppearance();
   const { renderState } = useRenderState();
@@ -24,7 +24,7 @@ export function SearchSidebar() {
 
   const handleEditorChange = useCallback(
     (editor) => handleEditorChangeHelper(editor, (value) => setSearchState("searchValue", value)),
-    [setSearchState]
+    [setSearchState],
   );
 
   const handleSearch = () => {
@@ -35,7 +35,7 @@ export function SearchSidebar() {
     setAllSearchState(searchStateInit);
   };
 
-  const handleEntryHighlight = (item) => {
+  const handleNodeFocus = (item) => {
     const node = matchingNodes?.find((n) => n.id === item?.nodeId);
     if (!node) return;
 
@@ -45,6 +45,19 @@ export function SearchSidebar() {
       renderState,
       container,
     });
+  };
+
+  const matchIds = matchingNodes ? matchingNodes.map((node) => node.id) : [];
+  const isHighlightAllActive =
+    matchIds.length > 0 &&
+    Array.isArray(highlightedNodeIds) &&
+    highlightedNodeIds.length === matchIds.length &&
+    highlightedNodeIds.every((id) => matchIds.includes(id));
+
+  const handleHighlightAllToggle = (event) => {
+    if (matchIds.length === 0) return;
+    const shouldEnable = event?.target?.checked ?? !isHighlightAllActive;
+    setSearchState("highlightedNodeIds", shouldEnable ? matchIds : []);
   };
 
   useSidebarCodeEditor({
@@ -74,7 +87,16 @@ export function SearchSidebar() {
         buttonText={hasActiveSearch ? "Clear" : "Search"}
       />
       <>
-        <TableList heading={`Node Matches (${nodeTotal})`} data={nodeResults} displayKey={"primaryText"} onItemClick={handleEntryHighlight} />
+        {hasActiveSearch && nodeTotal > 0 && (
+          <SwitchBlock
+            value={isHighlightAllActive}
+            setValue={handleHighlightAllToggle}
+            text={"Highlight all Matches"}
+            infoHeading={"Highlight all Matches"}
+            infoDescription={"Toggle to highlight every node that matches the current search."}
+          />
+        )}
+        <TableList heading={`Node Matches (${nodeTotal})`} data={nodeResults} displayKey={"primaryText"} onItemClick={handleNodeFocus} />
         {nodeOverflow && <OverflowHint total={nodeTotal} />}
       </>
     </>
@@ -82,5 +104,9 @@ export function SearchSidebar() {
 }
 
 function OverflowHint({ total }) {
-  return <div className="text-secondary pad-top-05">Showing the first {MAX_RESULTS} of {total} matches.</div>;
+  return (
+    <div className="text-secondary pad-top-05">
+      Showing the first {MAX_RESULTS} of {total} matches.
+    </div>
+  );
 }
