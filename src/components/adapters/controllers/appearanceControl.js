@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import log from "../logging/logger.js";
 
 import { toColorNumber } from "../../domain/service/canvas_drawing/drawingUtils.js";
+import { calculateLinkWidth } from "../../domain/service/canvas_drawing/lines.js";
 import { changeCircleBorderColor, changeNodeColors, changeNodeLabelColor } from "../../domain/service/canvas_drawing/nodes.js";
 import { applyNode3DState } from "../../domain/service/canvas_drawing/shading.js";
 import { useAppearance } from "../state/appearanceState.js";
@@ -16,13 +17,14 @@ import { useContainer } from "../state/containerState.js";
 import { useTheme } from "../state/themeState.js";
 
 export function AppearanceControl() {
-  const { appearance } = useAppearance();
+  const { appearance, setAppearance } = useAppearance();
   const { theme } = useTheme();
   const { colorschemeState } = useColorschemeState();
   const { graphState } = useGraphState();
   const { pixiState } = usePixiState();
   const { renderState } = useRenderState();
   const { container } = useContainer();
+  const linkCount = graphState.graph?.data?.links?.length ?? 0;
 
   // rebind redraw function and run one cycle
   useEffect(() => {
@@ -53,7 +55,7 @@ export function AppearanceControl() {
         renderState.app,
         container,
         appearance.cameraRef,
-        appearance.threeD
+        appearance.threeD,
       );
       redraw();
     } catch (error) {
@@ -136,4 +138,13 @@ export function AppearanceControl() {
     }
     appearance.cameraRef?.current?.redraw?.();
   }, [appearance.show3DGrid, appearance.threeD, pixiState.grid3D, appearance.cameraRef]);
+
+  useEffect(() => {
+    if (!graphState.graph) return;
+
+    const linkWidth = calculateLinkWidth(linkCount);
+
+    setAppearance("linkWidth", linkWidth);
+    setAppearance("linkWidthText", linkWidth.toFixed(1));
+  }, [graphState.graph, linkCount]);
 }

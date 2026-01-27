@@ -1,5 +1,26 @@
 import { getColor } from "./drawingUtils.js";
 
+const LINK_WIDTH_MIN = 0.1;
+const LINK_WIDTH_MAX = 3;
+const LINK_WIDTH_LOG_COEFFS = [8.166, -2.791, 0.202];
+
+function roundToDecimals(value, decimals = 1) {
+  const factor = 10 ** decimals;
+  return Math.round(value * factor) / factor;
+}
+
+function clamp(value, min, max) {
+  return Math.min(max, Math.max(min, value));
+}
+
+export function calculateLinkWidth(linkCount) {
+  const count = Number.isFinite(linkCount) ? Math.max(1, linkCount) : 1;
+  const logCount = Math.log10(count);
+  const [a, b, c] = LINK_WIDTH_LOG_COEFFS;
+  const width = a + b * logCount + c * logCount * logCount;
+  return roundToDecimals(clamp(width, LINK_WIDTH_MIN, LINK_WIDTH_MAX), 1);
+}
+
 export function drawLine(lines, link, linkWidth, colorscheme, linkAttribsToColorIndices) {
   if (link.attribs.length === 1) {
     lines
