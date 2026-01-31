@@ -1,18 +1,11 @@
-import { FieldBlock, SliderBlock, TableList } from "../reusable_components/sidebarComponents.js";
+import { SliderBlock, TableList } from "../reusable_components/sidebarComponents.js";
 import { SvgIcon } from "../reusable_components/SvgIcon.jsx";
 import eyeSvg from "../../../../assets/icons/eye.svg?raw";
 import rotateArrowSvg from "../../../../assets/icons/rotateArrow.svg?raw";
 import microscopeSvg from "../../../../assets/icons/microscope.svg?raw";
 
-import {
-  useFilter,
-  communityResolutionInit,
-  communityDensityInit,
-  communityMinSizeInit,
-  communityMaxSizeInit,
-} from "../../state/filterState.js";
-import { communityForceStrengthInit, usePhysics } from "../../state/physicsState.js";
-import { useCommunityState } from "../../state/communityState.js";
+import { useFilter } from "../../state/filterState.js";
+import { communityResolutionInit, useCommunityState } from "../../state/communityState.js";
 import { useGraphState } from "../../state/graphState.js";
 import { useAppearance } from "../../state/appearanceState.js";
 import { useRenderState } from "../../state/canvasState.js";
@@ -20,14 +13,11 @@ import { useContainer } from "../../state/containerState.js";
 import { getCentroid } from "../../../domain/service/graph_calculations/graphUtils.js";
 import { centerOnNode } from "../../../domain/service/canvas_interaction/centerView.js";
 import { getCommunityIdsOutsideSizeRange } from "../../../domain/service/graph_calculations/communityGrouping.js";
-import { communityDensityDescription, communityFilterSizeDescription } from "./descriptions/filterDescriptions.js";
-import { communityForceStrengthDescription } from "./descriptions/physicsDescriptions.js";
 
 const VisibilityIcon = ({ item, ...props }) => <SvgIcon svg={eyeSvg} className={item?.isHidden ? "icon-muted" : ""} {...props} />;
 
 export function CommunitySidebar() {
   const { filter, setFilter } = useFilter();
-  const { physics, setPhysics } = usePhysics();
   const { communityState, setCommunityState } = useCommunityState();
   const { graphState } = useGraphState();
   const { appearance } = useAppearance();
@@ -49,16 +39,6 @@ export function CommunitySidebar() {
   });
 
   const selectedGroup = visibleGroups.find((group) => group.id === communityState.selectedGroupId);
-
-  const handleResolutionChange = (value) => {
-    if (value === filter.communityResolution) return;
-    setFilter("communityResolution", value);
-    setFilter("communityComputeKey", filter.communityComputeKey + 1);
-  };
-
-  const handleResolutionTextChange = (value) => {
-    setFilter("communityResolutionText", value);
-  };
 
   const handleToggleVisibility = (item) => {
     const groupId = item?.id?.toString();
@@ -121,65 +101,17 @@ export function CommunitySidebar() {
   return (
     <>
       <SliderBlock
-        value={filter.communityResolution}
-        valueText={filter.communityResolutionText}
-        setValue={handleResolutionChange}
-        setValueText={handleResolutionTextChange}
+        value={communityState.communityResolution}
+        valueText={communityState.communityResolutionText}
+        setValue={(value) => setCommunityState("communityResolution", value)}
+        setValueText={(value) => setCommunityState("communityResolutionText", value)}
         fallbackValue={communityResolutionInit}
         min={0}
-        max={10}
-        step={1}
+        max={5}
+        step={0.5}
         text={"Community Resolution"}
         infoHeading={"Community Resolution"}
         infoDescription={"Higher values yield smaller communities. A resolution of 0 captures connected components."}
-      />
-      <div className="table-list-heading">Community Physics</div>
-      <SliderBlock
-        value={physics.communityForceStrength}
-        valueText={physics.communityForceStrengthText}
-        setValue={(value) => setPhysics("communityForceStrength", value)}
-        setValueText={(value) => setPhysics("communityForceStrengthText", value)}
-        fallbackValue={communityForceStrengthInit}
-        min={0}
-        max={10}
-        step={0.1}
-        text={"Community Force"}
-        infoHeading={"Adjusting the Community Force Strength"}
-        infoDescription={communityForceStrengthDescription}
-      />
-      <div className="table-list-heading">Community Filters</div>
-      <FieldBlock
-        valueText={filter.communityDensityText}
-        setValue={(value) => setFilter("communityDensity", value)}
-        setValueText={(value) => setFilter("communityDensityText", value)}
-        fallbackValue={communityDensityInit}
-        min={0}
-        step={1}
-        text={"Min Community Density"}
-        infoHeading={"Filter by Community Density"}
-        infoDescription={communityDensityDescription}
-      />
-      <FieldBlock
-        valueText={filter.communityMinSizeText}
-        setValue={(value) => setFilter("communityMinSize", value)}
-        setValueText={(value) => setFilter("communityMinSizeText", value)}
-        fallbackValue={communityMinSizeInit}
-        min={0}
-        step={1}
-        text={"Min Community Size"}
-        infoHeading={"Filter communities by size"}
-        infoDescription={communityFilterSizeDescription}
-      />
-      <FieldBlock
-        valueText={filter.communityMaxSizeText}
-        setValue={(value) => setFilter("communityMaxSize", value)}
-        setValueText={(value) => setFilter("communityMaxSizeText", value)}
-        fallbackValue={communityMaxSizeInit}
-        min={0}
-        step={1}
-        text={"Max Community Size"}
-        infoHeading={"Filter communities by size"}
-        infoDescription={communityFilterSizeDescription}
       />
       <TableList
         heading={`Communities (${rows.length})`}
@@ -200,9 +132,10 @@ export function CommunitySidebar() {
           <table className="item-table plain-item-table">
             <tbody>
               <DetailRow label={"Label"} value={selectedGroup.label} />
-              <DetailRow label={"Community ID"} value={selectedGroup.id} />
               <DetailRow label={"Nodes"} value={selectedGroup.size} />
-              <DetailRow label={"Links (internal)"} value={selectedGroup.linkCount ?? 0} />
+              <DetailRow label={"Internal Links"} value={selectedGroup.linkCount ?? 0} />
+              <DetailRow label={"External Links"} value={selectedGroup.externalLinkCount ?? 0} />
+              <DetailRow label={"Community Density"} value={formatDensity(selectedGroup.density)} />
               <DetailRow label={"Top pathways"} value={formatTopAttributes(selectedGroup.topAttributes) || "None"} />
               <DetailRow label={"Top link attributes"} value={formatTopAttributes(selectedGroup.topLinkAttributes) || "None"} />
             </tbody>
@@ -216,6 +149,11 @@ export function CommunitySidebar() {
 function formatTopAttributes(topAttributes) {
   if (!Array.isArray(topAttributes) || topAttributes.length === 0) return "";
   return topAttributes.map((entry) => `${entry.name} (${entry.count})`).join(", ");
+}
+
+function formatDensity(value) {
+  if (!Number.isFinite(value)) return "0";
+  return value.toFixed(2);
 }
 
 function DetailRow({ label, value }) {

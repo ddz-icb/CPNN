@@ -1,5 +1,5 @@
 import log from "../logging/logger.js";
-import { linkAttribsToColorIndicesInit, nodeAttribsToColorIndicesInit, useColorschemeState } from "../state/colorschemeState.js";
+import { useColorschemeState } from "../state/colorschemeState.js";
 import { filterInit, linkThresholdInit, useFilter } from "../state/filterState.js";
 import { useGraphFlags } from "../state/graphFlagsState.js";
 import { useGraphMetrics } from "../state/graphMetricsState.js";

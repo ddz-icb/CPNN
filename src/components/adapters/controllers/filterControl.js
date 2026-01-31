@@ -14,7 +14,7 @@ import {
   filterMinCompSize,
   filterNodesExist,
   filterLasso,
-  filterGroupVisibility,
+  filterCommunityVisibility,
 } from "../../domain/service/graph_calculations/filterGraph.js";
 import { useFilter } from "../state/filterState.js";
 import { useAppearance } from "../state/appearanceState.js";
@@ -23,7 +23,7 @@ import { usePixiState } from "../state/pixiState.js";
 import { useGraphFlags } from "../state/graphFlagsState.js";
 import { errorService } from "../../application/services/errorService.js";
 import { useCommunityState } from "../state/communityState.js";
-import { getCommunityIdsOutsideSizeRange } from "../../domain/service/graph_calculations/communityGrouping.js";
+import { buildCommunitySummary } from "../../domain/service/graph_calculations/communityGrouping.js";
 
 export function FilterControl() {
   const { filter } = useFilter();
@@ -33,7 +33,6 @@ export function FilterControl() {
   const { pixiState } = usePixiState();
   const { communityState, setCommunityState } = useCommunityState();
 
-  // base filters (exclude group visibility)
   useEffect(() => {
     if (
       !graphState.graph ||
@@ -91,30 +90,18 @@ export function FilterControl() {
       filteredGraphData = filterMaxCompSize(filteredGraphData, filter.maxCompSize);
       filteredGraphData = filterNodesExist(filteredGraphData);
 
-      const baseSignature = getGraphSignature(filteredGraphData);
-      if (shouldUpdateBaseGraph(baseSignature, communityState)) {
-        setCommunityState("baseSignature", baseSignature);
-        setCommunityState("baseGraphData", filteredGraphData);
-      }
+      const summary = buildCommunitySummary(filteredGraphData, { resolution: communityState.communityResolution });
+      filteredGraphData = filterCommunityVisibility(filteredGraphData, summary.idToGroup, filter.communityHiddenIds);
 
-      const effectiveHiddenIds = getEffectiveHiddenIds(communityState.groups, filter.communityHiddenIds, {
-        min: filter.communityMinSize,
-        max: filter.communityMaxSize,
-      });
-      if (shouldApplyGroupFilter(communityState, effectiveHiddenIds)) {
-        return;
-      }
+      const filteredGraph = { name: graphState.graph.name, data: filteredGraphData };
 
-      applyFilteredGraph({
-        filteredGraphData,
-        graphName: graphState.graph.name,
-        appearance,
-        pixiState,
-        setGraphFlags,
-        setGraphState,
-        communityState,
-        setCommunityState,
-      });
+      setCommunityState("groups", summary.groups);
+      setCommunityState("idToGroup", summary.idToGroup);
+      setCommunityState("groupToNodeIds", summary.groupToNodeIds);
+
+      filterActiveNodesForPixi(appearance.showNodeLabels, filteredGraphData, pixiState.nodeMap);
+      setGraphFlags("filteredAfterStart", true);
+      setGraphState("graph", filteredGraph);
     } catch (error) {
       errorService.setError(error.message);
       log.error("Error while filtering graph:", error);
@@ -138,137 +125,6 @@ export function FilterControl() {
     pixiState.nodeContainers,
     pixiState.nodeMap,
     appearance.showNodeLabels,
-    communityState.baseSignature,
-    communityState.baseGraphData,
-    communityState.isGroupFiltered,
-    communityState.groups,
+    communityState.communityResolution,
   ]);
-
-  // group visibility filter only
-  useEffect(() => {
-    if (!graphFlags.isPreprocessed || !pixiState.nodeMap) return;
-
-    const baseGraphData = communityState.baseGraphData;
-    const graphName = graphState.graph?.name;
-    if (!baseGraphData || !graphName) return;
-
-    const effectiveHiddenIds = getEffectiveHiddenIds(communityState.groups, filter.communityHiddenIds, {
-      min: filter.communityMinSize,
-      max: filter.communityMaxSize,
-    });
-    const shouldFilterGroups = !communityState.isStale && communityState.idToGroup && effectiveHiddenIds.length > 0;
-
-    if (!shouldFilterGroups) {
-      if (!communityState.isGroupFiltered) return;
-
-      const filteredGraph = { name: graphName, data: baseGraphData };
-      filterActiveNodesForPixi(appearance.showNodeLabels, baseGraphData, pixiState.nodeMap);
-      setGraphFlags("filteredAfterStart", true);
-      setGraphState("graph", filteredGraph);
-      setCommunityState("isGroupFiltered", false);
-      return;
-    }
-
-    let filteredGraphData = filterGroupVisibility(baseGraphData, communityState.idToGroup, effectiveHiddenIds);
-    filteredGraphData = filterNodesExist(filteredGraphData);
-
-    const filteredGraph = { name: graphName, data: filteredGraphData };
-    filterActiveNodesForPixi(appearance.showNodeLabels, filteredGraphData, pixiState.nodeMap);
-    setGraphFlags("filteredAfterStart", true);
-    setGraphState("graph", filteredGraph);
-
-    if (!communityState.isGroupFiltered) {
-      setCommunityState("isGroupFiltered", true);
-    }
-  }, [
-    graphFlags.isPreprocessed,
-    pixiState.nodeMap,
-    appearance.showNodeLabels,
-    communityState.baseGraphData,
-    communityState.idToGroup,
-    communityState.isStale,
-    communityState.isGroupFiltered,
-    communityState.groups,
-    filter.communityHiddenIds,
-    filter.communityMinSize,
-    filter.communityMaxSize,
-    graphState.graph?.name,
-    setCommunityState,
-  ]);
-}
-
-function getEffectiveHiddenIds(groups, manualHiddenIds, filterRange) {
-  const hiddenSet = new Set(Array.isArray(manualHiddenIds) ? manualHiddenIds.map((id) => id?.toString()).filter(Boolean) : []);
-  const filterIds = getCommunityIdsOutsideSizeRange(groups, filterRange?.min, filterRange?.max);
-  filterIds.forEach((id) => hiddenSet.add(id?.toString()));
-  return Array.from(hiddenSet);
-}
-
-function shouldUpdateBaseGraph(baseSignature, communityState) {
-  return baseSignature && (baseSignature !== communityState.baseSignature || !communityState.baseGraphData);
-}
-
-function shouldApplyGroupFilter(communityState, effectiveHiddenIds) {
-  return !communityState.isStale && communityState.idToGroup && effectiveHiddenIds.length > 0;
-}
-
-function applyFilteredGraph({
-  filteredGraphData,
-  graphName,
-  appearance,
-  pixiState,
-  setGraphFlags,
-  setGraphState,
-  communityState,
-  setCommunityState,
-}) {
-  const filteredGraph = { name: graphName, data: filteredGraphData };
-
-  filterActiveNodesForPixi(appearance.showNodeLabels, filteredGraphData, pixiState.nodeMap);
-
-  setGraphFlags("filteredAfterStart", true);
-  setGraphState("graph", filteredGraph);
-
-  if (communityState.isGroupFiltered) {
-    setCommunityState("isGroupFiltered", false);
-  }
-}
-
-function getEndpointId(endpoint) {
-  if (endpoint == null) return null;
-  if (typeof endpoint === "object") {
-    if (endpoint.id != null) return endpoint.id;
-    if (endpoint.data?.id != null) return endpoint.data.id;
-  }
-  return endpoint;
-}
-
-function hashString(value) {
-  if (value == null) return 0;
-  const str = value.toString();
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = (hash * 31 + str.charCodeAt(i)) >>> 0;
-  }
-  return hash;
-}
-
-function getGraphSignature(graphData) {
-  if (!graphData) return null;
-  let hash = 0;
-
-  graphData.nodes?.forEach((node) => {
-    hash = (hash * 33 + hashString(node?.id)) >>> 0;
-  });
-
-  graphData.links?.forEach((link) => {
-    const sourceId = getEndpointId(link.source);
-    const targetId = getEndpointId(link.target);
-    hash = (hash * 33 + hashString(sourceId)) >>> 0;
-    hash = (hash * 33 + hashString(targetId)) >>> 0;
-  });
-
-  const nodeCount = graphData.nodes?.length ?? 0;
-  const linkCount = graphData.links?.length ?? 0;
-  return `${nodeCount}:${linkCount}:${hash.toString(16)}`;
 }

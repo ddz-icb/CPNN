@@ -1,24 +1,13 @@
 import { getCommunityData, getComponentData } from "./graphUtils.js";
 
 const DEFAULT_TOP_ATTRIBUTES = 3;
-const COMMUNITY_MODE = {
-  communities: "communities",
-  components: "components",
-};
-
-function normalizeMode(mode) {
-  return mode === COMMUNITY_MODE.components ? COMMUNITY_MODE.components : COMMUNITY_MODE.communities;
-}
-
 function getLabelPrefix() {
   return "Community";
 }
 
-function getGroupAssignments(graphData, mode, options = {}) {
-  const normalizedMode = normalizeMode(mode);
-
+function getGroupAssignments(graphData, options = {}) {
   const resolution = options.resolution;
-  const useComponents = normalizedMode === COMMUNITY_MODE.components || resolution === 0;
+  const useComponents = resolution === 0;
 
   if (useComponents) {
     const [idToComp, compToCompSize] = getComponentData(graphData);
@@ -51,13 +40,12 @@ function getEndpointId(endpoint) {
   return endpoint;
 }
 
-export function buildGroupSummary(graphData, options = {}) {
+export function buildCommunitySummary(graphData, options = {}) {
   if (!graphData?.nodes?.length) {
     return { groups: [], idToGroup: null, groupToNodeIds: {} };
   }
 
-  const mode = normalizeMode(options.mode);
-  const { idToGroup, groupToSize } = getGroupAssignments(graphData, mode, options);
+  const { idToGroup, groupToSize } = getGroupAssignments(graphData, options);
   if (!idToGroup || !groupToSize) {
     return { groups: [], idToGroup: null, groupToNodeIds: {} };
   }
@@ -65,6 +53,7 @@ export function buildGroupSummary(graphData, options = {}) {
   const groupToNodeIds = {};
   const groupToAttribCounts = {};
   const groupToLinkCount = {};
+  const groupToExternalLinkCount = {};
   const groupToLinkAttribCounts = {};
 
   graphData.nodes.forEach((node) => {
@@ -97,20 +86,25 @@ export function buildGroupSummary(graphData, options = {}) {
     const targetGroup = idToGroup[targetId];
     if (sourceGroup === undefined || sourceGroup === null) return;
     if (targetGroup === undefined || targetGroup === null) return;
-    if (sourceGroup !== targetGroup) return;
+    if (sourceGroup === targetGroup) {
+      const groupKey = sourceGroup.toString();
+      groupToLinkCount[groupKey] = (groupToLinkCount[groupKey] || 0) + 1;
 
-    const groupKey = sourceGroup.toString();
-    groupToLinkCount[groupKey] = (groupToLinkCount[groupKey] || 0) + 1;
-
-    const attribs = Array.isArray(link.attribs) ? link.attribs : [];
-    if (!groupToLinkAttribCounts[groupKey]) {
-      groupToLinkAttribCounts[groupKey] = {};
+      const attribs = Array.isArray(link.attribs) ? link.attribs : [];
+      if (!groupToLinkAttribCounts[groupKey]) {
+        groupToLinkAttribCounts[groupKey] = {};
+      }
+      attribs.forEach((attrib) => {
+        const name = attrib?.toString();
+        if (!name) return;
+        groupToLinkAttribCounts[groupKey][name] = (groupToLinkAttribCounts[groupKey][name] || 0) + 1;
+      });
+    } else {
+      const sourceKey = sourceGroup.toString();
+      const targetKey = targetGroup.toString();
+      groupToExternalLinkCount[sourceKey] = (groupToExternalLinkCount[sourceKey] || 0) + 1;
+      groupToExternalLinkCount[targetKey] = (groupToExternalLinkCount[targetKey] || 0) + 1;
     }
-    attribs.forEach((attrib) => {
-      const name = attrib?.toString();
-      if (!name) return;
-      groupToLinkAttribCounts[groupKey][name] = (groupToLinkAttribCounts[groupKey][name] || 0) + 1;
-    });
   });
 
   const labelPrefix = getLabelPrefix();
@@ -118,10 +112,13 @@ export function buildGroupSummary(graphData, options = {}) {
     const groupKey = groupId.toString();
     const attribCounts = groupToAttribCounts[groupKey];
     const linkAttribCounts = groupToLinkAttribCounts[groupKey];
+    const internalLinks = groupToLinkCount[groupKey] || 0;
     return {
       id: groupKey,
       size,
-      linkCount: groupToLinkCount[groupKey] || 0,
+      linkCount: internalLinks,
+      externalLinkCount: groupToExternalLinkCount[groupKey] || 0,
+      density: size > 0 ? (2 * internalLinks) / size : 0,
       topAttributes: collectTopAttributes(attribCounts, options.topAttributes ?? DEFAULT_TOP_ATTRIBUTES),
       topLinkAttributes: collectTopAttributes(linkAttribCounts, options.topAttributes ?? DEFAULT_TOP_ATTRIBUTES),
     };
@@ -138,10 +135,6 @@ export function buildGroupSummary(graphData, options = {}) {
   }));
 
   return { groups, idToGroup, groupToNodeIds };
-}
-
-export function isCommunityMode(mode) {
-  return normalizeMode(mode) === COMMUNITY_MODE.communities;
 }
 
 export function getCommunityIdsOutsideSizeRange(groups, minSize, maxSize) {

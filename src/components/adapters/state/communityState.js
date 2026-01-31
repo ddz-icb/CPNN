@@ -1,15 +1,13 @@
 import { create } from "zustand";
 
+export const communityResolutionInit = 0;
+
 export const communityStateInit = {
   groups: [],
   idToGroup: null,
   groupToNodeIds: {},
-  baseGraphData: null,
-  baseSignature: null,
-  sourceSignature: null,
-  computedResolution: null,
-  isStale: false,
-  isGroupFiltered: false,
+  communityResolution: communityResolutionInit,
+  communityResolutionText: communityResolutionInit,
   selectedGroupId: null,
 };
 

@@ -33,7 +33,6 @@ import { SearchControl } from "./components/adapters/controllers/searchControl.j
 import { Lasso } from "./components/adapters/controllers/lassoControl.js";
 import { Tooltips } from "./components/adapters/gui/tooltip/tooltips.js";
 import { HighlightControl } from "./components/adapters/controllers/highlightControl.js";
-import { CommunityControl } from "./components/adapters/controllers/communityControl.js";
 
 function App() {
   const { theme } = useTheme();
@@ -45,7 +44,6 @@ function App() {
       <AppearanceControl />
       <DownloadControl />
       <FilterControl />
-      <CommunityControl />
       <HighlightControl />
       <PhysicsControl />
       <InitControl />

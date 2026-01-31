@@ -8,6 +8,7 @@ import {
   linkLengthDescription,
   nodeRepulsionStrengthDescription,
   gravityDescription,
+  communityForceStrengthDescription,
   checkBorderDescription,
   circleForceDescription,
   linkForceDescription,
@@ -60,6 +61,19 @@ export function PhysicsSidebar({}) {
         text={"Node Repulsion Force"}
         infoHeading={"Adjusting the Node Repulsion Strength"}
         infoDescription={nodeRepulsionStrengthDescription}
+      />
+      <SliderBlock
+        value={physics.communityForceStrength}
+        valueText={physics.communityForceStrengthText}
+        setValue={(value) => setPhysics("communityForceStrength", value)}
+        setValueText={(value) => setPhysics("communityForceStrengthText", value)}
+        fallbackValue={communityForceStrengthInit}
+        min={0}
+        max={10}
+        step={0.1}
+        text={"Community Force"}
+        infoHeading={"Adjusting the Community Force Strength"}
+        infoDescription={communityForceStrengthDescription}
       />
       <SwitchBlock
         value={physics.linkForce}

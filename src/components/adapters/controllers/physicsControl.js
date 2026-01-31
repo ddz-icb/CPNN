@@ -214,7 +214,7 @@ export function PhysicsControl() {
         return;
       }
 
-      if (communityState.isStale || !communityState.idToGroup) {
+      if (!communityState.idToGroup) {
         renderState.simulation.force("community", null);
         renderState.simulation.alpha(1).restart();
         return;
@@ -232,7 +232,6 @@ export function PhysicsControl() {
   }, [
     physics.communityForceStrength,
     communityState.idToGroup,
-    communityState.isStale,
     graphFlags.filteredAfterStart,
     graphState.graph,
     renderState.simulation,

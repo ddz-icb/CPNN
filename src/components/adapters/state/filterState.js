@@ -16,13 +16,6 @@ export const maxCompSizeInit = "";
 export const maxCompSizeTextInit = "";
 export const lassoInit = false;
 export const lassoSelectionInit = [];
-export const communityModeInit = "communities";
-export const communityResolutionInit = 0;
-export const communityHiddenIdsInit = [];
-export const communityComputeKeyInit = 0;
-export const communityMinSizeInit = 0;
-export const communityMaxSizeInit = "";
-export const communityMaxSizeTextInit = "";
 
 export const filterInit = {
   linkThreshold: linkThresholdInit,
@@ -45,15 +38,6 @@ export const filterInit = {
   minKCoreSizeText: minKCoreSizeInit,
   lasso: lassoInit,
   lassoSelection: lassoSelectionInit,
-  communityMode: communityModeInit,
-  communityResolution: communityResolutionInit,
-  communityResolutionText: communityResolutionInit,
-  communityHiddenIds: communityHiddenIdsInit,
-  communityComputeKey: communityComputeKeyInit,
-  communityMinSize: communityMinSizeInit,
-  communityMinSizeText: communityMinSizeInit,
-  communityMaxSize: communityMaxSizeInit,
-  communityMaxSizeText: communityMaxSizeInit,
 };
 
 export const useFilter = create((set) => ({

@@ -212,21 +212,35 @@ export function filterNodeIds(graphData, nodeIdFilters) {
   };
 }
 
-export function filterGroupVisibility(graphData, idToGroup, hiddenGroupIds) {
-  if (!idToGroup || !Array.isArray(hiddenGroupIds) || hiddenGroupIds.length === 0) {
+export function filterCommunityVisibility(graphData, idToGroup, hiddenGroupIds) {
+  if (!graphData || !idToGroup) {
     return graphData;
   }
 
-  const hiddenSet = new Set(hiddenGroupIds.map((id) => id?.toString()));
+  const hiddenIds = Array.isArray(hiddenGroupIds) ? hiddenGroupIds : hiddenGroupIds != null ? [hiddenGroupIds] : [];
+  if (hiddenIds.length === 0) {
+    return graphData;
+  }
 
-  return {
+  const hiddenSet = new Set(hiddenIds.map((id) => id?.toString()).filter(Boolean));
+  if (hiddenSet.size === 0) {
+    return graphData;
+  }
+
+  const filteredGraph = {
     ...graphData,
-    nodes: graphData.nodes.filter((node) => {
+    nodes: graphData.nodes?.filter((node) => {
       const groupId = idToGroup[node.id];
       if (groupId === undefined || groupId === null) return true;
       return !hiddenSet.has(groupId.toString());
     }),
   };
+
+  if (!filteredGraph.nodes || !filteredGraph.links) {
+    return filteredGraph;
+  }
+
+  return filterNodesExist(filteredGraph);
 }
 
 export function filterActiveNodesForPixi(showNodeLabels, graphData, nodeMap) {
