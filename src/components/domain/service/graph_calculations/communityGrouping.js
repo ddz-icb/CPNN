@@ -11,18 +11,20 @@ function normalizeMode(mode) {
 }
 
 function getLabelPrefix() {
-  return "Group";
+  return "Community";
 }
 
 function getGroupAssignments(graphData, mode, options = {}) {
   const normalizedMode = normalizeMode(mode);
 
-  if (normalizedMode === COMMUNITY_MODE.components) {
+  const resolution = options.resolution;
+  const useComponents = normalizedMode === COMMUNITY_MODE.components || resolution === 0;
+
+  if (useComponents) {
     const [idToComp, compToCompSize] = getComponentData(graphData);
     return { idToGroup: idToComp, groupToSize: compToCompSize };
   }
 
-  const { resolution } = options;
   const communityOptions = resolution ? { resolution } : {};
   const [idToComm, commToSize] = getCommunityData(graphData, communityOptions);
   return { idToGroup: idToComm, groupToSize: commToSize };
@@ -140,4 +142,28 @@ export function buildGroupSummary(graphData, options = {}) {
 
 export function isCommunityMode(mode) {
   return normalizeMode(mode) === COMMUNITY_MODE.communities;
+}
+
+export function getHiddenCommunityIdsBySize(groups, minSize, maxSize) {
+  if (!Array.isArray(groups) || groups.length === 0) return [];
+
+  const minValue = typeof minSize === "number" ? minSize : Number(minSize);
+  const hasMin = Number.isFinite(minValue) && minValue > 0;
+
+  const hasMaxInput = maxSize !== "" && maxSize !== null && maxSize !== undefined;
+  const maxValue = typeof maxSize === "number" ? maxSize : Number(maxSize);
+  const hasMax = hasMaxInput && Number.isFinite(maxValue) && maxValue > 0;
+
+  if (!hasMin && !hasMax) return [];
+
+  return groups
+    .filter((group) => {
+      const sizeValue = Number(group?.size);
+      if (!Number.isFinite(sizeValue)) return false;
+      if (hasMin && sizeValue < minValue) return true;
+      if (hasMax && sizeValue > maxValue) return true;
+      return false;
+    })
+    .map((group) => group?.id?.toString())
+    .filter(Boolean);
 }

@@ -13,7 +13,7 @@ export function SelectionSidebar({ handleNavItemClick }) {
       <NavItem text={"Data"} icon={<SvgIcon svg={dataSvg} />} onClick={() => handleNavItemClick("Data")} />
       <NavItem text={"Search"} icon={<SvgIcon svg={searchSvg} />} onClick={() => handleNavItemClick("Search")} />
       <NavItem text={"Filter"} icon={<SvgIcon svg={filterSvg} />} onClick={() => handleNavItemClick("Filter")} />
-      <NavItem text={"Groups"} icon={<SvgIcon svg={piechartSvg} />} onClick={() => handleNavItemClick("Groups")} />
+      <NavItem text={"Communities"} icon={<SvgIcon svg={piechartSvg} />} onClick={() => handleNavItemClick("Communities")} />
       <NavItem text={"Physics"} icon={<SvgIcon svg={magnetSvg} />} onClick={() => handleNavItemClick("Physics")}></NavItem>
       <NavItem text={"Appearance"} icon={<SvgIcon svg={paletteSvg} />} onClick={() => handleNavItemClick("Appearance")}></NavItem>
       <NavItem text={"Export"} icon={<SvgIcon svg={downloadSvg} />} onClick={() => handleNavItemClick("Export")} />

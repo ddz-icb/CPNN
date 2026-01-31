@@ -64,6 +64,52 @@ export function FieldBlock({ text, infoHeading, infoDescription, ...props }) {
   );
 }
 
+export function FieldApplyBlock({
+  text,
+  infoHeading,
+  infoDescription,
+  valueText,
+  setValueText,
+  onApply,
+  min = 0,
+  max = Infinity,
+  step = 1,
+  applyText = "Apply",
+}) {
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      if (onApply) onApply();
+      event.target.blur();
+    }
+  };
+
+  return (
+    <div className="block-section block-section-stack">
+      <div className="sidebar-control-header">
+        <label className="label">{text}</label>
+        <span className="info-button-container">
+          <InfoButtonPopup heading={infoHeading} description={infoDescription} />
+        </span>
+      </div>
+      <div className="sidebar-control-body">
+        <InputCN
+          className="input-field default-width default-height"
+          type="number"
+          lang="en"
+          min={min}
+          max={max}
+          step={step}
+          value={valueText}
+          onChange={(event) => handleFieldChange(event, setValueText, min, max)}
+          onKeyDown={handleKeyDown}
+        />
+        <Button text={applyText} onClick={onApply} />
+      </div>
+    </div>
+  );
+}
+
 export function Button({ onClick, onChange, linkRef, tooltip, tooltipId, text, className }) {
   return (
     <>

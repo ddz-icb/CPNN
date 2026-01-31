@@ -1,39 +1,30 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 import { useFilter } from "../state/filterState.js";
-import { useGraphState } from "../state/graphState.js";
-import { useCommunityState, communityStateInit } from "../state/communityState.js";
+import { useCommunityState } from "../state/communityState.js";
 import { buildGroupSummary, isCommunityMode } from "../../domain/service/graph_calculations/communityGrouping.js";
 
 export function CommunityControl() {
-  const { filter } = useFilter();
-  const { graphState } = useGraphState();
-  const { communityState, setCommunityState, setAllCommunityState } = useCommunityState();
+  const { filter, setFilter } = useFilter();
+  const { communityState, setCommunityState } = useCommunityState();
+  const lastComputeKeyRef = useRef(0);
 
-  const graphData = graphState.graph?.data;
-  const baseGraphData = communityState.baseGraphData ?? graphData;
+  const baseGraphData = communityState.baseGraphData;
   const baseSignature = communityState.baseSignature;
 
   useEffect(() => {
-    if (filter.communityComputeKey === 0 && communityState.lastComputeKey !== 0) {
-      setAllCommunityState({
-        ...communityStateInit,
-        baseGraphData: communityState.baseGraphData,
-        baseSignature: communityState.baseSignature,
-      });
+    if (filter.communityComputeKey !== 0) return;
+    if (lastComputeKeyRef.current !== 0) {
+      lastComputeKeyRef.current = 0;
     }
-  }, [
-    filter.communityComputeKey,
-    communityState.lastComputeKey,
-    communityState.baseGraphData,
-    communityState.baseSignature,
-    setAllCommunityState,
-  ]);
+    if (!baseGraphData || !baseSignature) return;
+    setFilter("communityComputeKey", 1);
+  }, [baseGraphData, baseSignature, filter.communityComputeKey, setFilter]);
 
   useEffect(() => {
-    if (!baseGraphData) return;
+    if (!baseGraphData || !baseSignature) return;
     if (filter.communityComputeKey === 0) return;
-    if (filter.communityComputeKey === communityState.lastComputeKey) return;
+    if (filter.communityComputeKey === lastComputeKeyRef.current) return;
 
     const summary = buildGroupSummary(baseGraphData, {
       mode: filter.communityMode,
@@ -44,31 +35,25 @@ export function CommunityControl() {
     setCommunityState("idToGroup", summary.idToGroup);
     setCommunityState("groupToNodeIds", summary.groupToNodeIds);
     setCommunityState("sourceSignature", baseSignature);
-    setCommunityState("lastComputeKey", filter.communityComputeKey);
-    setCommunityState("computedMode", filter.communityMode);
     setCommunityState("computedResolution", filter.communityResolution);
     setCommunityState("isStale", false);
     setCommunityState("selectedGroupId", null);
+    lastComputeKeyRef.current = filter.communityComputeKey;
   }, [
     baseGraphData,
     baseSignature,
     filter.communityComputeKey,
     filter.communityMode,
     filter.communityResolution,
-    communityState.lastComputeKey,
     setCommunityState,
   ]);
 
   useEffect(() => {
-    if (communityState.lastComputeKey === 0) return;
+    if (!communityState.sourceSignature) return;
 
     let isStale = false;
 
     if (baseSignature && communityState.sourceSignature && baseSignature !== communityState.sourceSignature) {
-      isStale = true;
-    }
-
-    if (communityState.computedMode && communityState.computedMode !== filter.communityMode) {
       isStale = true;
     }
 
@@ -87,9 +72,7 @@ export function CommunityControl() {
     baseSignature,
     filter.communityMode,
     filter.communityResolution,
-    communityState.lastComputeKey,
     communityState.sourceSignature,
-    communityState.computedMode,
     communityState.computedResolution,
     communityState.isStale,
     setCommunityState,

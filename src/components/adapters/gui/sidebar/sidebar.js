@@ -19,7 +19,7 @@ export function Sidebar(props) {
     Data: <DataSidebar {...props} />,
     Search: <SearchSidebar />,
     Filter: <FilterSidebar />,
-    Groups: <CommunitySidebar />,
+    Communities: <CommunitySidebar />,
     Physics: <PhysicsSidebar />,
     Appearance: <AppearanceSidebar {...props} />,
     Export: <ExportSidebar />,

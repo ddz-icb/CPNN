@@ -22,6 +22,7 @@ import { usePixiState } from "../state/pixiState.js";
 import { useGraphFlags } from "../state/graphFlagsState.js";
 import { errorService } from "../../application/services/errorService.js";
 import { useCommunityState } from "../state/communityState.js";
+import { getHiddenCommunityIdsBySize } from "../../domain/service/graph_calculations/communityGrouping.js";
 
 export function FilterControl() {
   const { filter } = useFilter();
@@ -98,11 +99,13 @@ export function FilterControl() {
         setCommunityState("baseGraphData", filteredGraphData);
       }
 
-      const shouldFilterGroups =
-        !communityState.isStale &&
-        communityState.idToGroup &&
-        Array.isArray(filter.communityHiddenIds) &&
-        filter.communityHiddenIds.length > 0;
+      const effectiveHiddenIds = getEffectiveHiddenIds(
+        communityState.groups,
+        filter.communityHiddenIds,
+        filter.communityMinSize,
+        filter.communityMaxSize
+      );
+      const shouldFilterGroups = !communityState.isStale && communityState.idToGroup && effectiveHiddenIds.length > 0;
 
       if (shouldFilterGroups) {
         return;
@@ -133,6 +136,9 @@ export function FilterControl() {
     filter.compDensity,
     filter.minKCoreSize,
     filter.lassoSelection,
+    filter.communityHiddenIds,
+    filter.communityMinSize,
+    filter.communityMaxSize,
     graphState.originGraph,
     pixiState.nodeContainers,
     pixiState.nodeMap,
@@ -140,6 +146,7 @@ export function FilterControl() {
     communityState.baseSignature,
     communityState.baseGraphData,
     communityState.isGroupFiltered,
+    communityState.groups,
   ]);
 
   // group visibility filter only
@@ -150,11 +157,13 @@ export function FilterControl() {
     const graphName = graphState.graph?.name;
     if (!baseGraphData || !graphName) return;
 
-    const shouldFilterGroups =
-      !communityState.isStale &&
-      communityState.idToGroup &&
-      Array.isArray(filter.communityHiddenIds) &&
-      filter.communityHiddenIds.length > 0;
+    const effectiveHiddenIds = getEffectiveHiddenIds(
+      communityState.groups,
+      filter.communityHiddenIds,
+      filter.communityMinSize,
+      filter.communityMaxSize
+    );
+    const shouldFilterGroups = !communityState.isStale && communityState.idToGroup && effectiveHiddenIds.length > 0;
 
     if (!shouldFilterGroups) {
       if (!communityState.isGroupFiltered) return;
@@ -167,7 +176,7 @@ export function FilterControl() {
       return;
     }
 
-    let filteredGraphData = filterGroupVisibility(baseGraphData, communityState.idToGroup, filter.communityHiddenIds);
+    let filteredGraphData = filterGroupVisibility(baseGraphData, communityState.idToGroup, effectiveHiddenIds);
     filteredGraphData = filterNodesExist(filteredGraphData);
 
     const filteredGraph = { name: graphName, data: filteredGraphData };
@@ -186,10 +195,22 @@ export function FilterControl() {
     communityState.idToGroup,
     communityState.isStale,
     communityState.isGroupFiltered,
+    communityState.groups,
     filter.communityHiddenIds,
+    filter.communityMinSize,
+    filter.communityMaxSize,
     graphState.graph?.name,
     setCommunityState,
   ]);
+}
+
+function getEffectiveHiddenIds(groups, manualHiddenIds, minSize, maxSize) {
+  const hiddenSet = new Set(
+    Array.isArray(manualHiddenIds) ? manualHiddenIds.map((id) => id?.toString()).filter(Boolean) : []
+  );
+  const sizeHiddenIds = getHiddenCommunityIdsBySize(groups, minSize, maxSize);
+  sizeHiddenIds.forEach((id) => hiddenSet.add(id?.toString()));
+  return Array.from(hiddenSet);
 }
 
 function getEndpointId(endpoint) {

@@ -7,8 +7,6 @@ export const communityStateInit = {
   baseGraphData: null,
   baseSignature: null,
   sourceSignature: null,
-  lastComputeKey: 0,
-  computedMode: null,
   computedResolution: null,
   isStale: false,
   isGroupFiltered: false,
