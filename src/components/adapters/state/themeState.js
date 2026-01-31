@@ -11,6 +11,7 @@ export const lightTheme = {
   circleBorderColor: indigo,
   textColor: deepNavy,
   highlightColor: coolBlue,
+  communityHighlightColor: "#ff7a00",
 };
 
 export const darkTheme = {
@@ -18,6 +19,7 @@ export const darkTheme = {
   circleBorderColor: lightGrey,
   textColor: lightGrey,
   highlightColor: brightYellow,
+  communityHighlightColor: "rgba(0, 200, 255, 0.75)",
 };
 
 export const themeInit = lightTheme;

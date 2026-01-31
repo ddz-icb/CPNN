@@ -2,31 +2,48 @@ import * as PIXI from "pixi.js";
 import { radius } from "./nodes.js";
 
 const activeHighlights = new Set();
+const activeCommunityHighlights = new Set();
 
-export function clearNodeHighlight(circle) {
+function clearOverlay(circle, overlayKey, activeSet) {
   if (!circle) return;
-  activeHighlights.delete(circle);
-  if (!circle?.highlightOverlay) return;
+  activeSet.delete(circle);
+  const overlay = circle?.[overlayKey];
+  if (!overlay) return;
 
-  const overlay = circle.highlightOverlay;
-  if (overlay && !overlay.destroyed) {
+  if (!overlay.destroyed) {
     if (overlay.parent) {
       overlay.parent.removeChild(overlay);
     }
     overlay.destroy();
   }
-  circle.highlightOverlay = null;
+  circle[overlayKey] = null;
 }
 
-export function highlightNode(circle, highlightColor) {
+function updateOverlay(circle, overlayKey, activeSet) {
+  const overlay = circle?.[overlayKey];
+  if (!overlay || overlay.destroyed) return;
+  if (circle.visible === false) {
+    clearOverlay(circle, overlayKey, activeSet);
+    return;
+  }
+
+  overlay.x = circle.x;
+  overlay.y = circle.y;
+  const scaleX = circle.scale?.x ?? 1;
+  const scaleY = circle.scale?.y ?? scaleX;
+  overlay.scale?.set?.(scaleX, scaleY);
+  overlay.zIndex = circle.zIndex ?? 0;
+}
+
+function drawOverlay(circle, highlightColor, overlayKey, activeSet) {
   if (!circle) return null;
 
   if (circle.visible === false) {
-    clearNodeHighlight(circle);
+    clearOverlay(circle, overlayKey, activeSet);
     return null;
   }
 
-  clearNodeHighlight(circle);
+  clearOverlay(circle, overlayKey, activeSet);
 
   const overlay = new PIXI.Graphics();
   overlay.eventMode = "none";
@@ -42,27 +59,27 @@ export function highlightNode(circle, highlightColor) {
   } else {
     circle.addChild?.(overlay);
   }
-  circle.highlightOverlay = overlay;
-  activeHighlights.add(circle);
-  updateHighlightOverlay(circle);
+  circle[overlayKey] = overlay;
+  activeSet.add(circle);
+  updateOverlay(circle, overlayKey, activeSet);
 
   return overlay;
 }
 
-function updateHighlightOverlay(circle) {
-  if (!circle?.highlightOverlay || circle.highlightOverlay.destroyed) return;
-  if (circle.visible === false) {
-    clearNodeHighlight(circle);
-    return;
-  }
+export function clearNodeHighlight(circle) {
+  clearOverlay(circle, "highlightOverlay", activeHighlights);
+}
 
-  const overlay = circle.highlightOverlay;
-  overlay.x = circle.x;
-  overlay.y = circle.y;
-  const scaleX = circle.scale?.x ?? 1;
-  const scaleY = circle.scale?.y ?? scaleX;
-  overlay.scale?.set?.(scaleX, scaleY);
-  overlay.zIndex = circle.zIndex ?? 0;
+export function highlightNode(circle, highlightColor) {
+  return drawOverlay(circle, highlightColor, "highlightOverlay", activeHighlights);
+}
+
+export function clearCommunityHighlight(circle) {
+  clearOverlay(circle, "communityHighlightOverlay", activeCommunityHighlights);
+}
+
+export function highlightCommunityNode(circle, highlightColor) {
+  return drawOverlay(circle, highlightColor, "communityHighlightOverlay", activeCommunityHighlights);
 }
 
 export function updateHighlights() {
@@ -71,6 +88,14 @@ export function updateHighlights() {
       activeHighlights.delete(circle);
       continue;
     }
-    updateHighlightOverlay(circle);
+    updateOverlay(circle, "highlightOverlay", activeHighlights);
+  }
+
+  for (const circle of activeCommunityHighlights) {
+    if (!circle || circle.destroyed) {
+      activeCommunityHighlights.delete(circle);
+      continue;
+    }
+    updateOverlay(circle, "communityHighlightOverlay", activeCommunityHighlights);
   }
 }
