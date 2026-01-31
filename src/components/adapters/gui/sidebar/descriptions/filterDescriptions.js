@@ -47,12 +47,20 @@ export const minKCoreSizeDescription = (
   </div>
 );
 
-export const compDensityDescription = (
+export const communityDensityDescription = (
   <div>
     <p className="margin-0">
-      You can filter the components/clusters based on their density. The density is measured as the average amount of neighbors per node. If a given
-      component has a smaller density than the applied threshold, the component will not be drawn. Increasing this value can significantly enhance
-      performance by reducing the graph size.
+      You can filter communities based on their density. The density is measured as the average amount of neighbors per node. If a given community has
+      a smaller density than the applied threshold, the community will not be drawn. This is applied before community computation, so it can change
+      the resulting communities. Increasing this value can significantly enhance performance by reducing the graph size.
+    </p>
+  </div>
+);
+
+export const communityFilterSizeDescription = (
+  <div>
+    <p className="margin-0">
+      Filter out communities outside the given range. Set the minimum to 0 and leave the maximum empty to disable this filter.
     </p>
   </div>
 );

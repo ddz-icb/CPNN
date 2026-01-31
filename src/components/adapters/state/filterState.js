@@ -1,8 +1,6 @@
 import { create } from "zustand";
 
 export const linkThresholdInit = 0.7;
-export const minCompSizeInit = 2;
-export const maxCompSizeInit = ""; // typically int but can be empty if no maxSize
 export const nodeFilterInit = true;
 export const linkFilterInit = true;
 export const linkFilterTextInit = "";
@@ -10,17 +8,16 @@ export const nodeFilterTextInit = "";
 export const nodeIdFiltersInit = [];
 export const nodeIdFilterTextInit = "";
 export const minKCoreSizeInit = 0;
-export const compDensityInit = 0;
+export const communityDensityInit = 0;
 export const lassoInit = false;
 export const lassoSelectionInit = [];
 export const communityModeInit = "communities";
 export const communityResolutionInit = 0;
 export const communityHiddenIdsInit = [];
 export const communityComputeKeyInit = 0;
-export const communityMinSizeInit = 0;
-export const communityMinSizeTextInit = 0;
-export const communityMaxSizeInit = "";
-export const communityMaxSizeTextInit = "";
+export const communityFilterMinSizeInit = 2;
+export const communityFilterMaxSizeInit = "";
+export const communityFilterMaxSizeTextInit = "";
 
 export const filterInit = {
   linkThreshold: linkThresholdInit,
@@ -31,12 +28,8 @@ export const filterInit = {
   nodeFilterText: nodeFilterTextInit,
   nodeIdFilters: nodeIdFiltersInit,
   nodeIdFilterText: nodeIdFilterTextInit,
-  minCompSize: minCompSizeInit,
-  minCompSizeText: minCompSizeInit,
-  maxCompSize: maxCompSizeInit,
-  maxCompSizeText: maxCompSizeInit,
-  compDensity: compDensityInit,
-  compDensityText: compDensityInit,
+  communityDensity: communityDensityInit,
+  communityDensityText: communityDensityInit,
   minKCoreSize: minKCoreSizeInit,
   minKCoreSizeText: minKCoreSizeInit,
   lasso: lassoInit,
@@ -46,10 +39,10 @@ export const filterInit = {
   communityResolutionText: communityResolutionInit,
   communityHiddenIds: communityHiddenIdsInit,
   communityComputeKey: communityComputeKeyInit,
-  communityMinSize: communityMinSizeInit,
-  communityMinSizeText: communityMinSizeTextInit,
-  communityMaxSize: communityMaxSizeInit,
-  communityMaxSizeText: communityMaxSizeTextInit,
+  communityFilterMinSize: communityFilterMinSizeInit,
+  communityFilterMinSizeText: communityFilterMinSizeInit,
+  communityFilterMaxSize: communityFilterMaxSizeInit,
+  communityFilterMaxSizeText: communityFilterMaxSizeInit,
 };
 
 export const useFilter = create((set) => ({

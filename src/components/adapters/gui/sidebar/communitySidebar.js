@@ -1,9 +1,10 @@
 import { FieldApplyBlock, FieldBlock, TableList } from "../reusable_components/sidebarComponents.js";
 import { SvgIcon } from "../reusable_components/SvgIcon.jsx";
 import eyeSvg from "../../../../assets/icons/eye.svg?raw";
+import backArrowSvg from "../../../../assets/icons/backArrow.svg?raw";
 import microscopeSvg from "../../../../assets/icons/microscope.svg?raw";
 
-import { useFilter, communityResolutionInit } from "../../state/filterState.js";
+import { useFilter, communityResolutionInit, communityDensityInit } from "../../state/filterState.js";
 import { useCommunityState } from "../../state/communityState.js";
 import { useGraphState } from "../../state/graphState.js";
 import { useAppearance } from "../../state/appearanceState.js";
@@ -11,10 +12,10 @@ import { useRenderState } from "../../state/canvasState.js";
 import { useContainer } from "../../state/containerState.js";
 import { getCentroid } from "../../../domain/service/graph_calculations/graphUtils.js";
 import { centerOnNode } from "../../../domain/service/canvas_interaction/centerView.js";
-import { getHiddenCommunityIdsBySize } from "../../../domain/service/graph_calculations/communityGrouping.js";
+import { getCommunityIdsOutsideSizeRange } from "../../../domain/service/graph_calculations/communityGrouping.js";
+import { communityDensityDescription, communityFilterSizeDescription } from "./descriptions/filterDescriptions.js";
 
 const VisibilityIcon = ({ item, ...props }) => <SvgIcon svg={eyeSvg} className={item?.isHidden ? "icon-muted" : ""} {...props} />;
-const IsolateIcon = (props) => <SvgIcon svg={microscopeSvg} {...props} />;
 
 export function CommunitySidebar() {
   const { filter, setFilter } = useFilter();
@@ -24,20 +25,21 @@ export function CommunitySidebar() {
   const { renderState } = useRenderState();
   const { container } = useContainer();
 
-  const manualHiddenSet = new Set((filter.communityHiddenIds ?? []).map((id) => id?.toString()));
-  const sizeHiddenIds = getHiddenCommunityIdsBySize(communityState.groups, filter.communityMinSize, filter.communityMaxSize);
-  const hiddenSet = new Set([...manualHiddenSet, ...sizeHiddenIds].map((id) => id?.toString()));
-
-  const rows = (communityState.groups ?? []).map((group) => {
+  const filterSizeIds = getCommunityIdsOutsideSizeRange(communityState.groups, filter.communityFilterMinSize, filter.communityFilterMaxSize);
+  const filterSizeSet = new Set(filterSizeIds.map((id) => id?.toString()));
+  const visibleGroups = (communityState.groups ?? []).filter((group) => !filterSizeSet.has(group?.id?.toString()));
+  const graphHiddenSet = new Set((filter.communityHiddenIds ?? []).map((id) => id?.toString()));
+  const rows = visibleGroups.map((group) => {
+    const isHidden = graphHiddenSet.has(group.id?.toString());
     return {
       ...group,
       primaryText: group.label,
       secondaryText: `${group.size} nodes`,
-      isHidden: hiddenSet.has(group.id?.toString()),
+      isHidden,
     };
   });
 
-  const selectedGroup = (communityState.groups ?? []).find((group) => group.id === communityState.selectedGroupId);
+  const selectedGroup = visibleGroups.find((group) => group.id === communityState.selectedGroupId);
 
   const handleResolutionChange = (value) => {
     if (value === filter.communityResolution) return;
@@ -49,28 +51,11 @@ export function CommunitySidebar() {
     setFilter("communityResolutionText", value);
   };
 
-  const handleApplyMinSize = () => {
-    const minSize = parseMinSize(filter.communityMinSizeText);
-    setFilter("communityMinSize", minSize);
-    setFilter("communityMinSizeText", minSize.toString());
-  };
-
-  const handleApplyMaxSize = () => {
-    const maxSize = parseMaxSize(filter.communityMaxSizeText);
-    if (maxSize === null) {
-      setFilter("communityMaxSize", "");
-      setFilter("communityMaxSizeText", "");
-      return;
-    }
-    setFilter("communityMaxSize", maxSize);
-    setFilter("communityMaxSizeText", maxSize.toString());
-  };
-
   const handleToggleVisibility = (item) => {
     const groupId = item?.id?.toString();
     if (!groupId) return;
 
-    const nextHidden = new Set(manualHiddenSet);
+    const nextHidden = new Set(graphHiddenSet);
     if (nextHidden.has(groupId)) {
       nextHidden.delete(groupId);
     } else {
@@ -79,9 +64,41 @@ export function CommunitySidebar() {
     setFilter("communityHiddenIds", Array.from(nextHidden));
   };
 
+  const handleApplyFilterMinSize = () => {
+    const minSize = parseMinSize(filter.communityFilterMinSizeText);
+    setFilter("communityFilterMinSize", minSize);
+    setFilter("communityFilterMinSizeText", minSize.toString());
+  };
+
+  const handleApplyFilterMaxSize = () => {
+    const maxSize = parseMaxSize(filter.communityFilterMaxSizeText);
+    if (maxSize === null) {
+      setFilter("communityFilterMaxSize", "");
+      setFilter("communityFilterMaxSizeText", "");
+      return;
+    }
+    setFilter("communityFilterMaxSize", maxSize);
+    setFilter("communityFilterMaxSizeText", maxSize.toString());
+  };
+
+  const isGroupIsolated = (groupId) => {
+    if (!groupId) return false;
+    const allIds = rows.map((group) => group.id?.toString()).filter(Boolean);
+    const currentHidden = new Set((filter.communityHiddenIds ?? []).map((id) => id?.toString()));
+    const unhiddenIds = allIds.filter((id) => !currentHidden.has(id));
+    return unhiddenIds.length === 1 && unhiddenIds[0] === groupId;
+  };
+
+  const IsolateIcon = ({ item, ...props }) => <SvgIcon svg={isGroupIsolated(item?.id?.toString()) ? backArrowSvg : microscopeSvg} {...props} />;
+
   const handleIsolateGroup = (item) => {
     const groupId = item?.id?.toString();
     if (!groupId) return;
+
+    if (isGroupIsolated(groupId)) {
+      setFilter("communityHiddenIds", []);
+      return;
+    }
 
     const allIds = rows.map((group) => group.id?.toString()).filter(Boolean);
     const hiddenIds = allIds.filter((id) => id !== groupId);
@@ -122,26 +139,39 @@ export function CommunitySidebar() {
         infoHeading={"Community Resolution"}
         infoDescription={"Higher values yield smaller communities. A resolution of 0 captures connected components."}
       />
-      <FieldApplyBlock
-        valueText={filter.communityMinSizeText}
-        setValueText={(value) => setFilter("communityMinSizeText", value)}
-        onApply={handleApplyMinSize}
+      <div className="table-list-heading">Community Filters</div>
+      <FieldBlock
+        valueText={filter.communityDensityText}
+        setValue={(value) => setFilter("communityDensity", value)}
+        setValueText={(value) => setFilter("communityDensityText", value)}
+        fallbackValue={communityDensityInit}
         min={0}
         step={1}
-        text={"Min Communitiy size"}
-        infoHeading={"Min Communitiy size"}
-        infoDescription={"Hide communities with fewer than this many nodes. Set to 0 to show all communities."}
+        text={"Community Density"}
+        infoHeading={"Filter by Community Density"}
+        infoDescription={communityDensityDescription}
       />
       <FieldApplyBlock
-        valueText={filter.communityMaxSizeText}
-        setValueText={(value) => setFilter("communityMaxSizeText", value)}
-        onApply={handleApplyMaxSize}
+        valueText={filter.communityFilterMinSizeText}
+        setValueText={(value) => setFilter("communityFilterMinSizeText", value)}
+        onApply={handleApplyFilterMinSize}
         min={0}
         step={1}
-        text={"Max Communitiy size"}
-        infoHeading={"Max Communitiy size"}
-        infoDescription={"Hide communities with more than this many nodes. Leave empty to show all communities."}
+        text={"Min Community Size"}
+        infoHeading={"Filter communities by size"}
+        infoDescription={communityFilterSizeDescription}
       />
+      <FieldApplyBlock
+        valueText={filter.communityFilterMaxSizeText}
+        setValueText={(value) => setFilter("communityFilterMaxSizeText", value)}
+        onApply={handleApplyFilterMaxSize}
+        min={0}
+        step={1}
+        text={"Max Community Size"}
+        infoHeading={"Filter communities by size"}
+        infoDescription={communityFilterSizeDescription}
+      />
+      <div className="table-list-heading">Community Physics</div>
       <TableList
         heading={`Communities (${rows.length})`}
         data={rows}
@@ -150,10 +180,10 @@ export function CommunitySidebar() {
         onItemClick={handleFocusGroup}
         ActionIcon={VisibilityIcon}
         onActionIconClick={handleToggleVisibility}
-        actionIconTooltipContent={(item) => (item.isHidden ? "Show community" : "Hide community")}
+        actionIconTooltipContent={(item) => (item?.isHidden ? "Show community" : "Hide community")}
         ActionIcon2={IsolateIcon}
         onActionIcon2Click={handleIsolateGroup}
-        actionIcon2TooltipContent={() => "Show only this community"}
+        actionIcon2TooltipContent={(item) => (isGroupIsolated(item?.id?.toString()) ? "Revert (show all communities)" : "Show only this community")}
       />
       {selectedGroup && (
         <div className="block-section block-section-stack">

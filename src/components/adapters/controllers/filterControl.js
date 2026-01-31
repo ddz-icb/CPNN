@@ -7,9 +7,7 @@ import {
   filterNodeAttribs,
   filterNodeIds,
   filterThreshold,
-  filterCompDensity,
-  filterMaxCompSize,
-  filterMinCompSize,
+  filterCommunityDensity,
   filterMinNeighborhood,
   filterNodesExist,
   filterLasso,
@@ -22,7 +20,7 @@ import { usePixiState } from "../state/pixiState.js";
 import { useGraphFlags } from "../state/graphFlagsState.js";
 import { errorService } from "../../application/services/errorService.js";
 import { useCommunityState } from "../state/communityState.js";
-import { getHiddenCommunityIdsBySize } from "../../domain/service/graph_calculations/communityGrouping.js";
+import { getCommunityIdsOutsideSizeRange } from "../../domain/service/graph_calculations/communityGrouping.js";
 
 export function FilterControl() {
   const { filter } = useFilter();
@@ -52,16 +50,12 @@ export function FilterControl() {
       filter.nodeFilter,
       "\n    Node ID Filters: ",
       filter.nodeIdFilters,
-      "\n    Mininum component size: ",
-      filter.minCompSize,
-      "\n    Maximum component size: ",
-      filter.maxCompSize,
       "\n    Minimum k-Core size: ",
       filter.minKCoreSize,
       "\n    Groups: ",
       filter.nodeFilter,
-      "\n    Comp Density: ",
-      filter.compDensity,
+      "\n    Community Density: ",
+      filter.communityDensity,
       "\n    Lasso Selection: ",
       filter.lassoSelection
     );
@@ -81,12 +75,8 @@ export function FilterControl() {
       filteredGraphData = filterThreshold(filteredGraphData, filter.linkThreshold);
       filteredGraphData = filterLinkAttribs(filteredGraphData, filter.linkFilter);
 
-      filteredGraphData = filterCompDensity(filteredGraphData, filter.compDensity);
+      filteredGraphData = filterCommunityDensity(filteredGraphData, filter.communityDensity);
       filteredGraphData = filterMinNeighborhood(filteredGraphData, filter.minKCoreSize);
-      filteredGraphData = filterNodesExist(filteredGraphData);
-
-      filteredGraphData = filterMinCompSize(filteredGraphData, filter.minCompSize);
-      filteredGraphData = filterMaxCompSize(filteredGraphData, filter.maxCompSize);
       filteredGraphData = filterNodesExist(filteredGraphData);
 
       const baseSignature = getGraphSignature(filteredGraphData);
@@ -102,8 +92,10 @@ export function FilterControl() {
       const effectiveHiddenIds = getEffectiveHiddenIds(
         communityState.groups,
         filter.communityHiddenIds,
-        filter.communityMinSize,
-        filter.communityMaxSize
+        {
+          min: filter.communityFilterMinSize,
+          max: filter.communityFilterMaxSize,
+        }
       );
       const shouldFilterGroups = !communityState.isStale && communityState.idToGroup && effectiveHiddenIds.length > 0;
 
@@ -131,14 +123,12 @@ export function FilterControl() {
     filter.linkFilter,
     filter.nodeFilter,
     filter.nodeIdFilters,
-    filter.minCompSize,
-    filter.maxCompSize,
-    filter.compDensity,
+    filter.communityDensity,
     filter.minKCoreSize,
     filter.lassoSelection,
     filter.communityHiddenIds,
-    filter.communityMinSize,
-    filter.communityMaxSize,
+    filter.communityFilterMinSize,
+    filter.communityFilterMaxSize,
     graphState.originGraph,
     pixiState.nodeContainers,
     pixiState.nodeMap,
@@ -160,8 +150,10 @@ export function FilterControl() {
     const effectiveHiddenIds = getEffectiveHiddenIds(
       communityState.groups,
       filter.communityHiddenIds,
-      filter.communityMinSize,
-      filter.communityMaxSize
+      {
+        min: filter.communityFilterMinSize,
+        max: filter.communityFilterMaxSize,
+      }
     );
     const shouldFilterGroups = !communityState.isStale && communityState.idToGroup && effectiveHiddenIds.length > 0;
 
@@ -197,19 +189,19 @@ export function FilterControl() {
     communityState.isGroupFiltered,
     communityState.groups,
     filter.communityHiddenIds,
-    filter.communityMinSize,
-    filter.communityMaxSize,
+    filter.communityFilterMinSize,
+    filter.communityFilterMaxSize,
     graphState.graph?.name,
     setCommunityState,
   ]);
 }
 
-function getEffectiveHiddenIds(groups, manualHiddenIds, minSize, maxSize) {
+function getEffectiveHiddenIds(groups, manualHiddenIds, filterRange) {
   const hiddenSet = new Set(
     Array.isArray(manualHiddenIds) ? manualHiddenIds.map((id) => id?.toString()).filter(Boolean) : []
   );
-  const sizeHiddenIds = getHiddenCommunityIdsBySize(groups, minSize, maxSize);
-  sizeHiddenIds.forEach((id) => hiddenSet.add(id?.toString()));
+  const filterIds = getCommunityIdsOutsideSizeRange(groups, filterRange?.min, filterRange?.max);
+  filterIds.forEach((id) => hiddenSet.add(id?.toString()));
   return Array.from(hiddenSet);
 }
 

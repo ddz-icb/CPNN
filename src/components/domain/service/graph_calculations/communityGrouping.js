@@ -144,7 +144,7 @@ export function isCommunityMode(mode) {
   return normalizeMode(mode) === COMMUNITY_MODE.communities;
 }
 
-export function getHiddenCommunityIdsBySize(groups, minSize, maxSize) {
+export function getCommunityIdsOutsideSizeRange(groups, minSize, maxSize) {
   if (!Array.isArray(groups) || groups.length === 0) return [];
 
   const minValue = typeof minSize === "number" ? minSize : Number(minSize);

@@ -2,18 +2,12 @@ import { Button, FieldBlock, SliderBlock, SwitchBlock, LassoFilterBlock } from "
 import {
   filterInit,
   linkThresholdInit,
-  maxCompSizeInit,
   minKCoreSizeInit,
-  compDensityInit,
-  minCompSizeInit,
 } from "../../../adapters/state/filterState.js";
 import {
-  compDensityDescription,
   lassoDescription,
   linkThresholdDescription,
-  maxCompSizeDescription,
   mergeByNameDescription,
-  minCompSizeDescription,
   minKCoreSizeDescription,
 } from "./descriptions/filterDescriptions.js";
 import { useFilter } from "../../state/filterState.js";
@@ -71,28 +65,6 @@ export function FilterSidebar() {
       <NodeAttribFilterBlock />
       <NodeIdFilterBlock />
       <FieldBlock
-        valueText={filter.minCompSizeText}
-        setValue={(value) => setFilter("minCompSize", value)}
-        setValueText={(value) => setFilter("minCompSizeText", value)}
-        fallbackValue={minCompSizeInit}
-        min={1}
-        step={1}
-        text={"Min Component Size"}
-        infoHeading={"Filter by Component Size"}
-        infoDescription={minCompSizeDescription}
-      />
-      <FieldBlock
-        valueText={filter.maxCompSizeText}
-        setValue={(value) => setFilter("maxCompSize", value)}
-        setValueText={(value) => setFilter("maxCompSizeText", value)}
-        fallbackValue={maxCompSizeInit}
-        min={1}
-        step={1}
-        text={"Max Component Size"}
-        infoHeading={"Filter by Component Size"}
-        infoDescription={maxCompSizeDescription}
-      />
-      <FieldBlock
         valueText={filter.minKCoreSizeText}
         setValue={(value) => setFilter("minKCoreSize", value)}
         setValueText={(value) => setFilter("minKCoreSizeText", value)}
@@ -102,17 +74,6 @@ export function FilterSidebar() {
         text={"Min k-Core Size"}
         infoHeading={"Filter by minimum k-Core Decomposition"}
         infoDescription={minKCoreSizeDescription}
-      />
-      <FieldBlock
-        valueText={filter.compDensityText}
-        setValue={(value) => setFilter("compDensity", value)}
-        setValueText={(value) => setFilter("compDensityText", value)}
-        fallbackValue={compDensityInit}
-        min={0}
-        step={1}
-        text={"Component Density"}
-        infoHeading={"Filter by Component Density"}
-        infoDescription={compDensityDescription}
       />
       <LassoFilterBlock
         isActive={filter.lasso}
