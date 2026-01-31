@@ -92,9 +92,7 @@ export function FilterControl() {
       filteredGraphData = filterNodesExist(filteredGraphData);
 
       const baseSignature = getGraphSignature(filteredGraphData);
-      const shouldUpdateBaseGraph = baseSignature && (baseSignature !== communityState.baseSignature || !communityState.baseGraphData);
-
-      if (shouldUpdateBaseGraph) {
+      if (shouldUpdateBaseGraph(baseSignature, communityState)) {
         setCommunityState("baseSignature", baseSignature);
         setCommunityState("baseGraphData", filteredGraphData);
       }
@@ -103,22 +101,20 @@ export function FilterControl() {
         min: filter.communityMinSize,
         max: filter.communityMaxSize,
       });
-      const shouldFilterGroups = !communityState.isStale && communityState.idToGroup && effectiveHiddenIds.length > 0;
-
-      if (shouldFilterGroups) {
+      if (shouldApplyGroupFilter(communityState, effectiveHiddenIds)) {
         return;
       }
 
-      const filteredGraph = { name: graphState.graph.name, data: filteredGraphData };
-
-      filterActiveNodesForPixi(appearance.showNodeLabels, filteredGraphData, pixiState.nodeMap);
-
-      setGraphFlags("filteredAfterStart", true);
-      setGraphState("graph", filteredGraph);
-
-      if (communityState.isGroupFiltered) {
-        setCommunityState("isGroupFiltered", false);
-      }
+      applyFilteredGraph({
+        filteredGraphData,
+        graphName: graphState.graph.name,
+        appearance,
+        pixiState,
+        setGraphFlags,
+        setGraphState,
+        communityState,
+        setCommunityState,
+      });
     } catch (error) {
       errorService.setError(error.message);
       log.error("Error while filtering graph:", error);
@@ -206,6 +202,36 @@ function getEffectiveHiddenIds(groups, manualHiddenIds, filterRange) {
   const filterIds = getCommunityIdsOutsideSizeRange(groups, filterRange?.min, filterRange?.max);
   filterIds.forEach((id) => hiddenSet.add(id?.toString()));
   return Array.from(hiddenSet);
+}
+
+function shouldUpdateBaseGraph(baseSignature, communityState) {
+  return baseSignature && (baseSignature !== communityState.baseSignature || !communityState.baseGraphData);
+}
+
+function shouldApplyGroupFilter(communityState, effectiveHiddenIds) {
+  return !communityState.isStale && communityState.idToGroup && effectiveHiddenIds.length > 0;
+}
+
+function applyFilteredGraph({
+  filteredGraphData,
+  graphName,
+  appearance,
+  pixiState,
+  setGraphFlags,
+  setGraphState,
+  communityState,
+  setCommunityState,
+}) {
+  const filteredGraph = { name: graphName, data: filteredGraphData };
+
+  filterActiveNodesForPixi(appearance.showNodeLabels, filteredGraphData, pixiState.nodeMap);
+
+  setGraphFlags("filteredAfterStart", true);
+  setGraphState("graph", filteredGraph);
+
+  if (communityState.isGroupFiltered) {
+    setCommunityState("isGroupFiltered", false);
+  }
 }
 
 function getEndpointId(endpoint) {
