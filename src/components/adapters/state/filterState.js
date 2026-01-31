@@ -9,15 +9,20 @@ export const nodeIdFiltersInit = [];
 export const nodeIdFilterTextInit = "";
 export const minKCoreSizeInit = 0;
 export const communityDensityInit = 0;
+export const componentDensityInit = 0;
+export const minCompSizeInit = 2;
+export const minCompSizeTextInit = 2;
+export const maxCompSizeInit = "";
+export const maxCompSizeTextInit = "";
 export const lassoInit = false;
 export const lassoSelectionInit = [];
 export const communityModeInit = "communities";
 export const communityResolutionInit = 0;
 export const communityHiddenIdsInit = [];
 export const communityComputeKeyInit = 0;
-export const communityFilterMinSizeInit = 2;
-export const communityFilterMaxSizeInit = "";
-export const communityFilterMaxSizeTextInit = "";
+export const communityMinSizeInit = 0;
+export const communityMaxSizeInit = "";
+export const communityMaxSizeTextInit = "";
 
 export const filterInit = {
   linkThreshold: linkThresholdInit,
@@ -30,6 +35,12 @@ export const filterInit = {
   nodeIdFilterText: nodeIdFilterTextInit,
   communityDensity: communityDensityInit,
   communityDensityText: communityDensityInit,
+  componentDensity: componentDensityInit,
+  componentDensityText: componentDensityInit,
+  minCompSize: minCompSizeInit,
+  minCompSizeText: minCompSizeTextInit,
+  maxCompSize: maxCompSizeInit,
+  maxCompSizeText: maxCompSizeTextInit,
   minKCoreSize: minKCoreSizeInit,
   minKCoreSizeText: minKCoreSizeInit,
   lasso: lassoInit,
@@ -39,10 +50,10 @@ export const filterInit = {
   communityResolutionText: communityResolutionInit,
   communityHiddenIds: communityHiddenIdsInit,
   communityComputeKey: communityComputeKeyInit,
-  communityFilterMinSize: communityFilterMinSizeInit,
-  communityFilterMinSizeText: communityFilterMinSizeInit,
-  communityFilterMaxSize: communityFilterMaxSizeInit,
-  communityFilterMaxSizeText: communityFilterMaxSizeInit,
+  communityMinSize: communityMinSizeInit,
+  communityMinSizeText: communityMinSizeInit,
+  communityMaxSize: communityMaxSizeInit,
+  communityMaxSizeText: communityMaxSizeInit,
 };
 
 export const useFilter = create((set) => ({

@@ -1,10 +1,17 @@
-import { FieldApplyBlock, FieldBlock, TableList } from "../reusable_components/sidebarComponents.js";
+import { FieldBlock, SliderBlock, TableList } from "../reusable_components/sidebarComponents.js";
 import { SvgIcon } from "../reusable_components/SvgIcon.jsx";
 import eyeSvg from "../../../../assets/icons/eye.svg?raw";
-import backArrowSvg from "../../../../assets/icons/backArrow.svg?raw";
+import rotateArrowSvg from "../../../../assets/icons/rotateArrow.svg?raw";
 import microscopeSvg from "../../../../assets/icons/microscope.svg?raw";
 
-import { useFilter, communityResolutionInit, communityDensityInit } from "../../state/filterState.js";
+import {
+  useFilter,
+  communityResolutionInit,
+  communityDensityInit,
+  communityMinSizeInit,
+  communityMaxSizeInit,
+} from "../../state/filterState.js";
+import { communityForceStrengthInit, usePhysics } from "../../state/physicsState.js";
 import { useCommunityState } from "../../state/communityState.js";
 import { useGraphState } from "../../state/graphState.js";
 import { useAppearance } from "../../state/appearanceState.js";
@@ -14,18 +21,20 @@ import { getCentroid } from "../../../domain/service/graph_calculations/graphUti
 import { centerOnNode } from "../../../domain/service/canvas_interaction/centerView.js";
 import { getCommunityIdsOutsideSizeRange } from "../../../domain/service/graph_calculations/communityGrouping.js";
 import { communityDensityDescription, communityFilterSizeDescription } from "./descriptions/filterDescriptions.js";
+import { communityForceStrengthDescription } from "./descriptions/physicsDescriptions.js";
 
 const VisibilityIcon = ({ item, ...props }) => <SvgIcon svg={eyeSvg} className={item?.isHidden ? "icon-muted" : ""} {...props} />;
 
 export function CommunitySidebar() {
   const { filter, setFilter } = useFilter();
+  const { physics, setPhysics } = usePhysics();
   const { communityState, setCommunityState } = useCommunityState();
   const { graphState } = useGraphState();
   const { appearance } = useAppearance();
   const { renderState } = useRenderState();
   const { container } = useContainer();
 
-  const filterSizeIds = getCommunityIdsOutsideSizeRange(communityState.groups, filter.communityFilterMinSize, filter.communityFilterMaxSize);
+  const filterSizeIds = getCommunityIdsOutsideSizeRange(communityState.groups, filter.communityMinSize, filter.communityMaxSize);
   const filterSizeSet = new Set(filterSizeIds.map((id) => id?.toString()));
   const visibleGroups = (communityState.groups ?? []).filter((group) => !filterSizeSet.has(group?.id?.toString()));
   const graphHiddenSet = new Set((filter.communityHiddenIds ?? []).map((id) => id?.toString()));
@@ -64,23 +73,6 @@ export function CommunitySidebar() {
     setFilter("communityHiddenIds", Array.from(nextHidden));
   };
 
-  const handleApplyFilterMinSize = () => {
-    const minSize = parseMinSize(filter.communityFilterMinSizeText);
-    setFilter("communityFilterMinSize", minSize);
-    setFilter("communityFilterMinSizeText", minSize.toString());
-  };
-
-  const handleApplyFilterMaxSize = () => {
-    const maxSize = parseMaxSize(filter.communityFilterMaxSizeText);
-    if (maxSize === null) {
-      setFilter("communityFilterMaxSize", "");
-      setFilter("communityFilterMaxSizeText", "");
-      return;
-    }
-    setFilter("communityFilterMaxSize", maxSize);
-    setFilter("communityFilterMaxSizeText", maxSize.toString());
-  };
-
   const isGroupIsolated = (groupId) => {
     if (!groupId) return false;
     const allIds = rows.map((group) => group.id?.toString()).filter(Boolean);
@@ -89,7 +81,7 @@ export function CommunitySidebar() {
     return unhiddenIds.length === 1 && unhiddenIds[0] === groupId;
   };
 
-  const IsolateIcon = ({ item, ...props }) => <SvgIcon svg={isGroupIsolated(item?.id?.toString()) ? backArrowSvg : microscopeSvg} {...props} />;
+  const IsolateIcon = ({ item, ...props }) => <SvgIcon svg={isGroupIsolated(item?.id?.toString()) ? rotateArrowSvg : microscopeSvg} {...props} />;
 
   const handleIsolateGroup = (item) => {
     const groupId = item?.id?.toString();
@@ -128,16 +120,32 @@ export function CommunitySidebar() {
 
   return (
     <>
-      <FieldBlock
+      <SliderBlock
+        value={filter.communityResolution}
         valueText={filter.communityResolutionText}
         setValue={handleResolutionChange}
         setValueText={handleResolutionTextChange}
         fallbackValue={communityResolutionInit}
         min={0}
-        step={0.1}
+        max={10}
+        step={1}
         text={"Community Resolution"}
         infoHeading={"Community Resolution"}
         infoDescription={"Higher values yield smaller communities. A resolution of 0 captures connected components."}
+      />
+      <div className="table-list-heading">Community Physics</div>
+      <SliderBlock
+        value={physics.communityForceStrength}
+        valueText={physics.communityForceStrengthText}
+        setValue={(value) => setPhysics("communityForceStrength", value)}
+        setValueText={(value) => setPhysics("communityForceStrengthText", value)}
+        fallbackValue={communityForceStrengthInit}
+        min={0}
+        max={10}
+        step={0.1}
+        text={"Community Force"}
+        infoHeading={"Adjusting the Community Force Strength"}
+        infoDescription={communityForceStrengthDescription}
       />
       <div className="table-list-heading">Community Filters</div>
       <FieldBlock
@@ -147,31 +155,32 @@ export function CommunitySidebar() {
         fallbackValue={communityDensityInit}
         min={0}
         step={1}
-        text={"Community Density"}
+        text={"Min Community Density"}
         infoHeading={"Filter by Community Density"}
         infoDescription={communityDensityDescription}
       />
-      <FieldApplyBlock
-        valueText={filter.communityFilterMinSizeText}
-        setValueText={(value) => setFilter("communityFilterMinSizeText", value)}
-        onApply={handleApplyFilterMinSize}
+      <FieldBlock
+        valueText={filter.communityMinSizeText}
+        setValue={(value) => setFilter("communityMinSize", value)}
+        setValueText={(value) => setFilter("communityMinSizeText", value)}
+        fallbackValue={communityMinSizeInit}
         min={0}
         step={1}
         text={"Min Community Size"}
         infoHeading={"Filter communities by size"}
         infoDescription={communityFilterSizeDescription}
       />
-      <FieldApplyBlock
-        valueText={filter.communityFilterMaxSizeText}
-        setValueText={(value) => setFilter("communityFilterMaxSizeText", value)}
-        onApply={handleApplyFilterMaxSize}
+      <FieldBlock
+        valueText={filter.communityMaxSizeText}
+        setValue={(value) => setFilter("communityMaxSize", value)}
+        setValueText={(value) => setFilter("communityMaxSizeText", value)}
+        fallbackValue={communityMaxSizeInit}
         min={0}
         step={1}
         text={"Max Community Size"}
         infoHeading={"Filter communities by size"}
         infoDescription={communityFilterSizeDescription}
       />
-      <div className="table-list-heading">Community Physics</div>
       <TableList
         heading={`Communities (${rows.length})`}
         data={rows}
@@ -183,7 +192,7 @@ export function CommunitySidebar() {
         actionIconTooltipContent={(item) => (item?.isHidden ? "Show community" : "Hide community")}
         ActionIcon2={IsolateIcon}
         onActionIcon2Click={handleIsolateGroup}
-        actionIcon2TooltipContent={(item) => (isGroupIsolated(item?.id?.toString()) ? "Revert (show all communities)" : "Show only this community")}
+        actionIcon2TooltipContent={(item) => (isGroupIsolated(item?.id?.toString()) ? "Revert" : "Show only this community")}
       />
       {selectedGroup && (
         <div className="block-section block-section-stack">
@@ -207,21 +216,6 @@ export function CommunitySidebar() {
 function formatTopAttributes(topAttributes) {
   if (!Array.isArray(topAttributes) || topAttributes.length === 0) return "";
   return topAttributes.map((entry) => `${entry.name} (${entry.count})`).join(", ");
-}
-
-function parseMinSize(valueText) {
-  if (valueText === "" || valueText === null || valueText === undefined) return 0;
-  const parsed = Number(valueText);
-  if (!Number.isFinite(parsed)) return 0;
-  return Math.max(0, Math.floor(parsed));
-}
-
-function parseMaxSize(valueText) {
-  if (valueText === "" || valueText === null || valueText === undefined) return null;
-  const parsed = Number(valueText);
-  if (!Number.isFinite(parsed)) return null;
-  if (parsed <= 0) return null;
-  return Math.floor(parsed);
 }
 
 function DetailRow({ label, value }) {

@@ -4,7 +4,7 @@ import * as d3 from "d3";
 import * as d3Force3d from "d3-force-3d";
 
 import { radius } from "../../domain/service/canvas_drawing/nodes.js";
-import { getAdjacentData, getComponentData, getCommunityData } from "../../domain/service/graph_calculations/graphUtils.js";
+import { getAdjacentData, getComponentData } from "../../domain/service/graph_calculations/graphUtils.js";
 import {
   accuracyBarnesHut,
   borderCheck,
@@ -22,9 +22,11 @@ import { useRenderState } from "../state/canvasState.js";
 import { errorService } from "../../application/services/errorService.js";
 import { useGraphFlags } from "../state/graphFlagsState.js";
 import { useAppearance } from "../state/appearanceState.js";
+import { useCommunityState } from "../state/communityState.js";
 
 export function PhysicsControl() {
   const { physics, setPhysics } = usePhysics();
+  const { communityState } = useCommunityState();
   const { container } = useContainer();
   const { graphState } = useGraphState();
   const { graphFlags } = useGraphFlags();
@@ -209,17 +211,31 @@ export function PhysicsControl() {
       if (physics.communityForceStrength == 0) {
         renderState.simulation.force("community", null);
         renderState.simulation.alpha(1).restart();
+        return;
+      }
+
+      if (communityState.isStale || !communityState.idToGroup) {
+        renderState.simulation.force("community", null);
+        renderState.simulation.alpha(1).restart();
+        return;
       } else {
-        const [idToComm] = getCommunityData(graphState.graph.data);
-        if (!idToComm) return;
         const threshold = 3;
 
-        renderState.simulation.force("community", groupRepulsionForce(idToComm, threshold).strength(physics.communityForceStrength));
+        renderState.simulation
+          .force("community", groupRepulsionForce(communityState.idToGroup, threshold).strength(physics.communityForceStrength));
         renderState.simulation.alpha(1).restart();
       }
     } catch (error) {
       errorService.setError(error.message);
       log.error("Error updating community force:", error);
     }
-  }, [physics.communityForceStrength, graphFlags.filteredAfterStart, graphState.graph, renderState.simulation, appearance.threeD]);
+  }, [
+    physics.communityForceStrength,
+    communityState.idToGroup,
+    communityState.isStale,
+    graphFlags.filteredAfterStart,
+    graphState.graph,
+    renderState.simulation,
+    appearance.threeD,
+  ]);
 }

@@ -170,7 +170,7 @@ function UploadGraph() {
         value={mergeByName}
         setValue={() => setMergeProtein(!mergeByName)}
         text={"Merge nodes sharing the same name"}
-        infoHeading={"Merge by Name"}
+        infoHeading={"Merge Nodes by Name"}
         infoDescription={mergeByNameDescription}
       />
       <div className="block-section"></div>

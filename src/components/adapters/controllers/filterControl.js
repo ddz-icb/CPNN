@@ -8,7 +8,10 @@ import {
   filterNodeIds,
   filterThreshold,
   filterCommunityDensity,
+  filterComponentDensity,
+  filterMaxCompSize,
   filterMinNeighborhood,
+  filterMinCompSize,
   filterNodesExist,
   filterLasso,
   filterGroupVisibility,
@@ -56,8 +59,14 @@ export function FilterControl() {
       filter.nodeFilter,
       "\n    Community Density: ",
       filter.communityDensity,
+      "\n    Component Density: ",
+      filter.componentDensity,
       "\n    Lasso Selection: ",
-      filter.lassoSelection
+      filter.lassoSelection,
+      "\n    Min Component Size: ",
+      filter.minCompSize,
+      "\n    Max Component Size: ",
+      filter.maxCompSize,
     );
 
     try {
@@ -75,28 +84,25 @@ export function FilterControl() {
       filteredGraphData = filterThreshold(filteredGraphData, filter.linkThreshold);
       filteredGraphData = filterLinkAttribs(filteredGraphData, filter.linkFilter);
 
+      filteredGraphData = filterComponentDensity(filteredGraphData, filter.componentDensity);
       filteredGraphData = filterCommunityDensity(filteredGraphData, filter.communityDensity);
       filteredGraphData = filterMinNeighborhood(filteredGraphData, filter.minKCoreSize);
+      filteredGraphData = filterMinCompSize(filteredGraphData, filter.minCompSize);
+      filteredGraphData = filterMaxCompSize(filteredGraphData, filter.maxCompSize);
       filteredGraphData = filterNodesExist(filteredGraphData);
 
       const baseSignature = getGraphSignature(filteredGraphData);
-      const shouldUpdateBaseGraph =
-        baseSignature &&
-        (baseSignature !== communityState.baseSignature || !communityState.baseGraphData);
+      const shouldUpdateBaseGraph = baseSignature && (baseSignature !== communityState.baseSignature || !communityState.baseGraphData);
 
       if (shouldUpdateBaseGraph) {
         setCommunityState("baseSignature", baseSignature);
         setCommunityState("baseGraphData", filteredGraphData);
       }
 
-      const effectiveHiddenIds = getEffectiveHiddenIds(
-        communityState.groups,
-        filter.communityHiddenIds,
-        {
-          min: filter.communityFilterMinSize,
-          max: filter.communityFilterMaxSize,
-        }
-      );
+      const effectiveHiddenIds = getEffectiveHiddenIds(communityState.groups, filter.communityHiddenIds, {
+        min: filter.communityMinSize,
+        max: filter.communityMaxSize,
+      });
       const shouldFilterGroups = !communityState.isStale && communityState.idToGroup && effectiveHiddenIds.length > 0;
 
       if (shouldFilterGroups) {
@@ -124,11 +130,14 @@ export function FilterControl() {
     filter.nodeFilter,
     filter.nodeIdFilters,
     filter.communityDensity,
+    filter.componentDensity,
     filter.minKCoreSize,
+    filter.minCompSize,
+    filter.maxCompSize,
     filter.lassoSelection,
     filter.communityHiddenIds,
-    filter.communityFilterMinSize,
-    filter.communityFilterMaxSize,
+    filter.communityMinSize,
+    filter.communityMaxSize,
     graphState.originGraph,
     pixiState.nodeContainers,
     pixiState.nodeMap,
@@ -147,14 +156,10 @@ export function FilterControl() {
     const graphName = graphState.graph?.name;
     if (!baseGraphData || !graphName) return;
 
-    const effectiveHiddenIds = getEffectiveHiddenIds(
-      communityState.groups,
-      filter.communityHiddenIds,
-      {
-        min: filter.communityFilterMinSize,
-        max: filter.communityFilterMaxSize,
-      }
-    );
+    const effectiveHiddenIds = getEffectiveHiddenIds(communityState.groups, filter.communityHiddenIds, {
+      min: filter.communityMinSize,
+      max: filter.communityMaxSize,
+    });
     const shouldFilterGroups = !communityState.isStale && communityState.idToGroup && effectiveHiddenIds.length > 0;
 
     if (!shouldFilterGroups) {
@@ -189,17 +194,15 @@ export function FilterControl() {
     communityState.isGroupFiltered,
     communityState.groups,
     filter.communityHiddenIds,
-    filter.communityFilterMinSize,
-    filter.communityFilterMaxSize,
+    filter.communityMinSize,
+    filter.communityMaxSize,
     graphState.graph?.name,
     setCommunityState,
   ]);
 }
 
 function getEffectiveHiddenIds(groups, manualHiddenIds, filterRange) {
-  const hiddenSet = new Set(
-    Array.isArray(manualHiddenIds) ? manualHiddenIds.map((id) => id?.toString()).filter(Boolean) : []
-  );
+  const hiddenSet = new Set(Array.isArray(manualHiddenIds) ? manualHiddenIds.map((id) => id?.toString()).filter(Boolean) : []);
   const filterIds = getCommunityIdsOutsideSizeRange(groups, filterRange?.min, filterRange?.max);
   filterIds.forEach((id) => hiddenSet.add(id?.toString()));
   return Array.from(hiddenSet);

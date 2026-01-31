@@ -1,12 +1,10 @@
 import { Button, SliderBlock, SwitchBlock } from "../reusable_components/sidebarComponents.js";
 
-import { communityForceStrengthInit, componentStrengthInit, gravityStrengthInit, physicsInit } from "../../../adapters/state/physicsState.js";
+import { communityForceStrengthInit, gravityStrengthInit, physicsInit } from "../../../adapters/state/physicsState.js";
 import {
   borderHeightDescription,
   borderWidthDescription,
   borderDepthDescription,
-  communityForceStrengthDescription,
-  componentStrengthDescription,
   linkLengthDescription,
   nodeRepulsionStrengthDescription,
   gravityDescription,
@@ -49,32 +47,6 @@ export function PhysicsSidebar({}) {
         text={"Gravitational Force"}
         infoHeading={"Adjusting the Gravity"}
         infoDescription={gravityDescription}
-      />
-      <SliderBlock
-        value={physics.componentStrength}
-        valueText={physics.componentStrengthText}
-        setValue={(value) => setPhysics("componentStrength", value)}
-        setValueText={(value) => setPhysics("componentStrengthText", value)}
-        fallbackValue={componentStrengthInit}
-        min={0}
-        max={10}
-        step={0.1}
-        text={"Component Force"}
-        infoHeading={"Adjusting the Component Force Strength"}
-        infoDescription={componentStrengthDescription}
-      />
-      <SliderBlock
-        value={physics.communityForceStrength}
-        valueText={physics.communityForceStrengthText}
-        setValue={(value) => setPhysics("communityForceStrength", value)}
-        setValueText={(value) => setPhysics("communityForceStrengthText", value)}
-        fallbackValue={communityForceStrengthInit}
-        min={0}
-        max={10}
-        step={0.1}
-        text={"Community Force"}
-        infoHeading={"Adjusting the Community Force Strength"}
-        infoDescription={communityForceStrengthDescription}
       />
       <SliderBlock
         value={physics.nodeRepulsionStrength}

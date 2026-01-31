@@ -57,6 +57,16 @@ export const communityDensityDescription = (
   </div>
 );
 
+export const componentDensityDescription = (
+  <div>
+    <p className="margin-0">
+      You can filter components based on their density. The density is measured as the average amount of neighbors per node. If a given component has
+      a smaller density than the applied threshold, the component will not be drawn. Increasing this value can significantly enhance performance by
+      reducing the graph size.
+    </p>
+  </div>
+);
+
 export const communityFilterSizeDescription = (
   <div>
     <p className="margin-0">

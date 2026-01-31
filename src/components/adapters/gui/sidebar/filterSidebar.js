@@ -3,11 +3,17 @@ import {
   filterInit,
   linkThresholdInit,
   minKCoreSizeInit,
+  minCompSizeInit,
+  maxCompSizeInit,
+  componentDensityInit,
 } from "../../../adapters/state/filterState.js";
 import {
   lassoDescription,
   linkThresholdDescription,
+  maxCompSizeDescription,
+  componentDensityDescription,
   mergeByNameDescription,
+  minCompSizeDescription,
   minKCoreSizeDescription,
 } from "./descriptions/filterDescriptions.js";
 import { useFilter } from "../../state/filterState.js";
@@ -41,13 +47,7 @@ export function FilterSidebar() {
       <div className="block-section">
         <Button text={"Reset Filters"} onClick={handleResetFilters} />
       </div>
-      <SwitchBlock
-        value={graphFlags.mergeByName}
-        setValue={() => setGraphFlags("mergeByName", !graphFlags.mergeByName)}
-        text={"Merge by Name"}
-        infoHeading={"Merge nodes with the same Name"}
-        infoDescription={mergeByNameDescription}
-      />
+      <div className="table-list-heading">Link Filters</div>
       <SliderBlock
         value={filter.linkThreshold}
         valueText={filter.linkThresholdText}
@@ -62,6 +62,15 @@ export function FilterSidebar() {
         infoDescription={linkThresholdDescription}
       />
       <LinkAttribFilterBlock />
+
+      <div className="table-list-heading">Node Filters</div>
+      <SwitchBlock
+        value={graphFlags.mergeByName}
+        setValue={() => setGraphFlags("mergeByName", !graphFlags.mergeByName)}
+        text={"Merge Nodes by Name"}
+        infoHeading={"Merge nodes with the same Name"}
+        infoDescription={mergeByNameDescription}
+      />
       <NodeAttribFilterBlock />
       <NodeIdFilterBlock />
       <FieldBlock
@@ -82,6 +91,40 @@ export function FilterSidebar() {
         onClearSelection={handleClearLassoSelection}
         infoHeading={"Lasso Filter"}
         infoDescription={lassoDescription}
+      />
+      <div className="table-list-heading">Component Filters</div>
+      <FieldBlock
+        valueText={filter.componentDensityText}
+        setValue={(value) => setFilter("componentDensity", value)}
+        setValueText={(value) => setFilter("componentDensityText", value)}
+        fallbackValue={componentDensityInit}
+        min={0}
+        step={1}
+        text={"Min Component Density"}
+        infoHeading={"Filter by Component Density"}
+        infoDescription={componentDensityDescription}
+      />
+      <FieldBlock
+        valueText={filter.minCompSizeText}
+        setValue={(value) => setFilter("minCompSize", value)}
+        setValueText={(value) => setFilter("minCompSizeText", value)}
+        fallbackValue={minCompSizeInit}
+        min={1}
+        step={1}
+        text={"Min Component Size"}
+        infoHeading={"Filter components by size"}
+        infoDescription={minCompSizeDescription}
+      />
+      <FieldBlock
+        valueText={filter.maxCompSizeText}
+        setValue={(value) => setFilter("maxCompSize", value)}
+        setValueText={(value) => setFilter("maxCompSizeText", value)}
+        fallbackValue={maxCompSizeInit}
+        min={1}
+        step={1}
+        text={"Max Component Size"}
+        infoHeading={"Filter components by size"}
+        infoDescription={maxCompSizeDescription}
       />
     </>
   );

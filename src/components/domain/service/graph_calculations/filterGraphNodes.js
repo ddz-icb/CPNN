@@ -1,7 +1,7 @@
 import { getAdjacentData, getComponentData } from "./graphUtils.js";
 import { filterNodesExist } from "./filterGraphLinks.js";
 
-export function filterCommunityDensity(graphData, communityDensity) {
+function getComponentDensityData(graphData) {
   const [IdToComp, compToCompSize] = getComponentData(graphData);
 
   const componentEdgeCount = [];
@@ -22,13 +22,23 @@ export function filterCommunityDensity(graphData, communityDensity) {
     componentAvgDegree[comp] = n > 0 ? (2 * m) / n : 0;
   }
 
+  return { IdToComp, componentAvgDegree };
+}
+
+export function filterComponentDensity(graphData, componentDensity) {
+  if (componentDensity <= 0) return graphData;
+  const { IdToComp, componentAvgDegree } = getComponentDensityData(graphData);
   return {
     ...graphData,
     nodes: graphData.nodes.filter((node) => {
       const comp = IdToComp[node.id];
-      return componentAvgDegree[comp] >= communityDensity;
+      return componentAvgDegree[comp] >= componentDensity;
     }),
   };
+}
+
+export function filterCommunityDensity(graphData, communityDensity) {
+  return filterComponentDensity(graphData, communityDensity);
 }
 
 export function filterMinNeighborhood(graphData, minKCoreSize) {
