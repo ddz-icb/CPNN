@@ -202,6 +202,23 @@ export function filterNodeIds(graphData, nodeIdFilters) {
   };
 }
 
+export function filterGroupVisibility(graphData, idToGroup, hiddenGroupIds) {
+  if (!idToGroup || !Array.isArray(hiddenGroupIds) || hiddenGroupIds.length === 0) {
+    return graphData;
+  }
+
+  const hiddenSet = new Set(hiddenGroupIds.map((id) => id?.toString()));
+
+  return {
+    ...graphData,
+    nodes: graphData.nodes.filter((node) => {
+      const groupId = idToGroup[node.id];
+      if (groupId === undefined || groupId === null) return true;
+      return !hiddenSet.has(groupId.toString());
+    }),
+  };
+}
+
 export function filterActiveNodesForPixi(showNodeLabels, graphData, nodeMap) {
   if (!nodeMap || !graphData?.nodes) return;
 

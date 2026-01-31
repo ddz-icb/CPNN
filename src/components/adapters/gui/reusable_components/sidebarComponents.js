@@ -250,6 +250,7 @@ export function TableList({
                     {!showActionIconOn || showActionIconOn(item) ? (
                       <td className="item-table-logo">
                         <ActionIcon
+                          item={item}
                           key={`action-icon-${instanceId}-${index}`}
                           onClick={() => onActionIconClick && onActionIconClick(item)}
                           {...(actionIconTooltipContent && {
@@ -260,7 +261,7 @@ export function TableList({
                       </td>
                     ) : (
                       <td className="item-table-empty-logo">
-                        <ActionIcon key={`action-icon-empty-${instanceId}-${index}`} />
+                        <ActionIcon item={item} key={`action-icon-empty-${instanceId}-${index}`} />
                       </td>
                     )}
                   </>
@@ -269,6 +270,7 @@ export function TableList({
                 {ActionIcon2 && (
                   <td className="item-table-logo">
                     <ActionIcon2
+                      item={item}
                       key={`action-icon-2-${instanceId}-${index}`}
                       onClick={() => onActionIcon2Click && onActionIcon2Click(item)}
                       {...(actionIcon2TooltipContent && {

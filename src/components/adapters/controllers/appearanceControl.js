@@ -143,8 +143,13 @@ export function AppearanceControl() {
     if (!graphState.graph) return;
 
     const linkWidth = calculateLinkWidth(linkCount);
+    const linkWidthText = linkWidth.toFixed(1);
 
-    setAppearance("linkWidth", linkWidth);
-    setAppearance("linkWidthText", linkWidth.toFixed(1));
+    if (appearance.linkWidth !== linkWidth) {
+      setAppearance("linkWidth", linkWidth);
+    }
+    if (appearance.linkWidthText !== linkWidthText) {
+      setAppearance("linkWidthText", linkWidthText);
+    }
   }, [graphState.graph, linkCount]);
 }

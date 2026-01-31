@@ -122,6 +122,11 @@
   cursor: pointer;
 }
 
+.icon-muted {
+  opacity: 0.35;
+  filter: grayscale(100%);
+}
+
 .item-table-empty-logo {
   display: block;
   width: 2rem;

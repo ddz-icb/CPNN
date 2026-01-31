@@ -1,6 +1,6 @@
 import log from "../logging/logger.js";
 import { linkAttribsToColorIndicesInit, nodeAttribsToColorIndicesInit, useColorschemeState } from "../state/colorschemeState.js";
-import { linkThresholdInit, useFilter } from "../state/filterState.js";
+import { filterInit, linkThresholdInit, useFilter } from "../state/filterState.js";
 import { useGraphFlags } from "../state/graphFlagsState.js";
 import { useGraphMetrics } from "../state/graphMetricsState.js";
 import { useGraphState } from "../state/graphState.js";
@@ -89,7 +89,7 @@ export const useGraphSetup = () => {
       setAllPhysics(graph.data.physics);
     }
     if (graph.data.filter) {
-      setAllFilter(graph.data.filter);
+      setAllFilter({ ...filterInit, ...graph.data.filter });
     }
 
     setKeepMapping(false);

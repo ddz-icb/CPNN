@@ -119,7 +119,7 @@ export function getLinkWeightMinMax(graphData) {
   return { minWeight: minWeight, maxWeight: maxWeight };
 }
 
-export function getCommunityData(graphData) {
+export function getCommunityData(graphData, options = {}) {
   if (graphData.nodes.length == 0) return [null, null];
 
   console.log("GRAPHDATA", graphData);
@@ -139,7 +139,7 @@ export function getCommunityData(graphData) {
     }
   });
 
-  louvain.assign(newGraph);
+  louvain.assign(newGraph, options);
 
   const idToComm = {};
   const commToSize = {};

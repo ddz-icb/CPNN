@@ -9,6 +9,7 @@ import { SelectionSidebar } from "./selectionSidebar.js";
 import { SearchSidebar } from "./searchSidebar.js";
 import { AppearanceSidebar } from "./appearanceSidebar.js";
 import { ExportSidebar } from "./exportSidebar.js";
+import { CommunitySidebar } from "./communitySidebar.js";
 
 export function Sidebar(props) {
   const [activeNavItem, setActiveNavItem] = useState("Selection");
@@ -18,6 +19,7 @@ export function Sidebar(props) {
     Data: <DataSidebar {...props} />,
     Search: <SearchSidebar />,
     Filter: <FilterSidebar />,
+    Groups: <CommunitySidebar />,
     Physics: <PhysicsSidebar />,
     Appearance: <AppearanceSidebar {...props} />,
     Export: <ExportSidebar />,
