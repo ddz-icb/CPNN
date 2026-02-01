@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export const communityResolutionInit = 0;
+export const communityResolutionInit = 1;
 
 export const communityStateInit = {
   communities: [],

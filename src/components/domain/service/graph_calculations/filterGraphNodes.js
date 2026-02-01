@@ -1,28 +1,46 @@
-import { getAdjacentData, getComponentData } from "./graphUtils.js";
+import { getAdjacentData, getCommunityData, getComponentData } from "./graphUtils.js";
 import { filterNodesExist } from "./filterGraphLinks.js";
 
-function getComponentDensityData(graphData) {
-  const [IdToComp, compToCompSize] = getComponentData(graphData);
-
-  const componentEdgeCount = [];
+function getGroupAvgDegree(graphData, idToGroup, groupToSize) {
+  const groupEdgeCount = {};
   graphData.links.forEach((link) => {
     const sourceId = link.source.id || link.source;
     const targetId = link.target.id || link.target;
-    const compSource = IdToComp[sourceId];
-    const compTarget = IdToComp[targetId];
-    if (compSource === compTarget) {
-      componentEdgeCount[compSource] = (componentEdgeCount[compSource] || 0) + 1;
+    const sourceGroup = idToGroup[sourceId];
+    const targetGroup = idToGroup[targetId];
+    if (sourceGroup === undefined || sourceGroup === null) return;
+    if (sourceGroup === targetGroup) {
+      groupEdgeCount[sourceGroup] = (groupEdgeCount[sourceGroup] || 0) + 1;
     }
   });
 
-  const componentAvgDegree = [];
-  for (let comp in compToCompSize) {
-    const n = compToCompSize[comp];
-    const m = componentEdgeCount[comp] || 0;
-    componentAvgDegree[comp] = n > 0 ? (2 * m) / n : 0;
+  const groupAvgDegree = {};
+  for (const groupId in groupToSize) {
+    const n = groupToSize[groupId];
+    const m = groupEdgeCount[groupId] || 0;
+    groupAvgDegree[groupId] = n > 0 ? (2 * m) / n : 0;
   }
 
+  return groupAvgDegree;
+}
+
+function getComponentDensityData(graphData) {
+  const [IdToComp, compToCompSize] = getComponentData(graphData);
+  const componentAvgDegree = getGroupAvgDegree(graphData, IdToComp, compToCompSize);
+
   return { IdToComp, componentAvgDegree };
+}
+
+function getCommunitySizeData(graphData, communityResolution) {
+  const resolutionValue = typeof communityResolution === "number" ? communityResolution : Number(communityResolution);
+  if (Number.isFinite(resolutionValue) && resolutionValue === 0) {
+    const [idToComponent, componentToSize] = getComponentData(graphData);
+    return { idToCommunity: idToComponent, communityToSize: componentToSize };
+  }
+
+  const options = Number.isFinite(resolutionValue) ? { resolution: resolutionValue } : {};
+  const [idToCommunity, communityToSize] = getCommunityData(graphData, options);
+  return { idToCommunity, communityToSize };
 }
 
 export function filterComponentDensity(graphData, componentDensity) {
@@ -37,8 +55,52 @@ export function filterComponentDensity(graphData, componentDensity) {
   };
 }
 
-export function filterCommunityDensity(graphData, communityDensity) {
-  return filterComponentDensity(graphData, communityDensity);
+export function filterCommunityDensity(graphData, communityDensity, communityResolution) {
+  if (communityDensity <= 0) return graphData;
+
+  const resolutionValue = typeof communityResolution === "number" ? communityResolution : Number(communityResolution);
+  if (Number.isFinite(resolutionValue) && resolutionValue === 0) {
+    return filterComponentDensity(graphData, communityDensity);
+  }
+
+  const options = Number.isFinite(resolutionValue) ? { resolution: resolutionValue } : {};
+  const [idToCommunity, communityToSize] = getCommunityData(graphData, options);
+  if (!idToCommunity || !communityToSize) return graphData;
+
+  const communityAvgDegree = getGroupAvgDegree(graphData, idToCommunity, communityToSize);
+  return {
+    ...graphData,
+    nodes: graphData.nodes.filter((node) => {
+      const communityId = idToCommunity[node.id];
+      return communityAvgDegree[communityId] >= communityDensity;
+    }),
+  };
+}
+
+export function filterCommunitySizeRange(graphData, minCommunitySize, maxCommunitySize, communityResolution) {
+  const minValue = typeof minCommunitySize === "number" ? minCommunitySize : Number(minCommunitySize);
+  const hasMin = Number.isFinite(minValue) && minValue > 0;
+
+  const hasMaxInput = maxCommunitySize !== "" && maxCommunitySize !== null && maxCommunitySize !== undefined;
+  const maxValue = typeof maxCommunitySize === "number" ? maxCommunitySize : Number(maxCommunitySize);
+  const hasMax = hasMaxInput && Number.isFinite(maxValue) && maxValue > 0;
+
+  if (!hasMin && !hasMax) return graphData;
+
+  const { idToCommunity, communityToSize } = getCommunitySizeData(graphData, communityResolution);
+  if (!idToCommunity || !communityToSize) return graphData;
+
+  return {
+    ...graphData,
+    nodes: graphData.nodes.filter((node) => {
+      const communityId = idToCommunity[node.id];
+      const size = communityToSize?.[communityId];
+      if (!Number.isFinite(size)) return true;
+      if (hasMin && size < minValue) return false;
+      if (hasMax && size > maxValue) return false;
+      return true;
+    }),
+  };
 }
 
 export function filterMinNeighborhood(graphData, minKCoreSize) {

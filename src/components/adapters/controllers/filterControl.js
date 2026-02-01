@@ -8,6 +8,7 @@ import {
   filterNodeIds,
   filterThreshold,
   filterCommunityDensity,
+  filterCommunitySizeRange,
   filterComponentDensity,
   filterMaxCompSize,
   filterMinNeighborhood,
@@ -58,6 +59,10 @@ export function FilterControl() {
       filter.nodeFilter,
       "\n    Community Density: ",
       filter.communityDensity,
+      "\n    Min Community Size: ",
+      filter.minCommunitySize,
+      "\n    Max Community Size: ",
+      filter.maxCommunitySize,
       "\n    Component Density: ",
       filter.componentDensity,
       "\n    Lasso Selection: ",
@@ -84,10 +89,16 @@ export function FilterControl() {
       filteredGraphData = filterLinkAttribs(filteredGraphData, filter.linkFilter);
 
       filteredGraphData = filterComponentDensity(filteredGraphData, filter.componentDensity);
-      filteredGraphData = filterCommunityDensity(filteredGraphData, filter.communityDensity);
+      filteredGraphData = filterCommunityDensity(filteredGraphData, filter.communityDensity, communityState.communityResolution);
       filteredGraphData = filterMinNeighborhood(filteredGraphData, filter.minKCoreSize);
       filteredGraphData = filterMinCompSize(filteredGraphData, filter.minCompSize);
       filteredGraphData = filterMaxCompSize(filteredGraphData, filter.maxCompSize);
+      filteredGraphData = filterCommunitySizeRange(
+        filteredGraphData,
+        filter.minCommunitySize,
+        filter.maxCommunitySize,
+        communityState.communityResolution,
+      );
       const communitySummary = buildCommunitySummary(filteredGraphData, { resolution: communityState.communityResolution });
       filteredGraphData = filterCommunityVisibility(filteredGraphData, communitySummary.idToCommunity, filter.communityHiddenIds);
       filteredGraphData = filterNodesExist(filteredGraphData);
@@ -112,6 +123,8 @@ export function FilterControl() {
     filter.nodeFilter,
     filter.nodeIdFilters,
     filter.communityDensity,
+    filter.minCommunitySize,
+    filter.maxCommunitySize,
     filter.componentDensity,
     filter.minKCoreSize,
     filter.minCompSize,

@@ -9,6 +9,10 @@ export const nodeIdFiltersInit = [];
 export const nodeIdFilterTextInit = "";
 export const minKCoreSizeInit = 0;
 export const communityDensityInit = 0;
+export const minCommunitySizeInit = 0;
+export const minCommunitySizeTextInit = 0;
+export const maxCommunitySizeInit = "";
+export const maxCommunitySizeTextInit = "";
 export const componentDensityInit = 0;
 export const minCompSizeInit = 2;
 export const minCompSizeTextInit = 2;
@@ -28,6 +32,10 @@ export const filterInit = {
   nodeIdFilterText: nodeIdFilterTextInit,
   communityDensity: communityDensityInit,
   communityDensityText: communityDensityInit,
+  minCommunitySize: minCommunitySizeInit,
+  minCommunitySizeText: minCommunitySizeTextInit,
+  maxCommunitySize: maxCommunitySizeInit,
+  maxCommunitySizeText: maxCommunitySizeTextInit,
   componentDensity: componentDensityInit,
   componentDensityText: componentDensityInit,
   minCompSize: minCompSizeInit,

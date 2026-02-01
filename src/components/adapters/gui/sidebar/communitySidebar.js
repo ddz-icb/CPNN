@@ -1,17 +1,20 @@
-import { SliderBlock, TableList } from "../reusable_components/sidebarComponents.js";
+import { FieldBlock, SliderBlock, TableList } from "../reusable_components/sidebarComponents.js";
 import { SvgIcon } from "../reusable_components/SvgIcon.jsx";
 import eyeSvg from "../../../../assets/icons/eye.svg?raw";
 import rotateArrowSvg from "../../../../assets/icons/rotateArrow.svg?raw";
 import microscopeSvg from "../../../../assets/icons/microscope.svg?raw";
 
-import { useFilter } from "../../state/filterState.js";
+import { communityDensityInit, maxCommunitySizeInit, minCommunitySizeInit, useFilter } from "../../state/filterState.js";
 import { communityResolutionInit, useCommunityState } from "../../state/communityState.js";
 import { useGraphState } from "../../state/graphState.js";
 import { useAppearance } from "../../state/appearanceState.js";
 import { useRenderState } from "../../state/canvasState.js";
 import { useContainer } from "../../state/containerState.js";
+import { communityForceStrengthInit, usePhysics } from "../../state/physicsState.js";
 import { getCentroid } from "../../../domain/service/graph_calculations/graphUtils.js";
 import { centerOnNode } from "../../../domain/service/canvas_interaction/centerView.js";
+import { communityForceStrengthDescription } from "./descriptions/physicsDescriptions.js";
+import { communityFilterSizeDescription } from "./descriptions/filterDescriptions.js";
 
 const VisibilityIcon = ({ item, ...props }) => <SvgIcon svg={eyeSvg} className={item?.isHidden ? "icon-muted" : ""} {...props} />;
 
@@ -22,6 +25,7 @@ export function CommunitySidebar() {
   const { appearance } = useAppearance();
   const { renderState } = useRenderState();
   const { container } = useContainer();
+  const { physics, setPhysics } = usePhysics();
 
   const graphHiddenSet = new Set((filter.communityHiddenIds ?? []).map((id) => id?.toString()));
   const rows = communityState.communities.map((community) => {
@@ -108,6 +112,54 @@ export function CommunitySidebar() {
         text={"Community Resolution"}
         infoHeading={"Community Resolution"}
         infoDescription={"Higher values yield smaller communities. A resolution of 0 captures connected components."}
+      />
+      <div className="table-list-heading">Physics</div>
+      <SliderBlock
+        value={physics.communityForceStrength}
+        valueText={physics.communityForceStrengthText}
+        setValue={(value) => setPhysics("communityForceStrength", value)}
+        setValueText={(value) => setPhysics("communityForceStrengthText", value)}
+        fallbackValue={communityForceStrengthInit}
+        min={0}
+        max={10}
+        step={0.1}
+        text={"Community Force"}
+        infoHeading={"Adjusting the Community Force Strength"}
+        infoDescription={communityForceStrengthDescription}
+      />
+      <div className="table-list-heading">Filter</div>
+      <FieldBlock
+        valueText={filter.communityDensityText}
+        setValue={(value) => setFilter("communityDensity", value)}
+        setValueText={(value) => setFilter("communityDensityText", value)}
+        fallbackValue={communityDensityInit}
+        min={0}
+        step={1}
+        text={"Community Density"}
+        infoHeading={"Community Density"}
+        infoDescription={"aösdlkaslödkfj"}
+      />
+      <FieldBlock
+        valueText={filter.minCommunitySizeText}
+        setValue={(value) => setFilter("minCommunitySize", value)}
+        setValueText={(value) => setFilter("minCommunitySizeText", value)}
+        fallbackValue={minCommunitySizeInit}
+        min={0}
+        step={1}
+        text={"Min Community Size"}
+        infoHeading={"Filter communities by size"}
+        infoDescription={communityFilterSizeDescription}
+      />
+      <FieldBlock
+        valueText={filter.maxCommunitySizeText}
+        setValue={(value) => setFilter("maxCommunitySize", value)}
+        setValueText={(value) => setFilter("maxCommunitySizeText", value)}
+        fallbackValue={maxCommunitySizeInit}
+        min={1}
+        step={1}
+        text={"Max Community Size"}
+        infoHeading={"Filter communities by size"}
+        infoDescription={communityFilterSizeDescription}
       />
       <TableList
         heading={`Communities (${rows.length})`}
