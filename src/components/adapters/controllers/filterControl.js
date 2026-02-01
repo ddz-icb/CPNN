@@ -88,16 +88,15 @@ export function FilterControl() {
       filteredGraphData = filterMinNeighborhood(filteredGraphData, filter.minKCoreSize);
       filteredGraphData = filterMinCompSize(filteredGraphData, filter.minCompSize);
       filteredGraphData = filterMaxCompSize(filteredGraphData, filter.maxCompSize);
+      const communitySummary = buildCommunitySummary(filteredGraphData, { resolution: communityState.communityResolution });
+      filteredGraphData = filterCommunityVisibility(filteredGraphData, communitySummary.idToCommunity, filter.communityHiddenIds);
       filteredGraphData = filterNodesExist(filteredGraphData);
-
-      const summary = buildCommunitySummary(filteredGraphData, { resolution: communityState.communityResolution });
-      filteredGraphData = filterCommunityVisibility(filteredGraphData, summary.idToGroup, filter.communityHiddenIds);
 
       const filteredGraph = { name: graphState.graph.name, data: filteredGraphData };
 
-      setCommunityState("groups", summary.groups);
-      setCommunityState("idToGroup", summary.idToGroup);
-      setCommunityState("groupToNodeIds", summary.groupToNodeIds);
+      setCommunityState("communities", communitySummary.communities);
+      setCommunityState("idToCommunity", communitySummary.idToCommunity);
+      setCommunityState("communityToNodeIds", communitySummary.communityToNodeIds);
 
       filterActiveNodesForPixi(appearance.showNodeLabels, filteredGraphData, pixiState.nodeMap);
       setGraphFlags("filteredAfterStart", true);
@@ -119,8 +118,6 @@ export function FilterControl() {
     filter.maxCompSize,
     filter.lassoSelection,
     filter.communityHiddenIds,
-    filter.communityMinSize,
-    filter.communityMaxSize,
     graphState.originGraph,
     pixiState.nodeContainers,
     pixiState.nodeMap,

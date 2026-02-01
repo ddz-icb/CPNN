@@ -49,8 +49,8 @@ export function HighlightControl() {
     });
     communityHighlightedRef.current = [];
 
-    const groupId = communityState.selectedGroupId;
-    const nodeIds = communityState.groupToNodeIds?.[groupId];
+    const communityId = communityState.selectedCommunityId;
+    const nodeIds = communityState.communityToNodeIds?.[communityId];
     if (!Array.isArray(nodeIds) || nodeIds.length === 0) return;
 
     nodeIds.forEach((nodeId) => {
@@ -61,7 +61,7 @@ export function HighlightControl() {
         communityHighlightedRef.current.push(nodeId);
       }
     });
-  }, [communityState.selectedGroupId, communityState.groupToNodeIds, pixiState.nodeMap, theme.communityHighlightColor]);
+  }, [communityState.selectedCommunityId, communityState.communityToNodeIds, pixiState.nodeMap, theme.communityHighlightColor]);
 
   return null;
 }

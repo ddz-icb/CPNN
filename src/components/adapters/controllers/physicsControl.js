@@ -214,7 +214,7 @@ export function PhysicsControl() {
         return;
       }
 
-      if (!communityState.idToGroup) {
+      if (!communityState.idToCommunity) {
         renderState.simulation.force("community", null);
         renderState.simulation.alpha(1).restart();
         return;
@@ -222,7 +222,7 @@ export function PhysicsControl() {
         const threshold = 3;
 
         renderState.simulation
-          .force("community", groupRepulsionForce(communityState.idToGroup, threshold).strength(physics.communityForceStrength));
+          .force("community", groupRepulsionForce(communityState.idToCommunity, threshold).strength(physics.communityForceStrength));
         renderState.simulation.alpha(1).restart();
       }
     } catch (error) {
@@ -231,7 +231,7 @@ export function PhysicsControl() {
     }
   }, [
     physics.communityForceStrength,
-    communityState.idToGroup,
+    communityState.idToCommunity,
     graphFlags.filteredAfterStart,
     graphState.graph,
     renderState.simulation,

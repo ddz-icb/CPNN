@@ -3,12 +3,12 @@ import { create } from "zustand";
 export const communityResolutionInit = 0;
 
 export const communityStateInit = {
-  groups: [],
-  idToGroup: null,
-  groupToNodeIds: {},
+  communities: [],
+  idToCommunity: null,
+  communityToNodeIds: {},
   communityResolution: communityResolutionInit,
   communityResolutionText: communityResolutionInit,
-  selectedGroupId: null,
+  selectedCommunityId: null,
 };
 
 export const useCommunityState = create((set) => ({

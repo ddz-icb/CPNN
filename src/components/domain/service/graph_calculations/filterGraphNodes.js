@@ -212,12 +212,12 @@ export function filterNodeIds(graphData, nodeIdFilters) {
   };
 }
 
-export function filterCommunityVisibility(graphData, idToGroup, hiddenGroupIds) {
-  if (!graphData || !idToGroup) {
+export function filterCommunityVisibility(graphData, idToCommunity, hiddenCommunityIds) {
+  if (!graphData || !idToCommunity) {
     return graphData;
   }
 
-  const hiddenIds = Array.isArray(hiddenGroupIds) ? hiddenGroupIds : hiddenGroupIds != null ? [hiddenGroupIds] : [];
+  const hiddenIds = Array.isArray(hiddenCommunityIds) ? hiddenCommunityIds : hiddenCommunityIds != null ? [hiddenCommunityIds] : [];
   if (hiddenIds.length === 0) {
     return graphData;
   }
@@ -230,9 +230,9 @@ export function filterCommunityVisibility(graphData, idToGroup, hiddenGroupIds) 
   const filteredGraph = {
     ...graphData,
     nodes: graphData.nodes?.filter((node) => {
-      const groupId = idToGroup[node.id];
-      if (groupId === undefined || groupId === null) return true;
-      return !hiddenSet.has(groupId.toString());
+      const communityId = idToCommunity[node.id];
+      if (communityId === undefined || communityId === null) return true;
+      return !hiddenSet.has(communityId.toString());
     }),
   };
 

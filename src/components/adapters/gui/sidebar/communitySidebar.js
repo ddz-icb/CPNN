@@ -12,7 +12,6 @@ import { useRenderState } from "../../state/canvasState.js";
 import { useContainer } from "../../state/containerState.js";
 import { getCentroid } from "../../../domain/service/graph_calculations/graphUtils.js";
 import { centerOnNode } from "../../../domain/service/canvas_interaction/centerView.js";
-import { getCommunityIdsOutsideSizeRange } from "../../../domain/service/graph_calculations/communityGrouping.js";
 
 const VisibilityIcon = ({ item, ...props }) => <SvgIcon svg={eyeSvg} className={item?.isHidden ? "icon-muted" : ""} {...props} />;
 
@@ -24,77 +23,74 @@ export function CommunitySidebar() {
   const { renderState } = useRenderState();
   const { container } = useContainer();
 
-  const filterSizeIds = getCommunityIdsOutsideSizeRange(communityState.groups, filter.communityMinSize, filter.communityMaxSize);
-  const filterSizeSet = new Set(filterSizeIds.map((id) => id?.toString()));
-  const visibleGroups = (communityState.groups ?? []).filter((group) => !filterSizeSet.has(group?.id?.toString()));
   const graphHiddenSet = new Set((filter.communityHiddenIds ?? []).map((id) => id?.toString()));
-  const rows = visibleGroups.map((group) => {
-    const isHidden = graphHiddenSet.has(group.id?.toString());
+  const rows = communityState.communities.map((community) => {
+    const isHidden = graphHiddenSet.has(community.id?.toString());
     return {
-      ...group,
-      primaryText: group.label,
-      secondaryText: `${group.size} nodes`,
+      ...community,
+      primaryText: community.label,
+      secondaryText: `${community.size} nodes`,
       isHidden,
     };
   });
 
-  const selectedGroup = visibleGroups.find((group) => group.id === communityState.selectedGroupId);
+  const selectedCommunity = communityState.communities.find((community) => community.id === communityState.selectedCommunityId);
 
   const handleToggleVisibility = (item) => {
-    const groupId = item?.id?.toString();
-    if (!groupId) return;
+    const communityId = item?.id?.toString();
+    if (!communityId) return;
 
     const nextHidden = new Set(graphHiddenSet);
-    if (nextHidden.has(groupId)) {
-      nextHidden.delete(groupId);
+    if (nextHidden.has(communityId)) {
+      nextHidden.delete(communityId);
     } else {
-      nextHidden.add(groupId);
+      nextHidden.add(communityId);
     }
     setFilter("communityHiddenIds", Array.from(nextHidden));
   };
 
-  const isGroupIsolated = (groupId) => {
-    if (!groupId) return false;
-    const allIds = rows.map((group) => group.id?.toString()).filter(Boolean);
+  const isCommunityIsolated = (communityId) => {
+    if (!communityId) return false;
+    const allIds = rows.map((community) => community.id?.toString()).filter(Boolean);
     const currentHidden = new Set((filter.communityHiddenIds ?? []).map((id) => id?.toString()));
     const unhiddenIds = allIds.filter((id) => !currentHidden.has(id));
-    return unhiddenIds.length === 1 && unhiddenIds[0] === groupId;
+    return unhiddenIds.length === 1 && unhiddenIds[0] === communityId;
   };
 
-  const IsolateIcon = ({ item, ...props }) => <SvgIcon svg={isGroupIsolated(item?.id?.toString()) ? rotateArrowSvg : microscopeSvg} {...props} />;
+  const IsolateIcon = ({ item, ...props }) => <SvgIcon svg={isCommunityIsolated(item?.id?.toString()) ? rotateArrowSvg : microscopeSvg} {...props} />;
 
-  const handleIsolateGroup = (item) => {
-    const groupId = item?.id?.toString();
-    if (!groupId) return;
+  const handleIsolateCommunity = (item) => {
+    const communityId = item?.id?.toString();
+    if (!communityId) return;
 
-    if (isGroupIsolated(groupId)) {
+    if (isCommunityIsolated(communityId)) {
       setFilter("communityHiddenIds", []);
       return;
     }
 
-    const allIds = rows.map((group) => group.id?.toString()).filter(Boolean);
-    const hiddenIds = allIds.filter((id) => id !== groupId);
+    const allIds = rows.map((community) => community.id?.toString()).filter(Boolean);
+    const hiddenIds = allIds.filter((id) => id !== communityId);
     setFilter("communityHiddenIds", hiddenIds);
   };
 
-  const handleFocusGroup = (item) => {
-    const groupId = item?.id?.toString();
-    if (!groupId) return;
-    const nextSelection = communityState.selectedGroupId === groupId ? null : groupId;
-    setCommunityState("selectedGroupId", nextSelection);
+  const handleFocusCommunity = (item) => {
+    const communityId = item?.id?.toString();
+    if (!communityId) return;
+    const nextSelection = communityState.selectedCommunityId === communityId ? null : communityId;
+    setCommunityState("selectedCommunityId", nextSelection);
     if (!nextSelection) return;
 
-    const nodeIds = communityState.groupToNodeIds?.[groupId];
+    const nodeIds = communityState.communityToNodeIds?.[communityId];
     if (!Array.isArray(nodeIds) || nodeIds.length === 0) return;
 
     const nodes = graphState.graph?.data?.nodes ?? [];
     if (nodes.length === 0) return;
 
     const nodeMap = new Map(nodes.map((node) => [node.id, node]));
-    const groupNodes = nodeIds.map((id) => nodeMap.get(id)).filter(Boolean);
-    if (groupNodes.length === 0) return;
+    const communityNodes = nodeIds.map((id) => nodeMap.get(id)).filter(Boolean);
+    if (communityNodes.length === 0) return;
 
-    const centroid = getCentroid(groupNodes);
+    const centroid = getCentroid(communityNodes);
     centerOnNode(centroid, { appearance, renderState, container });
   };
 
@@ -118,26 +114,26 @@ export function CommunitySidebar() {
         data={rows}
         displayKey={"primaryText"}
         secondaryKey={"secondaryText"}
-        onItemClick={handleFocusGroup}
+        onItemClick={handleFocusCommunity}
         ActionIcon={VisibilityIcon}
         onActionIconClick={handleToggleVisibility}
         actionIconTooltipContent={(item) => (item?.isHidden ? "Show community" : "Hide community")}
         ActionIcon2={IsolateIcon}
-        onActionIcon2Click={handleIsolateGroup}
-        actionIcon2TooltipContent={(item) => (isGroupIsolated(item?.id?.toString()) ? "Revert" : "Show only this community")}
+        onActionIcon2Click={handleIsolateCommunity}
+        actionIcon2TooltipContent={(item) => (isCommunityIsolated(item?.id?.toString()) ? "Revert" : "Show only this community")}
       />
-      {selectedGroup && (
+      {selectedCommunity && (
         <div className="block-section block-section-stack">
           <div className="table-list-heading">Community Details</div>
           <table className="item-table plain-item-table">
             <tbody>
-              <DetailRow label={"Label"} value={selectedGroup.label} />
-              <DetailRow label={"Nodes"} value={selectedGroup.size} />
-              <DetailRow label={"Internal Links"} value={selectedGroup.linkCount ?? 0} />
-              <DetailRow label={"External Links"} value={selectedGroup.externalLinkCount ?? 0} />
-              <DetailRow label={"Community Density"} value={formatDensity(selectedGroup.density)} />
-              <DetailRow label={"Top pathways"} value={formatTopAttributes(selectedGroup.topAttributes) || "None"} />
-              <DetailRow label={"Top link attributes"} value={formatTopAttributes(selectedGroup.topLinkAttributes) || "None"} />
+              <DetailRow label={"Label"} value={selectedCommunity.label} />
+              <DetailRow label={"Nodes"} value={selectedCommunity.size} />
+              <DetailRow label={"Internal Links"} value={selectedCommunity.linkCount ?? 0} />
+              <DetailRow label={"External Links"} value={selectedCommunity.externalLinkCount ?? 0} />
+              <DetailRow label={"Community Density"} value={formatDensity(selectedCommunity.density)} />
+              <DetailRow label={"Top pathways"} value={formatTopAttributes(selectedCommunity.topAttributes) || "None"} />
+              <DetailRow label={"Top link attributes"} value={formatTopAttributes(selectedCommunity.topLinkAttributes) || "None"} />
             </tbody>
           </table>
         </div>

@@ -5,18 +5,18 @@ function getLabelPrefix() {
   return "Community";
 }
 
-function getGroupAssignments(graphData, options = {}) {
+function getCommunityAssignments(graphData, options = {}) {
   const resolution = options.resolution;
   const useComponents = resolution === 0;
 
   if (useComponents) {
     const [idToComp, compToCompSize] = getComponentData(graphData);
-    return { idToGroup: idToComp, groupToSize: compToCompSize };
+    return { idToCommunity: idToComp, communityToSize: compToCompSize };
   }
 
   const communityOptions = resolution ? { resolution } : {};
   const [idToComm, commToSize] = getCommunityData(graphData, communityOptions);
-  return { idToGroup: idToComm, groupToSize: commToSize };
+  return { idToCommunity: idToComm, communityToSize: commToSize };
 }
 
 function collectTopAttributes(counts, limit) {
@@ -42,38 +42,38 @@ function getEndpointId(endpoint) {
 
 export function buildCommunitySummary(graphData, options = {}) {
   if (!graphData?.nodes?.length) {
-    return { groups: [], idToGroup: null, groupToNodeIds: {} };
+    return { communities: [], idToCommunity: null, communityToNodeIds: {} };
   }
 
-  const { idToGroup, groupToSize } = getGroupAssignments(graphData, options);
-  if (!idToGroup || !groupToSize) {
-    return { groups: [], idToGroup: null, groupToNodeIds: {} };
+  const { idToCommunity, communityToSize } = getCommunityAssignments(graphData, options);
+  if (!idToCommunity || !communityToSize) {
+    return { communities: [], idToCommunity: null, communityToNodeIds: {} };
   }
 
-  const groupToNodeIds = {};
-  const groupToAttribCounts = {};
-  const groupToLinkCount = {};
-  const groupToExternalLinkCount = {};
-  const groupToLinkAttribCounts = {};
+  const communityToNodeIds = {};
+  const communityToAttribCounts = {};
+  const communityToLinkCount = {};
+  const communityToExternalLinkCount = {};
+  const communityToLinkAttribCounts = {};
 
   graphData.nodes.forEach((node) => {
-    const groupId = idToGroup[node.id];
-    if (groupId === undefined || groupId === null) return;
+    const communityId = idToCommunity[node.id];
+    if (communityId === undefined || communityId === null) return;
 
-    const groupKey = groupId.toString();
-    if (!groupToNodeIds[groupKey]) {
-      groupToNodeIds[groupKey] = [];
+    const communityKey = communityId.toString();
+    if (!communityToNodeIds[communityKey]) {
+      communityToNodeIds[communityKey] = [];
     }
-    groupToNodeIds[groupKey].push(node.id);
+    communityToNodeIds[communityKey].push(node.id);
 
-    const groups = Array.isArray(node.groups) ? node.groups : [];
-    if (!groupToAttribCounts[groupKey]) {
-      groupToAttribCounts[groupKey] = {};
+    const nodeGroups = Array.isArray(node.groups) ? node.groups : [];
+    if (!communityToAttribCounts[communityKey]) {
+      communityToAttribCounts[communityKey] = {};
     }
-    groups.forEach((group) => {
-      const name = group?.toString();
+    nodeGroups.forEach((groupName) => {
+      const name = groupName?.toString();
       if (!name) return;
-      groupToAttribCounts[groupKey][name] = (groupToAttribCounts[groupKey][name] || 0) + 1;
+      communityToAttribCounts[communityKey][name] = (communityToAttribCounts[communityKey][name] || 0) + 1;
     });
   });
 
@@ -82,81 +82,57 @@ export function buildCommunitySummary(graphData, options = {}) {
     const targetId = getEndpointId(link.target);
     if (!sourceId || !targetId) return;
 
-    const sourceGroup = idToGroup[sourceId];
-    const targetGroup = idToGroup[targetId];
-    if (sourceGroup === undefined || sourceGroup === null) return;
-    if (targetGroup === undefined || targetGroup === null) return;
-    if (sourceGroup === targetGroup) {
-      const groupKey = sourceGroup.toString();
-      groupToLinkCount[groupKey] = (groupToLinkCount[groupKey] || 0) + 1;
+    const sourceCommunity = idToCommunity[sourceId];
+    const targetCommunity = idToCommunity[targetId];
+    if (sourceCommunity === undefined || sourceCommunity === null) return;
+    if (targetCommunity === undefined || targetCommunity === null) return;
+    if (sourceCommunity === targetCommunity) {
+      const communityKey = sourceCommunity.toString();
+      communityToLinkCount[communityKey] = (communityToLinkCount[communityKey] || 0) + 1;
 
       const attribs = Array.isArray(link.attribs) ? link.attribs : [];
-      if (!groupToLinkAttribCounts[groupKey]) {
-        groupToLinkAttribCounts[groupKey] = {};
+      if (!communityToLinkAttribCounts[communityKey]) {
+        communityToLinkAttribCounts[communityKey] = {};
       }
       attribs.forEach((attrib) => {
         const name = attrib?.toString();
         if (!name) return;
-        groupToLinkAttribCounts[groupKey][name] = (groupToLinkAttribCounts[groupKey][name] || 0) + 1;
+        communityToLinkAttribCounts[communityKey][name] = (communityToLinkAttribCounts[communityKey][name] || 0) + 1;
       });
     } else {
-      const sourceKey = sourceGroup.toString();
-      const targetKey = targetGroup.toString();
-      groupToExternalLinkCount[sourceKey] = (groupToExternalLinkCount[sourceKey] || 0) + 1;
-      groupToExternalLinkCount[targetKey] = (groupToExternalLinkCount[targetKey] || 0) + 1;
+      const sourceKey = sourceCommunity.toString();
+      const targetKey = targetCommunity.toString();
+      communityToExternalLinkCount[sourceKey] = (communityToExternalLinkCount[sourceKey] || 0) + 1;
+      communityToExternalLinkCount[targetKey] = (communityToExternalLinkCount[targetKey] || 0) + 1;
     }
   });
 
   const labelPrefix = getLabelPrefix();
-  const rawGroups = Object.entries(groupToSize).map(([groupId, size]) => {
-    const groupKey = groupId.toString();
-    const attribCounts = groupToAttribCounts[groupKey];
-    const linkAttribCounts = groupToLinkAttribCounts[groupKey];
-    const internalLinks = groupToLinkCount[groupKey] || 0;
+  const rawCommunities = Object.entries(communityToSize).map(([communityId, size]) => {
+    const communityKey = communityId.toString();
+    const attribCounts = communityToAttribCounts[communityKey];
+    const linkAttribCounts = communityToLinkAttribCounts[communityKey];
+    const internalLinks = communityToLinkCount[communityKey] || 0;
     return {
-      id: groupKey,
+      id: communityKey,
       size,
       linkCount: internalLinks,
-      externalLinkCount: groupToExternalLinkCount[groupKey] || 0,
+      externalLinkCount: communityToExternalLinkCount[communityKey] || 0,
       density: size > 0 ? (2 * internalLinks) / size : 0,
       topAttributes: collectTopAttributes(attribCounts, options.topAttributes ?? DEFAULT_TOP_ATTRIBUTES),
       topLinkAttributes: collectTopAttributes(linkAttribCounts, options.topAttributes ?? DEFAULT_TOP_ATTRIBUTES),
     };
   });
 
-  rawGroups.sort((a, b) => {
+  rawCommunities.sort((a, b) => {
     if (b.size !== a.size) return b.size - a.size;
     return a.id.localeCompare(b.id);
   });
 
-  const groups = rawGroups.map((group, index) => ({
-    ...group,
+  const communities = rawCommunities.map((community, index) => ({
+    ...community,
     label: `${labelPrefix} ${index + 1}`,
   }));
 
-  return { groups, idToGroup, groupToNodeIds };
-}
-
-export function getCommunityIdsOutsideSizeRange(groups, minSize, maxSize) {
-  if (!Array.isArray(groups) || groups.length === 0) return [];
-
-  const minValue = typeof minSize === "number" ? minSize : Number(minSize);
-  const hasMin = Number.isFinite(minValue) && minValue > 0;
-
-  const hasMaxInput = maxSize !== "" && maxSize !== null && maxSize !== undefined;
-  const maxValue = typeof maxSize === "number" ? maxSize : Number(maxSize);
-  const hasMax = hasMaxInput && Number.isFinite(maxValue) && maxValue > 0;
-
-  if (!hasMin && !hasMax) return [];
-
-  return groups
-    .filter((group) => {
-      const sizeValue = Number(group?.size);
-      if (!Number.isFinite(sizeValue)) return false;
-      if (hasMin && sizeValue < minValue) return true;
-      if (hasMax && sizeValue > maxValue) return true;
-      return false;
-    })
-    .map((group) => group?.id?.toString())
-    .filter(Boolean);
+  return { communities, idToCommunity, communityToNodeIds };
 }
