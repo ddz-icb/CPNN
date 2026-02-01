@@ -4,14 +4,16 @@ const indigo = "#073d7fff";
 const lightGrey = "#b2becd";
 const deepNavy = "#0f172a";
 const brightYellow = "rgba(255, 212, 0, 0.75)";
-const coolBlue = "#006aff";
+const coolBlue = "rgb(0, 106, 255)";
+const deepRed = "rgb(255, 17, 17)";
+const lightBlue = "rgb(181, 0, 191)";
 
 export const lightTheme = {
   name: "light",
   circleBorderColor: indigo,
   textColor: deepNavy,
-  highlightColor: coolBlue,
-  communityHighlightColor: "#ff7a00",
+  highlightColor: deepRed,
+  communityHighlightColor: coolBlue,
 };
 
 export const darkTheme = {
@@ -19,7 +21,7 @@ export const darkTheme = {
   circleBorderColor: lightGrey,
   textColor: lightGrey,
   highlightColor: brightYellow,
-  communityHighlightColor: "rgba(0, 200, 255, 0.75)",
+  communityHighlightColor: lightBlue,
 };
 
 export const themeInit = lightTheme;
