@@ -87,6 +87,32 @@
   gap: var(--sidebar-card-gap-y);
 }
 
+.item-table-details-cell {
+  cursor: default;
+  padding-top: var(--sidebar-control-gap-y);
+  padding-bottom: var(--sidebar-control-gap-y);
+}
+
+.toggle-list-details {
+  display: grid;
+}
+
+.toggle-list-detail-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sidebar-control-gap-y);
+  padding: var(--sidebar-control-gap-y) 0;
+}
+
+.toggle-list-detail-row + .toggle-list-detail-row {
+  border-top: var(--border-thin) solid var(--color-border-subtle);
+}
+
+.toggle-list-detail-value {
+  text-align: right;
+}
+
 .item-table-primary-text {
   font-weight: var(--font-weight-regular);
   color: var(--color-text-primary);

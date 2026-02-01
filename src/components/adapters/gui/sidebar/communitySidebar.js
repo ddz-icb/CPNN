@@ -1,4 +1,4 @@
-import { FieldBlock, SliderBlock, TableList } from "../reusable_components/sidebarComponents.js";
+import { FieldBlock, SliderBlock, ToggleList } from "../reusable_components/sidebarComponents.js";
 import { SvgIcon } from "../reusable_components/SvgIcon.jsx";
 import eyeSvg from "../../../../assets/icons/eye.svg?raw";
 import rotateArrowSvg from "../../../../assets/icons/rotateArrow.svg?raw";
@@ -37,8 +37,6 @@ export function CommunitySidebar() {
       isHidden,
     };
   });
-
-  const selectedCommunity = communityState.communities.find((community) => community.id === communityState.selectedCommunityId);
 
   const handleToggleVisibility = (item) => {
     const communityId = item?.id?.toString();
@@ -161,12 +159,25 @@ export function CommunitySidebar() {
         infoHeading={"Filter communities by size"}
         infoDescription={communityFilterSizeDescription}
       />
-      <TableList
+      <ToggleList
         heading={`Communities (${rows.length})`}
         data={rows}
         displayKey={"primaryText"}
         secondaryKey={"secondaryText"}
-        onItemClick={handleFocusCommunity}
+        expandedId={communityState.selectedCommunityId}
+        getItemId={(community) => community?.id}
+        onItemToggle={handleFocusCommunity}
+        renderExpandedContent={(community) => (
+          <div className="toggle-list-details">
+            <DetailRow label={"Label"} value={community.label} />
+            <DetailRow label={"Nodes"} value={community.size} />
+            <DetailRow label={"Internal Links"} value={community.linkCount ?? 0} />
+            <DetailRow label={"External Links"} value={community.externalLinkCount ?? 0} />
+            <DetailRow label={"Community Density"} value={formatDensity(community.density)} />
+            <DetailRow label={"Top pathways"} value={formatTopAttributes(community.topAttributes) || "None"} />
+            <DetailRow label={"Top link attributes"} value={formatTopAttributes(community.topLinkAttributes) || "None"} />
+          </div>
+        )}
         ActionIcon={VisibilityIcon}
         onActionIconClick={handleToggleVisibility}
         actionIconTooltipContent={(item) => (item?.isHidden ? "Show community" : "Hide community")}
@@ -174,22 +185,6 @@ export function CommunitySidebar() {
         onActionIcon2Click={handleIsolateCommunity}
         actionIcon2TooltipContent={(item) => (isCommunityIsolated(item?.id?.toString()) ? "Revert" : "Show only this community")}
       />
-      {selectedCommunity && (
-        <div className="block-section block-section-stack">
-          <div className="table-list-heading">Community Details</div>
-          <table className="item-table plain-item-table">
-            <tbody>
-              <DetailRow label={"Label"} value={selectedCommunity.label} />
-              <DetailRow label={"Nodes"} value={selectedCommunity.size} />
-              <DetailRow label={"Internal Links"} value={selectedCommunity.linkCount ?? 0} />
-              <DetailRow label={"External Links"} value={selectedCommunity.externalLinkCount ?? 0} />
-              <DetailRow label={"Community Density"} value={formatDensity(selectedCommunity.density)} />
-              <DetailRow label={"Top pathways"} value={formatTopAttributes(selectedCommunity.topAttributes) || "None"} />
-              <DetailRow label={"Top link attributes"} value={formatTopAttributes(selectedCommunity.topLinkAttributes) || "None"} />
-            </tbody>
-          </table>
-        </div>
-      )}
     </>
   );
 }
@@ -206,11 +201,9 @@ function formatDensity(value) {
 
 function DetailRow({ label, value }) {
   return (
-    <tr>
-      <td className="item-table-primary-text">{label}</td>
-      <td className="text-secondary" style={{ textAlign: "right" }}>
-        {value}
-      </td>
-    </tr>
+    <div className="toggle-list-detail-row">
+      <span className="item-table-primary-text">{label}</span>
+      <span className="text-secondary toggle-list-detail-value">{value}</span>
+    </div>
   );
 }

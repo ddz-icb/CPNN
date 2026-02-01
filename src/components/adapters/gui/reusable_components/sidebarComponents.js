@@ -351,6 +351,125 @@ export function TableList({
   );
 }
 
+export function ToggleList({
+  heading,
+  data,
+  displayKey,
+  secondaryKey,
+  expandedId,
+  getItemId,
+  onItemToggle,
+  renderExpandedContent,
+  ActionIcon,
+  onActionIconClick,
+  showActionIconOn,
+  itemTooltipContent,
+  actionIconTooltipContent,
+  ActionIcon2,
+  onActionIcon2Click,
+  actionIcon2TooltipContent,
+  dark,
+}) {
+  const instanceId = useId();
+  const normalizedExpandedId = expandedId === null || expandedId === undefined ? null : expandedId.toString();
+  const columnCount = 1 + (ActionIcon ? 1 : 0) + (ActionIcon2 ? 1 : 0);
+
+  return (
+    <div>
+      <div className="table-list-heading">{heading}</div>
+      <table className={`item-table ${dark && "plain-item-table"}`}>
+        <tbody>
+          {data && data.length > 0 ? (
+            data.map((item, index) => {
+              const rawItemId = getItemId ? getItemId(item) : item?.id;
+              const itemId = rawItemId === null || rawItemId === undefined ? "" : rawItemId.toString();
+              const isExpanded = normalizedExpandedId !== null && itemId !== "" && itemId === normalizedExpandedId;
+              const rowKey = itemId || `row-${index}`;
+
+              return (
+                <Fragment key={`row-${instanceId}-${rowKey}`}>
+                  <tr className="item-table-entry-highlight">
+                    <td
+                      className="item-table-text"
+                      onClick={() => onItemToggle && onItemToggle(item)}
+                      {...(itemTooltipContent && {
+                        "data-tooltip-id": `item-tooltip-${instanceId}-${index}`,
+                        "data-tooltip-content": itemTooltipContent(item),
+                      })}
+                    >
+                      <span className="item-table-primary-text">{displayKey ? item[displayKey] : item}</span>
+                      {secondaryKey && item[secondaryKey] && <span className="item-table-secondary-text">{item[secondaryKey]}</span>}
+                    </td>
+
+                    {ActionIcon && (
+                      <>
+                        {!showActionIconOn || showActionIconOn(item) ? (
+                          <td className="item-table-logo">
+                            <ActionIcon
+                              item={item}
+                              key={`action-icon-${instanceId}-${index}`}
+                              onClick={() => onActionIconClick && onActionIconClick(item)}
+                              {...(actionIconTooltipContent && {
+                                "data-tooltip-id": `action-tooltip-${instanceId}-${index}`,
+                                "data-tooltip-content": actionIconTooltipContent(item),
+                              })}
+                            />
+                          </td>
+                        ) : (
+                          <td className="item-table-empty-logo">
+                            <ActionIcon item={item} key={`action-icon-empty-${instanceId}-${index}`} />
+                          </td>
+                        )}
+                      </>
+                    )}
+
+                    {ActionIcon2 && (
+                      <td className="item-table-logo">
+                        <ActionIcon2
+                          item={item}
+                          key={`action-icon-2-${instanceId}-${index}`}
+                          onClick={() => onActionIcon2Click && onActionIcon2Click(item)}
+                          {...(actionIcon2TooltipContent && {
+                            "data-tooltip-id": `action-tooltip-2-${instanceId}-${index}`,
+                            "data-tooltip-content": actionIcon2TooltipContent(item),
+                          })}
+                        />
+                      </td>
+                    )}
+                  </tr>
+                  {isExpanded && renderExpandedContent && (
+                    <tr>
+                      <td className="item-table-details-cell" colSpan={columnCount}>
+                        {renderExpandedContent(item)}
+                      </td>
+                    </tr>
+                  )}
+                </Fragment>
+              );
+            })
+          ) : (
+            <tr>
+              <td className="item-table-text">
+                <span>None</span>
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+
+      {data &&
+        data.length > 0 &&
+        data.map((item, index) => (
+          <Fragment key={`tooltip-set-${instanceId}-${index}`}>
+            {itemTooltipContent && <Tooltip id={`item-tooltip-${instanceId}-${index}`} className="tooltip-gui" />}
+            {actionIconTooltipContent && <Tooltip id={`action-tooltip-${instanceId}-${index}`} className="tooltip-gui" />}
+            {actionIcon2TooltipContent && <Tooltip id={`action-tooltip-2-${instanceId}-${index}`} className="tooltip-gui" />}
+          </Fragment>
+        ))}
+    </div>
+  );
+}
+
 function NumericInput({ valueText, setValue, setValueText, fallbackValue, min, max, step }) {
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
