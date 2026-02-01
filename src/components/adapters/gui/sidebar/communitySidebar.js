@@ -201,7 +201,7 @@ function formatDensity(value) {
 
 function DetailRow({ label, value }) {
   return (
-    <div className="toggle-list-detail-row">
+    <div className="toggle-list-detail-item toggle-list-detail-row">
       <span className="item-table-primary-text">{label}</span>
       <span className="text-secondary toggle-list-detail-value">{value}</span>
     </div>

@@ -1,15 +1,13 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
-import axios from "axios";
 import * as $3Dmol from "3dmol/build/3Dmol.js";
 
 import log from "../../logging/logger.js";
-import { getDescriptionUniprotData, getFullNameUniprotData, getPdbIdUniprotData } from "../../../domain/service/parsing/uniprotDataParsing.js";
 
 import { useContainer } from "../../state/containerState.js";
 import { useTooltipSettings } from "../../state/tooltipState.js";
 import { useTheme } from "../../state/themeState.js";
 import { useAppearance } from "../../state/appearanceState.js";
-import { getNodeIdEntries, parseNodeIdEntries } from "../../../domain/service/parsing/nodeIdParsing.js";
+import { useProteinDetails } from "../hooks/useProteinDetails.js";
 import { useGraphState } from "../../state/graphState.js";
 import { useColorschemeState } from "../../state/colorschemeState.js";
 import { TooltipPopup, TooltipPopupItem, TooltipPopupLinkItem } from "../reusable_components/tooltipComponents.js";
@@ -19,17 +17,6 @@ import { downloadNodeIdsCsv } from "../../../domain/service/download/download.js
 import { usePixiState } from "../../state/pixiState.js";
 import { useRenderState } from "../../state/canvasState.js";
 import { formatWeight, getAdjacentNodes } from "../../../domain/service/graph_calculations/graphUtils.js";
-
-const proteinDetailsInit = {
-  fullName: "",
-  description: "",
-  pdbId: "",
-  protIdNoIsoform: "",
-  gene: "",
-  isoforms: [],
-  hasPhosphosites: false,
-  responsePdb: null,
-};
 
 export function ClickTooltip() {
   const { theme } = useTheme();
@@ -77,7 +64,7 @@ export function ClickTooltip() {
       const fallbackY = mapEntry?.circle?.y ?? node.y ?? 0;
       return { x: fallbackX, y: fallbackY };
     },
-    [appearance.cameraRef, appearance.threeD, pixiState.nodeMap]
+    [appearance.cameraRef, appearance.threeD, pixiState.nodeMap],
   );
 
   const handleExportAdjacent = useCallback(() => {
@@ -99,7 +86,7 @@ export function ClickTooltip() {
         y: pos.y,
       });
     },
-    [getNodeScreenPosition, setIsAdjacentView, setTooltipSettings, tooltipSettings.clickTooltipData]
+    [getNodeScreenPosition, setIsAdjacentView, setTooltipSettings, tooltipSettings.clickTooltipData],
   );
 
   const footerContent = useMemo(() => {
@@ -166,7 +153,7 @@ function NodeDetails({ nodeId, fullName, hasPhosphosites, isoforms, nodeGroups, 
           </div>
         ))}
       />
-      <TooltipPopupItem heading={"Gene/Protein Annotations"} value={nodeGroups.join(", ")} />
+      <TooltipPopupItem heading={"Annotations"} value={nodeGroups.join(", ")} />
       <TooltipPopupItem heading={"Description"} value={description} />
       <div className="pdb-viewer" ref={viewerRef} />
     </>
@@ -192,82 +179,6 @@ function useTooltipPosition(isActive, clickData, container) {
       transform: `${translateY}${translateX}`.trim(),
     };
   }, [clickData, height, isActive, width]);
-}
-
-function useProteinDetails(nodeId) {
-  const [details, setDetails] = useState(proteinDetailsInit);
-
-  const reset = useCallback(() => {
-    setDetails(proteinDetailsInit);
-  }, []);
-
-  useEffect(() => {
-    if (!nodeId) {
-      reset();
-      return;
-    }
-
-    let isCancelled = false;
-
-    const fetchProteinDetails = async () => {
-      try {
-        const entries = getNodeIdEntries(nodeId);
-        const parsedEntries = parseNodeIdEntries(entries);
-
-        if (isCancelled) return;
-        setDetails((prev) => ({
-          ...prev,
-          protIdNoIsoform: parsedEntries.protIdNoIsoform,
-          gene: parsedEntries.gene,
-          hasPhosphosites: parsedEntries.hasPhosphosites,
-          isoforms: parsedEntries.isoforms,
-        }));
-
-        if (!parsedEntries.protIdNoIsoform) return;
-
-        const responseUniprot = await axios.get(`http://localhost:3001/uniprot/${parsedEntries.protIdNoIsoform}`);
-        // const responseUniprot = await axios.get(`https://cpnn.ddz.de/api/uniprot/${parsedEntries.protIdNoIsoform}`);
-        if (isCancelled) return;
-
-        const uniprotData = responseUniprot?.data;
-        if (!uniprotData) return;
-
-        const nextDetails = {
-          fullName: getFullNameUniprotData(uniprotData) || "",
-          description: getDescriptionUniprotData(uniprotData) || "",
-          pdbId: "",
-          responsePdb: null,
-        };
-
-        const pdbId = getPdbIdUniprotData(uniprotData);
-        if (pdbId) {
-          nextDetails.pdbId = pdbId;
-          const responsePdb = await axios.get(`https://files.rcsb.org/download/${pdbId}.pdb`);
-          if (!isCancelled && responsePdb?.data) {
-            nextDetails.responsePdb = responsePdb;
-          }
-        }
-
-        if (!isCancelled) {
-          setDetails((prev) => ({
-            ...prev,
-            ...nextDetails,
-          }));
-        }
-      } catch (error) {
-        if (!isCancelled) log.error(error);
-      }
-    };
-
-    reset();
-    fetchProteinDetails();
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [nodeId, reset]);
-
-  return details;
 }
 
 function usePdbViewer(viewerRef, responsePdb, themeName, isTooltipActive) {

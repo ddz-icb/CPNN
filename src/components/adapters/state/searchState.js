@@ -10,6 +10,7 @@ export const searchStateInit = {
   query: queryInit,
   highlightedNodeIds: highlightedNodeIdsInit,
   matchingNodes: matchingNodesInit,
+  selectedNodeId: null,
 };
 
 export const useSearchState = create((set) => ({

@@ -2,23 +2,25 @@ import { useCallback, useRef } from "react";
 
 import { useSearchState, searchStateInit } from "../../state/searchState.js";
 import { useSidebarCodeEditor } from "../reusable_components/useSidebarCodeEditor.js";
-import { CodeEditorBlock, SwitchBlock, TableList } from "../reusable_components/sidebarComponents.js";
+import { CodeEditorBlock, SwitchBlock, ToggleList } from "../reusable_components/sidebarComponents.js";
 import { useTheme } from "../../state/themeState.js";
 import { handleEditorChange as handleEditorChangeHelper } from "../handlers/buttonHandlerFunctions.js";
 import { useAppearance } from "../../state/appearanceState.js";
 import { useRenderState } from "../../state/canvasState.js";
 import { useContainer } from "../../state/containerState.js";
 import { centerOnNode } from "../../../domain/service/canvas_interaction/centerView.js";
+import { useProteinDetails } from "../hooks/useProteinDetails.js";
 
 const MAX_RESULTS = 30;
 
 export function SearchSidebar() {
   const { searchState, setSearchState, setAllSearchState } = useSearchState();
-  const { searchValue, query, matchingNodes, highlightedNodeIds } = searchState;
+  const { searchValue, query, matchingNodes, highlightedNodeIds, selectedNodeId } = searchState;
   const { theme } = useTheme();
   const { appearance } = useAppearance();
   const { renderState } = useRenderState();
   const { container } = useContainer();
+  const { gene, isoforms } = useProteinDetails(selectedNodeId);
 
   const textareaRef = useRef(null);
 
@@ -35,9 +37,13 @@ export function SearchSidebar() {
     setAllSearchState(searchStateInit);
   };
 
-  const handleNodeFocus = (item) => {
-    const node = matchingNodes?.find((n) => n.id === item?.nodeId);
-    if (!node) return;
+  const handleNodeToggle = (item) => {
+    const nodeId = item?.nodeId;
+    if (!nodeId) return;
+    const node = item?.node ?? matchingNodes?.find((n) => n.id === nodeId);
+    const nextSelection = selectedNodeId === nodeId ? null : nodeId;
+    setSearchState("selectedNodeId", nextSelection);
+    if (!node || !nextSelection) return;
 
     setSearchState("highlightedNodeIds", [node.id]);
     centerOnNode(node, {
@@ -70,6 +76,7 @@ export function SearchSidebar() {
   const nodeResults = (matchingNodes ?? []).slice(0, MAX_RESULTS).map((node) => ({
     nodeId: node.id,
     primaryText: node.id,
+    node,
   }));
   const nodeTotal = matchingNodes?.length ?? 0;
   const nodeOverflow = nodeTotal > MAX_RESULTS;
@@ -96,10 +103,79 @@ export function SearchSidebar() {
             infoDescription={"Toggle to highlight every node that matches the current search."}
           />
         )}
-        <TableList heading={`Node Matches (${nodeTotal})`} data={nodeResults} displayKey={"primaryText"} onItemClick={handleNodeFocus} />
+        <ToggleList
+          heading={`Node Matches (${nodeTotal})`}
+          data={nodeResults}
+          displayKey={"primaryText"}
+          expandedId={selectedNodeId}
+          getItemId={(item) => item?.nodeId}
+          onItemToggle={handleNodeToggle}
+          renderExpandedContent={(item) => (
+            <div className="toggle-list-details">
+              <DetailRow label={"Name"} value={formatDetailValue(gene || item?.nodeId)} />
+              <ProteinIdsBlock isoforms={isoforms} />
+              <DetailRow label={"Annotations"} value={formatAnnotations(item?.node?.groups)} />
+            </div>
+          )}
+        />
         {nodeOverflow && <OverflowHint total={nodeTotal} />}
       </>
     </>
+  );
+}
+
+function formatDetailValue(value) {
+  if (value === undefined || value === null || value === "") return "None";
+  return value;
+}
+
+function formatAnnotations(groups) {
+  if (!Array.isArray(groups) || groups.length === 0) return "None";
+  return groups
+    .map((group) => group?.toString())
+    .filter(Boolean)
+    .join(", ");
+}
+
+function ProteinIdsBlock({ isoforms }) {
+  const hasEntries = Array.isArray(isoforms) && isoforms.length > 0;
+
+  return (
+    <div className="toggle-list-detail-item toggle-list-detail-block">
+      {hasEntries ? (
+        <table className="toggle-list-detail-table">
+          <thead>
+            <tr>
+              <th>Protein-ID</th>
+              <th>Phosphosites</th>
+            </tr>
+          </thead>
+          <tbody>
+            {isoforms.map(({ pepId, phosphosites }, index) => (
+              <tr key={`${pepId}-${index}`}>
+                <td>{pepId}</td>
+                <td>{Array.isArray(phosphosites) && phosphosites.length > 0 ? phosphosites.join(", ") : "—"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <span className="text-secondary toggle-list-detail-value">None</span>
+      )}
+    </div>
+  );
+}
+
+function DetailRow({ label, value }) {
+  const isList = Array.isArray(value);
+
+  return (
+    <div className={`toggle-list-detail-item toggle-list-detail-row${isList ? " toggle-list-detail-row--multiline" : ""}`}>
+      <span className="item-table-primary-text">{label}</span>
+      <div className="text-secondary toggle-list-detail-value">
+        {isList ? value.map((entry, index) => <div key={`${label}-${index}`}>{entry}</div>) : value}
+      </div>
+    </div>
   );
 }
 

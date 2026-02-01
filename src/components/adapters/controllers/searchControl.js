@@ -19,6 +19,7 @@ export function SearchControl() {
     const matches = getMatchingNodes(nodes, query);
     setSearchState("matchingNodes", matches);
     setSearchState("highlightedNodeIds", matches.map((node) => node.id));
+    setSearchState("selectedNodeId", null);
   }, [nodes, query]);
 
   return null;
