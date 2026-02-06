@@ -47,8 +47,8 @@ export function useProteinDetails(nodeId) {
 
         if (!parsedEntries.protIdNoIsoform) return;
 
-        const responseUniprot = await axios.get(`http://localhost:3001/uniprot/${parsedEntries.protIdNoIsoform}`);
-        // const responseUniprot = await axios.get(`https://cpnn.ddz.de/api/uniprot/${parsedEntries.protIdNoIsoform}`);
+        // const responseUniprot = await axios.get(`http://localhost:3001/uniprot/${parsedEntries.protIdNoIsoform}`);
+        const responseUniprot = await axios.get(`https://cpnn.ddz.de/api/uniprot/${parsedEntries.protIdNoIsoform}`);
         if (isCancelled) return;
 
         const uniprotData = responseUniprot?.data;
