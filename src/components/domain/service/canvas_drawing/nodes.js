@@ -6,17 +6,17 @@ export const radius = 8;
 export function drawCircle(circle, node, circleBorderColor, colorscheme, nodeAttribsToColorIndices) {
   circle
     .circle(0, 0, radius)
-    .fill({ color: getColor(nodeAttribsToColorIndices[node.groups[0]], colorscheme) })
+    .fill({ color: getColor(nodeAttribsToColorIndices[node.attribs[0]], colorscheme) })
     .stroke({ color: circleBorderColor, width: 2 });
-  for (let i = 1; i < node.groups.length; i++) {
-    const startAngle = (i * 2 * Math.PI) / node.groups.length;
-    const endAngle = ((i + 1) * 2 * Math.PI) / node.groups.length;
+  for (let i = 1; i < node.attribs.length; i++) {
+    const startAngle = (i * 2 * Math.PI) / node.attribs.length;
+    const endAngle = ((i + 1) * 2 * Math.PI) / node.attribs.length;
 
     circle
       .arc(0, 0, radius - 1, startAngle, endAngle)
       .lineTo(0, 0)
       .fill({
-        color: getColor(nodeAttribsToColorIndices[node.groups[i]], colorscheme),
+        color: getColor(nodeAttribsToColorIndices[node.attribs[i]], colorscheme),
       });
   }
   return circle;
@@ -55,7 +55,7 @@ export function drawCircleCanvas(ctx, node, circle, circleBorderColor, colorsche
   const strokeWidth = 2 * scale;
   ctx.beginPath();
   ctx.arc(centerX, centerY, effectiveRadius, 0, 2 * Math.PI);
-  const baseColor = getColor(nodeAttribsToColorIndices[node.groups[0]], colorscheme);
+  const baseColor = getColor(nodeAttribsToColorIndices[node.attribs[0]], colorscheme);
   const tintedBase = tint ? applyTintToColor(baseColor, tint) : baseColor;
   ctx.fillStyle = tintedBase;
   ctx.fill();
@@ -63,15 +63,15 @@ export function drawCircleCanvas(ctx, node, circle, circleBorderColor, colorsche
   ctx.strokeStyle = tint ? applyTintToColor(circleBorderColor, tint) : circleBorderColor;
   ctx.stroke();
 
-  for (let i = 1; i < node.groups.length; i++) {
-    const startAngle = (i * 2 * Math.PI) / node.groups.length;
-    const endAngle = ((i + 1) * 2 * Math.PI) / node.groups.length;
+  for (let i = 1; i < node.attribs.length; i++) {
+    const startAngle = (i * 2 * Math.PI) / node.attribs.length;
+    const endAngle = ((i + 1) * 2 * Math.PI) / node.attribs.length;
 
     ctx.beginPath();
     ctx.moveTo(centerX, centerY);
     ctx.arc(centerX, centerY, effectiveRadius - 1 * scale, startAngle, endAngle);
     ctx.closePath();
-    const segmentColor = getColor(nodeAttribsToColorIndices[node.groups[i]], colorscheme);
+    const segmentColor = getColor(nodeAttribsToColorIndices[node.attribs[i]], colorscheme);
     const tintedSegment = tint ? applyTintToColor(segmentColor, tint) : segmentColor;
     ctx.fillStyle = tintedSegment;
     ctx.fill();

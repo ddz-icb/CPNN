@@ -7,7 +7,7 @@ export function getMatchingNodes(nodes, query) {
 }
 
 function nodeMatchesQuery(node, query) {
-  return matchesQuery([node?.label, node?.id, node?.group, node?.type], query);
+  return matchesQuery([node?.label, node?.id, node?.attrib, node?.type], query);
 }
 
 function matchesQuery(values, query) {
@@ -22,5 +22,5 @@ export function applySearch(query, nodes) {
 
   const matches = getMatchingNodes(nodes ?? [], query);
 
-  return matches
+  return matches;
 }

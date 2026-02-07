@@ -15,7 +15,7 @@ export function initTooltips(circle, node, setTooltipSettings) {
   circle.on("mouseover", (mouseData) => {
     setTooltipSettings("hoverTooltipData", {
       node: node.id,
-      nodeGroups: node.groups,
+      nodeAttribs: node.attribs,
       x: mouseData.originalEvent.pageX,
       y: mouseData.originalEvent.pageY,
     });
@@ -27,7 +27,7 @@ export function initTooltips(circle, node, setTooltipSettings) {
   circle.on("click", (mouseData) => {
     setTooltipSettings("clickTooltipData", {
       node: node.id,
-      nodeGroups: node.groups,
+      // nodeAttribs: node.attribs,
       x: mouseData.originalEvent.pageX,
       y: mouseData.originalEvent.pageY,
     });

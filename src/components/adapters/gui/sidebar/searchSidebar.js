@@ -114,7 +114,7 @@ export function SearchSidebar() {
             <div className="toggle-list-details">
               <DetailRow label={"Name"} value={formatDetailValue(gene || item?.nodeId)} />
               <ProteinIdsBlock isoforms={isoforms} />
-              <DetailRow label={"Annotations"} value={formatAnnotations(item?.node?.groups)} />
+              <DetailRow label={"Annotations"} value={formatAnnotations(item?.node?.attribs)} />
             </div>
           )}
         />
@@ -129,10 +129,10 @@ function formatDetailValue(value) {
   return value;
 }
 
-function formatAnnotations(groups) {
-  if (!Array.isArray(groups) || groups.length === 0) return "None";
-  return groups
-    .map((group) => group?.toString())
+function formatAnnotations(attribs) {
+  if (!Array.isArray(attribs) || attribs.length === 0) return "None";
+  return attribs
+    .map((attrib) => attrib?.toString())
     .filter(Boolean)
     .join(", ");
 }

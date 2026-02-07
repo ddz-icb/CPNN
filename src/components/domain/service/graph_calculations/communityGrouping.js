@@ -66,11 +66,11 @@ export function buildCommunitySummary(graphData, options = {}) {
     }
     communityToNodeIds[communityKey].push(node.id);
 
-    const nodeGroups = Array.isArray(node.groups) ? node.groups : [];
+    const nodeAttribs = Array.isArray(node.groups) ? node.groups : [];
     if (!communityToAttribCounts[communityKey]) {
       communityToAttribCounts[communityKey] = {};
     }
-    nodeGroups.forEach((groupName) => {
+    nodeAttribs.forEach((groupName) => {
       const name = groupName?.toString();
       if (!name) return;
       communityToAttribCounts[communityKey][name] = (communityToAttribCounts[communityKey][name] || 0) + 1;

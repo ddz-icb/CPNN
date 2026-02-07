@@ -9,7 +9,7 @@ export function joinGraphs(graphData, newGraphData) {
       const baseNode = nodeMap.get(node.id);
       nodeMap.set(node.id, {
         ...baseNode,
-        groups: [...new Set([...baseNode.groups, ...node.groups])],
+        attribs: [...new Set([...baseNode.attribs, ...node.attribs])],
       });
     } else {
       nodeMap.set(node.id, { ...node });
@@ -89,25 +89,25 @@ export function filterMergeByName(graphData, mergeByName) {
   });
   const nodeIdToNodeObjectMap = new Map(graphData.nodes.map((node) => [node.id, node]));
 
-  const groupsMap = new Map();
+  const attribsMap = new Map();
   graphData.nodes.forEach((node) => {
     const parentIndex = unionFind.find(nodeIndexMap.get(node.id));
-    if (!groupsMap.has(parentIndex)) {
-      groupsMap.set(parentIndex, []);
+    if (!attribsMap.has(parentIndex)) {
+      attribsMap.set(parentIndex, []);
     }
-    groupsMap.get(parentIndex).push(node.id);
+    attribsMap.get(parentIndex).push(node.id);
   });
 
   const parentIndexToMergedNode = new Map();
-  groupsMap.forEach((groupNodeIds, parentIndex) => {
+  attribsMap.forEach((attribNodeIds, parentIndex) => {
     const protIdToPhosphositesMap = new Map();
-    const combinedGroups = new Set();
+    const combinedAttribs = new Set();
 
-    groupNodeIds.forEach((nodeId) => {
+    attribNodeIds.forEach((nodeId) => {
       const node = nodeIdToNodeObjectMap.get(nodeId);
       if (!node) return;
 
-      node.groups.forEach((g) => combinedGroups.add(g));
+      node.attribs.forEach((g) => combinedAttribs.add(g));
 
       const entries = getNodeIdEntries(node.id);
       entries.forEach((entry) => {
@@ -130,7 +130,7 @@ export function filterMergeByName(graphData, mergeByName) {
 
     parentIndexToMergedNode.set(parentIndex, {
       id: newId,
-      groups: Array.from(combinedGroups),
+      attribs: Array.from(combinedAttribs),
     });
   });
 

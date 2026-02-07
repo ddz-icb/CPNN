@@ -32,7 +32,7 @@ export function ClickTooltip() {
   const [isAdjacentView, setIsAdjacentView] = useState(false);
   const clickData = tooltipSettings.clickTooltipData;
   const nodeId = clickData?.node;
-  const nodeGroups = clickData?.nodeGroups ?? [];
+  const nodeAttribs = clickData?.nodeAttribs ?? [];
   const isTooltipActive = tooltipSettings.isClickTooltipActive;
   const { fullName, description, pdbId, protIdNoIsoform, gene, isoforms, hasPhosphosites, responsePdb } = useProteinDetails(nodeId);
   const heading = gene || nodeId;
@@ -81,7 +81,7 @@ export function ClickTooltip() {
       setIsAdjacentView(false);
       setTooltipSettings("clickTooltipData", {
         node: node.id,
-        nodeGroups: node.groups ?? [],
+        nodeAttribs: node.attribs ?? [],
         x: pos.x + 70, // offset needed, as the tooltip is quite large :c
         y: pos.y,
       });
@@ -123,7 +123,7 @@ export function ClickTooltip() {
           fullName={fullName}
           hasPhosphosites={hasPhosphosites}
           isoforms={isoforms}
-          nodeGroups={nodeGroups}
+          nodeAttribs={nodeAttribs}
           description={description}
           viewerRef={viewerRef}
         />
@@ -140,7 +140,7 @@ export function ClickTooltip() {
   );
 }
 
-function NodeDetails({ nodeId, fullName, hasPhosphosites, isoforms, nodeGroups, description, viewerRef }) {
+function NodeDetails({ nodeId, fullName, hasPhosphosites, isoforms, nodeAttribs, description, viewerRef }) {
   return (
     <>
       <TooltipPopupItem heading={"Node ID"} value={nodeId} />
@@ -153,7 +153,7 @@ function NodeDetails({ nodeId, fullName, hasPhosphosites, isoforms, nodeGroups, 
           </div>
         ))}
       />
-      <TooltipPopupItem heading={"Annotations"} value={nodeGroups.join(", ")} />
+      <TooltipPopupItem heading={"Annotations"} value={nodeAttribs.join(", ")} />
       <TooltipPopupItem heading={"Description"} value={description} />
       <div className="pdb-viewer" ref={viewerRef} />
     </>
@@ -246,7 +246,7 @@ function AdjacentNodesList({ adjacentNodes, nodeAttribsToColorIndices, nodeColor
                 <div className="tooltip-adjacent-node-id">{node.id}</div>
                 {onViewNode && <Button className="tooltip-popup-action" text="View node" onClick={() => onViewNode(node)} />}
               </div>
-              <div className="tooltip-adjacent-node-groups">{node.groups?.join(", ")}</div>
+              <div className="tooltip-adjacent-node-attribs">{node.attribs?.join(", ")}</div>
             </div>
           </div>
           <div className="tooltip-adjacent-connection-list">
@@ -265,20 +265,20 @@ function AdjacentNodesList({ adjacentNodes, nodeAttribsToColorIndices, nodeColor
 
 function NodePreview({ node, nodeAttribsToColorIndices, nodeColors, borderColor, size = 24 }) {
   if (!node) return null;
-  const groups = Array.isArray(node.groups) && node.groups.length > 0 ? node.groups : [null];
+  const attribs = Array.isArray(node.attribs) && node.attribs.length > 0 ? node.attribs : [null];
   const radius = size / 2 - 2;
   const center = size / 2;
-  const baseColor = getColor(nodeAttribsToColorIndices?.[groups[0]], nodeColors);
+  const baseColor = getColor(nodeAttribsToColorIndices?.[attribs[0]], nodeColors);
 
-  const wedges = groups.slice(1).map((group, index) => {
+  const wedges = attribs.slice(1).map((attrib, index) => {
     const segmentIndex = index + 1;
-    const total = groups.length;
+    const total = attribs.length;
     const startAngle = (segmentIndex * 2 * Math.PI) / total;
     const endAngle = ((segmentIndex + 1) * 2 * Math.PI) / total;
     return {
-      color: getColor(nodeAttribsToColorIndices?.[group], nodeColors),
+      color: getColor(nodeAttribsToColorIndices?.[attrib], nodeColors),
       path: describeSector(center, center, radius - 1, startAngle, endAngle),
-      key: `${group}-${index}`,
+      key: `${attrib}-${index}`,
     };
   });
 

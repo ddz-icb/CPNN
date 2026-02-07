@@ -75,7 +75,7 @@ function convertCorrMatrixToGraph(fileData, linkAttrib) {
   const graphData = { nodes: [], links: [] };
   const { header, data } = fileData;
 
-  graphData.nodes = header.map((id) => ({ id, groups: [] }));
+  graphData.nodes = header.map((id) => ({ id, attribs: [] }));
 
   for (let i = 0; i < header.length; i++) {
     for (let j = 0; j < i; j++) {

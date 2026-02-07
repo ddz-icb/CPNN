@@ -71,9 +71,9 @@ export function getNodeAttribsToColorIndices(graphData) {
   let i = 0;
 
   graphData.nodes.forEach((node) => {
-    node.groups.forEach((group) => {
-      if (!nodeAttribsToColorIndices.hasOwnProperty(group)) {
-        nodeAttribsToColorIndices[group] = i;
+    node.attribs.forEach((attrib) => {
+      if (!nodeAttribsToColorIndices.hasOwnProperty(attrib)) {
+        nodeAttribsToColorIndices[attrib] = i;
         i += 1;
       }
     });

@@ -2,579 +2,579 @@ const exampleGraph = {
   nodes: [
     {
       id: "Q08043_ACTN3_S321",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q9UIQ6_LNPEP_S91",
-      groups: ["Translocation of SLC2A4 (GLUT4) to the plasma membrane", "Membrane Trafficking"],
+      attribs: ["Translocation of SLC2A4 (GLUT4) to the plasma membrane", "Membrane Trafficking"],
     },
     {
       id: "Q92530_PSMF1_S153",
-      groups: ["PIP3 activates AKT signaling"],
+      attribs: ["PIP3 activates AKT signaling"],
     },
     {
       id: "Q8WZ42-2_TTN_S26707; Q8WZ42-10_TTN_S19500; Q8WZ42-12_TTN_S28440",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q9UQ35_SRRM2_S1083",
-      groups: ["mRNA Splicing"],
+      attribs: ["mRNA Splicing"],
     },
     {
       id: "P08590_MYL3_T165",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8WZ42-2_TTN_T719,S721; Q8WZ42-10_TTN_T765,S767; Q8WZ42-12_TTN_T811,S813; Q8WZ42-6_TTN_T811,S813",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "P13535_MYH8_T381; Q9UKX3_MYH13_T380; P11055_MYH3_T379; P12882_MYH1_T381; Q9UKX2_MYH2_T381; Q9UKX2-2_MYH4_T381; Q9Y623_MYH8_T381",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q01082_SPTBN1_T2320",
-      groups: ["Membrane Trafficking"],
+      attribs: ["Membrane Trafficking"],
     },
     {
       id: "Q9BX66-11_SORBS1_S350; Q9BX66-9_SORBS1_S227; Q9BX66-3_SORBS1_S281; Q9BX66-6_SORBS1_S218; Q9BX66-5_SORBS1_S341",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8WZ42-2_TTN_S33143; Q8WZ42-10_TTN_S25936; Q8WZ42-12_TTN_S34876",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q14677_CLINT1_S299",
-      groups: ["Membrane Trafficking"],
+      attribs: ["Membrane Trafficking"],
     },
     {
       id: "P16157-3_ANK1_S834",
-      groups: ["Membrane Trafficking"],
+      attribs: ["Membrane Trafficking"],
     },
     {
       id: "P04114_APOB_S4048",
-      groups: ["Membrane Trafficking"],
+      attribs: ["Membrane Trafficking"],
     },
     {
       id: "Q9BX66-11_SORBS1_S907",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "P35609_ACTN2_T415",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "P26678_PLN_S16",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "P49792_RANBP2_S2280",
-      groups: ["Transport of Mature Transcript to Cytoplasm", "Glucose metabolism"],
+      attribs: ["Transport of Mature Transcript to Cytoplasm", "Glucose metabolism"],
     },
     {
       id: "P07910-2_HNRNPC_S286",
-      groups: ["mRNA Splicing"],
+      attribs: ["mRNA Splicing"],
     },
     {
       id: "Q8WZ42-2_TTN_S33522; Q8WZ42-10_TTN_S26315; Q8WZ42-12_TTN_S35255",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8WZ42-2_TTN_S7238; Q8WZ42-12_TTN_S7647",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8WZ42-2_TTN_S28345; Q8WZ42-10_TTN_S21138; Q8WZ42-12_TTN_S30078",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8WZ42-2_TTN_S759; Q8WZ42-10_TTN_S805; Q8WZ42-12_TTN_S851; Q8WZ42-6_TTN_S851",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8WZ42-2_TTN_T29871; Q8WZ42-10_TTN_T22664; Q8WZ42-12_TTN_T31604",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "P20929-2_NEB_Y7097",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8WZ42-12_TTN_T13403",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8WZ42-12_TTN_S13395",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8WZ42-2_TTN_S31778; Q8WZ42-10_TTN_S24571; Q8WZ42-12_TTN_S33511",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q02641-2_CACNB1_T248",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "P35499_SCN4A_S1761",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8WZ42-2_TTN_T19764; Q8WZ42-10_TTN_T12557; Q8WZ42-12_TTN_T21497",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8WZ42-2_TTN_S29816; Q8WZ42-10_TTN_S22609; Q8WZ42-12_TTN_S31549",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "P35568_IRS1_S531",
-      groups: ["PIP3 activates AKT signaling", "Signaling by Insulin receptor"],
+      attribs: ["PIP3 activates AKT signaling", "Signaling by Insulin receptor"],
     },
     {
       id: "Q8WZ42-2_TTN_S721; Q8WZ42-10_TTN_S767; Q8WZ42-12_TTN_S813; Q8WZ42-6_TTN_S813",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "P67809_YBX1_S165",
-      groups: ["mRNA Splicing"],
+      attribs: ["mRNA Splicing"],
     },
     {
       id: "P20929-3_NEB_S4173; P20929-2_NEB_S4659; P20929-3_NEB_S5145; P20929-2_NEB_S4173; P20929-3_NEB_S5145",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8WZ42-2_TTN_S29948; Q8WZ42-10_TTN_S22741; Q8WZ42-12_TTN_S31681",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "P60174-4_TPI1_T96; P60174_TPI1_T178",
-      groups: ["Glucose metabolism"],
+      attribs: ["Glucose metabolism"],
     },
     {
       id: "P13535_MYH8_T1857; P12882_MYH1_T1858; P12883_MYH7_T1854; Q9UKX2_MYH2_T1860; Q9Y623_MYH4_T1858",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8WZ42-2_TTN_S28248; Q8WZ42-10_TTN_S21041; Q8WZ42-12_TTN_S29981",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8WZ42-2_TTN_Y21387; Q8WZ42-10_TTN_Y14180; Q8WZ42-12_TTN_Y23120",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8WZ42-2_TTN_T8744; Q8WZ42-12_TTN_T9153",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q05682-2_CALD1_S202",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8WZ42-2_TTN_S30358; Q8WZ42-10_TTN_S23151; Q8WZ42-12_TTN_S32091",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "P04075_ALDOA_S46; P04075-2_ALDOA_S100",
-      groups: ["Glucose metabolism"],
+      attribs: ["Glucose metabolism"],
     },
     {
       id: "Q13555-9_CAMK2G_S359; Q13555-4_CAMK2G_S384; Q13555-5_CAMK2G_S382; Q13555-10_CAMK2G_S350",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8WZ42-2_TTN_T25650; Q8WZ42-10_TTN_T18443; Q8WZ42-12_TTN_T27383",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q05682-4_CALD1_S202",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q00872_MYBPC1_S611; Q00872-7_MYBPC1_S598; Q00872-2_MYBPC1_S636; Q00872-5_MYBPC1_S585",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8WZ42-2_TTN_S33510,S33516; Q8WZ42-10_TTN_S26303,S26309; Q8WZ42-12_TTN_S35243,S35249",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8IZP0_ABI1_S225",
-      groups: ["Signaling by VEGF"],
+      attribs: ["Signaling by VEGF"],
     },
     {
       id: "Q8WZ42-2_TTN_S33497; Q8WZ42-10_TTN_S26290; Q8WZ42-12_TTN_S35230",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8WZ42-2_TTN_S15594; Q8WZ42-10_TTN_S8387; Q8WZ42-12_TTN_S17327",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "P07900_HSP90AA1_S231",
-      groups: ["Signaling by VEGF", "Signaling by ERBB2"],
+      attribs: ["Signaling by VEGF", "Signaling by ERBB2"],
     },
     {
       id: "Q9UNE7_STUB1_S19",
-      groups: ["PIP3 activates AKT signaling", "Signaling by ERBB2"],
+      attribs: ["PIP3 activates AKT signaling", "Signaling by ERBB2"],
     },
     {
       id: "P23588_EIF4B_S459",
-      groups: ["MTOR signalling"],
+      attribs: ["MTOR signalling"],
     },
     {
       id: "O00203_AP3B1_S276",
-      groups: ["Membrane Trafficking"],
+      attribs: ["Membrane Trafficking"],
     },
     {
       id: "Q8WZ42-2_TTN_S6828; Q8WZ42-12_TTN_S7237",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "P35568_IRS1_S1100",
-      groups: ["PIP3 activates AKT signaling", "Signaling by Insulin receptor"],
+      attribs: ["PIP3 activates AKT signaling", "Signaling by Insulin receptor"],
     },
     {
       id: "O00499-11_BIN1_S280,S282; O00499-2_BIN1_S265,S267",
-      groups: ["Membrane Trafficking"],
+      attribs: ["Membrane Trafficking"],
     },
     {
       id: "Q8WZ42-2_TTN_S27211; Q8WZ42-10_TTN_S20004; Q8WZ42-12_TTN_S28944",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8IYB3_SRRM1_S696",
-      groups: ["mRNA Splicing", "Transport of Mature Transcript to Cytoplasm"],
+      attribs: ["mRNA Splicing", "Transport of Mature Transcript to Cytoplasm"],
     },
     {
       id: "P60709_ACTB_S52; P62736_ACTA2_S54; P68133_ACTA1_S54; P68032_ACTC1_S54",
-      groups: ["Translocation of SLC2A4 (GLUT4) to the plasma membrane", "Signaling by VEGF", "Membrane Trafficking"],
+      attribs: ["Translocation of SLC2A4 (GLUT4) to the plasma membrane", "Signaling by VEGF", "Membrane Trafficking"],
     },
     {
       id: "Q9UKV3_ACIN1_S710; Q9UKV3-5_ACIN1_S710",
-      groups: ["mRNA Splicing"],
+      attribs: ["mRNA Splicing"],
     },
     {
       id: "Q8WZ42-2_TTN_T14272; Q8WZ42-10_TTN_T7065; Q8WZ42-12_TTN_T16005",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8WZ42-2_TTN_S28544; Q8WZ42-10_TTN_S21337; Q8WZ42-12_TTN_S30277",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q01082_SPTBN1_S2102; Q01082-3_SPTBN1_S2089",
-      groups: ["Membrane Trafficking"],
+      attribs: ["Membrane Trafficking"],
     },
     {
       id: "Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q14324_MYBPC2_S60",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "P61981_YWHAG_T139",
-      groups: ["Translocation of SLC2A4 (GLUT4) to the plasma membrane", "Membrane Trafficking"],
+      attribs: ["Translocation of SLC2A4 (GLUT4) to the plasma membrane", "Membrane Trafficking"],
     },
     {
       id: "P60709_ACTB_S60; P62736_ACTA2_S62; P68133_ACTA1_S62; P68032_ACTC1_S62",
-      groups: ["Translocation of SLC2A4 (GLUT4) to the plasma membrane", "Signaling by VEGF", "Membrane Trafficking"],
+      attribs: ["Translocation of SLC2A4 (GLUT4) to the plasma membrane", "Signaling by VEGF", "Membrane Trafficking"],
     },
     {
       id: "Q8WZ42-2_TTN_S29462; Q8WZ42-10_TTN_S22255; Q8WZ42-12_TTN_S31195",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8IYB3_SRRM1_T220",
-      groups: ["mRNA Splicing", "Transport of Mature Transcript to Cytoplasm"],
+      attribs: ["mRNA Splicing", "Transport of Mature Transcript to Cytoplasm"],
     },
     {
       id: "Q8NI27_THOC2_S1417",
-      groups: ["Transport of Mature Transcript to Cytoplasm"],
+      attribs: ["Transport of Mature Transcript to Cytoplasm"],
     },
     {
       id: "Q8WZ42-2_TTN_S9711; Q8WZ42-12_TTN_S10120",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "P15259_PGAM2_S14",
-      groups: ["Glucose metabolism"],
+      attribs: ["Glucose metabolism"],
     },
     {
       id: "Q8WZ42-2_TTN_S26971; Q8WZ42-10_TTN_S19764; Q8WZ42-12_TTN_S28704",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "P49756_RBM25_S677",
-      groups: ["mRNA Splicing"],
+      attribs: ["mRNA Splicing"],
     },
     {
       id: "Q13554-3_CAMK2B_S334; Q13554_CAMK2B_S358",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8WZ42-2_TTN_S7224; Q8WZ42-12_TTN_S7633",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8WZ42-2_TTN_T30654; Q8WZ42-10_TTN_T23447; Q8WZ42-12_TTN_T32387",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8WZ42-2_TTN_S27270; Q8WZ42-10_TTN_S20063; Q8WZ42-12_TTN_S29003",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "P14618-2_PKM_S249; P14618_PKM_S249",
-      groups: ["Glucose metabolism"],
+      attribs: ["Glucose metabolism"],
     },
     {
       id: "P09651_HNRNPA1_S6",
-      groups: ["mRNA Splicing"],
+      attribs: ["mRNA Splicing"],
     },
     {
       id: "Q4KMP7_TBC1D10B_S132",
-      groups: ["Membrane Trafficking"],
+      attribs: ["Membrane Trafficking"],
     },
     {
       id: "Q8WZ42-2_TTN_S5594; Q8WZ42-12_TTN_S6003",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8WZ42-2_TTN_T33145,TSY; Q8WZ42-10_TTN_T25938,TSY; Q8WZ42-12_TTN_T34878,TSY",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8WZ42-2_TTN_T23228; Q8WZ42-10_TTN_T16021; Q8WZ42-12_TTN_T24961",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "P13535_MYH8_S1918; Q9UKX3_MYH13_S1919; P11055_MYH3_S1916; P12882_MYH1_S1919; P12883_MYH7_S1915; Q9UKX2_MYH2_S1921; Q9UKX2-2_MYH4_S688; Q9Y623_MYH6_S1919; P13533_MYH8_S1917",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8TAD8_SNIP1_S99",
-      groups: ["mRNA Splicing"],
+      attribs: ["mRNA Splicing"],
     },
     {
       id: "Q8WZ42-2_TTN_S12810; Q8WZ42-10_TTN_S5603; Q8WZ42-12_TTN_S14543",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "O94979_SEC31A_S799",
-      groups: ["Membrane Trafficking"],
+      attribs: ["Membrane Trafficking"],
     },
     {
       id: "P13535_MYH8_S951; P11055_MYH3_S949; P12882_MYH1_S952; Q9UKX2_MYH2_S954; Q9Y623_MYH4_S952; P13533_MYH6_S950",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q01118_SCN7A_S905,S906",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8WZ42-2_TTN_S12361; Q8WZ42-10_TTN_S5154; Q8WZ42-12_TTN_S14094",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "O00418_EEF2K_S470",
-      groups: ["MTOR signalling"],
+      attribs: ["MTOR signalling"],
     },
     {
       id: "Q8WZ42-2_TTN_T18007; Q8WZ42-10_TTN_T10800; Q8WZ42-12_TTN_T19740",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q04637_EIF4G1_S1209",
-      groups: ["MTOR signalling"],
+      attribs: ["MTOR signalling"],
     },
     {
       id: "Q8WZ42-2_TTN_S7570; Q8WZ42-12_TTN_S7979",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "P18206_VCL_S346",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "O75554_WBP4_S277",
-      groups: ["mRNA Splicing"],
+      attribs: ["mRNA Splicing"],
     },
     {
       id: "P16157-3_ANK1_S1593",
-      groups: ["Membrane Trafficking"],
+      attribs: ["Membrane Trafficking"],
     },
     {
       id: "P23588_EIF4B_S497",
-      groups: ["MTOR signalling"],
+      attribs: ["MTOR signalling"],
     },
     {
       id: "Q8WZ42-2_TTN_T22838; Q8WZ42-10_TTN_T15631; Q8WZ42-12_TTN_T24571",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q9NZ63_C9orf78_S261",
-      groups: ["mRNA Splicing"],
+      attribs: ["mRNA Splicing"],
     },
     {
       id: "Q01484-7_ANK2_S507; Q01484-5_ANK2_S1815",
-      groups: ["Membrane Trafficking"],
+      attribs: ["Membrane Trafficking"],
     },
     {
       id: "O60333-3_KIF1B_S1053",
-      groups: ["Membrane Trafficking"],
+      attribs: ["Membrane Trafficking"],
     },
     {
       id: "O14983_ATP2A1_S473",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8WZ42-2_TTN_T23920; Q8WZ42-10_TTN_T16713; Q8WZ42-12_TTN_T25653",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "P18669_PGAM1_Y92; P15259_PGAM2_Y92",
-      groups: ["Glucose metabolism"],
+      attribs: ["Glucose metabolism"],
     },
     {
       id: "O60504_SORBS3_S545",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "P61981_YWHAG_S119",
-      groups: ["Translocation of SLC2A4 (GLUT4) to the plasma membrane", "Membrane Trafficking"],
+      attribs: ["Translocation of SLC2A4 (GLUT4) to the plasma membrane", "Membrane Trafficking"],
     },
     {
       id: "Q8WZ42-2_TTN_S18003; Q8WZ42-10_TTN_S10796; Q8WZ42-12_TTN_S19736",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8WZ42-2_TTN_S316; Q8WZ42-10_TTN_S316; Q8WZ42-12_TTN_S316; Q8WZ42-6_TTN_S316",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "O00308_WWP2_S211",
-      groups: ["PIP3 activates AKT signaling"],
+      attribs: ["PIP3 activates AKT signaling"],
     },
     {
       id: "O14958_CASQ2_S38",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "O00499-11_BIN1_S280; O00499-2_BIN1_S265",
-      groups: ["Membrane Trafficking"],
+      attribs: ["Membrane Trafficking"],
     },
     {
       id: "Q8WZ42-2_TTN_S7379; Q8WZ42-12_TTN_S7788",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8WZ42-2_TTN_S32979; Q8WZ42-10_TTN_S25772; Q8WZ42-12_TTN_S34712",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "P67809_YBX1_S176",
-      groups: ["mRNA Splicing"],
+      attribs: ["mRNA Splicing"],
     },
     {
       id: "Q8WZ42-2_TTN_T17003; Q8WZ42-10_TTN_T9796; Q8WZ42-12_TTN_T18736",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8WZ42-2_TTN_S10541; Q8WZ42-12_TTN_S10950",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "P35579_MYH9_S1943; P35579-2_MYH9_S1365",
-      groups: ["Translocation of SLC2A4 (GLUT4) to the plasma membrane", "Membrane Trafficking"],
+      attribs: ["Translocation of SLC2A4 (GLUT4) to the plasma membrane", "Membrane Trafficking"],
     },
     {
       id: "P54646_PRKAA2_S491",
-      groups: ["MTOR signalling", "Translocation of SLC2A4 (GLUT4) to the plasma membrane", "Membrane Trafficking"],
+      attribs: ["MTOR signalling", "Translocation of SLC2A4 (GLUT4) to the plasma membrane", "Membrane Trafficking"],
     },
     {
       id: "Q8WZ42-2_TTN_S2001; Q8WZ42-10_TTN_S2047; Q8WZ42-12_TTN_S2093; Q8WZ42-6_TTN_S2093",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8WZ42-2_TTN_T29180; Q8WZ42-10_TTN_T21973; Q8WZ42-12_TTN_T30913",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "P09493-5_TPM1_S193; P09493-7_TPM1_S229; P09493-10_TPM1_S229",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q9UQM7_CAMK2A_T337",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8WZ42-2_TTN_S33345; Q8WZ42-10_TTN_S26138; Q8WZ42-12_TTN_S35078",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "P52594_AGFG1_S181",
-      groups: ["Membrane Trafficking"],
+      attribs: ["Membrane Trafficking"],
     },
     {
       id: "P20929-3_NEB_S1836; P20929-2_NEB_S2080; P20929-3_NEB_S4025; P20929-2_NEB_S1836; P20929-3_NEB_S4025",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "P62736_ACTA2_S370; P68133_ACTA1_S370; P68032_ACTC1_S370",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8IYB3_SRRM1_S616",
-      groups: ["mRNA Splicing", "Transport of Mature Transcript to Cytoplasm"],
+      attribs: ["mRNA Splicing", "Transport of Mature Transcript to Cytoplasm"],
     },
     {
       id: "P07951_TPM2_S63",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "P60174-4_TPI1_S122; P60174_TPI1_S204",
-      groups: ["Glucose metabolism"],
+      attribs: ["Glucose metabolism"],
     },
     {
       id: "Q9BX66-11_SORBS1_S89; Q9BX66-9_SORBS1_S89; Q9BX66-3_SORBS1_S89; Q9BX66-6_SORBS1_S89; Q9BX66-5_SORBS1_S89",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8WZ42-2_TTN_S29967; Q8WZ42-10_TTN_S22760; Q8WZ42-12_TTN_S31700",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q14103_HNRNPD_S83",
-      groups: ["mRNA Splicing"],
+      attribs: ["mRNA Splicing"],
     },
     {
       id: "Q8WZ42-2_TTN_S33516; Q8WZ42-10_TTN_S26309; Q8WZ42-12_TTN_S35249",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q00872_MYBPC1_S1023; Q00872-7_MYBPC1_S992; Q00872-2_MYBPC1_S1030; Q00872-5_MYBPC1_S979",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "Q8WZ42-2_TTN_S21750; Q8WZ42-10_TTN_S14543; Q8WZ42-12_TTN_S23483",
-      groups: ["Muscle contraction"],
+      attribs: ["Muscle contraction"],
     },
     {
       id: "P06744_GPI_Y92",
-      groups: ["Glucose metabolism"],
+      attribs: ["Glucose metabolism"],
     },
     {
       id: "P25786_PSMA1_S54",
-      groups: ["PIP3 activates AKT signaling"],
+      attribs: ["PIP3 activates AKT signaling"],
     },
     {
       id: "O43395_PRPF3_S619",
-      groups: ["mRNA Splicing"],
+      attribs: ["mRNA Splicing"],
     },
   ],
   links: [

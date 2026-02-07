@@ -167,7 +167,7 @@
   flex: 1;
 }
 
-.tooltip-adjacent-node-groups {
+.tooltip-adjacent-node-attribs {
   font-size: var(--font-size-xs, 0.75rem);
   color: var(--color-text-secondary);
 }

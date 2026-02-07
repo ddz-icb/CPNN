@@ -55,8 +55,6 @@ export function FilterControl() {
       filter.nodeIdFilters,
       "\n    Minimum k-Core size: ",
       filter.minKCoreSize,
-      "\n    Groups: ",
-      filter.nodeFilter,
       "\n    Community Density: ",
       filter.communityDensity,
       "\n    Min Community Size: ",

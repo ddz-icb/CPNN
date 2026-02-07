@@ -15,15 +15,15 @@ export function applyNodeMapping(graphData, mappingData) {
       }
     });
 
-    let groupsSet = new Set();
+    let attribsSet = new Set();
     protIdsForLookup.forEach((protId) => {
       const protIdStr = String(protId).trim();
 
       if (nodeMapping.hasOwnProperty(protIdStr)) {
-        groupsSet = new Set([...groupsSet, ...nodeMapping[protIdStr].pathwayNames]);
+        attribsSet = new Set([...attribsSet, ...nodeMapping[protIdStr].pathwayNames]);
       }
     });
-    node.groups = Array.from(groupsSet);
+    node.attribs = Array.from(attribsSet);
   });
 
   return graphData;

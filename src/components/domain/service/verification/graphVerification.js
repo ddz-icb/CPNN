@@ -14,8 +14,8 @@ export function verifyGraph(graph) {
     if (node.id === undefined) {
       throw new Error(`Node at index ${i} is missing the 'id' property.`);
     }
-    if (node.groups === undefined) {
-      throw new Error(`Node at index ${i} is missing the 'groups' property.`);
+    if (node.attribs === undefined) {
+      throw new Error(`Node at index ${i} is missing the 'attribs' property.`);
     }
   });
 

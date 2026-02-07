@@ -163,35 +163,35 @@ export function filterNodeAttribs(graphData, filterRequest) {
             if (element === "=") {
               const nextElement = andTerm[i + 1];
 
-              if (node.groups.length == nextElement) {
+              if (node.attribs.length == nextElement) {
                 meetsTerm = true;
               }
               i++;
             } else if (element === "<") {
               const nextElement = andTerm[i + 1];
 
-              if (node.groups.length < nextElement) {
+              if (node.attribs.length < nextElement) {
                 meetsTerm = true;
               }
               i++;
             } else if (element === "<=") {
               const nextElement = andTerm[i + 1];
 
-              if (node.groups.length <= nextElement) {
+              if (node.attribs.length <= nextElement) {
                 meetsTerm = true;
               }
               i++;
             } else if (element === ">=") {
               const nextElement = andTerm[i + 1];
 
-              if (node.groups.length >= nextElement) {
+              if (node.attribs.length >= nextElement) {
                 meetsTerm = true;
               }
               i++;
             } else if (element === ">") {
               const nextElement = andTerm[i + 1];
 
-              if (node.groups.length > nextElement) {
+              if (node.attribs.length > nextElement) {
                 meetsTerm = true;
               }
               i++;
@@ -200,11 +200,11 @@ export function filterNodeAttribs(graphData, filterRequest) {
 
               if (nextElement instanceof Set) {
                 for (const e of nextElement) {
-                  if (!node.groups.some((group) => group.toString().toLowerCase().includes(e.toString().toLowerCase()))) {
+                  if (!node.attribs.some((attrib) => attrib.toString().toLowerCase().includes(e.toString().toLowerCase()))) {
                     meetsTerm = true;
                   }
                 }
-              } else if (!node.groups.some((group) => group.toString().toLowerCase().includes(nextElement.toString().toLowerCase()))) {
+              } else if (!node.attribs.some((attrib) => attrib.toString().toLowerCase().includes(nextElement.toString().toLowerCase()))) {
                 meetsTerm = true;
               }
               i++;
@@ -212,14 +212,14 @@ export function filterNodeAttribs(graphData, filterRequest) {
               if (element instanceof Set) {
                 let allTrue = true;
                 for (const e of element) {
-                  if (!node.groups.some((group) => group.toString().toLowerCase().includes(e.toString().toLowerCase()))) {
+                  if (!node.attribs.some((attrib) => attrib.toString().toLowerCase().includes(e.toString().toLowerCase()))) {
                     allTrue = false;
                   }
                 }
                 if (allTrue) meetsTerm = true;
               } else {
-                node.groups.forEach((group) => {
-                  if (group.toString().toLowerCase().includes(element.toString().toLowerCase())) {
+                node.attribs.forEach((attrib) => {
+                  if (attrib.toString().toLowerCase().includes(element.toString().toLowerCase())) {
                     meetsTerm = true;
                   }
                 });
@@ -231,7 +231,7 @@ export function filterNodeAttribs(graphData, filterRequest) {
             // doensn't meet all terms
             return {
               ...node,
-              groups: [],
+              attribs: [],
             };
           }
         }
@@ -239,10 +239,10 @@ export function filterNodeAttribs(graphData, filterRequest) {
         // meets all terms
         return {
           ...node,
-          groups: node.groups,
+          attribs: node.attribs,
         };
       })
-      .filter((node) => node.groups.length > 0),
+      .filter((node) => node.attribs.length > 0),
   };
 
   return graphData;
