@@ -95,7 +95,7 @@ function UploadedGraphFiles({ uploadedGraphNames, activeGraphNames }) {
 function Mapping({ mapping }) {
   return (
     <TableList
-      heading={"Currently Active Pathway Mapping"}
+      heading={"Currently Active Mapping"}
       data={mapping ? [mapping] : []}
       displayKey={"name"}
       ActionIcon={DeleteIcon}
@@ -109,10 +109,10 @@ function Mapping({ mapping }) {
 function UploadedMappings({ uploadedMappingNames }) {
   return (
     <TableList
-      heading={"Uploaded Pathway Mappings"}
+      heading={"Uploaded Mappings"}
       data={uploadedMappingNames}
       onItemClick={(mappingName) => mappingService.handleSelectMapping(mappingName)}
-      itemTooltipContent={() => "Replace Active Pathway Mapping"}
+      itemTooltipContent={() => "Replace Active Mapping"}
       ActionIcon={TrashIcon}
       onActionIconClick={(mappingName) => mappingService.handleDeleteMapping(mappingName)}
       actionIconTooltipContent={() => "Delete Annotation Mapping"}
@@ -241,21 +241,17 @@ function UploadMapping() {
 
   return (
     <ButtonPopup
-      buttonText={"Upload Pathway Mappings"}
+      buttonText={"Upload Mappings"}
       tooltip={"Upload Pathway Annotation Mappings as a TSV or CSV File"}
       tooltipId={"upload-mapping-tooltip"}
-      heading={"Uploading Your Pathway Mapping"}
+      heading={"Uploading Your Mapping"}
       description={uploadPathwayMappingDescription}
     >
       <div className="block-section">
+        <Button variant="popup" text={"Download Example Mapping"} onClick={() => downloadTsvFile(exampleMappingTsv.data, exampleMappingTsv.name)} />
         <Button
           variant="popup"
-          text={"Download Example Pathway Mapping"}
-          onClick={() => downloadTsvFile(exampleMappingTsv.data, exampleMappingTsv.name)}
-        />
-        <Button
-          variant="popup"
-          text={"Upload Own Pathway Mapping"}
+          text={"Upload Own Mapping"}
           onClick={() => mappingRef.current.click()}
           linkRef={mappingRef}
           onChange={(event) => {

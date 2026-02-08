@@ -174,8 +174,8 @@ export function CommunitySidebar() {
             <DetailRow label={"Internal Links"} value={community.linkCount ?? 0} />
             <DetailRow label={"External Links"} value={community.externalLinkCount ?? 0} />
             <DetailRow label={"Community Density"} value={formatDensity(community.density)} />
-            <DetailRow label={"Top pathways"} value={formatTopAttributes(community.topAttributes) || "None"} />
-            <DetailRow label={"Top link attributes"} value={formatTopAttributes(community.topLinkAttributes) || "None"} />
+            <DetailRow label={"Top node attributes"} value={formatTopAttributes(community.topNodeAttribs) || "None"} />
+            <DetailRow label={"Top link attributes"} value={formatTopAttributes(community.topLinkAttribs) || "None"} />
           </div>
         )}
         ActionIcon={VisibilityIcon}

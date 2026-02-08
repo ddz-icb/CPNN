@@ -119,8 +119,8 @@ export function buildCommunitySummary(graphData, options = {}) {
       linkCount: internalLinks,
       externalLinkCount: communityToExternalLinkCount[communityKey] || 0,
       density: size > 0 ? (2 * internalLinks) / size : 0,
-      topAttributes: collectTopAttributes(attribCounts, options.topAttributes ?? DEFAULT_TOP_ATTRIBUTES),
-      topLinkAttributes: collectTopAttributes(linkAttribCounts, options.topAttributes ?? DEFAULT_TOP_ATTRIBUTES),
+      topAttributes: collectTopAttributes(attribCounts, options.topNodeAttribs ?? DEFAULT_TOP_ATTRIBUTES),
+      topLinkAttributes: collectTopAttributes(linkAttribCounts, options.topNodeAttribs ?? DEFAULT_TOP_ATTRIBUTES),
     };
   });
 
