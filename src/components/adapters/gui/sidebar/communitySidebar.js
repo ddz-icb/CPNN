@@ -1,4 +1,4 @@
-import { FieldBlock, SliderBlock, ToggleList } from "../reusable_components/sidebarComponents.js";
+import { DetailRow, FieldBlock, SliderBlock, ToggleList } from "../reusable_components/sidebarComponents.js";
 import { SvgIcon } from "../reusable_components/SvgIcon.jsx";
 import eyeSvg from "../../../../assets/icons/eye.svg?raw";
 import rotateArrowSvg from "../../../../assets/icons/rotateArrow.svg?raw";
@@ -197,13 +197,4 @@ function formatTopAttributes(topAttributes) {
 function formatDensity(value) {
   if (!Number.isFinite(value)) return "0";
   return value.toFixed(2);
-}
-
-function DetailRow({ label, value }) {
-  return (
-    <div className="toggle-list-detail-item toggle-list-detail-row">
-      <span className="item-table-primary-text">{label}</span>
-      <span className="text-secondary toggle-list-detail-value">{value}</span>
-    </div>
-  );
 }

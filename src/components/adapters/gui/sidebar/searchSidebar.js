@@ -2,7 +2,7 @@ import { useCallback, useRef } from "react";
 
 import { useSearchState, searchStateInit } from "../../state/searchState.js";
 import { useSidebarCodeEditor } from "../reusable_components/useSidebarCodeEditor.js";
-import { CodeEditorBlock, SwitchBlock, ToggleList } from "../reusable_components/sidebarComponents.js";
+import { CodeEditorBlock, DetailRow, SwitchBlock, ToggleList } from "../reusable_components/sidebarComponents.js";
 import { useTheme } from "../../state/themeState.js";
 import { handleEditorChange as handleEditorChangeHelper } from "../handlers/buttonHandlerFunctions.js";
 import { useAppearance } from "../../state/appearanceState.js";
@@ -162,19 +162,6 @@ function ProteinIdsBlock({ isoforms }) {
       ) : (
         <span className="text-secondary toggle-list-detail-value">None</span>
       )}
-    </div>
-  );
-}
-
-function DetailRow({ label, value }) {
-  const isList = Array.isArray(value);
-
-  return (
-    <div className={`toggle-list-detail-item toggle-list-detail-row${isList ? " toggle-list-detail-row--multiline" : ""}`}>
-      <span className="item-table-primary-text">{label}</span>
-      <div className="text-secondary toggle-list-detail-value">
-        {isList ? value.map((entry, index) => <div key={`${label}-${index}`}>{entry}</div>) : value}
-      </div>
     </div>
   );
 }

@@ -470,6 +470,19 @@ export function ToggleList({
   );
 }
 
+export function DetailRow({ label, value }) {
+  const isList = Array.isArray(value);
+
+  return (
+    <div className={`toggle-list-detail-item toggle-list-detail-row${isList ? " toggle-list-detail-row--multiline" : ""}`}>
+      <span className="item-table-primary-text">{label}</span>
+      <div className="text-secondary toggle-list-detail-value">
+        {isList ? value.map((entry, index) => <div key={`${label}-${index}`}>{entry}</div>) : value}
+      </div>
+    </div>
+  );
+}
+
 function NumericInput({ valueText, setValue, setValueText, fallbackValue, min, max, step }) {
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
