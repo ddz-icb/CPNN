@@ -108,9 +108,8 @@ export function PhysicsControl() {
         renderState.simulation.alpha(1).restart();
       } else {
         const [IdToComp] = getComponentData(graphState.graph.data);
-        const threshold = 3;
 
-        renderState.simulation.force("component", groupRepulsionForce(IdToComp, threshold).strength(physics.componentStrength));
+        renderState.simulation.force("component", groupRepulsionForce(IdToComp).strength(physics.componentStrength));
         renderState.simulation.alpha(1).restart();
       }
     } catch (error) {
@@ -219,10 +218,7 @@ export function PhysicsControl() {
         renderState.simulation.alpha(1).restart();
         return;
       } else {
-        const threshold = 3;
-
-        renderState.simulation
-          .force("community", groupRepulsionForce(communityState.idToCommunity, threshold).strength(physics.communityForceStrength));
+        renderState.simulation.force("community", groupRepulsionForce(communityState.idToCommunity).strength(physics.communityForceStrength));
         renderState.simulation.alpha(1).restart();
       }
     } catch (error) {

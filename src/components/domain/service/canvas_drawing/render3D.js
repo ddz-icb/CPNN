@@ -8,8 +8,8 @@ export const defaultCamera = {
   y: null,
   z: -600,
   fov: 600,
-  rotX: 0,
-  rotY: 0,
+  rotX: 0.5,
+  rotY: -0.2,
 };
 
 export function redraw3D(
@@ -23,7 +23,7 @@ export function redraw3D(
   grid3D,
   app,
   container,
-  camera
+  camera,
 ) {
   const view = getViewParams(camera, container.width, container.height);
   const projections = computeProjections(graphData.nodes, view, camera?.projections);

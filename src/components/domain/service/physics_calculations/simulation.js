@@ -98,10 +98,19 @@ export function mountRedraw(
   cameraRef,
   threeD
 ) {
-  const drawImmediate = threeD
-    ? () =>
-        redraw3D(graphData, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, showNodeLabels, nodeMap, grid3D, app, container, cameraRef.current)
-    : () => redraw(graphData, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, showNodeLabels, nodeMap, app);
+  const drawToken = (simulation.__drawToken ?? 0) + 1;
+  simulation.__drawToken = drawToken;
+
+  const isActiveDraw = () => simulation.__drawToken === drawToken;
+
+  const drawImmediate = () => {
+    if (!isActiveDraw()) return;
+    if (threeD) {
+      redraw3D(graphData, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, showNodeLabels, nodeMap, grid3D, app, container, cameraRef.current);
+      return;
+    }
+    redraw(graphData, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, showNodeLabels, nodeMap, app);
+  };
 
   if (typeof simulation?.__cancelDraw === "function") {
     simulation.__cancelDraw();
@@ -109,11 +118,18 @@ export function mountRedraw(
 
   const drawScheduler = createFrameScheduler(drawImmediate);
   const drawNow = drawScheduler.flush;
-  simulation.__cancelDraw = drawScheduler.cancel;
+  simulation.__cancelDraw = () => {
+    if (simulation.__drawToken === drawToken) {
+      simulation.__drawToken = drawToken + 1;
+    }
+    drawScheduler.cancel();
+  };
 
   // expose the redraw function so interactions (e.g. zooming) can trigger re-projection without relying on simulation ticks
   if (threeD && cameraRef?.current) {
     cameraRef.current.redraw = drawNow;
+  } else if (cameraRef?.current?.redraw) {
+    cameraRef.current.redraw = null;
   }
 
   simulation.on("tick.redraw", drawScheduler.schedule);

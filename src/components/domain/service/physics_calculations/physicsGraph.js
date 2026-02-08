@@ -49,7 +49,7 @@ export function borderCheck(radius, borderHeight, borderWidth, center, borderDep
   return force;
 }
 
-export function groupRepulsionForce(IdToGroup, centroidThreshold) {
+export function groupRepulsionForce(IdToGroup, centroidThreshold = 3) {
   let nodes;
   let strength = 0.1;
 
