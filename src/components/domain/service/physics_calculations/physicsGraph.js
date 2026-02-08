@@ -3,9 +3,9 @@ import { getCentroid, getLinkWeight } from "../graph_calculations/graphUtils.js"
 export const accuracyBarnesHut = 0.3;
 export const maxDistanceChargeForce = 300;
 export const nodeRepulsionMultiplier = -300;
-export const borderMultiplier = 10;
 
 const minLinkLengthFactor = 0.15;
+const groupRepulsionMultiplier = 10;
 
 export function borderCheck(radius, borderHeight, borderWidth, center, borderDepth = Math.min(borderHeight, borderWidth)) {
   let nodes;
@@ -97,7 +97,7 @@ export function groupRepulsionForce(IdToGroup, centroidThreshold = 3) {
       }
     }
 
-    const strengthFactor = strength * centroidThreshold * alpha;
+    const strengthFactor = strength * centroidThreshold * alpha * groupRepulsionMultiplier * (1 / centroids.length);
 
     for (const node of nodes) {
       const compId = nodeToGroup.get(node);
