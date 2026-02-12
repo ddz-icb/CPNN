@@ -124,28 +124,6 @@ export function filterMinNeighborhood(graphData, minKCoreSize) {
   return filteredGraph;
 }
 
-export function filterMinCompSize(graphData, minCompSize) {
-  if (minCompSize === 1) return graphData;
-
-  const [IdToComp, compToCompSize] = getComponentData(graphData);
-
-  return {
-    ...graphData,
-    nodes: graphData.nodes.filter((node) => compToCompSize[IdToComp[node.id]] >= minCompSize),
-  };
-}
-
-export function filterMaxCompSize(graphData, maxCompSize) {
-  if (maxCompSize == "") return graphData;
-
-  const [IdToComp, compToCompSize] = getComponentData(graphData);
-
-  return {
-    ...graphData,
-    nodes: graphData.nodes.filter((node) => compToCompSize[IdToComp[node.id]] <= maxCompSize),
-  };
-}
-
 export function filterComponentSizeRange(graphData, minCompSize, maxCompSize) {
   const applyMin = minCompSize !== 1;
   const applyMax = maxCompSize != "";
