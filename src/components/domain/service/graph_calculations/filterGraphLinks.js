@@ -5,8 +5,9 @@ export function filterThreshold(graphData, linkThreshold) {
     ...graphData,
     links: graphData.links
       .map((link) => {
-        const filteredAttribs = link.attribs.filter((_, i) => link.weights[i] >= linkThreshold);
-        const filteredWeights = link.weights.filter((weight) => weight >= linkThreshold);
+        const keep = link.weights.map((weight) => Math.abs(weight) >= linkThreshold);
+        const filteredAttribs = link.attribs.filter((_, i) => keep[i]);
+        const filteredWeights = link.weights.filter((_, i) => keep[i]);
 
         return {
           ...link,
@@ -128,16 +129,20 @@ export function filterNodesExist(graphData) {
   };
 }
 
-export function filterTakeAbs(graphData, takeAbs) {
-  if (!takeAbs) {
-    graphData.links.forEach((link) => {
-      link.weights = link.weights.filter((w) => w > 0);
-    });
-  } else {
-    graphData.links.forEach((link) => {
-      link.weights = link.weights.map(Math.abs);
-    });
-  }
+export function filterIgnoreNegatives(graphData, ignoreNegatives) {
+  if (!ignoreNegatives) return graphData;
+
+  graphData.links = graphData.links.map((link) => {
+    const keep = link.weights.map((weight) => weight >= 0);
+    const filteredAttribs = link.attribs.filter((_, i) => keep[i]);
+    const filteredWeights = link.weights.filter((_, i) => keep[i]);
+
+    return {
+      ...link,
+      attribs: filteredAttribs,
+      weights: filteredWeights,
+    };
+  });
   return graphData;
 }
 

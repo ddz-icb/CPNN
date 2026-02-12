@@ -51,7 +51,7 @@ function round2(value) {
   return (rounded * sign) / factor;
 }
 
-function computePearsonEdgesJs(matrix, rows, cols, minEdgeCorr, takeAbs) {
+function computePearsonEdgesJs(matrix, rows, cols, minEdgeCorr, ignoreNegatives) {
   const sources = [];
   const targets = [];
   const weights = [];
@@ -90,9 +90,12 @@ function computePearsonEdgesJs(matrix, rows, cols, minEdgeCorr, takeAbs) {
       if (!Number.isFinite(corr)) continue;
 
       corr = round2(corr);
-      if (takeAbs) corr = Math.abs(corr);
-      if (!takeAbs && corr <= 0) continue;
-      if (corr < minEdgeCorr) continue;
+      if (ignoreNegatives) {
+        if (corr <= 0) continue;
+        if (corr < minEdgeCorr) continue;
+      } else if (Math.abs(corr) < minEdgeCorr) {
+        continue;
+      }
 
       sources.push(i);
       targets.push(j);
@@ -166,7 +169,7 @@ function pearsonFromArrays(x, y) {
   return corr;
 }
 
-function computeSpearmanEdgesJs(matrix, rows, cols, minEdgeCorr, takeAbs) {
+function computeSpearmanEdgesJs(matrix, rows, cols, minEdgeCorr, ignoreNegatives) {
   const sources = [];
   const targets = [];
   const weights = [];
@@ -194,9 +197,12 @@ function computeSpearmanEdgesJs(matrix, rows, cols, minEdgeCorr, takeAbs) {
       if (corr === null) continue;
 
       corr = round2(corr);
-      if (takeAbs) corr = Math.abs(corr);
-      if (!takeAbs && corr <= 0) continue;
-      if (corr < minEdgeCorr) continue;
+      if (ignoreNegatives) {
+        if (corr <= 0) continue;
+        if (corr < minEdgeCorr) continue;
+      } else if (Math.abs(corr) < minEdgeCorr) {
+        continue;
+      }
 
       sources.push(i);
       targets.push(j);
@@ -224,7 +230,7 @@ function readEdgeResult(memory, resultPtr) {
   return { sourcesPtr, targetsPtr, weightsPtr, length, sourcesCap, targetsCap, weightsCap };
 }
 
-function computePearsonEdgesWasm(exports, matrix, rows, cols, minEdgeCorr, takeAbs) {
+function computePearsonEdgesWasm(exports, matrix, rows, cols, minEdgeCorr, ignoreNegatives) {
   const { memory, alloc_f64, dealloc_f64, pearson_edges, free_edges } = exports;
 
   const length = rows * cols;
@@ -232,7 +238,7 @@ function computePearsonEdgesWasm(exports, matrix, rows, cols, minEdgeCorr, takeA
   const view = new Float64Array(memory.buffer, dataPtr, length);
   view.set(matrix);
 
-  const resultPtr = pearson_edges(dataPtr, rows, cols, minEdgeCorr, takeAbs ? 1 : 0);
+  const resultPtr = pearson_edges(dataPtr, rows, cols, minEdgeCorr, ignoreNegatives ? 1 : 0);
   if (!resultPtr) {
     dealloc_f64(dataPtr, length);
     return { sources: new Uint32Array(), targets: new Uint32Array(), weights: new Float32Array() };
@@ -249,10 +255,10 @@ function computePearsonEdgesWasm(exports, matrix, rows, cols, minEdgeCorr, takeA
   return { sources, targets, weights };
 }
 
-function computeSpearmanEdgesWasm(exports, matrix, rows, cols, minEdgeCorr, takeAbs) {
+function computeSpearmanEdgesWasm(exports, matrix, rows, cols, minEdgeCorr, ignoreNegatives) {
   const { memory, alloc_f64, dealloc_f64, spearman_edges, free_edges } = exports;
   if (typeof spearman_edges !== "function") {
-    return computeSpearmanEdgesJs(matrix, rows, cols, minEdgeCorr, takeAbs);
+    return computeSpearmanEdgesJs(matrix, rows, cols, minEdgeCorr, ignoreNegatives);
   }
 
   const length = rows * cols;
@@ -260,7 +266,7 @@ function computeSpearmanEdgesWasm(exports, matrix, rows, cols, minEdgeCorr, take
   const view = new Float64Array(memory.buffer, dataPtr, length);
   view.set(matrix);
 
-  const resultPtr = spearman_edges(dataPtr, rows, cols, minEdgeCorr, takeAbs ? 1 : 0);
+  const resultPtr = spearman_edges(dataPtr, rows, cols, minEdgeCorr, ignoreNegatives ? 1 : 0);
   if (!resultPtr) {
     dealloc_f64(dataPtr, length);
     return { sources: new Uint32Array(), targets: new Uint32Array(), weights: new Float32Array() };
@@ -278,7 +284,7 @@ function computeSpearmanEdgesWasm(exports, matrix, rows, cols, minEdgeCorr, take
 }
 
 self.onmessage = async (event) => {
-  const { id, type, matrix, rows, cols, minEdgeCorr, takeAbs } = event.data || {};
+  const { id, type, matrix, rows, cols, minEdgeCorr, ignoreNegatives } = event.data || {};
   if (type !== "pearson" && type !== "spearman") {
     self.postMessage({ id, type: "error", error: "Unknown correlation type." });
     return;
@@ -289,12 +295,12 @@ self.onmessage = async (event) => {
     let result;
     if (type === "pearson") {
       result = exports
-        ? computePearsonEdgesWasm(exports, matrix, rows, cols, minEdgeCorr, takeAbs)
-        : computePearsonEdgesJs(matrix, rows, cols, minEdgeCorr, takeAbs);
+        ? computePearsonEdgesWasm(exports, matrix, rows, cols, minEdgeCorr, ignoreNegatives)
+        : computePearsonEdgesJs(matrix, rows, cols, minEdgeCorr, ignoreNegatives);
     } else {
       result = exports
-        ? computeSpearmanEdgesWasm(exports, matrix, rows, cols, minEdgeCorr, takeAbs)
-        : computeSpearmanEdgesJs(matrix, rows, cols, minEdgeCorr, takeAbs);
+        ? computeSpearmanEdgesWasm(exports, matrix, rows, cols, minEdgeCorr, ignoreNegatives)
+        : computeSpearmanEdgesJs(matrix, rows, cols, minEdgeCorr, ignoreNegatives);
     }
 
     self.postMessage(

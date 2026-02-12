@@ -90,7 +90,7 @@ function toNumericMatrix(fileData) {
   return { matrix, rowNames, rows: keptRows, cols: colCount };
 }
 
-async function computeCorrelationEdges({ method, matrix, rows, cols, minEdgeCorr, takeAbs }) {
+async function computeCorrelationEdges({ method, matrix, rows, cols, minEdgeCorr, ignoreNegatives }) {
   const payload = await requestWorker(
     {
       type: method,
@@ -98,7 +98,7 @@ async function computeCorrelationEdges({ method, matrix, rows, cols, minEdgeCorr
       rows,
       cols,
       minEdgeCorr,
-      takeAbs,
+      ignoreNegatives,
     },
     [matrix.buffer]
   );
@@ -106,7 +106,7 @@ async function computeCorrelationEdges({ method, matrix, rows, cols, minEdgeCorr
   return payload;
 }
 
-export async function buildGraphFromRawTable(fileData, { takeSpearman, takeAbs, minEdgeCorr, linkAttrib }) {
+export async function buildGraphFromRawTable(fileData, { takeSpearman, ignoreNegatives, minEdgeCorr, linkAttrib }) {
   const { matrix, rowNames, rows, cols } = toNumericMatrix(fileData);
   if (rows === 0 || cols === 0) {
     return { nodes: [], links: [] };
@@ -120,7 +120,7 @@ export async function buildGraphFromRawTable(fileData, { takeSpearman, takeAbs, 
     rows,
     cols,
     minEdgeCorr: minEdgeCorrValue,
-    takeAbs: Boolean(takeAbs),
+    ignoreNegatives: Boolean(ignoreNegatives),
   });
 
   const nodes = rowNames.map((id) => ({ id, attribs: [] }));

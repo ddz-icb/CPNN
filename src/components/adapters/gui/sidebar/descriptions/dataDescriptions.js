@@ -25,11 +25,11 @@ export const containsSitesDescription = (
   </div>
 );
 
-export const takeAbsDescription = (
+export const ignoreNegativesDescription = (
   <div>
     <p>
-      When turned off, links with a negative weight value will be discarded. If enabled, the absolute value of the link weights will be taken,
-      therefore also displaying negative correlations.
+      When enabled, links with a negative weight value will be discarded. When disabled, negative correlations are kept and the threshold is applied
+      to the absolute value.
     </p>
   </div>
 );
@@ -82,20 +82,22 @@ export const uploadNodeMappingDescription = (
 export const uploadGraphDescription = (
   <div>
     You can upload your graphs in JSON, CSV or TSV format. CSV and TSV files must be either structured as a symmetric matrix or raw table data, while
-    JSON contains a list of nodes and links. You can download the example graphs below to take a closer look at the required format. When raw table
-    data is uploaded, a correlation matrix will be automatically computed. For this computation all NaN values will be ignored. The node-id format and
-    example node-ids are shown below.
+    JSON contains a list of nodes and links. You can download the example graphs below to take a closer look at the required format.<br></br>
+    When raw table data is uploaded, a correlation matrix will be computed with either pearson or spearman correlation. For this computation all NaN
+    values will be ignored.<br></br>
+    Pre-filtering the graph reduces memory consumption and increases performance significantly.<br></br>
+    The node-id format and example node-ids are shown below.
     <div className="pad-bottom-05" />
     <PopupTextField textInside={nodeIdFormat} />
     <div className="pad-bottom-05" />
     Examples:
-    <div className="pad-bottom-025" />
-    <PopupTextField textInside={nodeIdExample1} />
-    <div className="pad-bottom-025" />
-    <PopupTextField textInside={nodeIdExample2} />
-    <div className="pad-bottom-025" />
-    <PopupTextField textInside={nodeIdExample3} />
-    <div className="pad-bottom-025" />
-    <PopupTextField textInside={nodeIdExample4} />
+    <div className="pad-bottom-05" />
+    <div style={{ display: "flex", gap: "0.5rem", rowGap: "0.75rem", flexWrap: "wrap" }}>
+      <PopupTextField textInside={nodeIdExample1} />
+      <PopupTextField textInside={nodeIdExample2} />
+      <PopupTextField textInside={nodeIdExample3} />
+      <PopupTextField textInside={nodeIdExample4} />
+    </div>
+    <div className="pad-bottom-1" />
   </div>
 );

@@ -19,7 +19,7 @@ import {
   minCompSizeDescriptionUpload,
   minLinkCorrDescription,
   spearmanCoefficientDescription,
-  takeAbsDescription,
+  ignoreNegativesDescription,
   uploadGraphDescription,
   uploadNodeMappingDescription,
 } from "./descriptions/dataDescriptions.js";
@@ -123,7 +123,7 @@ function UploadedMappings({ uploadedMappingNames }) {
 function UploadGraph() {
   const graphFileRef = useRef(null);
 
-  const [takeAbs, setTakeAbs] = useState(false);
+  const [ignoreNegatives, setIgnoreNegatives] = useState(false);
   const [mergeByName, setMergeProtein] = useState(false);
   const [takeSpearman, setTakeSpearman] = useState(false);
 
@@ -144,7 +144,7 @@ function UploadGraph() {
       heading={"Uploading your Graph"}
       description={uploadGraphDescription}
     >
-      <div className="block-section">
+      <div className="block-section pad-bottom-1">
         <Button variant="popup" text={"JSON Example Graph"} onClick={() => downloadObjectAsFile(exampleGraphJson.data, exampleGraphJson.name)} />
         <Button variant="popup" text={"Matrix Example Graph"} onClick={() => downloadTsvFile(exampleGraphTsv.data, exampleGraphTsv.name)} />
         <Button variant="popup" text={"Raw Data Example Graph"} onClick={() => downloadTsvFile(exampleGraphRaw.data, exampleGraphRaw.name)} />
@@ -153,17 +153,18 @@ function UploadGraph() {
         variant="popup"
         value={takeSpearman}
         setValue={() => setTakeSpearman(!takeSpearman)}
-        text={"Calculate spearman correlation"}
+        text={"Spearman correlation"}
         infoHeading={"Use spearman correlation"}
         infoDescription={spearmanCoefficientDescription}
       />
+      <div className="table-list-heading pad-top-1">Pre-Filtering</div>
       <SwitchBlock
         variant="popup"
-        value={takeAbs}
-        setValue={() => setTakeAbs(!takeAbs)}
-        text={"Include negative correlations by taking the absolute value"}
-        infoHeading={"Include negative correlations"}
-        infoDescription={takeAbsDescription}
+        value={ignoreNegatives}
+        setValue={() => setIgnoreNegatives(!ignoreNegatives)}
+        text={"Ignore negative correlations"}
+        infoHeading={"Ignore negative correlations"}
+        infoDescription={ignoreNegativesDescription}
       />
       <SwitchBlock
         variant="popup"
@@ -212,7 +213,7 @@ function UploadGraph() {
         infoHeading={"Maximum component/cluster size"}
         infoDescription={maxCompSizeDescriptionUpload}
       />
-      <div className="block-section flex-end">
+      <div className="block-section pad-top-1 flex-end">
         <Button
           variant="popup"
           text={"Upload Own Graph File"}
@@ -220,7 +221,7 @@ function UploadGraph() {
           linkRef={graphFileRef}
           onChange={(event) => {
             const createGraphSettings = {
-              takeAbs: takeAbs,
+              ignoreNegatives: ignoreNegatives,
               minEdgeCorr: minEdgeCorr,
               minCompSize: minCompSize,
               maxCompSize: maxCompSize,
@@ -250,7 +251,7 @@ function UploadMapping() {
       <div className="block-section">
         <Button
           variant="popup"
-          text={"Download Example Mapping"}
+          text={"Download Example Node Mapping"}
           onClick={() => downloadTsvFile(exampleNodeMappingTsv.data, exampleNodeMappingTsv.name)}
         />
         <Button

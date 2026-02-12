@@ -167,7 +167,7 @@ pub extern "C" fn pearson_edges(
   rows: usize,
   cols: usize,
   min_corr: f64,
-  take_abs: u32,
+  ignore_negatives: u32,
 ) -> *mut EdgeResult {
   if data_ptr.is_null() || rows == 0 || cols == 0 {
     return core::ptr::null_mut();
@@ -178,7 +178,7 @@ pub extern "C" fn pearson_edges(
   let mut targets: Vec<u32> = Vec::new();
   let mut weights: Vec<f32> = Vec::new();
 
-  let use_abs = take_abs != 0;
+  let ignore_negatives_flag = ignore_negatives != 0;
 
   for i in 0..rows {
     for j in 0..i {
@@ -187,14 +187,16 @@ pub extern "C" fn pearson_edges(
         continue;
       }
 
-      let mut corr = corr_opt.unwrap();
-      if use_abs {
-        corr = corr.abs();
-      } else if corr <= 0.0 {
-        continue;
-      }
-
-      if corr < min_corr {
+      let corr = corr_opt.unwrap();
+      let corr = round2(corr);
+      if ignore_negatives_flag {
+        if corr <= 0.0 {
+          continue;
+        }
+        if corr < min_corr {
+          continue;
+        }
+      } else if corr.abs() < min_corr {
         continue;
       }
 
@@ -227,7 +229,7 @@ pub extern "C" fn spearman_edges(
   rows: usize,
   cols: usize,
   min_corr: f64,
-  take_abs: u32,
+  ignore_negatives: u32,
 ) -> *mut EdgeResult {
   if data_ptr.is_null() || rows == 0 || cols == 0 {
     return core::ptr::null_mut();
@@ -238,7 +240,7 @@ pub extern "C" fn spearman_edges(
   let mut targets: Vec<u32> = Vec::new();
   let mut weights: Vec<f32> = Vec::new();
 
-  let use_abs = take_abs != 0;
+  let ignore_negatives_flag = ignore_negatives != 0;
 
   for i in 0..rows {
     for j in 0..i {
@@ -268,14 +270,15 @@ pub extern "C" fn spearman_edges(
         continue;
       }
 
-      let mut corr = round2(corr_opt.unwrap());
-      if use_abs {
-        corr = corr.abs();
-      } else if corr <= 0.0 {
-        continue;
-      }
-
-      if corr < min_corr {
+      let corr = round2(corr_opt.unwrap());
+      if ignore_negatives_flag {
+        if corr <= 0.0 {
+          continue;
+        }
+        if corr < min_corr {
+          continue;
+        }
+      } else if corr.abs() < min_corr {
         continue;
       }
 

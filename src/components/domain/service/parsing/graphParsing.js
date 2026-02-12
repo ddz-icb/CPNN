@@ -6,7 +6,7 @@ import {
   filterMergeByName,
   filterMinCompSize,
   filterNodesExist,
-  filterTakeAbs,
+  filterIgnoreNegatives,
 } from "../graph_calculations/filterGraph.js";
 import { isCorrMatrix, isTableData, verifyGraph } from "../verification/graphVerification.js";
 import { sortGraph } from "../graph_calculations/graphUtils.js";
@@ -15,7 +15,7 @@ import { buildGraphFromRawTable } from "../correlation/correlationService.js";
 function applyFilters(graphData, settings) {
   let filteredGraph = graphData;
   filteredGraph = filterMergeByName(filteredGraph, settings.mergeByName);
-  filteredGraph = filterTakeAbs(filteredGraph, settings.takeAbs);
+  filteredGraph = filterIgnoreNegatives(filteredGraph, settings.ignoreNegatives);
   filteredGraph = filterThreshold(filteredGraph, settings.minEdgeCorr);
   filteredGraph = filterMinCompSize(filteredGraph, settings.minCompSize);
   filteredGraph = filterMaxCompSize(filteredGraph, settings.maxCompSize);
@@ -62,7 +62,7 @@ async function parseGraphByFileType(name, content, settings) {
       log.info("Parsing raw table data (CSV/TSV)");
       return await buildGraphFromRawTable(parsedData, {
         takeSpearman: settings?.takeSpearman,
-        takeAbs: settings?.takeAbs,
+        ignoreNegatives: settings?.ignoreNegatives,
         minEdgeCorr: settings?.minEdgeCorr,
         linkAttrib,
       });
