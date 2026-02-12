@@ -5,6 +5,8 @@ import { downloadInit, useDownload } from "../../adapters/state/downloadState.js
 import { useReset } from "../../adapters/state/resetState.js";
 import { filteredAfterStartInit, isPreprocessedInit, useGraphFlags } from "../../adapters/state/graphFlagsState.js";
 import { graphMetricsInit, useGraphMetrics } from "../../adapters/state/graphMetricsState.js";
+import { searchStateInit, useSearchState } from "../../adapters/state/searchState.js";
+import { communityStateInit, useCommunityState } from "../../adapters/state/communityState.js";
 
 export const resetService = {
   resetSimulation() {
@@ -17,6 +19,10 @@ export const resetService = {
 
     useGraphFlags.getState().setGraphFlags("isPreprocessed", isPreprocessedInit);
     useGraphFlags.getState().setGraphFlags("filteredAfterStart", filteredAfterStartInit);
+
+    useSearchState.getState().setAllSearchState(searchStateInit);
+
+    useCommunityState.getState().setAllCommunityState(communityStateInit);
 
     errorService.clearError();
     this.setReset(true);
