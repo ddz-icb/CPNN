@@ -124,25 +124,42 @@ export function filterMinNeighborhood(graphData, minKCoreSize) {
   return filteredGraph;
 }
 
+export function filterMinCompSize(graphData, minCompSize) {
+  if (minCompSize === 1) return graphData;
+
+  const [IdToComp, compToCompSize] = getComponentData(graphData);
+
+  return {
+    ...graphData,
+    nodes: graphData.nodes.filter((node) => compToCompSize[IdToComp[node.id]] >= minCompSize),
+  };
+}
+
+export function filterMaxCompSize(graphData, maxCompSize) {
+  if (maxCompSize == "") return graphData;
+
+  const [IdToComp, compToCompSize] = getComponentData(graphData);
+
+  return {
+    ...graphData,
+    nodes: graphData.nodes.filter((node) => compToCompSize[IdToComp[node.id]] <= maxCompSize),
+  };
+}
+
 export function filterComponentSizeRange(graphData, minCompSize, maxCompSize) {
-  const minValue = typeof minCompSize === "number" ? minCompSize : Number(minCompSize);
-  const hasMin = Number.isFinite(minValue) && minValue > 1;
+  const applyMin = minCompSize !== 1;
+  const applyMax = maxCompSize != "";
 
-  const hasMaxInput = maxCompSize !== "" && maxCompSize !== null && maxCompSize !== undefined;
-  const maxValue = typeof maxCompSize === "number" ? maxCompSize : Number(maxCompSize);
-  const hasMax = hasMaxInput && Number.isFinite(maxValue) && maxValue > 0;
-
-  if (!hasMin && !hasMax) return graphData;
+  if (!applyMin && !applyMax) return graphData;
 
   const [IdToComp, compToCompSize] = getComponentData(graphData);
 
   return {
     ...graphData,
     nodes: graphData.nodes.filter((node) => {
-      const size = compToCompSize?.[IdToComp[node.id]];
-      if (!Number.isFinite(size)) return true;
-      if (hasMin && size < minValue) return false;
-      if (hasMax && size > maxValue) return false;
+      const size = compToCompSize[IdToComp[node.id]];
+      if (applyMin && size < minCompSize) return false;
+      if (applyMax && size > maxCompSize) return false;
       return true;
     }),
   };
