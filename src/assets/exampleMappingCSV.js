@@ -1,5 +1,5 @@
-const exampleMapping = `
-UniProt-ID	Pathway Name
+const exampleNodeMapping = `
+id	attrib
 A2RRP1	Membrane Trafficking
 A2RUS2	Membrane Trafficking
 A5D8V6	Membrane Trafficking
@@ -39,4 +39,4 @@ O00443	Membrane Trafficking
 O00459	PIP3 activates AKT signaling; Signaling by VEGF; Signaling by Insulin receptor
 `;
 
-export const exampleMappingTsv = { name: "ExampleMapping.tsv", data: exampleMapping.trim() };
+export const exampleNodeMappingTsv = { name: "ExampleNodeMapping.tsv", data: exampleNodeMapping.trim() };

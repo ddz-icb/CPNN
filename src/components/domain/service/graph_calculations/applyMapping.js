@@ -20,7 +20,7 @@ export function applyNodeMapping(graphData, mappingData) {
       const protIdStr = String(protId).trim();
 
       if (nodeMapping.hasOwnProperty(protIdStr)) {
-        attribsSet = new Set([...attribsSet, ...nodeMapping[protIdStr].pathwayNames]);
+        attribsSet = new Set([...attribsSet, ...nodeMapping[protIdStr].attrib]);
       }
     });
     node.attribs = Array.from(attribsSet);

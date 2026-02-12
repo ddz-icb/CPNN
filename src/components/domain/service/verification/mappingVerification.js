@@ -4,8 +4,8 @@ export function verifyMapping(mapping) {
   }
 
   Object.entries(mapping.data).forEach(([key, node]) => {
-    if (!node.hasOwnProperty("pathwayNames")) {
-      throw new Error(`${key} is missing the 'Pathway Name' property.`);
+    if (!node.hasOwnProperty("attrib")) {
+      throw new Error(`${key} is missing the 'attrib' property.`);
     }
   });
 }

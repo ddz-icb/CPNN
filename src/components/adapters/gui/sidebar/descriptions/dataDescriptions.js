@@ -1,7 +1,7 @@
 import {
-  mappingExample,
-  mappingExample2,
-  mappingFormat,
+  nodeMappingExample,
+  nodeMappingExample2,
+  nodeMappingFormat,
   nodeIdExample1,
   nodeIdExample2,
   nodeIdExample3,
@@ -60,22 +60,22 @@ export const maxCompSizeDescriptionUpload = (
   </div>
 );
 
-export const uploadPathwayMappingDescription = (
+export const uploadNodeMappingDescription = (
   <div>
-    Uploading pathway mappings can provide additional context to classify nodes, determining their color. By doing so, nodes −such as peptides− are
-    associated with one or more pathways. Nodes belonging to the same pathway will then be colored accordingly.
+    Uploading node mappings can provide additional context to classify nodes, determining their color. By doing so, nodes −such as peptides− are
+    associated with one or more attributes. Nodes belonging to the same attribute will then be colored accordingly.
     <br />
     <br />
-    Pathway mappings can be uploaded in CSV or TSV format. These mappings must contain a "UniProt-ID" and a "Pathway Name" column. To better
-    understand the required format, you can look at examples or download an example mapping below.
+    Node mappings can be uploaded in CSV or TSV format. These mappings must contain an "id" and an "attrib" column. To better understand the required
+    format, you can look at examples or download an example mapping below.
     <div className="pad-bottom-05" />
-    <PopupTextField textInside={mappingFormat} />
+    <PopupTextField textInside={nodeMappingFormat} />
     <div className="pad-bottom-05" />
     Examples:
     <div className="pad-bottom-025" />
-    <PopupTextField textInside={mappingExample} />
+    <PopupTextField textInside={nodeMappingExample} />
     <div className="pad-bottom-025" />
-    <PopupTextField textInside={mappingExample2} />
+    <PopupTextField textInside={nodeMappingExample2} />
   </div>
 );
 

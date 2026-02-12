@@ -12,7 +12,7 @@ import { TableList, ButtonPopup, SwitchBlock, SliderBlock, FieldBlock, Button } 
 import { exampleGraphJson } from "../../../../assets/exampleGraphJSON.js";
 import { downloadObjectAsFile, downloadTsvFile } from "../../../domain/service/download/download.js";
 import { exampleGraphTsv } from "../../../../assets/exampleGraphCSV.js";
-import { exampleMappingTsv } from "../../../../assets/exampleMappingCSV.js";
+import { exampleNodeMappingTsv } from "../../../../assets/exampleMappingCSV.js";
 import { exampleGraphRaw } from "../../../../assets/exampleGraphRawTSV.js";
 import {
   maxCompSizeDescriptionUpload,
@@ -21,7 +21,7 @@ import {
   spearmanCoefficientDescription,
   takeAbsDescription,
   uploadGraphDescription,
-  uploadPathwayMappingDescription,
+  uploadNodeMappingDescription,
 } from "./descriptions/dataDescriptions.js";
 import { mergeByNameDescription } from "./descriptions/filterDescriptions.js";
 import { graphService } from "../../../application/services/graphService.js";
@@ -241,17 +241,21 @@ function UploadMapping() {
 
   return (
     <ButtonPopup
-      buttonText={"Upload Mappings"}
-      tooltip={"Upload Pathway Annotation Mappings as a TSV or CSV File"}
+      buttonText={"Upload Node Mappings"}
+      tooltip={"Upload Node Annotation Mappings as a TSV or CSV File"}
       tooltipId={"upload-mapping-tooltip"}
-      heading={"Uploading Your Mapping"}
-      description={uploadPathwayMappingDescription}
+      heading={"Uploading Your Node Annotation Mapping"}
+      description={uploadNodeMappingDescription}
     >
       <div className="block-section">
-        <Button variant="popup" text={"Download Example Mapping"} onClick={() => downloadTsvFile(exampleMappingTsv.data, exampleMappingTsv.name)} />
         <Button
           variant="popup"
-          text={"Upload Own Mapping"}
+          text={"Download Example Mapping"}
+          onClick={() => downloadTsvFile(exampleNodeMappingTsv.data, exampleNodeMappingTsv.name)}
+        />
+        <Button
+          variant="popup"
+          text={"Upload Own Node Mapping"}
           onClick={() => mappingRef.current.click()}
           linkRef={mappingRef}
           onChange={(event) => {

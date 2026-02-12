@@ -28,9 +28,18 @@ export function parseMapping(content) {
     dynamicTyping: true,
     skipEmptyLines: true,
     delimiter: "",
+    transformHeader: function (header) {
+      return header.trim().toLowerCase();
+    },
     transform: function (value, field) {
-      if (field !== "UniProt-ID") {
-        return value.split(";").map((item) => item.trim());
+      if (field === "attrib") {
+        if (value === null || value === undefined) return [];
+        if (typeof value !== "string") return [value];
+        if (value.trim().length === 0) return [];
+        return value
+          .split(";")
+          .map((item) => item.trim())
+          .filter((item) => item.length > 0);
       }
       return value;
     },
@@ -39,11 +48,11 @@ export function parseMapping(content) {
   const nodeMapping = {};
 
   for (let row of fileData.data) {
-    const uniProtId = row["UniProt-ID"];
-    const pathwayNames = row["Pathway Name"];
+    const id = row["id"];
+    const attrib = row["attrib"];
 
-    nodeMapping[uniProtId] = {
-      pathwayNames: pathwayNames,
+    nodeMapping[id] = {
+      attrib: attrib,
     };
   }
 
