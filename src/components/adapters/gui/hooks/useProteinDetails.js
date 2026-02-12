@@ -47,6 +47,7 @@ export function useProteinDetails(nodeId) {
 
         if (!parsedEntries.protIdNoIsoform) return;
 
+        log.debug(`Fetching UniProt data for ${parsedEntries.protIdNoIsoform}`);
         const responseUniprot = await axios.get(`https://rest.uniprot.org/uniprotkb/${parsedEntries.protIdNoIsoform}.json`);
         if (isCancelled) return;
 
@@ -63,6 +64,7 @@ export function useProteinDetails(nodeId) {
         const pdbId = getPdbIdUniprotData(uniprotData);
         if (pdbId) {
           nextDetails.pdbId = pdbId;
+          log.debug(`Fetching PDB file for ${pdbId}`);
           const responsePdb = await axios.get(`https://files.rcsb.org/download/${pdbId}.pdb`);
           if (!isCancelled && responsePdb?.data) {
             nextDetails.responsePdb = responsePdb;
