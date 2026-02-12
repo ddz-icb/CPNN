@@ -2,11 +2,10 @@ import log from "../../../adapters/logging/logger.js";
 import { getFileAsText, getFileNameWithoutExtension, parseSVFile } from "./fileParsing.js";
 import {
   filterThreshold,
-  filterMaxCompSize,
   filterMergeByName,
-  filterMinCompSize,
   filterNodesExist,
   filterIgnoreNegatives,
+  filterComponentSizeRange,
 } from "../graph_calculations/filterGraph.js";
 import { isCorrMatrix, isTableData, verifyGraph } from "../verification/graphVerification.js";
 import { sortGraph } from "../graph_calculations/graphUtils.js";
@@ -17,8 +16,7 @@ function applyFilters(graphData, settings) {
   filteredGraph = filterMergeByName(filteredGraph, settings.mergeByName);
   filteredGraph = filterIgnoreNegatives(filteredGraph, settings.ignoreNegatives);
   filteredGraph = filterThreshold(filteredGraph, settings.minEdgeCorr);
-  filteredGraph = filterMinCompSize(filteredGraph, settings.minCompSize);
-  filteredGraph = filterMaxCompSize(filteredGraph, settings.maxCompSize);
+  filteredGraph = filterComponentSizeRange(filteredGraph, settings.minCompSize, settings.maxCompSize);
 
   return filterNodesExist(filteredGraph);
 }

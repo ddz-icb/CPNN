@@ -10,9 +10,8 @@ import {
   filterCommunityDensity,
   filterCommunitySizeRange,
   filterComponentDensity,
-  filterMaxCompSize,
   filterMinNeighborhood,
-  filterMinCompSize,
+  filterComponentSizeRange,
   filterNodesExist,
   filterLasso,
   filterCommunityVisibility,
@@ -89,8 +88,7 @@ export function FilterControl() {
       filteredGraphData = filterComponentDensity(filteredGraphData, filter.componentDensity);
       filteredGraphData = filterCommunityDensity(filteredGraphData, filter.communityDensity, communityState.communityResolution);
       filteredGraphData = filterMinNeighborhood(filteredGraphData, filter.minKCoreSize);
-      filteredGraphData = filterMinCompSize(filteredGraphData, filter.minCompSize);
-      filteredGraphData = filterMaxCompSize(filteredGraphData, filter.maxCompSize);
+      filteredGraphData = filterComponentSizeRange(filteredGraphData, filter.minCompSize, filter.maxCompSize);
       filteredGraphData = filterCommunitySizeRange(
         filteredGraphData,
         filter.minCommunitySize,
