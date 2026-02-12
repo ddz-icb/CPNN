@@ -75,8 +75,9 @@ export const useGraphSetup = () => {
       setGraphMetrics("linkWeightMax", maxWeight);
     }
     if (minWeight !== Infinity && minWeight > linkThresholdInit) {
-      setFilter("linkThreshold", minWeight);
-      setFilter("linkThresholdText", minWeight);
+      const roundedMinWeight = Math.round(minWeight * 100) / 100;
+      setFilter("linkThreshold", roundedMinWeight);
+      setFilter("linkThresholdText", roundedMinWeight);
     }
 
     if (!keepMapping) {

@@ -1,5 +1,4 @@
 import log from "../../../adapters/logging/logger.js";
-import axios from "axios";
 import { getFileAsText, getFileNameWithoutExtension, parseSVFile } from "./fileParsing.js";
 import {
   filterThreshold,
@@ -11,6 +10,7 @@ import {
 } from "../graph_calculations/filterGraph.js";
 import { isCorrMatrix, isTableData, verifyGraph } from "../verification/graphVerification.js";
 import { sortGraph } from "../graph_calculations/graphUtils.js";
+import { buildGraphFromRawTable } from "../correlation/correlationService.js";
 
 function applyFilters(graphData, settings) {
   let filteredGraph = graphData;
@@ -29,7 +29,7 @@ export async function parseGraphFile(file, settings) {
   }
 
   const fileContent = await getFileAsText(file);
-  let graphData = await parseGraphByFileType(file.name, fileContent, settings.takeSpearman);
+  let graphData = await parseGraphByFileType(file.name, fileContent, settings);
   graphData = applyFilters(graphData, settings);
   sortGraph(graphData);
 
@@ -39,7 +39,7 @@ export async function parseGraphFile(file, settings) {
   return graph;
 }
 
-async function parseGraphByFileType(name, content, takeSpearman) {
+async function parseGraphByFileType(name, content, settings) {
   const fileExtension = name.split(".").pop();
   const linkAttrib = name.split(".")[0];
 
@@ -60,8 +60,12 @@ async function parseGraphByFileType(name, content, takeSpearman) {
 
     if (isTableData(parsedData)) {
       log.info("Parsing raw table data (CSV/TSV)");
-      const corrMatrix = await convertRawTableToCorrMatrix(parsedData, takeSpearman);
-      return convertCorrMatrixToGraph(corrMatrix, linkAttrib);
+      return await buildGraphFromRawTable(parsedData, {
+        takeSpearman: settings?.takeSpearman,
+        takeAbs: settings?.takeAbs,
+        minEdgeCorr: settings?.minEdgeCorr,
+        linkAttrib,
+      });
     }
 
     throw new Error("File has an unknown format.");
@@ -77,12 +81,14 @@ function convertCorrMatrixToGraph(fileData, linkAttrib) {
 
   graphData.nodes = header.map((id) => ({ id, attribs: [] }));
 
+  const round2 = (value) => Math.round(value * 100) / 100;
+
   for (let i = 0; i < header.length; i++) {
     for (let j = 0; j < i; j++) {
       graphData.links.push({
         source: header[i],
         target: header[j],
-        weights: [data[i][j]],
+        weights: [round2(data[i][j])],
         attribs: [linkAttrib],
       });
     }
@@ -91,23 +97,4 @@ function convertCorrMatrixToGraph(fileData, linkAttrib) {
   return graphData;
 }
 
-async function convertRawTableToCorrMatrix(fileData, takeSpearman = false) {
-  const method = takeSpearman ? "spearman" : "pearson";
-  const data = fileData.data.map((row, index) => [fileData.firstColumn[index], ...row]);
-
-  const formData = new FormData();
-  formData.append("file", new Blob([JSON.stringify(data)], { type: "application/json" }));
-  formData.append("method", method);
-
-  try {
-    // const response = await axios.post("http://localhost:3001/correlationMatrix", formData, {
-    const response = await axios.post("https://cpnn.ddz.de/api/correlationMatrix", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-    const { columns, data: matrixData } = response.data;
-    return { header: columns, firstColumn: columns, data: matrixData };
-  } catch (error) {
-    log.error("Error fetching correlation matrix:", error.message);
-    throw error;
-  }
-}
+// NOTE: server-side correlation has been replaced by a client-side worker implementation.

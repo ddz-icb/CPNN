@@ -43,11 +43,19 @@ export default defineConfig(({ mode }) => ({
     port: 3000,
     strictPort: true,
     allowedHosts: ["cpnn.ddz.de"],
+    headers: {
+      "Cross-Origin-Opener-Policy": "same-origin",
+      "Cross-Origin-Embedder-Policy": "require-corp",
+    },
   },
   preview: {
     port: 3000,
     strictPort: true,
     allowedHosts: ["cpnn.ddz.de"],
+    headers: {
+      "Cross-Origin-Opener-Policy": "same-origin",
+      "Cross-Origin-Embedder-Policy": "require-corp",
+    },
   },
   build: {
     // Keep the CRA-style output directory so downstream scripts (serve, etc.) still work.

@@ -2,3 +2,5 @@ node_modules/
 .DS_STORE
 build/
 .vscode
+wasm/corr_matrix/target/
+public/wasm/corr_matrix.wasm
