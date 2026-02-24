@@ -64,16 +64,51 @@ export function FieldBlock({ text, infoHeading, infoDescription, ...props }) {
   );
 }
 
-export function TextFieldBlock({ text, infoHeading, infoDescription, value, setValue, placeholder = "" }) {
+export function TextFieldBlock({ text, infoHeading, infoDescription, infoChildren, value, setValue, placeholder = "", size = "default" }) {
+  const showInfo = Boolean(infoHeading || infoDescription || infoChildren);
   return (
     <div className="block-section">
       <div className="sidebar-control-header">
         <label className="label">{text}</label>
-        <span className="info-button-container">
-          <InfoButtonPopup heading={infoHeading} description={infoDescription} />
-        </span>
+        {showInfo && (
+          <span className="info-button-container">
+            <InfoButtonPopup heading={infoHeading} description={infoDescription}>
+              {infoChildren}
+            </InfoButtonPopup>
+          </span>
+        )}
       </div>
-      <TextInput value={value} setValue={setValue} placeholder={placeholder} />
+      <TextInput value={value} setValue={setValue} placeholder={placeholder} size={size} />
+    </div>
+  );
+}
+
+export function SelectFieldBlock({
+  text,
+  infoHeading,
+  infoDescription,
+  infoChildren,
+  infoWidePopup = false,
+  value,
+  setValue,
+  options = [],
+  size = "default",
+}) {
+  const showInfo = Boolean(infoHeading || infoDescription || infoChildren);
+
+  return (
+    <div className="block-section">
+      <div className="sidebar-control-header">
+        <label className="label">{text}</label>
+        {showInfo && (
+          <span className="info-button-container">
+            <InfoButtonPopup heading={infoHeading} description={infoDescription} widePopup={infoWidePopup}>
+              {infoChildren}
+            </InfoButtonPopup>
+          </span>
+        )}
+      </div>
+      <SelectInput value={value} setValue={setValue} options={options} size={size} />
     </div>
   );
 }
@@ -198,8 +233,12 @@ export function CodeEditorBlock({ text, onClick, compilerError, defaultValue, te
   );
 }
 
-export function Popup({ heading, description, isOpen, setIsOpen, widePopup = false, children }) {
+export function Popup({ heading, description, isOpen, setIsOpen, widePopup = false, onClose, children }) {
   const popupContainer = widePopup ? "popup-container-wide" : "popup-container";
+  const handleClose = () => {
+    setIsOpen(false);
+    if (onClose) onClose();
+  };
 
   return (
     isOpen && (
@@ -207,7 +246,7 @@ export function Popup({ heading, description, isOpen, setIsOpen, widePopup = fal
         <div className={popupContainer}>
           <div className="popup-header pad-bottom-1">
             <span className="popup-heading">{heading}</span>
-            <span className="svg-button" onClick={() => setIsOpen(false)}>
+            <span className="svg-button" onClick={handleClose}>
               <SvgIcon svg={xSvg} className="popup-close-icon" />
             </span>
           </div>
@@ -219,20 +258,30 @@ export function Popup({ heading, description, isOpen, setIsOpen, widePopup = fal
   );
 }
 
-export function ButtonPopup({ buttonText, tooltip, tooltipId, heading, description, widePopup, children }) {
+export function ButtonPopup({ buttonText, tooltip, tooltipId, heading, description, widePopup, onClose, children }) {
   const [isOpen, setIsOpen] = useState(false);
+  const closePopup = () => setIsOpen(false);
+  const renderedChildren = typeof children === "function" ? children({ closePopup }) : children;
 
   return (
     <>
       <Button onClick={() => setIsOpen(!isOpen)} tooltip={tooltip} tooltipId={tooltipId} text={buttonText} />
       {isOpen && (
-        <Popup heading={heading} description={description} children={children} isOpen={isOpen} setIsOpen={setIsOpen} widePopup={widePopup} />
+        <Popup
+          heading={heading}
+          description={description}
+          children={renderedChildren}
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          widePopup={widePopup}
+          onClose={onClose}
+        />
       )}
     </>
   );
 }
 
-export function InfoButtonPopup({ heading, description, children }) {
+export function InfoButtonPopup({ heading, description, widePopup = false, children }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -241,7 +290,7 @@ export function InfoButtonPopup({ heading, description, children }) {
         <SvgIcon svg={infoCircleSvg} className="info-button-icon" />
       </button>
       {isOpen && (
-        <Popup heading={heading} description={description} children={children} isOpen={isOpen} setIsOpen={setIsOpen} />
+        <Popup heading={heading} description={description} children={children} isOpen={isOpen} setIsOpen={setIsOpen} widePopup={widePopup} />
       )}
     </>
   );
@@ -520,14 +569,28 @@ function NumericInput({ valueText, setValue, setValueText, fallbackValue, min, m
   );
 }
 
-function TextInput({ value, setValue, placeholder }) {
+function TextInput({ value, setValue, placeholder, size = "default" }) {
+  const widthClass = size === "wide" ? "sidebar-control-input--wide" : "default-width";
   return (
     <InputCN
-      className="input-field input-field--text default-width default-height"
+      className={`input-field input-field--text ${widthClass} default-height`}
       type="text"
       value={value}
       placeholder={placeholder}
       onChange={(event) => setValue(event.target.value)}
     />
+  );
+}
+
+function SelectInput({ value, setValue, options, size = "default" }) {
+  const widthClass = size === "wide" ? "sidebar-control-input--wide" : "default-width";
+  return (
+    <select className={`sidebar-select ${widthClass} default-height`} value={value} onChange={(event) => setValue(event.target.value)}>
+      {options.map((option) => (
+        <option key={option.value} value={option.value}>
+          {option.label}
+        </option>
+      ))}
+    </select>
   );
 }

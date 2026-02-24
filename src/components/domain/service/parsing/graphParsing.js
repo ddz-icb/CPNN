@@ -11,7 +11,8 @@ import { isCorrMatrix, isTableData, verifyGraph } from "../verification/graphVer
 import { sortGraph } from "../graph_calculations/graphUtils.js";
 import { buildGraphFromRawTable } from "../correlation/correlationService.js";
 
-const defaultGeneratedLinkAttrib = "uploaded";
+const supportedSeparatedFileExtensions = new Set(["csv", "tsv"]);
+const supportedDataFormats = new Set(["json", "matrix", "tabular"]);
 
 function applyFilters(graphData, settings) {
   let filteredGraph = graphData;
@@ -29,55 +30,109 @@ export async function parseGraphFile(file, settings) {
   }
 
   const fileContent = await getFileAsText(file);
-  let graphData = await parseGraphByFileType(file.name, fileContent, settings);
+  const resolvedGraphName = resolveGraphName(file);
+  const selectedDataFormat = resolveSelectedDataFormat(settings);
+  let graphData = await parseGraphBySelectedFormat({
+    fileName: file.name,
+    content: fileContent,
+    settings,
+    dataFormat: selectedDataFormat,
+    generatedLinkAttrib: resolvedGraphName,
+  });
   graphData = applyFilters(graphData, settings);
   sortGraph(graphData);
 
-  const graph = { name: getFileNameWithoutExtension(file.name), data: graphData };
+  const graph = { name: resolvedGraphName, data: graphData };
   verifyGraph(graph);
 
   return graph;
 }
 
-async function parseGraphByFileType(name, content, settings) {
-  const fileExtension = name.split(".").pop();
-  const generatedLinkAttrib = resolveGeneratedLinkAttrib(settings);
-
+async function parseGraphBySelectedFormat({ fileName, content, settings, dataFormat, generatedLinkAttrib }) {
   try {
-    if (fileExtension === "json") {
-      log.info("Parsing JSON graph");
-      return JSON.parse(content);
-    }
-    if (fileExtension != "csv" && fileExtension != "tsv") throw new Error("Unknown file type");
-
-    const parsedData = parseSVFile(content);
-    if (!parsedData || !parsedData.header) throw new Error("CSV/TSV file has a wrong or empty format.");
-
-    if (isCorrMatrix(parsedData)) {
-      log.info("Parsing symmetrical matrix (CSV/TSV)");
-      return convertCorrMatrixToGraph(parsedData, generatedLinkAttrib);
+    if (dataFormat === "json") {
+      return parseJsonGraphFile(fileName, content);
     }
 
-    if (isTableData(parsedData)) {
-      log.info("Parsing tabular data (CSV/TSV)");
-      return await buildGraphFromRawTable(parsedData, {
-        takeSpearman: settings?.takeSpearman,
-        ignoreNegatives: settings?.ignoreNegatives,
-        minEdgeCorr: settings?.minEdgeCorr,
-        linkAttrib: generatedLinkAttrib,
-      });
+    const parsedData = parseSeparatedGraphFile(fileName, content);
+    if (dataFormat === "matrix") {
+      return parseCorrelationMatrixGraph(parsedData, generatedLinkAttrib);
+    }
+    if (dataFormat === "tabular") {
+      return await parseTabularDataGraph(parsedData, settings, generatedLinkAttrib);
     }
 
-    throw new Error("File has an unknown format.");
+    throw new Error(`Unsupported data format '${dataFormat}'.`);
   } catch (error) {
     log.error(`Failed to parse graph: ${error.message}`);
     throw error;
   }
 }
 
-function resolveGeneratedLinkAttrib(settings) {
-  const candidate = String(settings?.generatedLinkAttrib ?? "").trim();
-  return candidate.length > 0 ? candidate : defaultGeneratedLinkAttrib;
+function parseJsonGraphFile(fileName, content) {
+  const fileExtension = getFileExtension(fileName);
+  if (fileExtension !== "json") {
+    throw new Error("Selected data format 'Listed Data (JSON)' requires a .json file.");
+  }
+
+  log.info("Parsing JSON graph");
+  return JSON.parse(content);
+}
+
+function parseSeparatedGraphFile(fileName, content) {
+  const fileExtension = getFileExtension(fileName);
+  if (!supportedSeparatedFileExtensions.has(fileExtension)) {
+    throw new Error("Selected data format requires a CSV or TSV file.");
+  }
+
+  const parsedData = parseSVFile(content);
+  if (!parsedData || !parsedData.header) {
+    throw new Error("CSV/TSV file has a wrong or empty format.");
+  }
+  return parsedData;
+}
+
+function parseCorrelationMatrixGraph(parsedData, generatedLinkAttrib) {
+  if (!isCorrMatrix(parsedData)) {
+    throw new Error("Selected data format is 'Correlation Matrix', but the uploaded TSV/CSV does not match matrix format.");
+  }
+
+  log.info("Parsing symmetrical matrix (CSV/TSV)");
+  return convertCorrMatrixToGraph(parsedData, generatedLinkAttrib);
+}
+
+async function parseTabularDataGraph(parsedData, settings, generatedLinkAttrib) {
+  if (isCorrMatrix(parsedData)) {
+    throw new Error("Selected data format is 'Tabular Data', but the uploaded TSV/CSV looks like a correlation matrix.");
+  }
+  if (!isTableData(parsedData)) {
+    throw new Error("Selected data format is 'Tabular Data', but the uploaded TSV/CSV does not match tabular format.");
+  }
+
+  log.info("Parsing tabular data (CSV/TSV)");
+  return await buildGraphFromRawTable(parsedData, {
+    takeSpearman: settings?.takeSpearman,
+    ignoreNegatives: settings?.ignoreNegatives,
+    minEdgeCorr: settings?.minEdgeCorr,
+    linkAttrib: generatedLinkAttrib,
+  });
+}
+
+function resolveSelectedDataFormat(settings) {
+  const candidate = String(settings?.dataFormat ?? settings?.graphStructure ?? "")
+    .trim()
+    .toLowerCase();
+  if (supportedDataFormats.has(candidate)) return candidate;
+
+  throw new Error("Please select a data format before uploading.");
+}
+
+function getFileExtension(fileName) {
+  return String(fileName).split(".").pop().toLowerCase();
+}
+
+function resolveGraphName(file) {
+  return getFileNameWithoutExtension(file.name);
 }
 
 function convertCorrMatrixToGraph(fileData, linkAttrib) {
@@ -101,5 +156,3 @@ function convertCorrMatrixToGraph(fileData, linkAttrib) {
 
   return graphData;
 }
-
-// NOTE: server-side correlation has been replaced by a client-side worker implementation.

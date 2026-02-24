@@ -61,15 +61,6 @@ export const maxCompSizeDescriptionUpload = (
   </div>
 );
 
-export const generatedLinkAttribDescription = (
-  <div>
-    <p>
-      Used for CSV/TSV graph uploads (correlation matrices and tabular data). All generated links will receive this attribute label. JSON uploads keep
-      their existing link attributes.
-    </p>
-  </div>
-);
-
 export const uploadNodeMappingDescription = (
   <div>
     Uploading node mappings can provide additional context to classify nodes, determining their color. By doing so, nodes −such as peptides− are
@@ -95,17 +86,30 @@ export const uploadNodeMappingDescription = (
 export const uploadGraphDescription = (
   <div>
     <p className="margin-0">
-      You can upload graphs as JSON, TSV (preferred), or CSV. TSV/CSV files must be either a symmetric correlation matrix or tabular data, while JSON
-      contains a list of nodes and links. For matrix/tabular uploads, use <PopupTextField inline={true} textInside={"id"} /> as the first column
-      header.
-      <br />
-      Tabular data is converted to a correlation matrix using Pearson (default) or Spearman. NaN values are ignored.
-      <br />
-      For TSV/CSV uploads, set the generated link attribute in the popup. JSON uploads keep their existing link attributes.
-      <br />
-      Pre-filtering can reduce memory usage and improve performance.
+      Select your preferred data format. You can read more about the different data formats by clicking the small info icon next to the selection.
     </p>
-    <div className="pad-bottom-05" />
+    <p className="margin-0">You can also enable prefilters for the graph to reduce it's base size, significantly enhancing it's performance.</p>
+    <br></br>
+  </div>
+);
+
+export const uploadGraphDataFormat = (
+  <div>
+    <p className="margin-0">
+      <strong>Listed Data (JSON):</strong> Upload a JSON file that already contains nodes and links. JSON uploads keep their existing link attributes.
+    </p>
+    <br></br>
+    <p className="margin-0">
+      <strong>Correlation Matrix (TSV/CSV):</strong> Upload a symmetric matrix table. Use <PopupTextField inline={true} textInside={"id"} /> as the
+      first column header. Links are created directly from the matrix and use the uploaded file name as link attribute.
+    </p>
+    <br></br>
+    <p className="margin-0">
+      <strong>Tabular Data (TSV/CSV):</strong> Upload tabular measurements (also with <PopupTextField inline={true} textInside={"id"} /> as the first
+      column header). The table is converted to a correlation graph using Pearson (default) or Spearman. NaN values are ignored, and generated links
+      use the uploaded file name as link attribute.
+    </p>
+    <br></br>
     <p className="margin-0">
       <strong>Node IDs:</strong> they can be as simple as <PopupTextField inline={true} textInside={"ID_Name"} /> (or{" "}
       <PopupTextField inline={true} textInside={"ID1_Name1; ID2_Name2"} />
@@ -113,11 +117,11 @@ export const uploadGraphDescription = (
       ). Using UniProt IDs adds more information via API references.
     </p>
     <div className="pad-bottom-05" />
-    Node-id format:
+    Format:
     <div className="pad-bottom-05" />
     <PopupTextField textInside={nodeIdFormat} />
     <div className="pad-bottom-05" />
-    Node-id examples:
+    Examples:
     <div className="pad-bottom-05" />
     <div style={{ display: "flex", gap: "0.5rem", rowGap: "0.75rem", flexWrap: "wrap" }}>
       <PopupTextField textInside={nodeIdExample0} />

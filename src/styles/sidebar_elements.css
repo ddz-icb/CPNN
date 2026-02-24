@@ -113,8 +113,28 @@
   text-align: left;
 }
 
+.sidebar-control-input--wide {
+  width: var(--sidebar-control-main-width);
+  min-width: var(--sidebar-control-main-width);
+}
+
 .input-field:focus-visible,
 [data-slot="input"].input-field:focus-visible {
+  border-color: var(--color-input-border-focus);
+}
+
+.sidebar-select {
+  flex-shrink: 0;
+  padding: 0 0.75rem;
+  border: var(--border-thin) solid var(--color-input-border);
+  border-radius: var(--radius);
+  background: var(--color-input-surface);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-m);
+}
+
+.sidebar-select:focus-visible {
+  outline: none;
   border-color: var(--color-input-border-focus);
 }
 

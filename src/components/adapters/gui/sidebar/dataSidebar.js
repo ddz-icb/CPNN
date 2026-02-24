@@ -2,33 +2,22 @@ import { SvgIcon } from "../reusable_components/SvgIcon.jsx";
 import deleteSvg from "../../../../assets/icons/delete.svg?raw";
 import trashSvg from "../../../../assets/icons/trash.svg?raw";
 import plusSvg from "../../../../assets/icons/plus.svg?raw";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 
 const DeleteIcon = (props) => <SvgIcon svg={deleteSvg} {...props} />;
 const TrashIcon = (props) => <SvgIcon svg={trashSvg} {...props} />;
 const PlusIcon = (props) => <SvgIcon svg={plusSvg} {...props} />;
 
-import { TableList, ButtonPopup, SwitchBlock, SliderBlock, FieldBlock, TextFieldBlock, Button } from "../reusable_components/sidebarComponents.js";
+import { TableList, ButtonPopup, Button } from "../reusable_components/sidebarComponents.js";
 import { exampleGraphJson } from "../../../../assets/exampleGraphJSON.js";
-import { downloadObjectAsFile, downloadTsvFile } from "../../../domain/service/download/download.js";
-import { exampleGraphTsv } from "../../../../assets/exampleGraphMatrixTSV.js";
+import { downloadTsvFile } from "../../../domain/service/download/download.js";
 import { exampleNodeMappingTsv } from "../../../../assets/exampleMappingTSV.js";
-import { exampleGraphRaw } from "../../../../assets/exampleGraphRawTSV.js";
-import {
-  generatedLinkAttribDescription,
-  maxCompSizeDescriptionUpload,
-  minCompSizeDescriptionUpload,
-  minLinkCorrDescription,
-  spearmanCoefficientDescription,
-  ignoreNegativesDescription,
-  uploadGraphDescription,
-  uploadNodeMappingDescription,
-} from "./descriptions/dataDescriptions.js";
-import { mergeByNameDescription } from "./descriptions/filterDescriptions.js";
+import { uploadNodeMappingDescription } from "./descriptions/dataDescriptions.js";
 import { graphService } from "../../../application/services/graphService.js";
 import { useMappingState } from "../../state/mappingState.js";
 import { mappingService } from "../../../application/services/mappingService.js";
 import { useGraphState } from "../../state/graphState.js";
+import { UploadGraph } from "./uploadGraph.js";
 
 export function DataSidebar() {
   const { graphState } = useGraphState();
@@ -118,133 +107,6 @@ function UploadedMappings({ uploadedMappingNames }) {
       onActionIconClick={(mappingName) => mappingService.handleDeleteMapping(mappingName)}
       actionIconTooltipContent={() => "Delete Annotation Mapping"}
     />
-  );
-}
-
-function UploadGraph() {
-  const graphFileRef = useRef(null);
-
-  const [ignoreNegatives, setIgnoreNegatives] = useState(false);
-  const [mergeByName, setMergeProtein] = useState(false);
-  const [takeSpearman, setTakeSpearman] = useState(false);
-  const [generatedLinkAttrib, setGeneratedLinkAttrib] = useState("uploaded");
-
-  const [minEdgeCorr, setMinEdgeCorr] = useState(0);
-  const [minEdgeCorrText, setMinEdgeCorrText] = useState(0);
-
-  const [minCompSize, setMinCompSize] = useState(2);
-  const [minCompSizeText, setMinCompSizeText] = useState(2);
-
-  const [maxCompSize, setMaxCompSize] = useState("");
-  const [maxCompSizeText, setMaxCompSizeText] = useState("");
-
-  return (
-    <ButtonPopup
-      buttonText={"Upload Graph"}
-      tooltip={"Upload Graph as TSV (preferred), CSV or JSON File"}
-      tooltipId={"upload-graph-tooltip"}
-      heading={"Uploading your Graph"}
-      description={uploadGraphDescription}
-    >
-      <div className="block-section pad-bottom-1">
-        <Button variant="popup" text={"JSON Example Graph"} onClick={() => downloadObjectAsFile(exampleGraphJson.data, exampleGraphJson.name)} />
-        <Button variant="popup" text={"Matrix Example Graph"} onClick={() => downloadTsvFile(exampleGraphTsv.data, exampleGraphTsv.name)} />
-        <Button variant="popup" text={"Tabular Data Example Graph"} onClick={() => downloadTsvFile(exampleGraphRaw.data, exampleGraphRaw.name)} />
-      </div>
-      <TextFieldBlock
-        value={generatedLinkAttrib}
-        setValue={setGeneratedLinkAttrib}
-        text={"Generated link attribute"}
-        infoHeading={"Generated Link Attribute"}
-        infoDescription={generatedLinkAttribDescription}
-        placeholder={"uploaded"}
-      />
-      <SwitchBlock
-        variant="popup"
-        value={takeSpearman}
-        setValue={() => setTakeSpearman(!takeSpearman)}
-        text={"Spearman correlation"}
-        infoHeading={"Use spearman correlation"}
-        infoDescription={spearmanCoefficientDescription}
-      />
-      <div className="table-list-heading pad-top-1">Pre-Filtering</div>
-      <SwitchBlock
-        variant="popup"
-        value={ignoreNegatives}
-        setValue={() => setIgnoreNegatives(!ignoreNegatives)}
-        text={"Ignore negative correlations"}
-        infoHeading={"Ignore negative correlations"}
-        infoDescription={ignoreNegativesDescription}
-      />
-      <SwitchBlock
-        variant="popup"
-        value={mergeByName}
-        setValue={() => setMergeProtein(!mergeByName)}
-        text={"Merge nodes sharing the same name"}
-        infoHeading={"Merge Nodes by Name"}
-        infoDescription={mergeByNameDescription}
-      />
-      <div className="block-section"></div>
-      <SliderBlock
-        variant="popup"
-        value={minEdgeCorr}
-        valueText={minEdgeCorrText}
-        setValue={(value) => setMinEdgeCorr(value)}
-        setValueText={(value) => setMinEdgeCorrText(value)}
-        fallbackValue={0}
-        min={0}
-        max={1}
-        step={0.05}
-        text={"Minimum link correlation"}
-        infoHeading={"Minimum link correlation"}
-        infoDescription={minLinkCorrDescription}
-      />
-      <FieldBlock
-        variant="popup"
-        valueText={minCompSizeText}
-        setValue={(value) => setMinCompSize(value)}
-        setValueText={(value) => setMinCompSizeText(value)}
-        fallbackValue={1}
-        min={1}
-        step={1}
-        text={"Minimum component size"}
-        infoHeading={"Minimum component/cluster size"}
-        infoDescription={minCompSizeDescriptionUpload}
-      />
-      <FieldBlock
-        variant="popup"
-        valueText={maxCompSizeText}
-        setValue={(value) => setMaxCompSize(value)}
-        setValueText={(value) => setMaxCompSizeText(value)}
-        fallbackValue={""}
-        min={1}
-        step={1}
-        text={"Maximum component size"}
-        infoHeading={"Maximum component/cluster size"}
-        infoDescription={maxCompSizeDescriptionUpload}
-      />
-      <div className="block-section pad-top-1 flex-end">
-        <Button
-          variant="popup"
-          text={"Upload Own Graph File"}
-          onClick={() => graphFileRef.current.click()}
-          linkRef={graphFileRef}
-          onChange={(event) => {
-            const createGraphSettings = {
-              ignoreNegatives: ignoreNegatives,
-              minEdgeCorr: minEdgeCorr,
-              minCompSize: minCompSize,
-              maxCompSize: maxCompSize,
-              takeSpearman: takeSpearman,
-              mergeByName: mergeByName,
-              generatedLinkAttrib: generatedLinkAttrib,
-            };
-            graphService.handleCreateGraph(event, createGraphSettings);
-            event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
-          }}
-        />
-      </div>
-    </ButtonPopup>
   );
 }
 
