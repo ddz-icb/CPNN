@@ -80,6 +80,7 @@ export const uploadNodeMappingDescription = (
     <PopupTextField textInside={nodeMappingExample} />
     <div className="pad-bottom-025" />
     <PopupTextField textInside={nodeMappingExample2} />
+    <div className="pad-bottom-1" />
   </div>
 );
 
