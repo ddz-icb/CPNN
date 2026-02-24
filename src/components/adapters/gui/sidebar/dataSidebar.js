@@ -116,7 +116,7 @@ function UploadMapping() {
   return (
     <ButtonPopup
       buttonText={"Upload Node Mappings"}
-      tooltip={"Upload Node Annotation Mappings as a TSV (preferred) or CSV File"}
+      tooltip={"Upload Node Mappings as a TSV or CSV File"}
       tooltipId={"upload-mapping-tooltip"}
       heading={"Uploading Your Node Annotation Mapping"}
       description={uploadNodeMappingDescription}
