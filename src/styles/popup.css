@@ -33,6 +33,10 @@
   max-width: 680px;
 }
 
+.popup-container-compact {
+  max-width: 640px;
+}
+
 .popup-container-wide {
   width: calc(100vw - 2rem);
   min-width: min(700px, calc(100vw - 2rem));

@@ -233,8 +233,8 @@ export function CodeEditorBlock({ text, onClick, compilerError, defaultValue, te
   );
 }
 
-export function Popup({ heading, description, isOpen, setIsOpen, widePopup = false, onClose, children }) {
-  const popupContainer = widePopup ? "popup-container-wide" : "popup-container";
+export function Popup({ heading, description, isOpen, setIsOpen, widePopup = false, compactPopup = false, onClose, children }) {
+  const popupContainer = widePopup ? "popup-container-wide" : compactPopup ? "popup-container popup-container-compact" : "popup-container";
   const handleClose = () => {
     setIsOpen(false);
     if (onClose) onClose();
@@ -290,7 +290,15 @@ export function InfoButtonPopup({ heading, description, widePopup = false, child
         <SvgIcon svg={infoCircleSvg} className="info-button-icon" />
       </button>
       {isOpen && (
-        <Popup heading={heading} description={description} children={children} isOpen={isOpen} setIsOpen={setIsOpen} widePopup={widePopup} />
+        <Popup
+          heading={heading}
+          description={description}
+          children={children}
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          widePopup={widePopup}
+          compactPopup={!widePopup}
+        />
       )}
     </>
   );

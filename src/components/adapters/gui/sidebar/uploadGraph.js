@@ -167,7 +167,6 @@ export function UploadGraph() {
             size={"wide"}
             infoHeading={"Data Formats"}
             infoDescription={uploadGraphDataFormat}
-            infoWidePopup={true}
             infoChildren={<GraphFormatExampleButtons />}
           />
           {usesTabularData && (
