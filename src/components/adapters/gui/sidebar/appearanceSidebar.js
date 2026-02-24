@@ -2,8 +2,8 @@ import { useRef, useState } from "react";
 import { SvgIcon } from "../reusable_components/SvgIcon.jsx";
 import trashSvg from "../../../../assets/icons/trash.svg?raw";
 import { SwitchBlock, Popup, TableList, SliderBlock, Button, PopupTextField } from "../reusable_components/sidebarComponents.js";
-import { colorschemeCsv } from "../../../../assets/exampleColorschemeCSV.js";
-import { downloadCsvFile } from "../../../domain/service/download/download.js";
+import { colorschemeTsv } from "../../../../assets/exampleColorschemeTSV.js";
+import { downloadTsvFile } from "../../../domain/service/download/download.js";
 import {
   linkWidthDescription,
   nodeLabelDescription,
@@ -105,7 +105,7 @@ export function UploadColorscheme() {
         <Button
           onClick={() => setColorschemePopupActive(!colorschemePopupActive)}
           text={"Upload Color Scheme"}
-          tooltip={"Upload your Color Scheme as a CSV or TSV File"}
+          tooltip={"Upload your Color Scheme as a TSV (preferred) or CSV File"}
           tooltipId={"upload-graph-tooltip"}
         />
       </div>
@@ -116,13 +116,13 @@ export function UploadColorscheme() {
         setIsOpen={setColorschemePopupActive}
       >
         <div className="pad-top-05 pad-bottom-05">
-          <PopupTextField inline={true} textInfront={"Color Scheme format:"} textInside={"Color1, Color2, Color3, ..."} />
+          <PopupTextField inline={true} textInfront={"Required column:"} textInside={"hex"} />
         </div>
         <div className="pad-top-05 pad-bottom-05">
-          <PopupTextField inline={true} textInfront={"Color Scheme example:"} textInside={"#e69f00,#56b4e9,#009e73"} />
+          <PopupTextField inline={true} textInfront={"Example row:"} textInside={"#e69f00"} />
         </div>
         <div className="block-section">
-          <Button variant="popup" text={"Download Example Color Scheme"} onClick={() => downloadCsvFile(colorschemeCsv.data, colorschemeCsv.name)} />
+          <Button variant="popup" text={"Download Example Color Scheme"} onClick={() => downloadTsvFile(colorschemeTsv.data, colorschemeTsv.name)} />
           <Button
             variant="popup"
             text={"Upload Own Color Scheme"}

@@ -16,23 +16,27 @@
   position: fixed;
   padding: 10px;
   min-height: 50px;
-  max-height: 800px;
+  max-height: min(86vh, 800px);
   background: var(--color-surface);
   border: var(--border-thin) solid var(--color-border);
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-soft);
   color: var(--color-text-primary);
   pointer-events: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .popup-container {
-  min-width: 250px;
-  max-width: 600px;
+  width: calc(100vw - 2rem);
+  min-width: min(250px, calc(100vw - 2rem));
+  max-width: 680px;
 }
 
 .popup-container-wide {
-  min-width: 700px;
-  max-width: 700px;
+  width: calc(100vw - 2rem);
+  min-width: min(700px, calc(100vw - 2rem));
+  max-width: 760px;
 }
 
 .popup-header {
@@ -70,4 +74,15 @@
 
 .svg-button svg {
   fill: var(--color-icon-primary);
+}
+
+.popup-description {
+  display: block;
+  width: 100%;
+  margin-bottom: calc(var(--sidebar-section-gap-y) * 0.6);
+  line-height: 1.35;
+}
+
+.popup-description p {
+  margin: 0;
 }

@@ -11,6 +11,8 @@ import { isCorrMatrix, isTableData, verifyGraph } from "../verification/graphVer
 import { sortGraph } from "../graph_calculations/graphUtils.js";
 import { buildGraphFromRawTable } from "../correlation/correlationService.js";
 
+const defaultGeneratedLinkAttrib = "uploaded";
+
 function applyFilters(graphData, settings) {
   let filteredGraph = graphData;
   filteredGraph = filterMergeByName(filteredGraph, settings.mergeByName);
@@ -39,7 +41,7 @@ export async function parseGraphFile(file, settings) {
 
 async function parseGraphByFileType(name, content, settings) {
   const fileExtension = name.split(".").pop();
-  const linkAttrib = name.split(".")[0];
+  const generatedLinkAttrib = resolveGeneratedLinkAttrib(settings);
 
   try {
     if (fileExtension === "json") {
@@ -53,16 +55,16 @@ async function parseGraphByFileType(name, content, settings) {
 
     if (isCorrMatrix(parsedData)) {
       log.info("Parsing symmetrical matrix (CSV/TSV)");
-      return convertCorrMatrixToGraph(parsedData, linkAttrib);
+      return convertCorrMatrixToGraph(parsedData, generatedLinkAttrib);
     }
 
     if (isTableData(parsedData)) {
-      log.info("Parsing raw table data (CSV/TSV)");
+      log.info("Parsing tabular data (CSV/TSV)");
       return await buildGraphFromRawTable(parsedData, {
         takeSpearman: settings?.takeSpearman,
         ignoreNegatives: settings?.ignoreNegatives,
         minEdgeCorr: settings?.minEdgeCorr,
-        linkAttrib,
+        linkAttrib: generatedLinkAttrib,
       });
     }
 
@@ -71,6 +73,11 @@ async function parseGraphByFileType(name, content, settings) {
     log.error(`Failed to parse graph: ${error.message}`);
     throw error;
   }
+}
+
+function resolveGeneratedLinkAttrib(settings) {
+  const candidate = String(settings?.generatedLinkAttrib ?? "").trim();
+  return candidate.length > 0 ? candidate : defaultGeneratedLinkAttrib;
 }
 
 function convertCorrMatrixToGraph(fileData, linkAttrib) {

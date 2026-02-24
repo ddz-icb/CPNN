@@ -109,6 +109,10 @@
   color: var(--color-text-primary);
 }
 
+.input-field--text {
+  text-align: left;
+}
+
 .input-field:focus-visible,
 [data-slot="input"].input-field:focus-visible {
   border-color: var(--color-input-border-focus);

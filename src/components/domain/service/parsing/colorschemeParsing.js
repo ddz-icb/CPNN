@@ -23,15 +23,25 @@ export async function parseColorschemeFile(file) {
 }
 
 export function parseColorscheme(content) {
-  let fileData = Papa.parse(content, {
+  const fileData = Papa.parse(content, {
+    header: true,
     skipEmptyLines: true,
+    delimiter: "",
+    transformHeader: function (header) {
+      return header.trim().toLowerCase();
+    },
   });
 
-  let colorschemeData = fileData.data;
-  colorschemeData = colorschemeData.reduce((acc, row) => {
-    const validColors = row.map((element) => element.toLowerCase())?.filter((element) => element.length !== 0);
-    return acc.concat(validColors);
-  }, []);
+  const fields = fileData.meta?.fields ?? [];
+  if (fields.length !== 1 || fields[0] !== "hex") {
+    throw new Error("Color scheme file must contain exactly one column named 'hex'.");
+  }
 
-  return colorschemeData;
+  return fileData.data.map((row, index) => {
+    const hex = row?.hex;
+    if (hex === null || hex === undefined || String(hex).trim().length === 0) {
+      throw new Error(`Missing hex color value at row ${index + 2}.`);
+    }
+    return String(hex).trim().toLowerCase();
+  });
 }

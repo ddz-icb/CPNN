@@ -8,13 +8,14 @@ const DeleteIcon = (props) => <SvgIcon svg={deleteSvg} {...props} />;
 const TrashIcon = (props) => <SvgIcon svg={trashSvg} {...props} />;
 const PlusIcon = (props) => <SvgIcon svg={plusSvg} {...props} />;
 
-import { TableList, ButtonPopup, SwitchBlock, SliderBlock, FieldBlock, Button } from "../reusable_components/sidebarComponents.js";
+import { TableList, ButtonPopup, SwitchBlock, SliderBlock, FieldBlock, TextFieldBlock, Button } from "../reusable_components/sidebarComponents.js";
 import { exampleGraphJson } from "../../../../assets/exampleGraphJSON.js";
 import { downloadObjectAsFile, downloadTsvFile } from "../../../domain/service/download/download.js";
-import { exampleGraphTsv } from "../../../../assets/exampleGraphCSV.js";
-import { exampleNodeMappingTsv } from "../../../../assets/exampleMappingCSV.js";
+import { exampleGraphTsv } from "../../../../assets/exampleGraphMatrixTSV.js";
+import { exampleNodeMappingTsv } from "../../../../assets/exampleMappingTSV.js";
 import { exampleGraphRaw } from "../../../../assets/exampleGraphRawTSV.js";
 import {
+  generatedLinkAttribDescription,
   maxCompSizeDescriptionUpload,
   minCompSizeDescriptionUpload,
   minLinkCorrDescription,
@@ -126,6 +127,7 @@ function UploadGraph() {
   const [ignoreNegatives, setIgnoreNegatives] = useState(false);
   const [mergeByName, setMergeProtein] = useState(false);
   const [takeSpearman, setTakeSpearman] = useState(false);
+  const [generatedLinkAttrib, setGeneratedLinkAttrib] = useState("uploaded");
 
   const [minEdgeCorr, setMinEdgeCorr] = useState(0);
   const [minEdgeCorrText, setMinEdgeCorrText] = useState(0);
@@ -139,7 +141,7 @@ function UploadGraph() {
   return (
     <ButtonPopup
       buttonText={"Upload Graph"}
-      tooltip={"Upload Graph as CSV, TSV or JSON File"}
+      tooltip={"Upload Graph as TSV (preferred), CSV or JSON File"}
       tooltipId={"upload-graph-tooltip"}
       heading={"Uploading your Graph"}
       description={uploadGraphDescription}
@@ -147,8 +149,16 @@ function UploadGraph() {
       <div className="block-section pad-bottom-1">
         <Button variant="popup" text={"JSON Example Graph"} onClick={() => downloadObjectAsFile(exampleGraphJson.data, exampleGraphJson.name)} />
         <Button variant="popup" text={"Matrix Example Graph"} onClick={() => downloadTsvFile(exampleGraphTsv.data, exampleGraphTsv.name)} />
-        <Button variant="popup" text={"Raw Data Example Graph"} onClick={() => downloadTsvFile(exampleGraphRaw.data, exampleGraphRaw.name)} />
+        <Button variant="popup" text={"Tabular Data Example Graph"} onClick={() => downloadTsvFile(exampleGraphRaw.data, exampleGraphRaw.name)} />
       </div>
+      <TextFieldBlock
+        value={generatedLinkAttrib}
+        setValue={setGeneratedLinkAttrib}
+        text={"Generated link attribute"}
+        infoHeading={"Generated Link Attribute"}
+        infoDescription={generatedLinkAttribDescription}
+        placeholder={"uploaded"}
+      />
       <SwitchBlock
         variant="popup"
         value={takeSpearman}
@@ -227,6 +237,7 @@ function UploadGraph() {
               maxCompSize: maxCompSize,
               takeSpearman: takeSpearman,
               mergeByName: mergeByName,
+              generatedLinkAttrib: generatedLinkAttrib,
             };
             graphService.handleCreateGraph(event, createGraphSettings);
             event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
@@ -243,7 +254,7 @@ function UploadMapping() {
   return (
     <ButtonPopup
       buttonText={"Upload Node Mappings"}
-      tooltip={"Upload Node Annotation Mappings as a TSV or CSV File"}
+      tooltip={"Upload Node Annotation Mappings as a TSV (preferred) or CSV File"}
       tooltipId={"upload-mapping-tooltip"}
       heading={"Uploading Your Node Annotation Mapping"}
       description={uploadNodeMappingDescription}

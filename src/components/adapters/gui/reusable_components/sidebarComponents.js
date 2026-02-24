@@ -64,6 +64,20 @@ export function FieldBlock({ text, infoHeading, infoDescription, ...props }) {
   );
 }
 
+export function TextFieldBlock({ text, infoHeading, infoDescription, value, setValue, placeholder = "" }) {
+  return (
+    <div className="block-section">
+      <div className="sidebar-control-header">
+        <label className="label">{text}</label>
+        <span className="info-button-container">
+          <InfoButtonPopup heading={infoHeading} description={infoDescription} />
+        </span>
+      </div>
+      <TextInput value={value} setValue={setValue} placeholder={placeholder} />
+    </div>
+  );
+}
+
 export function FieldApplyBlock({
   text,
   infoHeading,
@@ -197,7 +211,7 @@ export function Popup({ heading, description, isOpen, setIsOpen, widePopup = fal
               <SvgIcon svg={xSvg} className="popup-close-icon" />
             </span>
           </div>
-          <div className="block-section text-primary">{description}</div>
+          <div className="popup-description text-primary">{description}</div>
           {children}
         </div>
       </div>
@@ -503,5 +517,17 @@ function NumericInput({ valueText, setValue, setValueText, fallbackValue, min, m
         onBlur={(event) => handleFieldBlur(event, setValue, setValueText, min, max, fallbackValue)}
       />
     </>
+  );
+}
+
+function TextInput({ value, setValue, placeholder }) {
+  return (
+    <InputCN
+      className="input-field input-field--text default-width default-height"
+      type="text"
+      value={value}
+      placeholder={placeholder}
+      onChange={(event) => setValue(event.target.value)}
+    />
   );
 }

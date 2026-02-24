@@ -40,7 +40,7 @@ export const uploadColorschemeDescription = (
       A color scheme can determine the colors given to both links and nodes. It furthermore determines the order in which the colors are distributed.
       <br></br>
       <br></br>
-      Color schemes can be uploaded as either CSV or TSV files. The colors should be listed using the HEX-format.
+      Color schemes can be uploaded as TSV (preferred) or CSV files. The file must contain a single column named "hex", with one HEX color per row.
     </p>
   </div>
 );
