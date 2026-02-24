@@ -1,42 +1,149 @@
 const exampleNodeMapping = `
-id	attrib
-A2RRP1	Membrane Trafficking
-A2RUS2	Membrane Trafficking
-A5D8V6	Membrane Trafficking
-A5LHX3	PIP3 activates AKT signaling
-A5PLN9	Membrane Trafficking
-A6NDG6	Glucose metabolism
-A6NHL2	Translocation of SLC2A4 (GLUT4) to the plasma membrane; Membrane Trafficking
-A6NNW6	Glucose metabolism
-A6NNZ2	Translocation of SLC2A4 (GLUT4) to the plasma membrane; Membrane Trafficking
-A8CG34	Transport of Mature Transcript to Cytoplasm; Glucose metabolism
-A8MYZ6	PIP3 activates AKT signaling
-B7ZC32	Membrane Trafficking
-O00115	Membrane Trafficking
-O00139	Membrane Trafficking
-O00141	PIP3 activates AKT signaling
-O00148	Transport of Mature Transcript to Cytoplasm
-O00159	Translocation of SLC2A4 (GLUT4) to the plasma membrane; Membrane Trafficking
-O00161	Translocation of SLC2A4 (GLUT4) to the plasma membrane; Membrane Trafficking
-O00168	Muscle contraction
-O00180	Muscle contraction
-O00186	Translocation of SLC2A4 (GLUT4) to the plasma membrane; Membrane Trafficking
-O00189	Membrane Trafficking
-O00194	Membrane Trafficking
-O00203	Membrane Trafficking
-O00231	PIP3 activates AKT signaling
-O00232	PIP3 activates AKT signaling
-O00233	PIP3 activates AKT signaling
-O00257	PIP3 activates AKT signaling
-O00291	Membrane Trafficking
-O00308	PIP3 activates AKT signaling
-O00329	PIP3 activates AKT signaling
-O00399	Membrane Trafficking
-O00401	Membrane Trafficking
-O00418	MTOR signalling
-O00422	mRNA Splicing
-O00443	Membrane Trafficking
-O00459	PIP3 activates AKT signaling; Signaling by VEGF; Signaling by Insulin receptor
+id	attribs
+Q08043_ACTN3_S321	Muscle contraction
+Q9UIQ6_LNPEP_S91	Translocation of SLC2A4 (GLUT4) to the plasma membrane; Membrane Trafficking
+Q92530_PSMF1_S153	PIP3 activates AKT signaling
+Q8WZ42-2_TTN_S26707; Q8WZ42-10_TTN_S19500; Q8WZ42-12_TTN_S28440	Muscle contraction
+Q9UQ35_SRRM2_S1083	mRNA Splicing
+P08590_MYL3_T165	Muscle contraction
+Q8WZ42-2_TTN_T719,S721; Q8WZ42-10_TTN_T765,S767; Q8WZ42-12_TTN_T811,S813; Q8WZ42-6_TTN_T811,S813	Muscle contraction
+P13535_MYH8_T381; Q9UKX3_MYH13_T380; P11055_MYH3_T379; P12882_MYH1_T381; Q9UKX2_MYH2_T381; Q9UKX2-2_MYH4_T381; Q9Y623_MYH8_T381	Muscle contraction
+Q01082_SPTBN1_T2320	Membrane Trafficking
+Q9BX66-11_SORBS1_S350; Q9BX66-9_SORBS1_S227; Q9BX66-3_SORBS1_S281; Q9BX66-6_SORBS1_S218; Q9BX66-5_SORBS1_S341	Muscle contraction
+Q8WZ42-2_TTN_S33143; Q8WZ42-10_TTN_S25936; Q8WZ42-12_TTN_S34876	Muscle contraction
+Q14677_CLINT1_S299	Membrane Trafficking
+P16157-3_ANK1_S834	Membrane Trafficking
+P04114_APOB_S4048	Membrane Trafficking
+Q9BX66-11_SORBS1_S907	Muscle contraction
+P35609_ACTN2_T415	Muscle contraction
+P26678_PLN_S16	Muscle contraction
+P49792_RANBP2_S2280	Transport of Mature Transcript to Cytoplasm; Glucose metabolism
+P07910-2_HNRNPC_S286	mRNA Splicing
+Q8WZ42-2_TTN_S33522; Q8WZ42-10_TTN_S26315; Q8WZ42-12_TTN_S35255	Muscle contraction
+Q8WZ42-2_TTN_S7238; Q8WZ42-12_TTN_S7647	Muscle contraction
+Q8WZ42-2_TTN_S28345; Q8WZ42-10_TTN_S21138; Q8WZ42-12_TTN_S30078	Muscle contraction
+Q8WZ42-2_TTN_S759; Q8WZ42-10_TTN_S805; Q8WZ42-12_TTN_S851; Q8WZ42-6_TTN_S851	Muscle contraction
+Q8WZ42-2_TTN_T29871; Q8WZ42-10_TTN_T22664; Q8WZ42-12_TTN_T31604	Muscle contraction
+P20929-2_NEB_Y7097	Muscle contraction
+Q8WZ42-12_TTN_T13403	Muscle contraction
+Q8WZ42-12_TTN_S13395	Muscle contraction
+Q8WZ42-2_TTN_S31778; Q8WZ42-10_TTN_S24571; Q8WZ42-12_TTN_S33511	Muscle contraction
+Q02641-2_CACNB1_T248	Muscle contraction
+P35499_SCN4A_S1761	Muscle contraction
+Q8WZ42-2_TTN_T19764; Q8WZ42-10_TTN_T12557; Q8WZ42-12_TTN_T21497	Muscle contraction
+Q8WZ42-2_TTN_S29816; Q8WZ42-10_TTN_S22609; Q8WZ42-12_TTN_S31549	Muscle contraction
+P35568_IRS1_S531	PIP3 activates AKT signaling; Signaling by Insulin receptor
+Q8WZ42-2_TTN_S721; Q8WZ42-10_TTN_S767; Q8WZ42-12_TTN_S813; Q8WZ42-6_TTN_S813	Muscle contraction
+P67809_YBX1_S165	mRNA Splicing
+P20929-3_NEB_S4173; P20929-2_NEB_S4659; P20929-3_NEB_S5145; P20929-2_NEB_S4173; P20929-3_NEB_S5145	Muscle contraction
+Q8WZ42-2_TTN_S29948; Q8WZ42-10_TTN_S22741; Q8WZ42-12_TTN_S31681	Muscle contraction
+P60174-4_TPI1_T96; P60174_TPI1_T178	Glucose metabolism
+P13535_MYH8_T1857; P12882_MYH1_T1858; P12883_MYH7_T1854; Q9UKX2_MYH2_T1860; Q9Y623_MYH4_T1858	Muscle contraction
+Q8WZ42-2_TTN_S28248; Q8WZ42-10_TTN_S21041; Q8WZ42-12_TTN_S29981	Muscle contraction
+Q8WZ42-2_TTN_Y21387; Q8WZ42-10_TTN_Y14180; Q8WZ42-12_TTN_Y23120	Muscle contraction
+Q8WZ42-2_TTN_T8744; Q8WZ42-12_TTN_T9153	Muscle contraction
+Q05682-2_CALD1_S202	Muscle contraction
+Q8WZ42-2_TTN_S30358; Q8WZ42-10_TTN_S23151; Q8WZ42-12_TTN_S32091	Muscle contraction
+P04075_ALDOA_S46; P04075-2_ALDOA_S100	Glucose metabolism
+Q13555-9_CAMK2G_S359; Q13555-4_CAMK2G_S384; Q13555-5_CAMK2G_S382; Q13555-10_CAMK2G_S350	Muscle contraction
+Q8WZ42-2_TTN_T25650; Q8WZ42-10_TTN_T18443; Q8WZ42-12_TTN_T27383	Muscle contraction
+Q05682-4_CALD1_S202	Muscle contraction
+Q00872_MYBPC1_S611; Q00872-7_MYBPC1_S598; Q00872-2_MYBPC1_S636; Q00872-5_MYBPC1_S585	Muscle contraction
+Q8WZ42-2_TTN_S33510,S33516; Q8WZ42-10_TTN_S26303,S26309; Q8WZ42-12_TTN_S35243,S35249	Muscle contraction
+Q8IZP0_ABI1_S225	Signaling by VEGF
+Q8WZ42-2_TTN_S33497; Q8WZ42-10_TTN_S26290; Q8WZ42-12_TTN_S35230	Muscle contraction
+Q8WZ42-2_TTN_S15594; Q8WZ42-10_TTN_S8387; Q8WZ42-12_TTN_S17327	Muscle contraction
+P07900_HSP90AA1_S231	Signaling by VEGF; Signaling by ERBB2
+Q9UNE7_STUB1_S19	PIP3 activates AKT signaling; Signaling by ERBB2
+P23588_EIF4B_S459	MTOR signalling
+O00203_AP3B1_S276	Membrane Trafficking
+Q8WZ42-2_TTN_S6828; Q8WZ42-12_TTN_S7237	Muscle contraction
+P35568_IRS1_S1100	PIP3 activates AKT signaling; Signaling by Insulin receptor
+O00499-11_BIN1_S280,S282; O00499-2_BIN1_S265,S267	Membrane Trafficking
+Q8WZ42-2_TTN_S27211; Q8WZ42-10_TTN_S20004; Q8WZ42-12_TTN_S28944	Muscle contraction
+Q8IYB3_SRRM1_S696	mRNA Splicing; Transport of Mature Transcript to Cytoplasm
+P60709_ACTB_S52; P62736_ACTA2_S54; P68133_ACTA1_S54; P68032_ACTC1_S54	Translocation of SLC2A4 (GLUT4) to the plasma membrane; Signaling by VEGF; Membrane Trafficking
+Q9UKV3_ACIN1_S710; Q9UKV3-5_ACIN1_S710	mRNA Splicing
+Q8WZ42-2_TTN_T14272; Q8WZ42-10_TTN_T7065; Q8WZ42-12_TTN_T16005	Muscle contraction
+Q8WZ42-2_TTN_S28544; Q8WZ42-10_TTN_S21337; Q8WZ42-12_TTN_S30277	Muscle contraction
+Q01082_SPTBN1_S2102; Q01082-3_SPTBN1_S2089	Membrane Trafficking
+Q8WZ42-2_TTN_S2418; Q8WZ42-10_TTN_S2464; Q8WZ42-12_TTN_S2510; Q8WZ42-6_TTN_S2510	Muscle contraction
+Q14324_MYBPC2_S60	Muscle contraction
+P61981_YWHAG_T139	Translocation of SLC2A4 (GLUT4) to the plasma membrane; Membrane Trafficking
+P60709_ACTB_S60; P62736_ACTA2_S62; P68133_ACTA1_S62; P68032_ACTC1_S62	Translocation of SLC2A4 (GLUT4) to the plasma membrane; Signaling by VEGF; Membrane Trafficking
+Q8WZ42-2_TTN_S29462; Q8WZ42-10_TTN_S22255; Q8WZ42-12_TTN_S31195	Muscle contraction
+Q8IYB3_SRRM1_T220	mRNA Splicing; Transport of Mature Transcript to Cytoplasm
+Q8NI27_THOC2_S1417	Transport of Mature Transcript to Cytoplasm
+Q8WZ42-2_TTN_S9711; Q8WZ42-12_TTN_S10120	Muscle contraction
+P15259_PGAM2_S14	Glucose metabolism
+Q8WZ42-2_TTN_S26971; Q8WZ42-10_TTN_S19764; Q8WZ42-12_TTN_S28704	Muscle contraction
+P49756_RBM25_S677	mRNA Splicing
+Q13554-3_CAMK2B_S334; Q13554_CAMK2B_S358	Muscle contraction
+Q8WZ42-2_TTN_S7224; Q8WZ42-12_TTN_S7633	Muscle contraction
+Q8WZ42-2_TTN_T30654; Q8WZ42-10_TTN_T23447; Q8WZ42-12_TTN_T32387	Muscle contraction
+Q8WZ42-2_TTN_S27270; Q8WZ42-10_TTN_S20063; Q8WZ42-12_TTN_S29003	Muscle contraction
+P14618-2_PKM_S249; P14618_PKM_S249	Glucose metabolism
+P09651_HNRNPA1_S6	mRNA Splicing
+Q4KMP7_TBC1D10B_S132	Membrane Trafficking
+Q8WZ42-2_TTN_S5594; Q8WZ42-12_TTN_S6003	Muscle contraction
+Q8WZ42-2_TTN_T33145,TSY; Q8WZ42-10_TTN_T25938,TSY; Q8WZ42-12_TTN_T34878,TSY	Muscle contraction
+Q8WZ42-2_TTN_T23228; Q8WZ42-10_TTN_T16021; Q8WZ42-12_TTN_T24961	Muscle contraction
+P13535_MYH8_S1918; Q9UKX3_MYH13_S1919; P11055_MYH3_S1916; P12882_MYH1_S1919; P12883_MYH7_S1915; Q9UKX2_MYH2_S1921; Q9UKX2-2_MYH4_S688; Q9Y623_MYH6_S1919; P13533_MYH8_S1917	Muscle contraction
+Q8TAD8_SNIP1_S99	mRNA Splicing
+Q8WZ42-2_TTN_S12810; Q8WZ42-10_TTN_S5603; Q8WZ42-12_TTN_S14543	Muscle contraction
+O94979_SEC31A_S799	Membrane Trafficking
+P13535_MYH8_S951; P11055_MYH3_S949; P12882_MYH1_S952; Q9UKX2_MYH2_S954; Q9Y623_MYH4_S952; P13533_MYH6_S950	Muscle contraction
+Q01118_SCN7A_S905,S906	Muscle contraction
+Q8WZ42-2_TTN_S12361; Q8WZ42-10_TTN_S5154; Q8WZ42-12_TTN_S14094	Muscle contraction
+O00418_EEF2K_S470	MTOR signalling
+Q8WZ42-2_TTN_T18007; Q8WZ42-10_TTN_T10800; Q8WZ42-12_TTN_T19740	Muscle contraction
+Q04637_EIF4G1_S1209	MTOR signalling
+Q8WZ42-2_TTN_S7570; Q8WZ42-12_TTN_S7979	Muscle contraction
+P18206_VCL_S346	Muscle contraction
+O75554_WBP4_S277	mRNA Splicing
+P16157-3_ANK1_S1593	Membrane Trafficking
+P23588_EIF4B_S497	MTOR signalling
+Q8WZ42-2_TTN_T22838; Q8WZ42-10_TTN_T15631; Q8WZ42-12_TTN_T24571	Muscle contraction
+Q9NZ63_C9orf78_S261	mRNA Splicing
+Q01484-7_ANK2_S507; Q01484-5_ANK2_S1815	Membrane Trafficking
+O60333-3_KIF1B_S1053	Membrane Trafficking
+O14983_ATP2A1_S473	Muscle contraction
+Q8WZ42-2_TTN_T23920; Q8WZ42-10_TTN_T16713; Q8WZ42-12_TTN_T25653	Muscle contraction
+P18669_PGAM1_Y92; P15259_PGAM2_Y92	Glucose metabolism
+O60504_SORBS3_S545	Muscle contraction
+P61981_YWHAG_S119	Translocation of SLC2A4 (GLUT4) to the plasma membrane; Membrane Trafficking
+Q8WZ42-2_TTN_S18003; Q8WZ42-10_TTN_S10796; Q8WZ42-12_TTN_S19736	Muscle contraction
+Q8WZ42-2_TTN_S316; Q8WZ42-10_TTN_S316; Q8WZ42-12_TTN_S316; Q8WZ42-6_TTN_S316	Muscle contraction
+O00308_WWP2_S211	PIP3 activates AKT signaling
+O14958_CASQ2_S38	Muscle contraction
+O00499-11_BIN1_S280; O00499-2_BIN1_S265	Membrane Trafficking
+Q8WZ42-2_TTN_S7379; Q8WZ42-12_TTN_S7788	Muscle contraction
+Q8WZ42-2_TTN_S32979; Q8WZ42-10_TTN_S25772; Q8WZ42-12_TTN_S34712	Muscle contraction
+P67809_YBX1_S176	mRNA Splicing
+Q8WZ42-2_TTN_T17003; Q8WZ42-10_TTN_T9796; Q8WZ42-12_TTN_T18736	Muscle contraction
+Q8WZ42-2_TTN_S10541; Q8WZ42-12_TTN_S10950	Muscle contraction
+P35579_MYH9_S1943; P35579-2_MYH9_S1365	Translocation of SLC2A4 (GLUT4) to the plasma membrane; Membrane Trafficking
+P54646_PRKAA2_S491	MTOR signalling; Translocation of SLC2A4 (GLUT4) to the plasma membrane; Membrane Trafficking
+Q8WZ42-2_TTN_S2001; Q8WZ42-10_TTN_S2047; Q8WZ42-12_TTN_S2093; Q8WZ42-6_TTN_S2093	Muscle contraction
+Q8WZ42-2_TTN_T29180; Q8WZ42-10_TTN_T21973; Q8WZ42-12_TTN_T30913	Muscle contraction
+P09493-5_TPM1_S193; P09493-7_TPM1_S229; P09493-10_TPM1_S229	Muscle contraction
+Q9UQM7_CAMK2A_T337	Muscle contraction
+Q8WZ42-2_TTN_S33345; Q8WZ42-10_TTN_S26138; Q8WZ42-12_TTN_S35078	Muscle contraction
+P52594_AGFG1_S181	Membrane Trafficking
+P20929-3_NEB_S1836; P20929-2_NEB_S2080; P20929-3_NEB_S4025; P20929-2_NEB_S1836; P20929-3_NEB_S4025	Muscle contraction
+P62736_ACTA2_S370; P68133_ACTA1_S370; P68032_ACTC1_S370	Muscle contraction
+Q8IYB3_SRRM1_S616	mRNA Splicing; Transport of Mature Transcript to Cytoplasm
+P07951_TPM2_S63	Muscle contraction
+P60174-4_TPI1_S122; P60174_TPI1_S204	Glucose metabolism
+Q9BX66-11_SORBS1_S89; Q9BX66-9_SORBS1_S89; Q9BX66-3_SORBS1_S89; Q9BX66-6_SORBS1_S89; Q9BX66-5_SORBS1_S89	Muscle contraction
+Q8WZ42-2_TTN_S29967; Q8WZ42-10_TTN_S22760; Q8WZ42-12_TTN_S31700	Muscle contraction
+Q14103_HNRNPD_S83	mRNA Splicing
+Q8WZ42-2_TTN_S33516; Q8WZ42-10_TTN_S26309; Q8WZ42-12_TTN_S35249	Muscle contraction
+Q00872_MYBPC1_S1023; Q00872-7_MYBPC1_S992; Q00872-2_MYBPC1_S1030; Q00872-5_MYBPC1_S979	Muscle contraction
+Q8WZ42-2_TTN_S21750; Q8WZ42-10_TTN_S14543; Q8WZ42-12_TTN_S23483	Muscle contraction
+P06744_GPI_Y92	Glucose metabolism
+P25786_PSMA1_S54	PIP3 activates AKT signaling
+O43395_PRPF3_S619	mRNA Splicing
 `;
 
 export const exampleNodeMappingTsv = { name: "ExampleNodeMapping.tsv", data: exampleNodeMapping.trim() };

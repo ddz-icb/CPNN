@@ -12,6 +12,17 @@
   width: 100%;
 }
 
+.popup-text-field-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sidebar-control-gap-y);
+  vertical-align: baseline;
+}
+
+.popup-text-field-inline .label {
+  display: inline;
+}
+
 .sidebar-control-header {
   display: flex;
   align-items: center;

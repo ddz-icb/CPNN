@@ -236,12 +236,10 @@ export function InfoButtonPopup({ heading, description, children }) {
 export function PopupTextField({ textInfront, textInside, inline }) {
   if (inline) {
     return (
-      <>
-        <div className="popup-text-field-row pad-top-05 pad-bottom-05">
-          {textInfront && <span className="label">{textInfront}</span>}
-          <span className="text-field pad-left-025 pad-right-025">{textInside}</span>
-        </div>
-      </>
+      <span className="popup-text-field-inline">
+        {textInfront && <span className="label">{textInfront}</span>}
+        <span className="text-field pad-left-025 pad-right-025">{textInside}</span>
+      </span>
     );
   } else {
     return (

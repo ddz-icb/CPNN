@@ -4,8 +4,8 @@ export function verifyMapping(mapping) {
   }
 
   Object.entries(mapping.data).forEach(([key, node]) => {
-    if (!node.hasOwnProperty("attrib")) {
-      throw new Error(`${key} is missing the 'attrib' property.`);
+    if (!node.hasOwnProperty("attribs")) {
+      throw new Error(`${key} is missing the 'attribs' property.`);
     }
   });
 }

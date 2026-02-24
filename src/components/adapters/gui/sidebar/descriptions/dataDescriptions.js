@@ -66,10 +66,11 @@ export const uploadNodeMappingDescription = (
     associated with one or more attributes. Nodes belonging to the same attribute will then be colored accordingly.
     <br />
     <br />
-    Node mappings can be uploaded in CSV or TSV format. These mappings must contain an "id" and an "attrib" column. To better understand the required
-    format, you can look at examples or download an example mapping below.
-    <div className="pad-bottom-05" />
-    <PopupTextField textInside={nodeMappingFormat} />
+    Node mappings can be uploaded in CSV or TSV format. The file must contain two columns: <PopupTextField inline={true} textInside={"id"} />
+    and <PopupTextField inline={true} textInside={"attribs"} />. In the <PopupTextField inline={true} textInside={"attribs"} /> column, separate
+    multiple attributes with <PopupTextField inline={true} textInside={";"} /> (semicolon). A mapping row is applied to all nodes whose ID contains
+    the mapping <PopupTextField inline={true} textInside={"id"} /> value as a substring. To better understand the required format, you can look at
+    examples or download an example mapping below.
     <div className="pad-bottom-05" />
     Examples:
     <div className="pad-bottom-025" />

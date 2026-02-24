@@ -32,7 +32,7 @@ export function parseMapping(content) {
       return header.trim().toLowerCase();
     },
     transform: function (value, field) {
-      if (field === "attrib") {
+      if (field === "attribs") {
         if (value === null || value === undefined) return [];
         if (typeof value !== "string") return [value];
         if (value.trim().length === 0) return [];
@@ -49,10 +49,10 @@ export function parseMapping(content) {
 
   for (let row of fileData.data) {
     const id = row["id"];
-    const attrib = row["attrib"];
+    const attribs = row["attribs"];
 
     nodeMapping[id] = {
-      attrib: attrib,
+      attribs: attribs,
     };
   }
 
