@@ -1,33 +1,45 @@
 export function getNodeIdAndIsoformEntry(entry) {
-  return entry.split("_")[0].trim();
+  return entry.split("_")[0]?.trim();
 }
 
 export function getNodeIdEntries(nodeId) {
-  return nodeId.split(";").map((entry) => entry.trim());
+  if (!nodeId) return [];
+  return nodeId
+    .split(";")
+    .map((entry) => entry.trim())
+    .filter(Boolean);
 }
 
 export function getPhosphositesNodeIdEntry(entry) {
-  return entry
-    .split("_")[2]
-    .split(", ")
-    .map((entry) => entry.trim());
+  const phosphositePart = entry.split("_")[2];
+  if (!phosphositePart) return [];
+
+  return phosphositePart
+    .split(",")
+    .map((site) => site.trim())
+    .filter(Boolean);
 }
 
 export function getNodeIdAndNameEntry(entry) {
   const parts = entry.split("_");
-  return parts.slice(0, 2).join("_");
+  return parts
+    .slice(0, 2)
+    .map((part) => part.trim())
+    .join("_");
 }
 
 export function getNodeIdsAndIsoform(nodeId) {
-  return nodeId.split(";").map((id) => id.split("_")[0].trim());
+  return getNodeIdEntries(nodeId).map((id) => id.split("_")[0]?.trim());
 }
 
 export function getNodeIdNames(nodeId) {
-  return nodeId.split(";").map((id) => id.split("_")[1].trim());
+  return getNodeIdEntries(nodeId)
+    .map((id) => id.split("_")[1]?.trim())
+    .filter(Boolean);
 }
 
 export function getNodeIdName(nodeId) {
-  return nodeId.split("_")[1];
+  return getNodeIdNames(nodeId)[0] || "";
 }
 
 export function parseNodeIdEntries(entries) {
@@ -43,7 +55,12 @@ export function parseNodeIdEntries(entries) {
       return pepId
         ? {
             pepId,
-            phosphosites: phosphosites ? phosphosites.split(", ") : [],
+            phosphosites: phosphosites
+              ? phosphosites
+                  .split(",")
+                  .map((site) => site.trim())
+                  .filter(Boolean)
+              : [],
           }
         : null;
     })
