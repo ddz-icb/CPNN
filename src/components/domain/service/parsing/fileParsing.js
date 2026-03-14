@@ -21,10 +21,13 @@ export function parseSVFile(content) {
 
   if (!data?.length) return null;
 
-  const header = data[0].map(String).slice(1);
+  const toLabel = (value) => (value === null || value === undefined ? "" : String(value).trim());
+  const firstRow = data[0];
+  const firstHeader = toLabel(firstRow?.[0]);
+  const header = firstRow.slice(1).map(toLabel);
   const dataRows = data.slice(1);
-  const firstColumn = dataRows.map((row) => row[0]);
+  const firstColumn = dataRows.map((row) => toLabel(row?.[0]));
   const updatedData = dataRows.map((row) => row.slice(1));
 
-  return { header, firstColumn, data: updatedData };
+  return { firstHeader, header, firstColumn, data: updatedData };
 }

@@ -14,6 +14,61 @@ import { buildGraphFromRawTable } from "../correlation/correlationService.js";
 const supportedSeparatedFileExtensions = new Set(["csv", "tsv"]);
 const supportedDataFormats = new Set(["json", "matrix", "tabular"]);
 
+function normalizeIdValue(value) {
+  return String(value ?? "").trim();
+}
+
+function assertUniqueIds(values, label) {
+  const seen = new Set();
+
+  values.forEach((value, index) => {
+    const normalized = normalizeIdValue(value);
+    if (!normalized) {
+      throw new Error(`${label} at position ${index + 1} is empty.`);
+    }
+
+    const key = normalized.toLowerCase();
+    if (seen.has(key)) {
+      throw new Error(`Duplicate ${label.toLowerCase()} '${normalized}' detected.`);
+    }
+    seen.add(key);
+  });
+}
+
+function verifySeparatedFileStructure(parsedData) {
+  if (!parsedData || !Array.isArray(parsedData.header) || !Array.isArray(parsedData.firstColumn) || !Array.isArray(parsedData.data)) {
+    throw new Error("CSV/TSV file has a wrong or empty format.");
+  }
+
+  const firstHeader = normalizeIdValue(parsedData.firstHeader).toLowerCase();
+  if (firstHeader !== "id") {
+    throw new Error("CSV/TSV files must use 'id' as the first column header.");
+  }
+
+  if (parsedData.header.length === 0) {
+    throw new Error("CSV/TSV file must contain at least one data column.");
+  }
+  if (parsedData.firstColumn.length === 0) {
+    throw new Error("CSV/TSV file must contain at least one row.");
+  }
+
+  assertUniqueIds(parsedData.header, "Column ID");
+  assertUniqueIds(parsedData.firstColumn, "Row ID");
+}
+
+function verifyCorrelationMatrixIds(parsedData) {
+  const { header, firstColumn } = parsedData;
+  if (header.length !== firstColumn.length) {
+    throw new Error("Correlation matrix must have the same number of row and column IDs.");
+  }
+
+  for (let i = 0; i < header.length; i++) {
+    if (normalizeIdValue(header[i]) !== normalizeIdValue(firstColumn[i])) {
+      throw new Error(`Correlation matrix ID mismatch at row ${i + 1}: '${firstColumn[i]}' does not match '${header[i]}'.`);
+    }
+  }
+}
+
 function applyFilters(graphData, settings) {
   let filteredGraph = graphData;
   filteredGraph = filterMergeByName(filteredGraph, settings.mergeByName);
@@ -39,6 +94,8 @@ export async function parseGraphFile(file, settings) {
     dataFormat: selectedDataFormat,
     generatedLinkAttrib: resolvedGraphName,
   });
+  verifyGraph({ name: resolvedGraphName, data: graphData });
+
   graphData = applyFilters(graphData, settings);
   sortGraph(graphData);
 
@@ -76,7 +133,11 @@ function parseJsonGraphFile(fileName, content) {
   }
 
   log.info("Parsing JSON graph");
-  return JSON.parse(content);
+  try {
+    return JSON.parse(content);
+  } catch {
+    throw new Error("Invalid JSON file format.");
+  }
 }
 
 function parseSeparatedGraphFile(fileName, content) {
@@ -86,13 +147,13 @@ function parseSeparatedGraphFile(fileName, content) {
   }
 
   const parsedData = parseSVFile(content);
-  if (!parsedData || !parsedData.header) {
-    throw new Error("CSV/TSV file has a wrong or empty format.");
-  }
+  verifySeparatedFileStructure(parsedData);
   return parsedData;
 }
 
 function parseCorrelationMatrixGraph(parsedData, generatedLinkAttrib) {
+  verifyCorrelationMatrixIds(parsedData);
+
   if (!isCorrMatrix(parsedData)) {
     throw new Error("Selected data format is 'Correlation Matrix', but the uploaded TSV/CSV does not match matrix format.");
   }
