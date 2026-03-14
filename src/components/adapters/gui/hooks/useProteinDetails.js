@@ -3,7 +3,8 @@ import axios from "axios";
 
 import log from "../../logging/logger.js";
 import { getDescriptionUniprotData, getFullNameUniprotData, getPdbIdUniprotData } from "../../../domain/service/parsing/uniprotDataParsing.js";
-import { getNodeIdEntries, parseNodeIdEntries } from "../../../domain/service/parsing/nodeIdParsing.js";
+import { getNodeIdEntries } from "../../../domain/service/parsing/nodeIdParsing.js";
+import { isLikelyUniprotAccession, parseNodeIdEntries } from "../../../domain/service/parsing/nodeIdBioParsing.js";
 
 const proteinDetailsInit = {
   fullName: "",
@@ -85,6 +86,7 @@ export function useProteinDetails(nodeId) {
         }));
 
         if (!parsedEntries.protIdNoIsoform) return;
+        if (!isLikelyUniprotAccession(parsedEntries.protIdNoIsoform)) return;
 
         const uniprotData = await fetchUniprotData(parsedEntries.protIdNoIsoform);
         if (isCancelled) return;

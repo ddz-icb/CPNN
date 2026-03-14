@@ -2,11 +2,13 @@ import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import * as $3Dmol from "3dmol/build/3Dmol.js";
 
 import log from "../../logging/logger.js";
+import "../../../../styles/pdb_viewer.css";
 
 import { useContainer } from "../../state/containerState.js";
 import { useTooltipSettings } from "../../state/tooltipState.js";
 import { useTheme } from "../../state/themeState.js";
 import { useAppearance } from "../../state/appearanceState.js";
+import { useNodeDetails } from "../hooks/useNodeDetails.js";
 import { useProteinDetails } from "../hooks/useProteinDetails.js";
 import { useGraphState } from "../../state/graphState.js";
 import { useColorschemeState } from "../../state/colorschemeState.js";
@@ -34,8 +36,9 @@ export function ClickTooltip() {
   const nodeId = clickData?.node;
   const nodeAttribs = clickData?.nodeAttribs ?? [];
   const isTooltipActive = tooltipSettings.isClickTooltipActive;
-  const { fullName, description, pdbId, protIdNoIsoform, gene, isoforms, hasPhosphosites, responsePdb } = useProteinDetails(nodeId);
-  const heading = gene || nodeId;
+  const { displayName, entries: nodeEntries, hasPhosphosites } = useNodeDetails(nodeId);
+  const { fullName, description, pdbId, protIdNoIsoform, responsePdb } = useProteinDetails(nodeId);
+  const heading = displayName || nodeId;
 
   useEffect(() => {
     if (nodeId) setIsAdjacentView(false);
@@ -106,8 +109,8 @@ export function ClickTooltip() {
 
     return (
       <>
-        <TooltipPopupLinkItem text={"To UniProt"} link={`https://www.uniprot.org/uniprotkb/${protIdNoIsoform}/`} />
-        <TooltipPopupLinkItem text={"To RCSB PDB"} link={`https://www.rcsb.org/structure/${pdbId}/`} />
+        {protIdNoIsoform && <TooltipPopupLinkItem text={"To UniProt"} link={`https://www.uniprot.org/uniprotkb/${protIdNoIsoform}/`} />}
+        {pdbId && <TooltipPopupLinkItem text={"To RCSB PDB"} link={`https://www.rcsb.org/structure/${pdbId}/`} />}
         <Button className="tooltip-popup-action" text="See adjacent nodes" onClick={() => setIsAdjacentView(true)} />
       </>
     );
@@ -120,9 +123,10 @@ export function ClickTooltip() {
       {showDetails ? (
         <NodeDetails
           nodeId={nodeId}
-          fullName={fullName}
+          displayName={displayName}
+          nodeEntries={nodeEntries}
           hasPhosphosites={hasPhosphosites}
-          isoforms={isoforms}
+          fullName={fullName}
           nodeAttribs={nodeAttribs}
           description={description}
           viewerRef={viewerRef}
@@ -140,21 +144,26 @@ export function ClickTooltip() {
   );
 }
 
-function NodeDetails({ nodeId, fullName, hasPhosphosites, isoforms, nodeAttribs, description, viewerRef }) {
+function NodeDetails({ nodeId, displayName, nodeEntries, hasPhosphosites, fullName, nodeAttribs, description, viewerRef }) {
+  const entryContent =
+    Array.isArray(nodeEntries) && nodeEntries.length > 0
+      ? nodeEntries.map(({ id, name, phosphosites }, index) => (
+          <div key={`${id}-${name}-${index}`}>
+            {id}
+            {name ? ` (${name})` : ""}
+            {phosphosites?.length ? ` - ${phosphosites.join(", ")}` : ""}
+          </div>
+        ))
+      : "—";
+
   return (
     <>
       <TooltipPopupItem heading={"Node ID"} value={nodeId} />
-      <TooltipPopupItem heading={"Full Name"} value={fullName} />
-      <TooltipPopupItem
-        heading={`Protein-IDs ${hasPhosphosites && "and Phosphosites"}`}
-        value={isoforms.map(({ pepId, phosphosites }, index) => (
-          <div key={`${pepId}-${index}`}>
-            {pepId} {phosphosites.join(", ")}
-          </div>
-        ))}
-      />
+      <TooltipPopupItem heading={"Name"} value={displayName || "—"} />
+      <TooltipPopupItem heading={`Node Entries${hasPhosphosites ? " and Phosphosites" : ""}`} value={entryContent} />
+      {fullName && <TooltipPopupItem heading={"Full Name"} value={fullName} />}
       <TooltipPopupItem heading={"Annotations"} value={nodeAttribs.join(", ")} />
-      <TooltipPopupItem heading={"Description"} value={description} />
+      {description && <TooltipPopupItem heading={"Description"} value={description} />}
       <div className="pdb-viewer" ref={viewerRef} />
     </>
   );

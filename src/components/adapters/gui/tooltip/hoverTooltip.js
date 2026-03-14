@@ -5,12 +5,12 @@ import { getNodeIdName } from "../../../domain/service/parsing/nodeIdParsing.js"
 export function HoverTooltip() {
   const { tooltipSettings } = useTooltipSettings();
   const [style, setStyle] = useState({});
-  const [gene, setGene] = useState("");
+  const [nodeName, setNodeName] = useState("");
 
   useEffect(() => {
     if (!tooltipSettings.hoverTooltipData) return;
 
-    setGene(getNodeIdName(tooltipSettings.hoverTooltipData.node));
+    setNodeName(getNodeIdName(tooltipSettings.hoverTooltipData.node));
   }, [tooltipSettings.hoverTooltipData]);
 
   useEffect(() => {
@@ -21,7 +21,7 @@ export function HoverTooltip() {
 
   return (
     <div className="tooltip" style={style}>
-      <p className="margin-0">{gene}</p>
+      <p className="margin-0">{nodeName}</p>
     </div>
   );
 }

@@ -9,7 +9,7 @@ import { useAppearance } from "../../state/appearanceState.js";
 import { useRenderState } from "../../state/canvasState.js";
 import { useContainer } from "../../state/containerState.js";
 import { centerOnNode } from "../../../domain/service/canvas_interaction/centerView.js";
-import { useProteinDetails } from "../hooks/useProteinDetails.js";
+import { useNodeDetails } from "../hooks/useNodeDetails.js";
 
 const MAX_RESULTS = 30;
 
@@ -20,7 +20,7 @@ export function SearchSidebar() {
   const { appearance } = useAppearance();
   const { renderState } = useRenderState();
   const { container } = useContainer();
-  const { gene, isoforms } = useProteinDetails(selectedNodeId);
+  const { displayName, entries } = useNodeDetails(selectedNodeId);
 
   const textareaRef = useRef(null);
 
@@ -112,8 +112,8 @@ export function SearchSidebar() {
           onItemToggle={handleNodeToggle}
           renderExpandedContent={(item) => (
             <div className="toggle-list-details">
-              <DetailRow label={"Name"} value={formatDetailValue(gene || item?.nodeId)} />
-              <ProteinIdsBlock isoforms={isoforms} />
+              <DetailRow label={"Name"} value={formatDetailValue(displayName || item?.nodeId)} />
+              <NodeEntriesBlock entries={entries} />
               <DetailRow label={"Annotations"} value={formatAnnotations(item?.node?.attribs)} />
             </div>
           )}
@@ -137,8 +137,8 @@ function formatAnnotations(attribs) {
     .join(", ");
 }
 
-function ProteinIdsBlock({ isoforms }) {
-  const hasEntries = Array.isArray(isoforms) && isoforms.length > 0;
+function NodeEntriesBlock({ entries }) {
+  const hasEntries = Array.isArray(entries) && entries.length > 0;
 
   return (
     <div className="toggle-list-detail-item toggle-list-detail-block">
@@ -146,14 +146,16 @@ function ProteinIdsBlock({ isoforms }) {
         <table className="toggle-list-detail-table">
           <thead>
             <tr>
-              <th>Protein-ID</th>
+              <th>ID</th>
+              <th>Name</th>
               <th>Phosphosites</th>
             </tr>
           </thead>
           <tbody>
-            {isoforms.map(({ pepId, phosphosites }, index) => (
-              <tr key={`${pepId}-${index}`}>
-                <td>{pepId}</td>
+            {entries.map(({ id, name, phosphosites }, index) => (
+              <tr key={`${id}-${name}-${index}`}>
+                <td>{id}</td>
+                <td>{name || "—"}</td>
                 <td>{Array.isArray(phosphosites) && phosphosites.length > 0 ? phosphosites.join(", ") : "—"}</td>
               </tr>
             ))}

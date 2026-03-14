@@ -1,13 +1,15 @@
 import { expectedPhysicTypes } from "../../../adapters/state/physicsState.js";
 
+const PHOSPHOSITE_PATTERN = /^[STY]+\d*$/i;
+
 function normalizeNodeIdEntry(entry, fullNodeId) {
   const parts = entry.split("_").map((part) => part.trim());
 
   if (parts.length < 2 || parts.length > 3) {
-    throw new Error(`Invalid node id '${fullNodeId}'. Expected 'ID_Name' (optional: '_Site1,Site2').`);
+    throw new Error(`Invalid node id '${fullNodeId}'. Expected 'ID_Name' (optional: '_Phosphosite1,Phosphosite2').`);
   }
 
-  const [idPart, namePart, sitePart] = parts;
+  const [idPart, namePart, phosphositesPart] = parts;
   if (!idPart || !namePart) {
     throw new Error(`Invalid node id '${fullNodeId}'. ID and name must not be empty.`);
   }
@@ -16,16 +18,23 @@ function normalizeNodeIdEntry(entry, fullNodeId) {
     return `${idPart}_${namePart}`;
   }
 
-  if (!sitePart) {
-    throw new Error(`Invalid node id '${fullNodeId}'. Site information must not be empty.`);
+  if (!phosphositesPart) {
+    throw new Error(`Invalid node id '${fullNodeId}'. Phosphosite information must not be empty.`);
   }
 
-  const sites = sitePart.split(",").map((site) => site.trim());
-  if (sites.some((site) => !site)) {
-    throw new Error(`Invalid node id '${fullNodeId}'. Site list contains empty entries.`);
+  const phosphosites = phosphositesPart.split(",").map((site) => site.trim());
+  if (phosphosites.some((site) => !site)) {
+    throw new Error(`Invalid node id '${fullNodeId}'. Phosphosite list contains empty entries.`);
   }
 
-  return `${idPart}_${namePart}_${sites.join(", ")}`;
+  const invalidSite = phosphosites.find((site) => !PHOSPHOSITE_PATTERN.test(site));
+  if (invalidSite) {
+    throw new Error(
+      `Invalid phosphosite '${invalidSite}' in node id '${fullNodeId}'. Expected residues from S/T/Y, optionally with positions (for example 'S123' or 'TSY').`,
+    );
+  }
+
+  return `${idPart}_${namePart}_${phosphosites.join(", ")}`;
 }
 
 function normalizeNodeId(nodeId) {

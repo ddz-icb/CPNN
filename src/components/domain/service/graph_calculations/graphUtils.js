@@ -98,13 +98,6 @@ export function getLinkAttribsToColorIndices(graphData) {
   return linkAttribsToColorIndices;
 }
 
-export function getIdsHavePhosphosites(graphData) {
-  const nodeId = graphData.nodes[0].id;
-  const firstNodeIdElement = nodeId.split(";")[0];
-  const phosphosites = firstNodeIdElement.split("_")[2];
-  return phosphosites ? true : false;
-}
-
 export function getLinkWeightMinMax(graphData) {
   let minWeight = Infinity;
   let maxWeight = -Infinity;

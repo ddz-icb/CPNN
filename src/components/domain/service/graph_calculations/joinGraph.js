@@ -1,5 +1,23 @@
 import UnionFind from "union-find";
-import { getNodeIdAndNameEntry, getNodeIdEntries, getNodeIdNames, getPhosphositesNodeIdEntry } from "../parsing/nodeIdParsing.js";
+import { getNodeIdEntries, getNodeIdNames } from "../parsing/nodeIdParsing.js";
+
+function normalizeNodeEntry(entry) {
+  const [idPart = "", namePart = "", phosphositesPart = ""] = entry.split("_").map((part) => part.trim());
+  if (!idPart || !namePart) return entry.trim();
+
+  if (!phosphositesPart) return `${idPart}_${namePart}`;
+
+  const normalizedPhosphosites = phosphositesPart
+    .split(",")
+    .map((site) => site.trim())
+    .filter(Boolean)
+    .join(", ");
+  return normalizedPhosphosites ? `${idPart}_${namePart}_${normalizedPhosphosites}` : `${idPart}_${namePart}`;
+}
+
+function getEndpointId(endpoint) {
+  return endpoint?.id || endpoint;
+}
 
 export function joinGraphs(graphData, newGraphData) {
   const nodeMap = new Map(graphData.nodes.map((node) => [node.id, { ...node }]));
@@ -64,21 +82,21 @@ export function joinGraphNames(graphNames) {
 export function filterMergeByName(graphData, mergeByName) {
   if (!mergeByName) return graphData;
 
-  const protIdToNodeMap = new Map();
+  const nameToNodeMap = new Map();
   graphData.nodes.forEach((node) => {
-    const protIds = getNodeIdNames(node.id);
-    protIds.forEach((protId) => {
-      if (!protIdToNodeMap.has(protId)) {
-        protIdToNodeMap.set(protId, []);
+    const names = getNodeIdNames(node.id);
+    names.forEach((name) => {
+      if (!nameToNodeMap.has(name)) {
+        nameToNodeMap.set(name, []);
       }
-      protIdToNodeMap.get(protId).push(node.id);
+      nameToNodeMap.get(name).push(node.id);
     });
   });
 
   const nodeIndexMap = new Map(graphData.nodes.map((node, index) => [node.id, index]));
   const unionFind = new UnionFind(graphData.nodes.length);
 
-  protIdToNodeMap.forEach((nodeIds) => {
+  nameToNodeMap.forEach((nodeIds) => {
     for (let i = 1; i < nodeIds.length; i++) {
       const index1 = nodeIndexMap.get(nodeIds[0]);
       const index2 = nodeIndexMap.get(nodeIds[i]);
@@ -100,7 +118,8 @@ export function filterMergeByName(graphData, mergeByName) {
 
   const parentIndexToMergedNode = new Map();
   attribsMap.forEach((attribNodeIds, parentIndex) => {
-    const protIdToPhosphositesMap = new Map();
+    const mergedEntries = [];
+    const seenEntries = new Set();
     const combinedAttribs = new Set();
 
     attribNodeIds.forEach((nodeId) => {
@@ -111,22 +130,17 @@ export function filterMergeByName(graphData, mergeByName) {
 
       const entries = getNodeIdEntries(node.id);
       entries.forEach((entry) => {
-        const protIdName = getNodeIdAndNameEntry(entry);
-        const phosphosites = getPhosphositesNodeIdEntry(entry);
-
-        if (!protIdToPhosphositesMap.has(protIdName)) {
-          protIdToPhosphositesMap.set(protIdName, new Set());
+        const normalizedEntry = normalizeNodeEntry(entry);
+        const key = normalizedEntry.toLowerCase();
+        if (seenEntries.has(key)) {
+          return;
         }
-        phosphosites.forEach((site) => protIdToPhosphositesMap.get(protIdName).add(site));
+        seenEntries.add(key);
+        mergedEntries.push(normalizedEntry);
       });
     });
 
-    const newId = Array.from(protIdToPhosphositesMap.entries())
-      .map(([protIdName, phosphoSet]) => {
-        const phosphoArray = Array.from(phosphoSet);
-        return phosphoArray.length > 0 ? `${protIdName}_${phosphoArray.join(", ")}` : protIdName;
-      })
-      .join("; ");
+    const newId = mergedEntries.sort((a, b) => a.localeCompare(b)).join("; ");
 
     parentIndexToMergedNode.set(parentIndex, {
       id: newId,
@@ -139,8 +153,8 @@ export function filterMergeByName(graphData, mergeByName) {
   const mergedLinksMap = new Map();
 
   graphData.links.forEach((link) => {
-    const sourceParentIndex = unionFind.find(nodeIndexMap.get(link.source));
-    const targetParentIndex = unionFind.find(nodeIndexMap.get(link.target));
+    const sourceParentIndex = unionFind.find(nodeIndexMap.get(getEndpointId(link.source)));
+    const targetParentIndex = unionFind.find(nodeIndexMap.get(getEndpointId(link.target)));
 
     const sourceMergedNode = parentIndexToMergedNode.get(sourceParentIndex);
     const targetMergedNode = parentIndexToMergedNode.get(targetParentIndex);

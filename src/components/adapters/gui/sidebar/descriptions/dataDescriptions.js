@@ -22,7 +22,7 @@ export const minLinkCorrDescription = (
 
 export const containsSitesDescription = (
   <div>
-    <p>Allows to include phosphosite details for the nodes, which must be incorporated into the node ID as shown below.</p>
+    <p>Allows optional phosphosite suffixes in node IDs.</p>
   </div>
 );
 
@@ -63,8 +63,8 @@ export const maxCompSizeDescriptionUpload = (
 
 export const uploadNodeMappingDescription = (
   <div>
-    Uploading node mappings can provide additional context to classify nodes, determining their color. By doing so, nodes −such as peptides− are
-    associated with one or more attributes. Nodes belonging to the same attribute will then be colored accordingly.
+    Uploading node mappings can provide additional context to classify nodes, determining their color. Nodes can be associated with one or more
+    attributes. Nodes belonging to the same attribute will then be colored accordingly.
     <br />
     Node mappings can be uploaded as TSV (preferred) or CSV files. The file must contain two columns:{" "}
     <PopupTextField inline={true} textInside={"id"} /> and <PopupTextField inline={true} textInside={"attribs"} />. In the{" "}
@@ -115,7 +115,7 @@ export const uploadGraphDataFormat = (
       <strong>Node IDs:</strong> they can be as simple as <PopupTextField inline={true} textInside={"ID_Name"} /> (or{" "}
       <PopupTextField inline={true} textInside={"ID1_Name1; ID2_Name2"} />
       ). Optional site information can be appended (for example <PopupTextField inline={true} textInside={"P08590_MYL3_T165"} />
-      ). Using UniProt IDs adds more information via API references.
+      ). Using UniProt IDs adds more biological information via API references.
     </p>
     <div className="pad-bottom-05" />
     Format:
