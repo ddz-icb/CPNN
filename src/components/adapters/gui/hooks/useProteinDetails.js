@@ -16,6 +16,45 @@ const proteinDetailsInit = {
   responsePdb: null,
 };
 
+function logRequestIssue(source, identifier, error) {
+  if (!axios.isAxiosError(error)) {
+    log.warn(`${source} request failed for ${identifier}`);
+    return;
+  }
+
+  if (error.code === "ERR_CANCELED") return;
+
+  const status = error.response?.status;
+  if (status === 404) {
+    log.debug(`${source} entry not found for ${identifier}`);
+    return;
+  }
+
+  log.warn(`${source} request failed for ${identifier}${status ? ` (HTTP ${status})` : ""}`);
+}
+
+async function fetchUniprotData(protIdNoIsoform) {
+  try {
+    log.debug(`Fetching UniProt data for ${protIdNoIsoform}`);
+    const response = await axios.get(`https://rest.uniprot.org/uniprotkb/${protIdNoIsoform}.json`);
+    return response?.data ?? null;
+  } catch (error) {
+    logRequestIssue("UniProt", protIdNoIsoform, error);
+    return null;
+  }
+}
+
+async function fetchPdbData(pdbId) {
+  try {
+    log.debug(`Fetching PDB file for ${pdbId}`);
+    const response = await axios.get(`https://files.rcsb.org/download/${pdbId}.pdb`);
+    return response ?? null;
+  } catch (error) {
+    logRequestIssue("RCSB PDB", pdbId, error);
+    return null;
+  }
+}
+
 export function useProteinDetails(nodeId) {
   const [details, setDetails] = useState(proteinDetailsInit);
 
@@ -47,11 +86,8 @@ export function useProteinDetails(nodeId) {
 
         if (!parsedEntries.protIdNoIsoform) return;
 
-        log.debug(`Fetching UniProt data for ${parsedEntries.protIdNoIsoform}`);
-        const responseUniprot = await axios.get(`https://rest.uniprot.org/uniprotkb/${parsedEntries.protIdNoIsoform}.json`);
+        const uniprotData = await fetchUniprotData(parsedEntries.protIdNoIsoform);
         if (isCancelled) return;
-
-        const uniprotData = responseUniprot?.data;
         if (!uniprotData) return;
 
         const nextDetails = {
@@ -64,8 +100,7 @@ export function useProteinDetails(nodeId) {
         const pdbId = getPdbIdUniprotData(uniprotData);
         if (pdbId) {
           nextDetails.pdbId = pdbId;
-          log.debug(`Fetching PDB file for ${pdbId}`);
-          const responsePdb = await axios.get(`https://files.rcsb.org/download/${pdbId}.pdb`);
+          const responsePdb = await fetchPdbData(pdbId);
           if (!isCancelled && responsePdb?.data) {
             nextDetails.responsePdb = responsePdb;
           }
