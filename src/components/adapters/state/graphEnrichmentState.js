@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 export const stringDbEnrichmentEnabledInit = false;
-export const stringDbMinConfidenceInit = 0.7;
+export const stringDbMinConfidenceInit = 0.9;
 
 const graphEnrichmentInit = {
   stringDbEnrichmentEnabled: stringDbEnrichmentEnabledInit,
@@ -20,4 +20,3 @@ export const useGraphEnrichment = create((set) => ({
       graphEnrichment: value,
     })),
 }));
-
