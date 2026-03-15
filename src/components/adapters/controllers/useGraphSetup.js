@@ -2,6 +2,7 @@ import log from "../logging/logger.js";
 import { useColorschemeState } from "../state/colorschemeState.js";
 import { filterInit, linkThresholdInit, useFilter } from "../state/filterState.js";
 import { useGraphFlags } from "../state/graphFlagsState.js";
+import { useGraphEnrichment } from "../state/graphEnrichmentState.js";
 import { useGraphMetrics } from "../state/graphMetricsState.js";
 import { useGraphState } from "../state/graphState.js";
 import { useEffect, useState } from "react";
@@ -17,12 +18,14 @@ import { graphService } from "../../application/services/graphService.js";
 import { resetService } from "../../application/services/resetService.js";
 import { filterMergeByName } from "../../domain/service/graph_calculations/filterGraph.js";
 import { applyNodeMapping } from "../../domain/service/graph_calculations/applyMapping.js";
+import { enrichGraphWithStringDb } from "../../domain/service/enrichment/stringDbEnrichment.js";
 
 export const useGraphSetup = () => {
   const { setFilter } = useFilter();
   const { setColorschemeState } = useColorschemeState();
   const { graphState, setGraphState } = useGraphState();
   const { graphFlags, setGraphFlags } = useGraphFlags();
+  const { graphEnrichment } = useGraphEnrichment();
   const { setError } = useError();
   const { mappingState } = useMappingState();
   const { setGraphMetrics } = useGraphMetrics();
@@ -36,22 +39,31 @@ export const useGraphSetup = () => {
     if (!graphState.activeGraphNames) return;
     log.info("Loading graph");
 
-    async function reloadGraph() {
-      try {
-        let graph = await graphService.getJoinedGraph(graphState.activeGraphNames);
-        graph.data = filterMergeByName(graph.data, graphFlags.mergeByName);
-        graph.data = applyNodeMapping(graph.data, mappingState.mapping?.data);
-        setGraphState("originGraph", graph);
+    const reloadGraph = async () => {
+      let graph = await graphService.getJoinedGraph(graphState.activeGraphNames);
+      graph.data = filterMergeByName(graph.data, graphFlags.mergeByName);
+      graph.data = await enrichGraphWithStringDb(graph.data, {
+        enabled: graphEnrichment.stringDbEnrichmentEnabled,
+        minConfidence: graphEnrichment.stringDbMinConfidence,
+      });
+      graph.data = applyNodeMapping(graph.data, mappingState.mapping?.data);
 
-        resetService.resetSimulation();
-      } catch (error) {
-        setError("Error loading graph");
-        log.error("Error loading graph:", error);
-      }
-    }
+      setGraphState("originGraph", graph);
+      resetService.resetSimulation();
+    };
 
-    reloadGraph();
-  }, [graphFlags.mergeByName, mappingState.mapping, graphState.activeGraphNames]);
+    reloadGraph().catch((error) => {
+      const message = error instanceof Error ? error.message : "Error loading graph";
+      setError(message);
+      log.error("Error loading graph:", error);
+    });
+  }, [
+    graphFlags.mergeByName,
+    graphEnrichment.stringDbEnrichmentEnabled,
+    graphEnrichment.stringDbMinConfidence,
+    mappingState.mapping,
+    graphState.activeGraphNames,
+  ]);
 
   // keep mapping if mergeByName
   useEffect(() => {

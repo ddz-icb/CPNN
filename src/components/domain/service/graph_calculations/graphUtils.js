@@ -67,32 +67,40 @@ export function getAdjacentData(graphData) {
 }
 
 export function getNodeAttribsToColorIndices(graphData) {
-  const nodeAttribsToColorIndices = [];
-  let i = 0;
+  const attribSet = new Set();
 
   graphData.nodes.forEach((node) => {
     node.attribs.forEach((attrib) => {
-      if (!nodeAttribsToColorIndices.hasOwnProperty(attrib)) {
-        nodeAttribsToColorIndices[attrib] = i;
-        i += 1;
-      }
+      const key = String(attrib ?? "").trim();
+      if (!key) return;
+      attribSet.add(key);
     });
+  });
+
+  const sortedAttribs = Array.from(attribSet).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
+  const nodeAttribsToColorIndices = [];
+  sortedAttribs.forEach((attrib, index) => {
+    nodeAttribsToColorIndices[attrib] = index;
   });
 
   return nodeAttribsToColorIndices;
 }
 
 export function getLinkAttribsToColorIndices(graphData) {
-  const linkAttribsToColorIndices = [];
-  let i = 0;
+  const attribSet = new Set();
 
   graphData.links.forEach((link) => {
     link.attribs.forEach((attrib) => {
-      if (!linkAttribsToColorIndices.hasOwnProperty(attrib)) {
-        linkAttribsToColorIndices[attrib] = i;
-        i += 1;
-      }
+      const key = String(attrib ?? "").trim();
+      if (!key) return;
+      attribSet.add(key);
     });
+  });
+
+  const sortedAttribs = Array.from(attribSet).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
+  const linkAttribsToColorIndices = [];
+  sortedAttribs.forEach((attrib, index) => {
+    linkAttribsToColorIndices[attrib] = index;
   });
 
   return linkAttribsToColorIndices;

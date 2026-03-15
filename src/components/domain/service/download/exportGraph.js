@@ -114,7 +114,7 @@ export function drawLegendOnPdf(
   linkColorscheme,
   linkAttribsToColorIndices,
   mapping,
-  section = "both"
+  section = "both",
 ) {
   const padding = 20;
   const rectSize = 12;
@@ -227,7 +227,7 @@ export function drawLegendOnPdf(
         label: key,
         color: colorscheme[attribs[key]],
       }))
-      .concat({ label: "No Value Available", color: "#f3f3f3" });
+      .concat({ label: "No Value/Color Available", color: "#f3f3f3" });
 
     rows.forEach((row, rowIndex) => {
       const isLastRow = rowIndex === rows.length - 1;

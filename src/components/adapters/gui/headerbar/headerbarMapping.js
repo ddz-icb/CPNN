@@ -23,8 +23,8 @@ export function HeaderbarColorMapping() {
     entries.push(
       <span className="headerbar-colormapping-row">
         <span className="color-square" style={{ backgroundColor: fallbackColor }}></span>
-        <span className="headerbar-colormapping-label">No Value Available</span>
-      </span>
+        <span className="headerbar-colormapping-label">No Value/Color Available</span>
+      </span>,
     );
     return entries;
   };

@@ -1,4 +1,10 @@
 import { Button, FieldBlock, SliderBlock, SwitchBlock, LassoFilterBlock } from "../reusable_components/sidebarComponents.js";
+import { NodeIdFilterBlock } from "./nodeIdFilterBlock.js";
+import { LinkAttribFilterBlock, NodeAttribFilterBlock } from "./attribFilterBlock.js";
+import { useFilter } from "../../state/filterState.js";
+import { useGraphMetrics } from "../../state/graphMetricsState.js";
+import { useGraphFlags } from "../../state/graphFlagsState.js";
+import { stringDbMinConfidenceInit, useGraphEnrichment } from "../../state/graphEnrichmentState.js";
 import {
   filterInit,
   linkThresholdInit,
@@ -15,16 +21,14 @@ import {
   mergeByNameDescription,
   minCompSizeDescription,
   minKCoreSizeDescription,
+  stringDbEnrichmentDescription,
+  stringDbMinConfidenceDescription,
 } from "./descriptions/filterDescriptions.js";
-import { useFilter } from "../../state/filterState.js";
-import { useGraphMetrics } from "../../state/graphMetricsState.js";
-import { useGraphFlags } from "../../state/graphFlagsState.js";
-import { NodeIdFilterBlock } from "./nodeIdFilterBlock.js";
-import { LinkAttribFilterBlock, NodeAttribFilterBlock } from "./attribFilterBlock.js";
 
 export function FilterSidebar() {
   const { filter, setFilter, setAllFilter } = useFilter();
   const { graphFlags, setGraphFlags } = useGraphFlags();
+  const { graphEnrichment, setGraphEnrichment } = useGraphEnrichment();
   const { graphMetrics } = useGraphMetrics();
 
   const lassoSelectionCount = Array.isArray(filter.lassoSelection) ? filter.lassoSelection.length : 0;
@@ -40,6 +44,9 @@ export function FilterSidebar() {
   const handleResetFilters = () => {
     setAllFilter(filterInit);
     setGraphFlags("mergeByName", false);
+    setGraphEnrichment("stringDbEnrichmentEnabled", false);
+    setGraphEnrichment("stringDbMinConfidence", stringDbMinConfidenceInit);
+    setGraphEnrichment("stringDbMinConfidenceText", stringDbMinConfidenceInit);
   };
 
   return (
@@ -71,6 +78,28 @@ export function FilterSidebar() {
         infoHeading={"Merge nodes with the same Name"}
         infoDescription={mergeByNameDescription}
       />
+      <SwitchBlock
+        value={graphEnrichment.stringDbEnrichmentEnabled}
+        setValue={() => setGraphEnrichment("stringDbEnrichmentEnabled", !graphEnrichment.stringDbEnrichmentEnabled)}
+        text={"Add STRING-DB Links"}
+        infoHeading={"STRING-DB Enrichment"}
+        infoDescription={stringDbEnrichmentDescription}
+      />
+      {graphEnrichment.stringDbEnrichmentEnabled && (
+        <SliderBlock
+          value={graphEnrichment.stringDbMinConfidence}
+          valueText={graphEnrichment.stringDbMinConfidenceText}
+          setValue={(value) => setGraphEnrichment("stringDbMinConfidence", value)}
+          setValueText={(value) => setGraphEnrichment("stringDbMinConfidenceText", value)}
+          fallbackValue={stringDbMinConfidenceInit}
+          min={0}
+          max={1}
+          step={0.05}
+          text={"STRING Min Confidence"}
+          infoHeading={"STRING-DB minimum confidence"}
+          infoDescription={stringDbMinConfidenceDescription}
+        />
+      )}
       <NodeAttribFilterBlock />
       <NodeIdFilterBlock />
       <FieldBlock

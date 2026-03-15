@@ -19,6 +19,23 @@ export const mergeByNameDescription = (
   </div>
 );
 
+export const stringDbEnrichmentDescription = (
+  <div>
+    <p className="margin-0">
+      Enable STRING-DB enrichment to add additional protein-protein links for nodes with UniProt IDs in the current graph. Added links use a separate
+      link attribute and keep a fixed weight of 1.
+    </p>
+  </div>
+);
+
+export const stringDbMinConfidenceDescription = (
+  <div>
+    <p className="margin-0">
+      Set the minimum STRING confidence score (0 to 1) for additional interactions. Higher values keep only stronger evidence.
+    </p>
+  </div>
+);
+
 export const minCompSizeDescription = (
   <div>
     <p className="margin-0">
