@@ -49,7 +49,7 @@ export const useGraphSetup = () => {
       graph.data = applyNodeMapping(graph.data, mappingState.mapping?.data);
 
       setGraphState("originGraph", graph);
-      resetService.resetSimulation();
+      resetService.resetSimulation({ preserveSearch: true });
     };
 
     reloadGraph().catch((error) => {

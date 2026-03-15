@@ -9,9 +9,10 @@ import { searchStateInit, useSearchState } from "../../adapters/state/searchStat
 import { communityStateInit, useCommunityState } from "../../adapters/state/communityState.js";
 
 export const resetService = {
-  resetSimulation() {
+  resetSimulation(options = {}) {
     if (!graphService.getActiveGraphNames()) return;
     log.info("Resetting the simulation");
+    const preserveSearch = Boolean(options.preserveSearch);
 
     useDownload.getState().setAllDownload(downloadInit);
 
@@ -20,7 +21,16 @@ export const resetService = {
     useGraphFlags.getState().setGraphFlags("isPreprocessed", isPreprocessedInit);
     useGraphFlags.getState().setGraphFlags("filteredAfterStart", filteredAfterStartInit);
 
-    useSearchState.getState().setAllSearchState(searchStateInit);
+    if (preserveSearch) {
+      const currentSearchState = useSearchState.getState().searchState;
+      useSearchState.getState().setAllSearchState({
+        ...searchStateInit,
+        searchValue: currentSearchState.searchValue,
+        query: currentSearchState.query,
+      });
+    } else {
+      useSearchState.getState().setAllSearchState(searchStateInit);
+    }
 
     useCommunityState.getState().setAllCommunityState(communityStateInit);
 
