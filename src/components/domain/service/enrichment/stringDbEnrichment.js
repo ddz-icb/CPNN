@@ -1,14 +1,84 @@
 import log from "../../../adapters/logging/logger.js";
-import { joinGraphs } from "../graph_calculations/joinGraph.js";
 import { fetchNetworkInteractions } from "./stringDbApi.js";
+import { STRING_DB_LINK_ATTRIB } from "./stringDbConfig.js";
 import { buildEnrichmentLinks, buildProteinToNodeIdsMap } from "./stringDbMapping.js";
-import { buildCacheKey, clampConfidence, cloneLink } from "./stringDbHelpers.js";
+import { buildCacheKey, clampConfidence, cloneLink, getEdgeKey } from "./stringDbHelpers.js";
 
 const enrichmentCache = new Map();
 
-function applyStringDbLinks(graphData, links) {
-  if (!Array.isArray(links) || links.length === 0) return graphData;
-  return joinGraphs(graphData, { nodes: [], links: links.map((link) => cloneLink(link)) });
+function getEndpointId(endpoint) {
+  if (endpoint == null) return "";
+  if (typeof endpoint === "object") {
+    if (endpoint.id != null) return String(endpoint.id).trim();
+    if (endpoint.data?.id != null) return String(endpoint.data.id).trim();
+  }
+  return String(endpoint).trim();
+}
+
+function getLinkPairKey(source, target) {
+  if (!source || !target || source === target) return null;
+  return getEdgeKey(source, target);
+}
+
+function ensureStringDbAttrib(link) {
+  const attribs = Array.isArray(link.attribs) ? [...link.attribs] : [];
+  const weights = Array.isArray(link.weights) ? [...link.weights] : [];
+  const stringDbIndex = attribs.indexOf(STRING_DB_LINK_ATTRIB);
+
+  if (stringDbIndex === -1) {
+    attribs.push(STRING_DB_LINK_ATTRIB);
+    weights.push(1);
+    return { ...link, attribs, weights };
+  }
+
+  if (weights[stringDbIndex] == null) {
+    weights[stringDbIndex] = 1;
+    return { ...link, attribs, weights };
+  }
+
+  return { ...link, attribs, weights };
+}
+
+function applyStringDbLinks(graphData, enrichmentLinks) {
+  if (!Array.isArray(enrichmentLinks) || enrichmentLinks.length === 0) return graphData;
+
+  const mergedLinks = (graphData.links ?? []).map((link) => cloneLink(link));
+  const pairKeyToLinkIndex = new Map();
+
+  mergedLinks.forEach((link, index) => {
+    const sourceId = getEndpointId(link.source);
+    const targetId = getEndpointId(link.target);
+    const pairKey = getLinkPairKey(sourceId, targetId);
+    if (!pairKey || pairKeyToLinkIndex.has(pairKey)) return;
+    pairKeyToLinkIndex.set(pairKey, index);
+  });
+
+  enrichmentLinks.forEach((link) => {
+    const sourceId = getEndpointId(link.source);
+    const targetId = getEndpointId(link.target);
+    const pairKey = getLinkPairKey(sourceId, targetId);
+    if (!pairKey) return;
+
+    const existingLinkIndex = pairKeyToLinkIndex.get(pairKey);
+    if (existingLinkIndex !== undefined) {
+      mergedLinks[existingLinkIndex] = ensureStringDbAttrib(mergedLinks[existingLinkIndex]);
+      return;
+    }
+
+    const newLink = ensureStringDbAttrib({
+      source: sourceId,
+      target: targetId,
+      weights: [1],
+      attribs: [STRING_DB_LINK_ATTRIB],
+    });
+    mergedLinks.push(newLink);
+    pairKeyToLinkIndex.set(pairKey, mergedLinks.length - 1);
+  });
+
+  return {
+    ...graphData,
+    links: mergedLinks,
+  };
 }
 
 export async function enrichGraphWithStringDb(graphData, options = {}) {
