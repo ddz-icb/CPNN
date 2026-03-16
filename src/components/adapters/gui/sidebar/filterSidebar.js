@@ -68,16 +68,6 @@ export function FilterSidebar() {
         infoHeading={"Filtering Links by Threshold"}
         infoDescription={linkThresholdDescription}
       />
-      <LinkAttribFilterBlock />
-
-      <div className="table-list-heading">Node Filters</div>
-      <SwitchBlock
-        value={graphFlags.mergeByName}
-        setValue={() => setGraphFlags("mergeByName", !graphFlags.mergeByName)}
-        text={"Merge Nodes by Name"}
-        infoHeading={"Merge nodes with the same Name"}
-        infoDescription={mergeByNameDescription}
-      />
       <SwitchBlock
         value={graphEnrichment.stringDbEnrichmentEnabled}
         setValue={() => setGraphEnrichment("stringDbEnrichmentEnabled", !graphEnrichment.stringDbEnrichmentEnabled)}
@@ -100,6 +90,16 @@ export function FilterSidebar() {
           infoDescription={stringDbMinConfidenceDescription}
         />
       )}
+      <LinkAttribFilterBlock />
+
+      <div className="table-list-heading">Node Filters</div>
+      <SwitchBlock
+        value={graphFlags.mergeByName}
+        setValue={() => setGraphFlags("mergeByName", !graphFlags.mergeByName)}
+        text={"Merge Nodes by Name"}
+        infoHeading={"Merge nodes with the same Name"}
+        infoDescription={mergeByNameDescription}
+      />
       <NodeAttribFilterBlock />
       <NodeIdFilterBlock />
       <FieldBlock
