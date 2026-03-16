@@ -2,6 +2,7 @@ import log from "../../adapters/logging/logger.js";
 import { mappingInit, useMappingState } from "../../adapters/state/mappingState.js";
 import { createMapping, deleteMapping, loadMappingNames, getMapping } from "../../domain/models/mapping.js";
 import { errorService } from "./errorService.js";
+import { processNamedFileUpload } from "./fileUploadService.js";
 
 export const mappingService = {
   async handleLoadMappingNames() {
@@ -29,18 +30,17 @@ export const mappingService = {
       log.error(error);
     }
   },
-  async handleCreateMapping(event) {
-    const file = event?.target?.files?.[0];
-    if (!file) {
-      errorService.setError("The input is not a valid file");
-      log.error("The input is not a valid file");
-      return;
-    }
-    log.info("Adding new mapping file");
-
+  async handleCreateMapping(files) {
     try {
-      const mapping = await createMapping(file);
-      this.setUploadedMappingNames([...(this.getUploadedMappingNames() || []), mapping.name]);
+      await processNamedFileUpload({
+        files,
+        entityLabel: "mapping",
+        uploadSingleFile: (file) => createMapping(file),
+        getExistingNames: () => this.getUploadedMappingNames(),
+        setMergedNames: (names) => this.setUploadedMappingNames(names),
+        log,
+        setError: (message) => errorService.setError(message),
+      });
     } catch (error) {
       errorService.setError(error.message);
       log.error(error);

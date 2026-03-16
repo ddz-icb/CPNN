@@ -6,6 +6,7 @@ import { createGraphIfNotExistsDB, deleteGraphDB } from "../../repository/graphR
 import { errorService } from "./errorService.js";
 import { joinGraphNames, joinGraphs } from "../../domain/service/graph_calculations/joinGraph.js";
 import { useGraphFlags } from "../../adapters/state/graphFlagsState.js";
+import { processNamedFileUpload } from "./fileUploadService.js";
 
 export const graphService = {
   async handleLoadGraphNames() {
@@ -18,19 +19,17 @@ export const graphService = {
       log.error("Error setting init graph");
     }
   },
-  async handleCreateGraph(event, createGraphSettings) {
-    const file = event?.target?.files?.[0];
-    if (!file) {
-      errorService.setError("The input is not a valid file");
-      log.error("The input is not a valid file");
-      return;
-    }
-    log.info("Adding new graph file");
-
+  async handleCreateGraph(files, createGraphSettings) {
     try {
-      const graph = await createGraph(file, createGraphSettings);
-
-      this.setUploadedGraphNames([...(this.getUploadedGraphNames() || []), graph.name]);
+      await processNamedFileUpload({
+        files,
+        entityLabel: "graph",
+        uploadSingleFile: (file) => createGraph(file, createGraphSettings),
+        getExistingNames: () => this.getUploadedGraphNames(),
+        setMergedNames: (names) => this.setUploadedGraphNames(names),
+        log,
+        setError: (message) => errorService.setError(message),
+      });
     } catch (error) {
       errorService.setError(error.message);
       log.error(error);

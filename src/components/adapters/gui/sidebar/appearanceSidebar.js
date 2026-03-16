@@ -128,8 +128,9 @@ export function UploadColorscheme() {
             text={"Upload Own Color Scheme"}
             onClick={() => colorschemeRef.current.click()}
             linkRef={colorschemeRef}
+            fileInputProps={{ multiple: true }}
             onChange={(event) => {
-              colorschemeService.handleCreateColorscheme(event);
+              colorschemeService.handleCreateColorscheme(event.target.files);
               event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
               setColorschemePopupActive(false);
             }}

@@ -157,7 +157,7 @@ export function UploadGraph() {
       heading={"Uploading your Graph"}
       description={uploadGraphDescription}
     >
-      {({ closePopup: closeUploadPopup }) => (
+      {({ closePopup }) => (
         <>
           <SelectFieldBlock
             text={"Data format"}
@@ -181,7 +181,7 @@ export function UploadGraph() {
           )}
           <div className="block-section pad-top-1">
             <GraphPrefilterPopup
-              onCloseUploadPopup={closeUploadPopup}
+              onCloseUploadPopup={closePopup}
               ignoreNegatives={ignoreNegatives}
               setIgnoreNegatives={setIgnoreNegatives}
               mergeByName={mergeByName}
@@ -202,6 +202,7 @@ export function UploadGraph() {
               text={"Upload Graph File"}
               onClick={() => graphFileRef.current.click()}
               linkRef={graphFileRef}
+              fileInputProps={{ multiple: true }}
               onChange={(event) => {
                 const createGraphSettings = buildCreateGraphSettings({
                   dataFormat,
@@ -213,8 +214,9 @@ export function UploadGraph() {
                   mergeByName,
                 });
 
-                graphService.handleCreateGraph(event, createGraphSettings);
+                graphService.handleCreateGraph(event.target.files, createGraphSettings);
                 event.target.value = null; // Reset to allow re-uploading the same file.
+                closePopup();
               }}
             />
           </div>

@@ -132,8 +132,9 @@ function UploadMapping() {
           text={"Upload Own Node Mapping"}
           onClick={() => mappingRef.current.click()}
           linkRef={mappingRef}
+          fileInputProps={{ multiple: true }}
           onChange={(event) => {
-            mappingService.handleCreateMapping(event);
+            mappingService.handleCreateMapping(event.target.files);
             event.target.value = null; // resetting the value so uploading the same item tice in a row also gets registered
           }}
         />

@@ -159,7 +159,7 @@ export function FieldApplyBlock({
   );
 }
 
-export function Button({ onClick, onChange, linkRef, tooltip, tooltipId, text, className }) {
+export function Button({ onClick, onChange, linkRef, tooltip, tooltipId, text, className, fileInputProps = {} }) {
   return (
     <>
       <ButtonCN
@@ -169,7 +169,7 @@ export function Button({ onClick, onChange, linkRef, tooltip, tooltipId, text, c
         onClick={onClick}
       >
         <span>{text}</span>
-        <input type="file" style={{ display: "none" }} onChange={onChange} ref={linkRef} />
+        {(linkRef || onChange) && <input type="file" style={{ display: "none" }} onChange={onChange} ref={linkRef} {...fileInputProps} />}
       </ButtonCN>
       <Tooltip id={tooltipId} place="top" effect="solid" className="tooltip-gui" />
     </>

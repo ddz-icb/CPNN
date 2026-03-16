@@ -14,6 +14,7 @@ import {
   createColorschemeIfNotExists,
 } from "../../domain/models/colorscheme.js";
 import { errorService } from "./errorService.js";
+import { processNamedFileUpload } from "./fileUploadService.js";
 
 export const colorschemeService = {
   async handleLoadColorschemeNames() {
@@ -58,18 +59,17 @@ export const colorschemeService = {
       log.error(error);
     }
   },
-  async handleCreateColorscheme(event) {
-    const file = event?.target?.files?.[0];
-    if (!file) {
-      errorService.setError("The input is not a valid file");
-      log.error("The input is not a valid file");
-      return;
-    }
-    log.info("Adding new color scheme");
-
+  async handleCreateColorscheme(files) {
     try {
-      const colorscheme = await createColorscheme(file);
-      this.setUploadedColorschemeNames([...(this.getUploadedColorschemeNames() || [defaultColorschemeNames]), colorscheme.name]);
+      await processNamedFileUpload({
+        files,
+        entityLabel: "color scheme",
+        uploadSingleFile: (file) => createColorscheme(file),
+        getExistingNames: () => this.getUploadedColorschemeNames(),
+        setMergedNames: (names) => this.setUploadedColorschemeNames(names),
+        log,
+        setError: (message) => errorService.setError(message),
+      });
     } catch (error) {
       errorService.setError(error.message);
       log.error(error);
