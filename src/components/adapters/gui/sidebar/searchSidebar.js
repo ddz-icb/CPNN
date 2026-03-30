@@ -37,6 +37,14 @@ export function SearchSidebar() {
     setAllSearchState(searchStateInit);
   };
 
+  const handleClearAndSearch = () => {
+    setAllSearchState({
+      ...searchStateInit,
+      searchValue,
+      query: searchValue.trim().toLowerCase(),
+    });
+  };
+
   const handleNodeToggle = (item) => {
     const nodeId = item?.nodeId;
     if (!nodeId) return;
@@ -81,6 +89,8 @@ export function SearchSidebar() {
   const nodeTotal = matchingNodes?.length ?? 0;
   const nodeOverflow = nodeTotal > MAX_RESULTS;
   const hasActiveSearch = Boolean(query);
+  const hasModifiedInput = hasActiveSearch && searchValue.trim().toLowerCase() !== query;
+  const showClearButton = hasActiveSearch && !hasModifiedInput;
 
   return (
     <>
@@ -88,10 +98,10 @@ export function SearchSidebar() {
         text={"Search Graph Data"}
         textareaRef={textareaRef}
         defaultValue={searchValue}
-        onClick={hasActiveSearch ? handleClear : handleSearch}
+        onClick={showClearButton ? handleClear : hasModifiedInput ? handleClearAndSearch : handleSearch}
         infoHeading={"Search Graph Data"}
         infoDescription={"Search for nodes in the current graph by their name / ID."}
-        buttonText={hasActiveSearch ? "Clear" : "Search"}
+        buttonText={showClearButton ? "Clear" : "Search"}
       />
       <>
         {hasActiveSearch && nodeTotal > 0 && (
