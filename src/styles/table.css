@@ -156,6 +156,25 @@
   }
 }
 
+.overflow-hint {
+  padding: 0.4rem var(--sidebar-control-padding-x);
+  margin-top: var(--sidebar-card-gap-y);
+  border-left: 2px solid var(--color-border-subtle);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  line-height: 1.5;
+}
+
+.search-empty-hint {
+  padding: var(--sidebar-card-padding-y) var(--sidebar-control-padding-x);
+  font-size: var(--font-size-xs);
+  text-align: center;
+}
+
+.item-table-text--empty {
+  cursor: default;
+}
+
 .item-table-text-content {
   display: flex;
   align-items: center;

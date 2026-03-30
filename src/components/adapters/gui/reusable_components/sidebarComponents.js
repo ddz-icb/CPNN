@@ -160,11 +160,12 @@ export function FieldApplyBlock({
   );
 }
 
-export function Button({ onClick, onChange, linkRef, tooltip, tooltipId, text, className, fileInputProps = {} }) {
+export function Button({ onClick, onChange, linkRef, tooltip, tooltipId, text, className, variant, fileInputProps = {} }) {
   return (
     <>
       <ButtonCN
         className={`button-rect default-height default-min-width ${className}`}
+        variant={variant}
         data-tooltip-id={tooltipId}
         data-tooltip-content={tooltip}
         onClick={onClick}
@@ -214,7 +215,7 @@ export function LassoFilterBlock({ isActive, selectionCount, onToggle, onClearSe
   );
 }
 
-export function CodeEditorBlock({ text, onClick, compilerError, defaultValue, textareaRef, infoHeading, infoDescription, buttonText = "Apply" }) {
+export function CodeEditorBlock({ text, onClick, compilerError, defaultValue, textareaRef, infoHeading, infoDescription, buttonText = "Apply", buttonVariant }) {
   return (
     <div className="block-section block-section-stack">
       <div className="sidebar-control-header">
@@ -227,7 +228,7 @@ export function CodeEditorBlock({ text, onClick, compilerError, defaultValue, te
         <div className="code-editor-container">
           <textarea ref={textareaRef} defaultValue={defaultValue}></textarea>
         </div>
-        <Button onClick={onClick} text={buttonText} />
+        <Button onClick={onClick} text={buttonText} variant={buttonVariant} />
       </div>
       {compilerError && <span className="sidebar-control-helper text-warning">{compilerError}</span>}
     </div>
@@ -243,8 +244,8 @@ export function Popup({ heading, description, isOpen, setIsOpen, widePopup = fal
 
   return (
     isOpen && (
-      <div className="popup-overlay">
-        <div className={popupContainer}>
+      <div className="popup-overlay" onClick={handleClose}>
+        <div className={popupContainer} onClick={(e) => e.stopPropagation()}>
           <div className="popup-header pad-bottom-1">
             <span className="popup-heading">{heading}</span>
             <span className="svg-button" onClick={handleClose}>
@@ -439,6 +440,7 @@ export function ToggleList({
   onActionIcon2Click,
   actionIcon2TooltipContent,
   dark,
+  emptyMessage = "None",
 }) {
   const instanceId = useId();
   const normalizedExpandedId = expandedId === null || expandedId === undefined ? null : expandedId.toString();
@@ -522,8 +524,8 @@ export function ToggleList({
             })
           ) : (
             <tr>
-              <td className="item-table-text">
-                <span>None</span>
+              <td className="item-table-text item-table-text--empty">
+                <span className="text-secondary">{emptyMessage}</span>
               </td>
             </tr>
           )}

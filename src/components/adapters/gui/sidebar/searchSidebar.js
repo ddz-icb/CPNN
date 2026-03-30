@@ -103,33 +103,41 @@ export function SearchSidebar() {
         infoHeading={"Search Graph Data"}
         infoDescription={"Search for nodes in the current graph by their name / ID."}
         buttonText={showClearButton ? "Clear" : "Search"}
+        buttonVariant={showClearButton ? "secondary" : "default"}
       />
       <>
-        {hasActiveSearch && nodeTotal > 0 && (
-          <SwitchBlock
-            value={isHighlightAllActive}
-            setValue={handleHighlightAllToggle}
-            text={"Highlight all Matches"}
-            infoHeading={"Highlight all Matches"}
-            infoDescription={"Toggle to highlight every node that matches the current search."}
-          />
+        {!hasActiveSearch ? (
+          <div className="search-empty-hint text-secondary">Enter a query above to find nodes.</div>
+        ) : (
+          <>
+            {nodeTotal > 0 && (
+              <SwitchBlock
+                value={isHighlightAllActive}
+                setValue={handleHighlightAllToggle}
+                text={"Highlight all Matches"}
+                infoHeading={"Highlight all Matches"}
+                infoDescription={"Toggle to highlight every node that matches the current search."}
+              />
+            )}
+            <ToggleList
+              heading={`Node Matches (${nodeTotal})`}
+              data={nodeResults}
+              displayKey={"primaryText"}
+              expandedId={selectedNodeId}
+              getItemId={(item) => item?.nodeId}
+              onItemToggle={handleNodeToggle}
+              emptyMessage={"No nodes matched your query."}
+              renderExpandedContent={(item) => (
+                <div className="toggle-list-details">
+                  <DetailRow label={"Name"} value={formatDetailValue(displayName || item?.nodeId)} />
+                  <NodeEntriesBlock entries={entries} />
+                  <DetailRow label={"Annotations"} value={formatAnnotations(item?.node?.attribs)} />
+                </div>
+              )}
+            />
+            {nodeOverflow && <OverflowHint total={nodeTotal} />}
+          </>
         )}
-        <ToggleList
-          heading={`Node Matches (${nodeTotal})`}
-          data={nodeResults}
-          displayKey={"primaryText"}
-          expandedId={selectedNodeId}
-          getItemId={(item) => item?.nodeId}
-          onItemToggle={handleNodeToggle}
-          renderExpandedContent={(item) => (
-            <div className="toggle-list-details">
-              <DetailRow label={"Name"} value={formatDetailValue(displayName || item?.nodeId)} />
-              <NodeEntriesBlock entries={entries} />
-              <DetailRow label={"Annotations"} value={formatAnnotations(item?.node?.attribs)} />
-            </div>
-          )}
-        />
-        {nodeOverflow && <OverflowHint total={nodeTotal} />}
       </>
     </>
   );
@@ -181,7 +189,7 @@ function NodeEntriesBlock({ entries }) {
 
 function OverflowHint({ total }) {
   return (
-    <div className="text-secondary pad-top-05">
+    <div className="overflow-hint">
       Showing the first {MAX_RESULTS} of {total} matches.
     </div>
   );

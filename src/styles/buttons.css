@@ -42,6 +42,24 @@
   box-shadow: var(--shadow-soft);
 }
 
+.button-rect[data-variant="secondary"] {
+  background-color: var(--color-surface-contrast);
+  color: var(--color-text-secondary);
+  border: var(--border-thin) solid var(--color-border-subtle);
+}
+
+.button-rect[data-variant="secondary"]:hover,
+.button-rect[data-variant="secondary"]:focus-visible {
+  background-color: var(--color-surface-muted);
+  color: var(--color-text-primary);
+}
+
+.light .button-rect[data-variant="secondary"] {
+  background-color: var(--color-surface-muted);
+  color: var(--color-text-secondary);
+  box-shadow: none;
+}
+
 button svg,
 .svg-button svg,
 .svg-button svg,
