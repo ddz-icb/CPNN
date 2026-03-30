@@ -8,6 +8,7 @@
   border-right: var(--border-thick) solid var(--color-border);
   overflow-y: auto;
   overflow-x: hidden;
+  transition: width 200ms var(--motion-ease-standard);
 }
 
 .navbar.short {

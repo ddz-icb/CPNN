@@ -44,10 +44,10 @@
   --font-size-base: 0.8rem;
   font-family: "pingFangSC", sans-serif;
   font-size: var(--font-size-base);
-  font-weight: 300;
+  font-weight: 400;
   --font-family-sans: "pingFangSC", sans-serif;
   --font-family-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  --font-weight-regular: 300;
+  --font-weight-regular: 400;
   --font-weight-medium: 500;
   --font-size-xs: 0.7rem;
   --font-size-s: 0.85rem;

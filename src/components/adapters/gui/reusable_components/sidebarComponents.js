@@ -464,6 +464,14 @@ export function ToggleList({
                     <td
                       className="item-table-text"
                       onClick={() => onItemToggle && onItemToggle(item)}
+                      tabIndex={onItemToggle ? 0 : undefined}
+                      role={onItemToggle ? "button" : undefined}
+                      onKeyDown={onItemToggle ? (e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          onItemToggle(item);
+                        }
+                      } : undefined}
                       {...(itemTooltipContent && {
                         "data-tooltip-id": `item-tooltip-${instanceId}-${index}`,
                         "data-tooltip-content": itemTooltipContent(item),
