@@ -1,9 +1,13 @@
 import { SvgIcon } from "./SvgIcon.jsx";
 import xSvg from "../../../../assets/icons/x.svg?raw";
 
-export function TooltipPopup({ heading, close, children, style, footer }) {
+export function TooltipPopup({ heading, close, children, tooltipRef, isPositioned, footer }) {
   return (
-    <div className="tooltip tooltip-popup" style={style}>
+    <div
+      className="tooltip tooltip-popup"
+      ref={tooltipRef}
+      style={{ visibility: isPositioned ? "visible" : "hidden" }}
+    >
       <div className="tooltip-popup-content">
         <div className="tooltip-popup-header">
           <span className="tooltip-popup-heading">{heading}</span>
@@ -12,7 +16,6 @@ export function TooltipPopup({ heading, close, children, style, footer }) {
           </button>
         </div>
         <div className="tooltip-popup-body">{children}</div>
-
         {footer && <div className="tooltip-popup-footer">{footer}</div>}
       </div>
     </div>
@@ -20,15 +23,12 @@ export function TooltipPopup({ heading, close, children, style, footer }) {
 }
 
 export function TooltipPopupItem({ heading, value }) {
+  if (!value) return null;
   return (
-    <>
-      {value && (
-        <>
-          <b className="text-secondary">{heading}</b>
-          <div>{value}</div>
-        </>
-      )}
-    </>
+    <div className="tooltip-popup-item">
+      <span className="tooltip-popup-item-label">{heading}</span>
+      <div className="tooltip-popup-item-value">{value}</div>
+    </div>
   );
 }
 export function TooltipPopupLinkItem({ text, link }) {

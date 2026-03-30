@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import { useState, useEffect, useLayoutEffect, useRef, useCallback, useMemo } from "react";
 import * as $3Dmol from "3dmol/build/3Dmol.js";
 
 import log from "../../logging/logger.js";
@@ -57,7 +57,7 @@ export function ClickTooltip() {
 
   usePdbViewer(viewerRef, responsePdb, theme.name, isTooltipActive);
 
-  const tooltipStyle = useTooltipPosition(isTooltipActive, clickData, container);
+  const { tooltipRef, isPositioned } = useTooltipPosition(isTooltipActive, clickData);
 
   const nodeColors = colorschemeState.nodeColorscheme?.data ?? [];
   const nodeAttribsToColorIndices = colorschemeState.nodeAttribsToColorIndices ?? [];
@@ -130,7 +130,7 @@ export function ClickTooltip() {
   const showDetails = !isAdjacentView;
 
   return (
-    <TooltipPopup heading={heading} close={() => setTooltipSettings("isClickTooltipActive", false)} style={tooltipStyle} footer={footerContent}>
+    <TooltipPopup heading={heading} close={() => setTooltipSettings("isClickTooltipActive", false)} tooltipRef={tooltipRef} isPositioned={isPositioned} footer={footerContent}>
       {showDetails ? (
         <NodeDetails
           nodeId={nodeId}
@@ -180,25 +180,49 @@ function NodeDetails({ nodeId, displayName, nodeEntries, hasPhosphosites, fullNa
   );
 }
 
-function useTooltipPosition(isActive, clickData, container) {
-  const width = container?.width ?? 0;
-  const height = container?.height ?? 0;
+const TOOLTIP_OFFSET = 14; // gap between click point and tooltip edge (px)
+const SCREEN_MARGIN = 8;   // minimum distance from viewport edges (px)
 
-  return useMemo(() => {
-    if (!isActive || !clickData) return {};
+function useTooltipPosition(isActive, clickData) {
+  const tooltipRef = useRef(null);
+  const [isPositioned, setIsPositioned] = useState(false);
+
+  useLayoutEffect(() => {
+    if (!isActive || !clickData || !tooltipRef.current) {
+      setIsPositioned(false);
+      return;
+    }
+
+    const el = tooltipRef.current;
+    const { width, height } = el.getBoundingClientRect();
     const { x = 0, y = 0 } = clickData;
-    const left = x > (2 * width) / 3 ? x - 15 : x + 15;
-    const top = y;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
 
-    const translateY = y > height / 2 ? " translateY(-100%)" : "";
-    const translateX = x > (2 * width) / 3 ? " translateX(-100%)" : "";
+    // Default: open to the right and aligned to the click point vertically
+    let left = x + TOOLTIP_OFFSET;
+    let top = y;
 
-    return {
-      left: `${left}px`,
-      top: `${top}px`,
-      transform: `${translateY}${translateX}`.trim(),
-    };
-  }, [clickData, height, isActive, width]);
+    // Flip horizontally if it clips the right edge
+    if (left + width > vw - SCREEN_MARGIN) {
+      left = x - width - TOOLTIP_OFFSET;
+    }
+
+    // Flip vertically if it clips the bottom
+    if (top + height > vh - SCREEN_MARGIN) {
+      top = y - height;
+    }
+
+    // Final clamp to guarantee it stays within the viewport
+    left = Math.max(SCREEN_MARGIN, Math.min(left, vw - width - SCREEN_MARGIN));
+    top  = Math.max(SCREEN_MARGIN, Math.min(top,  vh - height - SCREEN_MARGIN));
+
+    el.style.left = `${left}px`;
+    el.style.top  = `${top}px`;
+    setIsPositioned(true);
+  }, [isActive, clickData]);
+
+  return { tooltipRef, isPositioned };
 }
 
 function usePdbViewer(viewerRef, responsePdb, themeName, isTooltipActive) {
