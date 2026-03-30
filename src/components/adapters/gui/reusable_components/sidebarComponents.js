@@ -1,5 +1,5 @@
 import { ButtonCN } from "./shadcn_blocks/buttonCN.jsx";
-import { Fragment, useState } from "react";
+import { Fragment, useState, useEffect } from "react";
 import { SvgIcon } from "./SvgIcon.jsx";
 import infoCircleSvg from "../../../../assets/icons/infoCircle.svg?raw";
 import xSvg from "../../../../assets/icons/x.svg?raw";
@@ -241,6 +241,18 @@ export function Popup({ heading, description, isOpen, setIsOpen, widePopup = fal
     setIsOpen(false);
     if (onClose) onClose();
   };
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKeyDown = (e) => {
+      if (e.key !== "Escape") return;
+      e.stopImmediatePropagation();
+      setIsOpen(false);
+      if (onClose) onClose();
+    };
+    document.addEventListener("keydown", onKeyDown, { capture: true });
+    return () => document.removeEventListener("keydown", onKeyDown, { capture: true });
+  }, [isOpen, onClose, setIsOpen]);
 
   return (
     isOpen && (

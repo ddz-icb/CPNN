@@ -44,6 +44,17 @@ export function ClickTooltip() {
     if (nodeId) setIsAdjacentView(false);
   }, [nodeId]);
 
+  useEffect(() => {
+    if (!isTooltipActive) return;
+    const onKeyDown = (e) => {
+      if (e.key !== "Escape") return;
+      e.stopImmediatePropagation();
+      setTooltipSettings("isClickTooltipActive", false);
+    };
+    document.addEventListener("keydown", onKeyDown, { capture: true });
+    return () => document.removeEventListener("keydown", onKeyDown, { capture: true });
+  }, [isTooltipActive, setTooltipSettings]);
+
   usePdbViewer(viewerRef, responsePdb, theme.name, isTooltipActive);
 
   const tooltipStyle = useTooltipPosition(isTooltipActive, clickData, container);
