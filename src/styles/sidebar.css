@@ -12,7 +12,7 @@
 }
 
 .navbar.short {
-  width: 12rem;
+  width: 14rem;
 }
 
 .navbar-main {
@@ -80,7 +80,16 @@
   fill: var(--color-accent);
 }
 
+.link-text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .nav-shortcut {
+  flex-shrink: 0;
   margin-left: auto;
   font-size: 0.6rem;
   font-family: var(--font-family-mono);
