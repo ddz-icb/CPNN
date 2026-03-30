@@ -24,6 +24,17 @@ export function SearchSidebar() {
 
   const textareaRef = useRef(null);
 
+  const nodeResults = (matchingNodes ?? []).slice(0, MAX_RESULTS).map((node) => ({
+    nodeId: node.id,
+    primaryText: node.id,
+    node,
+  }));
+  const nodeTotal = matchingNodes?.length ?? 0;
+  const nodeOverflow = nodeTotal > MAX_RESULTS;
+  const hasActiveSearch = Boolean(query);
+  const hasModifiedInput = hasActiveSearch && searchValue.trim().toLowerCase() !== query;
+  const showClearButton = hasActiveSearch && !hasModifiedInput;
+
   const handleEditorChange = useCallback(
     (editor) => handleEditorChangeHelper(editor, (value) => setSearchState("searchValue", value)),
     [setSearchState],
@@ -79,18 +90,8 @@ export function SearchSidebar() {
     value: searchValue,
     onChange: handleEditorChange,
     themeName: theme.name,
+    onSubmit: showClearButton ? handleClear : hasModifiedInput ? handleClearAndSearch : handleSearch,
   });
-
-  const nodeResults = (matchingNodes ?? []).slice(0, MAX_RESULTS).map((node) => ({
-    nodeId: node.id,
-    primaryText: node.id,
-    node,
-  }));
-  const nodeTotal = matchingNodes?.length ?? 0;
-  const nodeOverflow = nodeTotal > MAX_RESULTS;
-  const hasActiveSearch = Boolean(query);
-  const hasModifiedInput = hasActiveSearch && searchValue.trim().toLowerCase() !== query;
-  const showClearButton = hasActiveSearch && !hasModifiedInput;
 
   return (
     <>

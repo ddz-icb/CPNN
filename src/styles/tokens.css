@@ -79,7 +79,7 @@
   --border-thick: 2px;
 
   /* Motion */
-  --motion-duration-fast: 50ms;
+  --motion-duration-fast: 150ms;
   --motion-ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
   --color-error: var(--palette-red-500);
 

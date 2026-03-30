@@ -3,6 +3,7 @@ import { Fragment, useState } from "react";
 import { SvgIcon } from "./SvgIcon.jsx";
 import infoCircleSvg from "../../../../assets/icons/infoCircle.svg?raw";
 import xSvg from "../../../../assets/icons/x.svg?raw";
+import chevronSvg from "../../../../assets/icons/chevron.svg?raw";
 import { handleFieldBlur, handleFieldChange, handleSliderChange } from "../handlers/buttonHandlerFunctions.js";
 import { useId } from "react";
 import { InputCN } from "./shadcn_blocks/inputFieldCN.jsx";
@@ -466,8 +467,11 @@ export function ToggleList({
                         "data-tooltip-content": itemTooltipContent(item),
                       })}
                     >
-                      <span className="item-table-primary-text">{displayKey ? item[displayKey] : item}</span>
-                      {secondaryKey && item[secondaryKey] && <span className="item-table-secondary-text">{item[secondaryKey]}</span>}
+                      <span className="item-table-text-content">
+                        <span className="item-table-primary-text">{displayKey ? item[displayKey] : item}</span>
+                        {secondaryKey && item[secondaryKey] && <span className="item-table-secondary-text">{item[secondaryKey]}</span>}
+                      </span>
+                      <SvgIcon svg={chevronSvg} className={`toggle-list-chevron${isExpanded ? " toggle-list-chevron--expanded" : ""}`} />
                     </td>
 
                     {ActionIcon && (

@@ -12,8 +12,13 @@ const BASE_OPTIONS = {
   scrollbarStyle: "null",
 };
 
-export function useSidebarCodeEditor({ textareaRef, value, onChange, themeName }) {
+export function useSidebarCodeEditor({ textareaRef, value, onChange, themeName, onSubmit }) {
   const editorRef = useRef(null);
+  const onSubmitRef = useRef(onSubmit);
+
+  useEffect(() => {
+    onSubmitRef.current = onSubmit;
+  }, [onSubmit]);
 
   useEffect(() => {
     if (!textareaRef.current || editorRef.current) return;
@@ -21,6 +26,9 @@ export function useSidebarCodeEditor({ textareaRef, value, onChange, themeName }
     editorRef.current = CodeMirror.fromTextArea(textareaRef.current, {
       ...BASE_OPTIONS,
       theme: "default",
+      extraKeys: {
+        Enter: () => onSubmitRef.current?.(),
+      },
     });
     editorRef.current.setSize("100%", "100%");
     editorRef.current.on("change", onChange);

@@ -156,6 +156,26 @@
   }
 }
 
+.item-table-text-content {
+  display: flex;
+  align-items: center;
+  gap: var(--sidebar-card-gap-y);
+  flex: 1;
+  min-width: 0;
+}
+
+.toggle-list-chevron {
+  flex-shrink: 0;
+  width: 0.55rem;
+  height: 0.55rem;
+  fill: var(--color-icon-muted);
+  transition: transform var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.toggle-list-chevron--expanded {
+  transform: rotate(90deg);
+}
+
 .item-table-primary-text {
   font-weight: var(--font-weight-regular);
   color: var(--color-text-primary);
