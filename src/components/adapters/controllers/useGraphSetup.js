@@ -19,6 +19,7 @@ import { resetService } from "../../application/services/resetService.js";
 import { filterMergeByName } from "../../domain/service/graph_calculations/filterGraph.js";
 import { applyNodeMapping } from "../../domain/service/graph_calculations/applyMapping.js";
 import { enrichGraphWithStringDb } from "../../domain/service/enrichment/stringDbEnrichment.js";
+import { enrichGraphWithOmniPath } from "../../domain/service/enrichment/omniPathEnrichment.js";
 
 export const useGraphSetup = () => {
   const { setFilter } = useFilter();
@@ -47,6 +48,9 @@ export const useGraphSetup = () => {
         minConfidence: graphEnrichment.stringDbMinConfidence,
         speciesId: graphEnrichment.stringDbSpeciesId,
       });
+      graph.data = await enrichGraphWithOmniPath(graph.data, {
+        enabled: graphEnrichment.omniPathEnrichmentEnabled,
+      });
       graph.data = applyNodeMapping(graph.data, mappingState.mapping?.data);
 
       setGraphState("originGraph", graph);
@@ -63,6 +67,7 @@ export const useGraphSetup = () => {
     graphEnrichment.stringDbEnrichmentEnabled,
     graphEnrichment.stringDbMinConfidence,
     graphEnrichment.stringDbSpeciesId,
+    graphEnrichment.omniPathEnrichmentEnabled,
     mappingState.mapping,
     graphState.activeGraphNames,
   ]);

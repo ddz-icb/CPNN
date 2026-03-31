@@ -4,7 +4,7 @@ import { LinkAttribFilterBlock, NodeAttribFilterBlock } from "./attribFilterBloc
 import { useFilter } from "../../state/filterState.js";
 import { useGraphMetrics } from "../../state/graphMetricsState.js";
 import { useGraphFlags } from "../../state/graphFlagsState.js";
-import { stringDbMinConfidenceInit, stringDbSpeciesIdInit, useGraphEnrichment } from "../../state/graphEnrichmentState.js";
+import { omniPathEnrichmentEnabledInit, stringDbMinConfidenceInit, stringDbSpeciesIdInit, useGraphEnrichment } from "../../state/graphEnrichmentState.js";
 import {
   filterInit,
   linkThresholdInit,
@@ -22,6 +22,7 @@ import {
   mergeByNameDescription,
   minCompSizeDescription,
   minKCoreSizeDescription,
+  omniPathEnrichmentDescription,
   stringDbEnrichmentDescription,
   stringDbMinConfidenceDescription,
   stringDbSpeciesDescription,
@@ -50,6 +51,7 @@ export function FilterSidebar() {
     setGraphEnrichment("stringDbMinConfidence", stringDbMinConfidenceInit);
     setGraphEnrichment("stringDbMinConfidenceText", stringDbMinConfidenceInit);
     setGraphEnrichment("stringDbSpeciesId", stringDbSpeciesIdInit);
+    setGraphEnrichment("omniPathEnrichmentEnabled", omniPathEnrichmentEnabledInit);
   };
 
   return (
@@ -114,6 +116,13 @@ export function FilterSidebar() {
           />
         </>
       )}
+      <SwitchBlock
+        value={graphEnrichment.omniPathEnrichmentEnabled}
+        setValue={() => setGraphEnrichment("omniPathEnrichmentEnabled", !graphEnrichment.omniPathEnrichmentEnabled)}
+        text={"Add OmniPath Kinases"}
+        infoHeading={"OmniPath Kinase Enrichment"}
+        infoDescription={omniPathEnrichmentDescription}
+      />
       <NodeAttribFilterBlock />
       <NodeIdFilterBlock />
       <FieldBlock

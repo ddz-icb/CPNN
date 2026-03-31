@@ -19,6 +19,15 @@ export const mergeByNameDescription = (
   </div>
 );
 
+export const omniPathEnrichmentDescription = (
+  <div>
+    <p className="margin-0">
+      Adds kinase nodes and phosphorylation links for proteins in the graph using OmniPath. Kinases not already present are added as new nodes with a
+      "Kinase" attribute.
+    </p>
+  </div>
+);
+
 export const stringDbEnrichmentDescription = (
   <div>
     <p className="margin-0">

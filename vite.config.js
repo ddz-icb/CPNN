@@ -47,6 +47,13 @@ export default defineConfig(({ mode }) => ({
       "Cross-Origin-Opener-Policy": "same-origin",
       "Cross-Origin-Embedder-Policy": "require-corp",
     },
+    proxy: {
+      "/omnipathdb-api": {
+        target: "https://omnipathdb.org",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/omnipathdb-api/, ""),
+      },
+    },
   },
   preview: {
     port: 3000,
