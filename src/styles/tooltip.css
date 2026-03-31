@@ -68,23 +68,20 @@
 }
 
 .tooltip-popup-header {
-  display: grid;
-  grid-template-columns: 2rem 1fr 2rem;
+  position: relative;
+  display: flex;
   align-items: center;
-  gap: 0.25rem;
-  padding: 0.55rem 0.5rem 0.5rem;
+  justify-content: center;
+  padding: 0.55rem 2.25rem 0.5rem;
   border-bottom: var(--border-thin) solid var(--color-border-subtle);
   flex-shrink: 0;
 }
 
-.tooltip-popup-header-side {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .tooltip-popup-header-side--right {
-  justify-content: flex-end;
+  position: absolute;
+  top: 50%;
+  right: 0.35rem;
+  transform: translateY(-50%);
 }
 
 .tooltip-nav-button {

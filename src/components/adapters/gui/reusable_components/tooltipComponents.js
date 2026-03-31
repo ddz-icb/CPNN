@@ -3,11 +3,7 @@ import xSvg from "../../../../assets/icons/x.svg?raw";
 
 export function TooltipPopup({ heading, close, contentKey, children, tooltipRef, isPositioned, footer }) {
   return (
-    <div
-      className="tooltip tooltip-popup"
-      ref={tooltipRef}
-      style={{ visibility: isPositioned ? "visible" : "hidden" }}
-    >
+    <div className="tooltip tooltip-popup" ref={tooltipRef} style={{ visibility: isPositioned ? "visible" : "hidden" }}>
       <div className="tooltip-popup-content">
         <div className="tooltip-popup-header">
           <span className="tooltip-popup-heading">{heading}</span>
@@ -42,7 +38,7 @@ export function TooltipPopupLinkItem({ text, link }) {
   if (!text) return null;
   return (
     <a className="tooltip-popup-footer-link" href={link} target="_blank" rel="noreferrer">
-      {text} ↗
+      {text}
     </a>
   );
 }
