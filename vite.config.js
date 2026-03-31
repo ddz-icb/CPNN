@@ -48,6 +48,11 @@ export default defineConfig(({ mode }) => ({
       "Cross-Origin-Embedder-Policy": "require-corp",
     },
     proxy: {
+      "/stringdb-api": {
+        target: "https://string-db.org/api",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/stringdb-api/, ""),
+      },
       "/omnipathdb-api": {
         target: "https://omnipathdb.org",
         changeOrigin: true,

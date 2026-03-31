@@ -1,4 +1,4 @@
-export const STRING_DB_BASE_URL = "https://string-db.org/api/json";
+export const STRING_DB_BASE_URL = "/stringdb-api/json";
 export const STRING_DB_CALLER_ID = "cpnn";
 export const STRING_DB_LINK_ATTRIB = "STRING-DB";
 

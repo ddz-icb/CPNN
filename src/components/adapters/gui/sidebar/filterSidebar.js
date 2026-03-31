@@ -4,7 +4,12 @@ import { LinkAttribFilterBlock, NodeAttribFilterBlock } from "./attribFilterBloc
 import { useFilter } from "../../state/filterState.js";
 import { useGraphMetrics } from "../../state/graphMetricsState.js";
 import { useGraphFlags } from "../../state/graphFlagsState.js";
-import { omniPathEnrichmentEnabledInit, stringDbMinConfidenceInit, stringDbSpeciesIdInit, useGraphEnrichment } from "../../state/graphEnrichmentState.js";
+import {
+  omniPathEnrichmentEnabledInit,
+  stringDbMinConfidenceInit,
+  stringDbSpeciesIdInit,
+  useGraphEnrichment,
+} from "../../state/graphEnrichmentState.js";
 import {
   filterInit,
   linkThresholdInit,
@@ -74,15 +79,6 @@ export function FilterSidebar() {
         infoDescription={linkThresholdDescription}
       />
       <LinkAttribFilterBlock />
-
-      <div className="table-list-heading">Node Filters</div>
-      <SwitchBlock
-        value={graphFlags.mergeByName}
-        setValue={() => setGraphFlags("mergeByName", !graphFlags.mergeByName)}
-        text={"Merge Nodes by Name"}
-        infoHeading={"Merge nodes with the same Name"}
-        infoDescription={mergeByNameDescription}
-      />
       <SwitchBlock
         value={graphEnrichment.stringDbEnrichmentEnabled}
         setValue={() => setGraphEnrichment("stringDbEnrichmentEnabled", !graphEnrichment.stringDbEnrichmentEnabled)}
@@ -116,6 +112,14 @@ export function FilterSidebar() {
           />
         </>
       )}
+      <div className="table-list-heading">Node Filters</div>
+      <SwitchBlock
+        value={graphFlags.mergeByName}
+        setValue={() => setGraphFlags("mergeByName", !graphFlags.mergeByName)}
+        text={"Merge Nodes by Name"}
+        infoHeading={"Merge nodes with the same Name"}
+        infoDescription={mergeByNameDescription}
+      />
       <SwitchBlock
         value={graphEnrichment.omniPathEnrichmentEnabled}
         setValue={() => setGraphEnrichment("omniPathEnrichmentEnabled", !graphEnrichment.omniPathEnrichmentEnabled)}

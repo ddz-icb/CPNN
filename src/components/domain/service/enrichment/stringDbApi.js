@@ -43,10 +43,9 @@ async function fetchStringDbData(method, params, requestLabel) {
     log.debug(`STRING-DB ${method} returned ${rows.length} record(s) for ${requestLabel}`);
     return rows;
   } catch (error) {
-    if (!error.response && axios.isAxiosError(error)) {
-      throw new Error(
-        "STRING-DB request was blocked (CORS). This usually means the protein identifiers in your graph do not match the selected species.",
-      );
+    if (isHttpStatus(error, 404)) {
+      log.debug(`STRING-DB ${method}: no identifiers matched for ${requestLabel}`);
+      return [];
     }
     logRequestIssue("STRING-DB", `${method} (${requestLabel})`, error);
     throw error;
