@@ -45,6 +45,7 @@ export const useGraphSetup = () => {
       graph.data = await enrichGraphWithStringDb(graph.data, {
         enabled: graphEnrichment.stringDbEnrichmentEnabled,
         minConfidence: graphEnrichment.stringDbMinConfidence,
+        speciesId: graphEnrichment.stringDbSpeciesId,
       });
       graph.data = applyNodeMapping(graph.data, mappingState.mapping?.data);
 
@@ -61,6 +62,7 @@ export const useGraphSetup = () => {
     graphFlags.mergeByName,
     graphEnrichment.stringDbEnrichmentEnabled,
     graphEnrichment.stringDbMinConfidence,
+    graphEnrichment.stringDbSpeciesId,
     mappingState.mapping,
     graphState.activeGraphNames,
   ]);

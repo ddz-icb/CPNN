@@ -97,8 +97,10 @@ export function SelectFieldBlock({
 }) {
   const showInfo = Boolean(infoHeading || infoDescription || infoChildren);
 
+  const isWide = size === "wide";
+
   return (
-    <div className="block-section">
+    <div className={`block-section${isWide ? " block-section-stack" : ""}`}>
       <div className="sidebar-control-header">
         <label className="label">{text}</label>
         {showInfo && (

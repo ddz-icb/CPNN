@@ -61,6 +61,6 @@ export function deduplicateInteractions(interactions) {
   return Array.from(byPair.values());
 }
 
-export function buildCacheKey(proteinIds, minConfidence) {
-  return `${minConfidence.toFixed(3)}::${proteinIds.sort((a, b) => a.localeCompare(b)).join("|")}`;
+export function buildCacheKey(proteinIds, minConfidence, speciesId) {
+  return `${speciesId}::${minConfidence.toFixed(3)}::${proteinIds.sort((a, b) => a.localeCompare(b)).join("|")}`;
 }

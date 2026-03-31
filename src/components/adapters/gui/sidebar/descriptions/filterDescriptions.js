@@ -28,6 +28,12 @@ export const stringDbEnrichmentDescription = (
   </div>
 );
 
+export const stringDbSpeciesDescription = (
+  <div>
+    <p className="margin-0">Select the species used for STRING-DB lookups. Make sure it matches the proteins in your graph.</p>
+  </div>
+);
+
 export const stringDbMinConfidenceDescription = (
   <div>
     <p className="margin-0">

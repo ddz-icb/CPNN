@@ -1,10 +1,10 @@
-import { Button, FieldBlock, SliderBlock, SwitchBlock, LassoFilterBlock } from "../reusable_components/sidebarComponents.js";
+import { Button, FieldBlock, SelectFieldBlock, SliderBlock, SwitchBlock, LassoFilterBlock } from "../reusable_components/sidebarComponents.js";
 import { NodeIdFilterBlock } from "./nodeIdFilterBlock.js";
 import { LinkAttribFilterBlock, NodeAttribFilterBlock } from "./attribFilterBlock.js";
 import { useFilter } from "../../state/filterState.js";
 import { useGraphMetrics } from "../../state/graphMetricsState.js";
 import { useGraphFlags } from "../../state/graphFlagsState.js";
-import { stringDbMinConfidenceInit, useGraphEnrichment } from "../../state/graphEnrichmentState.js";
+import { stringDbMinConfidenceInit, stringDbSpeciesIdInit, useGraphEnrichment } from "../../state/graphEnrichmentState.js";
 import {
   filterInit,
   linkThresholdInit,
@@ -13,6 +13,7 @@ import {
   maxCompSizeInit,
   componentDensityInit,
 } from "../../../adapters/state/filterState.js";
+import { STRING_DB_SPECIES } from "../../../domain/service/enrichment/stringDbConfig.js";
 import {
   lassoDescription,
   linkThresholdDescription,
@@ -23,6 +24,7 @@ import {
   minKCoreSizeDescription,
   stringDbEnrichmentDescription,
   stringDbMinConfidenceDescription,
+  stringDbSpeciesDescription,
 } from "./descriptions/filterDescriptions.js";
 
 export function FilterSidebar() {
@@ -47,6 +49,7 @@ export function FilterSidebar() {
     setGraphEnrichment("stringDbEnrichmentEnabled", false);
     setGraphEnrichment("stringDbMinConfidence", stringDbMinConfidenceInit);
     setGraphEnrichment("stringDbMinConfidenceText", stringDbMinConfidenceInit);
+    setGraphEnrichment("stringDbSpeciesId", stringDbSpeciesIdInit);
   };
 
   return (
@@ -86,19 +89,30 @@ export function FilterSidebar() {
         infoDescription={stringDbEnrichmentDescription}
       />
       {graphEnrichment.stringDbEnrichmentEnabled && (
-        <SliderBlock
-          value={graphEnrichment.stringDbMinConfidence}
-          valueText={graphEnrichment.stringDbMinConfidenceText}
-          setValue={(value) => setGraphEnrichment("stringDbMinConfidence", value)}
-          setValueText={(value) => setGraphEnrichment("stringDbMinConfidenceText", value)}
-          fallbackValue={stringDbMinConfidenceInit}
-          min={0}
-          max={1}
-          step={0.05}
-          text={"STRING Min Confidence"}
-          infoHeading={"STRING-DB minimum confidence"}
-          infoDescription={stringDbMinConfidenceDescription}
-        />
+        <>
+          <SelectFieldBlock
+            value={graphEnrichment.stringDbSpeciesId}
+            setValue={(value) => setGraphEnrichment("stringDbSpeciesId", value)}
+            options={STRING_DB_SPECIES.map((s) => ({ value: s.id, label: s.label }))}
+            size={"wide"}
+            text={"STRING Species"}
+            infoHeading={"STRING-DB Species"}
+            infoDescription={stringDbSpeciesDescription}
+          />
+          <SliderBlock
+            value={graphEnrichment.stringDbMinConfidence}
+            valueText={graphEnrichment.stringDbMinConfidenceText}
+            setValue={(value) => setGraphEnrichment("stringDbMinConfidence", value)}
+            setValueText={(value) => setGraphEnrichment("stringDbMinConfidenceText", value)}
+            fallbackValue={stringDbMinConfidenceInit}
+            min={0}
+            max={1}
+            step={0.05}
+            text={"STRING Min Confidence"}
+            infoHeading={"STRING-DB minimum confidence"}
+            infoDescription={stringDbMinConfidenceDescription}
+          />
+        </>
       )}
       <NodeAttribFilterBlock />
       <NodeIdFilterBlock />

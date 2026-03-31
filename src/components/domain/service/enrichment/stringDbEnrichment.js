@@ -1,6 +1,6 @@
 import log from "../../../adapters/logging/logger.js";
 import { fetchNetworkInteractions } from "./stringDbApi.js";
-import { STRING_DB_LINK_ATTRIB } from "./stringDbConfig.js";
+import { DEFAULT_SPECIES_ID, STRING_DB_LINK_ATTRIB } from "./stringDbConfig.js";
 import { buildEnrichmentLinks, buildProteinToNodeIdsMap } from "./stringDbMapping.js";
 import { buildCacheKey, clampConfidence, cloneLink, getEdgeKey } from "./stringDbHelpers.js";
 
@@ -100,13 +100,14 @@ export async function enrichGraphWithStringDb(graphData, options = {}) {
   if (!options.enabled) return graphData;
 
   const minConfidence = clampConfidence(options.minConfidence);
+  const speciesId = options.speciesId ?? DEFAULT_SPECIES_ID;
   const proteinToNodeIds = buildProteinToNodeIdsMap(graphData.nodes);
   const proteinIds = Array.from(proteinToNodeIds.keys());
   if (proteinIds.length < 2) return graphData;
 
-  log.debug(`Preparing STRING-DB enrichment for ${proteinIds.length} protein id(s) with min confidence ${minConfidence}`);
+  log.debug(`Preparing STRING-DB enrichment for ${proteinIds.length} protein id(s), species ${speciesId}, min confidence ${minConfidence}`);
 
-  const cacheKey = buildCacheKey(proteinIds, minConfidence);
+  const cacheKey = buildCacheKey(proteinIds, minConfidence, speciesId);
   const cachedLinks = enrichmentCache.get(cacheKey);
   if (cachedLinks) {
     log.debug(`Using cached STRING-DB enrichment links (${cachedLinks.length})`);
@@ -114,7 +115,7 @@ export async function enrichGraphWithStringDb(graphData, options = {}) {
   }
 
   try {
-    const interactions = await fetchNetworkInteractions(proteinIds, minConfidence);
+    const interactions = await fetchNetworkInteractions(proteinIds, minConfidence, speciesId);
     const enrichmentLinks = buildEnrichmentLinks(interactions, proteinToNodeIds, minConfidence);
 
     if (interactions.length > 0 && enrichmentLinks.length === 0) {
