@@ -27,9 +27,9 @@ export function initTooltips(circle, node, setTooltipSettings) {
   circle.on("click", (mouseData) => {
     setTooltipSettings("clickTooltipData", {
       node: node.id,
-      // nodeAttribs: node.attribs,
-      x: mouseData.originalEvent.pageX,
-      y: mouseData.originalEvent.pageY,
+      nodeAttribs: node.attribs ?? [],
+      x: mouseData.originalEvent.clientX,
+      y: mouseData.originalEvent.clientY,
     });
     setTooltipSettings("isClickTooltipActive", true);
   });

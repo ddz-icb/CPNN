@@ -4,10 +4,8 @@ import * as $3Dmol from "3dmol/build/3Dmol.js";
 import log from "../../logging/logger.js";
 import "../../../../styles/pdb_viewer.css";
 
-import { useContainer } from "../../state/containerState.js";
 import { useTooltipSettings } from "../../state/tooltipState.js";
 import { useTheme } from "../../state/themeState.js";
-import { useAppearance } from "../../state/appearanceState.js";
 import { useNodeDetails } from "../hooks/useNodeDetails.js";
 import { useProteinDetails } from "../hooks/useProteinDetails.js";
 import { useGraphState } from "../../state/graphState.js";
@@ -22,16 +20,15 @@ import { formatWeight, getAdjacentNodes } from "../../../domain/service/graph_ca
 
 export function ClickTooltip() {
   const { theme } = useTheme();
-  const { container } = useContainer();
   const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
   const { graphState } = useGraphState();
   const { colorschemeState } = useColorschemeState();
   const { pixiState } = usePixiState();
   const { renderState } = useRenderState();
-  const { appearance } = useAppearance();
 
   const viewerRef = useRef(null);
   const [isAdjacentView, setIsAdjacentView] = useState(false);
+
   const clickData = tooltipSettings.clickTooltipData;
   const nodeId = clickData?.node;
   const nodeAttribs = clickData?.nodeAttribs ?? [];
@@ -69,16 +66,18 @@ export function ClickTooltip() {
   const getNodeScreenPosition = useCallback(
     (node) => {
       if (!node) return null;
-      const mapEntry = pixiState.nodeMap?.[node.id];
-      if (appearance.threeD) {
-        const proj = appearance.cameraRef?.current?.projections?.[node.id];
-        if (proj) return { x: proj.x, y: proj.y };
+      const circle = pixiState.nodeMap?.[node.id]?.circle;
+      if (!circle || !renderState.app?.stage) return null;
+      try {
+        const globalPos = circle.getGlobalPosition();
+        const canvasEl = renderState.app.renderer.view ?? renderState.app.canvas;
+        const rect = canvasEl.getBoundingClientRect();
+        return { x: rect.left + globalPos.x, y: rect.top + globalPos.y };
+      } catch {
+        return null;
       }
-      const fallbackX = mapEntry?.circle?.x ?? node.x ?? 0;
-      const fallbackY = mapEntry?.circle?.y ?? node.y ?? 0;
-      return { x: fallbackX, y: fallbackY };
     },
-    [appearance.cameraRef, appearance.threeD, pixiState.nodeMap],
+    [pixiState.nodeMap, renderState.app],
   );
 
   const handleExportAdjacent = useCallback(() => {
@@ -87,7 +86,7 @@ export function ClickTooltip() {
     downloadNodeIdsCsv(adjacentNodeList, baseName);
   }, [adjacentNodeList, nodeId]);
 
-  const handleViewAdjacentNode = useCallback(
+  const navigateToNode = useCallback(
     (node) => {
       if (!node) return;
       const pos = getNodeScreenPosition(node);
@@ -96,33 +95,40 @@ export function ClickTooltip() {
       setTooltipSettings("clickTooltipData", {
         node: node.id,
         nodeAttribs: node.attribs ?? [],
-        x: pos.x + 70, // offset needed, as the tooltip is quite large :c
+        x: pos.x,
         y: pos.y,
       });
     },
-    [getNodeScreenPosition, setIsAdjacentView, setTooltipSettings, tooltipSettings.clickTooltipData],
+    [getNodeScreenPosition, setTooltipSettings],
   );
 
   const footerContent = useMemo(() => {
     if (isAdjacentView) {
       return (
         <>
-          <Button
-            className="tooltip-popup-action tooltip-popup-footer-fill"
-            text="Export adjacent nodes"
-            onClick={handleExportAdjacent}
-            disabled={!adjacentNodeList.length}
-          />
-          <Button className="tooltip-popup-action" text="Back to node details" onClick={() => setIsAdjacentView(false)} />
+          <div className="tooltip-popup-footer-links" />
+          <div className="tooltip-popup-footer-actions">
+            <Button
+              className="tooltip-popup-action"
+              text="Export"
+              onClick={handleExportAdjacent}
+              disabled={!adjacentNodeList.length}
+            />
+            <Button className="tooltip-popup-action" text="Back to node" onClick={() => setIsAdjacentView(false)} />
+          </div>
         </>
       );
     }
 
     return (
       <>
-        {protIdNoIsoform && <TooltipPopupLinkItem text={"To UniProt"} link={`https://www.uniprot.org/uniprotkb/${protIdNoIsoform}/`} />}
-        {pdbId && <TooltipPopupLinkItem text={"To RCSB PDB"} link={`https://www.rcsb.org/structure/${pdbId}/`} />}
-        <Button className="tooltip-popup-action" text="See adjacent nodes" onClick={() => setIsAdjacentView(true)} />
+        <div className="tooltip-popup-footer-links">
+          {protIdNoIsoform && <TooltipPopupLinkItem text={"UniProt"} link={`https://www.uniprot.org/uniprotkb/${protIdNoIsoform}/`} />}
+          {pdbId && <TooltipPopupLinkItem text={"RCSB PDB"} link={`https://www.rcsb.org/structure/${pdbId}/`} />}
+        </div>
+        <div className="tooltip-popup-footer-actions">
+          <Button className="tooltip-popup-action" text="Adjacent nodes" onClick={() => setIsAdjacentView(true)} />
+        </div>
       </>
     );
   }, [adjacentNodeList.length, handleExportAdjacent, isAdjacentView, pdbId, protIdNoIsoform]);
@@ -130,7 +136,14 @@ export function ClickTooltip() {
   const showDetails = !isAdjacentView;
 
   return (
-    <TooltipPopup heading={heading} close={() => setTooltipSettings("isClickTooltipActive", false)} tooltipRef={tooltipRef} isPositioned={isPositioned} footer={footerContent}>
+    <TooltipPopup
+      heading={heading}
+      close={() => setTooltipSettings("isClickTooltipActive", false)}
+      contentKey={nodeId}
+      tooltipRef={tooltipRef}
+      isPositioned={isPositioned}
+      footer={footerContent}
+    >
       {showDetails ? (
         <NodeDetails
           nodeId={nodeId}
@@ -148,7 +161,7 @@ export function ClickTooltip() {
           nodeAttribsToColorIndices={nodeAttribsToColorIndices}
           nodeColors={nodeColors}
           borderColor={theme.circleBorderColor}
-          onViewNode={handleViewAdjacentNode}
+          onViewNode={(node) => navigateToNode(node)}
         />
       )}
     </TooltipPopup>
