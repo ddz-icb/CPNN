@@ -6,6 +6,20 @@ import { buildCacheKey, clampConfidence, cloneLink, getEdgeKey } from "./stringD
 
 const enrichmentCache = new Map();
 
+export function withoutStringDbAttrib(links) {
+  return links
+    .map((link) => {
+      const idx = (link.attribs ?? []).indexOf(STRING_DB_LINK_ATTRIB);
+      if (idx === -1) return link;
+      return {
+        ...link,
+        attribs: link.attribs.filter((_, i) => i !== idx),
+        weights: (link.weights ?? []).filter((_, i) => i !== idx),
+      };
+    })
+    .filter((link) => link.attribs.length > 0);
+}
+
 function getEndpointId(endpoint) {
   if (endpoint == null) return "";
   if (typeof endpoint === "object") {

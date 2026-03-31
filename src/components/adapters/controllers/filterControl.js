@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import log from "../logging/logger.js";
+import { STRING_DB_LINK_ATTRIB } from "../../domain/service/enrichment/stringDbConfig.js";
 
 import {
   filterActiveNodesForPixi,
@@ -24,6 +25,7 @@ import { useGraphFlags } from "../state/graphFlagsState.js";
 import { errorService } from "../../application/services/errorService.js";
 import { useCommunityState } from "../state/communityState.js";
 import { buildCommunitySummary } from "../../domain/service/graph_calculations/communityGrouping.js";
+import { withoutStringDbAttrib } from "../../domain/service/enrichment/stringDbEnrichment.js";
 
 export function FilterControl() {
   const { filter } = useFilter();
@@ -85,6 +87,11 @@ export function FilterControl() {
       filteredGraphData = filterThreshold(filteredGraphData, filter.linkThreshold);
       filteredGraphData = filterLinkAttribs(filteredGraphData, filter.linkFilter);
 
+      // STRING-DB links are excluded from structural filters (component/community/k-core)
+      // prevents keeping nodes alive without regular connections.
+      const linksBeforeStructural = filteredGraphData.links;
+      filteredGraphData = { ...filteredGraphData, links: withoutStringDbAttrib(filteredGraphData.links) };
+
       filteredGraphData = filterComponentDensity(filteredGraphData, filter.componentDensity);
       filteredGraphData = filterCommunityDensity(filteredGraphData, filter.communityDensity, communityState.communityResolution);
       filteredGraphData = filterMinNeighborhood(filteredGraphData, filter.minKCoreSize);
@@ -95,9 +102,12 @@ export function FilterControl() {
         filter.maxCommunitySize,
         communityState.communityResolution,
       );
+
       const communitySummary = buildCommunitySummary(filteredGraphData, { resolution: communityState.communityResolution });
       filteredGraphData = filterCommunityVisibility(filteredGraphData, communitySummary.idToCommunity, filter.communityHiddenIds);
       filteredGraphData = filterNodesExist(filteredGraphData);
+
+      filteredGraphData = { ...filteredGraphData, links: filterNodesExist({ ...filteredGraphData, links: linksBeforeStructural }).links };
 
       const filteredGraph = { name: graphState.graph.name, data: filteredGraphData };
 

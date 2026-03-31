@@ -22,9 +22,9 @@ export const mergeByNameDescription = (
 export const stringDbEnrichmentDescription = (
   <div>
     <p className="margin-0">
-      Enable STRING-DB enrichment to add additional protein-protein links for nodes with UniProt IDs in the current graph. Added links use a separate
-      link attribute and keep a fixed weight of 1.
+      Adds protein-protein links from STRING-DB for nodes with UniProt IDs. Added links use a separate attribute with a fixed weight of 1.
     </p>
+    <p className="margin-0 pad-top-05">Note: STRING-DB links are excluded from structural filters (k-core, component/community size and density).</p>
   </div>
 );
 
