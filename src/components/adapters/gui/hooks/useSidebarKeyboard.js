@@ -1,23 +1,6 @@
 import { useEffect } from "react";
 import { SIDEBAR_SHORTCUT_MAP } from "../../config/sidebarConfig.js";
-
-/** Returns true if the currently focused element is a text-entry target. */
-function isTypingTarget(el) {
-  if (!el) return false;
-  const tag = el.tagName;
-  return (
-    tag === "INPUT" ||
-    tag === "TEXTAREA" ||
-    tag === "SELECT" ||
-    el.isContentEditable ||
-    el.closest?.(".CodeMirror") !== null
-  );
-}
-
-/** Returns true if a modal popup is currently mounted. */
-function isPopupOpen() {
-  return !!document.querySelector(".popup-overlay");
-}
+import { isTypingTarget, isPopupOpen } from "./keyboardUtils.js";
 
 /**
  * Registers sidebar keyboard shortcuts for the lifetime of the component.

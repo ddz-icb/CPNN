@@ -1,11 +1,12 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 
 import { exampleGraphJson } from "../../../../assets/exampleGraphJSON.js";
 import { exampleGraphRaw } from "../../../../assets/exampleGraphRawTSV.js";
 import { exampleGraphTsv } from "../../../../assets/exampleGraphMatrixTSV.js";
 import { graphService } from "../../../application/services/graphService.js";
 import { downloadObjectAsFile, downloadTsvFile } from "../../../domain/service/download/download.js";
-import { Button, ButtonPopup, FieldBlock, SelectFieldBlock, SliderBlock, SwitchBlock } from "../reusable_components/sidebarComponents.js";
+import { Button, ButtonPopup, Popup, FieldBlock, SelectFieldBlock, SliderBlock, SwitchBlock } from "../reusable_components/sidebarComponents.js";
+import { isTypingTarget, isPopupOpen } from "../hooks/keyboardUtils.js";
 import {
   maxCompSizeDescriptionUpload,
   minCompSizeDescriptionUpload,
@@ -131,6 +132,7 @@ function buildCreateGraphSettings({ dataFormat, ignoreNegatives, minEdgeCorr, mi
 }
 
 export function UploadGraph() {
+  const [isOpen, setIsOpen] = useState(false);
   const graphFileRef = useRef(null);
 
   const [dataFormat, setDataFormat] = useState("json");
@@ -148,17 +150,29 @@ export function UploadGraph() {
   const [maxCompSizeText, setMaxCompSizeText] = useState("");
 
   const usesTabularData = dataFormat === "tabular";
+  const closePopup = () => setIsOpen(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key.toLowerCase() !== "u") return;
+      if (isTypingTarget(document.activeElement) || isPopupOpen()) return;
+      e.preventDefault();
+      setIsOpen(true);
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   return (
-    <ButtonPopup
-      buttonText={"Upload Graph"}
-      tooltip={"Upload Graph as TSV, CSV or JSON File"}
-      tooltipId={"upload-graph-tooltip"}
-      heading={"Uploading your Graph"}
-      description={uploadGraphDescription}
-    >
-      {({ closePopup }) => (
-        <>
+    <>
+      <Button
+        onClick={() => setIsOpen(!isOpen)}
+        tooltip={"Upload Graph as TSV, CSV or JSON File"}
+        tooltipId={"upload-graph-tooltip"}
+        text={"Upload Graph"}
+      />
+      {isOpen && (
+        <Popup heading={"Uploading your Graph"} description={uploadGraphDescription} isOpen={isOpen} setIsOpen={setIsOpen}>
           <SelectFieldBlock
             text={"Data format"}
             value={dataFormat}
@@ -220,8 +234,8 @@ export function UploadGraph() {
               }}
             />
           </div>
-        </>
+        </Popup>
       )}
-    </ButtonPopup>
+    </>
   );
 }
