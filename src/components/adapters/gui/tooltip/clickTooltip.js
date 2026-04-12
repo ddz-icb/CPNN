@@ -28,6 +28,8 @@ export function ClickTooltip() {
 
   const viewerRef = useRef(null);
   const [isAdjacentView, setIsAdjacentView] = useState(false);
+  const [history, setHistory] = useState([]);
+  const isGoingBack = useRef(false);
 
   const clickData = tooltipSettings.clickTooltipData;
   const nodeId = clickData?.node;
@@ -36,6 +38,19 @@ export function ClickTooltip() {
   const { displayName, entries: nodeEntries, hasPhosphosites } = useNodeDetails(nodeId);
   const { fullName, description, pdbId, protIdNoIsoform, responsePdb } = useProteinDetails(nodeId);
   const heading = displayName || nodeId;
+
+  // Push to history whenever the node changes, unless this change was triggered by going back.
+  useEffect(() => {
+    if (!clickData) return;
+    if (isGoingBack.current) {
+      isGoingBack.current = false;
+      return;
+    }
+    setHistory((prev) => {
+      if (prev.length > 0 && prev[prev.length - 1].node === clickData.node) return prev;
+      return [...prev, clickData];
+    });
+  }, [clickData]);
 
   useEffect(() => {
     if (nodeId) setIsAdjacentView(false);
@@ -102,12 +117,27 @@ export function ClickTooltip() {
     [getNodeScreenPosition, setTooltipSettings],
   );
 
+  const handleBack = useCallback(() => {
+    if (history.length <= 1) return;
+    const newHistory = history.slice(0, -1);
+    const prevEntry = newHistory[newHistory.length - 1];
+    // Refresh the position in case the graph was panned/zoomed since the node was visited.
+    const prevNode = graphState.graph?.data?.nodes?.find((n) => n.id === prevEntry.node);
+    const freshPos = prevNode ? getNodeScreenPosition(prevNode) : null;
+    isGoingBack.current = true;
+    setHistory(newHistory);
+    setTooltipSettings("clickTooltipData", freshPos ? { ...prevEntry, ...freshPos } : prevEntry);
+  }, [history, graphState.graph, getNodeScreenPosition, setTooltipSettings]);
+
+  const canGoBack = history.length > 1;
+
   const footerContent = useMemo(() => {
     if (isAdjacentView) {
       return (
         <>
           <div className="tooltip-popup-footer-links" />
           <div className="tooltip-popup-footer-actions">
+            {canGoBack && <Button className="tooltip-popup-action" text="Back" onClick={handleBack} />}
             <Button
               className="tooltip-popup-action"
               text="Export"
@@ -127,11 +157,12 @@ export function ClickTooltip() {
           {pdbId && <TooltipPopupLinkItem text={"RCSB PDB"} link={`https://www.rcsb.org/structure/${pdbId}/`} />}
         </div>
         <div className="tooltip-popup-footer-actions">
+          {canGoBack && <Button className="tooltip-popup-action" text="Back" onClick={handleBack} />}
           <Button className="tooltip-popup-action" text="Adjacent nodes" onClick={() => setIsAdjacentView(true)} />
         </div>
       </>
     );
-  }, [adjacentNodeList.length, handleExportAdjacent, isAdjacentView, pdbId, protIdNoIsoform]);
+  }, [adjacentNodeList.length, canGoBack, handleBack, handleExportAdjacent, isAdjacentView, pdbId, protIdNoIsoform]);
 
   const showDetails = !isAdjacentView;
 
