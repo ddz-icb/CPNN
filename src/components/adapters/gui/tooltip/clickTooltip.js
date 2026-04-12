@@ -82,12 +82,13 @@ export function ClickTooltip() {
     (node) => {
       if (!node) return null;
       const circle = pixiState.nodeMap?.[node.id]?.circle;
-      if (!circle || !renderState.app?.stage) return null;
+      if (!circle) return null;
+      const canvasEl = renderState.app?.renderer?.canvas ?? renderState.app?.renderer?.view ?? renderState.app?.canvas;
+      if (!canvasEl) return null;
       try {
-        const globalPos = circle.getGlobalPosition();
-        const canvasEl = renderState.app.renderer.view ?? renderState.app.canvas;
         const rect = canvasEl.getBoundingClientRect();
-        return { x: rect.left + globalPos.x, y: rect.top + globalPos.y };
+        const wt = circle.worldTransform;
+        return { x: rect.left + wt.tx, y: rect.top + wt.ty };
       } catch {
         return null;
       }
@@ -105,16 +106,15 @@ export function ClickTooltip() {
     (node) => {
       if (!node) return;
       const pos = getNodeScreenPosition(node);
-      if (!pos) return;
       setIsAdjacentView(false);
       setTooltipSettings("clickTooltipData", {
         node: node.id,
         nodeAttribs: node.attribs ?? [],
-        x: pos.x,
-        y: pos.y,
+        x: pos?.x ?? clickData?.x ?? 0,
+        y: pos?.y ?? clickData?.y ?? 0,
       });
     },
-    [getNodeScreenPosition, setTooltipSettings],
+    [clickData, getNodeScreenPosition, setTooltipSettings],
   );
 
   const handleBack = useCallback(() => {
