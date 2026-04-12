@@ -22,8 +22,12 @@ export const mergeByNameDescription = (
 export const omniPathEnrichmentDescription = (
   <div>
     <p className="margin-0">
-      Adds kinase nodes and phosphorylation links for proteins in the graph using OmniPath. Kinases not already present are added as new nodes with a
-      "Kinase" attribute.
+      Tags existing nodes as kinases and adds phosphorylation links based on enzyme–substrate interactions from <strong>OmniPath</strong> (Türei et
+      al., <em>Nat. Methods</em> 2016; omnipathdb.org). OmniPath aggregates data from multiple upstream databases including PhosphoSitePlus, SIGNOR,
+      PhosphoELM, and HPRD.
+    </p>
+    <p className="margin-0 pad-top-05">
+      Note: OmniPath phosphorylation links are excluded from structural filters (k-core, component/community size and density).
     </p>
   </div>
 );
@@ -31,7 +35,9 @@ export const omniPathEnrichmentDescription = (
 export const stringDbEnrichmentDescription = (
   <div>
     <p className="margin-0">
-      Adds protein-protein links from STRING-DB for nodes with UniProt IDs. Added links use a separate attribute with a fixed weight of 1.
+      Adds protein–protein interaction links from <strong>STRING</strong> (Szklarczyk et al., <em>Nucleic Acids Res.</em> 2023; string-db.org) for
+      nodes with UniProt IDs. STRING integrates evidence from genomic context, co-expression, text mining, and experimental data. Added links use a
+      separate attribute with a fixed weight of 1.
     </p>
     <p className="margin-0 pad-top-05">Note: STRING-DB links are excluded from structural filters (k-core, component/community size and density).</p>
   </div>

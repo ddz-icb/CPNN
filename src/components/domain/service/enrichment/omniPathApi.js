@@ -4,7 +4,6 @@ import { chunkArray } from "./stringDbHelpers.js";
 
 async function fetchEnzSubChunk(substrateIds) {
   log.debug(`Fetching OmniPath enzsub for ${substrateIds.length} substrate(s)`);
-  // UniProt IDs are alphanumeric, so joining with literal commas is safe.
   const url = `${OMNI_PATH_BASE_URL}/enzsub?substrates=${substrateIds.join(",")}&modification=phosphorylation&genesymbols=1&format=json`;
   const response = await fetch(url);
   if (!response.ok) throw new Error(`OmniPath request failed (HTTP ${response.status})`);

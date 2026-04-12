@@ -79,6 +79,7 @@ export function FilterSidebar() {
         infoDescription={linkThresholdDescription}
       />
       <LinkAttribFilterBlock />
+      <div className="table-list-heading">Additional Links</div>
       <SwitchBlock
         value={graphEnrichment.stringDbEnrichmentEnabled}
         setValue={() => setGraphEnrichment("stringDbEnrichmentEnabled", !graphEnrichment.stringDbEnrichmentEnabled)}
@@ -112,6 +113,13 @@ export function FilterSidebar() {
           />
         </>
       )}
+      <SwitchBlock
+        value={graphEnrichment.omniPathEnrichmentEnabled}
+        setValue={() => setGraphEnrichment("omniPathEnrichmentEnabled", !graphEnrichment.omniPathEnrichmentEnabled)}
+        text={"Add OmniPath Kinase Links"}
+        infoHeading={"OmniPath Kinase Enrichment"}
+        infoDescription={omniPathEnrichmentDescription}
+      />
       <div className="table-list-heading">Node Filters</div>
       <SwitchBlock
         value={graphFlags.mergeByName}
@@ -119,13 +127,6 @@ export function FilterSidebar() {
         text={"Merge Nodes by Name"}
         infoHeading={"Merge nodes with the same Name"}
         infoDescription={mergeByNameDescription}
-      />
-      <SwitchBlock
-        value={graphEnrichment.omniPathEnrichmentEnabled}
-        setValue={() => setGraphEnrichment("omniPathEnrichmentEnabled", !graphEnrichment.omniPathEnrichmentEnabled)}
-        text={"Add OmniPath Kinases"}
-        infoHeading={"OmniPath Kinase Enrichment"}
-        infoDescription={omniPathEnrichmentDescription}
       />
       <NodeAttribFilterBlock />
       <NodeIdFilterBlock />

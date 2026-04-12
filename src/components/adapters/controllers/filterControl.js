@@ -1,7 +1,5 @@
 import { useEffect } from "react";
 import log from "../logging/logger.js";
-import { STRING_DB_LINK_ATTRIB } from "../../domain/service/enrichment/stringDbConfig.js";
-
 import {
   filterActiveNodesForPixi,
   filterLinkAttribs,
@@ -25,7 +23,7 @@ import { useGraphFlags } from "../state/graphFlagsState.js";
 import { errorService } from "../../application/services/errorService.js";
 import { useCommunityState } from "../state/communityState.js";
 import { buildCommunitySummary } from "../../domain/service/graph_calculations/communityGrouping.js";
-import { withoutStringDbAttrib } from "../../domain/service/enrichment/stringDbEnrichment.js";
+import { withoutAdditionalLinkAttribs } from "../../domain/service/enrichment/stringDbEnrichment.js";
 
 export function FilterControl() {
   const { filter } = useFilter();
@@ -90,7 +88,7 @@ export function FilterControl() {
       // STRING-DB links are excluded from structural filters (component/community/k-core)
       // prevents keeping nodes alive without regular connections.
       const linksBeforeStructural = filteredGraphData.links;
-      filteredGraphData = { ...filteredGraphData, links: withoutStringDbAttrib(filteredGraphData.links) };
+      filteredGraphData = { ...filteredGraphData, links: withoutAdditionalLinkAttribs(filteredGraphData.links) };
 
       filteredGraphData = filterComponentDensity(filteredGraphData, filter.componentDensity);
       filteredGraphData = filterCommunityDensity(filteredGraphData, filter.communityDensity, communityState.communityResolution);

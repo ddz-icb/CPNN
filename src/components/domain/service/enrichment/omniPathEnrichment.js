@@ -10,17 +10,13 @@ function buildCacheKey(substrateIds) {
   return [...substrateIds].sort((a, b) => a.localeCompare(b)).join("|");
 }
 
-function buildKinaseNodeId(enzymeUniProtId, enzymeGeneSymbol) {
-  return enzymeGeneSymbol ? `${enzymeUniProtId}_${enzymeGeneSymbol}` : enzymeUniProtId;
-}
-
 function applyKinaseLinks(graphData, interactions, substrateProteinToNodeIds) {
   if (!interactions.length) return graphData;
 
   // Build protein map for the full graph so existing kinase nodes are found.
   const allProteinToNodeIds = buildProteinToNodeIdsMap(graphData.nodes);
 
-  const nodesToAdd = new Map(); // kinaseProteinId -> new node object
+  const taggedKinaseNodeIds = new Set(); // existing node IDs identified as kinases
   const linksToAdd = [];
   const seenLinkKeys = new Set();
 
@@ -32,18 +28,11 @@ function applyKinaseLinks(graphData, interactions, substrateProteinToNodeIds) {
     const substrateNodeIds = substrateProteinToNodeIds.get(substrateProteinId);
     if (!substrateNodeIds?.size) return;
 
-    // Resolve kinase to existing node(s) or create a new one.
-    let kinaseNodeIds = allProteinToNodeIds.get(kinaseProteinId);
-    if (!kinaseNodeIds?.size) {
-      if (!nodesToAdd.has(kinaseProteinId)) {
-        const nodeId = buildKinaseNodeId(kinaseProteinId, record.enzyme_genesymbol);
-        nodesToAdd.set(kinaseProteinId, { id: nodeId, attribs: [OMNI_PATH_KINASE_ATTRIB] });
-        allProteinToNodeIds.set(kinaseProteinId, new Set([nodeId]));
-      }
-      kinaseNodeIds = allProteinToNodeIds.get(kinaseProteinId);
-    }
+    const kinaseNodeIds = allProteinToNodeIds.get(kinaseProteinId);
+    if (!kinaseNodeIds?.size) return;
 
     kinaseNodeIds.forEach((kinaseNodeId) => {
+      taggedKinaseNodeIds.add(kinaseNodeId);
       substrateNodeIds.forEach((substrateNodeId) => {
         const key = `${kinaseNodeId}---${substrateNodeId}`;
         if (seenLinkKeys.has(key)) return;
@@ -58,11 +47,17 @@ function applyKinaseLinks(graphData, interactions, substrateProteinToNodeIds) {
     });
   });
 
-  log.info(`OmniPath enrichment added ${nodesToAdd.size} kinase node(s) and ${linksToAdd.length} phosphorylation link(s).`);
+  log.info(`OmniPath enrichment tagged ${taggedKinaseNodeIds.size} existing kinase node(s) and ${linksToAdd.length} phosphorylation link(s).`);
+
+  const updatedNodes = graphData.nodes.map((node) => {
+    if (!taggedKinaseNodeIds.has(node.id)) return node;
+    if (node.attribs?.includes(OMNI_PATH_KINASE_ATTRIB)) return node;
+    return { ...node, attribs: [...(node.attribs ?? []), OMNI_PATH_KINASE_ATTRIB] };
+  });
 
   return {
     ...graphData,
-    nodes: nodesToAdd.size > 0 ? [...graphData.nodes, ...Array.from(nodesToAdd.values())] : graphData.nodes,
+    nodes: updatedNodes,
     links: linksToAdd.length > 0 ? [...graphData.links, ...linksToAdd] : graphData.links,
   };
 }

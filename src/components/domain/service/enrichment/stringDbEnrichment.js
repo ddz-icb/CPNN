@@ -1,20 +1,29 @@
 import log from "../../../adapters/logging/logger.js";
 import { fetchNetworkInteractions } from "./stringDbApi.js";
 import { DEFAULT_SPECIES_ID, STRING_DB_LINK_ATTRIB } from "./stringDbConfig.js";
+import { OMNI_PATH_PHOSPHO_ATTRIB } from "./omniPathConfig.js";
 import { buildEnrichmentLinks, buildProteinToNodeIdsMap } from "./stringDbMapping.js";
 import { buildCacheKey, clampConfidence, cloneLink, getEdgeKey } from "./stringDbHelpers.js";
 
 const enrichmentCache = new Map();
 
-export function withoutStringDbAttrib(links) {
+const ADDITIONAL_LINK_ATTRIBS = [STRING_DB_LINK_ATTRIB, OMNI_PATH_PHOSPHO_ATTRIB];
+
+// Strips all additional-link attributes (STRING-DB, OmniPath phosphorylation) so they are
+// excluded from structural filters (k-core, component/community size and density).
+export function withoutAdditionalLinkAttribs(links) {
   return links
     .map((link) => {
-      const idx = (link.attribs ?? []).indexOf(STRING_DB_LINK_ATTRIB);
-      if (idx === -1) return link;
+      const attribs = link.attribs ?? [];
+      const weights = link.weights ?? [];
+      const keepIndices = attribs
+        .map((a, i) => (ADDITIONAL_LINK_ATTRIBS.includes(a) ? null : i))
+        .filter((i) => i !== null);
+      if (keepIndices.length === attribs.length) return link;
       return {
         ...link,
-        attribs: link.attribs.filter((_, i) => i !== idx),
-        weights: (link.weights ?? []).filter((_, i) => i !== idx),
+        attribs: keepIndices.map((i) => attribs[i]),
+        weights: keepIndices.map((i) => weights[i]),
       };
     })
     .filter((link) => link.attribs.length > 0);
