@@ -25,6 +25,25 @@ import { useCommunityState } from "../state/communityState.js";
 import { buildCommunitySummary } from "../../domain/service/graph_calculations/communityGrouping.js";
 import { withoutAdditionalLinkAttribs } from "../../domain/service/enrichment/stringDbEnrichment.js";
 
+function getEndpointId(endpoint) {
+  if (endpoint == null) return endpoint;
+  if (typeof endpoint === "object") return endpoint.id ?? endpoint.data?.id;
+  return endpoint;
+}
+
+function buildGraphSignature(graphData) {
+  if (!graphData) return "";
+  return JSON.stringify({
+    nodes: (graphData.nodes ?? []).map((node) => node.id),
+    links: (graphData.links ?? []).map((link) => ({
+      source: getEndpointId(link.source),
+      target: getEndpointId(link.target),
+      attribs: link.attribs ?? [],
+      weights: link.weights ?? [],
+    })),
+  });
+}
+
 export function FilterControl() {
   const { filter } = useFilter();
   const { appearance } = useAppearance();
@@ -108,19 +127,30 @@ export function FilterControl() {
       filteredGraphData = { ...filteredGraphData, links: filterNodesExist({ ...filteredGraphData, links: linksBeforeStructural }).links };
 
       const filteredGraph = { name: graphState.graph.name, data: filteredGraphData };
+      const graphChanged = buildGraphSignature(graphState.graph.data) !== buildGraphSignature(filteredGraphData);
+
+      if (!graphChanged && graphFlags.filteredAfterStart) {
+        log.info("Filtering produced no graph changes. Keeping current simulation temperature.");
+        return;
+      }
 
       setCommunityState("communities", communitySummary.communities);
       setCommunityState("idToCommunity", communitySummary.idToCommunity);
       setCommunityState("communityToNodeIds", communitySummary.communityToNodeIds);
 
       filterActiveNodesForPixi(appearance.showNodeLabels, filteredGraphData, pixiState.nodeMap);
-      setGraphFlags("filteredAfterStart", true);
-      setGraphState("graph", filteredGraph);
+      if (!graphFlags.filteredAfterStart) {
+        setGraphFlags("filteredAfterStart", true);
+      }
+      if (graphChanged) {
+        setGraphState("graph", filteredGraph);
+      }
     } catch (error) {
       errorService.setError(error.message);
       log.error("Error while filtering graph:", error);
     }
   }, [
+    graphFlags.filteredAfterStart,
     graphFlags.isPreprocessed,
     filter.linkThreshold,
     filter.linkFilter,
