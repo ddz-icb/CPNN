@@ -36,6 +36,14 @@ export function AppearanceSidebar() {
 export function AppearanceSettings() {
   const { appearance, setAppearance } = useAppearance();
   const { theme } = useTheme();
+  const setLinkWidthManually = (value) => {
+    setAppearance("linkWidth", value);
+    setAppearance("linkWidthManuallySet", true);
+  };
+  const setLinkWidthTextManually = (value) => {
+    setAppearance("linkWidthText", value);
+    setAppearance("linkWidthManuallySet", true);
+  };
 
   return (
     <>
@@ -81,8 +89,8 @@ export function AppearanceSettings() {
       <SliderBlock
         value={appearance.linkWidth}
         valueText={appearance.linkWidthText}
-        setValue={(value) => setAppearance("linkWidth", value)}
-        setValueText={(value) => setAppearance("linkWidthText", value)}
+        setValue={setLinkWidthManually}
+        setValueText={setLinkWidthTextManually}
         fallbackValue={linkWidthInit}
         min={0.1}
         max={3}

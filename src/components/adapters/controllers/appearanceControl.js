@@ -140,7 +140,7 @@ export function AppearanceControl() {
   }, [appearance.show3DGrid, appearance.threeD, pixiState.grid3D, appearance.cameraRef]);
 
   useEffect(() => {
-    if (!graphState.graph) return;
+    if (!graphState.graph || appearance.linkWidthManuallySet) return;
 
     const linkWidth = calculateLinkWidth(linkCount);
     const linkWidthText = linkWidth.toFixed(1);
@@ -151,5 +151,5 @@ export function AppearanceControl() {
     if (appearance.linkWidthText !== linkWidthText) {
       setAppearance("linkWidthText", linkWidthText);
     }
-  }, [graphState.graph, linkCount]);
+  }, [graphState.graph, linkCount, appearance.linkWidthManuallySet]);
 }

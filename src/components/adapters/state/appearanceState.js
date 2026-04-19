@@ -3,6 +3,7 @@ import { defaultCamera } from "../../domain/service/canvas_drawing/render3D";
 
 export const showNodeLabelsInit = true;
 export const linkWidthInit = 2;
+export const linkWidthManuallySetInit = false;
 export const threeDInit = false;
 export const threeDShadingInit = true;
 export const threeDGridInit = true;
@@ -12,6 +13,7 @@ export const appearanceInit = {
   showNodeLabels: true,
   linkWidth: linkWidthInit,
   linkWidthText: linkWidthInit,
+  linkWidthManuallySet: linkWidthManuallySetInit,
   threeD: threeDInit,
   enable3DShading: threeDShadingInit,
   show3DGrid: threeDGridInit,
