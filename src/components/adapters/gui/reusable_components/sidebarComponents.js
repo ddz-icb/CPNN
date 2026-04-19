@@ -262,9 +262,9 @@ export function Popup({ heading, description, isOpen, setIsOpen, widePopup = fal
         <div className={popupContainer} onClick={(e) => e.stopPropagation()}>
           <div className="popup-header pad-bottom-1">
             <span className="popup-heading">{heading}</span>
-            <span className="svg-button" onClick={handleClose}>
+            <button type="button" className="svg-button" onClick={handleClose} aria-label="Close popup">
               <SvgIcon svg={xSvg} className="popup-close-icon" />
-            </span>
+            </button>
           </div>
           <div className="popup-description text-primary">{description}</div>
           {children}

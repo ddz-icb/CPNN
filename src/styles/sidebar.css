@@ -2,17 +2,41 @@
   position: fixed;
   z-index: 10;
   top: 0;
-  width: 25rem;
+  width: min(25rem, calc(100vw - 0.35rem));
   height: 100%;
   background-color: var(--color-surface);
+  background-image: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--color-surface-contrast) 74%, transparent 26%),
+    var(--color-surface)
+  );
   border-right: var(--border-thick) solid var(--color-border);
+  box-shadow: var(--shadow-soft);
   overflow-y: auto;
   overflow-x: hidden;
   transition: width 200ms var(--motion-ease-standard);
 }
 
 .navbar.short {
-  width: 14rem;
+  width: min(14rem, calc(100vw - 0.35rem));
+}
+
+.navbar::-webkit-scrollbar {
+  width: 0.45rem;
+}
+
+.navbar::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-border-subtle) 70%, transparent 30%);
+}
+
+.navbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.navbar {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--color-border-subtle) 70%, transparent 30%) transparent;
 }
 
 .navbar-main {
@@ -47,13 +71,13 @@
   transition: all var(--motion-duration-fast) var(--motion-ease-standard);
   font-size: 0.95rem;
   letter-spacing: 0.01em;
-  /* button reset */
-  border: none;
   background: transparent;
   cursor: pointer;
   font-family: inherit;
   width: calc(100% - 1rem);
   text-align: left;
+  border: var(--border-thin) solid transparent;
+  box-shadow: 0 1px 0 transparent;
 }
 
 .nav-link svg {
@@ -68,11 +92,13 @@
 .nav-link:hover {
   background-color: var(--color-surface-contrast);
   color: var(--color-text-inverse);
+  border-color: color-mix(in srgb, var(--color-border-subtle) 80%, transparent 20%);
 }
 
 .light .nav-link:hover {
   background-color: color-mix(in srgb, var(--color-accent) 20%, var(--color-accent-soft) 80%);
   color: var(--color-text-primary);
+  border-color: color-mix(in srgb, var(--color-accent) 35%, transparent 65%);
 }
 
 .light .nav-link:hover .navbar-item-logo {
@@ -86,6 +112,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-weight: var(--font-weight-medium);
 }
 
 .nav-shortcut {
@@ -93,6 +120,8 @@
   margin-left: auto;
   font-size: 0.6rem;
   font-family: var(--font-family-mono);
+  font-weight: 600;
+  letter-spacing: 0.04em;
   color: var(--color-text-muted);
   background: transparent;
   border: var(--border-thin) solid var(--color-border-subtle);
@@ -123,6 +152,21 @@
   border-color: color-mix(in srgb, var(--color-accent-contrast) 50%, var(--color-accent) 50%);
 }
 
+.nav-link:focus-visible {
+  outline: none;
+  border-color: var(--color-focus-ring);
+  box-shadow: 0 0 0 var(--focus-ring-size) color-mix(in srgb, var(--color-focus-ring) 55%, transparent 45%);
+}
+
+.nav-link:focus-visible .nav-shortcut {
+  border-color: var(--color-focus-ring);
+  color: var(--color-text-primary);
+}
+
+.nav-link:active {
+  transform: translateY(1px);
+}
+
 .navbar-item-logo {
   display: inline-flex;
   color: var(--color-icon-primary);
@@ -142,7 +186,9 @@
 }
 
 .back-overlay {
-  position: relative;
+  position: sticky;
+  top: var(--sidebar-card-gap-y);
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -152,7 +198,9 @@
   background: var(--color-surface-contrast);
   border: var(--border-thin) solid var(--color-border);
   border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
   text-decoration: none;
+  backdrop-filter: blur(3px);
 }
 
 .light .back-overlay {
@@ -205,11 +253,20 @@
   color: var(--color-icon-hover);
 }
 
+.back-close:focus-visible {
+  outline: none;
+  color: var(--color-icon-hover);
+  box-shadow: 0 0 0 var(--focus-ring-size) color-mix(in srgb, var(--color-focus-ring) 55%, transparent 45%);
+}
+
 .light .back-close:hover {
   color: var(--color-accent);
 }
 
 .logo-container {
+  position: sticky;
+  top: var(--sidebar-card-gap-y);
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -218,10 +275,22 @@
   background: var(--color-surface-contrast);
   border: var(--border-thin) solid var(--color-border);
   border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(3px);
 }
 
 .logo {
   padding-left: 0.5rem;
   object-fit: contain;
   max-height: 100%;
+}
+
+@media (max-width: 960px) {
+  .navbar {
+    width: min(21rem, calc(100vw - 0.25rem));
+  }
+
+  .navbar.short {
+    width: min(13rem, calc(100vw - 0.25rem));
+  }
 }

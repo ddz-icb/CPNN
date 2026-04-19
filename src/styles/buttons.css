@@ -4,12 +4,19 @@
   width: var(--button-lg);
   height: var(--button-lg);
   background-color: var(--color-accent);
+  border: var(--border-thin) solid color-mix(in srgb, var(--color-accent-contrast) 32%, var(--color-accent) 68%);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   color: var(--color-accent-contrast);
+  box-shadow: var(--shadow-soft);
+  transition:
+    background-color var(--motion-duration-fast) var(--motion-ease-standard),
+    border-color var(--motion-duration-fast) var(--motion-ease-standard),
+    transform var(--motion-duration-fast) var(--motion-ease-standard),
+    box-shadow var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
 .icon-button svg {
@@ -20,26 +27,59 @@
 
 .icon-button:hover {
   background-color: var(--color-button-hover);
+  border-color: color-mix(in srgb, var(--color-accent-contrast) 45%, var(--color-accent) 55%);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-floating);
+}
+
+.icon-button:active {
+  transform: translateY(0);
+}
+
+.icon-button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 var(--focus-ring-size) color-mix(in srgb, var(--color-focus-ring) 70%, transparent 30%), var(--shadow-floating);
 }
 
 .button-rect {
   border-radius: var(--radius);
   background-color: var(--color-switch-track);
   color: var(--color-accent-contrast);
+  border: var(--border-thin) solid color-mix(in srgb, var(--color-accent-contrast) 26%, var(--color-switch-track) 74%);
   padding-inline: 0.4rem;
-  transition: background-color var(--motion-duration-fast) var(--motion-ease-standard), color var(--motion-duration-fast) var(--motion-ease-standard);
+  transition:
+    background-color var(--motion-duration-fast) var(--motion-ease-standard),
+    color var(--motion-duration-fast) var(--motion-ease-standard),
+    border-color var(--motion-duration-fast) var(--motion-ease-standard),
+    box-shadow var(--motion-duration-fast) var(--motion-ease-standard),
+    transform var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
 .button-rect:hover,
 .button-rect:focus-visible {
   background-color: var(--color-button-hover);
   color: var(--color-accent-contrast);
+  border-color: color-mix(in srgb, var(--color-accent-contrast) 35%, var(--color-button-hover) 65%);
   cursor: pointer;
 }
 
 .light .button-rect {
   background-color: var(--color-button-surface);
+  border-color: color-mix(in srgb, var(--color-accent) 40%, #ffffff 60%);
   box-shadow: var(--shadow-soft);
+}
+
+.button-rect:hover {
+  transform: translateY(-1px);
+}
+
+.button-rect:active {
+  transform: translateY(0);
+}
+
+.button-rect:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 var(--focus-ring-size) color-mix(in srgb, var(--color-focus-ring) 60%, transparent 40%), var(--shadow-soft);
 }
 
 .button-rect[data-variant="secondary"] {
@@ -90,9 +130,18 @@ button:hover svg,
   width: 1rem;
   height: 1rem;
   border-radius: 50%;
+  border: none;
+  padding: 0;
+  background: transparent;
+  color: var(--color-icon-primary);
   cursor: pointer;
 }
 
+.svg-button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 var(--focus-ring-size) color-mix(in srgb, var(--color-focus-ring) 55%, transparent 45%);
+}
+
 .svg-button svg {
-  fill: var(--color-icon-primary);
+  fill: currentColor;
 }
