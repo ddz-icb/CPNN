@@ -11,6 +11,14 @@ import { InputCN } from "./shadcn_blocks/inputFieldCN.jsx";
 import { Tooltip } from "react-tooltip";
 import { useTheme } from "../../state/themeState.js";
 
+function PortalTooltip(props) {
+  if (typeof document === "undefined" || !document.body) {
+    return <Tooltip {...props} />;
+  }
+
+  return createPortal(<Tooltip {...props} />, document.body);
+}
+
 export function SliderBlock({ value, setValue, setValueText, min, max, step, text, infoHeading, infoDescription, ...props }) {
   return (
     <div className="block-section block-section-stack">
@@ -177,7 +185,7 @@ export function Button({ onClick, onChange, linkRef, tooltip, tooltipId, text, c
         <span>{text}</span>
         {(linkRef || onChange) && <input type="file" style={{ display: "none" }} onChange={onChange} ref={linkRef} {...fileInputProps} />}
       </ButtonCN>
-      <Tooltip id={tooltipId} place="top" effect="solid" className="tooltip-gui" />
+      <PortalTooltip id={tooltipId} place="top" effect="solid" className="tooltip-gui" positionStrategy="fixed" />
     </>
   );
 }
@@ -436,9 +444,13 @@ export function TableList({
         data.length > 0 &&
         data.map((item, index) => (
           <Fragment key={`tooltip-set-${instanceId}-${index}`}>
-            {itemTooltipContent && <Tooltip id={`item-tooltip-${instanceId}-${index}`} className="tooltip-gui" />}
-            {actionIconTooltipContent && <Tooltip id={`action-tooltip-${instanceId}-${index}`} className="tooltip-gui" />}
-            {actionIcon2TooltipContent && <Tooltip id={`action-tooltip-2-${instanceId}-${index}`} className="tooltip-gui" />}
+            {itemTooltipContent && <PortalTooltip id={`item-tooltip-${instanceId}-${index}`} className="tooltip-gui" positionStrategy="fixed" />}
+            {actionIconTooltipContent && (
+              <PortalTooltip id={`action-tooltip-${instanceId}-${index}`} className="tooltip-gui" positionStrategy="fixed" />
+            )}
+            {actionIcon2TooltipContent && (
+              <PortalTooltip id={`action-tooltip-2-${instanceId}-${index}`} className="tooltip-gui" positionStrategy="fixed" />
+            )}
           </Fragment>
         ))}
     </div>
@@ -567,9 +579,13 @@ export function ToggleList({
         data.length > 0 &&
         data.map((item, index) => (
           <Fragment key={`tooltip-set-${instanceId}-${index}`}>
-            {itemTooltipContent && <Tooltip id={`item-tooltip-${instanceId}-${index}`} className="tooltip-gui" />}
-            {actionIconTooltipContent && <Tooltip id={`action-tooltip-${instanceId}-${index}`} className="tooltip-gui" />}
-            {actionIcon2TooltipContent && <Tooltip id={`action-tooltip-2-${instanceId}-${index}`} className="tooltip-gui" />}
+            {itemTooltipContent && <PortalTooltip id={`item-tooltip-${instanceId}-${index}`} className="tooltip-gui" positionStrategy="fixed" />}
+            {actionIconTooltipContent && (
+              <PortalTooltip id={`action-tooltip-${instanceId}-${index}`} className="tooltip-gui" positionStrategy="fixed" />
+            )}
+            {actionIcon2TooltipContent && (
+              <PortalTooltip id={`action-tooltip-2-${instanceId}-${index}`} className="tooltip-gui" positionStrategy="fixed" />
+            )}
           </Fragment>
         ))}
     </div>

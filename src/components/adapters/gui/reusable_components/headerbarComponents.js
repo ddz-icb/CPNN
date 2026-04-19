@@ -1,4 +1,13 @@
+import { createPortal } from "react-dom";
 import { Tooltip } from "react-tooltip";
+
+function PortalTooltip(props) {
+  if (typeof document === "undefined" || !document.body) {
+    return <Tooltip {...props} />;
+  }
+
+  return createPortal(<Tooltip {...props} />, document.body);
+}
 
 export function HeaderButton({ icon, onClick, children, tooltip, tooltipId, shortcut, ...buttonProps }) {
   return (
@@ -17,7 +26,7 @@ export function HeaderButton({ icon, onClick, children, tooltip, tooltipId, shor
         </button>
         {shortcut && <kbd className="header-shortcut">{shortcut}</kbd>}
       </div>
-      <Tooltip id={tooltipId} place="bottom" effect="solid" className="tooltip-gui" />
+      <PortalTooltip id={tooltipId} place="bottom" effect="solid" className="tooltip-gui" positionStrategy="fixed" />
       {children}
     </>
   );
