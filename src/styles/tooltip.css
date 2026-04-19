@@ -1,6 +1,6 @@
 .tooltip {
   position: fixed;
-  z-index: 100;
+  z-index: 6000 !important;
   display: block;
   min-height: var(--default-element-height);
   padding-top: 0.25rem;
@@ -19,7 +19,7 @@
 .tooltip-gui {
   position: fixed;
   padding: 0.25rem !important;
-  z-index: 100;
+  z-index: 6000 !important;
   display: block;
   border-radius: var(--radius);
   background: var(--color-surface);
@@ -27,6 +27,10 @@
   color: var(--color-text-primary);
   text-align: center;
   pointer-events: none;
+}
+
+.react-tooltip {
+  z-index: 6000 !important;
 }
 
 .tooltip a {

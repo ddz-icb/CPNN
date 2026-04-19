@@ -1,5 +1,6 @@
 import { ButtonCN } from "./shadcn_blocks/buttonCN.jsx";
 import { Fragment, useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { SvgIcon } from "./SvgIcon.jsx";
 import infoCircleSvg from "../../../../assets/icons/infoCircle.svg?raw";
 import xSvg from "../../../../assets/icons/x.svg?raw";
@@ -8,6 +9,7 @@ import { handleFieldBlur, handleFieldChange, handleSliderChange } from "../handl
 import { useId } from "react";
 import { InputCN } from "./shadcn_blocks/inputFieldCN.jsx";
 import { Tooltip } from "react-tooltip";
+import { useTheme } from "../../state/themeState.js";
 
 export function SliderBlock({ value, setValue, setValueText, min, max, step, text, infoHeading, infoDescription, ...props }) {
   return (
@@ -238,6 +240,7 @@ export function CodeEditorBlock({ text, onClick, compilerError, defaultValue, te
 }
 
 export function Popup({ heading, description, isOpen, setIsOpen, widePopup = false, compactPopup = false, onClose, children }) {
+  const { theme } = useTheme();
   const popupContainer = widePopup ? "popup-container-wide" : compactPopup ? "popup-container popup-container-compact" : "popup-container";
   const handleClose = () => {
     setIsOpen(false);
@@ -256,22 +259,28 @@ export function Popup({ heading, description, isOpen, setIsOpen, widePopup = fal
     return () => document.removeEventListener("keydown", onKeyDown, { capture: true });
   }, [isOpen, onClose, setIsOpen]);
 
-  return (
-    isOpen && (
-      <div className="popup-overlay" onClick={handleClose}>
-        <div className={popupContainer} onClick={(e) => e.stopPropagation()}>
-          <div className="popup-header pad-bottom-1">
-            <span className="popup-heading">{heading}</span>
-            <button type="button" className="svg-button" onClick={handleClose} aria-label="Close popup">
-              <SvgIcon svg={xSvg} className="popup-close-icon" />
-            </button>
-          </div>
-          <div className="popup-description text-primary">{description}</div>
-          {children}
+  if (!isOpen) return null;
+
+  const popupNode = (
+    <div className={`popup-overlay ${theme?.name ?? "light"}`} onClick={handleClose}>
+      <div className={popupContainer} onClick={(e) => e.stopPropagation()}>
+        <div className="popup-header pad-bottom-1">
+          <span className="popup-heading">{heading}</span>
+          <button type="button" className="svg-button" onClick={handleClose} aria-label="Close popup">
+            <SvgIcon svg={xSvg} className="popup-close-icon" />
+          </button>
         </div>
+        <div className="popup-description text-primary">{description}</div>
+        {children}
       </div>
-    )
+    </div>
   );
+
+  if (typeof document === "undefined" || !document.body) {
+    return popupNode;
+  }
+
+  return createPortal(popupNode, document.body);
 }
 
 export function ButtonPopup({ buttonText, tooltip, tooltipId, heading, description, widePopup, onClose, children }) {

@@ -17,6 +17,7 @@ import "./styles/colormapping_select.css";
 import "./styles/buttons.css";
 import "./styles/tailwind.css";
 
+import { useEffect } from "react";
 import { Sidebar } from "./components/adapters/gui/sidebar/sidebar.js";
 import { HeaderBar } from "./components/adapters/gui/headerbar/headerbar.js";
 import { useTheme } from "./components/adapters/state/themeState.js";
@@ -37,6 +38,14 @@ function App() {
   const { theme } = useTheme();
 
   useGraphSetup();
+  useEffect(() => {
+    const themeName = theme?.name === "dark" ? "dark" : "light";
+    document.body.classList.remove("light", "dark");
+    document.body.classList.add(themeName);
+    return () => {
+      document.body.classList.remove(themeName);
+    };
+  }, [theme?.name]);
 
   return (
     <>
