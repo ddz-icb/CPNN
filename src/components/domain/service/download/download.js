@@ -179,7 +179,8 @@ export async function downloadAsPDF(
     });
 }
 
-export function downloadGraphJson(graph, physics, filter) {
+export function downloadGraphJson(graph, settings = {}) {
+  const { physics, filter, appearance, colorscheme } = settings;
   const nodes = physics ? cleanNodes(graph.data.nodes) : cleanNodesNoCoords(graph.data.nodes);
   const links = cleanLinks(graph.data.links);
 
@@ -187,6 +188,8 @@ export function downloadGraphJson(graph, physics, filter) {
 
   if (physics) data.physics = physics;
   if (filter) data.filter = filter;
+  if (appearance) data.appearance = appearance;
+  if (colorscheme) data.colorscheme = colorscheme;
 
   const blob = new Blob([JSON.stringify(data, null, 4)], {
     type: "application/json",

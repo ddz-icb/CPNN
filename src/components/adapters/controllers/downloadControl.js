@@ -22,6 +22,33 @@ import { errorService } from "../../application/services/errorService.js";
 import { useFilter } from "../state/filterState.js";
 import { useContainer } from "../state/containerState.js";
 
+function toSerializableMapping(mapping) {
+  if (!mapping || typeof mapping !== "object") return mapping;
+  return Object.fromEntries(Object.entries(mapping));
+}
+
+function buildAppearanceExport(appearance, theme) {
+  return {
+    showNodeLabels: appearance.showNodeLabels,
+    linkWidth: appearance.linkWidth,
+    linkWidthText: appearance.linkWidthText,
+    linkWidthManuallySet: appearance.linkWidthManuallySet,
+    threeD: appearance.threeD,
+    enable3DShading: appearance.enable3DShading,
+    show3DGrid: appearance.show3DGrid,
+    themeName: theme?.name,
+  };
+}
+
+function buildColorschemeExport(colorschemeState) {
+  return {
+    nodeColorscheme: colorschemeState.nodeColorscheme,
+    linkColorscheme: colorschemeState.linkColorscheme,
+    nodeAttribsToColorIndices: toSerializableMapping(colorschemeState.nodeAttribsToColorIndices),
+    linkAttribsToColorIndices: toSerializableMapping(colorschemeState.linkAttribsToColorIndices),
+  };
+}
+
 export function DownloadControl() {
   const { physics } = usePhysics();
   const { filter } = useFilter();
@@ -48,13 +75,18 @@ export function DownloadControl() {
     }
   }, [download.json]);
 
-  // download graph data as json with coordinates and physics //
+  // download graph data as json with coordinates and current settings //
   useEffect(() => {
     if (!(download.jsonCoordsPhysics != null && graphState.graph)) return;
-    log.info("Downloading graph as JSON with coordinates and physics");
+    log.info("Downloading graph as JSON with coordinates and settings");
 
     try {
-      downloadGraphJson(graphState.graph, physics, filter);
+      downloadGraphJson(graphState.graph, {
+        physics,
+        filter,
+        appearance: buildAppearanceExport(appearance, theme),
+        colorscheme: buildColorschemeExport(colorschemeState),
+      });
     } catch (error) {
       errorService.setError(error.message);
       log.error("Error downloading the graph as JSON with coordinates:", error);

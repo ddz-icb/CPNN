@@ -14,6 +14,8 @@ import {
 import { usePhysics } from "../state/physicsState.js";
 import { useError } from "../state/errorState.js";
 import { useMappingState } from "../state/mappingState.js";
+import { useAppearance } from "../state/appearanceState.js";
+import { darkTheme, lightTheme, useTheme } from "../state/themeState.js";
 import { graphService } from "../../application/services/graphService.js";
 import { resetService } from "../../application/services/resetService.js";
 import { filterMergeByName } from "../../domain/service/graph_calculations/filterGraph.js";
@@ -21,9 +23,64 @@ import { applyNodeMapping } from "../../domain/service/graph_calculations/applyM
 import { enrichGraphWithStringDb } from "../../domain/service/enrichment/stringDbEnrichment.js";
 import { enrichGraphWithOmniPath } from "../../domain/service/enrichment/omniPathEnrichment.js";
 
+function isObject(value) {
+  return value && typeof value === "object" && !Array.isArray(value);
+}
+
+function applySavedAppearanceSettings(savedAppearance, setAppearance, setTheme) {
+  if (!isObject(savedAppearance)) return;
+
+  if (typeof savedAppearance.showNodeLabels === "boolean") {
+    setAppearance("showNodeLabels", savedAppearance.showNodeLabels);
+  }
+  if (typeof savedAppearance.linkWidth === "number") {
+    setAppearance("linkWidth", savedAppearance.linkWidth);
+  }
+  if (savedAppearance.linkWidthText !== undefined) {
+    setAppearance("linkWidthText", savedAppearance.linkWidthText);
+  }
+  if (typeof savedAppearance.linkWidthManuallySet === "boolean") {
+    setAppearance("linkWidthManuallySet", savedAppearance.linkWidthManuallySet);
+  }
+  if (typeof savedAppearance.threeD === "boolean") {
+    setAppearance("threeD", savedAppearance.threeD);
+  }
+  if (typeof savedAppearance.enable3DShading === "boolean") {
+    setAppearance("enable3DShading", savedAppearance.enable3DShading);
+  }
+  if (typeof savedAppearance.show3DGrid === "boolean") {
+    setAppearance("show3DGrid", savedAppearance.show3DGrid);
+  }
+
+  if (savedAppearance.themeName === darkTheme.name) {
+    setTheme(darkTheme);
+  } else if (savedAppearance.themeName === lightTheme.name) {
+    setTheme(lightTheme);
+  }
+}
+
+function applySavedColorschemeSettings(savedColorscheme, setColorschemeState) {
+  if (!isObject(savedColorscheme)) return;
+
+  if (isObject(savedColorscheme.nodeColorscheme) && Array.isArray(savedColorscheme.nodeColorscheme.data)) {
+    setColorschemeState("nodeColorscheme", savedColorscheme.nodeColorscheme);
+  }
+  if (isObject(savedColorscheme.linkColorscheme) && Array.isArray(savedColorscheme.linkColorscheme.data)) {
+    setColorschemeState("linkColorscheme", savedColorscheme.linkColorscheme);
+  }
+  if (savedColorscheme.nodeAttribsToColorIndices && typeof savedColorscheme.nodeAttribsToColorIndices === "object") {
+    setColorschemeState("nodeAttribsToColorIndices", savedColorscheme.nodeAttribsToColorIndices);
+  }
+  if (savedColorscheme.linkAttribsToColorIndices && typeof savedColorscheme.linkAttribsToColorIndices === "object") {
+    setColorschemeState("linkAttribsToColorIndices", savedColorscheme.linkAttribsToColorIndices);
+  }
+}
+
 export const useGraphSetup = () => {
   const { setFilter } = useFilter();
   const { setColorschemeState } = useColorschemeState();
+  const { setAppearance } = useAppearance();
+  const { setTheme } = useTheme();
   const { graphState, setGraphState } = useGraphState();
   const { graphFlags, setGraphFlags } = useGraphFlags();
   const { graphEnrichment } = useGraphEnrichment();
@@ -102,6 +159,8 @@ export const useGraphSetup = () => {
     if (!keepMapping) {
       setColorschemeState("nodeAttribsToColorIndices", getNodeAttribsToColorIndices(graph.data));
       setColorschemeState("linkAttribsToColorIndices", getLinkAttribsToColorIndices(graph.data));
+
+      applySavedColorschemeSettings(graph.data.colorscheme, setColorschemeState);
     }
 
     // incase user uploaded graph including physics
@@ -111,6 +170,7 @@ export const useGraphSetup = () => {
     if (graph.data.filter) {
       setAllFilter({ ...filterInit, ...graph.data.filter });
     }
+    applySavedAppearanceSettings(graph.data.appearance, setAppearance, setTheme);
 
     setKeepMapping(false);
     setGraphState("graph", graph);
