@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useSidebarKeyboard } from "../hooks/useSidebarKeyboard.js";
 import { useDataFileShortcuts } from "../hooks/useDataFileShortcuts.js";
 import { SvgIcon } from "../reusable_components/SvgIcon.jsx";
@@ -16,12 +16,20 @@ import { CommunitySidebar } from "./communitySidebar.js";
 
 export function Sidebar(props) {
   const [activeNavItem, setActiveNavItem] = useState("Selection");
+  const [lastNavItem, setLastNavItem] = useState("Data");
 
-  useSidebarKeyboard(setActiveNavItem);
+  const handleSetActiveNavItem = useCallback((item) => {
+    setActiveNavItem(item);
+    if (item && item !== "Selection") {
+      setLastNavItem(item);
+    }
+  }, []);
+
+  useSidebarKeyboard(handleSetActiveNavItem);
   useDataFileShortcuts();
 
   const sidebarComponents = {
-    Selection: <SelectionSidebar handleNavItemClick={(item) => setActiveNavItem(item)} />,
+    Selection: <SelectionSidebar handleNavItemClick={handleSetActiveNavItem} activeNavItem={lastNavItem} />,
     Data: <DataSidebar {...props} />,
     Search: <SearchSidebar />,
     Filter: <FilterSidebar />,
@@ -40,12 +48,16 @@ export function Sidebar(props) {
       {isSelection ? (
         <>
           <LogoBar />
-          <div className="navbar-main">{currentSidebar}</div>
+          <div className="navbar-main sidebar-panel" key="panel-selection">
+            {currentSidebar}
+          </div>
         </>
       ) : (
         <>
-          <BackBar activeNavItem={activeNavItem} onClick={() => setActiveNavItem("Selection")} />
-          <div className="navbar-subsection">{currentSidebar}</div>
+          <BackBar activeNavItem={activeNavItem} onClick={() => handleSetActiveNavItem("Selection")} />
+          <div className="navbar-subsection sidebar-panel" key={`panel-${activeNavItem}`}>
+            {currentSidebar}
+          </div>
         </>
       )}
     </Navbar>
@@ -54,15 +66,15 @@ export function Sidebar(props) {
 
 function Navbar({ short, children }) {
   return (
-    <nav className={`navbar ${short && "short"}`}>
+    <nav className={short ? "navbar short" : "navbar"}>
       <ul>{children}</ul>
     </nav>
   );
 }
 
-function LogoBar({ onClick }) {
+function LogoBar() {
   return (
-    <li className="logo-container" onClick={onClick}>
+    <li className="logo-container">
       <img src="./logos/ddz_logo_en.png" className="logo" />
     </li>
   );

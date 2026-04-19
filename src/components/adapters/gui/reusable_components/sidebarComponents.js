@@ -586,6 +586,11 @@ function NumericInput({ valueText, setValue, setValueText, fallbackValue, min, m
       event.target.blur();
     }
   };
+  const handleWheel = (event) => {
+    if (document.activeElement === event.currentTarget) {
+      event.currentTarget.blur();
+    }
+  };
 
   return (
     <>
@@ -599,6 +604,7 @@ function NumericInput({ valueText, setValue, setValueText, fallbackValue, min, m
         value={valueText}
         onChange={(event) => handleFieldChange(event, setValueText, min, max)}
         onKeyDown={handleKeyDown}
+        onWheel={handleWheel}
         onBlur={(event) => handleFieldBlur(event, setValue, setValueText, min, max, fallbackValue)}
       />
     </>

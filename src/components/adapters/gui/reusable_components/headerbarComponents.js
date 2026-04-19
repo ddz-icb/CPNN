@@ -1,6 +1,6 @@
 import { Tooltip } from "react-tooltip";
 
-export function HeaderButton({ icon, onClick, children, tooltip, tooltipId, shortcut }) {
+export function HeaderButton({ icon, onClick, children, tooltip, tooltipId, shortcut, ...buttonProps }) {
   return (
     <>
       <div className="header-button-container">
@@ -11,6 +11,7 @@ export function HeaderButton({ icon, onClick, children, tooltip, tooltipId, shor
           aria-label={tooltip || "Toggle panel"}
           data-tooltip-id={tooltipId}
           data-tooltip-content={tooltip}
+          {...buttonProps}
         >
           {icon}
         </button>
