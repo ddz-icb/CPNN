@@ -10,6 +10,7 @@ export const SIDEBAR_SECTIONS = [
   { key: "Data",        shortcut: "d" },
   { key: "Search",      shortcut: "s" },
   { key: "Filter",      shortcut: "f" },
+  { key: "Additional Data", shortcut: "l" },
   { key: "Communities", shortcut: "c" },
   { key: "Physics",     shortcut: "p" },
   { key: "Appearance",  shortcut: "a" },

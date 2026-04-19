@@ -2,6 +2,8 @@ import { getColor, getNodeLabelOffsetY } from "./drawingUtils.js";
 import { updateHighlights } from "./highlights.js";
 import { computeLightingTint, updateSphereShading } from "./shading.js";
 import { drawGrid3D } from "./grid3D.js";
+import * as PIXI from "pixi.js";
+import { isAdditionalLinkAttrib } from "./lines.js";
 
 export const defaultCamera = {
   x: null,
@@ -11,6 +13,28 @@ export const defaultCamera = {
   rotX: 0.5,
   rotY: -0.2,
 };
+
+let dottedLineTexture3D = null;
+
+function getDottedLineTexture3D() {
+  if (dottedLineTexture3D) return dottedLineTexture3D;
+  if (typeof document === "undefined") return PIXI.Texture.WHITE;
+
+  const canvas = document.createElement("canvas");
+  canvas.width = 32;
+  canvas.height = 4;
+  const context = canvas.getContext("2d");
+  if (!context) return PIXI.Texture.WHITE;
+
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  context.fillStyle = "#ffffff";
+  for (let x = 0; x < canvas.width; x += 5) {
+    context.fillRect(x, 0, 3, canvas.height);
+  }
+
+  dottedLineTexture3D = PIXI.Texture.from(canvas);
+  return dottedLineTexture3D;
+}
 
 export function redraw3D(
   graphData,
@@ -214,6 +238,8 @@ function updateLines3D(links, lineGraphics, linkWidth, linkColorscheme, linkAttr
       sprite.rotation = angle;
       sprite.width = length;
       sprite.height = widthScaled;
+      const isAdditional = isAdditionalLinkAttrib(attribs[i]);
+      sprite.texture = isAdditional ? getDottedLineTexture3D() : PIXI.Texture.WHITE;
       sprite.tint = getColor(linkAttribsToColorIndices[attribs[i]], linkColorscheme.data);
       sprite.zIndex = -(depth ?? 0);
     }

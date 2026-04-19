@@ -5,6 +5,7 @@ import { SvgIcon } from "../reusable_components/SvgIcon.jsx";
 import leftArrowSvg from "../../../../assets/icons/leftArrow.svg?raw";
 
 import { FilterSidebar } from "./filterSidebar.js";
+import { AdditionalDataSidebar } from "./additionalDataSidebar.js";
 import { PhysicsSidebar } from "./physicsSidebar.js";
 import { DataSidebar } from "./dataSidebar.js";
 import { SelectionSidebar } from "./selectionSidebar.js";
@@ -24,6 +25,7 @@ export function Sidebar(props) {
     Data: <DataSidebar {...props} />,
     Search: <SearchSidebar />,
     Filter: <FilterSidebar />,
+    "Additional Data": <AdditionalDataSidebar />,
     Communities: <CommunitySidebar />,
     Physics: <PhysicsSidebar />,
     Appearance: <AppearanceSidebar {...props} />,
