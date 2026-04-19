@@ -15,6 +15,16 @@
   padding: 0.15rem 0.35rem;
   line-height: 1;
   pointer-events: none;
+  transition:
+    color var(--motion-duration-fast) var(--motion-ease-standard),
+    border-color var(--motion-duration-fast) var(--motion-ease-standard),
+    background-color var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.dark .header-shortcut {
+  color: color-mix(in srgb, var(--color-accent-contrast) 82%, var(--color-accent) 18%);
+  background: color-mix(in srgb, var(--color-surface-contrast) 56%, var(--color-accent) 44%);
+  border-color: var(--color-border-accent);
 }
 
 .headerbar-overlay {

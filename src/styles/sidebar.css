@@ -102,7 +102,8 @@
   pointer-events: none;
   transition:
     color var(--motion-duration-fast) var(--motion-ease-standard),
-    border-color var(--motion-duration-fast) var(--motion-ease-standard);
+    border-color var(--motion-duration-fast) var(--motion-ease-standard),
+    background-color var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
 .nav-link:hover .nav-shortcut {
@@ -110,10 +111,30 @@
   border-color: var(--color-border);
 }
 
+.dark .nav-shortcut {
+  color: color-mix(in srgb, var(--color-accent-contrast) 82%, var(--color-accent) 18%);
+  background: color-mix(in srgb, var(--color-surface-contrast) 56%, var(--color-accent) 44%);
+  border-color: var(--color-border-accent);
+}
+
+.dark .nav-link:hover .nav-shortcut {
+  color: var(--color-accent-contrast);
+  background: color-mix(in srgb, var(--color-accent) 66%, #9ea9ff 34%);
+  border-color: color-mix(in srgb, var(--color-accent-contrast) 50%, var(--color-accent) 50%);
+}
+
 .navbar-item-logo {
   display: inline-flex;
   color: var(--color-icon-primary);
   transition: all var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.dark .navbar-item-logo {
+  color: var(--color-icon-accent);
+}
+
+.dark .nav-link:hover .navbar-item-logo {
+  color: var(--color-icon-hover);
 }
 
 .navbar-item-logo svg {
