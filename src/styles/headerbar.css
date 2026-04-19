@@ -134,3 +134,16 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.headerbar-colormapping-swatch {
+  background-color: var(--headerbar-swatch-color);
+}
+
+.headerbar-colormapping-swatch--striped {
+  background-color: var(--headerbar-swatch-color);
+  background-image: repeating-linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--headerbar-swatch-color) 96%, #ffffff 4%) 0 3px,
+    color-mix(in srgb, var(--headerbar-swatch-color) 44%, var(--color-surface-contrast) 56%) 3px 6px
+  );
+}
