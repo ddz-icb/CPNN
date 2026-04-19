@@ -33,17 +33,41 @@ function getEndpointId(endpoint) {
   return endpoint;
 }
 
-function buildGraphSignature(graphData) {
-  if (!graphData) return "";
-  return JSON.stringify({
-    nodes: (graphData.nodes ?? []).map((node) => node.id),
-    links: (graphData.links ?? []).map((link) => ({
-      source: getEndpointId(link.source),
-      target: getEndpointId(link.target),
-      attribs: link.attribs ?? [],
-      weights: link.weights ?? [],
-    })),
-  });
+function sameArrayValues(a, b) {
+  if (a === b) return true;
+  if (!Array.isArray(a) || !Array.isArray(b)) return false;
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) return false;
+  }
+  return true;
+}
+
+function hasGraphStructureChanged(currentGraphData, nextGraphData) {
+  if (!currentGraphData || !nextGraphData) return true;
+
+  const currentNodes = currentGraphData.nodes ?? [];
+  const nextNodes = nextGraphData.nodes ?? [];
+  if (currentNodes.length !== nextNodes.length) return true;
+  for (let i = 0; i < currentNodes.length; i++) {
+    if (currentNodes[i]?.id !== nextNodes[i]?.id) return true;
+  }
+
+  const currentLinks = currentGraphData.links ?? [];
+  const nextLinks = nextGraphData.links ?? [];
+  if (currentLinks.length !== nextLinks.length) return true;
+
+  for (let i = 0; i < currentLinks.length; i++) {
+    const currentLink = currentLinks[i];
+    const nextLink = nextLinks[i];
+
+    if (getEndpointId(currentLink?.source) !== getEndpointId(nextLink?.source)) return true;
+    if (getEndpointId(currentLink?.target) !== getEndpointId(nextLink?.target)) return true;
+    if (!sameArrayValues(currentLink?.attribs ?? [], nextLink?.attribs ?? [])) return true;
+    if (!sameArrayValues(currentLink?.weights ?? [], nextLink?.weights ?? [])) return true;
+  }
+
+  return false;
 }
 
 export function FilterControl() {
@@ -130,7 +154,7 @@ export function FilterControl() {
         filteredGraphData = { ...filteredGraphData, links: filterNodesExist({ ...filteredGraphData, links: linksBeforeStructural }).links };
 
         const filteredGraph = { name: graphState.graph.name, data: filteredGraphData };
-        const graphChanged = buildGraphSignature(graphState.graph.data) !== buildGraphSignature(filteredGraphData);
+        const graphChanged = hasGraphStructureChanged(graphState.graph.data, filteredGraphData);
 
         if (!graphChanged && graphFlags.filteredAfterStart) {
           log.info("Filtering produced no graph changes. Keeping current simulation temperature.");
@@ -158,7 +182,6 @@ export function FilterControl() {
       clearTimeout(debounceTimeout);
     };
   }, [
-    graphFlags.filteredAfterStart,
     graphFlags.isPreprocessed,
     filter.linkThreshold,
     filter.linkFilter,
@@ -176,7 +199,17 @@ export function FilterControl() {
     graphState.originGraph,
     pixiState.nodeContainers,
     pixiState.nodeMap,
-    appearance.showNodeLabels,
     communityState.communityResolution,
   ]);
+
+  useEffect(() => {
+    if (
+      !graphState.graph ||
+      !(pixiState?.nodeContainers?.children?.length > 0) ||
+      !pixiState.nodeMap
+    ) {
+      return;
+    }
+    filterActiveNodesForPixi(appearance.showNodeLabels, graphState.graph.data, pixiState.nodeMap);
+  }, [appearance.showNodeLabels, graphState.graph, pixiState.nodeContainers, pixiState.nodeMap]);
 }
