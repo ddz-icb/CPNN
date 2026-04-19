@@ -25,6 +25,8 @@ import { useCommunityState } from "../state/communityState.js";
 import { buildCommunitySummary } from "../../domain/service/graph_calculations/communityGrouping.js";
 import { withoutAdditionalLinkAttribs } from "../../domain/service/enrichment/stringDbEnrichment.js";
 
+const FILTER_DEBOUNCE_MS = 90;
+
 function getEndpointId(endpoint) {
   if (endpoint == null) return endpoint;
   if (typeof endpoint === "object") return endpoint.id ?? endpoint.data?.id;
@@ -62,93 +64,99 @@ export function FilterControl() {
     ) {
       return;
     }
-    log.info(
-      "Filtering nodes and links.\n    Threshold:  ",
-      filter.linkThreshold,
-      "\n    Link Attributes: ",
-      filter.linkFilter,
-      "\n    Node Attributes: ",
-      filter.nodeFilter,
-      "\n    Node ID Filters: ",
-      filter.nodeIdFilters,
-      "\n    Minimum k-Core size: ",
-      filter.minKCoreSize,
-      "\n    Community Density: ",
-      filter.communityDensity,
-      "\n    Min Community Size: ",
-      filter.minCommunitySize,
-      "\n    Max Community Size: ",
-      filter.maxCommunitySize,
-      "\n    Component Density: ",
-      filter.componentDensity,
-      "\n    Lasso Selection: ",
-      filter.lassoSelection,
-      "\n    Min Component Size: ",
-      filter.minCompSize,
-      "\n    Max Component Size: ",
-      filter.maxCompSize,
-    );
-
-    try {
-      let filteredGraphData = {
-        ...graphState.graph.data,
-        nodes: graphState.originGraph.data.nodes,
-        links: graphState.originGraph.data.links,
-      };
-
-      filteredGraphData = filterLasso(filteredGraphData, filter.lassoSelection);
-      filteredGraphData = filterNodeAttribs(filteredGraphData, filter.nodeFilter);
-      filteredGraphData = filterNodeIds(filteredGraphData, filter.nodeIdFilters);
-      filteredGraphData = filterNodesExist(filteredGraphData);
-
-      filteredGraphData = filterThreshold(filteredGraphData, filter.linkThreshold);
-      filteredGraphData = filterLinkAttribs(filteredGraphData, filter.linkFilter);
-
-      // STRING-DB links are excluded from structural filters (component/community/k-core)
-      // prevents keeping nodes alive without regular connections.
-      const linksBeforeStructural = filteredGraphData.links;
-      filteredGraphData = { ...filteredGraphData, links: withoutAdditionalLinkAttribs(filteredGraphData.links) };
-
-      filteredGraphData = filterComponentDensity(filteredGraphData, filter.componentDensity);
-      filteredGraphData = filterCommunityDensity(filteredGraphData, filter.communityDensity, communityState.communityResolution);
-      filteredGraphData = filterMinNeighborhood(filteredGraphData, filter.minKCoreSize);
-      filteredGraphData = filterComponentSizeRange(filteredGraphData, filter.minCompSize, filter.maxCompSize);
-      filteredGraphData = filterCommunitySizeRange(
-        filteredGraphData,
+    const debounceTimeout = setTimeout(() => {
+      log.info(
+        "Filtering nodes and links.\n    Threshold:  ",
+        filter.linkThreshold,
+        "\n    Link Attributes: ",
+        filter.linkFilter,
+        "\n    Node Attributes: ",
+        filter.nodeFilter,
+        "\n    Node ID Filters: ",
+        filter.nodeIdFilters,
+        "\n    Minimum k-Core size: ",
+        filter.minKCoreSize,
+        "\n    Community Density: ",
+        filter.communityDensity,
+        "\n    Min Community Size: ",
         filter.minCommunitySize,
+        "\n    Max Community Size: ",
         filter.maxCommunitySize,
-        communityState.communityResolution,
+        "\n    Component Density: ",
+        filter.componentDensity,
+        "\n    Lasso Selection: ",
+        filter.lassoSelection,
+        "\n    Min Component Size: ",
+        filter.minCompSize,
+        "\n    Max Component Size: ",
+        filter.maxCompSize,
       );
 
-      const communitySummary = buildCommunitySummary(filteredGraphData, { resolution: communityState.communityResolution });
-      filteredGraphData = filterCommunityVisibility(filteredGraphData, communitySummary.idToCommunity, filter.communityHiddenIds);
-      filteredGraphData = filterNodesExist(filteredGraphData);
+      try {
+        let filteredGraphData = {
+          ...graphState.graph.data,
+          nodes: graphState.originGraph.data.nodes,
+          links: graphState.originGraph.data.links,
+        };
 
-      filteredGraphData = { ...filteredGraphData, links: filterNodesExist({ ...filteredGraphData, links: linksBeforeStructural }).links };
+        filteredGraphData = filterLasso(filteredGraphData, filter.lassoSelection);
+        filteredGraphData = filterNodeAttribs(filteredGraphData, filter.nodeFilter);
+        filteredGraphData = filterNodeIds(filteredGraphData, filter.nodeIdFilters);
+        filteredGraphData = filterNodesExist(filteredGraphData);
 
-      const filteredGraph = { name: graphState.graph.name, data: filteredGraphData };
-      const graphChanged = buildGraphSignature(graphState.graph.data) !== buildGraphSignature(filteredGraphData);
+        filteredGraphData = filterThreshold(filteredGraphData, filter.linkThreshold);
+        filteredGraphData = filterLinkAttribs(filteredGraphData, filter.linkFilter);
 
-      if (!graphChanged && graphFlags.filteredAfterStart) {
-        log.info("Filtering produced no graph changes. Keeping current simulation temperature.");
-        return;
+        // STRING-DB links are excluded from structural filters (component/community/k-core)
+        // prevents keeping nodes alive without regular connections.
+        const linksBeforeStructural = filteredGraphData.links;
+        filteredGraphData = { ...filteredGraphData, links: withoutAdditionalLinkAttribs(filteredGraphData.links) };
+
+        filteredGraphData = filterComponentDensity(filteredGraphData, filter.componentDensity);
+        filteredGraphData = filterCommunityDensity(filteredGraphData, filter.communityDensity, communityState.communityResolution);
+        filteredGraphData = filterMinNeighborhood(filteredGraphData, filter.minKCoreSize);
+        filteredGraphData = filterComponentSizeRange(filteredGraphData, filter.minCompSize, filter.maxCompSize);
+        filteredGraphData = filterCommunitySizeRange(
+          filteredGraphData,
+          filter.minCommunitySize,
+          filter.maxCommunitySize,
+          communityState.communityResolution,
+        );
+
+        const communitySummary = buildCommunitySummary(filteredGraphData, { resolution: communityState.communityResolution });
+        filteredGraphData = filterCommunityVisibility(filteredGraphData, communitySummary.idToCommunity, filter.communityHiddenIds);
+        filteredGraphData = filterNodesExist(filteredGraphData);
+
+        filteredGraphData = { ...filteredGraphData, links: filterNodesExist({ ...filteredGraphData, links: linksBeforeStructural }).links };
+
+        const filteredGraph = { name: graphState.graph.name, data: filteredGraphData };
+        const graphChanged = buildGraphSignature(graphState.graph.data) !== buildGraphSignature(filteredGraphData);
+
+        if (!graphChanged && graphFlags.filteredAfterStart) {
+          log.info("Filtering produced no graph changes. Keeping current simulation temperature.");
+          return;
+        }
+
+        setCommunityState("communities", communitySummary.communities);
+        setCommunityState("idToCommunity", communitySummary.idToCommunity);
+        setCommunityState("communityToNodeIds", communitySummary.communityToNodeIds);
+
+        filterActiveNodesForPixi(appearance.showNodeLabels, filteredGraphData, pixiState.nodeMap);
+        if (!graphFlags.filteredAfterStart) {
+          setGraphFlags("filteredAfterStart", true);
+        }
+        if (graphChanged) {
+          setGraphState("graph", filteredGraph);
+        }
+      } catch (error) {
+        errorService.setError(error.message);
+        log.error("Error while filtering graph:", error);
       }
+    }, FILTER_DEBOUNCE_MS);
 
-      setCommunityState("communities", communitySummary.communities);
-      setCommunityState("idToCommunity", communitySummary.idToCommunity);
-      setCommunityState("communityToNodeIds", communitySummary.communityToNodeIds);
-
-      filterActiveNodesForPixi(appearance.showNodeLabels, filteredGraphData, pixiState.nodeMap);
-      if (!graphFlags.filteredAfterStart) {
-        setGraphFlags("filteredAfterStart", true);
-      }
-      if (graphChanged) {
-        setGraphState("graph", filteredGraph);
-      }
-    } catch (error) {
-      errorService.setError(error.message);
-      log.error("Error while filtering graph:", error);
-    }
+    return () => {
+      clearTimeout(debounceTimeout);
+    };
   }, [
     graphFlags.filteredAfterStart,
     graphFlags.isPreprocessed,
