@@ -14,9 +14,9 @@ import {
   DetailRow,
   DetailSelectRow,
   FieldBlock,
+  SelectFieldBlock,
   SliderBlock,
   StatusProgressBlock,
-  SwitchBlock,
   ToggleList,
 } from "../reusable_components/sidebarComponents.js";
 import { SvgIcon } from "../reusable_components/SvgIcon.jsx";
@@ -33,6 +33,7 @@ import {
   getCameraPathDurationMs,
   getKeyframeHoldSeconds,
   getRouteMode,
+  getVideoExportQualityPreset,
   getViewMode,
   getViewModeLabel,
   moveKeyframeById,
@@ -43,6 +44,7 @@ import {
   sanitizeNumber,
   updateKeyframeById,
   validateCameraPath,
+  VIDEO_EXPORT_QUALITY_OPTIONS,
 } from "../../../domain/service/videography/videography.js";
 
 const DeleteIcon = (props) => <SvgIcon svg={trashSvg} {...props} />;
@@ -60,7 +62,7 @@ const VIDEO_SETTING_FIELDS = [
 ];
 
 export function VideographySidebar() {
-  const { appearance, setAppearance } = useAppearance();
+  const { appearance } = useAppearance();
   const { colorschemeState } = useColorschemeState();
   const { container } = useContainer();
   const { graphState } = useGraphState();
@@ -73,6 +75,7 @@ export function VideographySidebar() {
   const keyframes = videography.keyframes ?? [];
   const currentMode = getViewMode(appearance);
   const routeMode = getRouteMode(keyframes);
+  const exportQualityPreset = getVideoExportQualityPreset(videography.exportQualityPreset);
   const hasModeMismatch = Boolean(routeMode && routeMode !== currentMode);
   const hasReadyCanvas = Boolean(renderState.app && container.width && container.height && graphState.graph);
   const canEditRoute = hasReadyCanvas && !videography.isRendering && !hasModeMismatch;
@@ -195,6 +198,7 @@ export function VideographySidebar() {
           showGrid: appearance.show3DGrid,
           gridLines: pixiState.grid3D?.__gridLines,
           holdSeconds: videography.holdSeconds,
+          exportQualityPreset,
           onProgress: setRenderProgress,
         }),
       "Rendering video...",
@@ -232,6 +236,14 @@ export function VideographySidebar() {
         text={"Default Transition"}
         infoHeading={"Default Transition"}
         infoDescription={"Duration used when adding a new keyframe."}
+      />
+      <SelectFieldBlock
+        text={"Export Quality"}
+        infoHeading={"Export Quality"}
+        infoDescription={"Default exports at 1440p with a smaller file size. High Quality exports at 4K with a higher bitrate."}
+        value={exportQualityPreset}
+        setValue={(value) => setVideography("exportQualityPreset", getVideoExportQualityPreset(value))}
+        options={VIDEO_EXPORT_QUALITY_OPTIONS}
       />
       {VIDEO_SETTING_FIELDS.map(({ key, textKey, fallbackValue, limits, ...fieldProps }) => (
         <FieldBlock

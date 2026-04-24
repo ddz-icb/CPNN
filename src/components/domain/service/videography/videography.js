@@ -27,10 +27,27 @@ export const CAMERA_PATH_LIMITS = {
 };
 
 export const VIDEO_EXPORT_FPS = 60;
-export const VIDEO_EXPORT_BITRATE_MBPS = 24;
+export const VIDEO_EXPORT_QUALITY_DEFAULT = "default";
+export const VIDEO_EXPORT_QUALITY_HIGH = "high";
 
-const VIDEO_EXPORT_TARGET_AREA = 3840 * 2160;
-const VIDEO_EXPORT_MAX_EDGE = 3840;
+export const VIDEO_EXPORT_QUALITY_OPTIONS = [
+  { value: VIDEO_EXPORT_QUALITY_DEFAULT, label: "Default (1440p)" },
+  { value: VIDEO_EXPORT_QUALITY_HIGH, label: "High Quality (4K)" },
+];
+
+const VIDEO_EXPORT_PRESETS = {
+  [VIDEO_EXPORT_QUALITY_DEFAULT]: {
+    targetArea: 2560 * 1440,
+    maxEdge: 2560,
+    bitrateMbps: 16,
+  },
+  [VIDEO_EXPORT_QUALITY_HIGH]: {
+    targetArea: 3840 * 2160,
+    maxEdge: 3840,
+    bitrateMbps: 32,
+  },
+};
+
 const VIDEO_KEYFRAME_INTERVAL_SECONDS = 2;
 
 const MIN_ZOOM = 0.05;
@@ -267,6 +284,10 @@ export function getKeyframeHoldSeconds(keyframe, fallbackHoldSeconds = 0) {
   );
 }
 
+export function getVideoExportQualityPreset(value) {
+  return VIDEO_EXPORT_PRESETS[value] ? value : VIDEO_EXPORT_QUALITY_DEFAULT;
+}
+
 export async function playCameraPath({
   keyframes,
   app,
@@ -357,6 +378,7 @@ export async function recordCameraPathVideo({
   showGrid = false,
   gridLines = [],
   holdSeconds = 0,
+  exportQualityPreset = VIDEO_EXPORT_QUALITY_DEFAULT,
   onProgress,
 }) {
   validateCameraPath(keyframes, getViewMode(appearance));
@@ -367,7 +389,8 @@ export async function recordCameraPathVideo({
 
   const sourceCanvas = getPixiCanvas(app);
   const captureCanvas = document.createElement("canvas");
-  const outputContainer = getVideoExportContainer(container);
+  const exportConfig = getVideoExportConfig(exportQualityPreset);
+  const outputContainer = getVideoExportContainer(container, exportConfig);
   captureCanvas.width = outputContainer.width;
   captureCanvas.height = outputContainer.height;
 
@@ -437,7 +460,7 @@ export async function recordCameraPathVideo({
     width: outputContainer.width,
     height: outputContainer.height,
     fps: VIDEO_EXPORT_FPS,
-    bitrate: VIDEO_EXPORT_BITRATE_MBPS * 1000 * 1000,
+    bitrate: exportConfig.bitrateMbps * 1000 * 1000,
     durationMs: getFrameScheduleDurationMs(frameSchedule),
   });
 
@@ -472,7 +495,7 @@ export async function recordCameraPathVideo({
   const mimeType = getSupportedRecorderMimeType();
   const recorderOptions = {};
   if (mimeType) recorderOptions.mimeType = mimeType;
-  recorderOptions.videoBitsPerSecond = VIDEO_EXPORT_BITRATE_MBPS * 1000 * 1000;
+  recorderOptions.videoBitsPerSecond = exportConfig.bitrateMbps * 1000 * 1000;
 
   const recorder = new MediaRecorder(stream, recorderOptions);
   const chunks = [];
@@ -734,19 +757,21 @@ function getPixiCanvas(app) {
   return app?.canvas ?? app?.renderer?.canvas ?? null;
 }
 
-function getVideoExportContainer(container) {
+function getVideoExportContainer(container, exportConfig = VIDEO_EXPORT_PRESETS[VIDEO_EXPORT_QUALITY_DEFAULT]) {
   const safeWidth = Math.max(1, finiteOr(container?.width, 1));
   const safeHeight = Math.max(1, finiteOr(container?.height, 1));
   const aspectRatio = safeWidth / safeHeight;
+  const targetArea = Math.max(1, finiteOr(exportConfig?.targetArea, VIDEO_EXPORT_PRESETS[VIDEO_EXPORT_QUALITY_DEFAULT].targetArea));
+  const maxEdge = Math.max(2, finiteOr(exportConfig?.maxEdge, VIDEO_EXPORT_PRESETS[VIDEO_EXPORT_QUALITY_DEFAULT].maxEdge));
 
   let width;
   let height;
 
   if (aspectRatio >= 1) {
-    width = Math.min(VIDEO_EXPORT_MAX_EDGE, Math.round(Math.sqrt(VIDEO_EXPORT_TARGET_AREA * aspectRatio)));
+    width = Math.min(maxEdge, Math.round(Math.sqrt(targetArea * aspectRatio)));
     height = Math.round(width / aspectRatio);
   } else {
-    height = Math.min(VIDEO_EXPORT_MAX_EDGE, Math.round(Math.sqrt(VIDEO_EXPORT_TARGET_AREA / aspectRatio)));
+    height = Math.min(maxEdge, Math.round(Math.sqrt(targetArea / aspectRatio)));
     width = Math.round(height * aspectRatio);
   }
 
@@ -778,6 +803,10 @@ function getVideoViewportTransform(sourceContainer, targetContainer) {
     y: (targetHeight - sourceHeight * scale) / 2,
     k: scale,
   };
+}
+
+function getVideoExportConfig(preset) {
+  return VIDEO_EXPORT_PRESETS[getVideoExportQualityPreset(preset)];
 }
 
 function getSupportedRecorderMimeType() {
