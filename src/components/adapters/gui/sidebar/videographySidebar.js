@@ -1,9 +1,12 @@
 import { useCallback, useRef } from "react";
 
 import { useAppearance } from "../../state/appearanceState.js";
+import { useColorschemeState } from "../../state/colorschemeState.js";
 import { useContainer } from "../../state/containerState.js";
 import { useGraphState } from "../../state/graphState.js";
+import { usePixiState } from "../../state/pixiState.js";
 import { useRenderState } from "../../state/canvasState.js";
+import { useTheme } from "../../state/themeState.js";
 import { defaultTransitionSecondsInit, holdSecondsInit, useVideography } from "../../state/videographyState.js";
 import {
   ButtonGrid,
@@ -28,6 +31,7 @@ import {
   formatNumber,
   formatKeyframeView,
   getCameraPathDurationMs,
+  getKeyframeHoldSeconds,
   getRouteMode,
   getViewMode,
   getViewModeLabel,
@@ -49,17 +53,20 @@ const VIDEO_SETTING_FIELDS = [
     textKey: "holdSecondsText",
     fallbackValue: holdSecondsInit,
     limits: CAMERA_PATH_LIMITS.holdSeconds,
-    text: "Keyframe Hold",
-    infoHeading: "Keyframe Hold",
-    infoDescription: "Pause time at each keyframe before the next move begins.",
+    text: "Default Hold",
+    infoHeading: "Default Hold",
+    infoDescription: "Pause time used for new keyframes, and as fallback for older ones.",
   },
 ];
 
 export function VideographySidebar() {
   const { appearance, setAppearance } = useAppearance();
+  const { colorschemeState } = useColorschemeState();
   const { container } = useContainer();
   const { graphState } = useGraphState();
+  const { pixiState } = usePixiState();
   const { renderState } = useRenderState();
+  const { theme } = useTheme();
   const { videography, setVideography, setKeyframes } = useVideography();
   const lastProgressRef = useRef(0);
 
@@ -110,6 +117,7 @@ export function VideographySidebar() {
       captured,
       index: nextIndex,
       transitionSeconds: videography.defaultTransitionSeconds,
+      holdSeconds: videography.holdSeconds,
     });
 
     setKeyframes([...keyframes, nextKeyframe]);
@@ -173,6 +181,19 @@ export function VideographySidebar() {
           appearance,
           container,
           graphName: graphState.graph?.name,
+          graphData: graphState.graph?.data,
+          nodeMap: pixiState.nodeMap,
+          linkWidth: appearance.linkWidth,
+          linkColorscheme: colorschemeState.linkColorscheme?.data,
+          linkAttribsToColorIndices: colorschemeState.linkAttribsToColorIndices,
+          circleBorderColor: theme.circleBorderColor,
+          textColor: theme.textColor,
+          nodeColorscheme: colorschemeState.nodeColorscheme?.data,
+          nodeAttribsToColorIndices: colorschemeState.nodeAttribsToColorIndices,
+          showNodeLabels: appearance.showNodeLabels,
+          enableShading: appearance.enable3DShading,
+          showGrid: appearance.show3DGrid,
+          gridLines: pixiState.grid3D?.__gridLines,
           holdSeconds: videography.holdSeconds,
           onProgress: setRenderProgress,
         }),
@@ -197,13 +218,6 @@ export function VideographySidebar() {
 
   return (
     <>
-      <SwitchBlock
-        value={appearance.threeD}
-        setValue={() => setAppearance("threeD", !appearance.threeD)}
-        text={"3D Camera"}
-        infoHeading={"3D Camera"}
-        infoDescription={"Use the 3D graph camera for keyframes with direction, depth, and zoom."}
-      />
       <ButtonGrid actions={primaryActions} />
       <ButtonGrid actions={secondaryActions} secondary={true} />
       <SliderBlock
@@ -262,6 +276,7 @@ export function VideographySidebar() {
             index={keyframes.findIndex((currentKeyframe) => currentKeyframe.id === keyframe.id)}
             keyframeCount={keyframes.length}
             canEdit={canEditRoute}
+            defaultHoldSeconds={videography.holdSeconds}
             app={renderState.app}
             appearance={appearance}
             container={container}
@@ -282,9 +297,24 @@ function RouteStatus({ status, progress, durationSeconds, busy, keyframeCount })
   return <StatusProgressBlock label={"Route"} value={durationText} status={status} progress={displayProgress} />;
 }
 
-function KeyframeDetails({ keyframe, index, keyframeCount, canEdit, app, appearance, container, updateKeyframe, moveKeyframe, setStatus }) {
+function KeyframeDetails({
+  keyframe,
+  index,
+  keyframeCount,
+  canEdit,
+  defaultHoldSeconds,
+  app,
+  appearance,
+  container,
+  updateKeyframe,
+  moveKeyframe,
+  setStatus,
+}) {
   const transitionSecondsText = keyframe.transitionSecondsText ?? formatNumber(keyframe.transitionSeconds, 2);
+  const holdSeconds = getKeyframeHoldSeconds(keyframe, defaultHoldSeconds);
+  const holdSecondsText = keyframe.holdSecondsText ?? formatNumber(holdSeconds, 2);
   const transitionLimits = CAMERA_PATH_LIMITS.transitionSeconds;
+  const holdLimits = CAMERA_PATH_LIMITS.holdSeconds;
 
   const handleJump = () => {
     applyKeyframe(keyframe, { app, appearance, container, syncZoom: true });
@@ -338,6 +368,21 @@ function KeyframeDetails({ keyframe, index, keyframeCount, canEdit, app, appeara
           onChange={(value) => updateKeyframe(keyframe.id, { easing: value })}
         />
       )}
+      <DetailNumberRow
+        label={"Hold"}
+        value={holdSecondsText}
+        min={holdLimits.min}
+        max={holdLimits.max}
+        step={holdLimits.step}
+        onChange={(value) => updateKeyframe(keyframe.id, { holdSecondsText: value })}
+        onCommit={(value) => {
+          const nextValue = sanitizeNumber(value, holdSeconds, holdLimits.min, holdLimits.max);
+          updateKeyframe(keyframe.id, {
+            holdSeconds: nextValue,
+            holdSecondsText: formatNumber(nextValue, 2),
+          });
+        }}
+      />
       <ButtonGrid actions={actions} compact={true} />
     </div>
   );

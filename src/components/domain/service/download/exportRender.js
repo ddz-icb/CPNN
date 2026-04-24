@@ -9,7 +9,7 @@ function computeNodeBounds(node, mapEntry, tempCtx) {
   const labelText = node.labelText ?? mapEntry?.nodeLabel?.text ?? node.id;
   const labelX = node.labelX ?? mapEntry?.nodeLabel?.x ?? node.x;
   const labelY = node.labelY ?? mapEntry?.nodeLabel?.y ?? node.y;
-  const fontSize = mapEntry?.nodeLabel?._fontSize || 12;
+  const fontSize = node.labelFontSize ?? mapEntry?.nodeLabel?._fontSize ?? 12;
   const scale = node.scale ?? mapEntry?.circle?.scale?.x ?? 1;
   const nodeRadius = radius * scale;
   const rimOuterRadius = nodeRadius * (rimRadiusFactor + rimWidthFactor);
@@ -93,7 +93,7 @@ const DEFAULT_FONT_SIZE = 12;
 
 export function drawLabel(ctx, node, mapEntry, textColor) {
   const labelText = node.labelText ?? mapEntry?.nodeLabel?.text ?? node.id;
-  const baseFontSize = mapEntry?.nodeLabel?._fontSize || DEFAULT_FONT_SIZE;
+  const baseFontSize = node.labelFontSize ?? mapEntry?.nodeLabel?._fontSize ?? DEFAULT_FONT_SIZE;
   const scale = node.scale ?? mapEntry?.circle?.scale?.x ?? 1;
   const labelX = node.labelX ?? mapEntry?.nodeLabel?.x ?? node.x;
   const labelY = (node.labelY ?? mapEntry?.nodeLabel?.y ?? node.y) + 10 * scale;
@@ -160,6 +160,86 @@ export function render2DGraph(ctx, graphData, nodeMap, params) {
   }
 }
 
+export function build2DFrameGraphData(graphData, nodeMap, { showNodeLabels = false } = {}) {
+  if (!graphData?.nodes || !graphData?.links) return null;
+
+  const nodes = graphData.nodes.map((node) => buildFrameNode(node, nodeMap?.[node.id], { showNodeLabels }));
+  const nodeLookup = new Map(nodes.map((node) => [node.id, node]));
+  const links = buildFrameLinks(graphData.links, nodeLookup);
+
+  return { nodes, links };
+}
+
+export function build3DFrameGraphData(
+  graphData,
+  nodeMap,
+  { camera, sourceContainer, targetContainer, showNodeLabels = false, gridLines = [] } = {}
+) {
+  if (!graphData?.nodes || !graphData?.links || !targetContainer?.width || !targetContainer?.height) {
+    return { graph: null, gridSegments: [] };
+  }
+
+  const worldNodes = graphData.nodes.map((node) => translateNodeForContainer(node, sourceContainer, targetContainer));
+  const frameCamera = translateCameraForContainer(camera, sourceContainer, targetContainer);
+  const view = getViewParams(frameCamera, targetContainer.width, targetContainer.height);
+  const projections = computeProjections(worldNodes, view);
+
+  const nodes = [];
+  const nodeLookup = new Map();
+
+  worldNodes.forEach((node) => {
+    const projection = projections[node.id];
+    if (!projection || projection.visible === false) return;
+
+    const frameNode = {
+      ...buildFrameNode(node, nodeMap?.[node.id], { showNodeLabels }),
+      x: projection.x,
+      y: projection.y,
+      scale: projection.scale,
+      depth: projection.depth,
+      labelX: projection.x,
+      labelY: projection.y,
+    };
+
+    nodes.push(frameNode);
+    nodeLookup.set(node.id, frameNode);
+  });
+
+  const links = buildFrameLinks(graphData.links, nodeLookup);
+  const shiftedGridLines = translateGridLinesForContainer(gridLines, sourceContainer, targetContainer);
+  const gridSegments = projectGridLines(shiftedGridLines, frameCamera, targetContainer);
+
+  return {
+    graph: { nodes, links },
+    gridSegments,
+  };
+}
+
+export function renderGraphFrameToCanvas(
+  ctx,
+  graphData,
+  drawParams,
+  { threeD = false, enableShading = true, showGrid = false, gridSegments = [], transform = null } = {}
+) {
+  if (!ctx || !graphData) return;
+
+  ctx.save();
+
+  if (transform) {
+    ctx.translate(transform.x ?? 0, transform.y ?? 0);
+    ctx.scale(transform.k ?? 1, transform.k ?? 1);
+  }
+
+  if (threeD) {
+    const queue = build3DRenderQueue(graphData, null);
+    render3DQueue(ctx, queue, { ...drawParams, enableShading }, { showGrid, segments: gridSegments });
+  } else {
+    render2DGraph(ctx, graphData, null, drawParams);
+  }
+
+  ctx.restore();
+}
+
 function drawGridExport(ctx, segments, color) {
   ctx.save();
   ctx.strokeStyle = color ?? "#6b7280";
@@ -194,35 +274,18 @@ export function projectGridLines(gridLines, camera, container) {
   return segments;
 }
 
-function projectPoint(node, params) {
-  const { rotX, rotY, cameraX, cameraY, cameraZ, fov, centerX, centerY } = params;
-
-  const rotated = rotatePoint(node, rotX, rotY, centerX, centerY);
-
-  const dx = rotated.x - cameraX;
-  const dy = rotated.y - cameraY;
-  let dz = rotated.z - cameraZ;
-
-  if (dz <= 0.000001) {
-    return null;
+function computeProjections(nodes, view, result = {}) {
+  for (const node of nodes) {
+    const existing = result[node.id];
+    const projection = projectNode(node, view, existing && typeof existing === "object" ? existing : undefined);
+    result[node.id] = projection;
   }
 
-  const depth = Math.abs(dz);
-  const scale = fov / depth;
-
-  return {
-    x: centerX + dx * scale,
-    y: centerY + dy * scale,
-    scale,
-    depth,
-  };
+  return result;
 }
 
-function rotatePoint(node, rotX, rotY, centerX, centerY) {
-  const cosY = Math.cos(rotY);
-  const sinY = Math.sin(rotY);
-  const cosX = Math.cos(rotX);
-  const sinX = Math.sin(rotX);
+function projectNode(node, params, out) {
+  const { cameraX, cameraY, cameraZ, fov, centerX, centerY, cosX, sinX, cosY, sinY } = params;
 
   const shiftedX = node.x - centerX;
   const shiftedY = node.y - centerY;
@@ -234,16 +297,51 @@ function rotatePoint(node, rotX, rotY, centerX, centerY) {
   let y = shiftedY * cosX - z * sinX;
   z = shiftedY * sinX + z * cosX;
 
-  return { x: x + centerX, y: y + centerY, z };
+  const dx = x + centerX - cameraX;
+  const dy = y + centerY - cameraY;
+  const dz = z - cameraZ;
+
+  const target = out || {};
+
+  if (dz <= 0.000001) {
+    if (!out) return null;
+    target.visible = false;
+    return target;
+  }
+
+  const depth = Math.abs(dz);
+  const scale = fov / depth;
+
+  target.x = centerX + dx * scale;
+  target.y = centerY + dy * scale;
+  target.scale = scale;
+  target.depth = depth;
+  target.visible = true;
+
+  return target;
+}
+
+function projectPoint(node, params) {
+  return projectNode(node, params);
 }
 
 function getViewParams(camera, width, height) {
   const centerX = width / 2;
   const centerY = height / 2;
+  const rotX = camera?.rotX ?? defaultCamera.rotX;
+  const rotY = camera?.rotY ?? defaultCamera.rotY;
+  const cosX = Math.cos(rotX);
+  const sinX = Math.sin(rotX);
+  const cosY = Math.cos(rotY);
+  const sinY = Math.sin(rotY);
 
   return {
-    rotX: camera?.rotX ?? defaultCamera.rotX,
-    rotY: camera?.rotY ?? defaultCamera.rotY,
+    rotX,
+    rotY,
+    cosX,
+    sinX,
+    cosY,
+    sinY,
     cameraX: camera?.x ?? centerX,
     cameraY: camera?.y ?? centerY,
     cameraZ: camera?.z ?? defaultCamera.z,
@@ -255,4 +353,88 @@ function getViewParams(camera, width, height) {
 
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
+}
+
+function buildFrameNode(node, mapEntry, { showNodeLabels = false } = {}) {
+  const nodeLabel = mapEntry?.nodeLabel;
+
+  return {
+    ...node,
+    scale: node.scale ?? 1,
+    depth: node.depth ?? 0,
+    labelVisible: showNodeLabels,
+    labelX: node.labelX ?? node.x,
+    labelY: node.labelY ?? node.y,
+    labelText: nodeLabel?.text ?? node.id,
+    labelFontSize: nodeLabel?._fontSize ?? DEFAULT_FONT_SIZE,
+  };
+}
+
+function buildFrameLinks(links, nodeLookup) {
+  return (links ?? [])
+    .map((link) => {
+      const sourceId = typeof link.source === "object" ? link.source.id : link.source;
+      const targetId = typeof link.target === "object" ? link.target.id : link.target;
+
+      const source = nodeLookup.get(sourceId);
+      const target = nodeLookup.get(targetId);
+      if (!source || !target) return null;
+
+      return {
+        ...link,
+        depth: Math.max(source.depth ?? 0, target.depth ?? 0),
+        source: { x: source.x, y: source.y, scale: source.scale, depth: source.depth },
+        target: { x: target.x, y: target.y, scale: target.scale, depth: target.depth },
+      };
+    })
+    .filter(Boolean);
+}
+
+function translateNodeForContainer(node, sourceContainer, targetContainer) {
+  const sourceCenterX = (sourceContainer?.width ?? targetContainer?.width ?? 0) / 2;
+  const sourceCenterY = (sourceContainer?.height ?? targetContainer?.height ?? 0) / 2;
+  const targetCenterX = (targetContainer?.width ?? 0) / 2;
+  const targetCenterY = (targetContainer?.height ?? 0) / 2;
+
+  return {
+    ...node,
+    x: (node?.x ?? sourceCenterX) - sourceCenterX + targetCenterX,
+    y: (node?.y ?? sourceCenterY) - sourceCenterY + targetCenterY,
+  };
+}
+
+function translateCameraForContainer(camera, sourceContainer, targetContainer) {
+  const sourceCenterX = (sourceContainer?.width ?? targetContainer?.width ?? 0) / 2;
+  const sourceCenterY = (sourceContainer?.height ?? targetContainer?.height ?? 0) / 2;
+  const targetCenterX = (targetContainer?.width ?? 0) / 2;
+  const targetCenterY = (targetContainer?.height ?? 0) / 2;
+
+  return {
+    ...camera,
+    x: (camera?.x ?? sourceCenterX) - sourceCenterX + targetCenterX,
+    y: (camera?.y ?? sourceCenterY) - sourceCenterY + targetCenterY,
+  };
+}
+
+function translateGridLinesForContainer(gridLines, sourceContainer, targetContainer) {
+  const sourceCenterX = (sourceContainer?.width ?? targetContainer?.width ?? 0) / 2;
+  const sourceCenterY = (sourceContainer?.height ?? targetContainer?.height ?? 0) / 2;
+  const targetCenterX = (targetContainer?.width ?? 0) / 2;
+  const targetCenterY = (targetContainer?.height ?? 0) / 2;
+  const deltaX = targetCenterX - sourceCenterX;
+  const deltaY = targetCenterY - sourceCenterY;
+
+  return (gridLines ?? []).map((line) => ({
+    ...line,
+    start: {
+      ...line.start,
+      x: (line.start?.x ?? sourceCenterX) + deltaX,
+      y: (line.start?.y ?? sourceCenterY) + deltaY,
+    },
+    end: {
+      ...line.end,
+      x: (line.end?.x ?? sourceCenterX) + deltaX,
+      y: (line.end?.y ?? sourceCenterY) + deltaY,
+    },
+  }));
 }
