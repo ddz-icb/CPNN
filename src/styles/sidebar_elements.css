@@ -301,6 +301,16 @@ input:checked + .switch-button:before {
   width: 100%;
 }
 
+.sidebar-detail-control--stack {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.sidebar-detail-control--stack .sidebar-select {
+  width: 100%;
+  min-width: 0;
+}
+
 .sidebar-progress-track {
   width: 100%;
   height: 0.35rem;

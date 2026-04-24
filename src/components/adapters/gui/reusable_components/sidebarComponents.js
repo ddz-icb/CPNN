@@ -231,9 +231,9 @@ export function StatusProgressBlock({ label, value, status, progress = 0 }) {
   );
 }
 
-export function DetailControlRow({ label, children }) {
+export function DetailControlRow({ label, children, stack = false }) {
   return (
-    <div className="sidebar-detail-control">
+    <div className={`sidebar-detail-control${stack ? " sidebar-detail-control--stack" : ""}`}>
       <label className="item-table-primary-text">{label}</label>
       {children}
     </div>
@@ -258,10 +258,10 @@ export function DetailNumberRow({ label, value, min, max, step, onChange, onComm
   );
 }
 
-export function DetailSelectRow({ label, value, options = [], onChange }) {
+export function DetailSelectRow({ label, value, options = [], onChange, size = "default", stack = false }) {
   return (
-    <DetailControlRow label={label}>
-      <SelectInput value={value} setValue={onChange} options={options} />
+    <DetailControlRow label={label} stack={stack}>
+      <SelectInput value={value} setValue={onChange} options={options} size={size} />
     </DetailControlRow>
   );
 }

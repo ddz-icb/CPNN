@@ -244,6 +244,7 @@ export function VideographySidebar() {
         value={exportQualityPreset}
         setValue={(value) => setVideography("exportQualityPreset", getVideoExportQualityPreset(value))}
         options={VIDEO_EXPORT_QUALITY_OPTIONS}
+        size={"wide"}
       />
       {VIDEO_SETTING_FIELDS.map(({ key, textKey, fallbackValue, limits, ...fieldProps }) => (
         <FieldBlock
@@ -378,6 +379,8 @@ function KeyframeDetails({
           value={keyframe.easing ?? EASING_OPTIONS[0].value}
           options={EASING_OPTIONS}
           onChange={(value) => updateKeyframe(keyframe.id, { easing: value })}
+          size={"wide"}
+          stack={true}
         />
       )}
       <DetailNumberRow
