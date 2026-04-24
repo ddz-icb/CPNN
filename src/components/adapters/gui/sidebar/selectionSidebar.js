@@ -8,6 +8,7 @@ import paletteSvg from "../../../../assets/icons/colorPalette.svg?raw";
 import downloadSvg from "../../../../assets/icons/download.svg?raw";
 import searchSvg from "../../../../assets/icons/search.svg?raw";
 import fileWaveformSvg from "../../../../assets/icons/fileWaveform.svg?raw";
+import playSvg from "../../../../assets/icons/play.svg?raw";
 
 export function SelectionSidebar({ handleNavItemClick, activeNavItem }) {
   return (
@@ -60,6 +61,13 @@ export function SelectionSidebar({ handleNavItemClick, activeNavItem }) {
         icon={<SvgIcon svg={paletteSvg} />}
         isActive={activeNavItem === "Appearance"}
         onClick={() => handleNavItemClick("Appearance")}
+      />
+      <NavItem
+        text={"Videography"}
+        shortcut={SIDEBAR_SHORTCUT_BY_KEY["Videography"]}
+        icon={<SvgIcon svg={playSvg} />}
+        isActive={activeNavItem === "Videography"}
+        onClick={() => handleNavItemClick("Videography")}
       />
       <NavItem
         text={"Export"}

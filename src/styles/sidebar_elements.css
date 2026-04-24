@@ -254,3 +254,75 @@ input:checked + .switch-button:before {
   color: var(--color-icon-hover);
   box-shadow: 0 0 0 var(--focus-ring-size) color-mix(in srgb, var(--color-focus-ring) 45%, transparent 55%);
 }
+
+.sidebar-action-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sidebar-control-gap-y);
+  width: 100%;
+}
+
+.sidebar-action-grid .button-rect {
+  width: 100%;
+  min-width: 0;
+  white-space: normal;
+  line-height: 1.15;
+}
+
+.sidebar-action-grid-full {
+  grid-column: 1 / -1;
+}
+
+.sidebar-action-grid--secondary {
+  grid-template-columns: 1fr;
+  margin-top: calc(-1 * var(--sidebar-control-gap-y));
+}
+
+.sidebar-action-grid--compact {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.sidebar-status-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sidebar-control-gap-y);
+  padding: 0.75rem;
+  border: var(--border-thin) solid var(--color-border-subtle);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--color-surface-muted) 76%, transparent 24%);
+}
+
+.sidebar-status-row,
+.sidebar-detail-control {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sidebar-control-gap-y);
+  width: 100%;
+}
+
+.sidebar-progress-track {
+  width: 100%;
+  height: 0.35rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--color-slider-track);
+}
+
+.sidebar-progress-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-accent);
+  transition: width var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.videography-keyframe-details {
+  gap: 0.65rem;
+}
+
+.button-rect:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  transform: none;
+}

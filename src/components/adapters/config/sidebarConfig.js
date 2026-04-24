@@ -14,6 +14,7 @@ export const SIDEBAR_SECTIONS = [
   { key: "Communities", shortcut: "c" },
   { key: "Physics",     shortcut: "p" },
   { key: "Appearance",  shortcut: "a" },
+  { key: "Videography", shortcut: "v" },
   { key: "Export",      shortcut: "e" },
 ];
 

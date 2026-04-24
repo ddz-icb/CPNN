@@ -7,6 +7,7 @@ import { filteredAfterStartInit, isPreprocessedInit, useGraphFlags } from "../..
 import { graphMetricsInit, useGraphMetrics } from "../../adapters/state/graphMetricsState.js";
 import { searchStateInit, useSearchState } from "../../adapters/state/searchState.js";
 import { communityStateInit, useCommunityState } from "../../adapters/state/communityState.js";
+import { useVideography, videographyInit } from "../../adapters/state/videographyState.js";
 
 export const resetService = {
   resetSimulation(options = {}) {
@@ -33,6 +34,7 @@ export const resetService = {
     }
 
     useCommunityState.getState().setAllCommunityState(communityStateInit);
+    useVideography.getState().setAllVideography(videographyInit);
 
     errorService.clearError();
     this.setReset(true);

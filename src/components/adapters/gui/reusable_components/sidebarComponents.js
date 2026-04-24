@@ -172,21 +172,97 @@ export function FieldApplyBlock({
   );
 }
 
-export function Button({ onClick, onChange, linkRef, tooltip, tooltipId, text, className, variant, fileInputProps = {} }) {
+export function Button({ onClick, onChange, linkRef, tooltip, tooltipId, text, className, variant, disabled, fileInputProps = {} }) {
   return (
     <>
       <ButtonCN
-        className={`button-rect default-height default-min-width ${className}`}
+        className={`button-rect default-height default-min-width ${className ?? ""}`}
         variant={variant}
         data-tooltip-id={tooltipId}
         data-tooltip-content={tooltip}
         onClick={onClick}
+        disabled={disabled}
       >
         <span>{text}</span>
         {(linkRef || onChange) && <input type="file" style={{ display: "none" }} onChange={onChange} ref={linkRef} {...fileInputProps} />}
       </ButtonCN>
       <PortalTooltip id={tooltipId} place="top" effect="solid" className="tooltip-gui" positionStrategy="fixed" />
     </>
+  );
+}
+
+export function ButtonGrid({ actions = [], secondary = false, compact = false, className = "" }) {
+  const classNames = [
+    "sidebar-action-grid",
+    secondary ? "sidebar-action-grid--secondary" : "",
+    compact ? "sidebar-action-grid--compact" : "",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  return (
+    <div className={classNames}>
+      {actions.map(({ key, fullWidth, className: actionClassName = "", ...action }) => (
+        <Button
+          key={key ?? action.text}
+          {...action}
+          className={[fullWidth ? "sidebar-action-grid-full" : "", actionClassName].filter(Boolean).join(" ")}
+        />
+      ))}
+    </div>
+  );
+}
+
+export function StatusProgressBlock({ label, value, status, progress = 0 }) {
+  const clampedProgress = Math.min(Math.max(progress ?? 0, 0), 1);
+
+  return (
+    <div className="sidebar-status-card" role="status">
+      <div className="sidebar-status-row">
+        <span className="item-table-primary-text">{label}</span>
+        <span className="text-secondary">{value}</span>
+      </div>
+      <div className="sidebar-progress-track" aria-hidden="true">
+        <span className="sidebar-progress-fill" style={{ width: `${Math.round(clampedProgress * 100)}%` }} />
+      </div>
+      {status && <span className="sidebar-control-helper text-secondary">{status}</span>}
+    </div>
+  );
+}
+
+export function DetailControlRow({ label, children }) {
+  return (
+    <div className="sidebar-detail-control">
+      <label className="item-table-primary-text">{label}</label>
+      {children}
+    </div>
+  );
+}
+
+export function DetailNumberRow({ label, value, min, max, step, onChange, onCommit }) {
+  return (
+    <DetailControlRow label={label}>
+      <InputCN
+        className="input-field default-width default-height"
+        type="number"
+        lang="en"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={(event) => onChange?.(event.target.value)}
+        onBlur={(event) => onCommit?.(event.target.value)}
+      />
+    </DetailControlRow>
+  );
+}
+
+export function DetailSelectRow({ label, value, options = [], onChange }) {
+  return (
+    <DetailControlRow label={label}>
+      <SelectInput value={value} setValue={onChange} options={options} />
+    </DetailControlRow>
   );
 }
 
