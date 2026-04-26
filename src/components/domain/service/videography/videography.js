@@ -45,6 +45,9 @@ const VIDEO_EXPORT_PRESETS = {
 };
 
 const VIDEO_KEYFRAME_INTERVAL_SECONDS = 2;
+const TRANSITION_FILTER_FADE_OUT_END = 0.6;
+const TRANSITION_FILTER_FADE_OUT_POWER = 3;
+const TRANSITION_FILTER_ALPHA_CUTOFF = 0.08;
 
 const MIN_ZOOM = 0.05;
 const MAX_ZOOM = 50;
@@ -788,14 +791,23 @@ export function sampleCameraPathAtMs(timeline, timeMs) {
 function getFrameRenderContext(sample, fallback) {
   const keyframe = sample?.stepType === "transition" ? sample.to : sample?.keyframe ?? sample?.to ?? sample?.from;
   const scene = keyframe?.scene ?? {};
-  const usesSnapshotGraph = hasGraphData(scene.graphSnapshot);
-  const frameGraphData = usesSnapshotGraph ? scene.graphSnapshot : fallback.graphData;
+  const transitionGraphData =
+    sample?.stepType === "transition"
+      ? buildTransitionGraphData(sample.from?.scene?.graphSnapshot, sample.to?.scene?.graphSnapshot, sample.easedT)
+      : null;
+  const usesSnapshotGraph = hasGraphData(transitionGraphData) || hasGraphData(scene.graphSnapshot);
+  const frameGraphData = transitionGraphData ?? (hasGraphData(scene.graphSnapshot) ? scene.graphSnapshot : fallback.graphData);
   const appearance = scene.appearanceSnapshot ?? {};
+  const fromAppearance = sample?.from?.scene?.appearanceSnapshot ?? {};
+  const toAppearance = sample?.to?.scene?.appearanceSnapshot ?? {};
   const colorscheme = scene.colorschemeSnapshot ?? {};
   const theme = scene.themeSnapshot ?? {};
   const communityHighlightNodeIds = getCommunityHighlightNodeIds(scene.communitySnapshot);
 
-  const frameLinkWidth = finiteNumberOr(appearance.linkWidth, fallback.linkWidth);
+  const frameLinkWidth =
+    sample?.stepType === "transition"
+      ? interpolateFiniteNumber(fromAppearance.linkWidth, toAppearance.linkWidth, sample.easedT, fallback.linkWidth)
+      : finiteNumberOr(appearance.linkWidth, fallback.linkWidth);
   const frameLinkColorscheme = getColorschemeData(colorscheme.linkColorscheme, fallback.linkColorscheme);
   const frameNodeColorscheme = getColorschemeData(colorscheme.nodeColorscheme, fallback.nodeColorscheme);
   const frameLinkAttribsToColorIndices = getColorIndexMap(colorscheme.linkAttribsToColorIndices, fallback.linkAttribsToColorIndices);
@@ -823,6 +835,103 @@ function getFrameRenderContext(sample, fallback) {
       communityHighlightColor: theme.communityHighlightColor ?? fallback.communityHighlightColor,
     },
   };
+}
+
+function buildTransitionGraphData(fromGraph, toGraph, t) {
+  if (!hasGraphData(fromGraph) || !hasGraphData(toGraph)) return null;
+
+  const amount = clamp(Number.isFinite(t) ? t : 0, 0, 1);
+  const fromNodes = new Map(fromGraph.nodes.map((node) => [String(node.id), node]));
+  const toNodes = new Map(toGraph.nodes.map((node) => [String(node.id), node]));
+  const nodeIds = new Set([...fromNodes.keys(), ...toNodes.keys()]);
+  const nodes = [];
+  const nodeAlpha = new Map();
+
+  for (const nodeId of nodeIds) {
+    const fromNode = fromNodes.get(nodeId);
+    const toNode = toNodes.get(nodeId);
+    const alpha = getPresenceTransitionAlpha(Boolean(fromNode), Boolean(toNode), amount);
+    const node = interpolateGraphNode(fromNode, toNode, amount, alpha);
+    nodes.push(node);
+    nodeAlpha.set(nodeId, alpha);
+  }
+
+  const fromLinks = new Map((fromGraph.links ?? []).map((link) => [getTransitionLinkKey(link), link]));
+  const toLinks = new Map((toGraph.links ?? []).map((link) => [getTransitionLinkKey(link), link]));
+  const linkKeys = new Set([...fromLinks.keys(), ...toLinks.keys()]);
+  const links = [];
+
+  for (const linkKey of linkKeys) {
+    if (!linkKey) continue;
+    const fromLink = fromLinks.get(linkKey);
+    const toLink = toLinks.get(linkKey);
+    const source = getEndpointIdForFrame(toLink?.source ?? fromLink?.source);
+    const target = getEndpointIdForFrame(toLink?.target ?? fromLink?.target);
+    if (!nodeIds.has(String(source)) || !nodeIds.has(String(target))) continue;
+
+    const linkAlpha = getPresenceTransitionAlpha(Boolean(fromLink), Boolean(toLink), amount);
+    const endpointAlpha = Math.min(nodeAlpha.get(String(source)) ?? 1, nodeAlpha.get(String(target)) ?? 1);
+    links.push({
+      ...(toLink ?? fromLink),
+      source,
+      target,
+      __alpha: clamp(Math.min(linkAlpha, endpointAlpha), 0, 1),
+    });
+  }
+
+  return {
+    ...toGraph,
+    nodes,
+    links,
+  };
+}
+
+function getPresenceTransitionAlpha(wasPresent, isPresent, t) {
+  if (wasPresent && isPresent) return 1;
+  const amount = clamp(Number.isFinite(t) ? t : 0, 0, 1);
+  if (wasPresent) {
+    if (amount >= TRANSITION_FILTER_FADE_OUT_END) return 0;
+    const fadeProgress = clamp(amount / TRANSITION_FILTER_FADE_OUT_END, 0, 1);
+    const alpha = Math.pow(1 - fadeProgress, TRANSITION_FILTER_FADE_OUT_POWER);
+    return alpha <= TRANSITION_FILTER_ALPHA_CUTOFF ? 0 : alpha;
+  }
+  if (isPresent) {
+    return amount * amount * (3 - 2 * amount);
+  }
+  return 0;
+}
+
+function interpolateGraphNode(fromNode, toNode, t, alpha) {
+  const source = toNode ?? fromNode ?? {};
+  const target = toNode ?? fromNode ?? {};
+  const origin = fromNode ?? toNode ?? {};
+
+  return {
+    ...source,
+    x: interpolateFiniteNumber(origin.x, target.x, t, source.x ?? 0),
+    y: interpolateFiniteNumber(origin.y, target.y, t, source.y ?? 0),
+    z: interpolateFiniteNumber(origin.z, target.z, t, source.z ?? 0),
+    labelX: interpolateFiniteNumber(origin.labelX, target.labelX, t, source.labelX ?? source.x ?? 0),
+    labelY: interpolateFiniteNumber(origin.labelY, target.labelY, t, source.labelY ?? source.y ?? 0),
+    labelVisible: Boolean(origin.labelVisible || target.labelVisible),
+    __alpha: clamp(alpha, 0, 1),
+  };
+}
+
+function getTransitionLinkKey(link) {
+  if (!link) return "";
+  const source = String(getEndpointIdForFrame(link.source) ?? "");
+  const target = String(getEndpointIdForFrame(link.target) ?? "");
+  if (!source || !target) return "";
+  const endpoints = [source, target].sort().join("\u001f");
+  const attribs = Array.isArray(link.attribs) ? link.attribs.map((attrib) => String(attrib)).sort().join("\u001f") : "";
+  return `${endpoints}\u001e${attribs}`;
+}
+
+function getEndpointIdForFrame(endpoint) {
+  if (endpoint == null) return endpoint;
+  if (typeof endpoint === "object") return endpoint.id ?? endpoint.data?.id ?? null;
+  return endpoint;
 }
 
 function getFrameGraph2D(graphData, nodeMap, showNodeLabels, cache) {
@@ -898,6 +1007,12 @@ function finiteNumberOr(value, fallback) {
   if (Number.isFinite(parsed)) return parsed;
   const fallbackParsed = Number.parseFloat(fallback);
   return Number.isFinite(fallbackParsed) ? fallbackParsed : 0;
+}
+
+function interpolateFiniteNumber(fromValue, toValue, t, fallback = 0) {
+  const from = finiteNumberOr(fromValue, fallback);
+  const to = finiteNumberOr(toValue, from);
+  return from + (to - from) * clamp(Number.isFinite(t) ? t : 0, 0, 1);
 }
 
 function runTimedStep({ durationMs, elapsedBeforeStep, totalMs, render, onProgress, onFrame, signal }) {

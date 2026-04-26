@@ -115,15 +115,16 @@ function computeSphereShadingAlpha(scale) {
   };
 }
 
-export function drawCanvasSphereShading(ctx, x, y, baseRadius, scale) {
+export function drawCanvasSphereShading(ctx, x, y, baseRadius, scale, alpha = 1) {
   const { highlightAlpha, shadowAlpha } = computeSphereShadingAlpha(scale);
+  const safeAlpha = Math.max(0, Math.min(1, Number.isFinite(alpha) ? alpha : 1));
   const rimRadius = baseRadius * pixiRimRadiusFactor;
   const rimWidth = baseRadius * pixiRimWidthFactor;
 
   ctx.save();
   ctx.translate(x, y);
   ctx.globalCompositeOperation = "multiply";
-  ctx.globalAlpha = shadowAlpha;
+  ctx.globalAlpha = shadowAlpha * safeAlpha;
   ctx.lineCap = "round";
   ctx.lineWidth = rimWidth;
   ctx.strokeStyle = "rgba(0,0,0,0.45)";
@@ -139,7 +140,7 @@ export function drawCanvasSphereShading(ctx, x, y, baseRadius, scale) {
   ctx.save();
   ctx.translate(x, y);
   ctx.globalCompositeOperation = "lighter";
-  ctx.globalAlpha = highlightAlpha;
+  ctx.globalAlpha = highlightAlpha * safeAlpha;
   ctx.lineCap = "round";
   ctx.lineWidth = rimWidth;
   ctx.strokeStyle = "rgba(255,255,255,0.55)";
@@ -152,4 +153,3 @@ export function drawCanvasSphereShading(ctx, x, y, baseRadius, scale) {
   ctx.fill();
   ctx.restore();
 }
-

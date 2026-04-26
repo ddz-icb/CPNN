@@ -133,23 +133,39 @@ export function render3DQueue(ctx, items, drawParams, gridOptions) {
   for (const item of items) {
     if (item.type === "link") {
       const link = item.link;
+      const alpha = getRenderAlpha(link);
+      if (alpha <= 0) continue;
       const sourceScale = link.source?.scale ?? 1;
       const targetScale = link.target?.scale ?? 1;
       const widthScale = (sourceScale + targetScale) / 2;
+      ctx.save();
+      ctx.globalAlpha *= alpha;
       drawLineCanvas(ctx, link, linkWidth, linkColorscheme, linkAttribsToColorIndices, { widthScale });
+      ctx.restore();
     } else if (item.type === "node") {
       const { node, mapEntry } = item;
       const scale = node.scale ?? mapEntry?.circle?.scale?.x ?? 1;
       const tint = computeLightingTint(scale);
+      const alpha = getRenderAlpha(node);
+      if (alpha <= 0) continue;
+      ctx.save();
+      ctx.globalAlpha *= alpha;
       drawCircleCanvas(ctx, node, mapEntry?.circle, circleBorderColor, nodeColorscheme, nodeAttribsToColorIndices, {
         scale,
         tint,
         enableShading,
+        alpha,
       });
-      drawNodeHighlightIfActive(ctx, node, highlightNodeIdSet, highlightColor, scale);
-      drawNodeHighlightIfActive(ctx, node, communityHighlightNodeIdSet, communityHighlightColor, scale);
+      drawNodeHighlightIfActive(ctx, node, highlightNodeIdSet, highlightColor, scale, alpha);
+      drawNodeHighlightIfActive(ctx, node, communityHighlightNodeIdSet, communityHighlightColor, scale, alpha);
+      ctx.restore();
     } else if (item.type === "label") {
+      const alpha = getRenderAlpha(item.node);
+      if (alpha <= 0) continue;
+      ctx.save();
+      ctx.globalAlpha *= alpha;
       drawLabel(ctx, item.node, item.mapEntry, textColor);
+      ctx.restore();
     }
   }
 }
@@ -172,18 +188,28 @@ export function render2DGraph(ctx, graphData, nodeMap, params) {
   const communityHighlightNodeIdSet = toNodeIdSet(communityHighlightNodeIds);
 
   for (const link of graphData.links) {
+    const alpha = getRenderAlpha(link);
+    if (alpha <= 0) continue;
+    ctx.save();
+    ctx.globalAlpha *= alpha;
     drawLineCanvas(ctx, link, linkWidth, linkColorscheme, linkAttribsToColorIndices);
+    ctx.restore();
   }
 
   for (const node of graphData.nodes) {
     const mapEntry = nodeMap?.[node.id];
-    drawCircleCanvas(ctx, node, mapEntry?.circle, circleBorderColor, nodeColorscheme, nodeAttribsToColorIndices);
-    drawNodeHighlightIfActive(ctx, node, highlightNodeIdSet, highlightColor);
-    drawNodeHighlightIfActive(ctx, node, communityHighlightNodeIdSet, communityHighlightColor);
+    const alpha = getRenderAlpha(node);
+    if (alpha <= 0) continue;
+    ctx.save();
+    ctx.globalAlpha *= alpha;
+    drawCircleCanvas(ctx, node, mapEntry?.circle, circleBorderColor, nodeColorscheme, nodeAttribsToColorIndices, { alpha });
+    drawNodeHighlightIfActive(ctx, node, highlightNodeIdSet, highlightColor, 1, alpha);
+    drawNodeHighlightIfActive(ctx, node, communityHighlightNodeIdSet, communityHighlightColor, 1, alpha);
     const labelVisible = node.labelVisible ?? mapEntry?.nodeLabel?.visible ?? false;
     if (labelVisible) {
       drawLabel(ctx, node, mapEntry, textColor);
     }
+    ctx.restore();
   }
 }
 
@@ -286,7 +312,7 @@ function drawGridExport(ctx, segments, color) {
   ctx.restore();
 }
 
-function drawNodeHighlightIfActive(ctx, node, nodeIdSet, color, scale = 1) {
+function drawNodeHighlightIfActive(ctx, node, nodeIdSet, color, scale = 1, alpha = 1) {
   if (!node || !nodeIdSet?.has?.(String(node.id)) || !color) return;
 
   const centerX = node.x ?? 0;
@@ -303,12 +329,18 @@ function drawNodeHighlightIfActive(ctx, node, nodeIdSet, color, scale = 1) {
   ctx.strokeStyle = color;
   for (const ring of rings) {
     ctx.beginPath();
-    ctx.globalAlpha = ring.alpha;
+    ctx.globalAlpha = ring.alpha * alpha;
     ctx.lineWidth = ring.width * safeScale;
     ctx.arc(centerX, centerY, ring.radius * safeScale, 0, 2 * Math.PI);
     ctx.stroke();
   }
   ctx.restore();
+}
+
+function getRenderAlpha(item) {
+  const alpha = Number.parseFloat(item?.__alpha);
+  if (!Number.isFinite(alpha)) return 1;
+  return clamp(alpha, 0, 1);
 }
 
 function toNodeIdSet(ids) {

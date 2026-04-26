@@ -48,7 +48,7 @@ export function changeNodeColors(nodeMap, circleBorderColor, colorscheme, nodeAt
 }
 
 export function drawCircleCanvas(ctx, node, circle, circleBorderColor, colorscheme, nodeAttribsToColorIndices, options = {}) {
-  const { scale = 1, tint = null, enableShading = false } = options;
+  const { scale = 1, tint = null, enableShading = false, alpha = ctx.globalAlpha ?? 1 } = options;
   const centerX = circle?.x ?? node.x ?? 0;
   const centerY = circle?.y ?? node.y ?? 0;
   const effectiveRadius = radius * scale;
@@ -78,6 +78,6 @@ export function drawCircleCanvas(ctx, node, circle, circleBorderColor, colorsche
   }
 
   if (enableShading) {
-    drawCanvasSphereShading(ctx, centerX, centerY, effectiveRadius, scale);
+    drawCanvasSphereShading(ctx, centerX, centerY, effectiveRadius, scale, alpha);
   }
 }
