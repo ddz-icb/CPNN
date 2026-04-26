@@ -306,8 +306,14 @@ export function filterActiveNodesForPixi(showNodeLabels, graphData, nodeMap) {
   if (!nodeMap || !graphData?.nodes) return;
 
   Object.values(nodeMap).forEach(({ circle, nodeLabel }) => {
-    if (circle) circle.visible = false;
-    if (nodeLabel) nodeLabel.visible = false;
+    if (circle) {
+      circle.visible = false;
+      circle.__hiddenByFilter = true;
+    }
+    if (nodeLabel) {
+      nodeLabel.visible = false;
+      nodeLabel.__hiddenByFilter = true;
+    }
   });
 
   graphData.nodes.forEach((n) => {
@@ -316,6 +322,10 @@ export function filterActiveNodesForPixi(showNodeLabels, graphData, nodeMap) {
     const { circle, nodeLabel } = entry;
     if (circle) {
       circle.visible = true;
+      circle.__hiddenByFilter = false;
+    }
+    if (nodeLabel) {
+      nodeLabel.__hiddenByFilter = false;
     }
     if (showNodeLabels && nodeLabel) {
       nodeLabel.visible = true;

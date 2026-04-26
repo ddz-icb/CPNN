@@ -1,10 +1,12 @@
 import { useCallback, useRef } from "react";
 
 import { useAppearance } from "../../state/appearanceState.js";
+import { useColorschemeState } from "../../state/colorschemeState.js";
 import { useContainer } from "../../state/containerState.js";
 import { useGraphState } from "../../state/graphState.js";
 import { usePixiState } from "../../state/pixiState.js";
 import { useRenderState } from "../../state/canvasState.js";
+import { useTheme } from "../../state/themeState.js";
 import { defaultTransitionSecondsInit, holdSecondsInit, useVideography } from "../../state/videographyState.js";
 import {
   ButtonGrid,
@@ -36,7 +38,7 @@ import {
   getViewModeLabel,
   moveKeyframeById,
   playCameraPath,
-  recordCameraPathSceneVideo,
+  recordCameraPathVideo,
   removeKeyframeById,
   sanitizeNumber,
   updateKeyframeById,
@@ -47,11 +49,9 @@ import {
   applyKeyframeScene,
   applyKeyframeTransitionScene,
   applyInterpolatedKeyframePhysics,
-  captureSceneStateSnapshot,
   createCapturedKeyframeScene,
-  createTooltipOverlayController,
   describeKeyframeScene,
-  restoreSceneStateSnapshot,
+  refreshActiveTooltipPosition,
 } from "./videographyScene.js";
 
 const DeleteIcon = (props) => <SvgIcon svg={trashSvg} {...props} />;
@@ -70,10 +70,12 @@ const VIDEO_SETTING_FIELDS = [
 
 export function VideographySidebar() {
   const { appearance } = useAppearance();
+  const { colorschemeState } = useColorschemeState();
   const { container } = useContainer();
   const { graphState } = useGraphState();
   const { pixiState } = usePixiState();
   const { renderState } = useRenderState();
+  const { theme } = useTheme();
   const { videography, setVideography, setKeyframes } = useVideography();
   const lastProgressRef = useRef(0);
 
@@ -85,6 +87,7 @@ export function VideographySidebar() {
   const hasReadyCanvas = Boolean(renderState.app && container.width && container.height && graphState.graph);
   const canEditRoute = hasReadyCanvas && !videography.isRendering && !hasModeMismatch;
   const canRenderRoute = canEditRoute && keyframes.length >= 2;
+  const canDownloadRoute = hasReadyCanvas && !videography.isRendering && keyframes.length >= 2;
   const totalDurationSeconds = getCameraPathDurationMs(keyframes, videography.holdSeconds) / 1000;
   const transitionLimits = CAMERA_PATH_LIMITS.transitionSeconds;
   const rows = buildKeyframeRows(keyframes);
@@ -128,7 +131,11 @@ export function VideographySidebar() {
         transitionSeconds: videography.defaultTransitionSeconds,
         holdSeconds: videography.holdSeconds,
       }),
-      scene: createCapturedKeyframeScene(),
+      scene: createCapturedKeyframeScene({
+        graphData: graphState.graph?.data,
+        nodeMap: pixiState.nodeMap,
+        mode: captured.mode,
+      }),
     };
 
     setKeyframes([...keyframes, nextKeyframe]);
@@ -142,9 +149,9 @@ export function VideographySidebar() {
     setStatus("", 0);
   };
 
-  const runWithCameraPathState = async (operation, busyStatus, completeStatus) => {
+  const runWithCameraPathState = async (operation, busyStatus, completeStatus, { requireCurrentMode = true } = {}) => {
     try {
-      validateCameraPath(keyframes, currentMode);
+      validateCameraPath(keyframes, requireCurrentMode ? currentMode : null);
       setVideography("error", null);
       setVideography("isRendering", true);
       lastProgressRef.current = 0;
@@ -172,6 +179,7 @@ export function VideographySidebar() {
           container,
           holdSeconds: videography.holdSeconds,
           onProgress: setRenderProgress,
+          onFrame: () => refreshActiveTooltipPosition({ app: renderState.app, nodeMap: pixiState.nodeMap }),
           onKeyframeEnter: (keyframe, index) =>
             index === 0 ? applyKeyframeScene(keyframe, { app: renderState.app, nodeMap: pixiState.nodeMap }) : undefined,
           onTransitionStart: (from, to) =>
@@ -186,54 +194,43 @@ export function VideographySidebar() {
   const handleDownload = () =>
     runWithCameraPathState(
       async () => {
-        const sceneSnapshot = captureSceneStateSnapshot();
-        const overlayController = createTooltipOverlayController({ app: renderState.app });
-
-        try {
-          await recordCameraPathSceneVideo({
-            keyframes,
-            app: renderState.app,
-            appearance,
-            container,
-            graphName: graphState.graph?.name,
-            holdSeconds: videography.holdSeconds,
-            exportQualityPreset,
-            onProgress: setRenderProgress,
-            onKeyframeEnter: async (keyframe, index) => {
-              if (index !== 0) return;
-              await applyKeyframeScene(keyframe, { app: renderState.app, nodeMap: pixiState.nodeMap });
-              overlayController.markDirty();
-              await overlayController.sync();
-            },
-            onTransitionStart: async (from, to) => {
-              const transitionScene = await applyKeyframeTransitionScene(from, to, {
-                app: renderState.app,
-                nodeMap: pixiState.nodeMap,
-              });
-              if (transitionScene.filterChanged || transitionScene.tooltipChanged) {
-                overlayController.markDirty();
-                await overlayController.sync();
-              }
-            },
-            onTransitionFrame: ({ from, to, easedT }) => {
-              applyInterpolatedKeyframePhysics(from, to, easedT);
-            },
-            drawOverlay: (context) => overlayController.draw(context),
-          });
-        } finally {
-          overlayController.dispose();
-          restoreSceneStateSnapshot(sceneSnapshot);
-        }
+        await recordCameraPathVideo({
+          keyframes,
+          app: renderState.app,
+          appearance,
+          container,
+          graphName: graphState.graph?.name,
+          graphData: graphState.graph?.data,
+          nodeMap: pixiState.nodeMap,
+          linkWidth: appearance.linkWidth,
+          linkColorscheme: colorschemeState.linkColorscheme?.data,
+          linkAttribsToColorIndices: colorschemeState.linkAttribsToColorIndices,
+          circleBorderColor: theme.circleBorderColor,
+          textColor: theme.textColor,
+          nodeColorscheme: colorschemeState.nodeColorscheme?.data,
+          nodeAttribsToColorIndices: colorschemeState.nodeAttribsToColorIndices,
+          highlightColor: theme.highlightColor,
+          communityHighlightColor: theme.communityHighlightColor,
+          showNodeLabels: appearance.showNodeLabels,
+          enableShading: appearance.enable3DShading,
+          showGrid: appearance.show3DGrid,
+          gridLines: pixiState.grid3D?.__gridLines,
+          holdSeconds: videography.holdSeconds,
+          exportQualityPreset,
+          validateCurrentMode: false,
+          onProgress: setRenderProgress,
+        });
       },
-      "Recording video...",
+      "Rendering video...",
       "Video downloaded.",
+      { requireCurrentMode: false },
     );
 
-  const modeWarning = hasModeMismatch ? `Route is ${getViewModeLabel(routeMode)}. Switch back to edit or export it.` : "";
+  const modeWarning = hasModeMismatch ? `Route is ${getViewModeLabel(routeMode)}. Switch back to edit or preview it.` : "";
   const primaryActions = [
     { text: "Add Keyframe", onClick: handleAddKeyframe, disabled: !canEditRoute },
     { text: "Preview", onClick: handlePreview, disabled: !canRenderRoute },
-    { text: "Download Video", onClick: handleDownload, disabled: !canRenderRoute, fullWidth: true },
+    { text: "Download Video", onClick: handleDownload, disabled: !canDownloadRoute, fullWidth: true },
   ];
   const secondaryActions = [
     {
@@ -317,6 +314,7 @@ export function VideographySidebar() {
             app={renderState.app}
             appearance={appearance}
             container={container}
+            graphData={graphState.graph?.data}
             nodeMap={pixiState.nodeMap}
             updateKeyframe={updateKeyframe}
             moveKeyframe={(direction) => setKeyframes((currentKeyframes) => moveKeyframeById(currentKeyframes, keyframe.id, direction))}
@@ -344,6 +342,7 @@ function KeyframeDetails({
   app,
   appearance,
   container,
+  graphData,
   nodeMap,
   updateKeyframe,
   moveKeyframe,
@@ -367,7 +366,15 @@ function KeyframeDetails({
       setStatus("Canvas is not ready.", 0);
       return;
     }
-    updateKeyframe(keyframe.id, { mode: captured.mode, view: captured.view, scene: createCapturedKeyframeScene() });
+    updateKeyframe(keyframe.id, {
+      mode: captured.mode,
+      view: captured.view,
+      scene: createCapturedKeyframeScene({
+        graphData,
+        nodeMap,
+        mode: captured.mode,
+      }),
+    });
     setStatus(`Updated ${keyframe.label}.`);
   };
   const actions = [
@@ -439,6 +446,8 @@ function KeyframeSceneControls({ keyframe }) {
       <DetailRow label={"Tooltip"} value={sceneSummary.tooltip} />
       <DetailRow label={"Filters"} value={sceneSummary.filter} />
       <DetailRow label={"Physics"} value={sceneSummary.physics} />
+      <DetailRow label={"Search"} value={sceneSummary.search} />
+      <DetailRow label={"Community"} value={sceneSummary.community} />
     </>
   );
 }

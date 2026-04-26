@@ -92,27 +92,29 @@ export function useProteinDetails(nodeId) {
         if (isCancelled) return;
         if (!uniprotData) return;
 
+        const pdbId = getPdbIdUniprotData(uniprotData);
         const nextDetails = {
           fullName: getFullNameUniprotData(uniprotData) || "",
           description: getDescriptionUniprotData(uniprotData) || "",
-          pdbId: "",
+          pdbId: pdbId || "",
           responsePdb: null,
         };
-
-        const pdbId = getPdbIdUniprotData(uniprotData);
-        if (pdbId) {
-          nextDetails.pdbId = pdbId;
-          const responsePdb = await fetchPdbData(pdbId);
-          if (!isCancelled && responsePdb?.data) {
-            nextDetails.responsePdb = responsePdb;
-          }
-        }
 
         if (!isCancelled) {
           setDetails((prev) => ({
             ...prev,
             ...nextDetails,
           }));
+        }
+
+        if (pdbId) {
+          const responsePdb = await fetchPdbData(pdbId);
+          if (!isCancelled && responsePdb?.data) {
+            setDetails((prev) => ({
+              ...prev,
+              responsePdb,
+            }));
+          }
         }
       } catch (error) {
         if (!isCancelled) log.error(error);

@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { VIDEO_EXPORT_QUALITY_DEFAULT } from "../../domain/service/videography/videography.js";
 
 export const defaultTransitionSecondsInit = 3;
-export const holdSecondsInit = 0.35;
+export const holdSecondsInit = 0.5;
 
 export const videographyInit = {
   keyframes: [],

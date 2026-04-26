@@ -142,7 +142,7 @@
   --shadow-floating: var(--shadow-floating-dark);
   --color-surface: #0f1229;
   --color-surface-contrast: #10183f;
-  --color-surface-muted: color-mix(in srgb, #0f1229 80%, #1632c9 20%);
+  --color-surface-muted: #101849;
   --color-border: var(--color-accent);
   --color-border-subtle: color-mix(in srgb, var(--color-accent) 45%, transparent 55%);
   --color-border-accent: color-mix(in srgb, var(--color-accent) 75%, #c7d2ff 25%);

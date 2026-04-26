@@ -3,14 +3,16 @@ import { drawCircleCanvas, radius } from "../canvas_drawing/nodes.js";
 import { drawLineCanvas } from "../canvas_drawing/lines.js";
 import { computeLightingTint, rimRadiusFactor, rimWidthFactor } from "../canvas_drawing/shading.js";
 import { defaultCamera } from "../canvas_drawing/render3D.js";
+import { getNodeLabelOffsetY } from "../canvas_drawing/drawingUtils.js";
+import { getNodeIdName } from "../parsing/nodeIdParsing.js";
 
 function computeNodeBounds(node, mapEntry, tempCtx) {
   const labelVisible = node.labelVisible ?? mapEntry?.nodeLabel?.visible ?? false;
-  const labelText = node.labelText ?? mapEntry?.nodeLabel?.text ?? node.id;
+  const labelText = node.labelText ?? mapEntry?.nodeLabel?.text ?? getNodeIdName(node.id);
   const labelX = node.labelX ?? mapEntry?.nodeLabel?.x ?? node.x;
-  const labelY = node.labelY ?? mapEntry?.nodeLabel?.y ?? node.y;
-  const fontSize = node.labelFontSize ?? mapEntry?.nodeLabel?._fontSize ?? 12;
   const scale = node.scale ?? mapEntry?.circle?.scale?.x ?? 1;
+  const labelY = node.labelY ?? mapEntry?.nodeLabel?.y ?? node.y + getNodeLabelOffsetY(node.id) * scale;
+  const fontSize = node.labelFontSize ?? mapEntry?.nodeLabel?._fontSize ?? 12;
   const nodeRadius = radius * scale;
   const rimOuterRadius = nodeRadius * (rimRadiusFactor + rimWidthFactor);
   const highlightRadius = nodeRadius * 0.65;
@@ -92,11 +94,12 @@ export function build3DRenderQueue(graphData, nodeMap) {
 const DEFAULT_FONT_SIZE = 12;
 
 export function drawLabel(ctx, node, mapEntry, textColor) {
-  const labelText = node.labelText ?? mapEntry?.nodeLabel?.text ?? node.id;
+  const labelText = node.labelText ?? mapEntry?.nodeLabel?.text ?? getNodeIdName(node.id);
   const baseFontSize = node.labelFontSize ?? mapEntry?.nodeLabel?._fontSize ?? DEFAULT_FONT_SIZE;
   const scale = node.scale ?? mapEntry?.circle?.scale?.x ?? 1;
   const labelX = node.labelX ?? mapEntry?.nodeLabel?.x ?? node.x;
-  const labelY = (node.labelY ?? mapEntry?.nodeLabel?.y ?? node.y) + 10 * scale;
+  const labelTopY = node.labelY ?? mapEntry?.nodeLabel?.y ?? node.y + getNodeLabelOffsetY(node.id) * scale;
+  const labelY = labelTopY + 10 * scale;
   const fontSize = baseFontSize * scale;
 
   ctx.font = `${fontSize}px sans-serif`;
@@ -115,7 +118,13 @@ export function render3DQueue(ctx, items, drawParams, gridOptions) {
     nodeAttribsToColorIndices,
     textColor,
     enableShading,
+    highlightNodeIds,
+    communityHighlightNodeIds,
+    highlightColor,
+    communityHighlightColor,
   } = drawParams;
+  const highlightNodeIdSet = toNodeIdSet(highlightNodeIds);
+  const communityHighlightNodeIdSet = toNodeIdSet(communityHighlightNodeIds);
 
   if (gridOptions?.showGrid && Array.isArray(gridOptions.segments)) {
     drawGridExport(ctx, gridOptions.segments, textColor);
@@ -137,6 +146,8 @@ export function render3DQueue(ctx, items, drawParams, gridOptions) {
         tint,
         enableShading,
       });
+      drawNodeHighlightIfActive(ctx, node, highlightNodeIdSet, highlightColor, scale);
+      drawNodeHighlightIfActive(ctx, node, communityHighlightNodeIdSet, communityHighlightColor, scale);
     } else if (item.type === "label") {
       drawLabel(ctx, item.node, item.mapEntry, textColor);
     }
@@ -144,7 +155,21 @@ export function render3DQueue(ctx, items, drawParams, gridOptions) {
 }
 
 export function render2DGraph(ctx, graphData, nodeMap, params) {
-  const { linkWidth, linkColorscheme, linkAttribsToColorIndices, circleBorderColor, nodeColorscheme, nodeAttribsToColorIndices, textColor } = params;
+  const {
+    linkWidth,
+    linkColorscheme,
+    linkAttribsToColorIndices,
+    circleBorderColor,
+    nodeColorscheme,
+    nodeAttribsToColorIndices,
+    textColor,
+    highlightNodeIds,
+    communityHighlightNodeIds,
+    highlightColor,
+    communityHighlightColor,
+  } = params;
+  const highlightNodeIdSet = toNodeIdSet(highlightNodeIds);
+  const communityHighlightNodeIdSet = toNodeIdSet(communityHighlightNodeIds);
 
   for (const link of graphData.links) {
     drawLineCanvas(ctx, link, linkWidth, linkColorscheme, linkAttribsToColorIndices);
@@ -153,6 +178,8 @@ export function render2DGraph(ctx, graphData, nodeMap, params) {
   for (const node of graphData.nodes) {
     const mapEntry = nodeMap?.[node.id];
     drawCircleCanvas(ctx, node, mapEntry?.circle, circleBorderColor, nodeColorscheme, nodeAttribsToColorIndices);
+    drawNodeHighlightIfActive(ctx, node, highlightNodeIdSet, highlightColor);
+    drawNodeHighlightIfActive(ctx, node, communityHighlightNodeIdSet, communityHighlightColor);
     const labelVisible = node.labelVisible ?? mapEntry?.nodeLabel?.visible ?? false;
     if (labelVisible) {
       drawLabel(ctx, node, mapEntry, textColor);
@@ -198,7 +225,7 @@ export function build3DFrameGraphData(
       scale: projection.scale,
       depth: projection.depth,
       labelX: projection.x,
-      labelY: projection.y,
+      labelY: projection.y + getNodeLabelOffsetY(node.id) * projection.scale,
     };
 
     nodes.push(frameNode);
@@ -257,6 +284,36 @@ function drawGridExport(ctx, segments, color) {
   }
 
   ctx.restore();
+}
+
+function drawNodeHighlightIfActive(ctx, node, nodeIdSet, color, scale = 1) {
+  if (!node || !nodeIdSet?.has?.(String(node.id)) || !color) return;
+
+  const centerX = node.x ?? 0;
+  const centerY = node.y ?? 0;
+  const safeScale = Number.isFinite(scale) ? scale : 1;
+  const rings = [
+    { radius: radius + 4, width: 3, alpha: 1 },
+    { radius: radius + 8, width: 2, alpha: 0.7 },
+    { radius: radius + 11, width: 1, alpha: 0.4 },
+  ];
+
+  ctx.save();
+  ctx.globalCompositeOperation = "lighter";
+  ctx.strokeStyle = color;
+  for (const ring of rings) {
+    ctx.beginPath();
+    ctx.globalAlpha = ring.alpha;
+    ctx.lineWidth = ring.width * safeScale;
+    ctx.arc(centerX, centerY, ring.radius * safeScale, 0, 2 * Math.PI);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function toNodeIdSet(ids) {
+  if (!Array.isArray(ids) || ids.length === 0) return null;
+  return new Set(ids.map((id) => String(id)));
 }
 
 export function projectGridLines(gridLines, camera, container) {
@@ -357,15 +414,17 @@ function clamp(value, min, max) {
 
 function buildFrameNode(node, mapEntry, { showNodeLabels = false } = {}) {
   const nodeLabel = mapEntry?.nodeLabel;
+  const labelText = nodeLabel?.text ?? getNodeIdName(node.id);
+  const scale = node.scale ?? 1;
 
   return {
     ...node,
-    scale: node.scale ?? 1,
+    scale,
     depth: node.depth ?? 0,
     labelVisible: showNodeLabels,
     labelX: node.labelX ?? node.x,
-    labelY: node.labelY ?? node.y,
-    labelText: nodeLabel?.text ?? node.id,
+    labelY: node.labelY ?? node.y + getNodeLabelOffsetY(node.id) * scale,
+    labelText,
     labelFontSize: nodeLabel?._fontSize ?? DEFAULT_FONT_SIZE,
   };
 }

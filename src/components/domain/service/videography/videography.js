@@ -2,11 +2,7 @@ import * as d3 from "d3";
 import { defaultCamera } from "../canvas_drawing/render3D.js";
 import { getFileNameWithoutExtension } from "../parsing/fileParsing.js";
 import { buildExportGridLines } from "../download/exportGrid.js";
-import {
-  build2DFrameGraphData,
-  build3DFrameGraphData,
-  renderGraphFrameToCanvas,
-} from "../download/exportRender.js";
+import { build2DFrameGraphData, build3DFrameGraphData, renderGraphFrameToCanvas } from "../download/exportRender.js";
 import { createWebMCanvasEncoder } from "./videoEncoding.js";
 
 export const VIEW_MODE_2D = "2d";
@@ -22,7 +18,7 @@ export const EASING_OPTIONS = [
 ];
 
 export const CAMERA_PATH_LIMITS = {
-  transitionSeconds: { min: 0.25, max: 20, step: 0.25 },
+  transitionSeconds: { min: 0.05, max: 20, step: 0.25 },
   holdSeconds: { min: 0, max: 3, step: 0.05 },
 };
 
@@ -54,13 +50,7 @@ const MIN_ZOOM = 0.05;
 const MAX_ZOOM = 50;
 const MIN_FOV = 120;
 const MAX_FOV = 2400;
-const RECORDER_MIME_TYPES = [
-  "video/webm;codecs=vp9",
-  "video/webm;codecs=vp8",
-  "video/webm",
-  "video/mp4;codecs=h264",
-  "video/mp4",
-];
+const RECORDER_MIME_TYPES = ["video/webm;codecs=vp9", "video/webm;codecs=vp8", "video/webm", "video/mp4;codecs=h264", "video/mp4"];
 
 export function getViewMode(appearance) {
   return appearance?.threeD ? VIEW_MODE_3D : VIEW_MODE_2D;
@@ -97,7 +87,7 @@ export function createCameraKeyframe({ captured, index, transitionSeconds, holdS
     transitionSeconds,
     3,
     CAMERA_PATH_LIMITS.transitionSeconds.min,
-    CAMERA_PATH_LIMITS.transitionSeconds.max
+    CAMERA_PATH_LIMITS.transitionSeconds.max,
   );
   const safeHoldSeconds = sanitizeNumber(holdSeconds, 0, CAMERA_PATH_LIMITS.holdSeconds.min, CAMERA_PATH_LIMITS.holdSeconds.max);
 
@@ -280,7 +270,7 @@ export function getKeyframeHoldSeconds(keyframe, fallbackHoldSeconds = 0) {
     keyframe?.holdSeconds,
     finiteOr(fallbackHoldSeconds, 0),
     CAMERA_PATH_LIMITS.holdSeconds.min,
-    CAMERA_PATH_LIMITS.holdSeconds.max
+    CAMERA_PATH_LIMITS.holdSeconds.max,
   );
 }
 
@@ -396,15 +386,30 @@ export async function recordCameraPathSceneVideo({
     throw new Error("The graph canvas is not ready for video export.");
   }
 
+  if (typeof sourceCanvas.captureStream !== "function") {
+    throw new Error("This browser does not support downloadable camera path video export.");
+  }
+
   const exportConfig = getVideoExportConfig(exportQualityPreset);
   const outputContainer = getVideoExportContainer(container, exportConfig);
+
+  // Temporarily increase the Pixi renderer resolution so the source canvas has
+  // native pixels for the target output size rather than being upscaled from viewport res.
+  const targetResolution = Math.min(
+    4,
+    Math.ceil(Math.max(outputContainer.width / Math.max(1, container.width), outputContainer.height / Math.max(1, container.height))),
+  );
+  const originalResolution = typeof app?.renderer?.resolution === "number" ? app.renderer.resolution : 1;
+  const shouldUpscaleRenderer = targetResolution > originalResolution && typeof app?.renderer?.resize === "function";
+
+  if (shouldUpscaleRenderer) {
+    app.renderer.resolution = targetResolution;
+    app.renderer.resize(container.width, container.height);
+  }
+
   const captureCanvas = document.createElement("canvas");
   captureCanvas.width = outputContainer.width;
   captureCanvas.height = outputContainer.height;
-
-  if (typeof captureCanvas.captureStream !== "function") {
-    throw new Error("This browser does not support downloadable camera path video export.");
-  }
 
   const context = captureCanvas.getContext("2d", { alpha: false });
   if (!context) {
@@ -478,6 +483,13 @@ export async function recordCameraPathSceneVideo({
     throw error;
   } finally {
     stream.getTracks().forEach((track) => track.stop());
+    if (shouldUpscaleRenderer) {
+      app.renderer.resolution = originalResolution;
+      app.renderer.resize(container.width, container.height);
+      try {
+        app.renderer.render(app.stage);
+      } catch (_) {}
+    }
   }
 }
 
@@ -496,15 +508,19 @@ export async function recordCameraPathVideo({
   textColor,
   nodeColorscheme,
   nodeAttribsToColorIndices,
+  highlightColor,
+  communityHighlightColor,
   showNodeLabels = false,
   enableShading = true,
   showGrid = false,
   gridLines = [],
   holdSeconds = 0,
   exportQualityPreset = VIDEO_EXPORT_QUALITY_DEFAULT,
+  validateCurrentMode = true,
+  drawOverlay,
   onProgress,
 }) {
-  validateCameraPath(keyframes, getViewMode(appearance));
+  validateCameraPath(keyframes, validateCurrentMode ? getViewMode(appearance) : null);
 
   if (!graphData?.nodes || !graphData?.links) {
     throw new Error("The graph data is not ready for video export.");
@@ -523,31 +539,36 @@ export async function recordCameraPathVideo({
   }
 
   const background = resolveCanvasBackground(sourceCanvas);
-  const drawParams = {
-    linkWidth,
-    linkColorscheme,
-    linkAttribsToColorIndices,
-    circleBorderColor,
-    nodeColorscheme,
-    nodeAttribsToColorIndices,
-    textColor,
-  };
-  const routeMode = getRouteMode(keyframes);
-  const frameGraph2D = routeMode === VIEW_MODE_2D ? build2DFrameGraphData(graphData, nodeMap, { showNodeLabels }) : null;
-  const frameGridLines =
-    routeMode === VIEW_MODE_3D && showGrid
-      ? Array.isArray(gridLines) && gridLines.length > 0
-        ? gridLines
-        : buildExportGridLines(graphData, container)
-      : [];
   const timeline = createCameraPathTimeline(keyframes, holdSeconds);
   const totalMs = timeline.totalMs;
   const frameSchedule = createVideoFrameSchedule(totalMs, VIDEO_EXPORT_FPS);
   const viewportTransform = getVideoViewportTransform(container, outputContainer);
+  const frameGraph2DCache = new WeakMap();
+  const frameGridLineCache = new WeakMap();
+
+  const fallbackRenderContext = {
+    graphData,
+    nodeMap,
+    linkWidth,
+    linkColorscheme,
+    linkAttribsToColorIndices,
+    circleBorderColor,
+    textColor,
+    nodeColorscheme,
+    nodeAttribsToColorIndices,
+    highlightColor,
+    communityHighlightColor,
+    showNodeLabels,
+    enableShading,
+    showGrid,
+    gridLines,
+    container,
+  };
 
   const drawFrameAtTime = (timeMs) => {
     const sample = sampleCameraPathAtMs(timeline, timeMs);
     if (!sample?.view) return;
+    const frameContext = getFrameRenderContext(sample, fallbackRenderContext);
 
     context.save();
     context.fillStyle = background;
@@ -558,25 +579,28 @@ export async function recordCameraPathVideo({
     context.scale(viewportTransform.k, viewportTransform.k);
 
     if (sample.mode === VIEW_MODE_3D) {
-      const { graph, gridSegments } = build3DFrameGraphData(graphData, nodeMap, {
+      const frameGridLines = frameContext.showGrid ? getFrameGridLines(frameContext.graphData, frameContext, frameGridLineCache) : [];
+      const { graph, gridSegments } = build3DFrameGraphData(frameContext.graphData, frameContext.nodeMap, {
         camera: sample.view,
         sourceContainer: container,
         targetContainer: container,
-        showNodeLabels,
+        showNodeLabels: frameContext.showNodeLabels,
         gridLines: frameGridLines,
       });
-      renderGraphFrameToCanvas(context, graph, drawParams, {
+      renderGraphFrameToCanvas(context, graph, frameContext.drawParams, {
         threeD: true,
-        enableShading,
-        showGrid,
+        enableShading: frameContext.enableShading,
+        showGrid: frameContext.showGrid,
         gridSegments,
       });
     } else {
-      renderGraphFrameToCanvas(context, frameGraph2D, drawParams, {
+      const frameGraph2D = getFrameGraph2D(frameContext.graphData, frameContext.nodeMap, frameContext.showNodeLabels, frameGraph2DCache);
+      renderGraphFrameToCanvas(context, frameGraph2D, frameContext.drawParams, {
         transform: get2DFrameTransform(sample.view, container),
       });
     }
 
+    drawOverlay?.(context, { sample, frameContext, sourceContainer: container, outputContainer });
     context.restore();
   };
   const webmEncoder = await createWebMCanvasEncoder({
@@ -587,83 +611,26 @@ export async function recordCameraPathVideo({
     durationMs: getFrameScheduleDurationMs(frameSchedule),
   });
 
-  if (webmEncoder) {
-    try {
-      for (let frameIndex = 0; frameIndex < frameSchedule.length; frameIndex += 1) {
-        const frame = frameSchedule[frameIndex];
-        drawFrameAtTime(frame.timeMs);
-        await webmEncoder.encodeCanvasFrame(captureCanvas, frame);
-        onProgress?.(frameSchedule.length <= 1 ? 1 : frameIndex / (frameSchedule.length - 1));
-      }
-
-      const blob = await webmEncoder.finalize();
-      const filename = `${getFileNameWithoutExtension(graphName ?? "graph")}_tracking_shot.${webmEncoder.extension}`;
-      triggerDownload(blob, filename);
-      onProgress?.(1);
-      return { blob, filename };
-    } catch (error) {
-      webmEncoder.close();
-      throw error;
-    }
+  if (!webmEncoder) {
+    throw new Error("This browser does not support deterministic video export. Use a browser with WebCodecs support.");
   }
-
-  if (typeof MediaRecorder === "undefined" || typeof captureCanvas.captureStream !== "function") {
-    throw new Error("This browser does not support downloadable video export.");
-  }
-
-  const stream = captureCanvas.captureStream(VIDEO_EXPORT_FPS);
-  const requestFrame = () => {
-    stream.getVideoTracks().forEach((track) => track.requestFrame?.());
-  };
-  const mimeType = getSupportedRecorderMimeType();
-  const recorderOptions = {};
-  if (mimeType) recorderOptions.mimeType = mimeType;
-  recorderOptions.videoBitsPerSecond = exportConfig.bitrateMbps * 1000 * 1000;
-
-  const recorder = new MediaRecorder(stream, recorderOptions);
-  const chunks = [];
-  const recorderStopped = new Promise((resolve, reject) => {
-    recorder.ondataavailable = (event) => {
-      if (event.data?.size > 0) chunks.push(event.data);
-    };
-    recorder.onerror = () => reject(recorder.error ?? new Error("Video recording failed."));
-    recorder.onstop = () => resolve(new Blob(chunks, { type: recorder.mimeType || mimeType || "video/webm" }));
-  });
 
   try {
-    recorder.start(250);
-    const startTime = performance.now();
     for (let frameIndex = 0; frameIndex < frameSchedule.length; frameIndex += 1) {
       const frame = frameSchedule[frameIndex];
       drawFrameAtTime(frame.timeMs);
-      requestFrame();
+      await webmEncoder.encodeCanvasFrame(captureCanvas, frame);
       onProgress?.(frameSchedule.length <= 1 ? 1 : frameIndex / (frameSchedule.length - 1));
-
-      if (frameIndex < frameSchedule.length - 1) {
-        const nextFrame = frameSchedule[frameIndex + 1];
-        const targetTimestamp = startTime + nextFrame.timestampUs / 1000;
-        const waitMs = targetTimestamp - performance.now();
-        if (waitMs > 0) {
-          await wait(waitMs);
-        }
-      }
     }
 
-    await wait(Math.max(50, Math.round(1000 / VIDEO_EXPORT_FPS) * 2));
-    recorder.stop();
-
-    const blob = await recorderStopped;
-    const extension = getVideoExtension(blob.type || recorder.mimeType || mimeType);
-    const filename = `${getFileNameWithoutExtension(graphName ?? "graph")}_tracking_shot.${extension}`;
+    const blob = await webmEncoder.finalize();
+    const filename = `${getFileNameWithoutExtension(graphName ?? "graph")}_tracking_shot.${webmEncoder.extension}`;
     triggerDownload(blob, filename);
+    onProgress?.(1);
     return { blob, filename };
   } catch (error) {
-    if (recorder.state !== "inactive") {
-      recorder.stop();
-    }
+    webmEncoder.close();
     throw error;
-  } finally {
-    stream.getTracks().forEach((track) => track.stop());
   }
 }
 
@@ -777,6 +744,12 @@ export function sampleCameraPathAtMs(timeline, timeMs) {
     return {
       mode: timeline.lastKeyframe.mode,
       view: timeline.lastKeyframe.view,
+      keyframe: timeline.lastKeyframe,
+      from: timeline.lastKeyframe,
+      to: timeline.lastKeyframe,
+      stepType: "hold",
+      rawT: 1,
+      easedT: 1,
     };
   }
 
@@ -787,6 +760,12 @@ export function sampleCameraPathAtMs(timeline, timeMs) {
     return {
       mode: currentStep.keyframe.mode,
       view: currentStep.keyframe.view,
+      keyframe: currentStep.keyframe,
+      from: currentStep.keyframe,
+      to: currentStep.keyframe,
+      stepType: "hold",
+      rawT: 0,
+      easedT: 0,
     };
   }
 
@@ -797,7 +776,128 @@ export function sampleCameraPathAtMs(timeline, timeMs) {
   return {
     mode: currentStep.from.mode,
     view: interpolateCameraView(currentStep.from, currentStep.to, easedT),
+    keyframe: currentStep.to,
+    from: currentStep.from,
+    to: currentStep.to,
+    stepType: "transition",
+    rawT,
+    easedT,
   };
+}
+
+function getFrameRenderContext(sample, fallback) {
+  const keyframe = sample?.stepType === "transition" ? sample.to : sample?.keyframe ?? sample?.to ?? sample?.from;
+  const scene = keyframe?.scene ?? {};
+  const usesSnapshotGraph = hasGraphData(scene.graphSnapshot);
+  const frameGraphData = usesSnapshotGraph ? scene.graphSnapshot : fallback.graphData;
+  const appearance = scene.appearanceSnapshot ?? {};
+  const colorscheme = scene.colorschemeSnapshot ?? {};
+  const theme = scene.themeSnapshot ?? {};
+  const communityHighlightNodeIds = getCommunityHighlightNodeIds(scene.communitySnapshot);
+
+  const frameLinkWidth = finiteNumberOr(appearance.linkWidth, fallback.linkWidth);
+  const frameLinkColorscheme = getColorschemeData(colorscheme.linkColorscheme, fallback.linkColorscheme);
+  const frameNodeColorscheme = getColorschemeData(colorscheme.nodeColorscheme, fallback.nodeColorscheme);
+  const frameLinkAttribsToColorIndices = getColorIndexMap(colorscheme.linkAttribsToColorIndices, fallback.linkAttribsToColorIndices);
+  const frameNodeAttribsToColorIndices = getColorIndexMap(colorscheme.nodeAttribsToColorIndices, fallback.nodeAttribsToColorIndices);
+
+  return {
+    graphData: frameGraphData,
+    nodeMap: usesSnapshotGraph ? null : fallback.nodeMap,
+    gridLines: usesSnapshotGraph ? [] : fallback.gridLines,
+    showNodeLabels: typeof appearance.showNodeLabels === "boolean" ? appearance.showNodeLabels : fallback.showNodeLabels,
+    enableShading: typeof appearance.enable3DShading === "boolean" ? appearance.enable3DShading : fallback.enableShading,
+    showGrid: typeof appearance.show3DGrid === "boolean" ? appearance.show3DGrid : fallback.showGrid,
+    container: fallback.container,
+    drawParams: {
+      linkWidth: frameLinkWidth,
+      linkColorscheme: frameLinkColorscheme,
+      linkAttribsToColorIndices: frameLinkAttribsToColorIndices,
+      circleBorderColor: theme.circleBorderColor ?? fallback.circleBorderColor,
+      textColor: theme.textColor ?? fallback.textColor,
+      nodeColorscheme: frameNodeColorscheme,
+      nodeAttribsToColorIndices: frameNodeAttribsToColorIndices,
+      highlightNodeIds: Array.isArray(scene.searchSnapshot?.highlightedNodeIds) ? scene.searchSnapshot.highlightedNodeIds : [],
+      communityHighlightNodeIds,
+      highlightColor: theme.highlightColor ?? fallback.highlightColor,
+      communityHighlightColor: theme.communityHighlightColor ?? fallback.communityHighlightColor,
+    },
+  };
+}
+
+function getFrameGraph2D(graphData, nodeMap, showNodeLabels, cache) {
+  if (!hasGraphData(graphData)) return null;
+
+  let graphCache = cache.get(graphData);
+  if (!graphCache) {
+    graphCache = new Map();
+    cache.set(graphData, graphCache);
+  }
+
+  const cacheKey = showNodeLabels ? "labels" : "no-labels";
+  if (!graphCache.has(cacheKey)) {
+    graphCache.set(cacheKey, build2DFrameGraphData(graphData, nodeMap, { showNodeLabels }));
+  }
+
+  return graphCache.get(cacheKey);
+}
+
+function getFrameGridLines(graphData, frameContext, cache) {
+  if (!hasGraphData(graphData)) return [];
+  if (Array.isArray(frameContext.gridLines) && frameContext.gridLines.length > 0) {
+    return frameContext.gridLines;
+  }
+  if (!cache.has(graphData)) {
+    cache.set(graphData, buildExportGridLines(graphData, frameContext.container));
+  }
+  return cache.get(graphData);
+}
+
+function hasGraphData(graphData) {
+  return Array.isArray(graphData?.nodes) && Array.isArray(graphData?.links);
+}
+
+function getColorschemeData(snapshotColorscheme, fallbackColorscheme) {
+  if (Array.isArray(snapshotColorscheme)) return snapshotColorscheme;
+  if (Array.isArray(snapshotColorscheme?.data)) return snapshotColorscheme.data;
+  if (Array.isArray(fallbackColorscheme)) return fallbackColorscheme;
+  if (Array.isArray(fallbackColorscheme?.data)) return fallbackColorscheme.data;
+  return [];
+}
+
+function getColorIndexMap(snapshotMap, fallbackMap) {
+  const normalizedSnapshot = normalizeColorIndexMap(snapshotMap);
+  if (Object.keys(normalizedSnapshot).length > 0) return normalizedSnapshot;
+  const normalizedFallback = normalizeColorIndexMap(fallbackMap);
+  if (Object.keys(normalizedFallback).length > 0) return normalizedFallback;
+  return {};
+}
+
+function normalizeColorIndexMap(mapping) {
+  if (!mapping || typeof mapping !== "object") return {};
+  return Object.fromEntries(
+    Object.entries(mapping)
+      .filter(([key, value]) => key !== "length" && Number.isFinite(Number.parseInt(value, 10)))
+      .map(([key, value]) => [key, Number.parseInt(value, 10)]),
+  );
+}
+
+function getCommunityHighlightNodeIds(communitySnapshot) {
+  const selectedCommunityId = communitySnapshot?.selectedCommunityId;
+  if (selectedCommunityId == null || !communitySnapshot?.communityToNodeIds) return [];
+
+  const directMatch = communitySnapshot.communityToNodeIds[selectedCommunityId];
+  if (Array.isArray(directMatch)) return directMatch;
+
+  const stringMatch = communitySnapshot.communityToNodeIds[String(selectedCommunityId)];
+  return Array.isArray(stringMatch) ? stringMatch : [];
+}
+
+function finiteNumberOr(value, fallback) {
+  const parsed = Number.parseFloat(value);
+  if (Number.isFinite(parsed)) return parsed;
+  const fallbackParsed = Number.parseFloat(fallback);
+  return Number.isFinite(fallbackParsed) ? fallbackParsed : 0;
 }
 
 function runTimedStep({ durationMs, elapsedBeforeStep, totalMs, render, onProgress, onFrame, signal }) {
@@ -994,10 +1094,7 @@ function createVideoFrameSchedule(totalMs, fps) {
       timeMs,
       timestampUs: Math.max(0, Math.round(timeMs * 1000)),
       durationUs: Math.max(1, Math.round((nextTimeMs - timeMs) * 1000) || fallbackDurationUs),
-      keyFrame:
-        frameIndex === 0 ||
-        frameIndex === totalFrames - 1 ||
-        frameIndex % keyFrameInterval === 0,
+      keyFrame: frameIndex === 0 || frameIndex === totalFrames - 1 || frameIndex % keyFrameInterval === 0,
     };
   });
 }
