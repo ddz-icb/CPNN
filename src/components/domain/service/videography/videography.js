@@ -545,10 +545,166 @@ export async function recordCameraPathVideo({
   const timeline = createCameraPathTimeline(keyframes, holdSeconds);
   const totalMs = timeline.totalMs;
   const frameSchedule = createVideoFrameSchedule(totalMs, VIDEO_EXPORT_FPS);
+  const frameRenderer = createCameraPathFrameRenderer({
+    app,
+    container,
+    outputContainer,
+    graphData,
+    nodeMap,
+    linkWidth,
+    linkColorscheme,
+    linkAttribsToColorIndices,
+    circleBorderColor,
+    textColor,
+    nodeColorscheme,
+    nodeAttribsToColorIndices,
+    highlightColor,
+    communityHighlightColor,
+    showNodeLabels,
+    enableShading,
+    showGrid,
+    gridLines,
+    background,
+    drawOverlay,
+  });
+  const webmEncoder = await createWebMCanvasEncoder({
+    width: outputContainer.width,
+    height: outputContainer.height,
+    fps: VIDEO_EXPORT_FPS,
+    bitrate: exportConfig.bitrateMbps * 1000 * 1000,
+    durationMs: getFrameScheduleDurationMs(frameSchedule),
+  });
+
+  if (!webmEncoder) {
+    throw new Error("This browser does not support deterministic video export. Use a browser with WebCodecs support.");
+  }
+
+  try {
+    for (let frameIndex = 0; frameIndex < frameSchedule.length; frameIndex += 1) {
+      const frame = frameSchedule[frameIndex];
+      frameRenderer.drawFrameAtTime(context, timeline, frame.timeMs);
+      await webmEncoder.encodeCanvasFrame(captureCanvas, frame);
+      onProgress?.(frameSchedule.length <= 1 ? 1 : frameIndex / (frameSchedule.length - 1));
+    }
+
+    const blob = await webmEncoder.finalize();
+    const filename = `${getFileNameWithoutExtension(graphName ?? "graph")}_tracking_shot.${webmEncoder.extension}`;
+    triggerDownload(blob, filename);
+    onProgress?.(1);
+    return { blob, filename };
+  } catch (error) {
+    webmEncoder.close();
+    throw error;
+  }
+}
+
+export async function previewCameraPathVideo({
+  keyframes,
+  app,
+  container,
+  graphData,
+  nodeMap,
+  linkWidth,
+  linkColorscheme,
+  linkAttribsToColorIndices,
+  circleBorderColor,
+  textColor,
+  nodeColorscheme,
+  nodeAttribsToColorIndices,
+  highlightColor,
+  communityHighlightColor,
+  showNodeLabels = false,
+  enableShading = true,
+  showGrid = false,
+  gridLines = [],
+  holdSeconds = 0,
+  drawOverlay,
+  onProgress,
+  signal,
+}) {
+  validateCameraPath(keyframes, null);
+
+  if (!graphData?.nodes || !graphData?.links) {
+    throw new Error("The graph data is not ready for video preview.");
+  }
+
+  const sourceCanvas = getPixiCanvas(app);
+  if (!sourceCanvas) {
+    throw new Error("The graph canvas is not ready for video preview.");
+  }
+
+  const outputContainer = getVideoPreviewContainer(container);
+  const previewCanvas = createVideoPreviewCanvas(sourceCanvas, outputContainer);
+  const context = previewCanvas.getContext("2d", { alpha: false });
+  if (!context) {
+    previewCanvas.remove();
+    throw new Error("Could not prepare the video preview canvas.");
+  }
+
+  const timeline = createCameraPathTimeline(keyframes, holdSeconds);
+  const totalMs = timeline.totalMs;
+  const frameRenderer = createCameraPathFrameRenderer({
+    app,
+    container,
+    outputContainer,
+    graphData,
+    nodeMap,
+    linkWidth,
+    linkColorscheme,
+    linkAttribsToColorIndices,
+    circleBorderColor,
+    textColor,
+    nodeColorscheme,
+    nodeAttribsToColorIndices,
+    highlightColor,
+    communityHighlightColor,
+    showNodeLabels,
+    enableShading,
+    showGrid,
+    gridLines,
+    drawOverlay,
+  });
+
+  try {
+    await playRenderedCameraPathPreview({
+      context,
+      timeline,
+      totalMs,
+      frameRenderer,
+      onProgress,
+      signal,
+    });
+  } finally {
+    previewCanvas.remove();
+  }
+}
+
+function createCameraPathFrameRenderer({
+  app,
+  container,
+  outputContainer,
+  graphData,
+  nodeMap,
+  linkWidth,
+  linkColorscheme,
+  linkAttribsToColorIndices,
+  circleBorderColor,
+  textColor,
+  nodeColorscheme,
+  nodeAttribsToColorIndices,
+  highlightColor,
+  communityHighlightColor,
+  showNodeLabels = false,
+  enableShading = true,
+  showGrid = false,
+  gridLines = [],
+  background,
+  drawOverlay,
+}) {
+  const sourceCanvas = getPixiCanvas(app);
   const viewportTransform = getVideoViewportTransform(container, outputContainer);
   const frameGraph2DCache = new WeakMap();
   const frameGridLineCache = new WeakMap();
-
   const fallbackRenderContext = {
     graphData,
     nodeMap,
@@ -567,74 +723,99 @@ export async function recordCameraPathVideo({
     gridLines,
     container,
   };
+  const frameBackground = background ?? resolveCanvasBackground(sourceCanvas);
 
-  const drawFrameAtTime = (timeMs) => {
-    const sample = sampleCameraPathAtMs(timeline, timeMs);
-    if (!sample?.view) return;
-    const frameContext = getFrameRenderContext(sample, fallbackRenderContext);
+  return {
+    drawFrameAtTime(context, timeline, timeMs) {
+      const sample = sampleCameraPathAtMs(timeline, timeMs);
+      if (!sample?.view) return;
+      const frameContext = getFrameRenderContext(sample, fallbackRenderContext);
 
-    context.save();
-    context.fillStyle = background;
-    context.fillRect(0, 0, outputContainer.width, outputContainer.height);
-    context.imageSmoothingEnabled = true;
-    context.imageSmoothingQuality = "high";
-    context.translate(viewportTransform.x, viewportTransform.y);
-    context.scale(viewportTransform.k, viewportTransform.k);
+      context.save();
+      context.fillStyle = frameBackground;
+      context.fillRect(0, 0, outputContainer.width, outputContainer.height);
+      context.imageSmoothingEnabled = true;
+      context.imageSmoothingQuality = "high";
+      context.translate(viewportTransform.x, viewportTransform.y);
+      context.scale(viewportTransform.k, viewportTransform.k);
 
-    if (sample.mode === VIEW_MODE_3D) {
-      const frameGridLines = frameContext.showGrid ? getFrameGridLines(frameContext.graphData, frameContext, frameGridLineCache) : [];
-      const { graph, gridSegments } = build3DFrameGraphData(frameContext.graphData, frameContext.nodeMap, {
-        camera: sample.view,
-        sourceContainer: container,
-        targetContainer: container,
-        showNodeLabels: frameContext.showNodeLabels,
-        gridLines: frameGridLines,
-      });
-      renderGraphFrameToCanvas(context, graph, frameContext.drawParams, {
-        threeD: true,
-        enableShading: frameContext.enableShading,
-        showGrid: frameContext.showGrid,
-        gridSegments,
-      });
-    } else {
-      const frameGraph2D = getFrameGraph2D(frameContext.graphData, frameContext.nodeMap, frameContext.showNodeLabels, frameGraph2DCache);
-      renderGraphFrameToCanvas(context, frameGraph2D, frameContext.drawParams, {
-        transform: get2DFrameTransform(sample.view, container),
-      });
-    }
+      if (sample.mode === VIEW_MODE_3D) {
+        const frameGridLines = frameContext.showGrid ? getFrameGridLines(frameContext.graphData, frameContext, frameGridLineCache) : [];
+        const { graph, gridSegments } = build3DFrameGraphData(frameContext.graphData, frameContext.nodeMap, {
+          camera: sample.view,
+          sourceContainer: container,
+          targetContainer: container,
+          showNodeLabels: frameContext.showNodeLabels,
+          gridLines: frameGridLines,
+        });
+        renderGraphFrameToCanvas(context, graph, frameContext.drawParams, {
+          threeD: true,
+          enableShading: frameContext.enableShading,
+          showGrid: frameContext.showGrid,
+          gridSegments,
+        });
+      } else {
+        const frameGraph2D = getFrameGraph2D(frameContext.graphData, frameContext.nodeMap, frameContext.showNodeLabels, frameGraph2DCache);
+        renderGraphFrameToCanvas(context, frameGraph2D, frameContext.drawParams, {
+          transform: get2DFrameTransform(sample.view, container),
+        });
+      }
 
-    drawOverlay?.(context, { sample, frameContext, sourceContainer: container, outputContainer });
-    context.restore();
+      drawOverlay?.(context, { sample, frameContext, sourceContainer: container, outputContainer });
+      context.restore();
+    },
   };
-  const webmEncoder = await createWebMCanvasEncoder({
-    width: outputContainer.width,
-    height: outputContainer.height,
-    fps: VIDEO_EXPORT_FPS,
-    bitrate: exportConfig.bitrateMbps * 1000 * 1000,
-    durationMs: getFrameScheduleDurationMs(frameSchedule),
-  });
+}
 
-  if (!webmEncoder) {
-    throw new Error("This browser does not support deterministic video export. Use a browser with WebCodecs support.");
-  }
+function playRenderedCameraPathPreview({ context, timeline, totalMs, frameRenderer, onProgress, signal }) {
+  return new Promise((resolve, reject) => {
+    const startedAt = performance.now();
+    let finished = false;
 
-  try {
-    for (let frameIndex = 0; frameIndex < frameSchedule.length; frameIndex += 1) {
-      const frame = frameSchedule[frameIndex];
-      drawFrameAtTime(frame.timeMs);
-      await webmEncoder.encodeCanvasFrame(captureCanvas, frame);
-      onProgress?.(frameSchedule.length <= 1 ? 1 : frameIndex / (frameSchedule.length - 1));
+    const renderAt = (timeMs) => {
+      frameRenderer.drawFrameAtTime(context, timeline, timeMs);
+      onProgress?.(totalMs > 0 ? clamp(timeMs / totalMs, 0, 1) : 1);
+    };
+
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      try {
+        renderAt(totalMs);
+        requestAnimationFrame(() => resolve());
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    const tick = (now) => {
+      try {
+        throwIfAborted(signal);
+        const elapsedMs = totalMs > 0 ? clamp(now - startedAt, 0, totalMs) : 0;
+        renderAt(elapsedMs);
+
+        if (elapsedMs >= totalMs) {
+          finish();
+          return;
+        }
+
+        requestAnimationFrame(tick);
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    try {
+      renderAt(0);
+      if (totalMs <= 0) {
+        finish();
+        return;
+      }
+      requestAnimationFrame(tick);
+    } catch (error) {
+      reject(error);
     }
-
-    const blob = await webmEncoder.finalize();
-    const filename = `${getFileNameWithoutExtension(graphName ?? "graph")}_tracking_shot.${webmEncoder.extension}`;
-    triggerDownload(blob, filename);
-    onProgress?.(1);
-    return { blob, filename };
-  } catch (error) {
-    webmEncoder.close();
-    throw error;
-  }
+  });
 }
 
 export function pauseSimulationForCameraPath(simulation) {
@@ -1117,6 +1298,37 @@ function getVideoExportContainer(container, exportConfig = VIDEO_EXPORT_PRESETS[
     width: toEven(Math.max(2, width)),
     height: toEven(Math.max(2, height)),
   };
+}
+
+function getVideoPreviewContainer(container) {
+  const pixelRatio = typeof window === "undefined" ? 1 : clamp(window.devicePixelRatio || 1, 1, 2);
+  return {
+    width: toEven(Math.max(2, Math.round(finiteOr(container?.width, 1) * pixelRatio))),
+    height: toEven(Math.max(2, Math.round(finiteOr(container?.height, 1) * pixelRatio))),
+  };
+}
+
+function createVideoPreviewCanvas(sourceCanvas, outputContainer) {
+  const previewCanvas = document.createElement("canvas");
+  previewCanvas.width = outputContainer.width;
+  previewCanvas.height = outputContainer.height;
+  previewCanvas.setAttribute("aria-hidden", "true");
+  Object.assign(previewCanvas.style, {
+    position: "absolute",
+    inset: "0",
+    width: "100%",
+    height: "100%",
+    zIndex: "30",
+    pointerEvents: "none",
+  });
+
+  const parent = sourceCanvas?.parentElement;
+  if (!parent) {
+    throw new Error("The graph canvas is not attached to the page.");
+  }
+
+  parent.appendChild(previewCanvas);
+  return previewCanvas;
 }
 
 function get2DFrameTransform(view, container) {

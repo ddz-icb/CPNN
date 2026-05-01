@@ -37,7 +37,7 @@ import {
   getViewMode,
   getViewModeLabel,
   moveKeyframeById,
-  playCameraPath,
+  previewCameraPathVideo,
   recordCameraPathVideo,
   removeKeyframeById,
   sanitizeNumber,
@@ -47,11 +47,8 @@ import {
 } from "../../../domain/service/videography/videography.js";
 import {
   applyKeyframeScene,
-  applyKeyframeTransitionScene,
-  applyInterpolatedKeyframePhysics,
   createCapturedKeyframeScene,
   describeKeyframeScene,
-  refreshActiveTooltipPosition,
 } from "./videographyScene.js";
 
 const DeleteIcon = (props) => <SvgIcon svg={trashSvg} {...props} />;
@@ -86,7 +83,7 @@ export function VideographySidebar() {
   const hasModeMismatch = Boolean(routeMode && routeMode !== currentMode);
   const hasReadyCanvas = Boolean(renderState.app && container.width && container.height && graphState.graph);
   const canEditRoute = hasReadyCanvas && !videography.isRendering && !hasModeMismatch;
-  const canRenderRoute = canEditRoute && keyframes.length >= 2;
+  const canPreviewRoute = hasReadyCanvas && !videography.isRendering && keyframes.length >= 2;
   const canDownloadRoute = hasReadyCanvas && !videography.isRendering && keyframes.length >= 2;
   const totalDurationSeconds = getCameraPathDurationMs(keyframes, videography.holdSeconds) / 1000;
   const transitionLimits = CAMERA_PATH_LIMITS.transitionSeconds;
@@ -172,23 +169,31 @@ export function VideographySidebar() {
   const handlePreview = () =>
     runWithCameraPathState(
       () =>
-        playCameraPath({
+        previewCameraPathVideo({
           keyframes,
           app: renderState.app,
-          appearance,
           container,
+          graphData: graphState.graph?.data,
+          nodeMap: pixiState.nodeMap,
+          linkWidth: appearance.linkWidth,
+          linkColorscheme: colorschemeState.linkColorscheme?.data,
+          linkAttribsToColorIndices: colorschemeState.linkAttribsToColorIndices,
+          circleBorderColor: theme.circleBorderColor,
+          textColor: theme.textColor,
+          nodeColorscheme: colorschemeState.nodeColorscheme?.data,
+          nodeAttribsToColorIndices: colorschemeState.nodeAttribsToColorIndices,
+          highlightColor: theme.highlightColor,
+          communityHighlightColor: theme.communityHighlightColor,
+          showNodeLabels: appearance.showNodeLabels,
+          enableShading: appearance.enable3DShading,
+          showGrid: appearance.show3DGrid,
+          gridLines: pixiState.grid3D?.__gridLines,
           holdSeconds: videography.holdSeconds,
           onProgress: setRenderProgress,
-          onFrame: () => refreshActiveTooltipPosition({ app: renderState.app, nodeMap: pixiState.nodeMap }),
-          onKeyframeEnter: (keyframe, index) =>
-            index === 0 ? applyKeyframeScene(keyframe, { app: renderState.app, nodeMap: pixiState.nodeMap }) : undefined,
-          onTransitionStart: (from, to) =>
-            applyKeyframeTransitionScene(from, to, { app: renderState.app, nodeMap: pixiState.nodeMap }),
-          onTransitionFrame: ({ from, to, easedT }) => applyInterpolatedKeyframePhysics(from, to, easedT),
-          syncZoomAtEnd: true,
         }),
       "Previewing camera path...",
       "Preview complete.",
+      { requireCurrentMode: false },
     );
 
   const handleDownload = () =>
@@ -226,10 +231,10 @@ export function VideographySidebar() {
       { requireCurrentMode: false },
     );
 
-  const modeWarning = hasModeMismatch ? `Route is ${getViewModeLabel(routeMode)}. Switch back to edit or preview it.` : "";
+  const modeWarning = hasModeMismatch ? `Route is ${getViewModeLabel(routeMode)}. Switch back to edit it.` : "";
   const primaryActions = [
     { text: "Add Keyframe", onClick: handleAddKeyframe, disabled: !canEditRoute },
-    { text: "Preview", onClick: handlePreview, disabled: !canRenderRoute },
+    { text: "Preview", onClick: handlePreview, disabled: !canPreviewRoute },
     { text: "Download Video", onClick: handleDownload, disabled: !canDownloadRoute, fullWidth: true },
   ];
   const secondaryActions = [
