@@ -123,6 +123,11 @@ export function getLinkWeightMinMax(graphData) {
 export function getCommunityData(graphData, options = {}) {
   if (graphData.nodes.length == 0) return [null, null];
 
+  const communityOptions = {
+    ...options,
+    randomWalk: options.randomWalk ?? false,
+  };
+
   const newGraph = new Graph();
 
   graphData.nodes.forEach((node) => {
@@ -139,7 +144,7 @@ export function getCommunityData(graphData, options = {}) {
     }
   });
 
-  louvain.assign(newGraph, options);
+  louvain.assign(newGraph, communityOptions);
 
   const idToComm = {};
   const commToSize = {};

@@ -156,14 +156,14 @@ export function FilterControl() {
         const filteredGraph = { name: graphState.graph.name, data: filteredGraphData };
         const graphChanged = hasGraphStructureChanged(graphState.graph.data, filteredGraphData);
 
+        setCommunityState("communities", communitySummary.communities);
+        setCommunityState("idToCommunity", communitySummary.idToCommunity);
+        setCommunityState("communityToNodeIds", communitySummary.communityToNodeIds);
+
         if (!graphChanged && graphFlags.filteredAfterStart) {
           log.info("Filtering produced no graph changes. Keeping current simulation temperature.");
           return;
         }
-
-        setCommunityState("communities", communitySummary.communities);
-        setCommunityState("idToCommunity", communitySummary.idToCommunity);
-        setCommunityState("communityToNodeIds", communitySummary.communityToNodeIds);
 
         filterActiveNodesForPixi(appearance.showNodeLabels, filteredGraphData, pixiState.nodeMap);
         if (!graphFlags.filteredAfterStart) {
