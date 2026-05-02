@@ -5,7 +5,7 @@ import { useGraphFlags } from "../state/graphFlagsState.js";
 import { useGraphEnrichment } from "../state/graphEnrichmentState.js";
 import { useGraphMetrics } from "../state/graphMetricsState.js";
 import { useGraphState } from "../state/graphState.js";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   getLinkAttribsToColorIndices,
   getLinkWeightMinMax,
@@ -18,7 +18,6 @@ import { useAppearance } from "../state/appearanceState.js";
 import { darkTheme, lightTheme, useTheme } from "../state/themeState.js";
 import { graphService } from "../../application/services/graphService.js";
 import { resetService } from "../../application/services/resetService.js";
-import { filterMergeByName } from "../../domain/service/graph_calculations/filterGraph.js";
 import { applyNodeMapping } from "../../domain/service/graph_calculations/applyMapping.js";
 import { enrichGraphWithStringDb } from "../../domain/service/enrichment/stringDbEnrichment.js";
 import { enrichGraphWithOmniPath } from "../../domain/service/enrichment/omniPathEnrichment.js";
@@ -77,7 +76,7 @@ function applySavedColorschemeSettings(savedColorscheme, setColorschemeState) {
 }
 
 export const useGraphSetup = () => {
-  const { setFilter } = useFilter();
+  const { setFilter, setAllFilter } = useFilter();
   const { setColorschemeState } = useColorschemeState();
   const { setAppearance } = useAppearance();
   const { setTheme } = useTheme();
@@ -88,9 +87,6 @@ export const useGraphSetup = () => {
   const { mappingState } = useMappingState();
   const { setGraphMetrics } = useGraphMetrics();
   const { setAllPhysics } = usePhysics();
-  const { setAllFilter } = useFilter();
-
-  const [keepMapping, setKeepMapping] = useState(false);
 
   // load graph
   useEffect(() => {
@@ -99,7 +95,6 @@ export const useGraphSetup = () => {
 
     const reloadGraph = async () => {
       let graph = await graphService.getJoinedGraph(graphState.activeGraphNames);
-      graph.data = filterMergeByName(graph.data, graphFlags.mergeByName);
       graph.data = await enrichGraphWithStringDb(graph.data, {
         enabled: graphEnrichment.stringDbEnrichmentEnabled,
         minConfidence: graphEnrichment.stringDbMinConfidence,
@@ -120,7 +115,6 @@ export const useGraphSetup = () => {
       log.error("Error loading graph:", error);
     });
   }, [
-    graphFlags.mergeByName,
     graphEnrichment.stringDbEnrichmentEnabled,
     graphEnrichment.stringDbMinConfidence,
     graphEnrichment.stringDbSpeciesId,
@@ -128,13 +122,6 @@ export const useGraphSetup = () => {
     mappingState.mapping,
     graphState.activeGraphNames,
   ]);
-
-  // keep mapping if mergeByName
-  useEffect(() => {
-    if (!graphFlags.mergeByName) return;
-
-    setKeepMapping(true);
-  }, [graphFlags.mergeByName]);
 
   // forward graph
   useEffect(() => {
@@ -156,14 +143,12 @@ export const useGraphSetup = () => {
       setFilter("linkThresholdText", roundedMinWeight);
     }
 
-    if (!keepMapping) {
-      setColorschemeState("nodeAttribsToColorIndices", getNodeAttribsToColorIndices(graph.data));
-      setColorschemeState("linkAttribsToColorIndices", getLinkAttribsToColorIndices(graph.data));
+    setColorschemeState("nodeAttribsToColorIndices", getNodeAttribsToColorIndices(graph.data));
+    setColorschemeState("linkAttribsToColorIndices", getLinkAttribsToColorIndices(graph.data));
 
-      applySavedColorschemeSettings(graph.data.colorscheme, setColorschemeState);
-    }
+    applySavedColorschemeSettings(graph.data.colorscheme, setColorschemeState);
 
-    // incase user uploaded graph including physics
+    // In case the user uploaded a graph including physics.
     if (graph.data.physics) {
       setAllPhysics(graph.data.physics);
     }
@@ -172,7 +157,6 @@ export const useGraphSetup = () => {
     }
     applySavedAppearanceSettings(graph.data.appearance, setAppearance, setTheme);
 
-    setKeepMapping(false);
     setGraphState("graph", graph);
     setGraphFlags("isPreprocessed", true);
   }, [graphState.originGraph]);

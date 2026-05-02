@@ -19,6 +19,34 @@ function getEndpointId(endpoint) {
   return endpoint?.id || endpoint;
 }
 
+function copyNodeLayout(targetNode, sourceNode) {
+  if (!sourceNode) return targetNode;
+
+  ["x", "y", "z", "vx", "vy", "vz", "fx", "fy", "fz"].forEach((key) => {
+    if (sourceNode[key] !== undefined) {
+      targetNode[key] = sourceNode[key];
+    }
+  });
+
+  return targetNode;
+}
+
+function setMergeMetadata(node, representativeId, mergedFromIds) {
+  Object.defineProperties(node, {
+    __mergeRepresentativeId: {
+      value: representativeId,
+      enumerable: false,
+      configurable: true,
+    },
+    __mergedFromIds: {
+      value: mergedFromIds,
+      enumerable: false,
+      configurable: true,
+    },
+  });
+  return node;
+}
+
 export function joinGraphs(graphData, newGraphData) {
   const nodeMap = new Map(graphData.nodes.map((node) => [node.id, { ...node }]));
 
@@ -79,8 +107,12 @@ export function joinGraphNames(graphNames) {
   return graphNames.join("-");
 }
 
-export function filterMergeByName(graphData, mergeByName) {
+export function filterMergeByName(graphData, mergeByName, options = {}) {
   if (!mergeByName) return graphData;
+
+  const previousNodeById = Array.isArray(options.previousGraphData?.nodes)
+    ? new Map(options.previousGraphData.nodes.map((node) => [node.id, node]))
+    : null;
 
   const nameToNodeMap = new Map();
   graphData.nodes.forEach((node) => {
@@ -121,6 +153,7 @@ export function filterMergeByName(graphData, mergeByName) {
     const mergedEntries = [];
     const seenEntries = new Set();
     const combinedAttribs = new Set();
+    const representativeNode = nodeIdToNodeObjectMap.get(attribNodeIds[0]);
 
     attribNodeIds.forEach((nodeId) => {
       const node = nodeIdToNodeObjectMap.get(nodeId);
@@ -141,11 +174,19 @@ export function filterMergeByName(graphData, mergeByName) {
     });
 
     const newId = mergedEntries.sort((a, b) => a.localeCompare(b)).join("; ");
-
-    parentIndexToMergedNode.set(parentIndex, {
+    const mergedNode = {
+      ...(options.preserveRepresentativeNodes && representativeNode ? representativeNode : {}),
       id: newId,
       attribs: Array.from(combinedAttribs),
-    });
+    };
+
+    copyNodeLayout(mergedNode, previousNodeById?.get(newId));
+
+    if (options.preserveRepresentativeNodes && representativeNode) {
+      setMergeMetadata(mergedNode, representativeNode.id, attribNodeIds);
+    }
+
+    parentIndexToMergedNode.set(parentIndex, mergedNode);
   });
 
   graphData.nodes = Array.from(parentIndexToMergedNode.values());

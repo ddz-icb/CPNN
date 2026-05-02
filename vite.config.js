@@ -15,6 +15,19 @@ const jsxInJs = () => ({
   },
 });
 
+const proxy = {
+  "/stringdb-api": {
+    target: "https://string-db.org/api",
+    changeOrigin: true,
+    rewrite: (path) => path.replace(/^\/stringdb-api/, ""),
+  },
+  "/omnipathdb-api": {
+    target: "https://omnipathdb.org",
+    changeOrigin: true,
+    rewrite: (path) => path.replace(/^\/omnipathdb-api/, ""),
+  },
+};
+
 export default defineConfig(({ mode }) => ({
   plugins: [
     jsxInJs(),
@@ -47,18 +60,7 @@ export default defineConfig(({ mode }) => ({
       "Cross-Origin-Opener-Policy": "same-origin",
       "Cross-Origin-Embedder-Policy": "require-corp",
     },
-    proxy: {
-      "/stringdb-api": {
-        target: "https://string-db.org/api",
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/stringdb-api/, ""),
-      },
-      "/omnipathdb-api": {
-        target: "https://omnipathdb.org",
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/omnipathdb-api/, ""),
-      },
-    },
+    proxy,
   },
   preview: {
     port: 3000,
@@ -68,6 +70,7 @@ export default defineConfig(({ mode }) => ({
       "Cross-Origin-Opener-Policy": "same-origin",
       "Cross-Origin-Embedder-Policy": "require-corp",
     },
+    proxy,
   },
   build: {
     // Keep the CRA-style output directory so downstream scripts (serve, etc.) still work.

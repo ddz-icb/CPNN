@@ -2,9 +2,23 @@ import log from "../../../adapters/logging/logger.js";
 import { OMNI_PATH_BASE_URL, SUBSTRATE_CHUNK_SIZE } from "./omniPathConfig.js";
 import { chunkArray } from "./stringDbHelpers.js";
 
+const ENZ_SUB_ENDPOINT = "/enz_sub";
+const PHOSPHORYLATION_MODIFICATION = "phosphorylation";
+
+function buildEnzSubUrl(substrateIds) {
+  const params = new URLSearchParams({
+    substrates: substrateIds.join(","),
+    modification: PHOSPHORYLATION_MODIFICATION,
+    genesymbols: "1",
+    format: "json",
+  });
+
+  return `${OMNI_PATH_BASE_URL}${ENZ_SUB_ENDPOINT}?${params.toString()}`;
+}
+
 async function fetchEnzSubChunk(substrateIds) {
-  log.debug(`Fetching OmniPath enzsub for ${substrateIds.length} substrate(s)`);
-  const url = `${OMNI_PATH_BASE_URL}/enzsub?substrates=${substrateIds.join(",")}&modification=phosphorylation&genesymbols=1&format=json`;
+  log.debug(`Fetching OmniPath enz_sub for ${substrateIds.length} substrate(s)`);
+  const url = buildEnzSubUrl(substrateIds);
   const response = await fetch(url);
   if (!response.ok) throw new Error(`OmniPath request failed (HTTP ${response.status})`);
   const data = await response.json();

@@ -13,9 +13,10 @@ export function initDragAndZoom(app, simulation, radius, setTooltipSettings, wid
 
 export function initTooltips(circle, node, setTooltipSettings) {
   circle.on("mouseover", (mouseData) => {
+    const tooltipNode = circle.__tooltipNode ?? node;
     setTooltipSettings("hoverTooltipData", {
-      node: node.id,
-      nodeAttribs: node.attribs,
+      node: tooltipNode.id,
+      nodeAttribs: tooltipNode.attribs,
       x: mouseData.originalEvent.pageX,
       y: mouseData.originalEvent.pageY,
     });
@@ -25,9 +26,10 @@ export function initTooltips(circle, node, setTooltipSettings) {
     setTooltipSettings("isHoverTooltipActive", false);
   });
   circle.on("click", (mouseData) => {
+    const tooltipNode = circle.__tooltipNode ?? node;
     setTooltipSettings("clickTooltipData", {
-      node: node.id,
-      nodeAttribs: node.attribs ?? [],
+      node: tooltipNode.id,
+      nodeAttribs: tooltipNode.attribs ?? [],
       x: mouseData.originalEvent.clientX,
       y: mouseData.originalEvent.clientY,
     });

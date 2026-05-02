@@ -14,6 +14,7 @@ import {
   filterNodesExist,
   filterLasso,
   filterCommunityVisibility,
+  filterMergeByName,
 } from "../../domain/service/graph_calculations/filterGraph.js";
 import { useFilter } from "../state/filterState.js";
 import { useAppearance } from "../state/appearanceState.js";
@@ -24,8 +25,13 @@ import { errorService } from "../../application/services/errorService.js";
 import { useCommunityState } from "../state/communityState.js";
 import { buildCommunitySummary } from "../../domain/service/graph_calculations/communityGrouping.js";
 import { withoutAdditionalLinkAttribs } from "../../domain/service/enrichment/stringDbEnrichment.js";
+import { useColorschemeState } from "../state/colorschemeState.js";
+import { useTheme } from "../state/themeState.js";
+import { drawCircle } from "../../domain/service/canvas_drawing/nodes.js";
+import { getNodeIdName } from "../../domain/service/parsing/nodeIdParsing.js";
 
 const FILTER_DEBOUNCE_MS = 90;
+const nodeMapMergeAliases = new WeakMap();
 
 function getEndpointId(endpoint) {
   if (endpoint == null) return endpoint;
@@ -70,9 +76,57 @@ function hasGraphStructureChanged(currentGraphData, nextGraphData) {
   return false;
 }
 
+function syncNodeMapWithGraphData(graphData, nodeMap, theme, colorschemeState) {
+  if (!graphData?.nodes || !nodeMap) return;
+
+  const previousAliases = nodeMapMergeAliases.get(nodeMap) ?? [];
+  previousAliases.forEach((alias) => {
+    delete nodeMap[alias];
+  });
+
+  const aliases = [];
+  graphData.nodes.forEach((node) => {
+    const representativeId = node.__mergeRepresentativeId ?? node.id;
+    const entry = nodeMap[representativeId] ?? nodeMap[node.id];
+    if (!entry) return;
+
+    entry.node = node;
+
+    if (entry.circle) {
+      entry.circle.id = node.id;
+      entry.circle.__tooltipNode = node;
+
+      if (theme?.circleBorderColor && colorschemeState?.nodeColorscheme?.data && colorschemeState?.nodeAttribsToColorIndices) {
+        entry.circle.clear();
+        drawCircle(
+          entry.circle,
+          node,
+          theme.circleBorderColor,
+          colorschemeState.nodeColorscheme.data,
+          colorschemeState.nodeAttribsToColorIndices,
+        );
+      }
+    }
+
+    if (entry.nodeLabel) {
+      entry.nodeLabel.text = getNodeIdName(node.id);
+      entry.nodeLabel.pivot.x = entry.nodeLabel.width / 2;
+    }
+
+    if (node.id !== representativeId) {
+      nodeMap[node.id] = entry;
+      aliases.push(node.id);
+    }
+  });
+
+  nodeMapMergeAliases.set(nodeMap, aliases);
+}
+
 export function FilterControl() {
   const { filter } = useFilter();
   const { appearance } = useAppearance();
+  const { colorschemeState } = useColorschemeState();
+  const { theme } = useTheme();
   const { graphState, setGraphState } = useGraphState();
   const { graphFlags, setGraphFlags } = useGraphFlags();
   const { pixiState } = usePixiState();
@@ -123,6 +177,10 @@ export function FilterControl() {
           links: graphState.originGraph.data.links,
         };
 
+        filteredGraphData = filterMergeByName(filteredGraphData, graphFlags.mergeByName, {
+          preserveRepresentativeNodes: true,
+          previousGraphData: graphState.graph.data,
+        });
         filteredGraphData = filterLasso(filteredGraphData, filter.lassoSelection);
         filteredGraphData = filterNodeAttribs(filteredGraphData, filter.nodeFilter);
         filteredGraphData = filterNodeIds(filteredGraphData, filter.nodeIdFilters);
@@ -165,6 +223,7 @@ export function FilterControl() {
           return;
         }
 
+        syncNodeMapWithGraphData(filteredGraphData, pixiState.nodeMap, theme, colorschemeState);
         filterActiveNodesForPixi(appearance.showNodeLabels, filteredGraphData, pixiState.nodeMap);
         if (!graphFlags.filteredAfterStart) {
           setGraphFlags("filteredAfterStart", true);
@@ -183,6 +242,7 @@ export function FilterControl() {
     };
   }, [
     graphFlags.isPreprocessed,
+    graphFlags.mergeByName,
     filter.linkThreshold,
     filter.linkFilter,
     filter.nodeFilter,
@@ -200,6 +260,8 @@ export function FilterControl() {
     pixiState.nodeContainers,
     pixiState.nodeMap,
     communityState.communityResolution,
+    theme,
+    colorschemeState,
   ]);
 
   useEffect(() => {
@@ -210,6 +272,7 @@ export function FilterControl() {
     ) {
       return;
     }
+    syncNodeMapWithGraphData(graphState.graph.data, pixiState.nodeMap, theme, colorschemeState);
     filterActiveNodesForPixi(appearance.showNodeLabels, graphState.graph.data, pixiState.nodeMap);
-  }, [appearance.showNodeLabels, graphState.graph, pixiState.nodeContainers, pixiState.nodeMap]);
+  }, [appearance.showNodeLabels, graphState.graph, pixiState.nodeContainers, pixiState.nodeMap, theme, colorschemeState]);
 }
