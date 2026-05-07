@@ -8,6 +8,8 @@ import { useGraphState } from "../../state/graphState.js";
 import { usePixiState } from "../../state/pixiState.js";
 import { useTheme } from "../../state/themeState.js";
 import { tooltipInit, useTooltipSettings } from "../../state/tooltipState.js";
+import { defaultCamera } from "../../../domain/service/canvas_drawing/render3D.js";
+import { radius as canvasNodeRadius } from "../../../domain/service/canvas_drawing/nodes.js";
 import { getNodeIdEntries } from "../../../domain/service/parsing/nodeIdParsing.js";
 import { isLikelyUniprotAccession, parseNodeIdEntries } from "../../../domain/service/parsing/nodeIdBioParsing.js";
 
@@ -40,11 +42,18 @@ const PHYSICS_TEXT_FIELDS = {
 };
 
 const PHYSICS_BOOLEAN_FIELDS = ["circleForce", "linkForce", "checkBorder"];
-const TOOLTIP_OFFSET = 14;
+const TOOLTIP_OFFSET = 12;
 const TOOLTIP_MARGIN = 8;
+const TOOLTIP_CAPTURE_PADDING = 16;
+const TOOLTIP_CAPTURE_VIEWPORT_MARGIN = 64;
 const TOOLTIP_CAPTURE_STABLE_MS = 180;
 const TOOLTIP_CAPTURE_BASE_WAIT_MS = 120;
 const TOOLTIP_CAPTURE_DETAILS_WAIT_MS = 5000;
+const TOOLTIP_VIDEO_CAPTURE_CLASS = "tooltip-popup--videography-capture";
+const TOOLTIP_VIDEO_PREPARING_CLASS = "tooltip-popup--videography-preparing";
+const TOOLTIP_TRANSITION_SHOW_AT = 0.98;
+const TOOLTIP_VIDEO_MAX_WIDTH = 460;
+const TOOLTIP_VIDEO_MAX_HEIGHT = 480;
 
 export function createCapturedKeyframeScene(params = {}) {
   const snapshot = captureSceneStateSnapshot(params);
@@ -330,6 +339,7 @@ export function createTooltipOverlayController({ app } = {}) {
   let captureInFlight = null;
   let disposed = false;
   let version = 0;
+  const keyframeOverlays = new Map();
 
   const clear = () => {
     overlay = null;
@@ -358,7 +368,7 @@ export function createTooltipOverlayController({ app } = {}) {
 
     const currentVersion = version;
     captureInFlight = (async () => {
-      const tooltipCapture = await captureTooltipElement(tooltipElement);
+      const tooltipCapture = await captureTooltipElement(tooltipElement, { expanded: true });
 
       if (disposed || currentVersion !== version) return;
       if (!tooltipCapture) {
@@ -375,6 +385,8 @@ export function createTooltipOverlayController({ app } = {}) {
         y: tooltipRect.top - sourceRect.top,
         width: tooltipCapture.width,
         height: tooltipCapture.height,
+        padding: tooltipCapture.padding,
+        nodeId: tooltipSettings.clickTooltipData?.node ?? null,
       };
     })().finally(() => {
       captureInFlight = null;
@@ -384,32 +396,118 @@ export function createTooltipOverlayController({ app } = {}) {
   };
 
   return {
+    async prepareKeyframes(keyframes, { nodeMap } = {}) {
+      keyframeOverlays.clear();
+      if (!Array.isArray(keyframes) || keyframes.length === 0 || disposed) return;
+
+      const previousTooltipSettings = cloneSerializable(useTooltipSettings.getState().tooltipSettings);
+      const overlaysByNodeId = new Map();
+      document.body?.classList.add(TOOLTIP_VIDEO_PREPARING_CLASS);
+
+      try {
+        for (const keyframe of keyframes) {
+          if (disposed) return;
+
+          const scene = getKeyframeScene(keyframe);
+          if (scene.tooltipAction !== KEYFRAME_TOOLTIP_ACTION_OPEN || !scene.tooltipNodeId) continue;
+
+          const node = getTooltipNodeForScene(scene, nodeMap);
+          if (!node) continue;
+
+          const cachedOverlay = overlaysByNodeId.get(node.id);
+          if (cachedOverlay) {
+            keyframeOverlays.set(keyframe.id, cachedOverlay);
+            continue;
+          }
+
+          useTooltipSettings.getState().setAllTooltipSettings({
+            isClickTooltipActive: true,
+            clickTooltipData: {
+              node: node.id,
+              nodeAttribs: node.attribs ?? [],
+              x: 0,
+              y: 0,
+            },
+            isHoverTooltipActive: false,
+            hoverTooltipData: null,
+          });
+
+          await waitForFrames(2);
+
+          const tooltipElement = document.querySelector(".tooltip-popup");
+          if (!tooltipElement) continue;
+
+          const tooltipCapture = await captureTooltipElement(tooltipElement, { expanded: true });
+          if (!tooltipCapture) continue;
+
+          const preparedOverlay = {
+            canvas: tooltipCapture.canvas,
+            width: tooltipCapture.width,
+            height: tooltipCapture.height,
+            padding: tooltipCapture.padding,
+            nodeId: node.id,
+            isPreparedKeyframeOverlay: true,
+          };
+          overlaysByNodeId.set(node.id, preparedOverlay);
+          keyframeOverlays.set(keyframe.id, preparedOverlay);
+        }
+      } finally {
+        document.body?.classList.remove(TOOLTIP_VIDEO_PREPARING_CLASS);
+        useTooltipSettings.getState().setAllTooltipSettings(previousTooltipSettings ?? cloneSerializable(tooltipInit));
+        await waitForFrames(1);
+      }
+    },
     async sync() {
       await refresh();
     },
     markDirty() {
       version += 1;
     },
-    draw(context, { nodeMap } = {}) {
-      if (!overlay || !context) return;
+    draw(context, { sample, frameContext, sourceContainer, nodeMap } = {}) {
+      const frameOverlay = getTooltipOverlayForSample(sample, keyframeOverlays) ?? overlay;
+      if (!frameOverlay || !context) return;
+
       const tooltipSettings = useTooltipSettings.getState().tooltipSettings;
-      const nodeId = tooltipSettings?.isClickTooltipActive ? tooltipSettings.clickTooltipData?.node : null;
-      const fitScale = getTooltipCanvasFitScale({ app, width: overlay.width, height: overlay.height });
-      const drawWidth = overlay.width * fitScale;
-      const drawHeight = overlay.height * fitScale;
-      const dynamicPosition = getTooltipCanvasPosition(nodeId, {
+      const nodeId =
+        frameOverlay.nodeId ?? (tooltipSettings?.isClickTooltipActive ? tooltipSettings.clickTooltipData?.node : null);
+      const capturePadding = Number.isFinite(frameOverlay.padding) ? Math.max(0, frameOverlay.padding) : 0;
+      const visibleWidth = Math.max(1, frameOverlay.width - capturePadding * 2);
+      const visibleHeight = Math.max(1, frameOverlay.height - capturePadding * 2);
+      const fitScale = getTooltipCanvasFitScale({
         app,
-        nodeMap,
-        width: drawWidth,
-        height: drawHeight,
+        container: sourceContainer,
+        width: visibleWidth,
+        height: visibleHeight,
       });
+      const drawWidth = frameOverlay.width * fitScale;
+      const drawHeight = frameOverlay.height * fitScale;
+      const visibleDrawWidth = visibleWidth * fitScale;
+      const visibleDrawHeight = visibleHeight * fitScale;
+      const drawPadding = capturePadding * fitScale;
+      const framePosition = getTooltipFrameCanvasPosition(nodeId, {
+        sample,
+        frameContext,
+        container: sourceContainer,
+        width: visibleDrawWidth,
+        height: visibleDrawHeight,
+      });
+      const dynamicPosition =
+        framePosition ??
+        (frameOverlay.isPreparedKeyframeOverlay
+          ? null
+          : getTooltipCanvasPosition(nodeId, {
+              app,
+              nodeMap,
+              width: visibleDrawWidth,
+              height: visibleDrawHeight,
+            }));
 
       if (!dynamicPosition && nodeId) return;
 
       context.drawImage(
-        overlay.canvas,
-        dynamicPosition?.x ?? overlay.x,
-        dynamicPosition?.y ?? overlay.y,
+        frameOverlay.canvas,
+        (dynamicPosition?.x ?? frameOverlay.x ?? 0) - drawPadding,
+        (dynamicPosition?.y ?? frameOverlay.y ?? 0) - drawPadding,
         drawWidth,
         drawHeight,
       );
@@ -418,6 +516,7 @@ export function createTooltipOverlayController({ app } = {}) {
     dispose() {
       disposed = true;
       overlay = null;
+      keyframeOverlays.clear();
       captureInFlight = null;
     },
   };
@@ -471,37 +570,116 @@ function openClickTooltipForNode(nodeId, { app, nodeMap } = {}) {
   }
 }
 
-async function captureTooltipElement(tooltipElement) {
+async function captureTooltipElement(tooltipElement, { expanded = false } = {}) {
+  let restoreCaptureStyles = null;
+  let addedPreparingClass = false;
   try {
+    if (expanded) {
+      tooltipElement.classList.add(TOOLTIP_VIDEO_CAPTURE_CLASS);
+    }
+
     const isReady = await waitForTooltipContentReady(tooltipElement);
     if (!isReady) return null;
     await waitForFontsReady();
 
+    if (!document.body?.classList.contains(TOOLTIP_VIDEO_PREPARING_CLASS)) {
+      document.body?.classList.add(TOOLTIP_VIDEO_PREPARING_CLASS);
+      addedPreparingClass = true;
+    }
+    restoreCaptureStyles = moveTooltipIntoCaptureViewport(tooltipElement);
     const { default: html2canvas } = await import("html2canvas");
     const scale = Math.max(1, window.devicePixelRatio || 1);
     const rect = tooltipElement.getBoundingClientRect();
-    const width = Math.ceil(Math.max(1, rect.width));
-    const height = Math.ceil(Math.max(1, rect.height));
+    const contentElement = tooltipElement.querySelector(".tooltip-popup-content");
+    const width = Math.ceil(Math.max(1, rect.width, tooltipElement.scrollWidth, contentElement?.scrollWidth ?? 0)) + 2;
+    const height = Math.ceil(Math.max(1, rect.height, tooltipElement.scrollHeight, contentElement?.scrollHeight ?? 0)) + 2;
     const canvas = await html2canvas(tooltipElement, {
       backgroundColor: null,
       foreignObjectRendering: true,
       height,
       logging: false,
+      onclone: (clonedDocument, clonedElement) => {
+        clonedDocument.body?.classList.remove(TOOLTIP_VIDEO_PREPARING_CLASS);
+        clonedElement.classList.add(TOOLTIP_VIDEO_CAPTURE_CLASS);
+        clonedElement.style.opacity = "1";
+        clonedElement.style.visibility = "visible";
+        clonedElement.style.left = "0px";
+        clonedElement.style.top = "0px";
+        clonedElement.style.right = "auto";
+        clonedElement.style.bottom = "auto";
+        clonedElement.style.transform = "none";
+        clonedElement.style.width = `${width}px`;
+        clonedElement.style.height = `${height}px`;
+      },
       scale,
       useCORS: true,
       width,
-      windowHeight: Math.max(window.innerHeight, Math.ceil(tooltipElement.getBoundingClientRect().top + height)),
-      windowWidth: Math.max(window.innerWidth, Math.ceil(tooltipElement.getBoundingClientRect().left + width)),
+      windowHeight: Math.max(window.innerHeight, Math.ceil(rect.top + height + TOOLTIP_CAPTURE_VIEWPORT_MARGIN)),
+      windowWidth: Math.max(window.innerWidth, Math.ceil(rect.left + width + TOOLTIP_CAPTURE_VIEWPORT_MARGIN)),
     });
+    const paddedCapture = addCanvasPadding(canvas, scale, TOOLTIP_CAPTURE_PADDING);
 
     return {
-      canvas,
-      width: canvas.width / scale,
-      height: canvas.height / scale,
+      canvas: paddedCapture.canvas,
+      width: paddedCapture.canvas.width / scale,
+      height: paddedCapture.canvas.height / scale,
+      padding: paddedCapture.padding,
     };
   } catch {
     return null;
+  } finally {
+    if (restoreCaptureStyles) {
+      restoreCaptureStyles();
+    }
+    if (expanded) {
+      tooltipElement.classList.remove(TOOLTIP_VIDEO_CAPTURE_CLASS);
+    }
+    if (addedPreparingClass) {
+      document.body?.classList.remove(TOOLTIP_VIDEO_PREPARING_CLASS);
+    }
   }
+}
+
+function moveTooltipIntoCaptureViewport(tooltipElement) {
+  const previous = {
+    left: tooltipElement.style.left,
+    top: tooltipElement.style.top,
+    right: tooltipElement.style.right,
+    bottom: tooltipElement.style.bottom,
+    transform: tooltipElement.style.transform,
+  };
+
+  tooltipElement.style.left = "0px";
+  tooltipElement.style.top = "0px";
+  tooltipElement.style.right = "auto";
+  tooltipElement.style.bottom = "auto";
+  tooltipElement.style.transform = "none";
+
+  return () => {
+    tooltipElement.style.left = previous.left;
+    tooltipElement.style.top = previous.top;
+    tooltipElement.style.right = previous.right;
+    tooltipElement.style.bottom = previous.bottom;
+    tooltipElement.style.transform = previous.transform;
+  };
+}
+
+function addCanvasPadding(canvas, scale, padding) {
+  const pixelPadding = Math.ceil(Math.max(0, padding) * scale);
+  if (!canvas || pixelPadding <= 0) return { canvas, padding: 0 };
+
+  const paddedCanvas = document.createElement("canvas");
+  paddedCanvas.width = canvas.width + pixelPadding * 2;
+  paddedCanvas.height = canvas.height + pixelPadding * 2;
+
+  const context = paddedCanvas.getContext("2d");
+  if (!context) return { canvas, padding: 0 };
+
+  context.drawImage(canvas, pixelPadding, pixelPadding);
+  return {
+    canvas: paddedCanvas,
+    padding: pixelPadding / Math.max(1, scale),
+  };
 }
 
 async function waitForTooltipContentReady(tooltipElement) {
@@ -726,36 +904,139 @@ function getNodeScreenPosition(nodeId, { app, nodeMap } = {}) {
   };
 }
 
+function getTooltipNodeForScene(scene, nodeMap) {
+  const nodeId = scene?.tooltipNodeId;
+  if (!nodeId) return null;
+
+  const fromSceneGraph = scene.graphSnapshot?.nodes?.find((node) => String(node.id) === String(nodeId));
+  if (fromSceneGraph) return fromSceneGraph;
+
+  const fromNodeMap = nodeMap?.[nodeId]?.node;
+  if (fromNodeMap) return fromNodeMap;
+
+  return useGraphState.getState().graphState.graph?.data?.nodes?.find((node) => String(node.id) === String(nodeId)) ?? null;
+}
+
+function getTooltipOverlayForSample(sample, overlays) {
+  if (!sample || !overlays?.size) return null;
+  if (sample.stepType === "transition" && sample.rawT < TOOLTIP_TRANSITION_SHOW_AT) return null;
+
+  const keyframe = sample.stepType === "transition" ? sample.to : sample.keyframe ?? sample.to ?? sample.from;
+  return keyframe?.id ? overlays.get(keyframe.id) ?? null : null;
+}
+
 function getTooltipCanvasPosition(nodeId, { app, nodeMap, width = 0, height = 0 } = {}) {
   const point = getNodeCanvasPosition(nodeId, { app, nodeMap });
   const size = getCanvasCssSize(app);
   if (!point || !size) return null;
 
-  const { width: canvasWidth, height: canvasHeight } = size;
+  return fitTooltipNearPoint({ ...point, radius: getNodeCanvasRadius(nodeId, { nodeMap }) }, size, width, height);
+}
 
-  let x = point.x + TOOLTIP_OFFSET;
+function getTooltipFrameCanvasPosition(nodeId, { sample, frameContext, container, width = 0, height = 0 } = {}) {
+  const point = getFrameNodeCanvasPosition(nodeId, { sample, frameContext, container });
+  const size = getCanvasCssSizeFromContainer(container);
+  if (!point || !size) return null;
+
+  return fitTooltipNearPoint(point, size, width, height);
+}
+
+function getFrameNodeCanvasPosition(nodeId, { sample, frameContext, container } = {}) {
+  if (!nodeId || !frameContext?.graphData?.nodes || !container) return null;
+
+  const node = frameContext.graphData.nodes.find((currentNode) => String(currentNode.id) === String(nodeId));
+  if (!node || getSceneAlpha(node) <= 0) return null;
+
+  if (sample?.mode === "3d") {
+    return projectTooltipNode3D(node, sample.view, container);
+  }
+
+  const zoom = clamp(Number.isFinite(Number.parseFloat(sample?.view?.zoom)) ? Number.parseFloat(sample.view.zoom) : 1, 0.05, 50);
+  return {
+    x: container.width / 2 - (Number.parseFloat(sample?.view?.centerX) || 0) * zoom + (Number.parseFloat(node.x) || 0) * zoom,
+    y: container.height / 2 - (Number.parseFloat(sample?.view?.centerY) || 0) * zoom + (Number.parseFloat(node.y) || 0) * zoom,
+    radius: canvasNodeRadius * zoom,
+  };
+}
+
+function projectTooltipNode3D(node, camera, container) {
+  if (!container?.width || !container?.height) return null;
+
+  const centerX = container.width / 2;
+  const centerY = container.height / 2;
+  const rotX = camera?.rotX ?? defaultCamera.rotX;
+  const rotY = camera?.rotY ?? defaultCamera.rotY;
+  const cosX = Math.cos(rotX);
+  const sinX = Math.sin(rotX);
+  const cosY = Math.cos(rotY);
+  const sinY = Math.sin(rotY);
+  const cameraX = camera?.x ?? centerX;
+  const cameraY = camera?.y ?? centerY;
+  const cameraZ = camera?.z ?? defaultCamera.z;
+  const fov = camera?.fov ?? defaultCamera.fov;
+
+  const shiftedX = (Number.parseFloat(node.x) || 0) - centerX;
+  const shiftedY = (Number.parseFloat(node.y) || 0) - centerY;
+  const zBase = Number.parseFloat(node.z) || 0;
+
+  let x = shiftedX * cosY - zBase * sinY;
+  let z = shiftedX * sinY + zBase * cosY;
+  const y = shiftedY * cosX - z * sinX;
+  z = shiftedY * sinX + z * cosX;
+
+  const dx = x + centerX - cameraX;
+  const dy = y + centerY - cameraY;
+  const dz = z - cameraZ;
+
+  if (dz <= 0.000001) return null;
+
+  const scale = fov / Math.abs(dz);
+  return {
+    x: centerX + dx * scale,
+    y: centerY + dy * scale,
+    radius: canvasNodeRadius * scale,
+  };
+}
+
+function getSceneAlpha(item) {
+  const alpha = Number.parseFloat(item?.__alpha);
+  if (!Number.isFinite(alpha)) return 1;
+  return clamp(alpha, 0, 1);
+}
+
+function fitTooltipNearPoint(point, size, width = 0, height = 0) {
+  const visualRadius = Math.max(0, Number.isFinite(point?.radius) ? point.radius : 0);
+  let x = point.x + visualRadius + TOOLTIP_OFFSET;
   let y = point.y;
 
-  if (x + width > canvasWidth - TOOLTIP_MARGIN) {
-    x = point.x - width - TOOLTIP_OFFSET;
+  if (x + width > size.width - TOOLTIP_MARGIN) {
+    x = point.x - visualRadius - width - TOOLTIP_OFFSET;
   }
-  if (y + height > canvasHeight - TOOLTIP_MARGIN) {
+  if (y + height > size.height - TOOLTIP_MARGIN) {
     y = point.y - height;
   }
 
   return {
-    x: clamp(x, TOOLTIP_MARGIN, Math.max(TOOLTIP_MARGIN, canvasWidth - width - TOOLTIP_MARGIN)),
-    y: clamp(y, TOOLTIP_MARGIN, Math.max(TOOLTIP_MARGIN, canvasHeight - height - TOOLTIP_MARGIN)),
+    x: clamp(x, TOOLTIP_MARGIN, Math.max(TOOLTIP_MARGIN, size.width - width - TOOLTIP_MARGIN)),
+    y: clamp(y, TOOLTIP_MARGIN, Math.max(TOOLTIP_MARGIN, size.height - height - TOOLTIP_MARGIN)),
   };
 }
 
-function getTooltipCanvasFitScale({ app, width = 0, height = 0 } = {}) {
-  const size = getCanvasCssSize(app);
+function getTooltipCanvasFitScale({ app, container, width = 0, height = 0 } = {}) {
+  const size = getCanvasCssSizeFromContainer(container) ?? getCanvasCssSize(app);
   if (!size || width <= 0 || height <= 0) return 1;
 
-  const maxWidth = Math.max(1, size.width - TOOLTIP_MARGIN * 2);
-  const maxHeight = Math.max(1, size.height - TOOLTIP_MARGIN * 2);
+  const maxWidth = Math.max(1, Math.min(size.width - TOOLTIP_MARGIN * 2, TOOLTIP_VIDEO_MAX_WIDTH));
+  const maxHeight = Math.max(1, Math.min(size.height - TOOLTIP_MARGIN * 2, TOOLTIP_VIDEO_MAX_HEIGHT));
   return Math.min(1, maxWidth / width, maxHeight / height);
+}
+
+function getCanvasCssSizeFromContainer(container) {
+  if (!container?.width || !container?.height) return null;
+  return {
+    width: Math.max(1, container.width),
+    height: Math.max(1, container.height),
+  };
 }
 
 function getCanvasCssSize(app) {
@@ -781,6 +1062,28 @@ function getNodeCanvasPosition(nodeId, { app, nodeMap } = {}) {
   } catch {
     return null;
   }
+}
+
+function getNodeCanvasRadius(nodeId, { nodeMap } = {}) {
+  const circle = nodeMap?.[nodeId]?.circle;
+  if (!circle || circle.destroyed) return canvasNodeRadius;
+
+  try {
+    const wt = circle.worldTransform;
+    if (wt) {
+      const scaleX = Math.hypot(Number.parseFloat(wt.a) || 0, Number.parseFloat(wt.b) || 0);
+      const scaleY = Math.hypot(Number.parseFloat(wt.c) || 0, Number.parseFloat(wt.d) || 0);
+      const worldScale = Math.max(scaleX, scaleY);
+      if (Number.isFinite(worldScale) && worldScale > 0) return canvasNodeRadius * worldScale;
+    }
+
+    const localScale = Number.parseFloat(circle.scale?.x);
+    if (Number.isFinite(localScale) && localScale > 0) return canvasNodeRadius * localScale;
+  } catch {
+    return canvasNodeRadius;
+  }
+
+  return canvasNodeRadius;
 }
 
 function formatSceneNumber(value) {

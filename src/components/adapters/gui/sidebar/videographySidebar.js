@@ -7,6 +7,7 @@ import { useGraphState } from "../../state/graphState.js";
 import { usePixiState } from "../../state/pixiState.js";
 import { useRenderState } from "../../state/canvasState.js";
 import { useTheme } from "../../state/themeState.js";
+import { tooltipInit, useTooltipSettings } from "../../state/tooltipState.js";
 import { defaultTransitionSecondsInit, holdSecondsInit, useVideography } from "../../state/videographyState.js";
 import {
   ButtonGrid,
@@ -48,10 +49,22 @@ import {
 import {
   applyKeyframeScene,
   createCapturedKeyframeScene,
+  createTooltipOverlayController,
   describeKeyframeScene,
 } from "./videographyScene.js";
 
 const DeleteIcon = (props) => <SvgIcon svg={trashSvg} {...props} />;
+
+function closeActivePopups() {
+  useTooltipSettings.getState().setAllTooltipSettings({ ...tooltipInit });
+}
+
+function waitForUiFrame() {
+  if (typeof requestAnimationFrame !== "function") {
+    return Promise.resolve();
+  }
+  return new Promise((resolve) => requestAnimationFrame(() => resolve()));
+}
 
 const VIDEO_SETTING_FIELDS = [
   {
@@ -168,29 +181,41 @@ export function VideographySidebar() {
 
   const handlePreview = () =>
     runWithCameraPathState(
-      () =>
-        previewCameraPathVideo({
-          keyframes,
-          app: renderState.app,
-          container,
-          graphData: graphState.graph?.data,
-          nodeMap: pixiState.nodeMap,
-          linkWidth: appearance.linkWidth,
-          linkColorscheme: colorschemeState.linkColorscheme?.data,
-          linkAttribsToColorIndices: colorschemeState.linkAttribsToColorIndices,
-          circleBorderColor: theme.circleBorderColor,
-          textColor: theme.textColor,
-          nodeColorscheme: colorschemeState.nodeColorscheme?.data,
-          nodeAttribsToColorIndices: colorschemeState.nodeAttribsToColorIndices,
-          highlightColor: theme.highlightColor,
-          communityHighlightColor: theme.communityHighlightColor,
-          showNodeLabels: appearance.showNodeLabels,
-          enableShading: appearance.enable3DShading,
-          showGrid: appearance.show3DGrid,
-          gridLines: pixiState.grid3D?.__gridLines,
-          holdSeconds: videography.holdSeconds,
-          onProgress: setRenderProgress,
-        }),
+      async () => {
+        const tooltipOverlay = createTooltipOverlayController({ app: renderState.app });
+        try {
+          closeActivePopups();
+          await waitForUiFrame();
+          await tooltipOverlay.prepareKeyframes(keyframes, { nodeMap: pixiState.nodeMap });
+          closeActivePopups();
+          await waitForUiFrame();
+          await previewCameraPathVideo({
+            keyframes,
+            app: renderState.app,
+            container,
+            graphData: graphState.graph?.data,
+            nodeMap: pixiState.nodeMap,
+            linkWidth: appearance.linkWidth,
+            linkColorscheme: colorschemeState.linkColorscheme?.data,
+            linkAttribsToColorIndices: colorschemeState.linkAttribsToColorIndices,
+            circleBorderColor: theme.circleBorderColor,
+            textColor: theme.textColor,
+            nodeColorscheme: colorschemeState.nodeColorscheme?.data,
+            nodeAttribsToColorIndices: colorschemeState.nodeAttribsToColorIndices,
+            highlightColor: theme.highlightColor,
+            communityHighlightColor: theme.communityHighlightColor,
+            showNodeLabels: appearance.showNodeLabels,
+            enableShading: appearance.enable3DShading,
+            showGrid: appearance.show3DGrid,
+            gridLines: pixiState.grid3D?.__gridLines,
+            holdSeconds: videography.holdSeconds,
+            drawOverlay: (context, frame) => tooltipOverlay.draw(context, frame),
+            onProgress: setRenderProgress,
+          });
+        } finally {
+          tooltipOverlay.dispose();
+        }
+      },
       "Previewing camera path...",
       "Preview complete.",
       { requireCurrentMode: false },
@@ -199,32 +224,43 @@ export function VideographySidebar() {
   const handleDownload = () =>
     runWithCameraPathState(
       async () => {
-        await recordCameraPathVideo({
-          keyframes,
-          app: renderState.app,
-          appearance,
-          container,
-          graphName: graphState.graph?.name,
-          graphData: graphState.graph?.data,
-          nodeMap: pixiState.nodeMap,
-          linkWidth: appearance.linkWidth,
-          linkColorscheme: colorschemeState.linkColorscheme?.data,
-          linkAttribsToColorIndices: colorschemeState.linkAttribsToColorIndices,
-          circleBorderColor: theme.circleBorderColor,
-          textColor: theme.textColor,
-          nodeColorscheme: colorschemeState.nodeColorscheme?.data,
-          nodeAttribsToColorIndices: colorschemeState.nodeAttribsToColorIndices,
-          highlightColor: theme.highlightColor,
-          communityHighlightColor: theme.communityHighlightColor,
-          showNodeLabels: appearance.showNodeLabels,
-          enableShading: appearance.enable3DShading,
-          showGrid: appearance.show3DGrid,
-          gridLines: pixiState.grid3D?.__gridLines,
-          holdSeconds: videography.holdSeconds,
-          exportQualityPreset,
-          validateCurrentMode: false,
-          onProgress: setRenderProgress,
-        });
+        const tooltipOverlay = createTooltipOverlayController({ app: renderState.app });
+        try {
+          closeActivePopups();
+          await waitForUiFrame();
+          await tooltipOverlay.prepareKeyframes(keyframes, { nodeMap: pixiState.nodeMap });
+          closeActivePopups();
+          await waitForUiFrame();
+          await recordCameraPathVideo({
+            keyframes,
+            app: renderState.app,
+            appearance,
+            container,
+            graphName: graphState.graph?.name,
+            graphData: graphState.graph?.data,
+            nodeMap: pixiState.nodeMap,
+            linkWidth: appearance.linkWidth,
+            linkColorscheme: colorschemeState.linkColorscheme?.data,
+            linkAttribsToColorIndices: colorschemeState.linkAttribsToColorIndices,
+            circleBorderColor: theme.circleBorderColor,
+            textColor: theme.textColor,
+            nodeColorscheme: colorschemeState.nodeColorscheme?.data,
+            nodeAttribsToColorIndices: colorschemeState.nodeAttribsToColorIndices,
+            highlightColor: theme.highlightColor,
+            communityHighlightColor: theme.communityHighlightColor,
+            showNodeLabels: appearance.showNodeLabels,
+            enableShading: appearance.enable3DShading,
+            showGrid: appearance.show3DGrid,
+            gridLines: pixiState.grid3D?.__gridLines,
+            holdSeconds: videography.holdSeconds,
+            exportQualityPreset,
+            validateCurrentMode: false,
+            drawOverlay: (context, frame) => tooltipOverlay.draw(context, frame),
+            onProgress: setRenderProgress,
+          });
+        } finally {
+          tooltipOverlay.dispose();
+        }
       },
       "Rendering video...",
       "Video downloaded.",
