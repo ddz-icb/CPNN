@@ -1,6 +1,5 @@
 import { useCallback, useState } from "react";
 import { useSidebarKeyboard } from "../hooks/useSidebarKeyboard.js";
-import { useDataFileShortcuts } from "../hooks/useDataFileShortcuts.js";
 import { SvgIcon } from "../reusable_components/SvgIcon.jsx";
 import leftArrowSvg from "../../../../assets/icons/leftArrow.svg?raw";
 
@@ -27,7 +26,6 @@ export function Sidebar(props) {
   }, []);
 
   useSidebarKeyboard(handleSetActiveNavItem);
-  useDataFileShortcuts();
 
   const sidebarComponents = {
     Selection: <SelectionSidebar handleNavItemClick={handleSetActiveNavItem} activeNavItem={lastNavItem} />,
