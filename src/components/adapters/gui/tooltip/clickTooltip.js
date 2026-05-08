@@ -36,8 +36,21 @@ export function ClickTooltip() {
   const nodeAttribs = clickData?.nodeAttribs ?? [];
   const isTooltipActive = tooltipSettings.isClickTooltipActive;
   const { displayName, entries: nodeEntries, hasPhosphosites } = useNodeDetails(nodeId);
-  const { fullName, description, pdbId, protIdNoIsoform, responsePdb } = useProteinDetails(nodeId);
+  const proteinDetails = useProteinDetails(nodeId);
+  const {
+    fullName,
+    description,
+    pdbId,
+    protIdNoIsoform,
+    responsePdb,
+    uniprotStatus,
+    pdbStatus,
+    isApiComplete,
+  } = proteinDetails;
   const heading = displayName || nodeId;
+  const [isPdbModelReady, setIsPdbModelReady] = useState(false);
+  const hasPdbModel = Boolean(responsePdb?.data);
+  const isTooltipApiReady = Boolean(!nodeId || (uniprotStatus !== "idle" && isApiComplete && (!hasPdbModel || isPdbModelReady)));
 
   // Push to history whenever the node changes, unless this change was triggered by going back.
   useEffect(() => {
@@ -67,7 +80,7 @@ export function ClickTooltip() {
     return () => document.removeEventListener("keydown", onKeyDown, { capture: true });
   }, [isTooltipActive, setTooltipSettings]);
 
-  usePdbViewer(viewerRef, responsePdb, theme.name, isTooltipActive);
+  usePdbViewer(viewerRef, responsePdb, theme.name, isTooltipActive, setIsPdbModelReady);
 
   const { tooltipRef, isPositioned } = useTooltipPosition(isTooltipActive, clickData);
 
@@ -174,16 +187,24 @@ export function ClickTooltip() {
       tooltipRef={tooltipRef}
       isPositioned={isPositioned}
       footer={footerContent}
+      dataAttributes={{
+        "data-tooltip-api-ready": isTooltipApiReady ? "true" : "false",
+        "data-tooltip-uniprot-status": uniprotStatus,
+        "data-tooltip-pdb-status": pdbStatus,
+        "data-tooltip-pdb-model-ready": hasPdbModel ? (isPdbModelReady ? "true" : "false") : "not-applicable",
+      }}
     >
       {showDetails ? (
         <NodeDetails
           nodeId={nodeId}
-          displayName={displayName}
           nodeEntries={nodeEntries}
           hasPhosphosites={hasPhosphosites}
           fullName={fullName}
           nodeAttribs={nodeAttribs}
           description={description}
+          pdbId={pdbId}
+          pdbStatus={pdbStatus}
+          responsePdb={responsePdb}
           viewerRef={viewerRef}
         />
       ) : (
@@ -199,7 +220,18 @@ export function ClickTooltip() {
   );
 }
 
-function NodeDetails({ nodeId, displayName, nodeEntries, hasPhosphosites, fullName, nodeAttribs, description, viewerRef }) {
+function NodeDetails({
+  nodeId,
+  nodeEntries,
+  hasPhosphosites,
+  fullName,
+  nodeAttribs,
+  description,
+  pdbId,
+  pdbStatus,
+  responsePdb,
+  viewerRef,
+}) {
   const entryContent =
     Array.isArray(nodeEntries) && nodeEntries.length > 0
       ? nodeEntries.map(({ id, name, phosphosites }, index) => (
@@ -210,16 +242,17 @@ function NodeDetails({ nodeId, displayName, nodeEntries, hasPhosphosites, fullNa
           </div>
         ))
       : "—";
+  const pdbValue = pdbId ? `${pdbId}${pdbStatus === "loading" ? " (loading model)" : ""}` : null;
 
   return (
     <>
       <TooltipPopupItem heading={"Node ID"} value={nodeId} />
-      <TooltipPopupItem heading={"Name"} value={displayName || "—"} />
       <TooltipPopupItem heading={`Node Entries${hasPhosphosites ? " and Phosphosites" : ""}`} value={entryContent} />
       {fullName && <TooltipPopupItem heading={"Full Name"} value={fullName} />}
       <TooltipPopupItem heading={"Annotations"} value={nodeAttribs.join(", ")} />
       {description && <TooltipPopupItem heading={"Description"} value={description} />}
-      <div className="pdb-viewer" ref={viewerRef} />
+      {pdbValue && <TooltipPopupItem heading={"PDB Structure"} value={pdbValue} />}
+      <div className={`pdb-viewer${responsePdb?.data ? "" : " pdb-viewer--pending"}`} ref={viewerRef} />
     </>
   );
 }
@@ -269,7 +302,7 @@ function useTooltipPosition(isActive, clickData) {
   return { tooltipRef, isPositioned };
 }
 
-function usePdbViewer(viewerRef, responsePdb, themeName, isTooltipActive) {
+function usePdbViewer(viewerRef, responsePdb, themeName, isTooltipActive, onModelReadyChange) {
   const [viewer, setViewer] = useState(null);
 
   const getTooltipBackground = useCallback(() => {
@@ -288,7 +321,7 @@ function usePdbViewer(viewerRef, responsePdb, themeName, isTooltipActive) {
     if (!viewerRef.current || viewer) return;
     try {
       const backgroundColor = getTooltipBackground() ?? (themeName === "light" ? "#ffffff" : "#2a2e35");
-      const config = { backgroundColor };
+      const config = { backgroundColor, preserveDrawingBuffer: true };
       setViewer($3Dmol.createViewer(viewerRef.current, config));
     } catch (error) {
       log.error(error);
@@ -304,18 +337,32 @@ function usePdbViewer(viewerRef, responsePdb, themeName, isTooltipActive) {
   useEffect(() => {
     if (!viewer) return;
 
-    if (!isTooltipActive || !responsePdb) {
+    if (!isTooltipActive || !responsePdb?.data) {
+      onModelReadyChange?.(false);
       viewer.clear();
       viewer.render();
       return;
     }
 
-    viewer.clear();
-    viewer.addModel(responsePdb.data, "pdb");
-    viewer.setStyle({}, { cartoon: { color: "spectrum" } });
-    viewer.zoomTo();
-    viewer.render();
-  }, [viewer, responsePdb, isTooltipActive]);
+    let frameId = null;
+    onModelReadyChange?.(false);
+
+    try {
+      viewer.clear();
+      viewer.addModel(responsePdb.data, "pdb");
+      viewer.setStyle({}, { cartoon: { color: "spectrum" } });
+      viewer.zoomTo();
+      viewer.render();
+      frameId = window.requestAnimationFrame(() => onModelReadyChange?.(true));
+    } catch (error) {
+      log.error(error);
+      onModelReadyChange?.(false);
+    }
+
+    return () => {
+      if (frameId != null) window.cancelAnimationFrame(frameId);
+    };
+  }, [viewer, responsePdb, isTooltipActive, onModelReadyChange]);
 }
 
 function AdjacentNodesList({ adjacentNodes, nodeAttribsToColorIndices, nodeColors, borderColor, onViewNode }) {

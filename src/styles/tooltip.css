@@ -72,8 +72,16 @@
 }
 
 .tooltip-popup.tooltip-popup--videography-capture .tooltip-popup-content {
-  width: min(28rem, calc(100vw - 2rem));
+  width: min(38rem, calc(100vw - 2rem));
   max-height: none;
+}
+
+.tooltip-popup.tooltip-popup--videography-capture .tooltip-popup-header {
+  padding: 0.75rem 2.75rem 0.7rem;
+}
+
+.tooltip-popup.tooltip-popup--videography-capture .tooltip-popup-heading {
+  font-size: 1.35rem;
 }
 
 .tooltip-popup--videography-preparing .tooltip-popup {
@@ -164,9 +172,32 @@
   overflow: visible;
 }
 
+.tooltip-popup.tooltip-popup--videography-capture .tooltip-popup-item {
+  gap: 0.2rem;
+  padding: 0.45rem 0.95rem;
+}
+
+.tooltip-popup.tooltip-popup--videography-capture .tooltip-popup-item-label {
+  font-size: 0.85rem;
+}
+
+.tooltip-popup.tooltip-popup--videography-capture .tooltip-popup-item-value {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.tooltip-popup.tooltip-popup--videography-capture .tooltip-popup-footer {
+  padding: 0.6rem 0.85rem;
+}
+
+.tooltip-popup.tooltip-popup--videography-capture .tooltip-popup-footer-link,
+.tooltip-popup.tooltip-popup--videography-capture .tooltip-popup-action {
+  font-size: 0.85rem;
+}
+
 .tooltip-popup.tooltip-popup--videography-capture .pdb-viewer {
-  height: 140px;
-  min-height: 140px;
+  height: 240px;
+  min-height: 240px;
 }
 
 .tooltip-popup-body-inner {

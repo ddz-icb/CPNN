@@ -15,6 +15,10 @@ const proteinDetailsInit = {
   isoforms: [],
   hasPhosphosites: false,
   responsePdb: null,
+  hasUniProtData: false,
+  uniprotStatus: "idle",
+  pdbStatus: "idle",
+  isApiComplete: true,
 };
 
 function logRequestIssue(source, identifier, error) {
@@ -60,7 +64,7 @@ export function useProteinDetails(nodeId) {
   const [details, setDetails] = useState(proteinDetailsInit);
 
   const reset = useCallback(() => {
-    setDetails(proteinDetailsInit);
+    setDetails({ ...proteinDetailsInit });
   }, []);
 
   useEffect(() => {
@@ -75,22 +79,35 @@ export function useProteinDetails(nodeId) {
       try {
         const entries = getNodeIdEntries(nodeId);
         const parsedEntries = parseNodeIdEntries(entries);
+        const canFetchUniprot =
+          parsedEntries.protIdNoIsoform && isLikelyUniprotAccession(parsedEntries.protIdNoIsoform);
 
         if (isCancelled) return;
-        setDetails((prev) => ({
-          ...prev,
+        setDetails({
+          ...proteinDetailsInit,
           protIdNoIsoform: parsedEntries.protIdNoIsoform,
           gene: parsedEntries.gene,
           hasPhosphosites: parsedEntries.hasPhosphosites,
           isoforms: parsedEntries.isoforms,
-        }));
+          uniprotStatus: canFetchUniprot ? "loading" : "unavailable",
+          pdbStatus: canFetchUniprot ? "idle" : "unavailable",
+          isApiComplete: !canFetchUniprot,
+        });
 
-        if (!parsedEntries.protIdNoIsoform) return;
-        if (!isLikelyUniprotAccession(parsedEntries.protIdNoIsoform)) return;
+        if (!canFetchUniprot) return;
 
         const uniprotData = await fetchUniprotData(parsedEntries.protIdNoIsoform);
         if (isCancelled) return;
-        if (!uniprotData) return;
+        if (!uniprotData) {
+          setDetails((prev) => ({
+            ...prev,
+            hasUniProtData: false,
+            uniprotStatus: "unavailable",
+            pdbStatus: "unavailable",
+            isApiComplete: true,
+          }));
+          return;
+        }
 
         const pdbId = getPdbIdUniprotData(uniprotData);
         const nextDetails = {
@@ -98,6 +115,10 @@ export function useProteinDetails(nodeId) {
           description: getDescriptionUniprotData(uniprotData) || "",
           pdbId: pdbId || "",
           responsePdb: null,
+          hasUniProtData: true,
+          uniprotStatus: "available",
+          pdbStatus: pdbId ? "loading" : "unavailable",
+          isApiComplete: !pdbId,
         };
 
         if (!isCancelled) {
@@ -113,6 +134,14 @@ export function useProteinDetails(nodeId) {
             setDetails((prev) => ({
               ...prev,
               responsePdb,
+              pdbStatus: "available",
+              isApiComplete: true,
+            }));
+          } else if (!isCancelled) {
+            setDetails((prev) => ({
+              ...prev,
+              pdbStatus: "unavailable",
+              isApiComplete: true,
             }));
           }
         }

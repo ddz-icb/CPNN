@@ -48,12 +48,12 @@ const TOOLTIP_CAPTURE_PADDING = 16;
 const TOOLTIP_CAPTURE_VIEWPORT_MARGIN = 64;
 const TOOLTIP_CAPTURE_STABLE_MS = 180;
 const TOOLTIP_CAPTURE_BASE_WAIT_MS = 120;
-const TOOLTIP_CAPTURE_DETAILS_WAIT_MS = 5000;
+const TOOLTIP_CAPTURE_DETAILS_WAIT_MS = 12000;
 const TOOLTIP_VIDEO_CAPTURE_CLASS = "tooltip-popup--videography-capture";
 const TOOLTIP_VIDEO_PREPARING_CLASS = "tooltip-popup--videography-preparing";
 const TOOLTIP_TRANSITION_SHOW_AT = 0.98;
-const TOOLTIP_VIDEO_MAX_WIDTH = 460;
-const TOOLTIP_VIDEO_MAX_HEIGHT = 480;
+const TOOLTIP_VIDEO_MAX_WIDTH = 680;
+const TOOLTIP_VIDEO_MAX_HEIGHT = 760;
 
 export function createCapturedKeyframeScene(params = {}) {
   const snapshot = captureSceneStateSnapshot(params);
@@ -334,7 +334,7 @@ export function describeKeyframeScene(keyframe) {
   };
 }
 
-export function createTooltipOverlayController({ app } = {}) {
+export function createTooltipOverlayController({ app, captureScale } = {}) {
   let overlay = null;
   let captureInFlight = null;
   let disposed = false;
@@ -368,7 +368,7 @@ export function createTooltipOverlayController({ app } = {}) {
 
     const currentVersion = version;
     captureInFlight = (async () => {
-      const tooltipCapture = await captureTooltipElement(tooltipElement, { expanded: true });
+      const tooltipCapture = await captureTooltipElement(tooltipElement, { expanded: true, captureScale });
 
       if (disposed || currentVersion !== version) return;
       if (!tooltipCapture) {
@@ -396,7 +396,7 @@ export function createTooltipOverlayController({ app } = {}) {
   };
 
   return {
-    async prepareKeyframes(keyframes, { nodeMap } = {}) {
+    async prepareKeyframes(keyframes, { nodeMap, captureScale: keyframeCaptureScale = captureScale } = {}) {
       keyframeOverlays.clear();
       if (!Array.isArray(keyframes) || keyframes.length === 0 || disposed) return;
 
@@ -437,7 +437,10 @@ export function createTooltipOverlayController({ app } = {}) {
           const tooltipElement = document.querySelector(".tooltip-popup");
           if (!tooltipElement) continue;
 
-          const tooltipCapture = await captureTooltipElement(tooltipElement, { expanded: true });
+          const tooltipCapture = await captureTooltipElement(tooltipElement, {
+            expanded: true,
+            captureScale: keyframeCaptureScale,
+          });
           if (!tooltipCapture) continue;
 
           const preparedOverlay = {
@@ -570,7 +573,7 @@ function openClickTooltipForNode(nodeId, { app, nodeMap } = {}) {
   }
 }
 
-async function captureTooltipElement(tooltipElement, { expanded = false } = {}) {
+async function captureTooltipElement(tooltipElement, { expanded = false, captureScale } = {}) {
   let restoreCaptureStyles = null;
   let addedPreparingClass = false;
   try {
@@ -588,7 +591,7 @@ async function captureTooltipElement(tooltipElement, { expanded = false } = {}) 
     }
     restoreCaptureStyles = moveTooltipIntoCaptureViewport(tooltipElement);
     const { default: html2canvas } = await import("html2canvas");
-    const scale = Math.max(1, window.devicePixelRatio || 1);
+    const scale = getTooltipCaptureScale(captureScale);
     const rect = tooltipElement.getBoundingClientRect();
     const contentElement = tooltipElement.querySelector(".tooltip-popup-content");
     const width = Math.ceil(Math.max(1, rect.width, tooltipElement.scrollWidth, contentElement?.scrollWidth ?? 0)) + 2;
@@ -638,6 +641,13 @@ async function captureTooltipElement(tooltipElement, { expanded = false } = {}) 
       document.body?.classList.remove(TOOLTIP_VIDEO_PREPARING_CLASS);
     }
   }
+}
+
+function getTooltipCaptureScale(captureScale) {
+  const deviceScale = typeof window === "undefined" ? 1 : Math.max(1, window.devicePixelRatio || 1);
+  const requestedScale = Number.parseFloat(captureScale);
+  if (!Number.isFinite(requestedScale) || requestedScale <= 0) return deviceScale;
+  return Math.max(deviceScale, requestedScale);
 }
 
 function moveTooltipIntoCaptureViewport(tooltipElement) {
@@ -701,14 +711,14 @@ async function waitForTooltipContentReady(tooltipElement) {
       stableSince = currentTime;
     }
 
-    const hasRequiredDetails = !waitForProteinDetails || hasProteinDetailFields(tooltipElement);
+    const hasRequiredDetails = !waitForProteinDetails || isTooltipApiReady(tooltipElement);
     const waitedLongEnough = currentTime - startedAt >= minWait;
     const isStable = currentTime - stableSince >= TOOLTIP_CAPTURE_STABLE_MS;
 
     if (hasRequiredDetails && waitedLongEnough && isStable) return true;
   }
 
-  return !waitForProteinDetails || hasProteinDetailFields(tooltipElement);
+  return !waitForProteinDetails || isTooltipApiReady(tooltipElement) || hasProteinDetailFields(tooltipElement);
 }
 
 function shouldWaitForActiveProteinDetails() {
@@ -724,6 +734,14 @@ function hasProteinDetailFields(tooltipElement) {
     label.textContent?.trim().toUpperCase(),
   );
   return labels.includes("FULL NAME") || labels.includes("DESCRIPTION");
+}
+
+function isTooltipApiReady(tooltipElement) {
+  const readyState = tooltipElement?.dataset?.tooltipApiReady;
+  if (readyState === "true") return true;
+  if (readyState === "false") return false;
+
+  return hasProteinDetailFields(tooltipElement);
 }
 
 function getTooltipContentSignature(tooltipElement) {

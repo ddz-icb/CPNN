@@ -32,6 +32,8 @@ import {
   formatNumber,
   formatKeyframeView,
   getCameraPathDurationMs,
+  getVideoExportFormat,
+  getVideoExportScale,
   getKeyframeHoldSeconds,
   getRouteMode,
   getVideoExportQualityPreset,
@@ -44,6 +46,7 @@ import {
   sanitizeNumber,
   updateKeyframeById,
   validateCameraPath,
+  VIDEO_EXPORT_FORMAT_OPTIONS,
   VIDEO_EXPORT_QUALITY_OPTIONS,
 } from "../../../domain/service/videography/videography.js";
 import {
@@ -93,6 +96,7 @@ export function VideographySidebar() {
   const currentMode = getViewMode(appearance);
   const routeMode = getRouteMode(keyframes);
   const exportQualityPreset = getVideoExportQualityPreset(videography.exportQualityPreset);
+  const exportFormat = getVideoExportFormat(videography.exportFormat);
   const hasModeMismatch = Boolean(routeMode && routeMode !== currentMode);
   const hasReadyCanvas = Boolean(renderState.app && container.width && container.height && graphState.graph);
   const canEditRoute = hasReadyCanvas && !videography.isRendering && !hasModeMismatch;
@@ -186,7 +190,10 @@ export function VideographySidebar() {
         try {
           closeActivePopups();
           await waitForUiFrame();
-          await tooltipOverlay.prepareKeyframes(keyframes, { nodeMap: pixiState.nodeMap });
+          await tooltipOverlay.prepareKeyframes(keyframes, {
+            nodeMap: pixiState.nodeMap,
+            captureScale: getVideoExportScale(container, exportQualityPreset),
+          });
           closeActivePopups();
           await waitForUiFrame();
           await previewCameraPathVideo({
@@ -228,7 +235,10 @@ export function VideographySidebar() {
         try {
           closeActivePopups();
           await waitForUiFrame();
-          await tooltipOverlay.prepareKeyframes(keyframes, { nodeMap: pixiState.nodeMap });
+          await tooltipOverlay.prepareKeyframes(keyframes, {
+            nodeMap: pixiState.nodeMap,
+            captureScale: getVideoExportScale(container, exportQualityPreset),
+          });
           closeActivePopups();
           await waitForUiFrame();
           await recordCameraPathVideo({
@@ -254,6 +264,7 @@ export function VideographySidebar() {
             gridLines: pixiState.grid3D?.__gridLines,
             holdSeconds: videography.holdSeconds,
             exportQualityPreset,
+            exportFormat,
             validateCurrentMode: false,
             drawOverlay: (context, frame) => tooltipOverlay.draw(context, frame),
             onProgress: setRenderProgress,
@@ -302,10 +313,19 @@ export function VideographySidebar() {
       <SelectFieldBlock
         text={"Export Quality"}
         infoHeading={"Export Quality"}
-        infoDescription={"Default exports at 1440p with a smaller file size. High Quality exports at 4K with a higher bitrate."}
+        infoDescription={"New exports default to High Quality 4K. 1080p and Medium 1440p are available for smaller files."}
         value={exportQualityPreset}
         setValue={(value) => setVideography("exportQualityPreset", getVideoExportQualityPreset(value))}
         options={VIDEO_EXPORT_QUALITY_OPTIONS}
+        size={"wide"}
+      />
+      <SelectFieldBlock
+        text={"Export Format"}
+        infoHeading={"Export Format"}
+        infoDescription={"MP4 uses browser H.264 recording support. WebM uses VP9 or VP8 encoding."}
+        value={exportFormat}
+        setValue={(value) => setVideography("exportFormat", getVideoExportFormat(value))}
+        options={VIDEO_EXPORT_FORMAT_OPTIONS}
         size={"wide"}
       />
       {VIDEO_SETTING_FIELDS.map(({ key, textKey, fallbackValue, limits, ...fieldProps }) => (

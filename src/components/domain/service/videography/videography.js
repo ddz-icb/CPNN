@@ -19,20 +19,38 @@ export const EASING_OPTIONS = [
 
 export const CAMERA_PATH_LIMITS = {
   transitionSeconds: { min: 0.05, max: 20, step: 0.25 },
-  holdSeconds: { min: 0, max: 3, step: 0.05 },
+  holdSeconds: { min: 0, max: 10, step: 0.05 },
 };
 
 export const VIDEO_EXPORT_FPS = 60;
-export const VIDEO_EXPORT_QUALITY_DEFAULT = "default";
+const VIDEO_EXPORT_QUALITY_LEGACY_DEFAULT = "default";
+export const VIDEO_EXPORT_QUALITY_1080P = "1080p";
+export const VIDEO_EXPORT_QUALITY_MEDIUM = "medium";
 export const VIDEO_EXPORT_QUALITY_HIGH = "high";
+export const VIDEO_EXPORT_QUALITY_DEFAULT = VIDEO_EXPORT_QUALITY_HIGH;
+export const VIDEO_EXPORT_FORMAT_MP4 = "mp4";
+export const VIDEO_EXPORT_FORMAT_WEBM = "webm";
 
 export const VIDEO_EXPORT_QUALITY_OPTIONS = [
-  { value: VIDEO_EXPORT_QUALITY_DEFAULT, label: "Default (1440p)" },
+  { value: VIDEO_EXPORT_QUALITY_1080P, label: "1080p" },
+  { value: VIDEO_EXPORT_QUALITY_MEDIUM, label: "Medium (1440p)" },
   { value: VIDEO_EXPORT_QUALITY_HIGH, label: "High Quality (4K)" },
 ];
 
+export const VIDEO_EXPORT_FORMAT_DEFAULT = VIDEO_EXPORT_FORMAT_MP4;
+
+export const VIDEO_EXPORT_FORMAT_OPTIONS = [
+  { value: VIDEO_EXPORT_FORMAT_MP4, label: "MP4 (H.264)" },
+  { value: VIDEO_EXPORT_FORMAT_WEBM, label: "WebM (VP9/VP8)" },
+];
+
 const VIDEO_EXPORT_PRESETS = {
-  [VIDEO_EXPORT_QUALITY_DEFAULT]: {
+  [VIDEO_EXPORT_QUALITY_1080P]: {
+    targetArea: 1920 * 1080,
+    maxEdge: 1920,
+    bitrateMbps: 10,
+  },
+  [VIDEO_EXPORT_QUALITY_MEDIUM]: {
     targetArea: 2560 * 1440,
     maxEdge: 2560,
     bitrateMbps: 16,
@@ -53,7 +71,8 @@ const MIN_ZOOM = 0.05;
 const MAX_ZOOM = 50;
 const MIN_FOV = 120;
 const MAX_FOV = 2400;
-const RECORDER_MIME_TYPES = ["video/webm;codecs=vp9", "video/webm;codecs=vp8", "video/webm", "video/mp4;codecs=h264", "video/mp4"];
+const RECORDER_MP4_MIME_TYPES = ["video/mp4;codecs=avc1.42E01E", "video/mp4;codecs=h264", "video/mp4"];
+const RECORDER_WEBM_MIME_TYPES = ["video/webm;codecs=vp9", "video/webm;codecs=vp8", "video/webm"];
 
 export function getViewMode(appearance) {
   return appearance?.threeD ? VIEW_MODE_3D : VIEW_MODE_2D;
@@ -278,7 +297,17 @@ export function getKeyframeHoldSeconds(keyframe, fallbackHoldSeconds = 0) {
 }
 
 export function getVideoExportQualityPreset(value) {
+  if (value === VIDEO_EXPORT_QUALITY_LEGACY_DEFAULT) return VIDEO_EXPORT_QUALITY_MEDIUM;
   return VIDEO_EXPORT_PRESETS[value] ? value : VIDEO_EXPORT_QUALITY_DEFAULT;
+}
+
+export function getVideoExportScale(container, preset = VIDEO_EXPORT_QUALITY_DEFAULT) {
+  const outputContainer = getVideoExportContainer(container, getVideoExportConfig(preset));
+  return getVideoViewportTransform(container, outputContainer).k;
+}
+
+export function getVideoExportFormat(value) {
+  return VIDEO_EXPORT_FORMAT_OPTIONS.some((option) => option.value === value) ? value : VIDEO_EXPORT_FORMAT_DEFAULT;
 }
 
 export async function playCameraPath({
@@ -519,6 +548,7 @@ export async function recordCameraPathVideo({
   gridLines = [],
   holdSeconds = 0,
   exportQualityPreset = VIDEO_EXPORT_QUALITY_DEFAULT,
+  exportFormat = VIDEO_EXPORT_FORMAT_DEFAULT,
   validateCurrentMode = true,
   drawOverlay,
   onProgress,
@@ -567,6 +597,28 @@ export async function recordCameraPathVideo({
     background,
     drawOverlay,
   });
+
+  const selectedFormat = getVideoExportFormat(exportFormat);
+  if (selectedFormat === VIDEO_EXPORT_FORMAT_MP4) {
+    const mp4MimeType = getSupportedRecorderMimeType(VIDEO_EXPORT_FORMAT_MP4);
+    if (!mp4MimeType) {
+      throw new Error("This browser does not support MP4 video export. Choose WebM, or use a browser with MP4 MediaRecorder support.");
+    }
+
+    return recordRenderedCameraPathWithMediaRecorder({
+      captureCanvas,
+      context,
+      timeline,
+      totalMs,
+      frameSchedule,
+      frameRenderer,
+      mimeType: mp4MimeType,
+      bitrate: exportConfig.bitrateMbps * 1000 * 1000,
+      graphName,
+      onProgress,
+    });
+  }
+
   const webmEncoder = await createWebMCanvasEncoder({
     width: outputContainer.width,
     height: outputContainer.height,
@@ -576,7 +628,23 @@ export async function recordCameraPathVideo({
   });
 
   if (!webmEncoder) {
-    throw new Error("This browser does not support deterministic video export. Use a browser with WebCodecs support.");
+    const webmMimeType = getSupportedRecorderMimeType(VIDEO_EXPORT_FORMAT_WEBM);
+    if (webmMimeType) {
+      return recordRenderedCameraPathWithMediaRecorder({
+        captureCanvas,
+        context,
+        timeline,
+        totalMs,
+        frameSchedule,
+        frameRenderer,
+        mimeType: webmMimeType,
+        bitrate: exportConfig.bitrateMbps * 1000 * 1000,
+        graphName,
+        onProgress,
+      });
+    }
+
+    throw new Error("This browser does not support video export. Use a browser with WebCodecs or MediaRecorder video support.");
   }
 
   try {
@@ -595,6 +663,87 @@ export async function recordCameraPathVideo({
   } catch (error) {
     webmEncoder.close();
     throw error;
+  }
+}
+
+async function recordRenderedCameraPathWithMediaRecorder({
+  captureCanvas,
+  context,
+  timeline,
+  totalMs,
+  frameSchedule,
+  frameRenderer,
+  mimeType,
+  bitrate,
+  graphName,
+  onProgress,
+}) {
+  if (typeof MediaRecorder === "undefined") {
+    throw new Error("This browser does not support MediaRecorder video export.");
+  }
+  if (typeof captureCanvas?.captureStream !== "function") {
+    throw new Error("This browser does not support canvas video capture.");
+  }
+
+  const { stream, requestFrame } = createCanvasCaptureStream(captureCanvas);
+  const recorderOptions = {};
+  if (mimeType) recorderOptions.mimeType = mimeType;
+  if (Number.isFinite(bitrate) && bitrate > 0) recorderOptions.videoBitsPerSecond = bitrate;
+
+  let recorder;
+  try {
+    recorder = new MediaRecorder(stream, recorderOptions);
+  } catch (error) {
+    stream.getTracks().forEach((track) => track.stop());
+    throw error;
+  }
+  const chunks = [];
+  const recorderStopped = new Promise((resolve, reject) => {
+    recorder.ondataavailable = (event) => {
+      if (event.data?.size > 0) chunks.push(event.data);
+    };
+    recorder.onerror = () => reject(recorder.error ?? new Error("Video recording failed."));
+    recorder.onstop = () => {
+      if (chunks.length === 0) {
+        reject(new Error("No video frames were recorded."));
+        return;
+      }
+      resolve(new Blob(chunks, { type: recorder.mimeType || mimeType || "video/webm" }));
+    };
+  });
+
+  let renderError = null;
+  try {
+    recorder.start(250);
+    await playRenderedCameraPathRecording({
+      context,
+      timeline,
+      totalMs,
+      frameSchedule,
+      frameRenderer,
+      requestFrame,
+      onProgress,
+    });
+    await wait(Math.max(50, Math.round(1000 / VIDEO_EXPORT_FPS) * 2));
+  } catch (error) {
+    renderError = error;
+  } finally {
+    if (recorder.state !== "inactive") {
+      recorder.stop();
+    }
+  }
+
+  try {
+    const blob = await recorderStopped;
+    if (renderError) throw renderError;
+
+    const extension = getVideoExtension(blob.type || recorder.mimeType || mimeType);
+    const filename = `${getFileNameWithoutExtension(graphName ?? "graph")}_tracking_shot.${extension}`;
+    triggerDownload(blob, filename);
+    onProgress?.(1);
+    return { blob, filename };
+  } finally {
+    stream.getTracks().forEach((track) => track.stop());
   }
 }
 
@@ -816,6 +965,23 @@ function playRenderedCameraPathPreview({ context, timeline, totalMs, frameRender
       reject(error);
     }
   });
+}
+
+async function playRenderedCameraPathRecording({ context, timeline, totalMs, frameSchedule, frameRenderer, requestFrame, onProgress }) {
+  const startedAt = performance.now();
+  const frames = Array.isArray(frameSchedule) && frameSchedule.length > 0 ? frameSchedule : createVideoFrameSchedule(totalMs, VIDEO_EXPORT_FPS);
+
+  for (let frameIndex = 0; frameIndex < frames.length; frameIndex += 1) {
+    const frame = frames[frameIndex];
+    const delayMs = frame.timeMs - (performance.now() - startedAt);
+    if (delayMs > 0) {
+      await wait(delayMs);
+    }
+
+    frameRenderer.drawFrameAtTime(context, timeline, frame.timeMs);
+    requestFrame();
+    onProgress?.(frames.length <= 1 ? 1 : frameIndex / (frames.length - 1));
+  }
 }
 
 export function pauseSimulationForCameraPath(simulation) {
@@ -1280,8 +1446,9 @@ function getVideoExportContainer(container, exportConfig = VIDEO_EXPORT_PRESETS[
   const safeWidth = Math.max(1, finiteOr(container?.width, 1));
   const safeHeight = Math.max(1, finiteOr(container?.height, 1));
   const aspectRatio = safeWidth / safeHeight;
-  const targetArea = Math.max(1, finiteOr(exportConfig?.targetArea, VIDEO_EXPORT_PRESETS[VIDEO_EXPORT_QUALITY_DEFAULT].targetArea));
-  const maxEdge = Math.max(2, finiteOr(exportConfig?.maxEdge, VIDEO_EXPORT_PRESETS[VIDEO_EXPORT_QUALITY_DEFAULT].maxEdge));
+  const fallbackPreset = VIDEO_EXPORT_PRESETS[VIDEO_EXPORT_QUALITY_DEFAULT];
+  const targetArea = Math.max(1, finiteOr(exportConfig?.targetArea, fallbackPreset.targetArea));
+  const maxEdge = Math.max(2, finiteOr(exportConfig?.maxEdge, fallbackPreset.maxEdge));
 
   let width;
   let height;
@@ -1331,6 +1498,25 @@ function createVideoPreviewCanvas(sourceCanvas, outputContainer) {
   return previewCanvas;
 }
 
+function createCanvasCaptureStream(canvas) {
+  let stream = canvas.captureStream(0);
+  let tracks = stream.getVideoTracks();
+  const canRequestFrames = tracks.length > 0 && tracks.every((track) => typeof track.requestFrame === "function");
+
+  if (!canRequestFrames) {
+    stream.getTracks().forEach((track) => track.stop());
+    stream = canvas.captureStream(VIDEO_EXPORT_FPS);
+    tracks = stream.getVideoTracks();
+  }
+
+  return {
+    stream,
+    requestFrame() {
+      tracks.forEach((track) => track.requestFrame?.());
+    },
+  };
+}
+
 function get2DFrameTransform(view, container) {
   const zoom = clamp(finiteOr(view?.zoom, 1), MIN_ZOOM, MAX_ZOOM);
 
@@ -1359,11 +1545,16 @@ function getVideoExportConfig(preset) {
   return VIDEO_EXPORT_PRESETS[getVideoExportQualityPreset(preset)];
 }
 
-function getSupportedRecorderMimeType() {
+function getSupportedRecorderMimeType(format = VIDEO_EXPORT_FORMAT_WEBM) {
   if (typeof MediaRecorder === "undefined" || typeof MediaRecorder.isTypeSupported !== "function") {
     return "";
   }
-  return RECORDER_MIME_TYPES.find((type) => MediaRecorder.isTypeSupported(type)) ?? "";
+  return getRecorderMimeTypeCandidates(format).find((type) => MediaRecorder.isTypeSupported(type)) ?? "";
+}
+
+function getRecorderMimeTypeCandidates(format) {
+  if (format === VIDEO_EXPORT_FORMAT_MP4) return RECORDER_MP4_MIME_TYPES;
+  return RECORDER_WEBM_MIME_TYPES;
 }
 
 function getVideoExtension(mimeType) {

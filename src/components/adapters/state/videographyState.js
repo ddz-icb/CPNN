@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { VIDEO_EXPORT_QUALITY_DEFAULT } from "../../domain/service/videography/videography.js";
+import { VIDEO_EXPORT_FORMAT_DEFAULT, VIDEO_EXPORT_QUALITY_DEFAULT } from "../../domain/service/videography/videography.js";
 
 export const defaultTransitionSecondsInit = 3;
 export const holdSecondsInit = 1;
@@ -12,6 +12,7 @@ export const videographyInit = {
   holdSeconds: holdSecondsInit,
   holdSecondsText: holdSecondsInit,
   exportQualityPreset: VIDEO_EXPORT_QUALITY_DEFAULT,
+  exportFormat: VIDEO_EXPORT_FORMAT_DEFAULT,
   isRendering: false,
   progress: 0,
   status: "",
