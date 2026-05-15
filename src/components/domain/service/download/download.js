@@ -3,8 +3,9 @@ import { jsPDF } from "jspdf";
 import { svg2pdf } from "svg2pdf.js";
 import { getFileNameWithoutExtension } from "../parsing/fileParsing.js";
 import { buildExportGraphData, cleanLinks, cleanNodes, cleanNodesNoCoords, drawLegendOnPdf } from "./exportGraph.js";
-import { build3DRenderQueue, createSvgContext, measureGraphBounds, projectGridLines, render2DGraph, render3DQueue } from "./exportRender.js";
+import { build3DRenderQueue, createSvgContext, measureGraphBounds, render2DGraph, render3DQueue } from "./exportRender.js";
 import { buildExportGridLines } from "./exportGrid.js";
+import { projectGridLines } from "./exportProjection.js";
 
 const pdfPadding = 10;
 

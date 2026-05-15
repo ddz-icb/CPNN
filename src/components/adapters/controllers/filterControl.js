@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import log from "../logging/logger.js";
 import {
-  filterActiveNodesForPixi,
   filterLinkAttribs,
   filterNodeAttribs,
   filterNodeIds,
@@ -16,6 +15,7 @@ import {
   filterCommunityVisibility,
   filterMergeByName,
 } from "../../domain/service/graph_calculations/filterGraph.js";
+import { hasGraphStructureChanged } from "../../domain/service/graph_calculations/graphUtils.js";
 import { useFilter } from "../state/filterState.js";
 import { useAppearance } from "../state/appearanceState.js";
 import { useGraphState } from "../state/graphState.js";
@@ -24,103 +24,12 @@ import { useGraphFlags } from "../state/graphFlagsState.js";
 import { errorService } from "../../application/services/errorService.js";
 import { useCommunityState } from "../state/communityState.js";
 import { buildCommunitySummary } from "../../domain/service/graph_calculations/communityGrouping.js";
-import { withoutAdditionalLinkAttribs } from "../../domain/service/enrichment/stringDbEnrichment.js";
+import { withoutAdditionalLinkAttribs } from "../../domain/service/enrichment/additionalLinkEnrichment.js";
 import { useColorschemeState } from "../state/colorschemeState.js";
 import { useTheme } from "../state/themeState.js";
-import { drawCircle } from "../../domain/service/canvas_drawing/nodes.js";
-import { getNodeIdName } from "../../domain/service/parsing/nodeIdParsing.js";
+import { filterActiveNodesForPixi, syncNodeMapWithGraphData } from "../../domain/service/canvas_drawing/nodes.js";
 
 const FILTER_DEBOUNCE_MS = 90;
-const nodeMapMergeAliases = new WeakMap();
-
-function getEndpointId(endpoint) {
-  if (endpoint == null) return endpoint;
-  if (typeof endpoint === "object") return endpoint.id ?? endpoint.data?.id;
-  return endpoint;
-}
-
-function sameArrayValues(a, b) {
-  if (a === b) return true;
-  if (!Array.isArray(a) || !Array.isArray(b)) return false;
-  if (a.length !== b.length) return false;
-  for (let i = 0; i < a.length; i++) {
-    if (a[i] !== b[i]) return false;
-  }
-  return true;
-}
-
-function hasGraphStructureChanged(currentGraphData, nextGraphData) {
-  if (!currentGraphData || !nextGraphData) return true;
-
-  const currentNodes = currentGraphData.nodes ?? [];
-  const nextNodes = nextGraphData.nodes ?? [];
-  if (currentNodes.length !== nextNodes.length) return true;
-  for (let i = 0; i < currentNodes.length; i++) {
-    if (currentNodes[i]?.id !== nextNodes[i]?.id) return true;
-  }
-
-  const currentLinks = currentGraphData.links ?? [];
-  const nextLinks = nextGraphData.links ?? [];
-  if (currentLinks.length !== nextLinks.length) return true;
-
-  for (let i = 0; i < currentLinks.length; i++) {
-    const currentLink = currentLinks[i];
-    const nextLink = nextLinks[i];
-
-    if (getEndpointId(currentLink?.source) !== getEndpointId(nextLink?.source)) return true;
-    if (getEndpointId(currentLink?.target) !== getEndpointId(nextLink?.target)) return true;
-    if (!sameArrayValues(currentLink?.attribs ?? [], nextLink?.attribs ?? [])) return true;
-    if (!sameArrayValues(currentLink?.weights ?? [], nextLink?.weights ?? [])) return true;
-  }
-
-  return false;
-}
-
-function syncNodeMapWithGraphData(graphData, nodeMap, theme, colorschemeState) {
-  if (!graphData?.nodes || !nodeMap) return;
-
-  const previousAliases = nodeMapMergeAliases.get(nodeMap) ?? [];
-  previousAliases.forEach((alias) => {
-    delete nodeMap[alias];
-  });
-
-  const aliases = [];
-  graphData.nodes.forEach((node) => {
-    const representativeId = node.__mergeRepresentativeId ?? node.id;
-    const entry = nodeMap[representativeId] ?? nodeMap[node.id];
-    if (!entry) return;
-
-    entry.node = node;
-
-    if (entry.circle) {
-      entry.circle.id = node.id;
-      entry.circle.__tooltipNode = node;
-
-      if (theme?.circleBorderColor && colorschemeState?.nodeColorscheme?.data && colorschemeState?.nodeAttribsToColorIndices) {
-        entry.circle.clear();
-        drawCircle(
-          entry.circle,
-          node,
-          theme.circleBorderColor,
-          colorschemeState.nodeColorscheme.data,
-          colorschemeState.nodeAttribsToColorIndices,
-        );
-      }
-    }
-
-    if (entry.nodeLabel) {
-      entry.nodeLabel.text = getNodeIdName(node.id);
-      entry.nodeLabel.pivot.x = entry.nodeLabel.width / 2;
-    }
-
-    if (node.id !== representativeId) {
-      nodeMap[node.id] = entry;
-      aliases.push(node.id);
-    }
-  });
-
-  nodeMapMergeAliases.set(nodeMap, aliases);
-}
 
 export function FilterControl() {
   const { filter } = useFilter();
@@ -189,7 +98,7 @@ export function FilterControl() {
         filteredGraphData = filterThreshold(filteredGraphData, filter.linkThreshold);
         filteredGraphData = filterLinkAttribs(filteredGraphData, filter.linkFilter);
 
-        // STRING-DB links are excluded from structural filters (component/community/k-core)
+        // Additional enrichment links are excluded from structural filters (component/community/k-core)
         // prevents keeping nodes alive without regular connections.
         const linksBeforeStructural = filteredGraphData.links;
         filteredGraphData = { ...filteredGraphData, links: withoutAdditionalLinkAttribs(filteredGraphData.links) };

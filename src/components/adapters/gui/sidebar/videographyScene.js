@@ -10,6 +10,7 @@ import { useTheme } from "../../state/themeState.js";
 import { tooltipInit, useTooltipSettings } from "../../state/tooltipState.js";
 import { defaultCamera } from "../../../domain/service/canvas_drawing/render3D.js";
 import { radius as canvasNodeRadius } from "../../../domain/service/canvas_drawing/nodes.js";
+import { getEndpointId } from "../../../domain/service/graph_calculations/graphUtils.js";
 import { getNodeIdEntries } from "../../../domain/service/parsing/nodeIdParsing.js";
 import { isLikelyUniprotAccession, parseNodeIdEntries } from "../../../domain/service/parsing/nodeIdBioParsing.js";
 
@@ -806,8 +807,8 @@ function captureGraphSnapshot(graphData, nodeMap, mode) {
   const capturedNodeIds = new Set(snapshotNodes.map((node) => String(node.id)));
   const snapshotLinks = graphData.links
     .map((link) => {
-      const source = getGraphEndpointId(link.source);
-      const target = getGraphEndpointId(link.target);
+      const source = getEndpointId(link.source);
+      const target = getEndpointId(link.target);
       if (!capturedNodeIds.has(String(source)) || !capturedNodeIds.has(String(target))) return null;
 
       return {
@@ -868,14 +869,6 @@ function getNodeWorldZ(node, entry) {
 
 function finiteSceneNumber(value, fallback) {
   return Number.isFinite(value) ? value : fallback;
-}
-
-function getGraphEndpointId(endpoint) {
-  if (endpoint == null) return endpoint;
-  if (typeof endpoint === "object") {
-    return endpoint.id ?? endpoint.data?.id ?? null;
-  }
-  return endpoint;
 }
 
 function cloneSerializable(value) {

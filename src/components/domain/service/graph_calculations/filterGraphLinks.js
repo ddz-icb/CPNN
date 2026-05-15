@@ -1,3 +1,5 @@
+import { getEndpointId } from "./graphUtils.js";
+
 export function filterThreshold(graphData, linkThreshold) {
   if (linkThreshold === 0) return graphData;
 
@@ -125,7 +127,7 @@ export function filterNodesExist(graphData) {
 
   return {
     ...graphData,
-    links: graphData.links.filter((link) => nodeSet.has(link.source.id || link.source) && nodeSet.has(link.target.id || link.target)),
+    links: graphData.links.filter((link) => nodeSet.has(getEndpointId(link.source)) && nodeSet.has(getEndpointId(link.target))),
   };
 }
 
@@ -152,6 +154,6 @@ export function filterLasso(graphData, selectedNodeIds) {
   }
   const selectedNodesSet = new Set(selectedNodeIds);
   graphData.nodes = graphData.nodes.filter((node) => selectedNodesSet.has(node.id));
-  graphData.links = graphData.links.filter((link) => selectedNodesSet.has(link.source) && selectedNodesSet.has(link.target));
+  graphData.links = graphData.links.filter((link) => selectedNodesSet.has(getEndpointId(link.source)) && selectedNodesSet.has(getEndpointId(link.target)));
   return graphData;
 }

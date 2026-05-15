@@ -1,4 +1,5 @@
 import { DEFAULT_MIN_CONFIDENCE, MIN_CONFIDENCE, MAX_CONFIDENCE } from "./stringDbConfig.js";
+import { getUndirectedLinkKey } from "../graph_calculations/graphUtils.js";
 
 export function clampConfidence(value) {
   const parsed = Number(value);
@@ -11,18 +12,6 @@ export function normalizeProteinId(value) {
     .trim()
     .split("-")[0]
     .trim();
-}
-
-export function cloneLink(link) {
-  return {
-    ...link,
-    weights: Array.isArray(link.weights) ? [...link.weights] : [],
-    attribs: Array.isArray(link.attribs) ? [...link.attribs] : [],
-  };
-}
-
-export function getEdgeKey(source, target) {
-  return source < target ? `${source}---${target}` : `${target}---${source}`;
 }
 
 export function chunkArray(items, chunkSize) {
@@ -44,7 +33,7 @@ export function deduplicateInteractions(interactions) {
     const target = String(interaction?.stringId_B ?? "").trim();
     if (!source || !target || source === target) return;
 
-    const key = getEdgeKey(source, target);
+    const key = getUndirectedLinkKey(source, target);
     const existing = byPair.get(key);
     if (!existing) {
       byPair.set(key, interaction);

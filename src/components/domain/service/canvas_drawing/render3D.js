@@ -1,9 +1,8 @@
-import { getColor, getNodeLabelOffsetY } from "./drawingUtils.js";
+import { getNodeLabelOffsetY } from "./drawingUtils.js";
 import { updateHighlights } from "./highlights.js";
 import { computeLightingTint, updateSphereShading } from "./shading.js";
 import { drawGrid3D } from "./grid3D.js";
-import * as PIXI from "pixi.js";
-import { isAdditionalLinkAttrib } from "./lines.js";
+import { updateLines3D } from "./lineGraphics.js";
 
 export const defaultCamera = {
   x: null,
@@ -13,28 +12,6 @@ export const defaultCamera = {
   rotX: 0.5,
   rotY: -0.2,
 };
-
-let dottedLineTexture3D = null;
-
-function getDottedLineTexture3D() {
-  if (dottedLineTexture3D) return dottedLineTexture3D;
-  if (typeof document === "undefined") return PIXI.Texture.WHITE;
-
-  const canvas = document.createElement("canvas");
-  canvas.width = 32;
-  canvas.height = 4;
-  const context = canvas.getContext("2d");
-  if (!context) return PIXI.Texture.WHITE;
-
-  context.clearRect(0, 0, canvas.width, canvas.height);
-  context.fillStyle = "#ffffff";
-  for (let x = 0; x < canvas.width; x += 5) {
-    context.fillRect(x, 0, 3, canvas.height);
-  }
-
-  dottedLineTexture3D = PIXI.Texture.from(canvas);
-  return dottedLineTexture3D;
-}
 
 export function redraw3D(
   graphData,
@@ -172,76 +149,6 @@ function updateNodes3D(nodes, nodeMap, showNodeLabels, projections) {
       nodeLabel.zIndex = -(proj.depth ?? 0);
     } else {
       nodeLabel.visible = false;
-    }
-  }
-}
-
-function updateLines3D(links, lineGraphics, linkWidth, linkColorscheme, linkAttribsToColorIndices, projections) {
-  if (!Array.isArray(lineGraphics)) return;
-
-  const lineSprites = lineGraphics;
-  const linkCount = Array.isArray(links) ? links.length : 0;
-
-  for (let linkIdx = 0; linkIdx < lineSprites.length; linkIdx++) {
-    const link = linkIdx < linkCount ? links[linkIdx] : null;
-    const sprites = lineSprites[linkIdx];
-    if (!Array.isArray(sprites)) continue;
-
-    if (!link) {
-      for (const sprite of sprites) {
-        if (sprite) sprite.visible = false;
-      }
-      continue;
-    }
-
-    const srcId = typeof link.source === "object" ? link.source.id : link.source;
-    const tgtId = typeof link.target === "object" ? link.target.id : link.target;
-
-    const src = projections[srcId];
-    const tgt = projections[tgtId];
-
-    if (!src || !tgt || src.visible === false || tgt.visible === false) {
-      for (const sprite of sprites) {
-        if (sprite) sprite.visible = false;
-      }
-      continue;
-    }
-
-    const depth = Math.max(src.depth ?? 0, tgt.depth ?? 0);
-    const widthScaled = linkWidth * ((src.scale + tgt.scale) / 2);
-
-    const dx = tgt.x - src.x;
-    const dy = tgt.y - src.y;
-    const length = Math.sqrt(dx * dx + dy * dy) || 1e-6;
-    const angle = Math.atan2(dy, dx);
-    const midX = (src.x + tgt.x) / 2;
-    const midY = (src.y + tgt.y) / 2;
-    const normedPerp = { x: -dy / length, y: dx / length };
-
-    const attribs = Array.isArray(link.attribs) ? link.attribs : [];
-    const attribCount = attribs.length;
-
-    for (let i = 0; i < sprites.length; i++) {
-      const sprite = sprites[i];
-      if (!sprite) continue;
-      if (i >= attribCount) {
-        sprite.visible = false;
-        continue;
-      }
-
-      const shift = (i - (attribCount - 1) / 2) * widthScaled;
-      const offsetX = shift * normedPerp.x;
-      const offsetY = shift * normedPerp.y;
-
-      sprite.visible = true;
-      sprite.position.set(midX + offsetX, midY + offsetY);
-      sprite.rotation = angle;
-      sprite.width = length;
-      sprite.height = widthScaled;
-      const isAdditional = isAdditionalLinkAttrib(attribs[i]);
-      sprite.texture = isAdditional ? getDottedLineTexture3D() : PIXI.Texture.WHITE;
-      sprite.tint = getColor(linkAttribsToColorIndices[attribs[i]], linkColorscheme.data);
-      sprite.zIndex = -(depth ?? 0);
     }
   }
 }

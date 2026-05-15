@@ -1,4 +1,4 @@
-import { getCommunityData, getComponentData } from "./graphUtils.js";
+import { getCommunityData, getComponentData, getEndpointId } from "./graphUtils.js";
 
 const DEFAULT_TOP_ATTRIBUTES = 3;
 function getLabelPrefix() {
@@ -29,15 +29,6 @@ function collectTopAttributes(counts, limit) {
     })
     .slice(0, limit)
     .map(([name, count]) => ({ name, count }));
-}
-
-function getEndpointId(endpoint) {
-  if (endpoint == null) return null;
-  if (typeof endpoint === "object") {
-    if (endpoint.id != null) return endpoint.id;
-    if (endpoint.data?.id != null) return endpoint.data.id;
-  }
-  return endpoint;
 }
 
 export function buildCommunitySummary(graphData, options = {}) {

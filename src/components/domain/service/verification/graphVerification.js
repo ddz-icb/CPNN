@@ -1,4 +1,5 @@
 import { expectedPhysicTypes } from "../../../adapters/state/physicsState.js";
+import { getEndpointId, getUndirectedLinkKey } from "../graph_calculations/graphUtils.js";
 
 const PHOSPHOSITE_PATTERN = /^[STY]+\d*$/i;
 
@@ -58,15 +59,6 @@ function normalizeNodeId(nodeId) {
 
   const normalizedEntries = rawEntries.map((entry) => normalizeNodeIdEntry(entry, nodeIdText));
   return normalizedEntries.join("; ");
-}
-
-function getEndpointId(endpoint) {
-  if (endpoint == null) return null;
-  if (typeof endpoint === "object") {
-    if (endpoint.id != null) return endpoint.id;
-    if (endpoint.data?.id != null) return endpoint.data.id;
-  }
-  return endpoint;
 }
 
 function getNormalizedEndpointId(endpoint, fieldName, linkIndex) {
@@ -171,7 +163,7 @@ export function verifyGraph(graph) {
       }
     });
 
-    const linkPairKey = sourceId < targetId ? `${sourceId}---${targetId}` : `${targetId}---${sourceId}`;
+    const linkPairKey = getUndirectedLinkKey(sourceId, targetId);
     if (normalizedLinkPairs.has(linkPairKey.toLowerCase())) {
       throw new Error(`Duplicate link between '${sourceId}' and '${targetId}'. Merge attributes into a single link.`);
     }

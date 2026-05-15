@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import log from "../logging/logger.js";
 
 import { toColorNumber } from "../../domain/service/canvas_drawing/drawingUtils.js";
-import { calculateLinkWidth } from "../../domain/service/canvas_drawing/lines.js";
+import { calculateLinkWidth } from "../../domain/service/canvas_drawing/lineGraphics.js";
 import { changeCircleBorderColor, changeNodeColors, changeNodeLabelColor } from "../../domain/service/canvas_drawing/nodes.js";
 import { applyNode3DState } from "../../domain/service/canvas_drawing/shading.js";
 import { useAppearance } from "../state/appearanceState.js";

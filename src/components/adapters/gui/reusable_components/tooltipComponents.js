@@ -1,5 +1,15 @@
+import { createPortal } from "react-dom";
+import { Tooltip } from "react-tooltip";
 import { SvgIcon } from "./SvgIcon.jsx";
 import xSvg from "../../../../assets/icons/x.svg?raw";
+
+export function PortalTooltip(props) {
+  if (typeof document === "undefined" || !document.body) {
+    return <Tooltip {...props} />;
+  }
+
+  return createPortal(<Tooltip {...props} />, document.body);
+}
 
 export function TooltipPopup({ heading, close, contentKey, children, tooltipRef, isPositioned, footer, dataAttributes = {} }) {
   return (

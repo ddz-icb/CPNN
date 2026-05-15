@@ -1,7 +1,8 @@
 import { getNodeIdAndIsoformEntry, getNodeIdEntries } from "../parsing/nodeIdParsing.js";
 import { isLikelyUniprotAccession } from "../parsing/nodeIdBioParsing.js";
 import { STRING_DB_LINK_ATTRIB } from "./stringDbConfig.js";
-import { getEdgeKey, normalizeProteinId } from "./stringDbHelpers.js";
+import { getUndirectedLinkKey } from "../graph_calculations/graphUtils.js";
+import { normalizeProteinId } from "./stringDbHelpers.js";
 
 function extractProteinIds(nodeId) {
   const nodeEntries = getNodeIdEntries(nodeId);
@@ -87,7 +88,7 @@ export function buildEnrichmentLinks(interactions, proteinToNodeIds, minConfiden
       targetNodeIds.forEach((targetNodeId) => {
         if (!sourceNodeId || !targetNodeId || sourceNodeId === targetNodeId) return;
 
-        const key = getEdgeKey(sourceNodeId, targetNodeId);
+        const key = getUndirectedLinkKey(sourceNodeId, targetNodeId);
         if (linksByKey.has(key)) return;
         linksByKey.set(key, {
           source: sourceNodeId,

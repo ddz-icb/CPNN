@@ -1,11 +1,11 @@
-import { getAdjacentData, getCommunityData, getComponentData } from "./graphUtils.js";
+import { getAdjacentData, getCommunityData, getComponentData, getEndpointId } from "./graphUtils.js";
 import { filterNodesExist } from "./filterGraphLinks.js";
 
 function getGroupAvgDegree(graphData, idToGroup, groupToSize) {
   const groupEdgeCount = {};
   graphData.links.forEach((link) => {
-    const sourceId = link.source.id || link.source;
-    const targetId = link.target.id || link.target;
+    const sourceId = getEndpointId(link.source);
+    const targetId = getEndpointId(link.target);
     const sourceGroup = idToGroup[sourceId];
     const targetGroup = idToGroup[targetId];
     if (sourceGroup === undefined || sourceGroup === null) return;
@@ -300,35 +300,4 @@ export function filterCommunityVisibility(graphData, idToCommunity, hiddenCommun
   }
 
   return filterNodesExist(filteredGraph);
-}
-
-export function filterActiveNodesForPixi(showNodeLabels, graphData, nodeMap) {
-  if (!nodeMap || !graphData?.nodes) return;
-
-  Object.values(nodeMap).forEach(({ circle, nodeLabel }) => {
-    if (circle) {
-      circle.visible = false;
-      circle.__hiddenByFilter = true;
-    }
-    if (nodeLabel) {
-      nodeLabel.visible = false;
-      nodeLabel.__hiddenByFilter = true;
-    }
-  });
-
-  graphData.nodes.forEach((n) => {
-    const entry = nodeMap[n.id];
-    if (!entry) return;
-    const { circle, nodeLabel } = entry;
-    if (circle) {
-      circle.visible = true;
-      circle.__hiddenByFilter = false;
-    }
-    if (nodeLabel) {
-      nodeLabel.__hiddenByFilter = false;
-    }
-    if (showNodeLabels && nodeLabel) {
-      nodeLabel.visible = true;
-    }
-  });
 }

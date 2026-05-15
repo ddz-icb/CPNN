@@ -3,6 +3,7 @@ import { defaultCamera } from "../canvas_drawing/render3D.js";
 import { getFileNameWithoutExtension } from "../parsing/fileParsing.js";
 import { buildExportGridLines } from "../download/exportGrid.js";
 import { build2DFrameGraphData, build3DFrameGraphData, renderGraphFrameToCanvas } from "../download/exportRender.js";
+import { getEndpointId, getUndirectedLinkKey } from "../graph_calculations/graphUtils.js";
 import { createWebMCanvasEncoder } from "./videoEncoding.js";
 
 export const VIEW_MODE_2D = "2d";
@@ -1212,8 +1213,8 @@ function buildTransitionGraphData(fromGraph, toGraph, t) {
     if (!linkKey) continue;
     const fromLink = fromLinks.get(linkKey);
     const toLink = toLinks.get(linkKey);
-    const source = getEndpointIdForFrame(toLink?.source ?? fromLink?.source);
-    const target = getEndpointIdForFrame(toLink?.target ?? fromLink?.target);
+    const source = getEndpointId(toLink?.source ?? fromLink?.source);
+    const target = getEndpointId(toLink?.target ?? fromLink?.target);
     if (!nodeIds.has(String(source)) || !nodeIds.has(String(target))) continue;
 
     const linkAlpha = getPresenceTransitionAlpha(Boolean(fromLink), Boolean(toLink), amount);
@@ -1267,18 +1268,10 @@ function interpolateGraphNode(fromNode, toNode, t, alpha) {
 
 function getTransitionLinkKey(link) {
   if (!link) return "";
-  const source = String(getEndpointIdForFrame(link.source) ?? "");
-  const target = String(getEndpointIdForFrame(link.target) ?? "");
-  if (!source || !target) return "";
-  const endpoints = [source, target].sort().join("\u001f");
+  const endpoints = getUndirectedLinkKey(getEndpointId(link.source), getEndpointId(link.target), "\u001f");
+  if (!endpoints) return "";
   const attribs = Array.isArray(link.attribs) ? link.attribs.map((attrib) => String(attrib)).sort().join("\u001f") : "";
   return `${endpoints}\u001e${attribs}`;
-}
-
-function getEndpointIdForFrame(endpoint) {
-  if (endpoint == null) return endpoint;
-  if (typeof endpoint === "object") return endpoint.id ?? endpoint.data?.id ?? null;
-  return endpoint;
 }
 
 function getFrameGraph2D(graphData, nodeMap, showNodeLabels, cache) {

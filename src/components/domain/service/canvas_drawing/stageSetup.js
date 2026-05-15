@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
 import { initTooltips } from "../canvas_interaction/interactiveCanvas.js";
 import { getBitMapStyle, getNodeLabelOffsetY, getTextStyle, toColorNumber } from "./drawingUtils.js";
+import { buildLineLayers } from "./lineGraphics.js";
 import { drawCircle } from "./nodes.js";
 
 function seedNodePositions(nodes, container) {
@@ -49,31 +50,6 @@ function buildNodeGraphics(nodes, theme, colorschemeState, setTooltipSettings, e
   }
 
   return { nodeContainers, nodeMap };
-}
-
-function buildLineLayers(graph, nodeContainers, isThreeD) {
-  const lines2D = new PIXI.Graphics();
-
-  let lines3D = null;
-  let activeLines = lines2D;
-
-  if (isThreeD && graph?.data?.links) {
-    lines3D = graph.data.links.map((link) => {
-      if (!link?.attribs) return [];
-      return link.attribs.map(() => {
-        const sprite = new PIXI.Sprite(PIXI.Texture.WHITE);
-        sprite.anchor.set(0.5);
-        sprite.eventMode = "none";
-        sprite.zIndex = 0;
-        nodeContainers.addChild(sprite);
-        return sprite;
-      });
-    });
-    lines2D.visible = false;
-    activeLines = lines3D;
-  }
-
-  return { lines2D, lines3D, activeLines };
 }
 
 function buildGridGraphics(container, theme, show) {

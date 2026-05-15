@@ -33,9 +33,8 @@ export function getComponentData(graphData) {
 
   const uf = new UnionFind(graphData.nodes.length);
   graphData.links.forEach((link) => {
-    // checking link.source.id and link.source for safety as d3 replaces the id in source with a graphics objects
-    const sourceIndex = idToIndexMap[link.source.id || link.source];
-    const targetIndex = idToIndexMap[link.target.id || link.target];
+    const sourceIndex = idToIndexMap[getEndpointId(link.source)];
+    const targetIndex = idToIndexMap[getEndpointId(link.target)];
     uf.link(sourceIndex, targetIndex);
   });
 
@@ -54,8 +53,10 @@ export function getAdjacentData(graphData) {
   const neighborCount = {};
 
   graphData.links.forEach((link) => {
-    neighborCount[link.source.id || link.source] = (neighborCount[link.source.id || link.source] || 0) + 1;
-    neighborCount[link.target.id || link.target] = (neighborCount[link.target.id || link.target] || 0) + 1;
+    const sourceId = getEndpointId(link.source);
+    const targetId = getEndpointId(link.target);
+    neighborCount[sourceId] = (neighborCount[sourceId] || 0) + 1;
+    neighborCount[targetId] = (neighborCount[targetId] || 0) + 1;
   });
 
   const idToNeighborCount = new Map();
@@ -135,8 +136,8 @@ export function getCommunityData(graphData, options = {}) {
   });
 
   graphData.links.forEach((link) => {
-    const sourceId = link.source.id || link.source;
-    const targetId = link.target.id || link.target;
+    const sourceId = getEndpointId(link.source);
+    const targetId = getEndpointId(link.target);
 
     if (newGraph.hasNode(sourceId) && newGraph.hasNode(targetId) && !newGraph.hasEdge(sourceId, targetId)) {
       const weight = link.weights && link.weights.length > 0 ? Math.max(...link.weights) : 1.0;
@@ -161,7 +162,11 @@ export function getCommunityData(graphData, options = {}) {
 
 export function sortGraph(graph) {
   graph.nodes.sort((a, b) => a.id.localeCompare(b.id));
-  graph.links.sort((a, b) => a.source.localeCompare(b.source) || a.target.localeCompare(b.target));
+  graph.links.sort(
+    (a, b) =>
+      String(getEndpointId(a.source) ?? "").localeCompare(String(getEndpointId(b.source) ?? "")) ||
+      String(getEndpointId(a.target) ?? "").localeCompare(String(getEndpointId(b.target) ?? "")),
+  );
 }
 
 export function getLinkWeight(link) {
@@ -182,13 +187,70 @@ export function formatWeight(value) {
   return value.toPrecision(2);
 }
 
-function getEndpointId(endpoint) {
-  if (endpoint == null) return null;
+export function cloneLink(link) {
+  return {
+    ...link,
+    weights: Array.isArray(link.weights) ? [...link.weights] : [],
+    attribs: Array.isArray(link.attribs) ? [...link.attribs] : [],
+  };
+}
+
+export function getEndpointId(endpoint) {
+  if (endpoint == null) return endpoint;
   if (typeof endpoint === "object") {
     if (endpoint.id != null) return endpoint.id;
     if (endpoint.data?.id != null) return endpoint.data.id;
   }
   return endpoint;
+}
+
+export function getEndpointIdText(endpoint) {
+  const endpointId = getEndpointId(endpoint);
+  return endpointId == null ? "" : String(endpointId).trim();
+}
+
+export function getUndirectedLinkKey(source, target, separator = "---") {
+  const sourceId = String(source ?? "").trim();
+  const targetId = String(target ?? "").trim();
+  if (!sourceId || !targetId || sourceId === targetId) return null;
+  return sourceId < targetId ? `${sourceId}${separator}${targetId}` : `${targetId}${separator}${sourceId}`;
+}
+
+function sameArrayValues(a, b) {
+  if (a === b) return true;
+  if (!Array.isArray(a) || !Array.isArray(b)) return false;
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) return false;
+  }
+  return true;
+}
+
+export function hasGraphStructureChanged(currentGraphData, nextGraphData) {
+  if (!currentGraphData || !nextGraphData) return true;
+
+  const currentNodes = currentGraphData.nodes ?? [];
+  const nextNodes = nextGraphData.nodes ?? [];
+  if (currentNodes.length !== nextNodes.length) return true;
+  for (let i = 0; i < currentNodes.length; i++) {
+    if (currentNodes[i]?.id !== nextNodes[i]?.id) return true;
+  }
+
+  const currentLinks = currentGraphData.links ?? [];
+  const nextLinks = nextGraphData.links ?? [];
+  if (currentLinks.length !== nextLinks.length) return true;
+
+  for (let i = 0; i < currentLinks.length; i++) {
+    const currentLink = currentLinks[i];
+    const nextLink = nextLinks[i];
+
+    if (getEndpointId(currentLink?.source) !== getEndpointId(nextLink?.source)) return true;
+    if (getEndpointId(currentLink?.target) !== getEndpointId(nextLink?.target)) return true;
+    if (!sameArrayValues(currentLink?.attribs ?? [], nextLink?.attribs ?? [])) return true;
+    if (!sameArrayValues(currentLink?.weights ?? [], nextLink?.weights ?? [])) return true;
+  }
+
+  return false;
 }
 
 export function getAdjacentNodes(graphData, nodeId) {

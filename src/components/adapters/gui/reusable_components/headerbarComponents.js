@@ -1,13 +1,4 @@
-import { createPortal } from "react-dom";
-import { Tooltip } from "react-tooltip";
-
-function PortalTooltip(props) {
-  if (typeof document === "undefined" || !document.body) {
-    return <Tooltip {...props} />;
-  }
-
-  return createPortal(<Tooltip {...props} />, document.body);
-}
+import { PortalTooltip } from "./tooltipComponents.js";
 
 export function HeaderButton({ icon, onClick, children, tooltip, tooltipId, shortcut, ...buttonProps }) {
   return (

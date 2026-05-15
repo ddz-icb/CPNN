@@ -1,4 +1,6 @@
 import log from "../../../adapters/logging/logger.js";
+import { getUndirectedLinkKey } from "../graph_calculations/graphUtils.js";
+import { applyAdditionalLinks } from "./additionalLinkEnrichment.js";
 import { fetchKinaseSubstrateInteractions } from "./omniPathApi.js";
 import { OMNI_PATH_KINASE_ATTRIB, OMNI_PATH_PHOSPHO_ATTRIB } from "./omniPathConfig.js";
 import { normalizeProteinId } from "./stringDbHelpers.js";
@@ -34,7 +36,7 @@ function applyKinaseLinks(graphData, interactions, substrateProteinToNodeIds) {
     kinaseNodeIds.forEach((kinaseNodeId) => {
       taggedKinaseNodeIds.add(kinaseNodeId);
       substrateNodeIds.forEach((substrateNodeId) => {
-        const key = `${kinaseNodeId}---${substrateNodeId}`;
+        const key = getUndirectedLinkKey(kinaseNodeId, substrateNodeId);
         if (seenLinkKeys.has(key)) return;
         seenLinkKeys.add(key);
         linksToAdd.push({
@@ -55,11 +57,15 @@ function applyKinaseLinks(graphData, interactions, substrateProteinToNodeIds) {
     return { ...node, attribs: [...(node.attribs ?? []), OMNI_PATH_KINASE_ATTRIB] };
   });
 
-  return {
-    ...graphData,
-    nodes: updatedNodes,
-    links: linksToAdd.length > 0 ? [...graphData.links, ...linksToAdd] : graphData.links,
-  };
+  return applyAdditionalLinks(
+    {
+      ...graphData,
+      nodes: updatedNodes,
+    },
+    linksToAdd,
+    OMNI_PATH_PHOSPHO_ATTRIB,
+    1,
+  );
 }
 
 export async function enrichGraphWithOmniPath(graphData, options = {}) {

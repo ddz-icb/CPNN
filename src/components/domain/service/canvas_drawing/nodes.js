@@ -1,7 +1,9 @@
 import { applyTintToColor, getColor, getTextStyle } from "./drawingUtils.js";
+import { getNodeIdName } from "../parsing/nodeIdParsing.js";
 import { drawCanvasSphereShading } from "./shading.js";
 
 export const radius = 8;
+const nodeMapMergeAliases = new WeakMap();
 
 export function drawCircle(circle, node, circleBorderColor, colorscheme, nodeAttribsToColorIndices) {
   circle
@@ -44,6 +46,83 @@ export function changeNodeColors(nodeMap, circleBorderColor, colorscheme, nodeAt
     if (!node || !circle) return;
     circle.clear();
     drawCircle(circle, node, circleBorderColor, colorscheme, nodeAttribsToColorIndices);
+  });
+}
+
+export function syncNodeMapWithGraphData(graphData, nodeMap, theme, colorschemeState) {
+  if (!graphData?.nodes || !nodeMap) return;
+
+  const previousAliases = nodeMapMergeAliases.get(nodeMap) ?? [];
+  previousAliases.forEach((alias) => {
+    delete nodeMap[alias];
+  });
+
+  const aliases = [];
+  graphData.nodes.forEach((node) => {
+    const representativeId = node.__mergeRepresentativeId ?? node.id;
+    const entry = nodeMap[representativeId] ?? nodeMap[node.id];
+    if (!entry) return;
+
+    entry.node = node;
+
+    if (entry.circle) {
+      entry.circle.id = node.id;
+      entry.circle.__tooltipNode = node;
+
+      if (theme?.circleBorderColor && colorschemeState?.nodeColorscheme?.data && colorschemeState?.nodeAttribsToColorIndices) {
+        entry.circle.clear();
+        drawCircle(
+          entry.circle,
+          node,
+          theme.circleBorderColor,
+          colorschemeState.nodeColorscheme.data,
+          colorschemeState.nodeAttribsToColorIndices,
+        );
+      }
+    }
+
+    if (entry.nodeLabel) {
+      entry.nodeLabel.text = getNodeIdName(node.id);
+      entry.nodeLabel.pivot.x = entry.nodeLabel.width / 2;
+    }
+
+    if (node.id !== representativeId) {
+      nodeMap[node.id] = entry;
+      aliases.push(node.id);
+    }
+  });
+
+  nodeMapMergeAliases.set(nodeMap, aliases);
+}
+
+export function filterActiveNodesForPixi(showNodeLabels, graphData, nodeMap) {
+  if (!nodeMap || !graphData?.nodes) return;
+
+  Object.values(nodeMap).forEach(({ circle, nodeLabel }) => {
+    if (circle) {
+      circle.visible = false;
+      circle.__hiddenByFilter = true;
+    }
+    if (nodeLabel) {
+      nodeLabel.visible = false;
+      nodeLabel.__hiddenByFilter = true;
+    }
+  });
+
+  graphData.nodes.forEach((node) => {
+    const entry = nodeMap[node.id];
+    if (!entry) return;
+    const { circle, nodeLabel } = entry;
+    if (circle) {
+      circle.visible = true;
+      circle.__hiddenByFilter = false;
+    }
+    if (nodeLabel) {
+      nodeLabel.__hiddenByFilter = false;
+    }
+    if (showNodeLabels && nodeLabel) {
+      nodeLabel.visible = true;
+    }
   });
 }
 

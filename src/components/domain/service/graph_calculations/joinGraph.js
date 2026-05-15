@@ -1,5 +1,6 @@
 import UnionFind from "union-find";
 import { getNodeIdEntries, getNodeIdNames } from "../parsing/nodeIdParsing.js";
+import { getEndpointId, getUndirectedLinkKey } from "./graphUtils.js";
 
 function normalizeNodeEntry(entry) {
   const [idPart = "", namePart = "", phosphositesPart = ""] = entry.split("_").map((part) => part.trim());
@@ -13,10 +14,6 @@ function normalizeNodeEntry(entry) {
     .filter(Boolean)
     .join(", ");
   return normalizedPhosphosites ? `${idPart}_${namePart}_${normalizedPhosphosites}` : `${idPart}_${namePart}`;
-}
-
-function getEndpointId(endpoint) {
-  return endpoint?.id || endpoint;
 }
 
 function copyNodeLayout(targetNode, sourceNode) {
@@ -64,12 +61,13 @@ export function joinGraphs(graphData, newGraphData) {
 
   const joinedNodes = Array.from(nodeMap.values());
 
-  const linkMap = new Map(graphData.links.map((link) => [`${link.source}-${link.target}`, { ...link }]));
+  const linkMap = new Map(
+    graphData.links.map((link) => [getUndirectedLinkKey(getEndpointId(link.source), getEndpointId(link.target)), { ...link }]),
+  );
 
   newGraphData.links.forEach((link) => {
-    const key1 = `${link.source}-${link.target}`;
-    const key2 = `${link.target}-${link.source}`;
-    const baseLink = linkMap.get(key1) || linkMap.get(key2);
+    const key = getUndirectedLinkKey(getEndpointId(link.source), getEndpointId(link.target));
+    const baseLink = linkMap.get(key);
 
     if (baseLink) {
       const newAttribs = [];
@@ -83,13 +81,9 @@ export function joinGraphs(graphData, newGraphData) {
       baseLink.attribs.push(...newAttribs);
       baseLink.weights.push(...newWeights);
 
-      if (linkMap.has(key1)) {
-        linkMap.set(key1, baseLink);
-      } else {
-        linkMap.set(key2, baseLink);
-      }
+      linkMap.set(key, baseLink);
     } else {
-      linkMap.set(key1, { ...link });
+      linkMap.set(key, { ...link });
     }
   });
 
@@ -207,7 +201,7 @@ export function filterMergeByName(graphData, mergeByName, options = {}) {
     const sourceMergedId = sourceMergedNode.id;
     const targetMergedId = targetMergedNode.id;
 
-    const key = sourceMergedId < targetMergedId ? `${sourceMergedId}---${targetMergedId}` : `${targetMergedId}---${sourceMergedId}`;
+    const key = getUndirectedLinkKey(sourceMergedId, targetMergedId);
 
     const existingLink = mergedLinksMap.get(key);
 

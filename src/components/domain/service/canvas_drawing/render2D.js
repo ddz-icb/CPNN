@@ -1,6 +1,6 @@
 import { getNodeLabelOffsetY } from "./drawingUtils.js";
 import { updateHighlights } from "./highlights.js";
-import { drawLine } from "./lines.js";
+import { updateLines } from "./lineGraphics.js";
 
 export function redraw(graphData, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, showNodeLabels, nodeMap, app) {
   const { nodes, links } = graphData;
@@ -35,32 +35,5 @@ function updateNodes(nodes, nodeMap, showNodeLabels) {
         nodeLabel.visible = false;
       }
     }
-  }
-}
-
-function updateLines(links, lineGraphics, linkWidth, linkColorscheme, linkAttribsToColorIndices) {
-  if (!lineGraphics || !links) return;
-
-  if (Array.isArray(lineGraphics)) {
-    for (let i = 0; i < lineGraphics.length; i++) {
-      const link = links[i];
-      const graphic = lineGraphics[i];
-      if (!graphic) continue;
-      graphic.clear();
-      if (!link) {
-        graphic.visible = false;
-        continue;
-      }
-      drawLine(graphic, link, linkWidth, linkColorscheme.data, linkAttribsToColorIndices);
-      graphic.visible = true;
-      graphic.zIndex = 0;
-    }
-    return;
-  }
-
-  lineGraphics.clear();
-  lineGraphics.visible = true;
-  for (const link of links) {
-    drawLine(lineGraphics, link, linkWidth, linkColorscheme.data, linkAttribsToColorIndices);
   }
 }
