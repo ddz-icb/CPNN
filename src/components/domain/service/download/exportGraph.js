@@ -124,6 +124,8 @@ export function drawLegendOnPdf(
   const headerBottomSpacing = 10;
   const rowSpacing = 6;
   const groupSpacing = 16;
+  const minRightTextBuffer = 18;
+  const textWidthBufferRatio = 0.06;
 
   const sectionsConfig = [
     {
@@ -163,7 +165,8 @@ export function drawLegendOnPdf(
     });
   });
 
-  const legendWidth = padding * 2 + rectSize + rectSpacing + maxTextWidth;
+  const rightTextBuffer = Math.max(minRightTextBuffer, maxTextWidth * textWidthBufferRatio);
+  const legendWidth = padding * 2 + rectSize + rectSpacing + maxTextWidth + rightTextBuffer;
 
   tempPdf.setFontSize(headerFontSize);
   const headerMetricsSample = typeof tempPdf.getTextDimensions === "function" ? tempPdf.getTextDimensions("Ag") : null;
