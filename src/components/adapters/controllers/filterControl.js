@@ -55,6 +55,8 @@ export function FilterControl() {
       log.info(
         "Filtering nodes and links.\n    Threshold:  ",
         filter.linkThreshold,
+        "\n    Max Threshold: ",
+        filter.maxLinkThreshold,
         "\n    Link Attributes: ",
         filter.linkFilter,
         "\n    Node Attributes: ",
@@ -95,7 +97,7 @@ export function FilterControl() {
         filteredGraphData = filterNodeIds(filteredGraphData, filter.nodeIdFilters);
         filteredGraphData = filterNodesExist(filteredGraphData);
 
-        filteredGraphData = filterThreshold(filteredGraphData, filter.linkThreshold);
+        filteredGraphData = filterThreshold(filteredGraphData, filter.linkThreshold, filter.maxLinkThreshold);
         filteredGraphData = filterLinkAttribs(filteredGraphData, filter.linkFilter);
 
         // Additional enrichment links are excluded from structural filters (component/community/k-core)
@@ -153,6 +155,7 @@ export function FilterControl() {
     graphFlags.isPreprocessed,
     graphFlags.mergeByName,
     filter.linkThreshold,
+    filter.maxLinkThreshold,
     filter.linkFilter,
     filter.nodeFilter,
     filter.nodeIdFilters,

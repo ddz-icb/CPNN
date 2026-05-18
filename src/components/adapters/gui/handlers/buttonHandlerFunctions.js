@@ -14,6 +14,13 @@ function isFiniteNumber(value) {
   return typeof value === "number" && Number.isFinite(value);
 }
 
+export function getNumericControlValue(value, fallbackValue) {
+  if (value === "" || value === null || value === undefined) return fallbackValue;
+
+  const numericValue = Number(value);
+  return Number.isFinite(numericValue) ? numericValue : fallbackValue;
+}
+
 function getNiceNumber(value, fallbackStep) {
   if (!Number.isFinite(value) || value <= 0) return fallbackStep;
 

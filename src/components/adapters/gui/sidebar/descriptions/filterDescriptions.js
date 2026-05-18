@@ -4,7 +4,16 @@ export const linkThresholdDescription = (
   <div>
     <p className="margin-0">
       Filter links by minimum absolute weight. The slider range is based on the smallest and largest absolute link weight in the loaded graph, so
-      weights do not need to be limited to 0 to 1. Increasing this value can significantly enhance performance by reducing the graph size.
+      weights do not need to be limited to 0 to 1. Increasing this value keeps only stronger links.
+    </p>
+  </div>
+);
+
+export const maxLinkThresholdDescription = (
+  <div>
+    <p className="margin-0">
+      Filter links by maximum absolute weight. The slider range is based on the smallest and largest absolute link weight in the loaded graph.
+      Decreasing this value removes links above the selected weight.
     </p>
   </div>
 );

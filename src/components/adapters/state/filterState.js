@@ -1,6 +1,8 @@
 import { create } from "zustand";
 
 export const linkThresholdInit = 0.7;
+export const maxLinkThresholdInit = "";
+export const maxLinkThresholdTextInit = "";
 export const nodeFilterInit = true;
 export const linkFilterInit = true;
 export const linkFilterTextInit = "";
@@ -24,6 +26,8 @@ export const lassoSelectionInit = [];
 export const filterInit = {
   linkThreshold: linkThresholdInit,
   linkThresholdText: linkThresholdInit,
+  maxLinkThreshold: maxLinkThresholdInit,
+  maxLinkThresholdText: maxLinkThresholdTextInit,
   linkFilter: linkFilterInit,
   linkFilterText: linkFilterTextInit,
   nodeFilter: nodeFilterInit,

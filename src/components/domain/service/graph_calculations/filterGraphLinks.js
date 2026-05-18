@@ -1,14 +1,28 @@
 import { getEndpointId } from "./graphUtils.js";
 
-export function filterThreshold(graphData, linkThreshold) {
-  const threshold = Number(linkThreshold);
-  if (!Number.isFinite(threshold) || threshold <= 0) return graphData;
+function getFiniteThreshold(value) {
+  if (value === "" || value === null || value === undefined) return null;
+
+  const threshold = Number(value);
+  return Number.isFinite(threshold) ? threshold : null;
+}
+
+export function filterThreshold(graphData, minLinkThreshold, maxLinkThreshold) {
+  const minThreshold = getFiniteThreshold(minLinkThreshold);
+  const maxThreshold = getFiniteThreshold(maxLinkThreshold);
+  const hasMinThreshold = minThreshold !== null && minThreshold > 0;
+  const hasMaxThreshold = maxThreshold !== null && maxThreshold >= 0;
+
+  if (!hasMinThreshold && !hasMaxThreshold) return graphData;
 
   graphData = {
     ...graphData,
     links: graphData.links
       .map((link) => {
-        const keep = link.weights.map((weight) => Math.abs(weight) >= threshold);
+        const keep = link.weights.map((weight) => {
+          const absoluteWeight = Math.abs(weight);
+          return (!hasMinThreshold || absoluteWeight >= minThreshold) && (!hasMaxThreshold || absoluteWeight <= maxThreshold);
+        });
         const filteredAttribs = link.attribs.filter((_, i) => keep[i]);
         const filteredWeights = link.weights.filter((_, i) => keep[i]);
 

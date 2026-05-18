@@ -82,6 +82,17 @@ function applyGraphMetrics(graphData) {
   return { minWeight, maxWeight, minAbsWeight, maxAbsWeight };
 }
 
+function getFiniteFilterNumber(value) {
+  if (value === "" || value === null || value === undefined) return null;
+
+  const numericValue = Number(value);
+  return Number.isFinite(numericValue) ? numericValue : null;
+}
+
+function toFilterControlNumber(value) {
+  return Number(value.toPrecision(12));
+}
+
 function applyGraphFilterSettings(savedFilter, { minAbsWeight, maxAbsWeight }) {
   const { filter, setAllFilter } = useFilter.getState();
   let nextFilter = { ...filter };
@@ -89,14 +100,37 @@ function applyGraphFilterSettings(savedFilter, { minAbsWeight, maxAbsWeight }) {
 
   if (hasSavedFilter) {
     nextFilter = mergeKnownSettings(filterInit, savedFilter, filterInit);
-  } else if (Number.isFinite(minAbsWeight) && Number.isFinite(maxAbsWeight)) {
-    const currentThreshold = Number(nextFilter.linkThreshold);
-    if (!Number.isFinite(currentThreshold) || currentThreshold < minAbsWeight || currentThreshold > maxAbsWeight) {
-      const roundedMinWeight = Math.round(minAbsWeight * 100) / 100;
+  }
+
+  if (Number.isFinite(minAbsWeight) && Number.isFinite(maxAbsWeight)) {
+    const currentMinThreshold = getFiniteFilterNumber(nextFilter.linkThreshold);
+    const currentMaxThreshold = getFiniteFilterNumber(nextFilter.maxLinkThreshold);
+
+    if (currentMinThreshold === null || currentMinThreshold < minAbsWeight || currentMinThreshold > maxAbsWeight) {
+      const roundedMinWeight = toFilterControlNumber(minAbsWeight);
       nextFilter = {
         ...nextFilter,
         linkThreshold: roundedMinWeight,
         linkThresholdText: roundedMinWeight,
+      };
+    }
+
+    if (currentMaxThreshold === null || currentMaxThreshold < minAbsWeight || currentMaxThreshold > maxAbsWeight) {
+      const roundedMaxWeight = toFilterControlNumber(maxAbsWeight);
+      nextFilter = {
+        ...nextFilter,
+        maxLinkThreshold: roundedMaxWeight,
+        maxLinkThresholdText: roundedMaxWeight,
+      };
+    }
+
+    const nextMinThreshold = getFiniteFilterNumber(nextFilter.linkThreshold);
+    const nextMaxThreshold = getFiniteFilterNumber(nextFilter.maxLinkThreshold);
+    if (nextMinThreshold !== null && nextMaxThreshold !== null && nextMaxThreshold < nextMinThreshold) {
+      nextFilter = {
+        ...nextFilter,
+        maxLinkThreshold: nextMinThreshold,
+        maxLinkThresholdText: nextMinThreshold,
       };
     }
   }
