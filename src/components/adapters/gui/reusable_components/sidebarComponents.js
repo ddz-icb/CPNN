@@ -163,7 +163,7 @@ export function FieldApplyBlock({
   );
 }
 
-export function Button({ onClick, onChange, linkRef, tooltip, tooltipId, text, className, variant, disabled, fileInputProps = {} }) {
+export function Button({ onClick, onChange, linkRef, tooltip, tooltipId, text, shortcut, className, variant, disabled, fileInputProps = {} }) {
   return (
     <>
       <ButtonCN
@@ -175,6 +175,7 @@ export function Button({ onClick, onChange, linkRef, tooltip, tooltipId, text, c
         disabled={disabled}
       >
         <span>{text}</span>
+        {shortcut && <kbd className="nav-shortcut">{shortcut}</kbd>}
         {(linkRef || onChange) && <input type="file" style={{ display: "none" }} onChange={onChange} ref={linkRef} {...fileInputProps} />}
       </ButtonCN>
       <PortalTooltip id={tooltipId} place="top" effect="solid" className="tooltip-gui" positionStrategy="fixed" />

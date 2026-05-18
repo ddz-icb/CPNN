@@ -1,4 +1,4 @@
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 import { useAppearance } from "../../state/appearanceState.js";
 import { useColorschemeState } from "../../state/colorschemeState.js";
@@ -55,6 +55,7 @@ import {
   createTooltipOverlayController,
   describeKeyframeScene,
 } from "./videographyScene.js";
+import { isPopupOpen, isTypingTarget } from "../hooks/keyboardUtils.js";
 
 const DeleteIcon = (props) => <SvgIcon svg={trashSvg} {...props} />;
 
@@ -130,7 +131,7 @@ export function VideographySidebar() {
     [setKeyframes],
   );
 
-  const handleAddKeyframe = () => {
+  const handleAddKeyframe = useCallback(() => {
     const captured = captureCurrentView({ app: renderState.app, appearance, container });
     if (!captured) {
       setStatus("Canvas is not ready.", 0);
@@ -155,7 +156,33 @@ export function VideographySidebar() {
     setKeyframes([...keyframes, nextKeyframe]);
     setVideography("selectedKeyframeId", nextKeyframe.id);
     setStatus(`Added ${nextKeyframe.label}.`, 0);
-  };
+  }, [
+    appearance,
+    container,
+    graphState.graph?.data,
+    keyframes,
+    pixiState.nodeMap,
+    renderState.app,
+    setKeyframes,
+    setStatus,
+    setVideography,
+    videography.defaultTransitionSeconds,
+    videography.holdSeconds,
+  ]);
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.repeat || event.key?.toLowerCase() !== "k") return;
+      if (isTypingTarget(document.activeElement) || isPopupOpen()) return;
+      if (!canEditRoute) return;
+
+      event.preventDefault();
+      handleAddKeyframe();
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [canEditRoute, handleAddKeyframe]);
 
   const handleClear = () => {
     setKeyframes([]);
@@ -280,7 +307,7 @@ export function VideographySidebar() {
 
   const modeWarning = hasModeMismatch ? `Route is ${getViewModeLabel(routeMode)}. Switch back to edit it.` : "";
   const primaryActions = [
-    { text: "Add Keyframe", onClick: handleAddKeyframe, disabled: !canEditRoute },
+    { text: "Add Keyframe", shortcut: "K", onClick: handleAddKeyframe, disabled: !canEditRoute },
     { text: "Preview", onClick: handlePreview, disabled: !canPreviewRoute },
     { text: "Download Video", onClick: handleDownload, disabled: !canDownloadRoute, fullWidth: true },
   ];
