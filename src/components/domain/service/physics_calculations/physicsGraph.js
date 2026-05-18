@@ -275,13 +275,31 @@ export function gravityForce(x, y, z) {
   return force;
 }
 
-export function getLinkDistance(baseLength, link) {
-  const weight = getLinkWeight(link);
+function normalizeLinkWeight(weight, extent) {
   if (!Number.isFinite(weight)) {
+    return null;
+  }
+
+  const min = Number.isFinite(extent?.min) ? Math.max(0, extent.min) : 0;
+  const max = Number.isFinite(extent?.max) ? Math.max(0, extent.max) : 1;
+
+  if (max <= 0) {
+    return 0;
+  }
+  if (max <= min) {
+    return 1;
+  }
+
+  return Math.min(Math.max((weight - min) / (max - min), 0), 1);
+}
+
+export function getLinkDistance(baseLength, link, weightExtent) {
+  const weight = getLinkWeight(link);
+  const normalized = normalizeLinkWeight(weight, weightExtent);
+  if (normalized === null) {
     return baseLength;
   }
 
-  const normalized = Math.min(Math.max(weight, 0), 1);
   const scaledLength = baseLength * (1 - normalized);
   return Math.max(scaledLength, baseLength * minLinkLengthFactor);
 }

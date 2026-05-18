@@ -1,22 +1,24 @@
 import * as d3 from "d3";
 import { forceSimulation, forceLink } from "d3-force-3d";
 import { getLinkDistance } from "./physicsGraph.js";
+import { getLinkWeightMagnitudeExtent } from "../graph_calculations/graphUtils.js";
 import { redraw3D } from "../canvas_drawing/render3D.js";
 import { redraw } from "../canvas_drawing/render2D.js";
 import { createFrameScheduler } from "../utils/frameScheduler.js";
 
-export function getSimulation(linkLength, threeD, linkForce = true) {
+export function getSimulation(linkLength, threeD, linkForce = true, graphData) {
+  const weightExtent = graphData ? getLinkWeightMagnitudeExtent(graphData) : null;
   if (threeD) {
-    return getSimulation3D(linkLength, linkForce);
+    return getSimulation3D(linkLength, linkForce, weightExtent);
   } else {
-    return getSimulation2D(linkLength, linkForce);
+    return getSimulation2D(linkLength, linkForce, weightExtent);
   }
 }
 
-function createLinkForce(forceLinkFactory, linkLength, linkForce) {
+function createLinkForce(forceLinkFactory, linkLength, linkForce, weightExtent) {
   const link = forceLinkFactory()
     .id((d) => d.id)
-    .distance((link) => getLinkDistance(linkLength, link));
+    .distance((link) => getLinkDistance(linkLength, link, weightExtent));
 
   if (linkForce === false) {
     link.strength(0);
@@ -25,19 +27,19 @@ function createLinkForce(forceLinkFactory, linkLength, linkForce) {
   return link;
 }
 
-function getSimulation2D(linkLength, linkForce) {
+function getSimulation2D(linkLength, linkForce, weightExtent) {
   const simulation = d3
     .forceSimulation()
-    .force("link", createLinkForce(d3.forceLink, linkLength, linkForce))
+    .force("link", createLinkForce(d3.forceLink, linkLength, linkForce, weightExtent))
     .alphaMin(0.05);
 
   simulation.randomSource();
   return simulation;
 }
 
-function getSimulation3D(linkLength, linkForce) {
+function getSimulation3D(linkLength, linkForce, weightExtent) {
   const simulation = forceSimulation([], 3)
-    .force("link", createLinkForce(forceLink, linkLength, linkForce))
+    .force("link", createLinkForce(forceLink, linkLength, linkForce, weightExtent))
     .alphaMin(0.05);
 
   simulation.randomSource();

@@ -4,7 +4,7 @@ import * as d3 from "d3";
 import * as d3Force3d from "d3-force-3d";
 
 import { radius } from "../../domain/service/canvas_drawing/nodes.js";
-import { getAdjacentData, getComponentData } from "../../domain/service/graph_calculations/graphUtils.js";
+import { getAdjacentData, getComponentData, getLinkWeightMagnitudeExtent } from "../../domain/service/graph_calculations/graphUtils.js";
 import {
   accuracyBarnesHut,
   borderCheck,
@@ -44,11 +44,12 @@ export function PhysicsControl() {
       if (physics.linkForce == false) {
         renderState.simulation.force("link").strength(0);
       } else {
+        const weightExtent = getLinkWeightMagnitudeExtent(graphState.graph.data);
         renderState.simulation.force(
           "link",
           forceLinkFactory(graphState.graph.data.links)
             .id((d) => d.id)
-            .distance((link) => getLinkDistance(physics.linkLength, link)),
+            .distance((link) => getLinkDistance(physics.linkLength, link, weightExtent)),
         );
         setPhysics("circleForce", false);
         renderState.simulation.alpha(1).restart();
@@ -60,11 +61,12 @@ export function PhysicsControl() {
   }, [physics.linkForce, renderState.simulation, appearance.threeD]); // shouldn't be called on filteredAfterStart since all nodes of the graph are needed
 
   useEffect(() => {
-    if (!renderState.simulation || !graphFlags.filteredAfterStart || physics.linkForce == false) return;
+    if (!renderState.simulation || !graphFlags.filteredAfterStart || !graphState.graph || physics.linkForce == false) return;
     log.info("Changing link length", physics.linkLength);
 
     try {
-      renderState.simulation.force("link").distance((link) => getLinkDistance(physics.linkLength, link));
+      const weightExtent = getLinkWeightMagnitudeExtent(graphState.graph.data);
+      renderState.simulation.force("link").distance((link) => getLinkDistance(physics.linkLength, link, weightExtent));
       renderState.simulation.alpha(1).restart();
     } catch (error) {
       errorService.setError(error.message);

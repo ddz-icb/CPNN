@@ -1,13 +1,14 @@
 import { getEndpointId } from "./graphUtils.js";
 
 export function filterThreshold(graphData, linkThreshold) {
-  if (linkThreshold === 0) return graphData;
+  const threshold = Number(linkThreshold);
+  if (!Number.isFinite(threshold) || threshold <= 0) return graphData;
 
   graphData = {
     ...graphData,
     links: graphData.links
       .map((link) => {
-        const keep = link.weights.map((weight) => Math.abs(weight) >= linkThreshold);
+        const keep = link.weights.map((weight) => Math.abs(weight) >= threshold);
         const filteredAttribs = link.attribs.filter((_, i) => keep[i]);
         const filteredWeights = link.weights.filter((_, i) => keep[i]);
 

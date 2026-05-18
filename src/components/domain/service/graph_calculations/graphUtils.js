@@ -110,15 +110,25 @@ export function getLinkAttribsToColorIndices(graphData) {
 export function getLinkWeightMinMax(graphData) {
   let minWeight = Infinity;
   let maxWeight = -Infinity;
+  let minAbsWeight = Infinity;
+  let maxAbsWeight = -Infinity;
 
   graphData.links.forEach((link) => {
     link.weights.forEach((w) => {
       if (w < minWeight) minWeight = w;
       if (w > maxWeight) maxWeight = w;
+      const absWeight = Math.abs(w);
+      if (absWeight < minAbsWeight) minAbsWeight = absWeight;
+      if (absWeight > maxAbsWeight) maxAbsWeight = absWeight;
     });
   });
 
-  return { minWeight: minWeight, maxWeight: maxWeight };
+  return { minWeight, maxWeight, minAbsWeight, maxAbsWeight };
+}
+
+export function getLinkWeightMagnitudeExtent(graphData) {
+  const { minAbsWeight, maxAbsWeight } = getLinkWeightMinMax(graphData);
+  return { min: minAbsWeight, max: maxAbsWeight };
 }
 
 export function getCommunityData(graphData, options = {}) {
@@ -140,7 +150,7 @@ export function getCommunityData(graphData, options = {}) {
     const targetId = getEndpointId(link.target);
 
     if (newGraph.hasNode(sourceId) && newGraph.hasNode(targetId) && !newGraph.hasEdge(sourceId, targetId)) {
-      const weight = link.weights && link.weights.length > 0 ? Math.max(...link.weights) : 1.0;
+      const weight = getLinkWeight(link);
       newGraph.addUndirectedEdge(sourceId, targetId, { weight });
     }
   });

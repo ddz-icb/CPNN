@@ -1,6 +1,6 @@
 import { appearanceInit, useAppearance } from "../../adapters/state/appearanceState.js";
 import { colorschemeStateInit, useColorschemeState } from "../../adapters/state/colorschemeState.js";
-import { filterInit, linkThresholdInit, useFilter } from "../../adapters/state/filterState.js";
+import { filterInit, useFilter } from "../../adapters/state/filterState.js";
 import { useGraphMetrics } from "../../adapters/state/graphMetricsState.js";
 import { physicsInit, usePhysics } from "../../adapters/state/physicsState.js";
 import { darkTheme, lightTheme, useTheme } from "../../adapters/state/themeState.js";
@@ -64,7 +64,7 @@ export function buildColorschemeSettingsExport(colorschemeState) {
 
 function applyGraphMetrics(graphData) {
   const { setGraphMetrics } = useGraphMetrics.getState();
-  const { minWeight, maxWeight } = getLinkWeightMinMax(graphData);
+  const { minWeight, maxWeight, minAbsWeight, maxAbsWeight } = getLinkWeightMinMax(graphData);
 
   if (minWeight !== Infinity) {
     setGraphMetrics("linkWeightMin", minWeight);
@@ -72,25 +72,33 @@ function applyGraphMetrics(graphData) {
   if (maxWeight !== -Infinity) {
     setGraphMetrics("linkWeightMax", maxWeight);
   }
-
-  return { minWeight, maxWeight };
-}
-
-function applyGraphFilterSettings(savedFilter, { minWeight }) {
-  const { filter, setAllFilter } = useFilter.getState();
-  let nextFilter = { ...filter };
-
-  if (minWeight !== Infinity && minWeight > linkThresholdInit) {
-    const roundedMinWeight = Math.round(minWeight * 100) / 100;
-    nextFilter = {
-      ...nextFilter,
-      linkThreshold: roundedMinWeight,
-      linkThresholdText: roundedMinWeight,
-    };
+  if (minAbsWeight !== Infinity) {
+    setGraphMetrics("linkWeightAbsMin", minAbsWeight);
+  }
+  if (maxAbsWeight !== -Infinity) {
+    setGraphMetrics("linkWeightAbsMax", maxAbsWeight);
   }
 
-  if (isObject(savedFilter)) {
+  return { minWeight, maxWeight, minAbsWeight, maxAbsWeight };
+}
+
+function applyGraphFilterSettings(savedFilter, { minAbsWeight, maxAbsWeight }) {
+  const { filter, setAllFilter } = useFilter.getState();
+  let nextFilter = { ...filter };
+  const hasSavedFilter = isObject(savedFilter);
+
+  if (hasSavedFilter) {
     nextFilter = mergeKnownSettings(filterInit, savedFilter, filterInit);
+  } else if (Number.isFinite(minAbsWeight) && Number.isFinite(maxAbsWeight)) {
+    const currentThreshold = Number(nextFilter.linkThreshold);
+    if (!Number.isFinite(currentThreshold) || currentThreshold < minAbsWeight || currentThreshold > maxAbsWeight) {
+      const roundedMinWeight = Math.round(minAbsWeight * 100) / 100;
+      nextFilter = {
+        ...nextFilter,
+        linkThreshold: roundedMinWeight,
+        linkThresholdText: roundedMinWeight,
+      };
+    }
   }
 
   setAllFilter(nextFilter);

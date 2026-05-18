@@ -1,4 +1,5 @@
 import { Button, FieldBlock, SliderBlock, SwitchBlock, LassoFilterBlock } from "../reusable_components/sidebarComponents.js";
+import { getSliderBoundsForDataRange } from "../handlers/buttonHandlerFunctions.js";
 import { NodeIdFilterBlock } from "./nodeIdFilterBlock.js";
 import { LinkAttribFilterBlock, NodeAttribFilterBlock } from "./attribFilterBlock.js";
 import { useFilter } from "../../state/filterState.js";
@@ -28,6 +29,11 @@ export function FilterSidebar() {
   const { graphMetrics } = useGraphMetrics();
 
   const lassoSelectionCount = Array.isArray(filter.lassoSelection) ? filter.lassoSelection.length : 0;
+  const linkThresholdBounds = getSliderBoundsForDataRange({
+    dataMin: graphMetrics.linkWeightAbsMin,
+    dataMax: graphMetrics.linkWeightAbsMax,
+    fallbackMax: linkThresholdInit,
+  });
 
   const handleClearLassoSelection = () => {
     setFilter("lassoSelection", []);
@@ -54,9 +60,9 @@ export function FilterSidebar() {
         setValue={(value) => setFilter("linkThreshold", value)}
         setValueText={(value) => setFilter("linkThresholdText", value)}
         fallbackValue={linkThresholdInit}
-        min={Math.max(Math.floor((graphMetrics.linkWeightMin / 0.05) * 0.05) - 0.05, 0)}
-        max={Math.min(Math.ceil((graphMetrics.linkWeightMax / 0.05) * 0.05) + 0.05, 1)}
-        step={0.05}
+        min={linkThresholdBounds.min}
+        max={linkThresholdBounds.max}
+        step={linkThresholdBounds.step}
         text={"Link Weight Threshold"}
         infoHeading={"Filtering Links by Threshold"}
         infoDescription={linkThresholdDescription}

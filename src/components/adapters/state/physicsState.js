@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 export const linkForceInit = true;
-export const linkLengthInit = 200;
+export const linkLengthInit = 100;
 export const gravityStrengthInit = 0.05;
 export const componentStrengthInit = 0;
 export const nodeRepulsionStrengthInit = 1;
@@ -36,7 +36,11 @@ export const physicsInit = {
 };
 
 export const expectedPhysicTypes = {
-  ...Object.fromEntries(Object.entries(physicsInit).filter(([key]) => !key.endsWith("Text")).map(([key, value]) => [key, typeof value])),
+  ...Object.fromEntries(
+    Object.entries(physicsInit)
+      .filter(([key]) => !key.endsWith("Text"))
+      .map(([key, value]) => [key, typeof value]),
+  ),
   gravityAdvanced: "boolean",
 };
 

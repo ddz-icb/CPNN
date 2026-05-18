@@ -3,8 +3,8 @@ import { PopupTextField } from "../../reusable_components/sidebarComponents.js";
 export const linkThresholdDescription = (
   <div>
     <p className="margin-0">
-      You can filter the links by adjusting their threshold. Links will only be drawn, if their link weight is larger or equal to the set threshold.
-      Increasing this value can significantly enhance performance by reducing the graph size.
+      Filter links by minimum absolute weight. The slider range is based on the smallest and largest absolute link weight in the loaded graph, so
+      weights do not need to be limited to 0 to 1. Increasing this value can significantly enhance performance by reducing the graph size.
     </p>
   </div>
 );

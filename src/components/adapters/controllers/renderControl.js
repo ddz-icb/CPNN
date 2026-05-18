@@ -163,7 +163,7 @@ export function RenderControl() {
     log.info("Init simulation");
 
     try {
-      const newSimulation = getSimulation(physics.linkLength, appearance.threeD, physics.linkForce);
+      const newSimulation = getSimulation(physics.linkLength, appearance.threeD, physics.linkForce, graphState.graph.data);
       initDragAndZoom(renderState.app, newSimulation, radius, setTooltipSettings, container.width, container.height, appearance.threeD, cameraRef);
       setRenderState("simulation", newSimulation);
     } catch (error) {
@@ -196,7 +196,7 @@ export function RenderControl() {
       }
       resetGridVisibility(pixiState.grid3D, appearance.threeD && appearance.show3DGrid);
       resetStageTransform(renderState.app?.stage);
-      const newSimulation = getSimulation(physics.linkLength, appearance.threeD, physics.linkForce);
+      const newSimulation = getSimulation(physics.linkLength, appearance.threeD, physics.linkForce, graphState.graph.data);
       initDragAndZoom(renderState.app, newSimulation, radius, setTooltipSettings, container.width, container.height, appearance.threeD, cameraRef);
       applyNode3DState(pixiState.nodeMap, appearance.threeD, appearance.enable3DShading);
       setRenderState("simulation", newSimulation);

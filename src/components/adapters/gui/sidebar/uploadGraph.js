@@ -36,6 +36,7 @@ function GraphFormatExampleButtons() {
 
 function GraphPrefilterPopup({
   onCloseUploadPopup,
+  dataFormat,
   ignoreNegatives,
   setIgnoreNegatives,
   mergeByName,
@@ -51,6 +52,8 @@ function GraphPrefilterPopup({
   setMaxCompSize,
   setMaxCompSizeText,
 }) {
+  const usesListedWeights = dataFormat === "json";
+
   return (
     <ButtonPopup buttonText={"Prefilter Graph"} heading={"Prefilter Graph"} onClose={onCloseUploadPopup}>
       {({ closePopup }) => (
@@ -59,8 +62,8 @@ function GraphPrefilterPopup({
             variant="popup"
             value={ignoreNegatives}
             setValue={() => setIgnoreNegatives(!ignoreNegatives)}
-            text={"Ignore negative correlations"}
-            infoHeading={"Ignore negative correlations"}
+            text={usesListedWeights ? "Ignore negative weights" : "Ignore negative correlations"}
+            infoHeading={usesListedWeights ? "Ignore negative weights" : "Ignore negative correlations"}
             infoDescription={ignoreNegativesDescription}
           />
           <SwitchBlock
@@ -72,20 +75,35 @@ function GraphPrefilterPopup({
             infoDescription={mergeByNameDescription}
           />
           <div className="block-section"></div>
-          <SliderBlock
-            variant="popup"
-            value={minEdgeCorr}
-            valueText={minEdgeCorrText}
-            setValue={(value) => setMinEdgeCorr(value)}
-            setValueText={(value) => setMinEdgeCorrText(value)}
-            fallbackValue={0}
-            min={0}
-            max={1}
-            step={0.05}
-            text={"Minimum link correlation"}
-            infoHeading={"Minimum link correlation"}
-            infoDescription={minLinkCorrDescription}
-          />
+          {usesListedWeights ? (
+            <FieldBlock
+              variant="popup"
+              valueText={minEdgeCorrText}
+              setValue={(value) => setMinEdgeCorr(value)}
+              setValueText={(value) => setMinEdgeCorrText(value)}
+              fallbackValue={0}
+              min={0}
+              step={0.05}
+              text={"Minimum absolute link weight"}
+              infoHeading={"Minimum absolute link weight"}
+              infoDescription={minLinkCorrDescription}
+            />
+          ) : (
+            <SliderBlock
+              variant="popup"
+              value={minEdgeCorr}
+              valueText={minEdgeCorrText}
+              setValue={(value) => setMinEdgeCorr(value)}
+              setValueText={(value) => setMinEdgeCorrText(value)}
+              fallbackValue={0}
+              min={0}
+              max={1}
+              step={0.05}
+              text={"Minimum link correlation"}
+              infoHeading={"Minimum link correlation"}
+              infoDescription={minLinkCorrDescription}
+            />
+          )}
           <FieldBlock
             variant="popup"
             valueText={minCompSizeText}
@@ -153,6 +171,12 @@ export function UploadGraph() {
   const closePopup = () => setIsOpen(false);
 
   useEffect(() => {
+    if (dataFormat === "json" || Number(minEdgeCorr) <= 1) return;
+    setMinEdgeCorr(1);
+    setMinEdgeCorrText(1);
+  }, [dataFormat, minEdgeCorr]);
+
+  useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key.toLowerCase() !== "u") return;
       if (isTypingTarget(document.activeElement) || isPopupOpen()) return;
@@ -196,6 +220,7 @@ export function UploadGraph() {
           <div className="block-section pad-top-1">
             <GraphPrefilterPopup
               onCloseUploadPopup={closePopup}
+              dataFormat={dataFormat}
               ignoreNegatives={ignoreNegatives}
               setIgnoreNegatives={setIgnoreNegatives}
               mergeByName={mergeByName}

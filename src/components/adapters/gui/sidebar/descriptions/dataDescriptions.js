@@ -14,8 +14,8 @@ import { PopupTextField } from "../../reusable_components/sidebarComponents.js";
 export const minLinkCorrDescription = (
   <div>
     <p>
-      "Minimum (absolute) correlation value or link weight required for display as a link. Increasing this value can significantly improve
-      performance."
+      Minimum absolute correlation value or link weight required for display as a link. Correlation-derived data uses values from 0 to 1; listed JSON
+      graphs can use any finite numeric weights. Increasing this value can significantly improve performance.
     </p>
   </div>
 );
@@ -29,8 +29,8 @@ export const containsSitesDescription = (
 export const ignoreNegativesDescription = (
   <div>
     <p>
-      When enabled, links with a negative weight value will be discarded. When disabled, negative correlations are kept and the threshold is applied
-      to the absolute value.
+      When enabled, links with a negative weight value will be discarded. When disabled, negative weights are kept and the threshold is applied to the
+      absolute value.
     </p>
   </div>
 );
@@ -47,7 +47,7 @@ export const spearmanCoefficientDescription = (
 export const minCompSizeDescriptionUpload = (
   <div>
     <p>
-      Based on the specified minimum link correlation above, set the minimum component/cluster size required for a node to be included in the graph.
+      Based on the specified minimum link threshold above, set the minimum component/cluster size required for a node to be included in the graph.
       Increasing this value can significantly improve performance.
     </p>
   </div>
@@ -55,8 +55,8 @@ export const minCompSizeDescriptionUpload = (
 export const maxCompSizeDescriptionUpload = (
   <div>
     <p>
-      "Based on the specified minimum link correlation above, set the maximum component/cluster size required for a node to be included in the graph.
-      Decreasing this value can significantly improve performance."{" "}
+      Based on the specified minimum link threshold above, set the maximum component/cluster size required for a node to be included in the graph.
+      Decreasing this value can significantly improve performance.
     </p>
   </div>
 );
@@ -97,7 +97,8 @@ export const uploadGraphDescription = (
 export const uploadGraphDataFormat = (
   <div>
     <p className="margin-0">
-      <strong>Listed Data (JSON):</strong> Upload a JSON file that already contains nodes and links. JSON uploads keep their existing link attributes.
+      <strong>Listed Data (JSON):</strong> Upload a JSON file that already contains nodes and links. JSON uploads keep their existing link attributes
+      and can use any finite numeric link weights.
     </p>
     <br></br>
     <p className="margin-0">
