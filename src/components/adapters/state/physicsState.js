@@ -36,28 +36,68 @@ export const physicsInit = {
 };
 
 export const expectedPhysicTypes = {
-  circleForce: "boolean",
-  gravityStrength: "number",
-  componentStrength: "number",
-  nodeRepulsionStrength: "number",
-  linkForce: "boolean",
-  linkLength: "number",
-  checkBorder: "boolean",
-  borderWidth: "number",
-  borderHeight: "number",
-  borderDepth: "number",
+  ...Object.fromEntries(Object.entries(physicsInit).filter(([key]) => !key.endsWith("Text")).map(([key, value]) => [key, typeof value])),
   gravityAdvanced: "boolean",
-  communityForceStrength: "number",
 };
 
+function isObject(value) {
+  return value && typeof value === "object" && !Array.isArray(value);
+}
+
+function isFiniteNumber(value) {
+  return typeof value === "number" && Number.isFinite(value);
+}
+
+function isValidPhysicsValue(value, defaultValue) {
+  if (typeof defaultValue === "number") {
+    return isFiniteNumber(value);
+  }
+  return typeof value === typeof defaultValue;
+}
+
+function isValidPhysicsTextValue(value) {
+  return typeof value === "string" || isFiniteNumber(value);
+}
+
+export function normalizePhysicsState(value) {
+  const savedPhysics = isObject(value) ? value : {};
+  const normalized = { ...physicsInit };
+
+  for (const key of Object.keys(physicsInit)) {
+    if (!Object.hasOwn(savedPhysics, key) || savedPhysics[key] === undefined) continue;
+    if (key.endsWith("Text")) {
+      if (isValidPhysicsTextValue(savedPhysics[key])) {
+        normalized[key] = savedPhysics[key];
+      }
+      continue;
+    }
+
+    if (isValidPhysicsValue(savedPhysics[key], physicsInit[key])) {
+      normalized[key] = savedPhysics[key];
+    }
+  }
+
+  for (const field of Object.keys(expectedPhysicTypes)) {
+    const textField = `${field}Text`;
+    if (!Object.hasOwn(physicsInit, textField)) continue;
+
+    const textValue = normalized[textField];
+    if (!isValidPhysicsTextValue(textValue)) {
+      normalized[textField] = normalized[field];
+    }
+  }
+
+  return normalized;
+}
+
 export const usePhysics = create((set) => ({
-  physics: physicsInit,
+  physics: normalizePhysicsState(physicsInit),
   setPhysics: (key, value) =>
     set((state) => ({
       physics: { ...state.physics, [key]: value },
     })),
   setAllPhysics: (value) =>
     set(() => ({
-      physics: value,
+      physics: normalizePhysicsState(value),
     })),
 }));

@@ -176,11 +176,7 @@ export function PhysicsControl() {
     log.info("Changing circular force force", physics.circleForce);
 
     try {
-      if (physics.circleForce == false) {
-        // enabling link force by default
-        if (physics.linkForce === false) {
-          setPhysics("linkForce", true);
-        }
+      if (!physics.circleForce) {
         renderState.simulation.force("circleForce", null);
         renderState.simulation.alpha(1).restart();
       } else {

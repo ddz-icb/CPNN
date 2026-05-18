@@ -21,33 +21,7 @@ import { useRenderState } from "../state/canvasState.js";
 import { errorService } from "../../application/services/errorService.js";
 import { useFilter } from "../state/filterState.js";
 import { useContainer } from "../state/containerState.js";
-
-function toSerializableMapping(mapping) {
-  if (!mapping || typeof mapping !== "object") return mapping;
-  return Object.fromEntries(Object.entries(mapping));
-}
-
-function buildAppearanceExport(appearance, theme) {
-  return {
-    showNodeLabels: appearance.showNodeLabels,
-    linkWidth: appearance.linkWidth,
-    linkWidthText: appearance.linkWidthText,
-    linkWidthManuallySet: appearance.linkWidthManuallySet,
-    threeD: appearance.threeD,
-    enable3DShading: appearance.enable3DShading,
-    show3DGrid: appearance.show3DGrid,
-    themeName: theme?.name,
-  };
-}
-
-function buildColorschemeExport(colorschemeState) {
-  return {
-    nodeColorscheme: colorschemeState.nodeColorscheme,
-    linkColorscheme: colorschemeState.linkColorscheme,
-    nodeAttribsToColorIndices: toSerializableMapping(colorschemeState.nodeAttribsToColorIndices),
-    linkAttribsToColorIndices: toSerializableMapping(colorschemeState.linkAttribsToColorIndices),
-  };
-}
+import { buildAppearanceSettingsExport, buildColorschemeSettingsExport } from "../../application/services/graphSettingsService.js";
 
 export function DownloadControl() {
   const { physics } = usePhysics();
@@ -84,8 +58,8 @@ export function DownloadControl() {
       downloadGraphJson(graphState.graph, {
         physics,
         filter,
-        appearance: buildAppearanceExport(appearance, theme),
-        colorscheme: buildColorschemeExport(colorschemeState),
+        appearance: buildAppearanceSettingsExport(appearance, theme),
+        colorscheme: buildColorschemeSettingsExport(colorschemeState),
       });
     } catch (error) {
       errorService.setError(error.message);

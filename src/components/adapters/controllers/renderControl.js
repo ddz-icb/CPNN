@@ -5,7 +5,7 @@ import { handleResize, initDragAndZoom } from "../../domain/service/canvas_inter
 import { radius } from "../../domain/service/canvas_drawing/nodes.js";
 import { applyNode3DState } from "../../domain/service/canvas_drawing/shading.js";
 import { applyLineGraphicsState } from "../../domain/service/canvas_drawing/lineGraphics.js";
-import { linkLengthInit } from "../state/physicsState.js";
+import { usePhysics } from "../state/physicsState.js";
 import { useAppearance } from "../state/appearanceState.js";
 import { graphInit, useGraphState } from "../state/graphState.js";
 import { useContainer } from "../state/containerState.js";
@@ -23,6 +23,7 @@ import { resetGridVisibility, resetStageTransform, restoreProjectionHidden } fro
 
 export function RenderControl() {
   const { appearance, setAppearance } = useAppearance();
+  const { physics } = usePhysics();
   const { theme } = useTheme();
   const { colorschemeState } = useColorschemeState();
   const { graphState, setGraphState } = useGraphState();
@@ -162,14 +163,14 @@ export function RenderControl() {
     log.info("Init simulation");
 
     try {
-      const newSimulation = getSimulation(linkLengthInit, appearance.threeD);
+      const newSimulation = getSimulation(physics.linkLength, appearance.threeD, physics.linkForce);
       initDragAndZoom(renderState.app, newSimulation, radius, setTooltipSettings, container.width, container.height, appearance.threeD, cameraRef);
       setRenderState("simulation", newSimulation);
     } catch (error) {
       setError(error.message);
       log.error(error.message);
     }
-  }, [renderState.app, graphState.graph]);
+  }, [renderState.app, graphState.graph, physics.linkLength, physics.linkForce]);
 
   // change 2D <-> 3D
   useEffect(() => {
@@ -195,7 +196,7 @@ export function RenderControl() {
       }
       resetGridVisibility(pixiState.grid3D, appearance.threeD && appearance.show3DGrid);
       resetStageTransform(renderState.app?.stage);
-      const newSimulation = getSimulation(linkLengthInit, appearance.threeD);
+      const newSimulation = getSimulation(physics.linkLength, appearance.threeD, physics.linkForce);
       initDragAndZoom(renderState.app, newSimulation, radius, setTooltipSettings, container.width, container.height, appearance.threeD, cameraRef);
       applyNode3DState(pixiState.nodeMap, appearance.threeD, appearance.enable3DShading);
       setRenderState("simulation", newSimulation);

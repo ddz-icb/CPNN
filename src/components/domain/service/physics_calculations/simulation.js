@@ -5,38 +5,39 @@ import { redraw3D } from "../canvas_drawing/render3D.js";
 import { redraw } from "../canvas_drawing/render2D.js";
 import { createFrameScheduler } from "../utils/frameScheduler.js";
 
-export function getSimulation(linkLength, threeD) {
+export function getSimulation(linkLength, threeD, linkForce = true) {
   if (threeD) {
-    return getSimulation3D(linkLength);
+    return getSimulation3D(linkLength, linkForce);
   } else {
-    return getSimulation2D(linkLength);
+    return getSimulation2D(linkLength, linkForce);
   }
 }
 
-function getSimulation2D(linkLength) {
+function createLinkForce(forceLinkFactory, linkLength, linkForce) {
+  const link = forceLinkFactory()
+    .id((d) => d.id)
+    .distance((link) => getLinkDistance(linkLength, link));
+
+  if (linkForce === false) {
+    link.strength(0);
+  }
+
+  return link;
+}
+
+function getSimulation2D(linkLength, linkForce) {
   const simulation = d3
     .forceSimulation()
-    .force(
-      "link",
-      d3
-        .forceLink()
-        .id((d) => d.id)
-        .distance((link) => getLinkDistance(linkLength, link))
-    )
+    .force("link", createLinkForce(d3.forceLink, linkLength, linkForce))
     .alphaMin(0.05);
 
   simulation.randomSource();
   return simulation;
 }
 
-function getSimulation3D(linkLength) {
+function getSimulation3D(linkLength, linkForce) {
   const simulation = forceSimulation([], 3)
-    .force(
-      "link",
-      forceLink()
-        .id((d) => d.id)
-        .distance((link) => getLinkDistance(linkLength, link))
-    )
+    .force("link", createLinkForce(forceLink, linkLength, linkForce))
     .alphaMin(0.05);
 
   simulation.randomSource();

@@ -1,0 +1,501 @@
+node_index,node_id,city,country,latitude,longitude,population
+1,001_tokyo_japan,Tokyo,Japan,35.685,139.7514,35676000
+2,002_new_york_united_states,New York,United States,40.6943,-73.9249,19354922
+3,003_mexico_city_mexico,Mexico City,Mexico,19.4424,-99.131,19028000
+4,004_mumbai_india,Mumbai,India,19.017,72.857,18978000
+5,005_s_o_paulo_brazil,São Paulo,Brazil,-23.5587,-46.625,18845000
+6,006_delhi_india,Delhi,India,28.67,77.23,15926000
+7,007_shanghai_china,Shanghai,China,31.2165,121.4365,14987000
+8,008_kolkata_india,Kolkata,India,22.495,88.3247,14787000
+9,009_los_angeles_united_states,Los Angeles,United States,34.1139,-118.4068,12815475
+10,010_dhaka_bangladesh,Dhaka,Bangladesh,23.7231,90.4086,12797394
+11,011_buenos_aires_argentina,Buenos Aires,Argentina,-34.6025,-58.3975,12795000
+12,012_karachi_pakistan,Karachi,Pakistan,24.87,66.99,12130000
+13,013_cairo_egypt,Cairo,Egypt,30.05,31.25,11893000
+14,014_rio_de_janeiro_brazil,Rio de Janeiro,Brazil,-22.925,-43.225,11748000
+15,015_saka_japan,Ōsaka,Japan,34.75,135.4601,11294000
+16,016_beijing_china,Beijing,China,39.9289,116.3883,11106000
+17,017_manila_philippines,Manila,Philippines,14.6042,120.9822,11100000
+18,018_moscow_russia,Moscow,Russia,55.7522,37.6155,10452000
+19,019_istanbul_turkey,Istanbul,Turkey,41.105,29.01,10061000
+20,020_paris_france,Paris,France,48.8667,2.3333,9904000
+21,021_seoul_korea_south,Seoul,"Korea, South",37.5663,126.9997,9796000
+22,022_lagos_nigeria,Lagos,Nigeria,6.4433,3.3915,9466000
+23,023_jakarta_indonesia,Jakarta,Indonesia,-6.1744,106.8294,9125000
+24,024_guangzhou_china,Guangzhou,China,23.145,113.325,8829000
+25,025_chicago_united_states,Chicago,United States,41.8373,-87.6861,8675982
+26,026_london_united_kingdom,London,United Kingdom,51.5,-0.1167,8567000
+27,027_lima_peru,Lima,Peru,-12.048,-77.0501,8012000
+28,028_tehran_iran,Tehran,Iran,35.6719,51.4243,7873000
+29,029_kinshasa_congo_kinshasa,Kinshasa,Congo (Kinshasa),-4.3297,15.315,7843000
+30,030_bogota_colombia,Bogota,Colombia,4.5964,-74.0833,7772000
+31,031_shenzhen_china,Shenzhen,China,22.5524,114.1221,7581000
+32,032_wuhan_china,Wuhan,China,30.58,114.27,7243000
+33,033_hong_kong_hong_kong,Hong Kong,Hong Kong,22.305,114.185,7206000
+34,034_tianjin_china,Tianjin,China,39.13,117.2,7180000
+35,035_chennai_india,Chennai,India,13.09,80.28,7163000
+36,036_taipei_taiwan,Taipei,Taiwan,25.0358,121.5683,6900273
+37,037_bangalore_india,Bangalore,India,12.97,77.56,6787000
+38,038_bangkok_thailand,Bangkok,Thailand,13.75,100.5166,6704000
+39,039_lahore_pakistan,Lahore,Pakistan,31.56,74.35,6577000
+40,040_chongqing_china,Chongqing,China,29.565,106.595,6461000
+41,041_miami_united_states,Miami,United States,25.784,-80.2102,6381966
+42,042_hyderabad_india,Hyderabad,India,17.4,78.48,6376000
+43,043_dallas_united_states,Dallas,United States,32.7937,-96.7662,5733259
+44,044_santiago_chile,Santiago,Chile,-33.45,-70.667,5720000
+45,045_philadelphia_united_states,Philadelphia,United States,40.0076,-75.134,5637884
+46,046_belo_horizonte_brazil,Belo Horizonte,Brazil,-19.915,-43.915,5575000
+47,047_madrid_spain,Madrid,Spain,40.4,-3.6834,5567000
+48,048_houston_united_states,Houston,United States,29.7868,-95.3905,5446468
+49,049_ahmedabad_india,Ahmedabad,India,23.0301,72.58,5375000
+50,050_ho_chi_minh_city_vietnam,Ho Chi Minh City,Vietnam,10.78,106.695,5314000
+51,051_washington_united_states,Washington,United States,38.9047,-77.0163,5289420
+52,052_atlanta_united_states,Atlanta,United States,33.7626,-84.4228,5228750
+53,053_toronto_canada,Toronto,Canada,43.7,-79.42,5213000
+54,054_singapore_singapore,Singapore,Singapore,1.293,103.8558,5183700
+55,055_luanda_angola,Luanda,Angola,-8.8383,13.2344,5172900
+56,056_baghdad_iraq,Baghdad,Iraq,33.3386,44.3939,5054000
+57,057_barcelona_spain,Barcelona,Spain,41.3833,2.1834,4920000
+58,058_haora_india,Haora,India,22.5804,88.3299,4841638
+59,059_shenyeng_china,Shenyeng,China,41.805,123.45,4787000
+60,060_khartoum_sudan,Khartoum,Sudan,15.5881,32.5342,4754000
+61,061_pune_india,Pune,India,18.53,73.85,4672000
+62,062_boston_united_states,Boston,United States,42.3188,-71.0846,4637537
+63,063_sydney_australia,Sydney,Australia,-33.92,151.1852,4630000
+64,064_st_petersburg_russia,St. Petersburg,Russia,59.939,30.316,4553000
+65,065_chittagong_bangladesh,Chittagong,Bangladesh,22.33,91.8,4529000
+66,066_dongguan_china,Dongguan,China,23.0489,113.7447,4528000
+67,067_riyadh_saudi_arabia,Riyadh,Saudi Arabia,24.6408,46.7727,4465000
+68,068_hanoi_vietnam,Hanoi,Vietnam,21.0333,105.85,4378000
+69,069_guadalajara_mexico,Guadalajara,Mexico,20.67,-103.33,4198000
+70,070_melbourne_australia,Melbourne,Australia,-37.82,144.975,4170000
+71,071_alexandria_egypt,Alexandria,Egypt,31.2,29.95,4165000
+72,072_chengdu_china,Chengdu,China,30.67,104.07,4123000
+73,073_rangoon_burma,Rangoon,Burma,16.7834,96.1667,4088000
+74,074_phoenix_united_states,Phoenix,United States,33.5722,-112.0891,4081849
+75,075_xian_china,Xian,China,34.275,108.895,4009000
+76,076_porto_alegre_brazil,Porto Alegre,Brazil,-30.05,-51.2,3917000
+77,077_surat_india,Surat,India,21.2,72.84,3842000
+78,078_hechi_china,Hechi,China,23.0965,109.6091,3830000
+79,079_abidjan_c_te_d_ivoire,Abidjan,Côte D’Ivoire,5.32,-4.04,3802000
+80,080_bras_lia_brazil,Brasília,Brazil,-15.7833,-47.9161,3716996
+81,081_ankara_turkey,Ankara,Turkey,39.9272,32.8644,3716000
+82,082_monterrey_mexico,Monterrey,Mexico,25.67,-100.33,3712000
+83,083_yokohama_japan,Yokohama,Japan,35.32,139.58,3697894
+84,084_nanjing_china,Nanjing,China,32.05,118.78,3679000
+85,085_montr_al_canada,Montréal,Canada,45.5,-73.5833,3678000
+86,086_guiyang_china,Guiyang,China,26.58,106.72,3662000
+87,087_recife_brazil,Recife,Brazil,-8.0756,-34.9156,3651000
+88,088_seattle_united_states,Seattle,United States,47.6211,-122.3244,3643765
+89,089_harbin_china,Harbin,China,45.75,126.65,3621000
+90,090_san_francisco_united_states,San Francisco,United States,37.7562,-122.443,3603761
+91,091_fortaleza_brazil,Fortaleza,Brazil,-3.75,-38.58,3602319
+92,092_zhangzhou_china,Zhangzhou,China,24.5204,117.67,3531147
+93,093_detroit_united_states,Detroit,United States,42.3834,-83.1024,3522206
+94,094_salvador_brazil,Salvador,Brazil,-12.97,-38.48,3484000
+95,095_busan_korea_south,Busan,"Korea, South",35.0951,129.01,3480000
+96,096_johannesburg_south_africa,Johannesburg,South Africa,-26.17,28.03,3435000
+97,097_berlin_germany,Berlin,Germany,52.5218,13.4015,3406000
+98,098_algiers_algeria,Algiers,Algeria,36.7631,3.0506,3354000
+99,099_rome_italy,Rome,Italy,41.896,12.4833,3339000
+100,100_pyongyang_korea_north,Pyongyang,"Korea, North",39.0194,125.7547,3300000
+101,101_medell_n_colombia,Medellín,Colombia,6.275,-75.575,3297000
+102,102_kabul_afghanistan,Kabul,Afghanistan,34.5167,69.1833,3277000
+103,103_athens_greece,Athens,Greece,37.9833,23.7333,3242000
+104,104_nagoya_japan,Nagoya,Japan,35.155,136.915,3230000
+105,105_cape_town_south_africa,Cape Town,South Africa,-33.92,18.435,3215000
+106,106_san_diego_united_states,San Diego,United States,32.8312,-117.1226,3210314
+107,107_changchun_china,Changchun,China,43.865,125.34,3183000
+108,108_casablanca_morocco,Casablanca,Morocco,33.6,-7.6164,3181000
+109,109_dalian_china,Dalian,China,38.9228,121.6298,3167000
+110,110_kanpur_india,Kanpur,India,26.46,80.32,3162000
+111,111_kano_nigeria,Kano,Nigeria,12,8.52,3140000
+112,112_tel_aviv_yafo_israel,Tel Aviv-Yafo,Israel,32.08,34.77,3112000
+113,113_addis_ababa_ethiopia,Addis Ababa,Ethiopia,9.0333,38.7,3100000
+114,114_curitiba_brazil,Curitiba,Brazil,-25.42,-49.32,3084000
+115,115_zibo_china,Zibo,China,36.8,118.05,3061000
+116,116_jeddah_saudi_arabia,Jeddah,Saudi Arabia,21.5169,39.2192,3012000
+117,117_nairobi_kenya,Nairobi,Kenya,-1.2833,36.8167,3010000
+118,118_hangzhou_china,Hangzhou,China,30.25,120.17,3007000
+119,119_benoni_south_africa,Benoni,South Africa,-26.1496,28.3299,2986000
+120,120_caracas_venezuela,Caracas,Venezuela,10.501,-66.917,2985000
+121,121_milan_italy,Milan,Italy,45.47,9.205,2945000
+122,122_stuttgart_germany,Stuttgart,Germany,48.78,9.2,2944700
+123,123_kunming_china,Kunming,China,25.07,102.68,2931000
+124,124_dar_es_salaam_tanzania,Dar es Salaam,Tanzania,-6.8,39.2683,2930000
+125,125_minneapolis_united_states,Minneapolis,United States,44.9635,-93.2678,2926757
+126,126_jaipur_india,Jaipur,India,26.9211,75.81,2917000
+127,127_taiyuan_china,Taiyuan,China,37.875,112.5451,2913000
+128,128_frankfurt_germany,Frankfurt,Germany,50.1,8.675,2895000
+129,129_qingdao_china,Qingdao,China,36.09,120.33,2866000
+130,130_surabaya_indonesia,Surabaya,Indonesia,-7.2492,112.7508,2845000
+131,131_lisbon_portugal,Lisbon,Portugal,38.7227,-9.1449,2812000
+132,132_tampa_united_states,Tampa,United States,27.9937,-82.4454,2804240
+133,133_jinan_china,Jinan,China,36.675,116.995,2798000
+134,134_fukuoka_japan,Fukuoka,Japan,33.595,130.41,2792000
+135,135_campinas_brazil,Campinas,Brazil,-22.9,-47.1,2791000
+136,136_denver_united_states,Denver,United States,39.7621,-104.8759,2787266
+137,137_kaohsiung_taiwan,Kaohsiung,Taiwan,22.6333,120.2666,2769072
+138,138_quezon_city_philippines,Quezon City,Philippines,14.6504,121.03,2761720
+139,139_katowice_poland,Katowice,Poland,50.2604,19.02,2746000
+140,140_aleppo_syria,Aleppo,Syria,36.23,37.17,2738000
+141,141_durban_south_africa,Durban,South Africa,-29.865,30.98,2729000
+142,142_kiev_ukraine,Kiev,Ukraine,50.4334,30.5166,2709000
+143,143_lucknow_india,Lucknow,India,26.855,80.915,2695000
+144,144_el_giza_egypt,El Giza,Egypt,30.01,31.19,2681863
+145,145_zhengzhou_china,Zhengzhou,China,34.755,113.6651,2636000
+146,146_taichung_taiwan,Taichung,Taiwan,24.1521,120.6817,2629323
+147,147_brooklyn_united_states,Brooklyn,United States,40.6501,-73.9496,2629150
+148,148_ibadan_nigeria,Ibadan,Nigeria,7.38,3.93,2628000
+149,149_faisalabad_pakistan,Faisalabad,Pakistan,31.41,73.11,2617000
+150,150_fuzhou_china,Fuzhou,China,26.08,119.3,2606000
+151,151_dakar_senegal,Dakar,Senegal,14.7158,-17.4731,2604000
+152,152_changsha_china,Changsha,China,28.2,112.97,2604000
+153,153_zmir_turkey,İzmir,Turkey,38.4361,27.1518,2587000
+154,154_xiangtan_china,Xiangtan,China,27.8504,112.9,2586948
+155,155_lanzhou_china,Lanzhou,China,36.056,103.792,2561000
+156,156_incheon_korea_south,Incheon,"Korea, South",37.4761,126.6422,2550000
+157,157_sapporo_japan,Sapporo,Japan,43.075,141.34,2544000
+158,158_xiamen_china,Xiamen,China,24.45,118.08,2519000
+159,159_guayaquil_ecuador,Guayaquil,Ecuador,-2.22,-79.92,2514000
+160,160_george_town_malaysia,George Town,Malaysia,5.4136,100.3294,2500000
+161,161_mashhad_iran,Mashhad,Iran,36.27,59.57,2469000
+162,162_damascus_syria,Damascus,Syria,33.5,36.3,2466000
+163,163_daegu_korea_south,Daegu,"Korea, South",35.8668,128.607,2460000
+164,164_nagpur_india,Nagpur,India,21.17,79.09,2454000
+165,165_jinxi_china,Jinxi,China,40.7503,120.83,2426000
+166,166_shijianzhuang_china,Shijianzhuang,China,38.05,114.48,2417000
+167,167_tunis_tunisia,Tunis,Tunisia,36.8028,10.1797,2412500
+168,168_vienna_austria,Vienna,Austria,48.2,16.3666,2400000
+169,169_jilin_china,Jilin,China,43.85,126.55,2396000
+170,170_omdurman_sudan,Omdurman,Sudan,15.6167,32.48,2395159
+171,171_bandung_indonesia,Bandung,Indonesia,-6.95,107.57,2394000
+172,172_bekasi_indonesia,Bekasi,Indonesia,-6.2173,106.9723,2378211
+173,173_mannheim_germany,Mannheim,Germany,49.5004,8.47,2362000
+174,174_nanchang_china,Nanchang,China,28.68,115.88,2350000
+175,175_wenzhou_china,Wenzhou,China,28.02,120.6501,2350000
+176,176_queens_united_states,Queens,United States,40.7498,-73.7976,2333054
+177,177_vancouver_canada,Vancouver,Canada,49.2734,-123.1216,2313328
+178,178_birmingham_united_kingdom,Birmingham,United Kingdom,52.475,-1.92,2285000
+179,179_cali_colombia,Cali,Colombia,3.4,-76.5,2254000
+180,180_naples_italy,Naples,Italy,40.84,14.245,2250000
+181,181_sendai_japan,Sendai,Japan,38.2871,141.0217,2250000
+182,182_manchester_united_kingdom,Manchester,United Kingdom,53.5004,-2.248,2230000
+183,183_puebla_mexico,Puebla,Mexico,19.05,-98.2,2195000
+184,184_tripoli_libya,Tripoli,Libya,32.8925,13.18,2189000
+185,185_tashkent_uzbekistan,Tashkent,Uzbekistan,41.3117,69.2949,2184000
+186,186_nanchong_china,Nanchong,China,30.7804,106.13,2174000
+187,187_havana_cuba,Havana,Cuba,23.132,-82.3642,2174000
+188,188_baltimore_united_states,Baltimore,United States,39.3051,-76.6144,2170504
+189,189_bel_m_brazil,Belém,Brazil,-1.45,-48.48,2167000
+190,190_nanning_china,Nanning,China,22.82,108.32,2167000
+191,191_patna_india,Patna,India,25.625,85.13,2158000
+192,192_santo_domingo_dominican_republic,Santo Domingo,Dominican Republic,18.4701,-69.9001,2154000
+193,193_r_mqi_china,Ürümqi,China,43.805,87.575,2151000
+194,194_zaozhuang_china,Zaozhuang,China,34.88,117.57,2145000
+195,195_baku_azerbaijan,Baku,Azerbaijan,40.3953,49.8622,2122300
+196,196_accra_ghana,Accra,Ghana,5.55,-0.2167,2121000
+197,197_yantai_china,Yantai,China,37.5304,121.4,2116000
+198,198_medan_indonesia,Medan,Indonesia,3.58,98.65,2115000
+199,199_santa_cruz_bolivia,Santa Cruz,Bolivia,-17.7539,-63.226,2102998
+200,200_xuzhou_china,Xuzhou,China,34.28,117.18,2091000
+201,201_riverside_united_states,Riverside,United States,33.9381,-117.3948,2084749
+202,202_linyi_china,Linyi,China,35.08,118.33,2082000
+203,203_saint_louis_united_states,Saint Louis,United States,38.6358,-90.2451,2078283
+204,204_las_vegas_united_states,Las Vegas,United States,36.2291,-115.2607,2073045
+205,205_maracaibo_venezuela,Maracaibo,Venezuela,10.73,-71.66,2072000
+206,206_kuwait_kuwait,Kuwait,Kuwait,29.3697,47.9783,2063000
+207,207_ad_damman_saudi_arabia,Ad Damman,Saudi Arabia,26.4282,50.0997,2054710
+208,208_portland_united_states,Portland,United States,45.5372,-122.65,2052796
+209,209_haikou_china,Haikou,China,20.05,110.32,2046189
+210,210_hiroshima_japan,Hiroshima,Japan,34.3878,132.4429,2045000
+211,211_baotou_china,Baotou,China,40.6522,109.822,2036000
+212,212_hefei_china,Hefei,China,31.85,117.28,2035000
+213,213_indore_india,Indore,India,22.7151,75.865,2026000
+214,214_goi_nia_brazil,Goiânia,Brazil,-16.72,-49.3,2022000
+215,215_sanaa_yemen,Sanaa,Yemen,15.3547,44.2066,2008000
+216,216_san_antonio_united_states,San Antonio,United States,29.4722,-98.5247,2002530
+217,217_port_au_prince_haiti,Port-au-Prince,Haiti,18.541,-72.336,1998000
+218,218_haiphong_vietnam,Haiphong,Vietnam,20.83,106.6801,1969000
+219,219_suzhou_china,Suzhou,China,33.6361,116.9789,1964000
+220,220_nanyang_china,Nanyang,China,33.0004,112.53,1944000
+221,221_bucharest_romania,Bucharest,Romania,44.4334,26.0999,1942000
+222,222_ningbo_china,Ningbo,China,29.88,121.55,1923000
+223,223_douala_cameroon,Douala,Cameroon,4.0604,9.71,1906000
+224,224_tangshan_china,Tangshan,China,39.6243,118.1944,1879000
+225,225_tainan_taiwan,Tainan,Taiwan,23,120.2,1876312
+226,226_datong_china,Datong,China,40.08,113.3,1873000
+227,227_asunci_n_paraguay,Asunción,Paraguay,-25.2964,-57.6415,1870000
+228,228_saidu_pakistan,Saidu,Pakistan,34.75,72.35,1860310
+229,229_brisbane_australia,Brisbane,Australia,-27.455,153.0351,1860000
+230,230_rawalpindi_pakistan,Rawalpindi,Pakistan,33.6,73.04,1858000
+231,231_sacramento_united_states,Sacramento,United States,38.5667,-121.4683,1854698
+232,232_beirut_lebanon,Beirut,Lebanon,33.872,35.5097,1846000
+233,233_san_jose_united_states,San Jose,United States,37.3018,-121.8485,1821899
+234,234_minsk_belarus,Minsk,Belarus,53.9,27.5666,1805000
+235,235_kyoto_japan,Kyoto,Japan,35.03,135.75,1805000
+236,236_barranquilla_colombia,Barranquilla,Colombia,10.96,-74.8,1798000
+237,237_orlando_united_states,Orlando,United States,28.4788,-81.342,1776841
+238,238_valencia_venezuela,Valencia,Venezuela,10.23,-67.98,1770000
+239,239_shuyang_china,Shuyang,China,34.1299,118.7734,1770000
+240,240_hamburg_germany,Hamburg,Germany,53.55,10,1757000
+241,241_vadodara_india,Vadodara,India,22.31,73.18,1756000
+242,242_manaus_brazil,Manaus,Brazil,-3.1,-60,1753000
+243,243_shangqiu_china,Shangqiu,China,34.4504,115.65,1753000
+244,244_wuxi_china,Wuxi,China,31.58,120.3,1749000
+245,245_palembang_indonesia,Palembang,Indonesia,-2.98,104.75,1749000
+246,246_brussels_belgium,Brussels,Belgium,50.8333,4.3333,1743000
+247,247_essen_germany,Essen,Germany,51.45,7.0166,1742135
+248,248_cleveland_united_states,Cleveland,United States,41.4767,-81.6805,1730363
+249,249_bhopal_india,Bhopal,India,23.25,77.41,1727000
+250,250_hohhot_china,Hohhot,China,40.82,111.66,1726000
+251,251_pittsburgh_united_states,Pittsburgh,United States,40.4396,-79.9763,1715297
+252,252_luoyang_china,Luoyang,China,34.68,112.4701,1715000
+253,253_santos_brazil,Santos,Brazil,-23.9537,-46.3329,1709000
+254,254_jianmen_china,Jianmen,China,30.6501,113.16,1708000
+255,255_warsaw_poland,Warsaw,Poland,52.25,21,1707000
+256,256_rabat_morocco,Rabat,Morocco,34.0253,-6.8361,1705000
+257,257_vit_ria_brazil,Vitória,Brazil,-20.324,-40.366,1704000
+258,258_quito_ecuador,Quito,Ecuador,-0.215,-78.5001,1701000
+259,259_antananarivo_madagascar,Antananarivo,Madagascar,-18.9166,47.5166,1697000
+260,260_coimbatore_india,Coimbatore,India,11,76.95,1696000
+261,261_daqing_china,Daqing,China,46.58,125,1693000
+262,262_luan_china,Luan,China,31.7503,116.48,1690000
+263,263_wanzhou_china,Wanzhou,China,30.82,108.4,1680000
+264,264_budapest_hungary,Budapest,Hungary,47.5,19.0833,1679000
+265,265_turin_italy,Turin,Italy,45.0704,7.67,1652000
+266,266_suzhou_china,Suzhou,China,31.3005,120.62,1650000
+267,267_ludhiana_india,Ludhiana,India,30.9278,75.8723,1649000
+268,268_cincinnati_united_states,Cincinnati,United States,39.1412,-84.5059,1648254
+269,269_kumasi_ghana,Kumasi,Ghana,6.69,-1.63,1646000
+270,270_manhattan_united_states,Manhattan,United States,40.7834,-73.9662,1643734
+271,271_qiqihar_china,Qiqihar,China,47.345,123.99,1641000
+272,272_anshan_china,Anshan,China,41.115,122.94,1639000
+273,273_austin_united_states,Austin,United States,30.3006,-97.7517,1638716
+274,274_zhongli_taiwan,Zhongli,Taiwan,24.965,121.2168,1632616
+275,275_handan_china,Handan,China,36.58,114.48,1631000
+276,276_taian_china,Taian,China,36.2,117.1201,1629000
+277,277_isfahan_iran,Isfahan,Iran,32.7,51.7,1628000
+278,278_kansas_city_united_states,Kansas City,United States,39.1239,-94.5541,1615621
+279,279_yaounde_cameroon,Yaounde,Cameroon,3.8667,11.5167,1611000
+280,280_shantou_china,Shantou,China,23.37,116.67,1601000
+281,281_agra_india,Agra,India,27.1704,78.015,1592000
+282,282_la_paz_bolivia,La Paz,Bolivia,-16.498,-68.15,1590000
+283,283_zhanjiang_china,Zhanjiang,China,21.2,110.38,1590000
+284,284_kalyan_india,Kalyan,India,19.2502,73.1602,1576614
+285,285_abuja_nigeria,Abuja,Nigeria,9.0833,7.5333,1576000
+286,286_harare_zimbabwe,Harare,Zimbabwe,-17.8178,31.0447,1572000
+287,287_indianapolis_united_states,Indianapolis,United States,39.7771,-86.1458,1564699
+288,288_xiantao_china,Xiantao,China,30.3704,113.44,1556000
+289,289_tijuana_mexico,Tijuana,Mexico,32.5,-117.08,1553000
+290,290_khulna_bangladesh,Khulna,Bangladesh,22.84,89.56,1553000
+291,291_weifang_china,Weifang,China,36.7204,119.1001,1553000
+292,292_santiago_dominican_republic,Santiago,Dominican Republic,19.5,-70.67,1550753
+293,293_xinyang_china,Xinyang,China,32.1304,114.07,1541000
+294,294_luzhou_china,Luzhou,China,28.88,105.38,1537000
+295,295_perth_australia,Perth,Australia,-31.955,115.84,1532000
+296,296_toluca_mexico,Toluca,Mexico,19.3304,-99.67,1531000
+297,297_leeds_united_kingdom,Leeds,United Kingdom,53.83,-1.58,1529000
+298,298_vishakhapatnam_india,Vishakhapatnam,India,17.73,83.305,1529000
+299,299_k_be_japan,Kōbe,Japan,34.68,135.17,1528478
+300,300_columbus_united_states,Columbus,United States,39.986,-82.9852,1528314
+301,301_multan_pakistan,Multan,Pakistan,30.2,71.455,1522000
+302,302_kochi_india,Kochi,India,10.015,76.2239,1519000
+303,303_gujranwala_pakistan,Gujranwala,Pakistan,32.1604,74.185,1513000
+304,304_montevideo_uruguay,Montevideo,Uruguay,-34.858,-56.1711,1513000
+305,305_niter_i_brazil,Niterói,Brazil,-22.9,-43.1,1500513
+306,306_ganzhou_china,Ganzhou,China,25.92,114.95,1500000
+307,307_florence_italy,Florence,Italy,43.78,11.25,1500000
+308,308_liuzhou_china,Liuzhou,China,24.28,109.25,1497000
+309,309_bamako_mali,Bamako,Mali,12.65,-8,1494000
+310,310_conakry_guinea,Conakry,Guinea,9.5315,-13.6802,1494000
+311,311_bursa_turkey,Bursa,Turkey,40.2,29.07,1492000
+312,312_le_n_mexico,León,Mexico,21.15,-101.7,1488000
+313,313_virginia_beach_united_states,Virginia Beach,United States,36.7335,-76.0435,1480383
+314,314_nasik_india,Nasik,India,20.0004,73.78,1473000
+315,315_fushun_china,Fushun,China,41.8654,123.87,1470000
+316,316_changde_china,Changde,China,29.03,111.68,1469000
+317,317_daejeon_korea_south,Daejeon,"Korea, South",36.3355,127.425,1468000
+318,318_charlotte_united_states,Charlotte,United States,35.2079,-80.8303,1467362
+319,319_neijiang_china,Neijiang,China,29.5804,105.05,1466000
+320,320_phnom_penh_cambodia,Phnom Penh,Cambodia,11.55,104.9166,1466000
+321,321_quanzhou_china,Quanzhou,China,24.9,118.58,1463000
+322,322_kharkiv_ukraine,Kharkiv,Ukraine,50,36.25,1461000
+323,323_hyderabad_pakistan,Hyderabad,Pakistan,25.38,68.375,1459000
+324,324_bronx_united_states,Bronx,United States,40.8501,-73.8662,1455720
+325,325_lom_togo,Lomé,Togo,6.1319,1.2228,1452000
+326,326_c_rdoba_argentina,Córdoba,Argentina,-31.4,-64.1823,1452000
+327,327_huainan_china,Huainan,China,32.63,116.98,1451000
+328,328_doha_qatar,Doha,Qatar,25.2866,51.533,1450000
+329,329_kuala_lumpur_malaysia,Kuala Lumpur,Malaysia,3.1667,101.7,1448000
+330,330_maputo_mozambique,Maputo,Mozambique,-25.9553,32.5892,1446000
+331,331_kaduna_nigeria,Kaduna,Nigeria,10.52,7.44,1442000
+332,332_gwangju_korea_south,Gwangju,"Korea, South",35.171,126.9104,1440000
+333,333_kawasaki_japan,Kawasaki,Japan,35.53,139.705,1437266
+334,334_san_salvador_el_salvador,San Salvador,El Salvador,13.71,-89.203,1433000
+335,335_suining_china,Suining,China,30.5333,105.5333,1425000
+336,336_lyon_france,Lyon,France,45.77,4.83,1423000
+337,337_karaj_iran,Karaj,Iran,35.8004,50.97,1423000
+338,338_kampala_uganda,Kampala,Uganda,0.3167,32.5833,1420000
+339,339_tabriz_iran,Tabriz,Iran,38.0863,46.3012,1413000
+340,340_the_hague_netherlands,The Hague,Netherlands,52.08,4.27,1406000
+341,341_davao_philippines,Davao,Philippines,7.11,125.63,1402000
+342,342_marseille_france,Marseille,France,43.29,5.375,1400000
+343,343_meerut_india,Meerut,India,29.0004,77.7,1398000
+344,344_mianyang_china,Mianyang,China,31.47,104.77,1396000
+345,345_semarang_indonesia,Semarang,Indonesia,-6.9666,110.42,1396000
+346,346_faridabad_india,Faridabad,India,28.4333,77.3167,1394000
+347,347_novosibirsk_russia,Novosibirsk,Russia,55.03,82.96,1389000
+348,348_makkah_saudi_arabia,Makkah,Saudi Arabia,21.43,39.82,1385000
+349,349_dubai_united_arab_emirates,Dubai,United Arab Emirates,25.23,55.28,1379000
+350,350_milwaukee_united_states,Milwaukee,United States,43.064,-87.9669,1377808
+351,351_auckland_new_zealand,Auckland,New Zealand,-36.8481,174.763,1377200
+352,352_maanshan_china,Maanshan,China,31.7304,118.48,1366302
+353,353_brazzaville_congo_brazzaville,Brazzaville,Congo (Brazzaville),-4.2592,15.2847,1355000
+354,354_lubumbashi_congo_kinshasa,Lubumbashi,Congo (Kinshasa),-11.68,27.48,1352000
+355,355_yiyang_china,Yiyang,China,28.6004,112.33,1352000
+356,356_varanasi_india,Varanasi,India,25.33,83,1352000
+357,357_ciudad_ju_rez_mexico,Ciudad Juárez,Mexico,31.6904,-106.49,1343000
+358,358_ghaziabad_india,Ghaziabad,India,28.6604,77.4084,1341000
+359,359_pretoria_south_africa,Pretoria,South Africa,-25.7069,28.2294,1338000
+360,360_heze_china,Heze,China,35.23,115.45,1338000
+361,361_porto_portugal,Porto,Portugal,41.15,-8.62,1337000
+362,362_lusaka_zambia,Lusaka,Zambia,-15.4166,28.2833,1328000
+363,363_asansol_india,Asansol,India,23.6833,86.9833,1328000
+364,364_changzhou_china,Changzhou,China,31.78,119.97,1327000
+365,365_mosul_iraq,Mosul,Iraq,36.345,43.145,1316000
+366,366_yekaterinburg_russia,Yekaterinburg,Russia,56.85,60.6,1313000
+367,367_peshawar_pakistan,Peshawar,Pakistan,34.005,71.535,1303000
+368,368_mandalay_burma,Mandalay,Burma,21.97,96.085,1300000
+369,369_jamshedpur_india,Jamshedpur,India,22.7875,86.1975,1300000
+370,370_mbuji_mayi_congo_kinshasa,Mbuji-Mayi,Congo (Kinshasa),-6.15,23.6,1295000
+371,371_madurai_india,Madurai,India,9.92,78.12,1294000
+372,372_adana_turkey,Adana,Turkey,36.995,35.32,1293000
+373,373_sheffield_united_kingdom,Sheffield,United Kingdom,53.3667,-1.5,1292900
+374,374_jabalpur_india,Jabalpur,India,23.1751,79.9551,1285000
+375,375_san_jos_costa_rica,San José,Costa Rica,9.935,-84.0841,1284000
+376,376_panama_city_panama,Panama City,Panama,8.968,-79.533,1281000
+377,377_nizhny_novgorod_russia,Nizhny Novgorod,Russia,56.333,44.0001,1278000
+378,378_chifeng_china,Chifeng,China,42.27,118.95,1277000
+379,379_duisburg_germany,Duisburg,Germany,51.43,6.75,1276757
+380,380_munich_germany,Munich,Germany,48.1299,11.575,1275000
+381,381_stockholm_sweden,Stockholm,Sweden,59.3508,18.0973,1264000
+382,382_huaiyin_china,Huaiyin,China,33.58,119.03,1264000
+383,383_ujungpandang_indonesia,Ujungpandang,Indonesia,-5.14,119.432,1262000
+384,384_rajkot_india,Rajkot,India,22.31,70.8,1260000
+385,385_dhanbad_india,Dhanbad,India,23.8004,86.42,1246000
+386,386_mudangiang_china,Mudangiang,China,44.575,129.59,1244000
+387,387_geneva_switzerland,Geneva,Switzerland,46.21,6.14,1240000
+388,388_shiraz_iran,Shiraz,Iran,29.63,52.57,1240000
+389,389_huzhou_china,Huzhou,China,30.8704,120.1,1231000
+390,390_tianshui_china,Tianshui,China,34.6,105.92,1225000
+391,391_lupanshui_china,Lupanshui,China,26.5944,104.8333,1221000
+392,392_d_sseldorf_germany,Düsseldorf,Germany,51.2204,6.78,1220000
+393,393_maoming_china,Maoming,China,21.9204,110.87,1217715
+394,394_seville_spain,Seville,Spain,37.405,-5.98,1212045
+395,395_amritsar_india,Amritsar,India,31.64,74.87,1212000
+396,396_vila_velha_brazil,Vila Velha,Brazil,-20.3676,-40.318,1209091
+397,397_vila_velha_brazil,Vila Velha,Brazil,3.2167,-51.2167,1209091
+398,398_almaty_kazakhstan,Almaty,Kazakhstan,43.325,76.915,1209000
+399,399_providence_united_states,Providence,United States,41.8229,-71.4186,1206642
+400,400_warangal_india,Warangal,India,18.01,79.58,1203853
+401,401_rosario_argentina,Rosario,Argentina,-32.9511,-60.6663,1203000
+402,402_allahabad_india,Allahabad,India,25.455,81.84,1201000
+403,403_benin_city_nigeria,Benin City,Nigeria,6.3405,5.62,1190000
+404,404_macei_brazil,Maceió,Brazil,-9.62,-35.73,1186000
+405,405_jining_china,Jining,China,35.4004,116.55,1186000
+406,406_sofia_bulgaria,Sofia,Bulgaria,42.6833,23.3167,1185000
+407,407_abbottabad_pakistan,Abbottabad,Pakistan,34.1495,73.1995,1183647
+408,408_banghazi_libya,Banghazi,Libya,32.1167,20.0667,1180000
+409,409_cilacap_indonesia,Cilacap,Indonesia,-7.7188,109.0154,1174964
+410,410_prague_czechia,Prague,Czechia,50.0833,14.466,1162000
+411,411_glasgow_united_kingdom,Glasgow,United Kingdom,55.8744,-4.2507,1160000
+412,412_leshan_china,Leshan,China,29.5671,103.7333,1157000
+413,413_jacksonville_united_states,Jacksonville,United States,30.3322,-81.6749,1156291
+414,414_ouagadougou_burkina_faso,Ouagadougou,Burkina Faso,12.3703,-1.5247,1149000
+415,415_adelaide_australia,Adelaide,Australia,-34.935,138.6,1145000
+416,416_ottawa_canada,Ottawa,Canada,45.4167,-75.7,1145000
+417,417_shangrao_china,Shangrao,China,28.4704,117.97,1144577
+418,418_torre_n_mexico,Torreón,Mexico,25.5701,-103.42,1144000
+419,419_srinagar_india,Srinagar,India,34.1,74.815,1140000
+420,420_samara_russia,Samara,Russia,53.195,50.1513,1137000
+421,421_vijayawada_india,Vijayawada,India,16.52,80.63,1137000
+422,422_omsk_russia,Omsk,Russia,54.99,73.4,1135000
+423,423_newcastle_australia,Newcastle,Australia,-32.8453,151.815,1134616
+424,424_yulin_china,Yulin,China,22.63,110.15,1127000
+425,425_nampo_korea_north,Nampo,"Korea, North",38.7669,125.4524,1127000
+426,426_xianyang_china,Xianyang,China,34.3456,108.7147,1126000
+427,427_cagayan_de_oro_philippines,Cagayan de Oro,Philippines,8.4508,124.6853,1121561
+428,428_can_tho_vietnam,Can Tho,Vietnam,10.05,105.77,1121000
+429,429_barquisimeto_venezuela,Barquisimeto,Venezuela,10.05,-69.3,1116000
+430,430_kazan_russia,Kazan,Russia,55.7499,49.1263,1115000
+431,431_helsinki_finland,Helsinki,Finland,60.1756,24.9341,1115000
+432,432_aurangabad_india,Aurangabad,India,19.8957,75.3203,1113000
+433,433_calgary_canada,Calgary,Canada,51.083,-114.08,1110000
+434,434_nezahualcoyotl_mexico,Nezahualcoyotl,Mexico,19.41,-99.03,1109363
+435,435_z_rich_switzerland,Zürich,Switzerland,47.38,8.55,1108000
+436,436_baoding_china,Baoding,China,38.8704,115.48,1107000
+437,437_zigong_china,Zigong,China,29.4,104.78,1105000
+438,438_sharjah_united_arab_emirates,Sharjah,United Arab Emirates,25.3714,55.4065,1103027
+439,439_yerevan_armenia,Yerevan,Armenia,40.1812,44.5136,1102000
+440,440_mogadishu_somalia,Mogadishu,Somalia,2.0667,45.3667,1100000
+441,441_huambo_angola,Huambo,Angola,-12.75,15.76,1100000
+442,442_ankang_china,Ankang,China,32.68,109.02,1100000
+443,443_tbilisi_georgia,Tbilisi,Georgia,41.725,44.7908,1100000
+444,444_ikare_nigeria,Ikare,Nigeria,7.5304,5.76,1099931
+445,445_belgrade_serbia,Belgrade,Serbia,44.8186,20.468,1099000
+446,446_salt_lake_city_united_states,Salt Lake City,United States,40.7774,-111.9301,1098400
+447,447_bhilai_india,Bhilai,India,21.2167,81.4333,1097000
+448,448_jinhua_china,Jinhua,China,29.12,119.65,1092852
+449,449_chelyabinsk_russia,Chelyabinsk,Russia,55.155,61.4387,1091000
+450,450_natal_brazil,Natal,Brazil,-5.78,-35.24,1088000
+451,451_dushanbe_tajikistan,Dushanbe,Tajikistan,38.56,68.7739,1086244
+452,452_k_benhavn_denmark,København,Denmark,55.6786,12.5635,1085000
+453,453_changwon_korea_south,Changwon,"Korea, South",35.2191,128.5836,1081499
+454,454_zhuzhou_china,Zhuzhou,China,27.83,113.15,1080000
+455,455_suwon_korea_south,Suwon,"Korea, South",37.2578,127.0109,1078000
+456,456_nashville_united_states,Nashville,United States,36.1714,-86.7844,1076645
+457,457_vereeniging_south_africa,Vereeniging,South Africa,-26.6496,27.96,1074000
+458,458_xiangfan_china,Xiangfan,China,32.02,112.13,1069000
+459,459_memphis_united_states,Memphis,United States,35.1047,-89.9773,1068873
+460,460_ulsan_korea_south,Ulsan,"Korea, South",35.5467,129.317,1061000
+461,461_zhucheng_china,Zhucheng,China,35.99,119.3801,1060000
+462,462_amman_jordan,Amman,Jordan,31.95,35.9333,1060000
+463,463_richmond_united_states,Richmond,United States,37.5295,-77.4756,1059907
+464,464_dublin_ireland,Dublin,Ireland,53.3331,-6.2489,1059000
+465,465_edmonton_canada,Edmonton,Canada,53.55,-113.5,1058000
+466,466_sholapur_india,Sholapur,India,17.6704,75.9,1057000
+467,467_rostov_russia,Rostov,Russia,47.2346,39.7127,1052000
+468,468_dnipro_ukraine,Dnipro,Ukraine,48.48,35,1050000
+469,469_xining_china,Xining,China,36.62,101.77,1048000
+470,470_zhangjiakou_china,Zhangjiakou,China,40.83,114.93,1046000
+471,471_gaziantep_turkey,Gaziantep,Turkey,37.075,37.385,1044000
+472,472_lille_france,Lille,France,50.65,3.08,1044000
+473,473_ranchi_india,Ranchi,India,23.37,85.33,1044000
+474,474_monrovia_liberia,Monrovia,Liberia,6.3106,-10.8048,1041000
+475,475_s_o_lu_s_brazil,São Luís,Brazil,-2.516,-44.266,1038000
+476,476_amsterdam_netherlands,Amsterdam,Netherlands,52.35,4.9166,1031000
+477,477_jerusalem_israel,Jerusalem,Israel,31.7784,35.2066,1029300
+478,478_new_orleans_united_states,New Orleans,United States,30.0687,-89.9288,1029123
+479,479_guatemala_guatemala,Guatemala,Guatemala,14.6211,-90.527,1024000
+480,480_florian_polis_brazil,Florianópolis,Brazil,-27.58,-48.52,1023000
+481,481_zhuhai_china,Zhuhai,China,22.2769,113.5678,1023000
+482,482_port_elizabeth_south_africa,Port Elizabeth,South Africa,-33.97,25.6,1021000
+483,483_port_harcourt_nigeria,Port Harcourt,Nigeria,4.81,7.01,1020000
+484,484_jiamusi_china,Jiamusi,China,46.83,130.35,1020000
+485,485_raleigh_united_states,Raleigh,United States,35.8323,-78.6439,1018336
+486,486_ufa_russia,Ufa,Russia,54.79,56.04,1018000
+487,487_hengyang_china,Hengyang,China,26.88,112.59,1016000
+488,488_benxi_china,Benxi,China,41.3304,123.75,1012000
+489,489_louisville_united_states,Louisville,United States,38.1662,-85.6488,1011696
+490,490_haifa_israel,Haifa,Israel,32.8204,34.98,1011000
+491,491_medina_saudi_arabia,Medina,Saudi Arabia,24.5,39.58,1010000
+492,492_bucaramanga_colombia,Bucaramanga,Colombia,7.1301,-73.1259,1009000
+493,493_maracay_venezuela,Maracay,Venezuela,10.2469,-67.5958,1007000
+494,494_rotterdam_netherlands,Rotterdam,Netherlands,51.92,4.48,1005000
+495,495_hims_syria,Hims,Syria,34.73,36.72,1005000
+496,496_cologne_germany,Cologne,Germany,50.93,6.95,1004000
+497,497_qinhuangdao_china,Qinhuangdao,China,39.9304,119.62,1003000
+498,498_fez_morocco,Fez,Morocco,34.0546,-5.0004,1002000
+499,499_aden_yemen,Aden,Yemen,12.7797,45.0095,1000000
+500,500_da_nang_vietnam,Da Nang,Vietnam,16.06,108.25,1000000
