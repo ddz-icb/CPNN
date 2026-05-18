@@ -22,6 +22,7 @@ export const maxCompSizeInit = "";
 export const maxCompSizeTextInit = "";
 export const lassoInit = false;
 export const lassoSelectionInit = [];
+export const communityHiddenIdsInit = [];
 
 export const filterInit = {
   linkThreshold: linkThresholdInit,
@@ -50,6 +51,7 @@ export const filterInit = {
   minKCoreSizeText: minKCoreSizeInit,
   lasso: lassoInit,
   lassoSelection: lassoSelectionInit,
+  communityHiddenIds: communityHiddenIdsInit,
 };
 
 export const useFilter = create((set) => ({

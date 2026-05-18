@@ -1,5 +1,5 @@
-import { expectedPhysicTypes } from "../../../adapters/state/physicsState.js";
 import { getEndpointId, getUndirectedLinkKey } from "../graph_calculations/graphUtils.js";
+import { verifyGraphSettings } from "../graph_settings/graphSettingsSchema.js";
 
 const PHOSPHOSITE_PATTERN = /^[STY]+\d*$/i;
 
@@ -170,21 +170,7 @@ export function verifyGraph(graph) {
     normalizedLinkPairs.add(linkPairKey.toLowerCase());
   });
 
-  if (graph.data.physics !== undefined) {
-    const physics = graph.data.physics;
-    if (typeof physics !== "object" || Array.isArray(physics)) {
-      throw new Error("The 'physics' property must be an object.");
-    }
-    const expectedTypes = expectedPhysicTypes;
-
-    for (const key in physics) {
-      if (expectedTypes.hasOwnProperty(key)) {
-        if (typeof physics[key] !== expectedTypes[key]) {
-          throw new Error(`Invalid type for physics.${key}: expected ${expectedTypes[key]}, got ${typeof physics[key]}.`);
-        }
-      }
-    }
-  }
+  verifyGraphSettings(graph.data);
 }
 
 export function isCorrMatrix(fileData, tol = 1e-4) {

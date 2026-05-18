@@ -5,7 +5,6 @@ import { useColorschemeState } from "../state/colorschemeState.js";
 import { useDownload } from "../state/downloadState.js";
 import { useGraphState } from "../state/graphState.js";
 import { useMappingState } from "../state/mappingState.js";
-import { usePhysics } from "../state/physicsState.js";
 import {
   downloadAsPDF,
   downloadAsPNG,
@@ -19,13 +18,10 @@ import { lightTheme, themeInit, useTheme } from "../state/themeState.js";
 import { usePixiState } from "../state/pixiState.js";
 import { useRenderState } from "../state/canvasState.js";
 import { errorService } from "../../application/services/errorService.js";
-import { useFilter } from "../state/filterState.js";
 import { useContainer } from "../state/containerState.js";
-import { buildAppearanceSettingsExport, buildColorschemeSettingsExport } from "../../application/services/graphSettingsService.js";
+import { buildCurrentGraphSettingsExport } from "../../application/services/graphSettingsService.js";
 
 export function DownloadControl() {
-  const { physics } = usePhysics();
-  const { filter } = useFilter();
   const { appearance } = useAppearance();
   const { theme } = useTheme();
   const { colorschemeState } = useColorschemeState();
@@ -55,12 +51,7 @@ export function DownloadControl() {
     log.info("Downloading graph as JSON with coordinates and settings");
 
     try {
-      downloadGraphJson(graphState.graph, {
-        physics,
-        filter,
-        appearance: buildAppearanceSettingsExport(appearance, theme),
-        colorscheme: buildColorschemeSettingsExport(colorschemeState),
-      });
+      downloadGraphJson(graphState.graph, { includeCoordinates: true, settings: buildCurrentGraphSettingsExport() });
     } catch (error) {
       errorService.setError(error.message);
       log.error("Error downloading the graph as JSON with coordinates:", error);

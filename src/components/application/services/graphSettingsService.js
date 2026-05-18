@@ -1,21 +1,35 @@
-import { appearanceInit, useAppearance } from "../../adapters/state/appearanceState.js";
-import { colorschemeStateInit, useColorschemeState } from "../../adapters/state/colorschemeState.js";
-import { filterInit, useFilter } from "../../adapters/state/filterState.js";
+import { useAppearance } from "../../adapters/state/appearanceState.js";
+import { useColorschemeState } from "../../adapters/state/colorschemeState.js";
+import { useFilter } from "../../adapters/state/filterState.js";
 import { useGraphMetrics } from "../../adapters/state/graphMetricsState.js";
-import { physicsInit, usePhysics } from "../../adapters/state/physicsState.js";
+import { usePhysics } from "../../adapters/state/physicsState.js";
 import { darkTheme, lightTheme, useTheme } from "../../adapters/state/themeState.js";
 import {
   getLinkAttribsToColorIndices,
   getLinkWeightMinMax,
   getNodeAttribsToColorIndices,
 } from "../../domain/service/graph_calculations/graphUtils.js";
+import {
+  deserializeGraphSettingValue,
+  graphSettingKeys,
+  graphSettingsSchema,
+  serializeGraphSettingValue,
+} from "../../domain/service/graph_settings/graphSettingsSchema.js";
 
-const appearanceExportOmittedKeys = new Set(["cameraRef"]);
-const colorschemeExportOmittedKeys = new Set(["uploadedColorschemeNames"]);
 const themesByName = {
   [lightTheme.name]: lightTheme,
   [darkTheme.name]: darkTheme,
 };
+
+function getStateInit(sectionKey) {
+  const sectionConfig = graphSettingsSchema[sectionKey];
+  return sectionConfig.stateInit ?? sectionConfig.init;
+}
+
+const appearanceInit = getStateInit("appearance");
+const colorschemeStateInit = getStateInit("colorscheme");
+const filterInit = getStateInit("filter");
+const physicsInit = getStateInit("physics");
 
 function isObject(value) {
   return value && typeof value === "object" && !Array.isArray(value);
@@ -30,7 +44,7 @@ function pickKnownSettings(savedSettings, initSettings, { omittedKeys = new Set(
       .filter((key) => Object.hasOwn(savedSettings, key))
       .filter((key) => savedSettings[key] !== undefined)
       .filter((key) => !(skipNull && savedSettings[key] === null))
-      .map((key) => [key, savedSettings[key]]),
+      .map((key) => [key, deserializeGraphSettingValue(savedSettings[key])]),
   );
 }
 
@@ -41,25 +55,51 @@ function mergeKnownSettings(baseSettings, savedSettings, initSettings, options) 
   };
 }
 
-function toSerializableValue(value) {
-  if (!isObject(value)) return value;
-  return Object.fromEntries(Object.entries(value));
-}
-
 function buildKnownSettingsExport(settings, initSettings, options) {
   const knownSettings = pickKnownSettings(settings, initSettings, options);
-  return Object.fromEntries(Object.entries(knownSettings).map(([key, value]) => [key, toSerializableValue(value)]));
+  return Object.fromEntries(Object.entries(knownSettings).map(([key, value]) => [key, serializeGraphSettingValue(value)]));
 }
 
 export function buildAppearanceSettingsExport(appearance, theme) {
-  return {
-    ...buildKnownSettingsExport(appearance, appearanceInit, { omittedKeys: appearanceExportOmittedKeys }),
-    themeName: theme?.name,
-  };
+  return buildGraphSettingsExport({ appearance: { ...appearance, themeName: theme?.name } }).appearance ?? {};
 }
 
 export function buildColorschemeSettingsExport(colorschemeState) {
-  return buildKnownSettingsExport(colorschemeState, colorschemeStateInit, { omittedKeys: colorschemeExportOmittedKeys });
+  return buildGraphSettingsExport({ colorschemeState }).colorscheme ?? {};
+}
+
+function getSettingsSource(sources, sectionKey, sectionConfig) {
+  return sources?.[sectionConfig.sourceKey ?? sectionKey];
+}
+
+export function buildGraphSettingsExport(sources = {}) {
+  const exportedSettings = {};
+
+  for (const sectionKey of graphSettingKeys) {
+    const sectionConfig = graphSettingsSchema[sectionKey];
+    const sourceSettings = getSettingsSource(sources, sectionKey, sectionConfig);
+    const sectionSettings = {
+      ...buildKnownSettingsExport(sourceSettings, sectionConfig.init, { omittedKeys: sectionConfig.exportOmittedKeys }),
+    };
+
+    if (Object.keys(sectionSettings).length > 0) {
+      exportedSettings[sectionKey] = sectionSettings;
+    }
+  }
+
+  return exportedSettings;
+}
+
+export function buildCurrentGraphSettingsExport() {
+  return buildGraphSettingsExport({
+    physics: usePhysics.getState().physics,
+    filter: useFilter.getState().filter,
+    appearance: {
+      ...useAppearance.getState().appearance,
+      themeName: useTheme.getState().theme?.name,
+    },
+    colorschemeState: useColorschemeState.getState().colorschemeState,
+  });
 }
 
 function applyGraphMetrics(graphData) {
@@ -148,8 +188,8 @@ function applyGraphColorschemeSettings(graphData) {
 
   setAllColorschemeState(
     mergeKnownSettings(graphColorschemeState, graphData.colorscheme, colorschemeStateInit, {
-      omittedKeys: colorschemeExportOmittedKeys,
-      skipNull: true,
+      omittedKeys: graphSettingsSchema.colorscheme.importOmittedKeys,
+      skipNull: graphSettingsSchema.colorscheme.skipNullImport,
     }),
   );
 }
@@ -159,7 +199,7 @@ function applyGraphAppearanceSettings(savedAppearance) {
 
   const { appearance, setAllAppearance } = useAppearance.getState();
   const nextAppearance = mergeKnownSettings(appearance, savedAppearance, appearanceInit, {
-    omittedKeys: appearanceExportOmittedKeys,
+    omittedKeys: graphSettingsSchema.appearance.importOmittedKeys,
   });
 
   setAllAppearance(nextAppearance);
@@ -176,12 +216,19 @@ function applyGraphPhysicsSettings(savedPhysics) {
   usePhysics.getState().setAllPhysics(mergeKnownSettings(physicsInit, savedPhysics, physicsInit));
 }
 
+const graphSettingsAppliers = {
+  filter: (graphData, { graphMetrics }) => applyGraphFilterSettings(graphData.filter, graphMetrics),
+  colorscheme: (graphData) => applyGraphColorschemeSettings(graphData),
+  appearance: (graphData) => applyGraphAppearanceSettings(graphData.appearance),
+  physics: (graphData) => applyGraphPhysicsSettings(graphData.physics),
+};
+
 export function applyGraphSettings(graph) {
   if (!graph?.data) return;
 
   const graphMetrics = applyGraphMetrics(graph.data);
-  applyGraphFilterSettings(graph.data.filter, graphMetrics);
-  applyGraphColorschemeSettings(graph.data);
-  applyGraphAppearanceSettings(graph.data.appearance);
-  applyGraphPhysicsSettings(graph.data.physics);
+
+  for (const sectionKey of graphSettingKeys) {
+    graphSettingsAppliers[sectionKey]?.(graph.data, { graphMetrics });
+  }
 }
