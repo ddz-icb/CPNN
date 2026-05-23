@@ -1,8 +1,8 @@
 import { cloneLink, getEndpointIdText, getUndirectedLinkKey } from "../graph_calculations/graphUtils.js";
-import { OMNI_PATH_PHOSPHO_ATTRIB } from "./omniPathConfig.js";
+import { OMNI_PATH_DEPHOSPHO_ATTRIB, OMNI_PATH_PHOSPHO_ATTRIB } from "./omniPathConfig.js";
 import { STRING_DB_LINK_ATTRIB } from "./stringDbConfig.js";
 
-export const ADDITIONAL_LINK_ATTRIBS = [STRING_DB_LINK_ATTRIB, OMNI_PATH_PHOSPHO_ATTRIB];
+export const ADDITIONAL_LINK_ATTRIBS = [STRING_DB_LINK_ATTRIB, OMNI_PATH_PHOSPHO_ATTRIB, OMNI_PATH_DEPHOSPHO_ATTRIB];
 
 export function isAdditionalLinkAttrib(attrib) {
   return ADDITIONAL_LINK_ATTRIBS.includes(attrib);

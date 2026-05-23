@@ -36,7 +36,23 @@ export const omniPathEnrichmentDescription = (
       PhosphoELM, and HPRD.
     </p>
     <p className="margin-0 pad-top-05">
+      Matching is phosphosite-aware: if a substrate node includes phosphosites, an OmniPath record must match one of those sites. Nodes without
+      phosphosite annotations are matched at protein level.
+    </p>
+    <p className="margin-0 pad-top-05">
       Note: OmniPath phosphorylation links are excluded from structural filters (k-core, component/community size and density).
+    </p>
+  </div>
+);
+
+export const omniPathPhosphataseEnrichmentDescription = (
+  <div>
+    <p className="margin-0">
+      Tags existing nodes as phosphatases and adds dephosphorylation links from OmniPath interaction records supported by the DEPOD phosphatase
+      resource. These records are protein-level interactions, so they do not require a phosphosite match.
+    </p>
+    <p className="margin-0 pad-top-05">
+      Note: OmniPath dephosphorylation links are excluded from structural filters (k-core, component/community size and density).
     </p>
   </div>
 );
@@ -44,8 +60,17 @@ export const omniPathEnrichmentDescription = (
 export const omniPathMinReferencesDescription = (
   <div>
     <p className="margin-0">
-      Keep only OmniPath phosphorylation records with at least this many unique publication references. Set this to 0 to include records without
-      literature references.
+      Keep only OmniPath records with at least this many unique publication references. Set this to 0 to include records without literature
+      references.
+    </p>
+  </div>
+);
+
+export const omniPathCurationEffortDescription = (
+  <div>
+    <p className="margin-0">
+      Keep only OmniPath records with at least this curation effort value. OmniPath defines this as the number of unique resource-reference pairs
+      supporting a record.
     </p>
   </div>
 );

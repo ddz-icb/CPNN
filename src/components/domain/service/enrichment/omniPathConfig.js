@@ -1,9 +1,16 @@
 export const OMNI_PATH_API_BASE_URL = "/omnipathdb-api";
 export const OMNI_PATH_ENZ_SUB_PATH = "/enz_sub";
+export const OMNI_PATH_INTERACTIONS_PATH = "/interactions";
 export const OMNI_PATH_KINASE_ATTRIB = "Kinase";
+export const OMNI_PATH_PHOSPHATASE_ATTRIB = "Phosphatase";
 export const OMNI_PATH_PHOSPHO_ATTRIB = "Phosphorylation";
+export const OMNI_PATH_DEPHOSPHO_ATTRIB = "Dephosphorylation";
 export const OMNI_PATH_DEFAULT_ORGANISM_ID = "9606";
 export const OMNI_PATH_SUBSTRATE_CHUNK_SIZE = 200;
+export const OMNI_PATH_PARTNER_CHUNK_SIZE = 100;
 export const OMNI_PATH_MIN_REFERENCES_MIN = 0;
 export const OMNI_PATH_MIN_REFERENCES_MAX = 999;
 export const OMNI_PATH_MIN_REFERENCES_DEFAULT = 0;
+export const OMNI_PATH_MIN_CURATION_EFFORT_MIN = 0;
+export const OMNI_PATH_MIN_CURATION_EFFORT_MAX = 999;
+export const OMNI_PATH_MIN_CURATION_EFFORT_DEFAULT = 0;
