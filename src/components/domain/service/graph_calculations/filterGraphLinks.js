@@ -1,4 +1,5 @@
 import { getEndpointId } from "./graphUtils.js";
+import { isAdditionalLinkAttrib } from "../enrichment/additionalLinkEnrichment.js";
 
 function getFiniteThreshold(value) {
   if (value === "" || value === null || value === undefined) return null;
@@ -19,7 +20,9 @@ export function filterThreshold(graphData, minLinkThreshold, maxLinkThreshold) {
     ...graphData,
     links: graphData.links
       .map((link) => {
-        const keep = link.weights.map((weight) => {
+        const keep = link.weights.map((weight, index) => {
+          if (isAdditionalLinkAttrib(link.attribs?.[index])) return true;
+
           const absoluteWeight = Math.abs(weight);
           return (!hasMinThreshold || absoluteWeight >= minThreshold) && (!hasMaxThreshold || absoluteWeight <= maxThreshold);
         });

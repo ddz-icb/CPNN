@@ -21,10 +21,10 @@ const proxy = {
     changeOrigin: true,
     rewrite: (path) => path.replace(/^\/stringdb-api/, ""),
   },
-  "/omnipathdb-archive": {
-    target: "https://archive.omnipathdb.org",
+  "/omnipathdb-api": {
+    target: "https://omnipathdb.org",
     changeOrigin: true,
-    rewrite: (path) => path.replace(/^\/omnipathdb-archive/, ""),
+    rewrite: (path) => path.replace(/^\/omnipathdb-api/, ""),
   },
 };
 

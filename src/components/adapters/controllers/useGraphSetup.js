@@ -33,6 +33,7 @@ export const useGraphSetup = () => {
       });
       graph.data = await enrichGraphWithOmniPath(graph.data, {
         enabled: graphEnrichment.omniPathEnrichmentEnabled,
+        minReferences: graphEnrichment.omniPathMinReferences,
       });
       graph.data = applyNodeMapping(graph.data, mappingState.mapping?.data);
 
@@ -51,6 +52,7 @@ export const useGraphSetup = () => {
     graphEnrichment.stringDbMinConfidence,
     graphEnrichment.stringDbSpeciesId,
     graphEnrichment.omniPathEnrichmentEnabled,
+    graphEnrichment.omniPathMinReferences,
     mappingState.mapping,
     graphState.activeGraphNames,
   ]);

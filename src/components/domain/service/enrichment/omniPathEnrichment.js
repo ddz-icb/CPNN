@@ -1,15 +1,15 @@
 import log from "../../../adapters/logging/logger.js";
 import { getUndirectedLinkKey } from "../graph_calculations/graphUtils.js";
 import { applyAdditionalLinks } from "./additionalLinkEnrichment.js";
-import { fetchKinaseSubstrateInteractions } from "./omniPathApi.js";
-import { OMNI_PATH_KINASE_ATTRIB, OMNI_PATH_PHOSPHO_ATTRIB } from "./omniPathConfig.js";
+import { clampMinReferences, fetchKinaseSubstrateInteractions } from "./omniPathApi.js";
+import { OMNI_PATH_DEFAULT_ORGANISM_ID, OMNI_PATH_KINASE_ATTRIB, OMNI_PATH_PHOSPHO_ATTRIB } from "./omniPathConfig.js";
 import { normalizeProteinId } from "./stringDbHelpers.js";
 import { buildProteinToNodeIdsMap } from "./stringDbMapping.js";
 
 const enrichmentCache = new Map();
 
-function buildCacheKey(substrateIds) {
-  return [...substrateIds].sort((a, b) => a.localeCompare(b)).join("|");
+function buildCacheKey(substrateIds, minReferences, organismId) {
+  return `${organismId}::${minReferences}::${[...substrateIds].sort((a, b) => a.localeCompare(b)).join("|")}`;
 }
 
 function applyKinaseLinks(graphData, interactions, substrateProteinToNodeIds) {
@@ -72,18 +72,22 @@ export async function enrichGraphWithOmniPath(graphData, options = {}) {
   if (!graphData?.nodes || !graphData?.links) return graphData;
   if (!options.enabled) return graphData;
 
+  const minReferences = clampMinReferences(options.minReferences);
+  const organismId = options.organismId ?? OMNI_PATH_DEFAULT_ORGANISM_ID;
   const substrateProteinToNodeIds = buildProteinToNodeIdsMap(graphData.nodes);
   const substrateIds = Array.from(substrateProteinToNodeIds.keys());
   if (substrateIds.length === 0) return graphData;
 
-  log.debug(`Preparing OmniPath kinase enrichment for ${substrateIds.length} substrate(s)`);
+  log.debug(
+    `Preparing OmniPath kinase enrichment for ${substrateIds.length} graph protein id(s), organism ${organismId}, min references ${minReferences}`,
+  );
 
-  const cacheKey = buildCacheKey(substrateIds);
+  const cacheKey = buildCacheKey(substrateIds, minReferences, organismId);
   let interactions = enrichmentCache.get(cacheKey);
 
   if (!interactions) {
     try {
-      interactions = await fetchKinaseSubstrateInteractions(substrateIds);
+      interactions = await fetchKinaseSubstrateInteractions(substrateIds, { minReferences, organismId });
       enrichmentCache.set(cacheKey, interactions);
       log.info(`OmniPath returned ${interactions.length} kinase-substrate interaction(s).`);
     } catch (error) {

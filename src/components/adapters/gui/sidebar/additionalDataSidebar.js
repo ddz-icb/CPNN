@@ -1,13 +1,16 @@
-import { Button, SelectFieldBlock, SliderBlock, SwitchBlock } from "../reusable_components/sidebarComponents.js";
+import { Button, FieldBlock, SelectFieldBlock, SliderBlock, SwitchBlock } from "../reusable_components/sidebarComponents.js";
 import {
+  omniPathMinReferencesInit,
   omniPathEnrichmentEnabledInit,
   stringDbMinConfidenceInit,
   stringDbSpeciesIdInit,
   useGraphEnrichment,
 } from "../../state/graphEnrichmentState.js";
+import { OMNI_PATH_MIN_REFERENCES_MAX, OMNI_PATH_MIN_REFERENCES_MIN } from "../../../domain/service/enrichment/omniPathConfig.js";
 import { STRING_DB_SPECIES } from "../../../domain/service/enrichment/stringDbConfig.js";
 import {
   omniPathEnrichmentDescription,
+  omniPathMinReferencesDescription,
   stringDbEnrichmentDescription,
   stringDbMinConfidenceDescription,
   stringDbSpeciesDescription,
@@ -22,6 +25,8 @@ export function AdditionalDataSidebar() {
     setGraphEnrichment("stringDbMinConfidenceText", stringDbMinConfidenceInit);
     setGraphEnrichment("stringDbSpeciesId", stringDbSpeciesIdInit);
     setGraphEnrichment("omniPathEnrichmentEnabled", omniPathEnrichmentEnabledInit);
+    setGraphEnrichment("omniPathMinReferences", omniPathMinReferencesInit);
+    setGraphEnrichment("omniPathMinReferencesText", omniPathMinReferencesInit);
   };
 
   return (
@@ -71,6 +76,20 @@ export function AdditionalDataSidebar() {
         infoHeading={"OmniPath Kinase Enrichment"}
         infoDescription={omniPathEnrichmentDescription}
       />
+      {graphEnrichment.omniPathEnrichmentEnabled && (
+        <FieldBlock
+          valueText={graphEnrichment.omniPathMinReferencesText}
+          setValue={(value) => setGraphEnrichment("omniPathMinReferences", value)}
+          setValueText={(value) => setGraphEnrichment("omniPathMinReferencesText", value)}
+          fallbackValue={omniPathMinReferencesInit}
+          min={OMNI_PATH_MIN_REFERENCES_MIN}
+          max={OMNI_PATH_MIN_REFERENCES_MAX}
+          step={1}
+          text={"OmniPath Min References"}
+          infoHeading={"OmniPath minimum references"}
+          infoDescription={omniPathMinReferencesDescription}
+        />
+      )}
     </>
   );
 }

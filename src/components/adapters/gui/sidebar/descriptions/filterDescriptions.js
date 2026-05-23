@@ -41,6 +41,15 @@ export const omniPathEnrichmentDescription = (
   </div>
 );
 
+export const omniPathMinReferencesDescription = (
+  <div>
+    <p className="margin-0">
+      Keep only OmniPath phosphorylation records with at least this many unique publication references. Set this to 0 to include records without
+      literature references.
+    </p>
+  </div>
+);
+
 export const stringDbEnrichmentDescription = (
   <div>
     <p className="margin-0">

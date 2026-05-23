@@ -1,4 +1,9 @@
-export const OMNI_PATH_ARCHIVE_BASE_URL = "/omnipathdb-archive";
-export const OMNI_PATH_ENZ_SUB_ARCHIVE_PATH = "/omnipath_webservice_enz_sub__latest.tsv.gz";
+export const OMNI_PATH_API_BASE_URL = "/omnipathdb-api";
+export const OMNI_PATH_ENZ_SUB_PATH = "/enz_sub";
 export const OMNI_PATH_KINASE_ATTRIB = "Kinase";
 export const OMNI_PATH_PHOSPHO_ATTRIB = "Phosphorylation";
+export const OMNI_PATH_DEFAULT_ORGANISM_ID = "9606";
+export const OMNI_PATH_SUBSTRATE_CHUNK_SIZE = 200;
+export const OMNI_PATH_MIN_REFERENCES_MIN = 0;
+export const OMNI_PATH_MIN_REFERENCES_MAX = 999;
+export const OMNI_PATH_MIN_REFERENCES_DEFAULT = 0;
