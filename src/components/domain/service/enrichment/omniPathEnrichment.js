@@ -1,5 +1,7 @@
 import log from "../../../adapters/logging/logger.js";
 import { getUndirectedLinkKey } from "../graph_calculations/graphUtils.js";
+import { getPhosphositesNodeIdEntry, isLikelyUniprotAccession } from "../parsing/nodeIdBioParsing.js";
+import { getNodeIdAndIsoformEntry, getNodeIdEntries } from "../parsing/nodeIdParsing.js";
 import { applyAdditionalLinks } from "./additionalLinkEnrichment.js";
 import { clampMinReferences, fetchKinaseSubstrateInteractions } from "./omniPathApi.js";
 import { OMNI_PATH_DEFAULT_ORGANISM_ID, OMNI_PATH_KINASE_ATTRIB, OMNI_PATH_PHOSPHO_ATTRIB } from "./omniPathConfig.js";
@@ -12,7 +14,72 @@ function buildCacheKey(substrateIds, minReferences, organismId) {
   return `${organismId}::${minReferences}::${[...substrateIds].sort((a, b) => a.localeCompare(b)).join("|")}`;
 }
 
-function applyKinaseLinks(graphData, interactions, substrateProteinToNodeIds) {
+function normalizePhosphosite(site) {
+  return String(site ?? "").trim().toUpperCase();
+}
+
+function parsePhosphosite(site) {
+  const match = normalizePhosphosite(site).match(/^([STY]+)(\d*)$/);
+  if (!match) return null;
+  return {
+    residues: match[1],
+    offset: match[2] ?? "",
+  };
+}
+
+function getOmniPathRecordSite(record) {
+  const residue = normalizePhosphosite(record?.residue_type);
+  const offset = String(record?.residue_offset ?? "").trim();
+  if (!/^[STY]$/.test(residue)) return null;
+  return { residue, offset };
+}
+
+function phosphositeMatchesRecord(site, recordSite) {
+  const parsedSite = parsePhosphosite(site);
+  if (!parsedSite || !recordSite) return false;
+  if (!parsedSite.residues.includes(recordSite.residue)) return false;
+  return !parsedSite.offset || parsedSite.offset === recordSite.offset;
+}
+
+function buildProteinToSubstrateEntriesMap(nodes) {
+  const proteinToSubstrateEntries = new Map();
+
+  nodes.forEach((node) => {
+    getNodeIdEntries(node?.id).forEach((entry) => {
+      const rawProteinId = getNodeIdAndIsoformEntry(entry);
+      const proteinId = normalizeProteinId(rawProteinId);
+      if (!proteinId || !isLikelyUniprotAccession(proteinId)) return;
+
+      if (!proteinToSubstrateEntries.has(proteinId)) {
+        proteinToSubstrateEntries.set(proteinId, []);
+      }
+
+      proteinToSubstrateEntries.get(proteinId).push({
+        nodeId: node.id,
+        phosphosites: getPhosphositesNodeIdEntry(entry).map(normalizePhosphosite),
+      });
+    });
+  });
+
+  return proteinToSubstrateEntries;
+}
+
+function getMatchingSubstrateNodeIds(substrateEntries, record) {
+  if (!substrateEntries?.length) return [];
+
+  const recordSite = getOmniPathRecordSite(record);
+  const matchingNodeIds = new Set();
+
+  substrateEntries.forEach(({ nodeId, phosphosites }) => {
+    if (!phosphosites.length || phosphosites.some((site) => phosphositeMatchesRecord(site, recordSite))) {
+      matchingNodeIds.add(nodeId);
+    }
+  });
+
+  return Array.from(matchingNodeIds);
+}
+
+function applyKinaseLinks(graphData, interactions, substrateProteinToEntries) {
   if (!interactions.length) return graphData;
 
   // Build protein map for the full graph so existing kinase nodes are found.
@@ -27,8 +94,8 @@ function applyKinaseLinks(graphData, interactions, substrateProteinToNodeIds) {
     const substrateProteinId = normalizeProteinId(record.substrate);
     if (!kinaseProteinId || !substrateProteinId || kinaseProteinId === substrateProteinId) return;
 
-    const substrateNodeIds = substrateProteinToNodeIds.get(substrateProteinId);
-    if (!substrateNodeIds?.size) return;
+    const substrateNodeIds = getMatchingSubstrateNodeIds(substrateProteinToEntries.get(substrateProteinId), record);
+    if (!substrateNodeIds.length) return;
 
     const kinaseNodeIds = allProteinToNodeIds.get(kinaseProteinId);
     if (!kinaseNodeIds?.size) return;
@@ -74,8 +141,8 @@ export async function enrichGraphWithOmniPath(graphData, options = {}) {
 
   const minReferences = clampMinReferences(options.minReferences);
   const organismId = options.organismId ?? OMNI_PATH_DEFAULT_ORGANISM_ID;
-  const substrateProteinToNodeIds = buildProteinToNodeIdsMap(graphData.nodes);
-  const substrateIds = Array.from(substrateProteinToNodeIds.keys());
+  const substrateProteinToEntries = buildProteinToSubstrateEntriesMap(graphData.nodes);
+  const substrateIds = Array.from(substrateProteinToEntries.keys());
   if (substrateIds.length === 0) return graphData;
 
   log.debug(
@@ -99,5 +166,5 @@ export async function enrichGraphWithOmniPath(graphData, options = {}) {
     log.debug(`Using cached OmniPath interactions (${interactions.length})`);
   }
 
-  return applyKinaseLinks(graphData, interactions, substrateProteinToNodeIds);
+  return applyKinaseLinks(graphData, interactions, substrateProteinToEntries);
 }
