@@ -57,6 +57,24 @@ export const omniPathPhosphataseEnrichmentDescription = (
   </div>
 );
 
+export const omniPathNodeAnnotationEnrichmentDescription = (
+  <div>
+    <p className="margin-0">
+      Adds pathway and/or intercellular role attributes to existing graph nodes from OmniPath annotations. Only proteins already present in the graph
+      are queried, and attributes are added only when OmniPath returns a matching annotation for that node.
+    </p>
+  </div>
+);
+
+export const omniPathNodeAnnotationModeDescription = (
+  <div>
+    <p className="margin-0">
+      Pathways use OmniPath annotation records from SignaLink pathway. Intercell roles use OmniPath composite functional annotations such as receptor,
+      ligand regulator, and adhesion.
+    </p>
+  </div>
+);
+
 export const omniPathCurationEffortDescription = (
   <div>
     <p className="margin-0">
@@ -74,6 +92,49 @@ export const stringDbEnrichmentDescription = (
       separate attribute with a fixed weight of 1.
     </p>
     <p className="margin-0 pad-top-05">Note: STRING-DB links are excluded from structural filters (k-core, component/community size and density).</p>
+  </div>
+);
+
+export const stringDbEvidenceDescription = (
+  <div>
+    <p className="margin-0">
+      Adds separate STRING link attributes for evidence channels such as experimental, database, coexpression, and text mining support. These
+      attributes are added only for channels above the selected evidence score.
+    </p>
+  </div>
+);
+
+export const stringDbNodeAttributeDescription = (
+  <div>
+    <p className="margin-0">
+      Adds STRING functional annotation terms to existing nodes. Choose one attribute type such as Pathways, Disease, Tissue, Phenotype, GO Process,
+      or Domains to keep the labels focused.
+    </p>
+    <p className="margin-0 pad-top-05">
+      Use the term filter to keep only annotations whose source, term ID, or description contains the entered words. Commas separate alternatives,
+      e.g. diabetes, insulin.
+    </p>
+  </div>
+);
+
+export const stringDbGroupEnrichmentDescription = (
+  <div>
+    <p className="margin-0">
+      Labels graph communities with their strongest STRING enrichment term. The current community resolution is used; set resolution to 0 to label
+      connected components instead.
+    </p>
+  </div>
+);
+
+export const stringDbMinEvidenceDescription = (
+  <div>
+    <p className="margin-0">Minimum STRING channel score required before an evidence-specific link attribute is added.</p>
+  </div>
+);
+
+export const stringDbGroupEnrichmentFdrDescription = (
+  <div>
+    <p className="margin-0">Maximum false discovery rate for accepting a STRING enrichment term as a community label.</p>
   </div>
 );
 

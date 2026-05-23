@@ -1,8 +1,8 @@
 import { cloneLink, getEndpointIdText, getUndirectedLinkKey } from "../graph_calculations/graphUtils.js";
 import { OMNI_PATH_DEPHOSPHO_ATTRIB, OMNI_PATH_PHOSPHO_ATTRIB } from "./omniPathConfig.js";
-import { STRING_DB_LINK_ATTRIB } from "./stringDbConfig.js";
+import { STRING_DB_LINK_ATTRIBS } from "./stringDbConfig.js";
 
-export const ADDITIONAL_LINK_ATTRIBS = [STRING_DB_LINK_ATTRIB, OMNI_PATH_PHOSPHO_ATTRIB, OMNI_PATH_DEPHOSPHO_ATTRIB];
+export const ADDITIONAL_LINK_ATTRIBS = [...STRING_DB_LINK_ATTRIBS, OMNI_PATH_PHOSPHO_ATTRIB, OMNI_PATH_DEPHOSPHO_ATTRIB];
 
 export function isAdditionalLinkAttrib(attrib) {
   return ADDITIONAL_LINK_ATTRIBS.includes(attrib);
@@ -41,6 +41,65 @@ function ensureLinkAttrib(link, attrib, weight = 1) {
     weights[attribIndex] = weight;
   }
   return { ...link, attribs, weights };
+}
+
+function ensureLinkAttribs(link, attribs, weights) {
+  let nextLink = link;
+  attribs.forEach((attrib, index) => {
+    nextLink = ensureLinkAttrib(nextLink, attrib, weights[index] ?? 1);
+  });
+  return nextLink;
+}
+
+export function applyAdditionalLinkRecords(graphData, additionalLinks) {
+  if (!Array.isArray(additionalLinks) || additionalLinks.length === 0) return graphData;
+
+  const mergedLinks = (graphData.links ?? []).map((link) => cloneLink(link));
+  const pairKeyToLinkIndex = new Map();
+
+  mergedLinks.forEach((link, index) => {
+    const sourceId = getEndpointIdText(link.source);
+    const targetId = getEndpointIdText(link.target);
+    const pairKey = getUndirectedLinkKey(sourceId, targetId);
+    if (!pairKey || pairKeyToLinkIndex.has(pairKey)) return;
+    pairKeyToLinkIndex.set(pairKey, index);
+  });
+
+  additionalLinks.forEach((link) => {
+    const sourceId = getEndpointIdText(link.source);
+    const targetId = getEndpointIdText(link.target);
+    const pairKey = getUndirectedLinkKey(sourceId, targetId);
+    if (!pairKey) return;
+
+    const attribs = Array.isArray(link.attribs) ? link.attribs.map((attrib) => String(attrib ?? "").trim()).filter(Boolean) : [];
+    if (attribs.length === 0) return;
+    const weights = Array.isArray(link.weights) ? link.weights : [];
+
+    const existingLinkIndex = pairKeyToLinkIndex.get(pairKey);
+    if (existingLinkIndex !== undefined) {
+      mergedLinks[existingLinkIndex] = ensureLinkAttribs(mergedLinks[existingLinkIndex], attribs, weights);
+      return;
+    }
+
+    mergedLinks.push(
+      ensureLinkAttribs(
+        {
+          source: sourceId,
+          target: targetId,
+          weights: [],
+          attribs: [],
+        },
+        attribs,
+        weights,
+      ),
+    );
+    pairKeyToLinkIndex.set(pairKey, mergedLinks.length - 1);
+  });
+
+  return {
+    ...graphData,
+    links: mergedLinks,
+  };
 }
 
 export function applyAdditionalLinks(graphData, additionalLinks, attrib, weight = 1) {

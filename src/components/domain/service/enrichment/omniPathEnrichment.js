@@ -6,7 +6,9 @@ import { applyAdditionalLinks } from "./additionalLinkEnrichment.js";
 import {
   clampMinCurationEffort,
   fetchKinaseSubstrateInteractions,
+  fetchOmniPathNodeAnnotations,
   fetchPhosphataseSubstrateInteractions,
+  normalizeNodeAnnotationMode,
 } from "./omniPathApi.js";
 import {
   OMNI_PATH_DEFAULT_ORGANISM_ID,
@@ -20,8 +22,8 @@ import { buildProteinToNodeIdsMap } from "./stringDbMapping.js";
 
 const enrichmentCache = new Map();
 
-function buildCacheKey(kind, proteinIds, minCurationEffort, organismId) {
-  return `${kind}::${organismId}::${minCurationEffort}::${[...proteinIds].sort((a, b) => a.localeCompare(b)).join("|")}`;
+function buildCacheKey(kind, proteinIds, ...parts) {
+  return `${kind}::${parts.join("::")}::${[...proteinIds].sort((a, b) => a.localeCompare(b)).join("|")}`;
 }
 
 function normalizePhosphosite(site) {
@@ -202,19 +204,64 @@ function applyPhosphataseLinks(graphData, interactions, proteinToNodeIds) {
   );
 }
 
+function applyNodeAnnotations(graphData, annotations, proteinToNodeIds) {
+  if (!annotations.length) return graphData;
+
+  const attribsByNodeId = new Map();
+
+  annotations.forEach((annotation) => {
+    const proteinId = normalizeProteinId(annotation?.proteinId);
+    const attrib = String(annotation?.attrib ?? "").trim();
+    if (!proteinId || !attrib) return;
+
+    const nodeIds = proteinToNodeIds.get(proteinId);
+    if (!nodeIds?.size) return;
+
+    nodeIds.forEach((nodeId) => {
+      if (!attribsByNodeId.has(nodeId)) {
+        attribsByNodeId.set(nodeId, new Set());
+      }
+      attribsByNodeId.get(nodeId).add(attrib);
+    });
+  });
+
+  if (!attribsByNodeId.size) return graphData;
+
+  let addedAttribCount = 0;
+  const updatedNodes = graphData.nodes.map((node) => {
+    const addedAttribs = attribsByNodeId.get(node.id);
+    if (!addedAttribs?.size) return node;
+
+    const currentAttribs = Array.isArray(node.attribs) ? node.attribs : [];
+    const nextAttribs = new Set(currentAttribs);
+    addedAttribs.forEach((attrib) => nextAttribs.add(attrib));
+
+    if (nextAttribs.size === currentAttribs.length) return node;
+    addedAttribCount += nextAttribs.size - currentAttribs.length;
+    return { ...node, attribs: Array.from(nextAttribs) };
+  });
+
+  if (addedAttribCount === 0) return graphData;
+
+  log.info(`OmniPath enrichment added ${addedAttribCount} node annotation attribute(s) to ${attribsByNodeId.size} node(s).`);
+  return { ...graphData, nodes: updatedNodes };
+}
+
 export async function enrichGraphWithOmniPath(graphData, options = {}) {
   if (!graphData?.nodes || !graphData?.links) return graphData;
   const kinaseEnabled = options.kinaseEnabled ?? options.enabled ?? false;
   const phosphataseEnabled = options.phosphataseEnabled ?? false;
-  if (!kinaseEnabled && !phosphataseEnabled) return graphData;
+  const nodeAnnotationEnabled = options.nodeAnnotationEnabled ?? false;
+  if (!kinaseEnabled && !phosphataseEnabled && !nodeAnnotationEnabled) return graphData;
 
   const minCurationEffort = clampMinCurationEffort(options.minCurationEffort);
+  const nodeAnnotationMode = normalizeNodeAnnotationMode(options.nodeAnnotationMode);
   const organismId = options.organismId ?? OMNI_PATH_DEFAULT_ORGANISM_ID;
   const substrateProteinToEntries = buildProteinToSubstrateEntriesMap(graphData.nodes);
   const substrateIds = Array.from(substrateProteinToEntries.keys());
   const proteinToNodeIds = buildProteinToNodeIdsMap(graphData.nodes);
   const proteinIds = Array.from(proteinToNodeIds.keys());
-  if (substrateIds.length === 0) return graphData;
+  if (proteinIds.length === 0) return graphData;
 
   log.debug(
     `Preparing OmniPath enrichment for ${substrateIds.length} graph protein id(s), organism ${organismId}, min curation effort ${minCurationEffort}`,
@@ -223,7 +270,7 @@ export async function enrichGraphWithOmniPath(graphData, options = {}) {
   let enrichedGraphData = graphData;
 
   if (kinaseEnabled) {
-    const cacheKey = buildCacheKey("kinase", substrateIds, minCurationEffort, organismId);
+    const cacheKey = buildCacheKey("kinase", substrateIds, organismId, minCurationEffort);
     let interactions = enrichmentCache.get(cacheKey);
 
     if (!interactions) {
@@ -244,7 +291,7 @@ export async function enrichGraphWithOmniPath(graphData, options = {}) {
   }
 
   if (phosphataseEnabled) {
-    const cacheKey = buildCacheKey("phosphatase", proteinIds, minCurationEffort, organismId);
+    const cacheKey = buildCacheKey("phosphatase", proteinIds, organismId, minCurationEffort);
     let interactions = enrichmentCache.get(cacheKey);
 
     if (!interactions) {
@@ -262,6 +309,27 @@ export async function enrichGraphWithOmniPath(graphData, options = {}) {
     }
 
     enrichedGraphData = applyPhosphataseLinks(enrichedGraphData, interactions, proteinToNodeIds);
+  }
+
+  if (nodeAnnotationEnabled) {
+    const cacheKey = buildCacheKey("node-annotations", proteinIds, nodeAnnotationMode);
+    let annotations = enrichmentCache.get(cacheKey);
+
+    if (!annotations) {
+      try {
+        annotations = await fetchOmniPathNodeAnnotations(proteinIds, { mode: nodeAnnotationMode });
+        enrichmentCache.set(cacheKey, annotations);
+        log.info(`OmniPath returned ${annotations.length} node annotation(s).`);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "Unknown error";
+        log.warn(`OmniPath node annotation enrichment failed: ${message}`);
+        throw new Error("Failed to load OmniPath node annotations.");
+      }
+    } else {
+      log.debug(`Using cached OmniPath node annotations (${annotations.length})`);
+    }
+
+    enrichedGraphData = applyNodeAnnotations(enrichedGraphData, annotations, proteinToNodeIds);
   }
 
   return enrichedGraphData;

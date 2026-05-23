@@ -1,24 +1,9 @@
 import * as PIXI from "pixi.js";
 import { initTooltips } from "../canvas_interaction/interactiveCanvas.js";
 import { getBitMapStyle, getNodeLabelOffsetY, getTextStyle, toColorNumber } from "./drawingUtils.js";
+import { centerGraphInContainer, seedNodePositions } from "./graphLayout.js";
 import { buildLineLayers } from "./lineGraphics.js";
 import { drawCircle } from "./nodes.js";
-
-function seedNodePositions(nodes, container) {
-  const offsetSpawnValue = nodes.length * 10;
-
-  for (const node of nodes) {
-    if (node.x == null) {
-      node.x = container.width / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
-    }
-    if (node.y == null) {
-      node.y = container.height / 2 + Math.random() * offsetSpawnValue - offsetSpawnValue / 2;
-    }
-    if (node.z == null) {
-      node.z = (Math.random() - 0.5) * offsetSpawnValue;
-    }
-  }
-}
 
 function buildNodeGraphics(nodes, theme, colorschemeState, setTooltipSettings, enableSorting) {
   const nodeContainers = new PIXI.Container();
@@ -67,6 +52,7 @@ export function setupStage({ app, graph, container, theme, colorschemeState, set
   if (!app || !graph?.data?.nodes?.length) return null;
 
   seedNodePositions(graph.data.nodes, container);
+  centerGraphInContainer(graph.data.nodes, container);
 
   const grid3D = buildGridGraphics(container, theme, threeD && show3DGrid);
   const { nodeContainers, nodeMap } = buildNodeGraphics(graph.data.nodes, theme, colorschemeState, setTooltipSettings, threeD);

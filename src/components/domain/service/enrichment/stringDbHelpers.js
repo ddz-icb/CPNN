@@ -1,10 +1,32 @@
-import { DEFAULT_MIN_CONFIDENCE, MIN_CONFIDENCE, MAX_CONFIDENCE } from "./stringDbConfig.js";
+import {
+  DEFAULT_GROUP_ENRICHMENT_MAX_FDR,
+  DEFAULT_MIN_CONFIDENCE,
+  DEFAULT_MIN_EVIDENCE_SCORE,
+  MAX_CONFIDENCE,
+  MAX_EVIDENCE_SCORE,
+  MAX_GROUP_ENRICHMENT_MAX_FDR,
+  MIN_CONFIDENCE,
+  MIN_EVIDENCE_SCORE,
+  MIN_GROUP_ENRICHMENT_MAX_FDR,
+} from "./stringDbConfig.js";
 import { getUndirectedLinkKey } from "../graph_calculations/graphUtils.js";
 
 export function clampConfidence(value) {
   const parsed = Number(value);
   if (!Number.isFinite(parsed)) return DEFAULT_MIN_CONFIDENCE;
   return Math.min(Math.max(parsed, MIN_CONFIDENCE), MAX_CONFIDENCE);
+}
+
+export function clampEvidenceScore(value) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return DEFAULT_MIN_EVIDENCE_SCORE;
+  return Math.min(Math.max(parsed, MIN_EVIDENCE_SCORE), MAX_EVIDENCE_SCORE);
+}
+
+export function clampGroupEnrichmentMaxFdr(value) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return DEFAULT_GROUP_ENRICHMENT_MAX_FDR;
+  return Math.min(Math.max(parsed, MIN_GROUP_ENRICHMENT_MAX_FDR), MAX_GROUP_ENRICHMENT_MAX_FDR);
 }
 
 export function normalizeProteinId(value) {

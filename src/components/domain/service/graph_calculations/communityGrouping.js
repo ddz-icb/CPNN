@@ -57,7 +57,7 @@ export function buildCommunitySummary(graphData, options = {}) {
     }
     communityToNodeIds[communityKey].push(node.id);
 
-    const nodeAttribs = Array.isArray(node.groups) ? node.groups : [];
+    const nodeAttribs = Array.isArray(node.attribs) ? node.attribs : [];
     if (!communityToAttribCounts[communityKey]) {
       communityToAttribCounts[communityKey] = {};
     }
@@ -104,14 +104,18 @@ export function buildCommunitySummary(graphData, options = {}) {
     const attribCounts = communityToAttribCounts[communityKey];
     const linkAttribCounts = communityToLinkAttribCounts[communityKey];
     const internalLinks = communityToLinkCount[communityKey] || 0;
+    const topAttributes = collectTopAttributes(attribCounts, options.topNodeAttribs ?? DEFAULT_TOP_ATTRIBUTES);
+    const topLinkAttributes = collectTopAttributes(linkAttribCounts, options.topNodeAttribs ?? DEFAULT_TOP_ATTRIBUTES);
     return {
       id: communityKey,
       size,
       linkCount: internalLinks,
       externalLinkCount: communityToExternalLinkCount[communityKey] || 0,
       density: size > 0 ? (2 * internalLinks) / size : 0,
-      topAttributes: collectTopAttributes(attribCounts, options.topNodeAttribs ?? DEFAULT_TOP_ATTRIBUTES),
-      topLinkAttributes: collectTopAttributes(linkAttribCounts, options.topNodeAttribs ?? DEFAULT_TOP_ATTRIBUTES),
+      topAttributes,
+      topNodeAttribs: topAttributes,
+      topLinkAttributes,
+      topLinkAttribs: topLinkAttributes,
     };
   });
 

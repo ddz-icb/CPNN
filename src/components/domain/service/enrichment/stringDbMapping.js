@@ -1,6 +1,6 @@
 import { getNodeIdAndIsoformEntry, getNodeIdEntries } from "../parsing/nodeIdParsing.js";
 import { isLikelyUniprotAccession } from "../parsing/nodeIdBioParsing.js";
-import { STRING_DB_LINK_ATTRIB } from "./stringDbConfig.js";
+import { STRING_DB_EVIDENCE_ATTRIBS, STRING_DB_LINK_ATTRIB } from "./stringDbConfig.js";
 import { getUndirectedLinkKey } from "../graph_calculations/graphUtils.js";
 import { normalizeProteinId } from "./stringDbHelpers.js";
 
@@ -32,6 +32,21 @@ export function buildProteinToNodeIdsMap(nodes) {
   });
 
   return proteinToNodeIds;
+}
+
+export function buildNodeIdToProteinIdsMap(proteinToNodeIds) {
+  const nodeIdToProteinIds = new Map();
+
+  proteinToNodeIds.forEach((nodeIds, proteinId) => {
+    nodeIds.forEach((nodeId) => {
+      if (!nodeIdToProteinIds.has(nodeId)) {
+        nodeIdToProteinIds.set(nodeId, new Set());
+      }
+      nodeIdToProteinIds.get(nodeId).add(proteinId);
+    });
+  });
+
+  return nodeIdToProteinIds;
 }
 
 function buildProteinIdLookup(proteinIds) {
@@ -69,8 +84,29 @@ function getEndpointProteinId(interaction, endpointSuffix, proteinIdLookup) {
 }
 
 export function buildEnrichmentLinks(interactions, proteinToNodeIds, minConfidence) {
+  return buildStringDbLinks(interactions, proteinToNodeIds, { minConfidence });
+}
+
+function getEvidenceAttribs(interaction, minEvidenceScore) {
+  const attribs = [];
+  const weights = [];
+
+  Object.entries(STRING_DB_EVIDENCE_ATTRIBS).forEach(([field, attrib]) => {
+    const score = Number(interaction?.[field]);
+    if (!Number.isFinite(score) || score < minEvidenceScore) return;
+    attribs.push(attrib);
+    weights.push(score);
+  });
+
+  return { attribs, weights };
+}
+
+export function buildStringDbLinks(interactions, proteinToNodeIds, options = {}) {
   const linksByKey = new Map();
   const proteinIdLookup = buildProteinIdLookup(Array.from(proteinToNodeIds.keys()));
+  const minConfidence = options.minConfidence ?? 0;
+  const includeEvidence = options.includeEvidence ?? false;
+  const minEvidenceScore = options.minEvidenceScore ?? 0;
 
   interactions.forEach((interaction) => {
     const sourceProteinId = getEndpointProteinId(interaction, "A", proteinIdLookup);
@@ -90,11 +126,18 @@ export function buildEnrichmentLinks(interactions, proteinToNodeIds, minConfiden
 
         const key = getUndirectedLinkKey(sourceNodeId, targetNodeId);
         if (linksByKey.has(key)) return;
+        const attribs = [STRING_DB_LINK_ATTRIB];
+        const weights = [1];
+        if (includeEvidence) {
+          const evidence = getEvidenceAttribs(interaction, minEvidenceScore);
+          attribs.push(...evidence.attribs);
+          weights.push(...evidence.weights);
+        }
         linksByKey.set(key, {
           source: sourceNodeId,
           target: targetNodeId,
-          weights: [1],
-          attribs: [STRING_DB_LINK_ATTRIB],
+          weights,
+          attribs,
         });
       });
     });
