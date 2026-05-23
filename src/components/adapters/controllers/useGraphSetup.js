@@ -34,7 +34,6 @@ export const useGraphSetup = () => {
       graph.data = await enrichGraphWithOmniPath(graph.data, {
         kinaseEnabled: graphEnrichment.omniPathEnrichmentEnabled,
         phosphataseEnabled: graphEnrichment.omniPathPhosphataseEnrichmentEnabled,
-        minReferences: graphEnrichment.omniPathMinReferences,
         minCurationEffort: graphEnrichment.omniPathMinCurationEffort,
       });
       graph.data = applyNodeMapping(graph.data, mappingState.mapping?.data);
@@ -55,7 +54,6 @@ export const useGraphSetup = () => {
     graphEnrichment.stringDbSpeciesId,
     graphEnrichment.omniPathEnrichmentEnabled,
     graphEnrichment.omniPathPhosphataseEnrichmentEnabled,
-    graphEnrichment.omniPathMinReferences,
     graphEnrichment.omniPathMinCurationEffort,
     mappingState.mapping,
     graphState.activeGraphNames,

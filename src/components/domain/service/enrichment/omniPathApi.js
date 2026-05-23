@@ -7,9 +7,6 @@ import {
   OMNI_PATH_MIN_CURATION_EFFORT_DEFAULT,
   OMNI_PATH_MIN_CURATION_EFFORT_MAX,
   OMNI_PATH_MIN_CURATION_EFFORT_MIN,
-  OMNI_PATH_MIN_REFERENCES_DEFAULT,
-  OMNI_PATH_MIN_REFERENCES_MAX,
-  OMNI_PATH_MIN_REFERENCES_MIN,
   OMNI_PATH_PARTNER_CHUNK_SIZE,
   OMNI_PATH_SUBSTRATE_CHUNK_SIZE,
 } from "./omniPathConfig.js";
@@ -42,33 +39,6 @@ function parseTsvRows(text, requiredHeaders = []) {
 function isPhosphorylationRecord(record) {
   const modification = String(record?.modification ?? "").trim().toLowerCase();
   return !modification || modification === PHOSPHORYLATION_MODIFICATION;
-}
-
-export function clampMinReferences(value) {
-  const parsed = Number(value);
-  if (!Number.isFinite(parsed)) return OMNI_PATH_MIN_REFERENCES_DEFAULT;
-  return Math.min(Math.max(Math.floor(parsed), OMNI_PATH_MIN_REFERENCES_MIN), OMNI_PATH_MIN_REFERENCES_MAX);
-}
-
-export function countUniqueReferences(record) {
-  const references = String(record?.references ?? "")
-    .split(";")
-    .map((reference) => reference.trim())
-    .filter(Boolean);
-
-  const uniqueReferences = new Set();
-  references.forEach((reference) => {
-    const referenceId = reference.includes(":") ? reference.split(":").pop() : reference;
-    const normalizedReferenceId = referenceId.trim();
-    if (!normalizedReferenceId || normalizedReferenceId === "-") return;
-    uniqueReferences.add(normalizedReferenceId);
-  });
-
-  return uniqueReferences.size;
-}
-
-function hasEnoughReferences(record, minReferences) {
-  return countUniqueReferences(record) >= minReferences;
 }
 
 export function clampMinCurationEffort(value) {
@@ -137,7 +107,6 @@ export async function fetchKinaseSubstrateInteractions(substrateIds, options = {
   if (uniqueSubstrateIds.length === 0) return [];
 
   const organismId = options.organismId ?? OMNI_PATH_DEFAULT_ORGANISM_ID;
-  const minReferences = clampMinReferences(options.minReferences);
   const minCurationEffort = clampMinCurationEffort(options.minCurationEffort);
   const substrateChunks = chunkArray(uniqueSubstrateIds, OMNI_PATH_SUBSTRATE_CHUNK_SIZE);
   const rows = [];
@@ -147,9 +116,7 @@ export async function fetchKinaseSubstrateInteractions(substrateIds, options = {
     rows.push(...chunkRows);
   }
 
-  return rows.filter(
-    (record) => isPhosphorylationRecord(record) && hasEnoughReferences(record, minReferences) && hasEnoughCurationEffort(record, minCurationEffort),
-  );
+  return rows.filter((record) => isPhosphorylationRecord(record) && hasEnoughCurationEffort(record, minCurationEffort));
 }
 
 export async function fetchPhosphataseSubstrateInteractions(proteinIds, options = {}) {
@@ -157,7 +124,6 @@ export async function fetchPhosphataseSubstrateInteractions(proteinIds, options 
   if (uniqueProteinIds.length === 0) return [];
 
   const organismId = options.organismId ?? OMNI_PATH_DEFAULT_ORGANISM_ID;
-  const minReferences = clampMinReferences(options.minReferences);
   const minCurationEffort = clampMinCurationEffort(options.minCurationEffort);
   const partnerChunks = chunkArray(uniqueProteinIds, OMNI_PATH_PARTNER_CHUNK_SIZE);
   const rows = [];
@@ -167,5 +133,5 @@ export async function fetchPhosphataseSubstrateInteractions(proteinIds, options 
     rows.push(...chunkRows);
   }
 
-  return rows.filter((record) => hasEnoughReferences(record, minReferences) && hasEnoughCurationEffort(record, minCurationEffort));
+  return rows.filter((record) => hasEnoughCurationEffort(record, minCurationEffort));
 }

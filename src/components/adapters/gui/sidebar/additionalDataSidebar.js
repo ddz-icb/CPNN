@@ -1,7 +1,6 @@
 import { Button, FieldBlock, SelectFieldBlock, SliderBlock, SwitchBlock } from "../reusable_components/sidebarComponents.js";
 import {
   omniPathMinCurationEffortInit,
-  omniPathMinReferencesInit,
   omniPathEnrichmentEnabledInit,
   omniPathPhosphataseEnrichmentEnabledInit,
   stringDbMinConfidenceInit,
@@ -11,14 +10,11 @@ import {
 import {
   OMNI_PATH_MIN_CURATION_EFFORT_MAX,
   OMNI_PATH_MIN_CURATION_EFFORT_MIN,
-  OMNI_PATH_MIN_REFERENCES_MAX,
-  OMNI_PATH_MIN_REFERENCES_MIN,
 } from "../../../domain/service/enrichment/omniPathConfig.js";
 import { STRING_DB_SPECIES } from "../../../domain/service/enrichment/stringDbConfig.js";
 import {
   omniPathCurationEffortDescription,
   omniPathEnrichmentDescription,
-  omniPathMinReferencesDescription,
   omniPathPhosphataseEnrichmentDescription,
   stringDbEnrichmentDescription,
   stringDbMinConfidenceDescription,
@@ -35,8 +31,6 @@ export function AdditionalDataSidebar() {
     setGraphEnrichment("stringDbSpeciesId", stringDbSpeciesIdInit);
     setGraphEnrichment("omniPathEnrichmentEnabled", omniPathEnrichmentEnabledInit);
     setGraphEnrichment("omniPathPhosphataseEnrichmentEnabled", omniPathPhosphataseEnrichmentEnabledInit);
-    setGraphEnrichment("omniPathMinReferences", omniPathMinReferencesInit);
-    setGraphEnrichment("omniPathMinReferencesText", omniPathMinReferencesInit);
     setGraphEnrichment("omniPathMinCurationEffort", omniPathMinCurationEffortInit);
     setGraphEnrichment("omniPathMinCurationEffortText", omniPathMinCurationEffortInit);
   };
@@ -97,32 +91,18 @@ export function AdditionalDataSidebar() {
         infoDescription={omniPathPhosphataseEnrichmentDescription}
       />
       {omniPathEnabled && (
-        <>
-          <FieldBlock
-            valueText={graphEnrichment.omniPathMinReferencesText}
-            setValue={(value) => setGraphEnrichment("omniPathMinReferences", value)}
-            setValueText={(value) => setGraphEnrichment("omniPathMinReferencesText", value)}
-            fallbackValue={omniPathMinReferencesInit}
-            min={OMNI_PATH_MIN_REFERENCES_MIN}
-            max={OMNI_PATH_MIN_REFERENCES_MAX}
-            step={1}
-            text={"OmniPath Min References"}
-            infoHeading={"OmniPath minimum references"}
-            infoDescription={omniPathMinReferencesDescription}
-          />
-          <FieldBlock
-            valueText={graphEnrichment.omniPathMinCurationEffortText}
-            setValue={(value) => setGraphEnrichment("omniPathMinCurationEffort", value)}
-            setValueText={(value) => setGraphEnrichment("omniPathMinCurationEffortText", value)}
-            fallbackValue={omniPathMinCurationEffortInit}
-            min={OMNI_PATH_MIN_CURATION_EFFORT_MIN}
-            max={OMNI_PATH_MIN_CURATION_EFFORT_MAX}
-            step={1}
-            text={"OmniPath Min Curation"}
-            infoHeading={"OmniPath minimum curation effort"}
-            infoDescription={omniPathCurationEffortDescription}
-          />
-        </>
+        <FieldBlock
+          valueText={graphEnrichment.omniPathMinCurationEffortText}
+          setValue={(value) => setGraphEnrichment("omniPathMinCurationEffort", value)}
+          setValueText={(value) => setGraphEnrichment("omniPathMinCurationEffortText", value)}
+          fallbackValue={omniPathMinCurationEffortInit}
+          min={OMNI_PATH_MIN_CURATION_EFFORT_MIN}
+          max={OMNI_PATH_MIN_CURATION_EFFORT_MAX}
+          step={1}
+          text={"OmniPath Min Curation"}
+          infoHeading={"OmniPath minimum curation effort"}
+          infoDescription={omniPathCurationEffortDescription}
+        />
       )}
     </>
   );

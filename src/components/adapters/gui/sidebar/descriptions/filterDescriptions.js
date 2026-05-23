@@ -57,15 +57,6 @@ export const omniPathPhosphataseEnrichmentDescription = (
   </div>
 );
 
-export const omniPathMinReferencesDescription = (
-  <div>
-    <p className="margin-0">
-      Keep only OmniPath records with at least this many unique publication references. Set this to 0 to include records without literature
-      references.
-    </p>
-  </div>
-);
-
 export const omniPathCurationEffortDescription = (
   <div>
     <p className="margin-0">

@@ -5,7 +5,6 @@ import { getNodeIdAndIsoformEntry, getNodeIdEntries } from "../parsing/nodeIdPar
 import { applyAdditionalLinks } from "./additionalLinkEnrichment.js";
 import {
   clampMinCurationEffort,
-  clampMinReferences,
   fetchKinaseSubstrateInteractions,
   fetchPhosphataseSubstrateInteractions,
 } from "./omniPathApi.js";
@@ -21,8 +20,8 @@ import { buildProteinToNodeIdsMap } from "./stringDbMapping.js";
 
 const enrichmentCache = new Map();
 
-function buildCacheKey(kind, proteinIds, minReferences, minCurationEffort, organismId) {
-  return `${kind}::${organismId}::${minReferences}::${minCurationEffort}::${[...proteinIds].sort((a, b) => a.localeCompare(b)).join("|")}`;
+function buildCacheKey(kind, proteinIds, minCurationEffort, organismId) {
+  return `${kind}::${organismId}::${minCurationEffort}::${[...proteinIds].sort((a, b) => a.localeCompare(b)).join("|")}`;
 }
 
 function normalizePhosphosite(site) {
@@ -209,7 +208,6 @@ export async function enrichGraphWithOmniPath(graphData, options = {}) {
   const phosphataseEnabled = options.phosphataseEnabled ?? false;
   if (!kinaseEnabled && !phosphataseEnabled) return graphData;
 
-  const minReferences = clampMinReferences(options.minReferences);
   const minCurationEffort = clampMinCurationEffort(options.minCurationEffort);
   const organismId = options.organismId ?? OMNI_PATH_DEFAULT_ORGANISM_ID;
   const substrateProteinToEntries = buildProteinToSubstrateEntriesMap(graphData.nodes);
@@ -219,18 +217,18 @@ export async function enrichGraphWithOmniPath(graphData, options = {}) {
   if (substrateIds.length === 0) return graphData;
 
   log.debug(
-    `Preparing OmniPath enrichment for ${substrateIds.length} graph protein id(s), organism ${organismId}, min references ${minReferences}, min curation effort ${minCurationEffort}`,
+    `Preparing OmniPath enrichment for ${substrateIds.length} graph protein id(s), organism ${organismId}, min curation effort ${minCurationEffort}`,
   );
 
   let enrichedGraphData = graphData;
 
   if (kinaseEnabled) {
-    const cacheKey = buildCacheKey("kinase", substrateIds, minReferences, minCurationEffort, organismId);
+    const cacheKey = buildCacheKey("kinase", substrateIds, minCurationEffort, organismId);
     let interactions = enrichmentCache.get(cacheKey);
 
     if (!interactions) {
       try {
-        interactions = await fetchKinaseSubstrateInteractions(substrateIds, { minReferences, minCurationEffort, organismId });
+        interactions = await fetchKinaseSubstrateInteractions(substrateIds, { minCurationEffort, organismId });
         enrichmentCache.set(cacheKey, interactions);
         log.info(`OmniPath returned ${interactions.length} kinase-substrate interaction(s).`);
       } catch (error) {
@@ -246,12 +244,12 @@ export async function enrichGraphWithOmniPath(graphData, options = {}) {
   }
 
   if (phosphataseEnabled) {
-    const cacheKey = buildCacheKey("phosphatase", proteinIds, minReferences, minCurationEffort, organismId);
+    const cacheKey = buildCacheKey("phosphatase", proteinIds, minCurationEffort, organismId);
     let interactions = enrichmentCache.get(cacheKey);
 
     if (!interactions) {
       try {
-        interactions = await fetchPhosphataseSubstrateInteractions(proteinIds, { minReferences, minCurationEffort, organismId });
+        interactions = await fetchPhosphataseSubstrateInteractions(proteinIds, { minCurationEffort, organismId });
         enrichmentCache.set(cacheKey, interactions);
         log.info(`OmniPath returned ${interactions.length} phosphatase interaction(s).`);
       } catch (error) {
