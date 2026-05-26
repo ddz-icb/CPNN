@@ -27,57 +27,79 @@ export function TableList({
       <table className={`item-table ${dark && "plain-item-table"}`}>
         <tbody>
           {data && data.length > 0 ? (
-            data.map((item, index) => (
-              <tr key={`row-${instanceId}-${index}`} className="item-table-entry-highlight">
-                <td
-                  className="item-table-text"
-                  onClick={() => onItemClick && onItemClick(item)}
-                  {...(itemTooltipContent && {
-                    "data-tooltip-id": `item-tooltip-${instanceId}-${index}`,
-                    "data-tooltip-content": itemTooltipContent(item),
-                  })}
-                >
-                  <span className="item-table-primary-text">{displayKey ? item[displayKey] : item}</span>
-                  {secondaryKey && item[secondaryKey] && <span className="item-table-secondary-text">{item[secondaryKey]}</span>}
-                </td>
+            data.map((item, index) => {
+              const primaryValue = getDisplayValue(item, displayKey);
+              const secondaryValue = secondaryKey ? getDisplayValue(item, secondaryKey) : null;
+              const primaryTitle = getTooltipText(primaryValue);
+              const secondaryTitle = getTooltipText(secondaryValue);
+              const rowTooltipContent = getItemTooltipContent(item, itemTooltipContent, primaryTitle, secondaryTitle);
 
-                {ActionIcon && (
-                  <>
-                    {!showActionIconOn || showActionIconOn(item) ? (
-                      <td className="item-table-logo">
-                        <ActionIcon
-                          item={item}
-                          key={`action-icon-${instanceId}-${index}`}
-                          onClick={() => onActionIconClick && onActionIconClick(item)}
-                          {...(actionIconTooltipContent && {
-                            "data-tooltip-id": `action-tooltip-${instanceId}-${index}`,
-                            "data-tooltip-content": actionIconTooltipContent(item),
-                          })}
-                        />
-                      </td>
-                    ) : (
-                      <td className="item-table-empty-logo">
-                        <ActionIcon item={item} key={`action-icon-empty-${instanceId}-${index}`} />
-                      </td>
-                    )}
-                  </>
-                )}
-
-                {ActionIcon2 && (
-                  <td className="item-table-logo">
-                    <ActionIcon2
-                      item={item}
-                      key={`action-icon-2-${instanceId}-${index}`}
-                      onClick={() => onActionIcon2Click && onActionIcon2Click(item)}
-                      {...(actionIcon2TooltipContent && {
-                        "data-tooltip-id": `action-tooltip-2-${instanceId}-${index}`,
-                        "data-tooltip-content": actionIcon2TooltipContent(item),
-                      })}
-                    />
+              return (
+                <tr key={`row-${instanceId}-${index}`} className="item-table-entry-highlight">
+                  <td
+                    className="item-table-text"
+                    onClick={() => onItemClick && onItemClick(item)}
+                    {...(rowTooltipContent && {
+                      "data-tooltip-id": `item-tooltip-${instanceId}-${index}`,
+                      "data-tooltip-content": rowTooltipContent,
+                    })}
+                  >
+                    <span className="item-table-text-content">
+                      <span
+                        className="item-table-primary-text item-table-text-truncate"
+                        title={primaryTitle || undefined}
+                      >
+                        {primaryValue}
+                      </span>
+                      {secondaryKey && secondaryValue && (
+                        <span
+                          className="item-table-secondary-text item-table-text-truncate"
+                          title={secondaryTitle || undefined}
+                        >
+                          {secondaryValue}
+                        </span>
+                      )}
+                    </span>
                   </td>
-                )}
-              </tr>
-            ))
+
+                  {ActionIcon && (
+                    <>
+                      {!showActionIconOn || showActionIconOn(item) ? (
+                        <td className="item-table-logo">
+                          <ActionIcon
+                            item={item}
+                            key={`action-icon-${instanceId}-${index}`}
+                            onClick={() => onActionIconClick && onActionIconClick(item)}
+                            {...(actionIconTooltipContent && {
+                              "data-tooltip-id": `action-tooltip-${instanceId}-${index}`,
+                              "data-tooltip-content": actionIconTooltipContent(item),
+                            })}
+                          />
+                        </td>
+                      ) : (
+                        <td className="item-table-empty-logo">
+                          <ActionIcon item={item} key={`action-icon-empty-${instanceId}-${index}`} />
+                        </td>
+                      )}
+                    </>
+                  )}
+
+                  {ActionIcon2 && (
+                    <td className="item-table-logo">
+                      <ActionIcon2
+                        item={item}
+                        key={`action-icon-2-${instanceId}-${index}`}
+                        onClick={() => onActionIcon2Click && onActionIcon2Click(item)}
+                        {...(actionIcon2TooltipContent && {
+                          "data-tooltip-id": `action-tooltip-2-${instanceId}-${index}`,
+                          "data-tooltip-content": actionIcon2TooltipContent(item),
+                        })}
+                      />
+                    </td>
+                  )}
+                </tr>
+              );
+            })
           ) : (
             <tr>
               <td className="item-table-text">
@@ -90,17 +112,23 @@ export function TableList({
 
       {data &&
         data.length > 0 &&
-        data.map((item, index) => (
-          <Fragment key={`tooltip-set-${instanceId}-${index}`}>
-            {itemTooltipContent && <PortalTooltip id={`item-tooltip-${instanceId}-${index}`} className="tooltip-gui" positionStrategy="fixed" />}
-            {actionIconTooltipContent && (
-              <PortalTooltip id={`action-tooltip-${instanceId}-${index}`} className="tooltip-gui" positionStrategy="fixed" />
-            )}
-            {actionIcon2TooltipContent && (
-              <PortalTooltip id={`action-tooltip-2-${instanceId}-${index}`} className="tooltip-gui" positionStrategy="fixed" />
-            )}
-          </Fragment>
-        ))}
+        data.map((item, index) => {
+          const primaryTitle = getTooltipText(getDisplayValue(item, displayKey));
+          const secondaryTitle = getTooltipText(secondaryKey ? getDisplayValue(item, secondaryKey) : null);
+          const rowTooltipContent = getItemTooltipContent(item, itemTooltipContent, primaryTitle, secondaryTitle);
+
+          return (
+            <Fragment key={`tooltip-set-${instanceId}-${index}`}>
+              {rowTooltipContent && <PortalTooltip id={`item-tooltip-${instanceId}-${index}`} className="tooltip-gui" positionStrategy="fixed" />}
+              {actionIconTooltipContent && (
+                <PortalTooltip id={`action-tooltip-${instanceId}-${index}`} className="tooltip-gui" positionStrategy="fixed" />
+              )}
+              {actionIcon2TooltipContent && (
+                <PortalTooltip id={`action-tooltip-2-${instanceId}-${index}`} className="tooltip-gui" positionStrategy="fixed" />
+              )}
+            </Fragment>
+          );
+        })}
     </div>
   );
 }
@@ -140,6 +168,11 @@ export function ToggleList({
               const itemId = rawItemId === null || rawItemId === undefined ? "" : rawItemId.toString();
               const isExpanded = normalizedExpandedId !== null && itemId !== "" && itemId === normalizedExpandedId;
               const rowKey = itemId || `row-${index}`;
+              const primaryValue = getDisplayValue(item, displayKey);
+              const secondaryValue = secondaryKey ? getDisplayValue(item, secondaryKey) : null;
+              const primaryTitle = getTooltipText(primaryValue);
+              const secondaryTitle = getTooltipText(secondaryValue);
+              const rowTooltipContent = getItemTooltipContent(item, itemTooltipContent, primaryTitle, secondaryTitle);
 
               return (
                 <Fragment key={`row-${instanceId}-${rowKey}`}>
@@ -159,14 +192,26 @@ export function ToggleList({
                             }
                           : undefined
                       }
-                      {...(itemTooltipContent && {
+                      {...(rowTooltipContent && {
                         "data-tooltip-id": `item-tooltip-${instanceId}-${index}`,
-                        "data-tooltip-content": itemTooltipContent(item),
+                        "data-tooltip-content": rowTooltipContent,
                       })}
                     >
                       <span className="item-table-text-content">
-                        <span className="item-table-primary-text">{displayKey ? item[displayKey] : item}</span>
-                        {secondaryKey && item[secondaryKey] && <span className="item-table-secondary-text">{item[secondaryKey]}</span>}
+                        <span
+                          className="item-table-primary-text item-table-text-truncate"
+                          title={primaryTitle || undefined}
+                        >
+                          {primaryValue}
+                        </span>
+                        {secondaryKey && secondaryValue && (
+                          <span
+                            className="item-table-secondary-text item-table-text-truncate"
+                            title={secondaryTitle || undefined}
+                          >
+                            {secondaryValue}
+                          </span>
+                        )}
                       </span>
                       <SvgIcon svg={chevronSvg} className={`toggle-list-chevron${isExpanded ? " toggle-list-chevron--expanded" : ""}`} />
                     </td>
@@ -229,30 +274,75 @@ export function ToggleList({
 
       {data &&
         data.length > 0 &&
-        data.map((item, index) => (
-          <Fragment key={`tooltip-set-${instanceId}-${index}`}>
-            {itemTooltipContent && <PortalTooltip id={`item-tooltip-${instanceId}-${index}`} className="tooltip-gui" positionStrategy="fixed" />}
-            {actionIconTooltipContent && (
-              <PortalTooltip id={`action-tooltip-${instanceId}-${index}`} className="tooltip-gui" positionStrategy="fixed" />
-            )}
-            {actionIcon2TooltipContent && (
-              <PortalTooltip id={`action-tooltip-2-${instanceId}-${index}`} className="tooltip-gui" positionStrategy="fixed" />
-            )}
-          </Fragment>
-        ))}
+        data.map((item, index) => {
+          const primaryTitle = getTooltipText(getDisplayValue(item, displayKey));
+          const secondaryTitle = getTooltipText(secondaryKey ? getDisplayValue(item, secondaryKey) : null);
+          const rowTooltipContent = getItemTooltipContent(item, itemTooltipContent, primaryTitle, secondaryTitle);
+
+          return (
+            <Fragment key={`tooltip-set-${instanceId}-${index}`}>
+              {rowTooltipContent && <PortalTooltip id={`item-tooltip-${instanceId}-${index}`} className="tooltip-gui" positionStrategy="fixed" />}
+              {actionIconTooltipContent && (
+                <PortalTooltip id={`action-tooltip-${instanceId}-${index}`} className="tooltip-gui" positionStrategy="fixed" />
+              )}
+              {actionIcon2TooltipContent && (
+                <PortalTooltip id={`action-tooltip-2-${instanceId}-${index}`} className="tooltip-gui" positionStrategy="fixed" />
+              )}
+            </Fragment>
+          );
+        })}
     </div>
   );
 }
 
 export function DetailRow({ label, value }) {
   const isList = Array.isArray(value);
+  const labelTitle = getTooltipText(label);
+  const valueTitle = getTooltipText(value);
 
   return (
     <div className={`toggle-list-detail-item toggle-list-detail-row${isList ? " toggle-list-detail-row--multiline" : ""}`}>
-      <span className="item-table-primary-text">{label}</span>
-      <div className="text-secondary toggle-list-detail-value">
-        {isList ? value.map((entry, index) => <div key={`${label}-${index}`}>{entry}</div>) : value}
+      <span className="item-table-primary-text" title={labelTitle || undefined}>{label}</span>
+      <div className="text-secondary toggle-list-detail-value" title={valueTitle || undefined}>
+        {isList
+          ? value.map((entry, index) => {
+              const entryTitle = getTooltipText(entry);
+              return <div key={`${label}-${index}`} title={entryTitle || undefined}>{entry}</div>;
+            })
+          : value}
       </div>
     </div>
   );
+}
+
+function getDisplayValue(item, displayKey) {
+  return displayKey ? item?.[displayKey] : item;
+}
+
+function getTooltipText(value) {
+  if (value === null || value === undefined || value === false) return "";
+  if (Array.isArray(value)) {
+    return value.map(getTooltipText).filter(Boolean).join("\n");
+  }
+  if (typeof value === "string" || typeof value === "number" || typeof value === "bigint" || typeof value === "boolean") {
+    return value.toString();
+  }
+  return "";
+}
+
+function getItemTooltipContent(item, itemTooltipContent, primaryTitle, secondaryTitle) {
+  const customTooltip = itemTooltipContent ? getTooltipText(itemTooltipContent(item)) : "";
+  return uniqueTooltipLines([primaryTitle, secondaryTitle, customTooltip]).join("\n");
+}
+
+function uniqueTooltipLines(lines) {
+  const seen = new Set();
+  return lines
+    .flatMap((line) => (line ? line.split("\n") : []))
+    .map((line) => line.trim())
+    .filter((line) => {
+      if (!line || seen.has(line)) return false;
+      seen.add(line);
+      return true;
+    });
 }

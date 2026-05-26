@@ -4,6 +4,7 @@
   border: var(--border-thin) solid var(--color-border);
   border-spacing: 0;
   width: 100%;
+  table-layout: fixed;
   color: var(--color-text-primary);
   border-radius: var(--radius);
   overflow: hidden;
@@ -91,6 +92,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--sidebar-card-gap-y);
+  min-width: 0;
 }
 
 .item-table-details-cell {
@@ -125,7 +127,16 @@
 }
 
 .toggle-list-detail-value {
+  max-width: 65%;
+  overflow: hidden;
   text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.toggle-list-detail-row--multiline .toggle-list-detail-value {
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .toggle-list-detail-block {
@@ -136,6 +147,7 @@
 .toggle-list-detail-table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
   color: var(--color-text-secondary);
   font-size: var(--text-sm);
 }
@@ -144,6 +156,9 @@
 .toggle-list-detail-table td {
   text-align: left;
   padding: 0.25rem 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .toggle-list-detail-table th {
@@ -182,11 +197,18 @@
 }
 
 .item-table-text-content {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: var(--sidebar-card-gap-y);
   flex: 1;
+  max-width: 100%;
   min-width: 0;
+  vertical-align: middle;
+  width: calc(100% - 0.95rem);
+}
+
+.item-table-text-content:only-child {
+  width: 100%;
 }
 
 .toggle-list-chevron {
@@ -206,6 +228,17 @@
   color: var(--color-text-primary);
 }
 
+.item-table-text-truncate {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.item-table-text-content > .item-table-primary-text.item-table-text-truncate {
+  flex: 1 1 auto;
+}
+
 .item-table-secondary-text {
   font-size: var(--text-sm);
   color: var(--color-text-secondary);
@@ -219,6 +252,16 @@
   margin-left: 1rem;
   display: inline-flex;
   align-items: center;
+  max-width: 45%;
+}
+
+.item-table-secondary-text.item-table-text-truncate {
+  display: inline-block;
+}
+
+.item-table-text-content > .item-table-secondary-text {
+  flex: 0 1 auto;
+  margin-left: 0;
 }
 
 .item-table-logo {

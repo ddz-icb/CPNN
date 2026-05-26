@@ -173,9 +173,11 @@ function NodeEntriesBlock({ entries }) {
           <tbody>
             {entries.map(({ id, name, phosphosites }, index) => (
               <tr key={`${id}-${name}-${index}`}>
-                <td>{id}</td>
-                <td>{name || "—"}</td>
-                <td>{Array.isArray(phosphosites) && phosphosites.length > 0 ? phosphosites.join(", ") : "—"}</td>
+                <td title={id}>{id}</td>
+                <td title={name || undefined}>{name || "—"}</td>
+                <td title={Array.isArray(phosphosites) && phosphosites.length > 0 ? phosphosites.join(", ") : undefined}>
+                  {Array.isArray(phosphosites) && phosphosites.length > 0 ? phosphosites.join(", ") : "—"}
+                </td>
               </tr>
             ))}
           </tbody>

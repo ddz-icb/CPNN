@@ -1,7 +1,8 @@
-import { useRef, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { SvgIcon } from "../reusable_components/SvgIcon.jsx";
 import trashSvg from "../../../../assets/icons/trash.svg?raw";
 import { SwitchBlock, Popup, TableList, SliderBlock, Button, PopupTextField } from "../reusable_components/sidebarComponents.js";
+import { PortalTooltip } from "../reusable_components/tooltipComponents.js";
 import { colorschemeTsv } from "../../../../assets/exampleColorschemeTSV.js";
 import { downloadTsvFile } from "../../../domain/service/download/download.js";
 import {
@@ -230,6 +231,8 @@ function ColorSelection() {
 }
 
 export function ColorMappingSelect({ heading, colorschemeData, attribsToColorIndices, setMapping }) {
+  const instanceId = useId();
+
   const handleColorChange = (colorIndex, newAttribute) => {
     const updatedMapping = { ...attribsToColorIndices };
 
@@ -267,6 +270,8 @@ export function ColorMappingSelect({ heading, colorschemeData, attribsToColorInd
               const currentAttribute = attribsToColorIndices
                 ? Object.keys(attribsToColorIndices).find((key) => attribsToColorIndices[key] === parseInt(colorIndex, 10))
                 : undefined;
+              const selectedTooltipContent = currentAttribute || "None";
+              const tooltipId = `colormapping-select-${instanceId}-${colorIndex}`;
 
               return (
                 <div className="colormapping-select-row" key={colorIndex}>
@@ -279,16 +284,21 @@ export function ColorMappingSelect({ heading, colorschemeData, attribsToColorInd
                   <select
                     className="colormapping-select-input"
                     value={currentAttribute || ""}
+                    title={selectedTooltipContent}
+                    aria-label={`${heading}: ${selectedTooltipContent}`}
+                    data-tooltip-id={tooltipId}
+                    data-tooltip-content={selectedTooltipContent}
                     onChange={(event) => handleColorChange(parseInt(colorIndex, 10), event.target.value)}
                   >
-                    {!currentAttribute && <option value="">None</option>}
+                    {!currentAttribute && <option value="" title="None">None</option>}
 
                     {Object.keys(attribsToColorIndices || {}).map((attribute) => (
-                      <option key={attribute} value={attribute}>
+                      <option key={attribute} value={attribute} title={attribute}>
                         {attribute}
                       </option>
                     ))}
                   </select>
+                  <PortalTooltip id={tooltipId} className="tooltip-gui" positionStrategy="fixed" />
                 </div>
               );
             })}

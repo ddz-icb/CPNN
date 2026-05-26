@@ -152,12 +152,16 @@
 
 .sidebar-select {
   flex-shrink: 0;
+  min-width: 0;
   padding: 0 0.75rem;
   border: var(--border-thin) solid var(--color-input-border);
   border-radius: var(--radius);
   background: var(--color-input-surface);
   color: var(--color-text-primary);
   font-size: var(--font-size-m);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .sidebar-select:focus-visible {

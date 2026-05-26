@@ -21,11 +21,15 @@
   padding: 0.25rem !important;
   z-index: 12000 !important;
   display: block;
+  max-width: min(28rem, calc(100vw - 2rem));
   border-radius: var(--radius);
   background: var(--color-surface);
   border: var(--border-thin) solid var(--color-border);
   color: var(--color-text-primary);
-  text-align: center;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  text-align: left;
+  white-space: pre-line;
   pointer-events: none;
 }
 

@@ -469,10 +469,17 @@ function TextInput({ value, setValue, placeholder, size = "default" }) {
 
 function SelectInput({ value, setValue, options, size = "default" }) {
   const widthClass = size === "wide" ? "sidebar-control-input--wide" : "default-width";
+  const selectedOption = options.find((option) => option.value === value);
+  const selectedLabel = selectedOption?.label ?? value;
   return (
-    <select className={`sidebar-select ${widthClass} default-height`} value={value} onChange={(event) => setValue(event.target.value)}>
+    <select
+      className={`sidebar-select ${widthClass} default-height`}
+      value={value}
+      title={selectedLabel}
+      onChange={(event) => setValue(event.target.value)}
+    >
       {options.map((option) => (
-        <option key={option.value} value={option.value}>
+        <option key={option.value} value={option.value} title={option.label}>
           {option.label}
         </option>
       ))}
