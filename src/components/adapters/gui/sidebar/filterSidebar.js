@@ -86,7 +86,7 @@ export function FilterSidebar() {
         min={linkThresholdBounds.min}
         max={linkThresholdBounds.max}
         step={linkThresholdBounds.step}
-        text={"Link Weight Threshold"}
+        text={"Min Link Weight Threshold"}
         infoHeading={"Filtering Links by Threshold"}
         infoDescription={linkThresholdDescription}
       />
