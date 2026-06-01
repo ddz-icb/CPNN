@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { SvgIcon } from "../reusable_components/SvgIcon.jsx";
 import eyeSvg from "../../../../assets/icons/eye.svg?raw";
 import xSvg from "../../../../assets/icons/x.svg?raw";
@@ -8,7 +8,6 @@ import { isTypingTarget, isPopupOpen } from "../hooks/keyboardUtils.js";
 
 export function HeaderBar() {
   const [isMappingActive, setIsMappingActive] = useState(false);
-  const overlayRef = useRef(null);
   const mappingPanelId = "headerbar-colormapping-panel";
 
   useEffect(() => {
@@ -26,22 +25,14 @@ export function HeaderBar() {
       }
     };
 
-    const handlePointerDown = (e) => {
-      if (!isMappingActive) return;
-      if (overlayRef.current?.contains(e.target)) return;
-      setIsMappingActive(false);
-    };
-
     document.addEventListener("keydown", handleKeyDown);
-    document.addEventListener("pointerdown", handlePointerDown);
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
-      document.removeEventListener("pointerdown", handlePointerDown);
     };
   }, [isMappingActive]);
 
   return (
-    <div className="headerbar-overlay" ref={overlayRef}>
+    <div className="headerbar-overlay">
       <HeaderButton
         onClick={() => setIsMappingActive(!isMappingActive)}
         icon={isMappingActive ? <SvgIcon svg={xSvg} /> : <SvgIcon svg={eyeSvg} />}
