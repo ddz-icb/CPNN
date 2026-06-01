@@ -40,6 +40,7 @@
   height: var(--default-element-height);
   border-bottom: var(--border-thin) solid var(--color-border-subtle);
   color: var(--color-text-primary);
+  font-size: var(--font-size-s);
   transition: background-color var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
@@ -91,6 +92,7 @@
   border: none;
   outline: none;
   color: var(--color-text-primary);
+  font-size: var(--font-size-s);
   background: transparent;
 }
 

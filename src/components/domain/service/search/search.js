@@ -1,20 +1,156 @@
-export function getMatchingNodes(nodes, query) {
-  if (!query) {
-    return [];
-  }
+import { getEndpointIdText } from "../graph_calculations/graphUtils.js";
+import { matchesAttribsFilter, normalizeAttribs } from "../graph_calculations/attribFilterMatching.js";
+import { parseAttribsFilter } from "../parsing/attribsFilterParsing.js";
 
-  return nodes.filter((node) => nodeMatchesQuery(node, query));
+export function getMatchingNodes(nodes, query) {
+  const search = createSearchRequest(query);
+  if (!search.query) return [];
+  return (nodes ?? []).filter((node) => matchesSearchRequest(node, search, getNodeSearchValues));
 }
 
-function nodeMatchesQuery(node, query) {
-  return matchesQuery([node?.label, node?.id, node?.attrib, node?.type], query);
+export function getMatchingLinks(links, query) {
+  const search = createSearchRequest(query);
+  if (!search.query) return [];
+  return (links ?? [])
+    .map((link, index) => buildLinkSearchResult(link, index))
+    .filter((entry) => matchesSearchRequest(entry.link, search, () => getLinkSearchValues(entry)));
+}
+
+export function getMatchingNodeAttributes(nodes, query) {
+  return getMatchingAttributes(nodes, query, "nodes");
+}
+
+export function getMatchingLinkAttributes(links, query) {
+  return getMatchingAttributes(links, query, "links", buildLinkSearchResult);
+}
+
+export function getSearchHighlightNodeIds(matchingNodes = [], matchingLinks = []) {
+  return uniqueValues([...getSearchNodeIds(matchingNodes), ...getSearchLinkEndpointIds(matchingLinks)]);
+}
+
+export function getSearchNodeIds(nodes = []) {
+  return uniqueValues((nodes ?? []).map((node) => node?.id));
+}
+
+export function getSearchLinkEndpointIds(entries = []) {
+  return uniqueValues((entries ?? []).flatMap(getLinkEndpointIds));
+}
+
+export function getLinkEndpointIds(entry) {
+  const sourceId = entry?.sourceId ?? getEndpointIdText(entry?.link?.source);
+  const targetId = entry?.targetId ?? getEndpointIdText(entry?.link?.target);
+  return [sourceId, targetId].filter(hasValue);
+}
+
+export function formatSearchLinkLabel(entry) {
+  const sourceId = entry?.sourceId || getEndpointIdText(entry?.link?.source) || "Unknown";
+  const targetId = entry?.targetId || getEndpointIdText(entry?.link?.target) || "Unknown";
+  return `${sourceId} -> ${targetId}`;
+}
+
+function buildLinkSearchResult(link, index) {
+  const sourceId = getEndpointIdText(link?.source);
+  const targetId = getEndpointIdText(link?.target);
+  return {
+    link,
+    linkId: getLinkSearchId(link, index, sourceId, targetId),
+    sourceId,
+    targetId,
+  };
+}
+
+function getLinkSearchId(link, index, sourceId, targetId) {
+  if (link?.id !== undefined && link?.id !== null && link.id !== "") return link.id.toString();
+  return `${sourceId || "unknown"}::${targetId || "unknown"}::${index}`;
+}
+
+function getNodeSearchValues(node) {
+  return [node?.label, node?.id, node?.attrib, node?.attribs, node?.type];
+}
+
+function getLinkSearchValues(entry) {
+  return [entry?.link?.id, entry?.link?.label, entry?.link?.type, entry?.sourceId, entry?.targetId, entry?.link?.attrib, entry?.link?.attribs, entry?.link?.weights];
+}
+
+function matchesSearchRequest(item, search, getSearchValues) {
+  return matchesQuery(getSearchValues(item), search.query) || matchesAttribsFilter(item?.attribs, search.attributeFilter);
 }
 
 function matchesQuery(values, query) {
   return values.some((value) => {
     if (value === undefined || value === null) return false;
+    if (Array.isArray(value)) return matchesQuery(value, query);
     return value.toString().toLowerCase().includes(query);
   });
+}
+
+function getMatchingAttributes(items, query, resultKey, toResultItem = (item) => item) {
+  const search = createSearchRequest(query);
+  if (!search.query) return [];
+
+  const matches = new Map();
+  (items ?? []).forEach((item, index) => {
+    normalizeAttribs(item?.attribs).forEach((attribute) => {
+      if (!attributeMatchesText(attribute, search.attributeQuery)) return;
+      if (!matches.has(attribute)) {
+        matches.set(attribute, { attribute, [resultKey]: [] });
+      }
+      matches.get(attribute)[resultKey].push(toResultItem(item, index));
+    });
+  });
+
+  return sortAttributeResults(
+    Array.from(matches.values()).map((entry) => ({
+      ...entry,
+      count: entry[resultKey].length,
+    })),
+  );
+}
+
+function sortAttributeResults(results) {
+  return results.sort((a, b) => a.attribute.localeCompare(b.attribute, undefined, { sensitivity: "base" }));
+}
+
+function attributeMatchesText(attribute, query) {
+  return attribute.toString().toLowerCase().includes(query);
+}
+
+function createSearchRequest(query) {
+  const normalizedQuery = normalizeSearchText(query);
+  return {
+    query: normalizedQuery,
+    attributeQuery: stripWrappingQuotes(normalizedQuery),
+    attributeFilter: parseAttributeSearch(normalizedQuery),
+  };
+}
+
+function parseAttributeSearch(query) {
+  try {
+    const parsedFilter = parseAttribsFilter(query);
+    return parsedFilter === true ? null : parsedFilter;
+  } catch {
+    return null;
+  }
+}
+
+function stripWrappingQuotes(value) {
+  const trimmed = value.trim().replace(/[“”„‟]/g, '"');
+  if (trimmed.length >= 2 && trimmed.startsWith('"') && trimmed.endsWith('"')) {
+    return trimmed.slice(1, -1);
+  }
+  return trimmed;
+}
+
+function normalizeSearchText(value) {
+  return (value ?? "").toString().trim().toLowerCase();
+}
+
+function uniqueValues(values) {
+  return Array.from(new Set((values ?? []).filter(hasValue)));
+}
+
+function hasValue(value) {
+  return value !== undefined && value !== null && value !== "";
 }
 
 export function applySearch(query, nodes) {

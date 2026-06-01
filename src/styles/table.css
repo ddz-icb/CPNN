@@ -9,6 +9,8 @@
   border-radius: var(--radius);
   overflow: hidden;
   background: color-mix(in srgb, var(--color-surface-contrast) 90%, transparent 10%);
+  font-size: var(--font-size-s);
+  line-height: var(--text-sm--line-height);
 }
 
 .table-list-heading {
@@ -105,9 +107,13 @@
 
 .toggle-list-details {
   display: grid;
+  min-width: 0;
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
 }
 
 .toggle-list-detail-item {
+  min-width: 0;
   padding: var(--sidebar-control-gap-y) 0;
 }
 
@@ -120,6 +126,15 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--sidebar-control-gap-y);
+  min-width: 0;
+}
+
+.toggle-list-detail-row > .item-table-primary-text {
+  flex: 0 1 35%;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .toggle-list-detail-row--multiline {
@@ -127,6 +142,8 @@
 }
 
 .toggle-list-detail-value {
+  flex: 1 1 auto;
+  min-width: 0;
   max-width: 65%;
   overflow: hidden;
   text-align: right;
@@ -135,8 +152,16 @@
 }
 
 .toggle-list-detail-row--multiline .toggle-list-detail-value {
-  white-space: normal;
-  overflow-wrap: anywhere;
+  display: grid;
+  justify-items: end;
+  gap: 0.15rem;
+}
+
+.toggle-list-detail-row--multiline .toggle-list-detail-value > div {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .toggle-list-detail-block {
@@ -156,6 +181,7 @@
 .toggle-list-detail-table td {
   text-align: left;
   padding: 0.25rem 0;
+  line-height: var(--text-sm--line-height);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -269,6 +295,14 @@
   width: 2rem;
   margin: auto;
   fill: var(--color-icon-primary);
+}
+
+.item-table td.item-table-logo,
+.item-table td.item-table-empty-logo {
+  width: 2.75rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  text-align: center;
 }
 
 .item-table-logo svg {

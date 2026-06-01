@@ -46,6 +46,7 @@
   background-color: var(--color-switch-track);
   color: var(--color-accent-contrast);
   border: var(--border-thin) solid color-mix(in srgb, var(--color-accent-contrast) 26%, var(--color-switch-track) 74%);
+  font-size: var(--font-size-s);
   padding-inline: 0.4rem;
   transition:
     background-color var(--motion-duration-fast) var(--motion-ease-standard),

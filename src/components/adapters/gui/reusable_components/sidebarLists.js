@@ -20,86 +20,61 @@ export function TableList({
   dark,
 }) {
   const instanceId = useId();
+  const rows = getListRows(data, displayKey, secondaryKey, itemTooltipContent);
 
   return (
     <div>
       <div className="table-list-heading">{heading}</div>
       <table className={`item-table ${dark && "plain-item-table"}`}>
         <tbody>
-          {data && data.length > 0 ? (
-            data.map((item, index) => {
-              const primaryValue = getDisplayValue(item, displayKey);
-              const secondaryValue = secondaryKey ? getDisplayValue(item, secondaryKey) : null;
-              const primaryTitle = getTooltipText(primaryValue);
-              const secondaryTitle = getTooltipText(secondaryValue);
-              const rowTooltipContent = getItemTooltipContent(item, itemTooltipContent, primaryTitle, secondaryTitle);
+          {rows.length > 0 ? (
+            rows.map(({ item, index, primaryValue, secondaryValue, primaryTitle, secondaryTitle, rowTooltipContent }) => (
+              <tr key={`row-${instanceId}-${index}`} className="item-table-entry-highlight">
+                <td
+                  className="item-table-text"
+                  onClick={() => onItemClick && onItemClick(item)}
+                  {...getTooltipAttributes(rowTooltipContent, `item-tooltip-${instanceId}-${index}`)}
+                >
+                  <ListItemText
+                    primaryValue={primaryValue}
+                    secondaryValue={secondaryValue}
+                    primaryTitle={primaryTitle}
+                    secondaryTitle={secondaryTitle}
+                    showSecondary={Boolean(secondaryKey)}
+                  />
+                </td>
 
-              return (
-                <tr key={`row-${instanceId}-${index}`} className="item-table-entry-highlight">
-                  <td
-                    className="item-table-text"
-                    onClick={() => onItemClick && onItemClick(item)}
-                    {...(rowTooltipContent && {
-                      "data-tooltip-id": `item-tooltip-${instanceId}-${index}`,
-                      "data-tooltip-content": rowTooltipContent,
-                    })}
-                  >
-                    <span className="item-table-text-content">
-                      <span
-                        className="item-table-primary-text item-table-text-truncate"
-                        title={primaryTitle || undefined}
-                      >
-                        {primaryValue}
-                      </span>
-                      {secondaryKey && secondaryValue && (
-                        <span
-                          className="item-table-secondary-text item-table-text-truncate"
-                          title={secondaryTitle || undefined}
-                        >
-                          {secondaryValue}
-                        </span>
-                      )}
-                    </span>
+                {ActionIcon && (
+                  <>
+                    {!showActionIconOn || showActionIconOn(item) ? (
+                      <td className="item-table-logo">
+                        <ActionIcon
+                          item={item}
+                          key={`action-icon-${instanceId}-${index}`}
+                          onClick={() => onActionIconClick && onActionIconClick(item)}
+                          {...getTooltipAttributes(actionIconTooltipContent?.(item), `action-tooltip-${instanceId}-${index}`)}
+                        />
+                      </td>
+                    ) : (
+                      <td className="item-table-empty-logo">
+                        <ActionIcon item={item} key={`action-icon-empty-${instanceId}-${index}`} />
+                      </td>
+                    )}
+                  </>
+                )}
+
+                {ActionIcon2 && (
+                  <td className="item-table-logo">
+                    <ActionIcon2
+                      item={item}
+                      key={`action-icon-2-${instanceId}-${index}`}
+                      onClick={() => onActionIcon2Click && onActionIcon2Click(item)}
+                      {...getTooltipAttributes(actionIcon2TooltipContent?.(item), `action-tooltip-2-${instanceId}-${index}`)}
+                    />
                   </td>
-
-                  {ActionIcon && (
-                    <>
-                      {!showActionIconOn || showActionIconOn(item) ? (
-                        <td className="item-table-logo">
-                          <ActionIcon
-                            item={item}
-                            key={`action-icon-${instanceId}-${index}`}
-                            onClick={() => onActionIconClick && onActionIconClick(item)}
-                            {...(actionIconTooltipContent && {
-                              "data-tooltip-id": `action-tooltip-${instanceId}-${index}`,
-                              "data-tooltip-content": actionIconTooltipContent(item),
-                            })}
-                          />
-                        </td>
-                      ) : (
-                        <td className="item-table-empty-logo">
-                          <ActionIcon item={item} key={`action-icon-empty-${instanceId}-${index}`} />
-                        </td>
-                      )}
-                    </>
-                  )}
-
-                  {ActionIcon2 && (
-                    <td className="item-table-logo">
-                      <ActionIcon2
-                        item={item}
-                        key={`action-icon-2-${instanceId}-${index}`}
-                        onClick={() => onActionIcon2Click && onActionIcon2Click(item)}
-                        {...(actionIcon2TooltipContent && {
-                          "data-tooltip-id": `action-tooltip-2-${instanceId}-${index}`,
-                          "data-tooltip-content": actionIcon2TooltipContent(item),
-                        })}
-                      />
-                    </td>
-                  )}
-                </tr>
-              );
-            })
+                )}
+              </tr>
+            ))
           ) : (
             <tr>
               <td className="item-table-text">
@@ -110,25 +85,12 @@ export function TableList({
         </tbody>
       </table>
 
-      {data &&
-        data.length > 0 &&
-        data.map((item, index) => {
-          const primaryTitle = getTooltipText(getDisplayValue(item, displayKey));
-          const secondaryTitle = getTooltipText(secondaryKey ? getDisplayValue(item, secondaryKey) : null);
-          const rowTooltipContent = getItemTooltipContent(item, itemTooltipContent, primaryTitle, secondaryTitle);
-
-          return (
-            <Fragment key={`tooltip-set-${instanceId}-${index}`}>
-              {rowTooltipContent && <PortalTooltip id={`item-tooltip-${instanceId}-${index}`} className="tooltip-gui" positionStrategy="fixed" />}
-              {actionIconTooltipContent && (
-                <PortalTooltip id={`action-tooltip-${instanceId}-${index}`} className="tooltip-gui" positionStrategy="fixed" />
-              )}
-              {actionIcon2TooltipContent && (
-                <PortalTooltip id={`action-tooltip-2-${instanceId}-${index}`} className="tooltip-gui" positionStrategy="fixed" />
-              )}
-            </Fragment>
-          );
-        })}
+      <ListTooltipPortals
+        rows={rows}
+        instanceId={instanceId}
+        actionIconTooltipContent={actionIconTooltipContent}
+        actionIcon2TooltipContent={actionIcon2TooltipContent}
+      />
     </div>
   );
 }
@@ -154,6 +116,7 @@ export function ToggleList({
   emptyMessage = "None",
 }) {
   const instanceId = useId();
+  const rows = getListRows(data, displayKey, secondaryKey, itemTooltipContent);
   const normalizedExpandedId = expandedId === null || expandedId === undefined ? null : expandedId.toString();
   const columnCount = 1 + (ActionIcon ? 1 : 0) + (ActionIcon2 ? 1 : 0);
 
@@ -162,17 +125,12 @@ export function ToggleList({
       <div className="table-list-heading">{heading}</div>
       <table className={`item-table ${dark && "plain-item-table"}`}>
         <tbody>
-          {data && data.length > 0 ? (
-            data.map((item, index) => {
+          {rows.length > 0 ? (
+            rows.map(({ item, index, primaryValue, secondaryValue, primaryTitle, secondaryTitle, rowTooltipContent }) => {
               const rawItemId = getItemId ? getItemId(item) : item?.id;
               const itemId = rawItemId === null || rawItemId === undefined ? "" : rawItemId.toString();
               const isExpanded = normalizedExpandedId !== null && itemId !== "" && itemId === normalizedExpandedId;
               const rowKey = itemId || `row-${index}`;
-              const primaryValue = getDisplayValue(item, displayKey);
-              const secondaryValue = secondaryKey ? getDisplayValue(item, secondaryKey) : null;
-              const primaryTitle = getTooltipText(primaryValue);
-              const secondaryTitle = getTooltipText(secondaryValue);
-              const rowTooltipContent = getItemTooltipContent(item, itemTooltipContent, primaryTitle, secondaryTitle);
 
               return (
                 <Fragment key={`row-${instanceId}-${rowKey}`}>
@@ -192,27 +150,15 @@ export function ToggleList({
                             }
                           : undefined
                       }
-                      {...(rowTooltipContent && {
-                        "data-tooltip-id": `item-tooltip-${instanceId}-${index}`,
-                        "data-tooltip-content": rowTooltipContent,
-                      })}
+                      {...getTooltipAttributes(rowTooltipContent, `item-tooltip-${instanceId}-${index}`)}
                     >
-                      <span className="item-table-text-content">
-                        <span
-                          className="item-table-primary-text item-table-text-truncate"
-                          title={primaryTitle || undefined}
-                        >
-                          {primaryValue}
-                        </span>
-                        {secondaryKey && secondaryValue && (
-                          <span
-                            className="item-table-secondary-text item-table-text-truncate"
-                            title={secondaryTitle || undefined}
-                          >
-                            {secondaryValue}
-                          </span>
-                        )}
-                      </span>
+                      <ListItemText
+                        primaryValue={primaryValue}
+                        secondaryValue={secondaryValue}
+                        primaryTitle={primaryTitle}
+                        secondaryTitle={secondaryTitle}
+                        showSecondary={Boolean(secondaryKey)}
+                      />
                       <SvgIcon svg={chevronSvg} className={`toggle-list-chevron${isExpanded ? " toggle-list-chevron--expanded" : ""}`} />
                     </td>
 
@@ -224,10 +170,7 @@ export function ToggleList({
                               item={item}
                               key={`action-icon-${instanceId}-${index}`}
                               onClick={() => onActionIconClick && onActionIconClick(item)}
-                              {...(actionIconTooltipContent && {
-                                "data-tooltip-id": `action-tooltip-${instanceId}-${index}`,
-                                "data-tooltip-content": actionIconTooltipContent(item),
-                              })}
+                              {...getTooltipAttributes(actionIconTooltipContent?.(item), `action-tooltip-${instanceId}-${index}`)}
                             />
                           </td>
                         ) : (
@@ -244,10 +187,7 @@ export function ToggleList({
                           item={item}
                           key={`action-icon-2-${instanceId}-${index}`}
                           onClick={() => onActionIcon2Click && onActionIcon2Click(item)}
-                          {...(actionIcon2TooltipContent && {
-                            "data-tooltip-id": `action-tooltip-2-${instanceId}-${index}`,
-                            "data-tooltip-content": actionIcon2TooltipContent(item),
-                          })}
+                          {...getTooltipAttributes(actionIcon2TooltipContent?.(item), `action-tooltip-2-${instanceId}-${index}`)}
                         />
                       </td>
                     )}
@@ -272,25 +212,12 @@ export function ToggleList({
         </tbody>
       </table>
 
-      {data &&
-        data.length > 0 &&
-        data.map((item, index) => {
-          const primaryTitle = getTooltipText(getDisplayValue(item, displayKey));
-          const secondaryTitle = getTooltipText(secondaryKey ? getDisplayValue(item, secondaryKey) : null);
-          const rowTooltipContent = getItemTooltipContent(item, itemTooltipContent, primaryTitle, secondaryTitle);
-
-          return (
-            <Fragment key={`tooltip-set-${instanceId}-${index}`}>
-              {rowTooltipContent && <PortalTooltip id={`item-tooltip-${instanceId}-${index}`} className="tooltip-gui" positionStrategy="fixed" />}
-              {actionIconTooltipContent && (
-                <PortalTooltip id={`action-tooltip-${instanceId}-${index}`} className="tooltip-gui" positionStrategy="fixed" />
-              )}
-              {actionIcon2TooltipContent && (
-                <PortalTooltip id={`action-tooltip-2-${instanceId}-${index}`} className="tooltip-gui" positionStrategy="fixed" />
-              )}
-            </Fragment>
-          );
-        })}
+      <ListTooltipPortals
+        rows={rows}
+        instanceId={instanceId}
+        actionIconTooltipContent={actionIconTooltipContent}
+        actionIcon2TooltipContent={actionIcon2TooltipContent}
+      />
     </div>
   );
 }
@@ -319,7 +246,7 @@ function getDisplayValue(item, displayKey) {
   return displayKey ? item?.[displayKey] : item;
 }
 
-function getTooltipText(value) {
+export function getTooltipText(value) {
   if (value === null || value === undefined || value === false) return "";
   if (Array.isArray(value)) {
     return value.map(getTooltipText).filter(Boolean).join("\n");
@@ -328,6 +255,63 @@ function getTooltipText(value) {
     return value.toString();
   }
   return "";
+}
+
+function getListRows(data, displayKey, secondaryKey, itemTooltipContent) {
+  return (data ?? []).map((item, index) => {
+    const primaryValue = getDisplayValue(item, displayKey);
+    const secondaryValue = secondaryKey ? getDisplayValue(item, secondaryKey) : null;
+    const primaryTitle = getTooltipText(primaryValue);
+    const secondaryTitle = getTooltipText(secondaryValue);
+
+    return {
+      item,
+      index,
+      primaryValue,
+      secondaryValue,
+      primaryTitle,
+      secondaryTitle,
+      rowTooltipContent: getItemTooltipContent(item, itemTooltipContent, primaryTitle, secondaryTitle),
+    };
+  });
+}
+
+function ListItemText({ primaryValue, secondaryValue, primaryTitle, secondaryTitle, showSecondary }) {
+  return (
+    <span className="item-table-text-content">
+      <span className="item-table-primary-text item-table-text-truncate" title={primaryTitle || undefined}>
+        {primaryValue}
+      </span>
+      {showSecondary && secondaryValue && (
+        <span className="item-table-secondary-text item-table-text-truncate" title={secondaryTitle || undefined}>
+          {secondaryValue}
+        </span>
+      )}
+    </span>
+  );
+}
+
+function ListTooltipPortals({ rows, instanceId, actionIconTooltipContent, actionIcon2TooltipContent }) {
+  return rows.map(({ item, index, rowTooltipContent }) => (
+    <Fragment key={`tooltip-set-${instanceId}-${index}`}>
+      {rowTooltipContent && <PortalTooltip id={`item-tooltip-${instanceId}-${index}`} className="tooltip-gui" positionStrategy="fixed" />}
+      {actionIconTooltipContent && actionIconTooltipContent(item) && (
+        <PortalTooltip id={`action-tooltip-${instanceId}-${index}`} className="tooltip-gui" positionStrategy="fixed" />
+      )}
+      {actionIcon2TooltipContent && actionIcon2TooltipContent(item) && (
+        <PortalTooltip id={`action-tooltip-2-${instanceId}-${index}`} className="tooltip-gui" positionStrategy="fixed" />
+      )}
+    </Fragment>
+  ));
+}
+
+function getTooltipAttributes(content, id) {
+  return content
+    ? {
+        "data-tooltip-id": id,
+        "data-tooltip-content": content,
+      }
+    : {};
 }
 
 function getItemTooltipContent(item, itemTooltipContent, primaryTitle, secondaryTitle) {

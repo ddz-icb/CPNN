@@ -1,4 +1,5 @@
 import { getAdjacentData, getCommunityData, getComponentData, getEndpointId } from "./graphUtils.js";
+import { matchesAttribsFilter } from "./attribFilterMatching.js";
 import { filterNodesExist } from "./filterGraphLinks.js";
 
 function getGroupAvgDegree(graphData, idToGroup, groupToSize) {
@@ -147,102 +148,12 @@ export function filterNodeAttribs(graphData, filterRequest) {
   // filterRequest is true if the filter is empty
   if (filterRequest === true) return graphData;
 
-  graphData = {
+  return {
     ...graphData,
     nodes: graphData.nodes
-      .map((node) => {
-        for (const andTerm of filterRequest) {
-          let meetsTerm = false;
-
-          for (let i = 0; i < andTerm.length; i++) {
-            const element = andTerm[i];
-
-            if (element === "=") {
-              const nextElement = andTerm[i + 1];
-
-              if (node.attribs.length == nextElement) {
-                meetsTerm = true;
-              }
-              i++;
-            } else if (element === "<") {
-              const nextElement = andTerm[i + 1];
-
-              if (node.attribs.length < nextElement) {
-                meetsTerm = true;
-              }
-              i++;
-            } else if (element === "<=") {
-              const nextElement = andTerm[i + 1];
-
-              if (node.attribs.length <= nextElement) {
-                meetsTerm = true;
-              }
-              i++;
-            } else if (element === ">=") {
-              const nextElement = andTerm[i + 1];
-
-              if (node.attribs.length >= nextElement) {
-                meetsTerm = true;
-              }
-              i++;
-            } else if (element === ">") {
-              const nextElement = andTerm[i + 1];
-
-              if (node.attribs.length > nextElement) {
-                meetsTerm = true;
-              }
-              i++;
-            } else if (element === "not") {
-              const nextElement = andTerm[i + 1];
-
-              if (nextElement instanceof Set) {
-                for (const e of nextElement) {
-                  if (!node.attribs.some((attrib) => attrib.toString().toLowerCase().includes(e.toString().toLowerCase()))) {
-                    meetsTerm = true;
-                  }
-                }
-              } else if (!node.attribs.some((attrib) => attrib.toString().toLowerCase().includes(nextElement.toString().toLowerCase()))) {
-                meetsTerm = true;
-              }
-              i++;
-            } else {
-              if (element instanceof Set) {
-                let allTrue = true;
-                for (const e of element) {
-                  if (!node.attribs.some((attrib) => attrib.toString().toLowerCase().includes(e.toString().toLowerCase()))) {
-                    allTrue = false;
-                  }
-                }
-                if (allTrue) meetsTerm = true;
-              } else {
-                node.attribs.forEach((attrib) => {
-                  if (attrib.toString().toLowerCase().includes(element.toString().toLowerCase())) {
-                    meetsTerm = true;
-                  }
-                });
-              }
-            }
-          }
-
-          if (meetsTerm === false) {
-            // doensn't meet all terms
-            return {
-              ...node,
-              attribs: [],
-            };
-          }
-        }
-
-        // meets all terms
-        return {
-          ...node,
-          attribs: node.attribs,
-        };
-      })
+      .map((node) => (matchesAttribsFilter(node.attribs, filterRequest) ? { ...node, attribs: node.attribs } : { ...node, attribs: [] }))
       .filter((node) => node.attribs.length > 0),
   };
-
-  return graphData;
 }
 
 export function filterNodeIds(graphData, nodeIdFilters) {

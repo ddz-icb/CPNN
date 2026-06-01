@@ -3,7 +3,13 @@ import log from "../logging/logger.js";
 
 import { useGraphState } from "../state/graphState.js";
 import { useSearchState } from "../state/searchState.js";
-import { getMatchingNodes } from "../../domain/service/search/search.js";
+import {
+  getMatchingLinkAttributes,
+  getMatchingLinks,
+  getMatchingNodeAttributes,
+  getMatchingNodes,
+  getSearchHighlightNodeIds,
+} from "../../domain/service/search/search.js";
 
 export function SearchControl() {
   const { graphState } = useGraphState();
@@ -11,16 +17,24 @@ export function SearchControl() {
 
   const { query } = searchState;
   const nodes = graphState.graph?.data?.nodes ?? [];
+  const links = graphState.graph?.data?.links ?? [];
 
-  useEffect(() => {    
+  useEffect(() => {
     if (!query) return;
-    log.info("SearchControl: recomputing matches", { query, nodeCount: nodes.length });
-    
-    const matches = getMatchingNodes(nodes, query);
-    setSearchState("matchingNodes", matches);
-    setSearchState("highlightedNodeIds", matches.map((node) => node.id));
+    log.info("SearchControl: recomputing matches", { query, nodeCount: nodes.length, linkCount: links.length });
+
+    const matchingNodes = getMatchingNodes(nodes, query);
+    const matchingLinks = getMatchingLinks(links, query);
+    setSearchState("matchingNodes", matchingNodes);
+    setSearchState("matchingLinks", matchingLinks);
+    setSearchState("matchingNodeAttributes", getMatchingNodeAttributes(nodes, query));
+    setSearchState("matchingLinkAttributes", getMatchingLinkAttributes(links, query));
+    setSearchState("highlightedNodeIds", getSearchHighlightNodeIds(matchingNodes, matchingLinks));
     setSearchState("selectedNodeId", null);
-  }, [nodes, query]);
+    setSearchState("selectedLinkId", null);
+    setSearchState("selectedNodeAttribute", null);
+    setSearchState("selectedLinkAttribute", null);
+  }, [nodes, links, query]);
 
   return null;
 }

@@ -1,4 +1,5 @@
 import { getEndpointId } from "./graphUtils.js";
+import { matchesAttribsFilter } from "./attribFilterMatching.js";
 import { isAdditionalLinkAttrib } from "../enrichment/additionalLinkEnrichment.js";
 
 function getFiniteThreshold(value) {
@@ -44,100 +45,12 @@ export function filterLinkAttribs(graphData, filterRequest) {
   // linkAttribs is true if the filterRequest was empty
   if (filterRequest === true) return graphData;
 
-  graphData = {
+  return {
     ...graphData,
     links: graphData.links
-      .map((link) => {
-        for (const andTerm of filterRequest) {
-          let meetsTerm = false;
-
-          for (let i = 0; i < andTerm.length; i++) {
-            const element = andTerm[i];
-
-            if (element === "=") {
-              const nextElement = andTerm[i + 1];
-
-              if (link.attribs.length == nextElement) {
-                meetsTerm = true;
-              }
-              i++;
-            } else if (element === "<") {
-              const nextElement = andTerm[i + 1];
-
-              if (link.attribs.length < nextElement) {
-                meetsTerm = true;
-              }
-              i++;
-            } else if (element === "<=") {
-              const nextElement = andTerm[i + 1];
-
-              if (link.attribs.length <= nextElement) {
-                meetsTerm = true;
-              }
-              i++;
-            } else if (element === ">=") {
-              const nextElement = andTerm[i + 1];
-
-              if (link.attribs.length >= nextElement) {
-                meetsTerm = true;
-              }
-              i++;
-            } else if (element === ">") {
-              const nextElement = andTerm[i + 1];
-
-              if (link.attribs.length > nextElement) {
-                meetsTerm = true;
-              }
-              i++;
-            } else if (element === "not") {
-              const nextElement = andTerm[i + 1];
-
-              if (nextElement instanceof Set) {
-                for (const e of nextElement) {
-                  if (!link.attribs.some((attrib) => attrib.toString().toLowerCase().includes(e.toString().toLowerCase()))) {
-                    meetsTerm = true;
-                  }
-                }
-              } else if (!link.attribs.some((attrib) => attrib.toString().toLowerCase().includes(nextElement.toString().toLowerCase()))) {
-                meetsTerm = true;
-              }
-              i++;
-            } else {
-              if (element instanceof Set) {
-                let allTrue = true;
-                for (const e of element) {
-                  if (!link.attribs.some((attrib) => attrib.toString().toLowerCase().includes(e.toString().toLowerCase()))) {
-                    allTrue = false;
-                  }
-                }
-                if (allTrue) meetsTerm = true;
-              } else {
-                link.attribs.forEach((attrib, i) => {
-                  if (attrib.toString().toLowerCase().includes(element.toString().toLowerCase())) {
-                    meetsTerm = true;
-                  }
-                });
-              }
-            }
-          }
-
-          if (meetsTerm === false) {
-            // doensn't meet all terms
-            return {
-              ...link,
-              attribs: [],
-            };
-          }
-        }
-
-        return {
-          ...link,
-        };
-      })
+      .map((link) => (matchesAttribsFilter(link.attribs, filterRequest) ? { ...link } : { ...link, attribs: [] }))
       .filter((link) => link.attribs.length > 0),
   };
-
-  return graphData;
 }
 
 export function filterNodesExist(graphData) {
