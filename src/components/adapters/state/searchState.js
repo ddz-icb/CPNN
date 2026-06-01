@@ -7,8 +7,6 @@ export const linkQueryInit = "";
 export const highlightedNodeIdsInit = [];
 export const matchingNodesInit = [];
 export const matchingLinksInit = [];
-export const matchingNodeAttributesInit = [];
-export const matchingLinkAttributesInit = [];
 
 export const searchStateInit = {
   nodeSearchValue: nodeSearchValueInit,
@@ -18,12 +16,8 @@ export const searchStateInit = {
   highlightedNodeIds: highlightedNodeIdsInit,
   matchingNodes: matchingNodesInit,
   matchingLinks: matchingLinksInit,
-  matchingNodeAttributes: matchingNodeAttributesInit,
-  matchingLinkAttributes: matchingLinkAttributesInit,
   selectedNodeId: null,
   selectedLinkId: null,
-  selectedNodeAttribute: null,
-  selectedLinkAttribute: null,
 };
 
 export const useSearchState = create((set) => ({

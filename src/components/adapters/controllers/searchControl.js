@@ -4,9 +4,7 @@ import log from "../logging/logger.js";
 import { useGraphState } from "../state/graphState.js";
 import { useSearchState } from "../state/searchState.js";
 import {
-  getMatchingLinkAttributes,
   getMatchingLinks,
-  getMatchingNodeAttributes,
   getMatchingNodes,
   getSearchHighlightNodeIds,
 } from "../../domain/service/search/search.js";
@@ -35,13 +33,9 @@ export function SearchControl() {
       ...currentSearchState,
       matchingNodes,
       matchingLinks,
-      matchingNodeAttributes: nodeQuery ? getMatchingNodeAttributes(nodes, nodeQuery) : [],
-      matchingLinkAttributes: linkQuery ? getMatchingLinkAttributes(links, linkQuery) : [],
       highlightedNodeIds: getSearchHighlightNodeIds(matchingNodes, matchingLinks),
       selectedNodeId: null,
       selectedLinkId: null,
-      selectedNodeAttribute: null,
-      selectedLinkAttribute: null,
     });
   }, [graphData, nodeQuery, linkQuery]);
 

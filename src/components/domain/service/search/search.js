@@ -1,5 +1,5 @@
 import { formatWeight, getEndpointIdText } from "../graph_calculations/graphUtils.js";
-import { matchesAttribsFilter, normalizeAttribs } from "../graph_calculations/attribFilterMatching.js";
+import { matchesAttribsFilter } from "../graph_calculations/attribFilterMatching.js";
 import { parseAttribsFilter } from "../parsing/attribsFilterParsing.js";
 
 export function getMatchingNodes(nodes, query) {
@@ -16,23 +16,15 @@ export function getMatchingLinks(links, query) {
     .filter((entry) => matchesSearchRequest(entry.link, search, () => getLinkSearchValues(entry)));
 }
 
-export function getMatchingNodeAttributes(nodes, query) {
-  return getMatchingAttributes(nodes, query, "nodes");
-}
-
-export function getMatchingLinkAttributes(links, query) {
-  return getMatchingAttributes(links, query, "links", buildLinkSearchResult);
-}
-
 export function getSearchHighlightNodeIds(matchingNodes = [], matchingLinks = []) {
   return uniqueValues([...getSearchNodeIds(matchingNodes), ...getSearchLinkEndpointIds(matchingLinks)]);
 }
 
-export function getSearchNodeIds(nodes = []) {
+function getSearchNodeIds(nodes = []) {
   return uniqueValues((nodes ?? []).map((node) => node?.id));
 }
 
-export function getSearchLinkEndpointIds(entries = []) {
+function getSearchLinkEndpointIds(entries = []) {
   return uniqueValues((entries ?? []).flatMap(getLinkEndpointIds));
 }
 
@@ -65,14 +57,6 @@ export function getSearchLinkResults(entries = [], limit = Infinity) {
   }));
 }
 
-export function getSearchAttributeResults(entries = [], singularLabel, limit = Infinity) {
-  return entries.slice(0, limit).map((entry) => ({
-    ...entry,
-    primaryText: entry.attribute,
-    secondaryText: formatSearchAttributeCount(entry.count, singularLabel),
-  }));
-}
-
 export function getNodesByIds(nodeIds, nodeById) {
   return (nodeIds ?? []).map((nodeId) => nodeById.get(nodeId)).filter(Boolean);
 }
@@ -91,13 +75,6 @@ export function formatSearchDetailValue(value) {
 export function formatSearchValues(values, formatter = stringifySearchValue) {
   const formattedValues = (values ?? []).map(formatter).filter(Boolean);
   return formattedValues.length ? formattedValues.join(", ") : "None";
-}
-
-export function formatLimitedSearchValues(values, limit) {
-  const formattedValues = (values ?? []).map(stringifySearchValue).filter(Boolean);
-  if (formattedValues.length === 0) return "None";
-  if (formattedValues.length <= limit) return formattedValues;
-  return [...formattedValues.slice(0, limit), `${formattedValues.length - limit} more`];
 }
 
 export function formatSearchWeight(weight) {
@@ -151,42 +128,10 @@ function matchesQuery(values, query) {
   });
 }
 
-function getMatchingAttributes(items, query, resultKey, toResultItem = (item) => item) {
-  const search = createSearchRequest(query);
-  if (!search.query) return [];
-
-  const matches = new Map();
-  (items ?? []).forEach((item, index) => {
-    normalizeAttribs(item?.attribs).forEach((attribute) => {
-      if (!attributeMatchesText(attribute, search.attributeQuery)) return;
-      if (!matches.has(attribute)) {
-        matches.set(attribute, { attribute, [resultKey]: [] });
-      }
-      matches.get(attribute)[resultKey].push(toResultItem(item, index));
-    });
-  });
-
-  return sortAttributeResults(
-    Array.from(matches.values()).map((entry) => ({
-      ...entry,
-      count: entry[resultKey].length,
-    })),
-  );
-}
-
-function sortAttributeResults(results) {
-  return results.sort((a, b) => a.attribute.localeCompare(b.attribute, undefined, { sensitivity: "base" }));
-}
-
-function attributeMatchesText(attribute, query) {
-  return attribute.toString().toLowerCase().includes(query);
-}
-
 function createSearchRequest(query) {
   const normalizedQuery = normalizeSearchText(query);
   return {
     query: normalizedQuery,
-    attributeQuery: stripWrappingQuotes(normalizedQuery),
     attributeFilter: parseAttributeSearch(normalizedQuery),
   };
 }
@@ -198,14 +143,6 @@ function parseAttributeSearch(query) {
   } catch {
     return null;
   }
-}
-
-function stripWrappingQuotes(value) {
-  const trimmed = value.trim().replace(/[“”„‟]/g, '"');
-  if (trimmed.length >= 2 && trimmed.startsWith('"') && trimmed.endsWith('"')) {
-    return trimmed.slice(1, -1);
-  }
-  return trimmed;
 }
 
 function normalizeSearchText(value) {

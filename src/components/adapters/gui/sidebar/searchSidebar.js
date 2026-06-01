@@ -13,27 +13,21 @@ import { centerOnNodes } from "../../../domain/service/canvas_interaction/center
 import {
   getLinkEndpointIds,
   getNodesByIds,
-  getSearchAttributeResults,
   getSearchHighlightNodeIds,
-  getSearchLinkEndpointIds,
   getSearchLinkResults,
-  getSearchNodeIds,
   getSearchNodeResults,
   hasSameValues,
 } from "../../../domain/service/search/search.js";
 import { useNodeDetails } from "../hooks/useNodeDetails.js";
 import { linkSearchDescription, nodeSearchDescription } from "./descriptions/searchDescriptions.js";
 import {
-  SearchLinkAttributeDetails,
   SearchLinkDetails,
-  SearchNodeAttributeDetails,
   SearchNodeDetails,
   SearchResultSection,
 } from "./searchResultComponents.js";
 
 const MAX_RESULTS = 30;
-const DETAIL_LIST_LIMIT = 12;
-const SEARCH_SELECTION_KEYS = ["selectedNodeId", "selectedLinkId", "selectedNodeAttribute", "selectedLinkAttribute"];
+const SEARCH_SELECTION_KEYS = ["selectedNodeId", "selectedLinkId"];
 
 export function SearchSidebar() {
   const { searchState, setSearchState, setAllSearchState } = useSearchState();
@@ -44,13 +38,9 @@ export function SearchSidebar() {
     linkQuery,
     matchingNodes = [],
     matchingLinks = [],
-    matchingNodeAttributes = [],
-    matchingLinkAttributes = [],
     highlightedNodeIds,
     selectedNodeId,
     selectedLinkId,
-    selectedNodeAttribute,
-    selectedLinkAttribute,
   } = searchState;
   const { theme } = useTheme();
   const { appearance } = useAppearance();
@@ -66,15 +56,9 @@ export function SearchSidebar() {
 
   const nodeResults = getSearchNodeResults(matchingNodes, MAX_RESULTS);
   const linkResults = getSearchLinkResults(matchingLinks, MAX_RESULTS);
-  const nodeAttributeResults = getSearchAttributeResults(matchingNodeAttributes, "node", MAX_RESULTS);
-  const linkAttributeResults = getSearchAttributeResults(matchingLinkAttributes, "link", MAX_RESULTS);
 
   const nodeTotal = matchingNodes.length;
   const linkTotal = matchingLinks.length;
-  const nodeAttributeTotal = matchingNodeAttributes.length;
-  const linkAttributeTotal = matchingLinkAttributes.length;
-  const nodeTotalMatches = nodeTotal + nodeAttributeTotal;
-  const linkTotalMatches = linkTotal + linkAttributeTotal;
   const hasActiveNodeSearch = Boolean(nodeQuery);
   const hasActiveLinkSearch = Boolean(linkQuery);
   const hasActiveSearch = hasActiveNodeSearch || hasActiveLinkSearch;
@@ -103,9 +87,7 @@ export function SearchSidebar() {
       nodeSearchValue,
       nodeQuery: nextQuery,
       matchingNodes: [],
-      matchingNodeAttributes: [],
       selectedNodeId: null,
-      selectedNodeAttribute: null,
     });
   };
 
@@ -121,9 +103,7 @@ export function SearchSidebar() {
       linkSearchValue,
       linkQuery: nextQuery,
       matchingLinks: [],
-      matchingLinkAttributes: [],
       selectedLinkId: null,
-      selectedLinkAttribute: null,
     });
   };
 
@@ -133,9 +113,7 @@ export function SearchSidebar() {
       nodeSearchValue: searchStateInit.nodeSearchValue,
       nodeQuery: searchStateInit.nodeQuery,
       matchingNodes: searchStateInit.matchingNodes,
-      matchingNodeAttributes: searchStateInit.matchingNodeAttributes,
       selectedNodeId: null,
-      selectedNodeAttribute: null,
       highlightedNodeIds: getSearchHighlightNodeIds([], matchingLinks),
     });
   };
@@ -146,9 +124,7 @@ export function SearchSidebar() {
       linkSearchValue: searchStateInit.linkSearchValue,
       linkQuery: searchStateInit.linkQuery,
       matchingLinks: searchStateInit.matchingLinks,
-      matchingLinkAttributes: searchStateInit.matchingLinkAttributes,
       selectedLinkId: null,
-      selectedLinkAttribute: null,
       highlightedNodeIds: getSearchHighlightNodeIds(matchingNodes, []),
     });
   };
@@ -189,32 +165,6 @@ export function SearchSidebar() {
     centerOnNodes(getNodesByIds(endpointIds, nodeById), { appearance, renderState, container });
   };
 
-  const handleNodeAttributeToggle = (item) => {
-    const attribute = item?.attribute;
-    if (!attribute) return;
-    const nextSelection = selectedNodeAttribute === attribute ? null : attribute;
-    clearOtherSelections("selectedNodeAttribute");
-    setSearchState("selectedNodeAttribute", nextSelection);
-    if (!nextSelection) return;
-
-    const nodeIds = getSearchNodeIds(item.nodes);
-    setSearchState("highlightedNodeIds", nodeIds);
-    centerOnNodes(item.nodes ?? [], { appearance, renderState, container });
-  };
-
-  const handleLinkAttributeToggle = (item) => {
-    const attribute = item?.attribute;
-    if (!attribute) return;
-    const nextSelection = selectedLinkAttribute === attribute ? null : attribute;
-    clearOtherSelections("selectedLinkAttribute");
-    setSearchState("selectedLinkAttribute", nextSelection);
-    if (!nextSelection) return;
-
-    const endpointIds = getSearchLinkEndpointIds(item.links);
-    setSearchState("highlightedNodeIds", endpointIds);
-    centerOnNodes(getNodesByIds(endpointIds, nodeById), { appearance, renderState, container });
-  };
-
   const isHighlightAllActive = allMatchNodeIds.length > 0 && Array.isArray(highlightedNodeIds) && hasSameValues(highlightedNodeIds, allMatchNodeIds);
 
   const handleHighlightAllToggle = (event) => {
@@ -233,15 +183,6 @@ export function SearchSidebar() {
       onItemToggle: handleNodeToggle,
       renderExpandedContent: (item) => <SearchNodeDetails item={item} displayName={displayName} entries={entries} />,
     },
-    {
-      total: nodeAttributeTotal,
-      heading: `Node Attribute Matches (${nodeAttributeTotal})`,
-      data: nodeAttributeResults,
-      expandedId: selectedNodeAttribute,
-      getItemId: (item) => item?.attribute,
-      onItemToggle: handleNodeAttributeToggle,
-      renderExpandedContent: (item) => <SearchNodeAttributeDetails item={item} limit={DETAIL_LIST_LIMIT} />,
-    },
   ].filter((section) => section.total > 0);
 
   const linkResultSections = [
@@ -253,15 +194,6 @@ export function SearchSidebar() {
       getItemId: (item) => item?.linkId,
       onItemToggle: handleLinkToggle,
       renderExpandedContent: (item) => <SearchLinkDetails item={item} />,
-    },
-    {
-      total: linkAttributeTotal,
-      heading: `Link Attribute Matches (${linkAttributeTotal})`,
-      data: linkAttributeResults,
-      expandedId: selectedLinkAttribute,
-      getItemId: (item) => item?.attribute,
-      onItemToggle: handleLinkAttributeToggle,
-      renderExpandedContent: (item) => <SearchLinkAttributeDetails item={item} limit={DETAIL_LIST_LIMIT} />,
     },
   ].filter((section) => section.total > 0);
 
@@ -318,14 +250,14 @@ export function SearchSidebar() {
               />
             )}
             {hasActiveNodeSearch &&
-              (nodeTotalMatches === 0 ? (
-                <div className="search-empty-hint text-secondary">No nodes or node attributes matched your node query.</div>
+              (nodeTotal === 0 ? (
+                <div className="search-empty-hint text-secondary">No nodes matched your node query.</div>
               ) : (
                 nodeResultSections.map((section) => <SearchResultSection key={section.heading} maxResults={MAX_RESULTS} {...section} />)
               ))}
             {hasActiveLinkSearch &&
-              (linkTotalMatches === 0 ? (
-                <div className="search-empty-hint text-secondary">No links or link attributes matched your link query.</div>
+              (linkTotal === 0 ? (
+                <div className="search-empty-hint text-secondary">No links matched your link query.</div>
               ) : (
                 linkResultSections.map((section) => <SearchResultSection key={section.heading} maxResults={MAX_RESULTS} {...section} />)
               ))}

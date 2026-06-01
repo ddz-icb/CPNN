@@ -1,8 +1,6 @@
 import { DetailRow, ToggleList } from "../reusable_components/sidebarComponents.js";
 import {
-  formatLimitedSearchValues,
   formatSearchDetailValue,
-  formatSearchLinkLabel,
   formatSearchValues,
   formatSearchWeight,
   stringifySearchValue,
@@ -77,24 +75,6 @@ export function SearchLinkDetails({ item }) {
       <DetailRow label={"Target"} value={formatSearchDetailValue(item.targetId)} />
       <DetailRow label={"Attributes"} value={formatSearchValues(item.link?.attribs)} />
       <DetailRow label={"Weights"} value={formatSearchValues(item.link?.weights, formatSearchWeight)} />
-    </div>
-  );
-}
-
-export function SearchNodeAttributeDetails({ item, limit }) {
-  return (
-    <div className="toggle-list-details">
-      <DetailRow label={"Attribute"} value={item.attribute} />
-      <DetailRow label={"Matching Nodes"} value={formatLimitedSearchValues((item.nodes ?? []).map((node) => node.id), limit)} />
-    </div>
-  );
-}
-
-export function SearchLinkAttributeDetails({ item, limit }) {
-  return (
-    <div className="toggle-list-details">
-      <DetailRow label={"Attribute"} value={item.attribute} />
-      <DetailRow label={"Matching Links"} value={formatLimitedSearchValues((item.links ?? []).map(formatSearchLinkLabel), limit)} />
     </div>
   );
 }
