@@ -891,7 +891,8 @@ function getActiveTooltipNodeId(tooltipSettings) {
 function describeSearchScene(searchSnapshot) {
   const highlightedCount = Array.isArray(searchSnapshot?.highlightedNodeIds) ? searchSnapshot.highlightedNodeIds.length : 0;
   if (searchSnapshot?.selectedNodeId) return `Selected ${searchSnapshot.selectedNodeId}`;
-  if (searchSnapshot?.query) return highlightedCount > 0 ? `${highlightedCount} highlighted` : "Captured";
+  if (searchSnapshot?.selectedLinkId) return "Selected link";
+  if (searchSnapshot?.nodeQuery || searchSnapshot?.linkQuery || searchSnapshot?.query) return highlightedCount > 0 ? `${highlightedCount} highlighted` : "Captured";
   return "Cleared";
 }
 

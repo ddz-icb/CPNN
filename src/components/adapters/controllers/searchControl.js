@@ -11,30 +11,39 @@ import {
   getSearchHighlightNodeIds,
 } from "../../domain/service/search/search.js";
 
+const EMPTY_GRAPH_ITEMS = [];
+
 export function SearchControl() {
   const { graphState } = useGraphState();
-  const { searchState, setSearchState } = useSearchState();
+  const { searchState } = useSearchState();
 
-  const { query } = searchState;
-  const nodes = graphState.graph?.data?.nodes ?? [];
-  const links = graphState.graph?.data?.links ?? [];
+  const { nodeQuery, linkQuery } = searchState;
+  const graphData = graphState.graph?.data;
+  const nodes = graphData?.nodes ?? EMPTY_GRAPH_ITEMS;
+  const links = graphData?.links ?? EMPTY_GRAPH_ITEMS;
 
   useEffect(() => {
-    if (!query) return;
-    log.info("SearchControl: recomputing matches", { query, nodeCount: nodes.length, linkCount: links.length });
+    if (nodeQuery || linkQuery) {
+      log.info("SearchControl: recomputing matches", { nodeQuery, linkQuery, nodeCount: nodes.length, linkCount: links.length });
+    }
 
-    const matchingNodes = getMatchingNodes(nodes, query);
-    const matchingLinks = getMatchingLinks(links, query);
-    setSearchState("matchingNodes", matchingNodes);
-    setSearchState("matchingLinks", matchingLinks);
-    setSearchState("matchingNodeAttributes", getMatchingNodeAttributes(nodes, query));
-    setSearchState("matchingLinkAttributes", getMatchingLinkAttributes(links, query));
-    setSearchState("highlightedNodeIds", getSearchHighlightNodeIds(matchingNodes, matchingLinks));
-    setSearchState("selectedNodeId", null);
-    setSearchState("selectedLinkId", null);
-    setSearchState("selectedNodeAttribute", null);
-    setSearchState("selectedLinkAttribute", null);
-  }, [nodes, links, query]);
+    const matchingNodes = nodeQuery ? getMatchingNodes(nodes, nodeQuery) : [];
+    const matchingLinks = linkQuery ? getMatchingLinks(links, linkQuery) : [];
+    const currentSearchState = useSearchState.getState().searchState;
+
+    useSearchState.getState().setAllSearchState({
+      ...currentSearchState,
+      matchingNodes,
+      matchingLinks,
+      matchingNodeAttributes: nodeQuery ? getMatchingNodeAttributes(nodes, nodeQuery) : [],
+      matchingLinkAttributes: linkQuery ? getMatchingLinkAttributes(links, linkQuery) : [],
+      highlightedNodeIds: getSearchHighlightNodeIds(matchingNodes, matchingLinks),
+      selectedNodeId: null,
+      selectedLinkId: null,
+      selectedNodeAttribute: null,
+      selectedLinkAttribute: null,
+    });
+  }, [graphData, nodeQuery, linkQuery]);
 
   return null;
 }

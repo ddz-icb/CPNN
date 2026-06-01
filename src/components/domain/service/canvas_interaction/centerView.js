@@ -1,5 +1,6 @@
 import * as d3 from "d3";
 import { defaultCamera } from "../canvas_drawing/render3D.js";
+import { getCentroid } from "../graph_calculations/graphUtils.js";
 
 const CENTER_EPSILON = 1e-6;
 const MIN_TARGET_DEPTH = 1e-3;
@@ -114,4 +115,11 @@ export function centerOnNode(node, { appearance, renderState, container }) {
   app.stage.y = ty;
   app.stage.scale?.set?.(safeScale, safeScale);
   app.renderer.render(app.stage);
+}
+
+export function centerOnNodes(nodes, viewState) {
+  const positionedNodes = (nodes ?? []).filter((node) => Number.isFinite(node?.x) && Number.isFinite(node?.y));
+  if (positionedNodes.length === 0) return;
+
+  centerOnNode(positionedNodes.length === 1 ? positionedNodes[0] : getCentroid(positionedNodes), viewState);
 }

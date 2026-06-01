@@ -26,8 +26,10 @@ export const resetService = {
       const currentSearchState = useSearchState.getState().searchState;
       useSearchState.getState().setAllSearchState({
         ...searchStateInit,
-        searchValue: currentSearchState.searchValue,
-        query: currentSearchState.query,
+        nodeSearchValue: currentSearchState.nodeSearchValue ?? currentSearchState.searchValue,
+        nodeQuery: currentSearchState.nodeQuery ?? currentSearchState.query,
+        linkSearchValue: currentSearchState.linkSearchValue ?? currentSearchState.searchValue,
+        linkQuery: currentSearchState.linkQuery ?? currentSearchState.query,
       });
     } else {
       useSearchState.getState().setAllSearchState(searchStateInit);

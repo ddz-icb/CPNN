@@ -1,4 +1,4 @@
-import { getEndpointIdText } from "../graph_calculations/graphUtils.js";
+import { formatWeight, getEndpointIdText } from "../graph_calculations/graphUtils.js";
 import { matchesAttribsFilter, normalizeAttribs } from "../graph_calculations/attribFilterMatching.js";
 import { parseAttribsFilter } from "../parsing/attribsFilterParsing.js";
 
@@ -48,6 +48,67 @@ export function formatSearchLinkLabel(entry) {
   return `${sourceId} -> ${targetId}`;
 }
 
+export function getSearchNodeResults(nodes = [], limit = Infinity) {
+  return nodes.slice(0, limit).map((node) => ({
+    nodeId: node.id,
+    primaryText: node.id,
+    secondaryText: formatSearchAttributeCount(node.attribs?.length, "attribute"),
+    node,
+  }));
+}
+
+export function getSearchLinkResults(entries = [], limit = Infinity) {
+  return entries.slice(0, limit).map((entry) => ({
+    ...entry,
+    primaryText: formatSearchLinkLabel(entry),
+    secondaryText: formatSearchAttributeCount(entry.link?.attribs?.length, "attribute"),
+  }));
+}
+
+export function getSearchAttributeResults(entries = [], singularLabel, limit = Infinity) {
+  return entries.slice(0, limit).map((entry) => ({
+    ...entry,
+    primaryText: entry.attribute,
+    secondaryText: formatSearchAttributeCount(entry.count, singularLabel),
+  }));
+}
+
+export function getNodesByIds(nodeIds, nodeById) {
+  return (nodeIds ?? []).map((nodeId) => nodeById.get(nodeId)).filter(Boolean);
+}
+
+export function hasSameValues(left = [], right = []) {
+  if (left.length !== right.length) return false;
+  const rightSet = new Set(right);
+  return left.every((value) => rightSet.has(value));
+}
+
+export function formatSearchDetailValue(value) {
+  if (value === undefined || value === null || value === "") return "None";
+  return value;
+}
+
+export function formatSearchValues(values, formatter = stringifySearchValue) {
+  const formattedValues = (values ?? []).map(formatter).filter(Boolean);
+  return formattedValues.length ? formattedValues.join(", ") : "None";
+}
+
+export function formatLimitedSearchValues(values, limit) {
+  const formattedValues = (values ?? []).map(stringifySearchValue).filter(Boolean);
+  if (formattedValues.length === 0) return "None";
+  if (formattedValues.length <= limit) return formattedValues;
+  return [...formattedValues.slice(0, limit), `${formattedValues.length - limit} more`];
+}
+
+export function formatSearchWeight(weight) {
+  return typeof weight === "number" && Number.isFinite(weight) ? formatWeight(weight) : stringifySearchValue(weight);
+}
+
+export function stringifySearchValue(value) {
+  if (value === undefined || value === null || value === "") return "";
+  return value.toString();
+}
+
 function buildLinkSearchResult(link, index) {
   const sourceId = getEndpointIdText(link?.source);
   const targetId = getEndpointIdText(link?.target);
@@ -62,6 +123,12 @@ function buildLinkSearchResult(link, index) {
 function getLinkSearchId(link, index, sourceId, targetId) {
   if (link?.id !== undefined && link?.id !== null && link.id !== "") return link.id.toString();
   return `${sourceId || "unknown"}::${targetId || "unknown"}::${index}`;
+}
+
+function formatSearchAttributeCount(count, singularLabel) {
+  const numericCount = Number.isFinite(count) ? count : 0;
+  const label = numericCount === 1 ? singularLabel : `${singularLabel}s`;
+  return `${numericCount} ${label}`;
 }
 
 function getNodeSearchValues(node) {

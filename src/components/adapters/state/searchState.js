@@ -1,7 +1,9 @@
 import { create } from "zustand";
 
-export const searchValueInit = "";
-export const queryInit = "";
+export const nodeSearchValueInit = "";
+export const nodeQueryInit = "";
+export const linkSearchValueInit = "";
+export const linkQueryInit = "";
 export const highlightedNodeIdsInit = [];
 export const matchingNodesInit = [];
 export const matchingLinksInit = [];
@@ -9,8 +11,10 @@ export const matchingNodeAttributesInit = [];
 export const matchingLinkAttributesInit = [];
 
 export const searchStateInit = {
-  searchValue: searchValueInit,
-  query: queryInit,
+  nodeSearchValue: nodeSearchValueInit,
+  nodeQuery: nodeQueryInit,
+  linkSearchValue: linkSearchValueInit,
+  linkQuery: linkQueryInit,
   highlightedNodeIds: highlightedNodeIdsInit,
   matchingNodes: matchingNodesInit,
   matchingLinks: matchingLinksInit,
@@ -30,6 +34,19 @@ export const useSearchState = create((set) => ({
     })),
   setAllSearchState: (value) =>
     set(() => ({
-      searchState: value,
+      searchState: normalizeSearchState(value),
     })),
 }));
+
+function normalizeSearchState(value) {
+  const { searchValue: legacySearchValue = "", query: legacyQuery = "", ...state } = value ?? {};
+
+  return {
+    ...searchStateInit,
+    ...state,
+    nodeSearchValue: state.nodeSearchValue ?? legacySearchValue,
+    nodeQuery: state.nodeQuery ?? legacyQuery,
+    linkSearchValue: state.linkSearchValue ?? legacySearchValue,
+    linkQuery: state.linkQuery ?? legacyQuery,
+  };
+}
