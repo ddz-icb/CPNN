@@ -6,7 +6,8 @@ import { useSearchState } from "../state/searchState.js";
 import {
   getMatchingLinks,
   getMatchingNodes,
-  getSearchHighlightNodeIds,
+  getSearchLinkIds,
+  getSearchNodeIds,
 } from "../../domain/service/search/search.js";
 
 const EMPTY_GRAPH_ITEMS = [];
@@ -33,7 +34,8 @@ export function SearchControl() {
       ...currentSearchState,
       matchingNodes,
       matchingLinks,
-      highlightedNodeIds: getSearchHighlightNodeIds(matchingNodes, matchingLinks),
+      highlightedNodeIds: getSearchNodeIds(matchingNodes),
+      highlightedLinkIds: getSearchLinkIds(matchingLinks),
       selectedNodeId: null,
       selectedLinkId: null,
     });

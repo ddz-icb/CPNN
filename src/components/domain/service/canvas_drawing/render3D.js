@@ -36,7 +36,7 @@ export function redraw3D(
   drawGrid3D(grid3D, view, graphData.nodes, container, (point) => projectNode(point, view));
   updateNodes3D(graphData.nodes, nodeMap, showNodeLabels, projections);
   updateLines3D(graphData.links, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, projections);
-  updateHighlights();
+  updateHighlights({ links: graphData.links, lineGraphics: lines, linkWidth });
 
   app.renderer.render(app.stage);
 }

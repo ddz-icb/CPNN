@@ -1,4 +1,4 @@
-import { formatWeight, getEndpointIdText } from "../graph_calculations/graphUtils.js";
+import { formatWeight, getEndpointIdText, getLinkIdText } from "../graph_calculations/graphUtils.js";
 import { matchesAttribsFilter } from "../graph_calculations/attribFilterMatching.js";
 import { parseAttribsFilter } from "../parsing/attribsFilterParsing.js";
 
@@ -16,16 +16,12 @@ export function getMatchingLinks(links, query) {
     .filter((entry) => matchesSearchRequest(entry.link, search, () => getLinkSearchValues(entry)));
 }
 
-export function getSearchHighlightNodeIds(matchingNodes = [], matchingLinks = []) {
-  return uniqueValues([...getSearchNodeIds(matchingNodes), ...getSearchLinkEndpointIds(matchingLinks)]);
-}
-
-function getSearchNodeIds(nodes = []) {
+export function getSearchNodeIds(nodes = []) {
   return uniqueValues((nodes ?? []).map((node) => node?.id));
 }
 
-function getSearchLinkEndpointIds(entries = []) {
-  return uniqueValues((entries ?? []).flatMap(getLinkEndpointIds));
+export function getSearchLinkIds(entries = []) {
+  return uniqueValues((entries ?? []).map((entry) => entry?.linkId ?? (entry?.link ? getLinkIdText(entry.link, entry.linkIndex) : null)));
 }
 
 export function getLinkEndpointIds(entry) {
@@ -91,15 +87,11 @@ function buildLinkSearchResult(link, index) {
   const targetId = getEndpointIdText(link?.target);
   return {
     link,
-    linkId: getLinkSearchId(link, index, sourceId, targetId),
+    linkId: getLinkIdText(link, index, sourceId, targetId),
+    linkIndex: index,
     sourceId,
     targetId,
   };
-}
-
-function getLinkSearchId(link, index, sourceId, targetId) {
-  if (link?.id !== undefined && link?.id !== null && link.id !== "") return link.id.toString();
-  return `${sourceId || "unknown"}::${targetId || "unknown"}::${index}`;
 }
 
 function formatSearchAttributeCount(count, singularLabel) {

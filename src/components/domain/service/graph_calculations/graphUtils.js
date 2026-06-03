@@ -219,6 +219,11 @@ export function getEndpointIdText(endpoint) {
   return endpointId == null ? "" : String(endpointId).trim();
 }
 
+export function getLinkIdText(link, index, sourceId = getEndpointIdText(link?.source), targetId = getEndpointIdText(link?.target)) {
+  if (link?.id !== undefined && link?.id !== null && link.id !== "") return link.id.toString();
+  return `${sourceId || "unknown"}::${targetId || "unknown"}::${index}`;
+}
+
 export function getUndirectedLinkKey(source, target, separator = "---") {
   const sourceId = String(source ?? "").trim();
   const targetId = String(target ?? "").trim();

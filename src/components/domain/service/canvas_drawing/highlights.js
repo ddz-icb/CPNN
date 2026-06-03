@@ -1,8 +1,21 @@
 import * as PIXI from "pixi.js";
+import { getLinkIdText } from "../graph_calculations/graphUtils.js";
 import { radius } from "./nodes.js";
 
 const activeHighlights = new Set();
 const activeCommunityHighlights = new Set();
+const activeLinkGlowGraphics = new Map();
+const LINK_GLOW_STROKES = [
+  { outset: 4.5, alpha: 0.5 },
+  { outset: 2, alpha: 0.7 },
+];
+const LINK_GLOW_ENDPOINT_INSET = radius + 1;
+const LINK_GLOW_Z_OFFSET = 0.08;
+
+let activeLinkHighlightIds = new Set();
+let activeLinkHighlightColor = 0xffff00;
+let linkHighlightLayer = null;
+let lastLinkHighlightContext = null;
 
 function clearOverlay(circle, overlayKey, activeSet) {
   if (!circle) return;
@@ -82,7 +95,271 @@ export function highlightCommunityNode(circle, highlightColor) {
   return drawOverlay(circle, highlightColor, "communityHighlightOverlay", activeCommunityHighlights);
 }
 
-export function updateHighlights() {
+function clearLinkHighlightLayer() {
+  if (!linkHighlightLayer || linkHighlightLayer.destroyed) return;
+  linkHighlightLayer.clear();
+  linkHighlightLayer.visible = false;
+}
+
+function destroyLinkGlowGraphic(graphic) {
+  if (!graphic || graphic.destroyed) return;
+  if (graphic.parent) {
+    graphic.parent.removeChild(graphic);
+  }
+  graphic.destroy();
+}
+
+function clearLineGlowGraphics() {
+  activeLinkGlowGraphics.forEach((graphic) => {
+    destroyLinkGlowGraphic(graphic);
+  });
+  activeLinkGlowGraphics.clear();
+}
+
+function getBaseLinkWidth(width) {
+  const numericWidth = Number(width);
+  return Number.isFinite(numericWidth) && numericWidth > 0 ? numericWidth : 1;
+}
+
+function getDepthScale(scale) {
+  const numericScale = Number(scale);
+  return Number.isFinite(numericScale) && numericScale > 0 ? numericScale : 1;
+}
+
+function getGlowLinkWidth(style, bundleWidth, depthScale = 1) {
+  const baseWidth = getBaseLinkWidth(bundleWidth);
+  const outset = Number(style?.outset);
+  return baseWidth + Math.max(0, Number.isFinite(outset) ? outset : 0) * getDepthScale(depthScale) * 2;
+}
+
+function getLinkAttribCount(link) {
+  return Math.max(1, Array.isArray(link?.attribs) ? link.attribs.length : 1);
+}
+
+function getLinkBundleWidth(link, linkWidth) {
+  return getBaseLinkWidth(linkWidth) * getLinkAttribCount(link);
+}
+
+function getTrimmedLineEndpoints(x1, y1, x2, y2, endpointInset = 0) {
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+  const length = Math.sqrt(dx * dx + dy * dy);
+  const inset = Number(endpointInset);
+
+  if (!Number.isFinite(length) || length <= 0 || !Number.isFinite(inset) || inset <= 0) {
+    return { sourceX: x1, sourceY: y1, targetX: x2, targetY: y2 };
+  }
+
+  const safeInset = Math.min(inset, Math.max(0, length / 2 - 0.5));
+  if (safeInset <= 0) {
+    return { sourceX: x1, sourceY: y1, targetX: x2, targetY: y2 };
+  }
+
+  const unitX = dx / length;
+  const unitY = dy / length;
+
+  return {
+    sourceX: x1 + unitX * safeInset,
+    sourceY: y1 + unitY * safeInset,
+    targetX: x2 - unitX * safeInset,
+    targetY: y2 - unitY * safeInset,
+  };
+}
+
+function ensureLinkHighlightLayer(lineGraphic) {
+  const parent = lineGraphic?.parent;
+  if (!parent) return null;
+
+  if (!linkHighlightLayer || linkHighlightLayer.destroyed || linkHighlightLayer.parent !== parent) {
+    if (linkHighlightLayer?.parent) {
+      linkHighlightLayer.parent.removeChild(linkHighlightLayer);
+    }
+    linkHighlightLayer = new PIXI.Graphics();
+    linkHighlightLayer.eventMode = "none";
+    linkHighlightLayer.blendMode = "add";
+
+    const lineIndex = parent.children?.indexOf?.(lineGraphic) ?? -1;
+    if (lineIndex >= 0 && parent.addChildAt) {
+      parent.addChildAt(linkHighlightLayer, lineIndex);
+    } else {
+      parent.addChild(linkHighlightLayer);
+    }
+  }
+
+  linkHighlightLayer.zIndex = (lineGraphic?.zIndex ?? 0) - LINK_GLOW_Z_OFFSET;
+  return linkHighlightLayer;
+}
+
+function drawLinkGlow(layer, link, linkWidth) {
+  const sourceX = link?.source?.x;
+  const sourceY = link?.source?.y;
+  const targetX = link?.target?.x;
+  const targetY = link?.target?.y;
+
+  if (![sourceX, sourceY, targetX, targetY].every(Number.isFinite)) return;
+
+  const trimmed = getTrimmedLineEndpoints(sourceX, sourceY, targetX, targetY, LINK_GLOW_ENDPOINT_INSET);
+  const bundleWidth = getLinkBundleWidth(link, linkWidth);
+
+  for (const style of LINK_GLOW_STROKES) {
+    layer
+      .moveTo(trimmed.sourceX, trimmed.sourceY)
+      .lineTo(trimmed.targetX, trimmed.targetY)
+      .stroke({
+        color: activeLinkHighlightColor,
+        width: getGlowLinkWidth(style, bundleWidth),
+        alpha: style.alpha,
+        cap: "round",
+      });
+  }
+}
+
+function updateLineHighlights2D({ links, lineGraphics, linkWidth }) {
+  clearLineGlowGraphics();
+  if (activeLinkHighlightIds.size === 0) {
+    clearLinkHighlightLayer();
+    return;
+  }
+
+  const layer = ensureLinkHighlightLayer(lineGraphics);
+  if (!layer) return;
+
+  layer.clear();
+  layer.visible = lineGraphics?.visible !== false;
+  if (!layer.visible) return;
+
+  (links ?? []).forEach((link, index) => {
+    if (!activeLinkHighlightIds.has(getLinkIdText(link, index))) return;
+    drawLinkGlow(layer, link, linkWidth);
+  });
+}
+
+function getVisibleEdgeSpriteGeometry(sprites, linkWidth) {
+  const visibleSprites = (sprites ?? []).filter((sprite) => sprite && sprite.visible !== false);
+  if (visibleSprites.length === 0) return null;
+
+  const sourceSprite = visibleSprites[0];
+  const stripeHeight = visibleSprites.reduce((sum, sprite) => sum + getBaseLinkWidth(sprite.height), 0) / visibleSprites.length;
+  const depthScale = stripeHeight / getBaseLinkWidth(linkWidth);
+  const position = visibleSprites.reduce(
+    (sum, sprite) => {
+      sum.x += sprite.x ?? 0;
+      sum.y += sprite.y ?? 0;
+      return sum;
+    },
+    { x: 0, y: 0 },
+  );
+
+  return {
+    parent: sourceSprite.parent,
+    x: position.x / visibleSprites.length,
+    y: position.y / visibleSprites.length,
+    rotation: sourceSprite.rotation,
+    width: sourceSprite.width,
+    bundleWidth: stripeHeight * visibleSprites.length,
+    depthScale,
+    zIndex: sourceSprite.zIndex ?? 0,
+  };
+}
+
+function ensureLineGlowGraphic(key, edgeGeometry) {
+  const parent = edgeGeometry?.parent;
+  if (!parent) return null;
+
+  let glowGraphic = activeLinkGlowGraphics.get(key);
+  if (!glowGraphic || glowGraphic.destroyed || glowGraphic.parent !== parent) {
+    destroyLinkGlowGraphic(glowGraphic);
+    glowGraphic = new PIXI.Graphics();
+    glowGraphic.eventMode = "none";
+    glowGraphic.blendMode = "add";
+    parent.addChild(glowGraphic);
+    activeLinkGlowGraphics.set(key, glowGraphic);
+  }
+
+  return glowGraphic;
+}
+
+function updateLineGlowGraphic(glowGraphic, edgeGeometry, style, styleIndex) {
+  const sourceWidth = getBaseLinkWidth(edgeGeometry.width);
+  const depthScale = getDepthScale(edgeGeometry.depthScale);
+  const endpointInset = Math.min(LINK_GLOW_ENDPOINT_INSET * depthScale, Math.max(0, sourceWidth / 2 - 0.5));
+  const halfLength = Math.max(0.5, (sourceWidth - endpointInset * 2) / 2);
+  const offsetX = Math.cos(edgeGeometry.rotation) * halfLength;
+  const offsetY = Math.sin(edgeGeometry.rotation) * halfLength;
+
+  glowGraphic.clear();
+  glowGraphic.visible = true;
+  glowGraphic
+    .moveTo(edgeGeometry.x - offsetX, edgeGeometry.y - offsetY)
+    .lineTo(edgeGeometry.x + offsetX, edgeGeometry.y + offsetY)
+    .stroke({
+      color: activeLinkHighlightColor,
+      width: getGlowLinkWidth(style, edgeGeometry.bundleWidth, depthScale),
+      alpha: style.alpha,
+      cap: "round",
+    });
+  glowGraphic.zIndex = edgeGeometry.zIndex - LINK_GLOW_Z_OFFSET - styleIndex * 0.01;
+}
+
+function pruneUnusedLineGlowGraphics(usedKeys) {
+  activeLinkGlowGraphics.forEach((graphic, key) => {
+    if (usedKeys.has(key)) return;
+    destroyLinkGlowGraphic(graphic);
+    activeLinkGlowGraphics.delete(key);
+  });
+}
+
+function updateLineHighlights3D({ links, lineGraphics, linkWidth }) {
+  clearLinkHighlightLayer();
+  if (activeLinkHighlightIds.size === 0 || !Array.isArray(lineGraphics)) {
+    clearLineGlowGraphics();
+    return;
+  }
+
+  const usedGlowKeys = new Set();
+
+  (links ?? []).forEach((link, index) => {
+    if (!activeLinkHighlightIds.has(getLinkIdText(link, index))) return;
+    const sprites = lineGraphics[index];
+    if (!Array.isArray(sprites)) return;
+
+    const edgeGeometry = getVisibleEdgeSpriteGeometry(sprites, linkWidth);
+    if (!edgeGeometry) return;
+
+    LINK_GLOW_STROKES.forEach((style, styleIndex) => {
+      const key = `${index}:${styleIndex}`;
+      const glowGraphic = ensureLineGlowGraphic(key, edgeGeometry);
+      if (!glowGraphic) return;
+      updateLineGlowGraphic(glowGraphic, edgeGeometry, style, styleIndex);
+      usedGlowKeys.add(key);
+    });
+  });
+
+  pruneUnusedLineGlowGraphics(usedGlowKeys);
+}
+
+function updateLinkHighlights(context) {
+  if (context) {
+    lastLinkHighlightContext = context;
+  }
+
+  const nextContext = context ?? lastLinkHighlightContext;
+  if (!nextContext) return;
+
+  if (Array.isArray(nextContext.lineGraphics)) {
+    updateLineHighlights3D(nextContext);
+  } else {
+    updateLineHighlights2D(nextContext);
+  }
+}
+
+export function setLinkHighlights(linkIds = [], highlightColor = activeLinkHighlightColor) {
+  activeLinkHighlightIds = new Set((linkIds ?? []).filter((linkId) => linkId !== undefined && linkId !== null && linkId !== ""));
+  activeLinkHighlightColor = highlightColor;
+  updateLinkHighlights();
+}
+
+export function updateHighlights(linkContext) {
   for (const circle of activeHighlights) {
     if (!circle || circle.destroyed) {
       activeHighlights.delete(circle);
@@ -98,4 +375,6 @@ export function updateHighlights() {
     }
     updateOverlay(circle, "communityHighlightOverlay", activeCommunityHighlights);
   }
+
+  updateLinkHighlights(linkContext);
 }

@@ -199,6 +199,8 @@ export function drawLine(lines, link, linkWidth, colorscheme, linkAttribsToColor
   const dx = link.target.x - link.source.x;
   const dy = link.target.y - link.source.y;
   const length = Math.sqrt(dx * dx + dy * dy);
+  if (!Number.isFinite(length) || length <= 0) return;
+
   const normedPerpendicularVector = { x: -dy / length, y: dx / length };
 
   for (let i = 0; i < link.attribs.length; i++) {

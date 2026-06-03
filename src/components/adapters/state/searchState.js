@@ -5,6 +5,7 @@ export const nodeQueryInit = "";
 export const linkSearchValueInit = "";
 export const linkQueryInit = "";
 export const highlightedNodeIdsInit = [];
+export const highlightedLinkIdsInit = [];
 export const matchingNodesInit = [];
 export const matchingLinksInit = [];
 
@@ -14,6 +15,7 @@ export const searchStateInit = {
   linkSearchValue: linkSearchValueInit,
   linkQuery: linkQueryInit,
   highlightedNodeIds: highlightedNodeIdsInit,
+  highlightedLinkIds: highlightedLinkIdsInit,
   matchingNodes: matchingNodesInit,
   matchingLinks: matchingLinksInit,
   selectedNodeId: null,

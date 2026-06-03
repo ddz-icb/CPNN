@@ -4,11 +4,13 @@ import { useSearchState } from "../state/searchState.js";
 import { useCommunityState } from "../state/communityState.js";
 import { usePixiState } from "../state/pixiState.js";
 import { useTheme } from "../state/themeState.js";
+import { useRenderState } from "../state/canvasState.js";
 import {
   clearCommunityHighlight,
   clearNodeHighlight,
   highlightCommunityNode,
   highlightNode,
+  setLinkHighlights,
 } from "../../domain/service/canvas_drawing/highlights.js";
 
 export function HighlightControl() {
@@ -16,6 +18,7 @@ export function HighlightControl() {
   const { communityState } = useCommunityState();
   const { pixiState } = usePixiState();
   const { theme } = useTheme();
+  const { renderState } = useRenderState();
 
   const highlightedRef = useRef([]);
   const communityHighlightedRef = useRef([]);
@@ -38,6 +41,11 @@ export function HighlightControl() {
       highlightedRef.current.push(nodeId);
     });
   }, [searchState.highlightedNodeIds, pixiState.nodeMap, theme.highlightColor]);
+
+  useEffect(() => {
+    setLinkHighlights(searchState.highlightedLinkIds, theme.highlightColor);
+    renderState.app?.renderer?.render(renderState.app.stage);
+  }, [searchState.highlightedLinkIds, theme.highlightColor, renderState.app]);
 
   useEffect(() => {
     const nodeMap = pixiState?.nodeMap;

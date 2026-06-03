@@ -13,8 +13,9 @@ import { centerOnNodes } from "../../../domain/service/canvas_interaction/center
 import {
   getLinkEndpointIds,
   getNodesByIds,
-  getSearchHighlightNodeIds,
+  getSearchLinkIds,
   getSearchLinkResults,
+  getSearchNodeIds,
   getSearchNodeResults,
   hasSameValues,
 } from "../../../domain/service/search/search.js";
@@ -27,7 +28,6 @@ import {
 } from "./searchResultComponents.js";
 
 const MAX_RESULTS = 30;
-const SEARCH_SELECTION_KEYS = ["selectedNodeId", "selectedLinkId"];
 
 export function SearchSidebar() {
   const { searchState, setSearchState, setAllSearchState } = useSearchState();
@@ -39,6 +39,7 @@ export function SearchSidebar() {
     matchingNodes = [],
     matchingLinks = [],
     highlightedNodeIds,
+    highlightedLinkIds,
     selectedNodeId,
     selectedLinkId,
   } = searchState;
@@ -64,7 +65,9 @@ export function SearchSidebar() {
   const hasActiveSearch = hasActiveNodeSearch || hasActiveLinkSearch;
   const showNodeClearButton = hasActiveNodeSearch && nodeSearchValue.trim().toLowerCase() === nodeQuery;
   const showLinkClearButton = hasActiveLinkSearch && linkSearchValue.trim().toLowerCase() === linkQuery;
-  const allMatchNodeIds = useMemo(() => getSearchHighlightNodeIds(matchingNodes, matchingLinks), [matchingNodes, matchingLinks]);
+  const allMatchNodeIds = useMemo(() => getSearchNodeIds(matchingNodes), [matchingNodes]);
+  const allMatchLinkIds = useMemo(() => getSearchLinkIds(matchingLinks), [matchingLinks]);
+  const allMatchCount = allMatchNodeIds.length + allMatchLinkIds.length;
 
   const handleNodeEditorChange = useCallback(
     (editor) => handleEditorChangeHelper(editor, (value) => setSearchState("nodeSearchValue", value)),
@@ -114,7 +117,8 @@ export function SearchSidebar() {
       nodeQuery: searchStateInit.nodeQuery,
       matchingNodes: searchStateInit.matchingNodes,
       selectedNodeId: null,
-      highlightedNodeIds: getSearchHighlightNodeIds([], matchingLinks),
+      highlightedNodeIds: [],
+      highlightedLinkIds: getSearchLinkIds(matchingLinks),
     });
   };
 
@@ -125,13 +129,8 @@ export function SearchSidebar() {
       linkQuery: searchStateInit.linkQuery,
       matchingLinks: searchStateInit.matchingLinks,
       selectedLinkId: null,
-      highlightedNodeIds: getSearchHighlightNodeIds(matchingNodes, []),
-    });
-  };
-
-  const clearOtherSelections = (activeKey) => {
-    SEARCH_SELECTION_KEYS.forEach((key) => {
-      if (key !== activeKey) setSearchState(key, null);
+      highlightedNodeIds: getSearchNodeIds(matchingNodes),
+      highlightedLinkIds: [],
     });
   };
 
@@ -140,11 +139,15 @@ export function SearchSidebar() {
     if (!nodeId) return;
     const node = item?.node ?? matchingNodes?.find((n) => n.id === nodeId);
     const nextSelection = selectedNodeId === nodeId ? null : nodeId;
-    clearOtherSelections("selectedNodeId");
-    setSearchState("selectedNodeId", nextSelection);
+    setAllSearchState({
+      ...searchState,
+      selectedNodeId: nextSelection,
+      selectedLinkId: null,
+      highlightedNodeIds: node && nextSelection ? [node.id] : [],
+      highlightedLinkIds: [],
+    });
     if (!node || !nextSelection) return;
 
-    setSearchState("highlightedNodeIds", [node.id]);
     centerOnNodes([node], {
       appearance,
       renderState,
@@ -156,21 +159,34 @@ export function SearchSidebar() {
     const linkId = item?.linkId;
     if (!linkId) return;
     const nextSelection = selectedLinkId === linkId ? null : linkId;
-    clearOtherSelections("selectedLinkId");
-    setSearchState("selectedLinkId", nextSelection);
+    setAllSearchState({
+      ...searchState,
+      selectedNodeId: null,
+      selectedLinkId: nextSelection,
+      highlightedNodeIds: [],
+      highlightedLinkIds: nextSelection ? [linkId] : [],
+    });
     if (!nextSelection) return;
 
     const endpointIds = getLinkEndpointIds(item);
-    setSearchState("highlightedNodeIds", endpointIds);
     centerOnNodes(getNodesByIds(endpointIds, nodeById), { appearance, renderState, container });
   };
 
-  const isHighlightAllActive = allMatchNodeIds.length > 0 && Array.isArray(highlightedNodeIds) && hasSameValues(highlightedNodeIds, allMatchNodeIds);
+  const isHighlightAllActive =
+    allMatchCount > 0 &&
+    Array.isArray(highlightedNodeIds) &&
+    Array.isArray(highlightedLinkIds) &&
+    hasSameValues(highlightedNodeIds, allMatchNodeIds) &&
+    hasSameValues(highlightedLinkIds, allMatchLinkIds);
 
   const handleHighlightAllToggle = (event) => {
-    if (allMatchNodeIds.length === 0) return;
+    if (allMatchCount === 0) return;
     const shouldEnable = event?.target?.checked ?? !isHighlightAllActive;
-    setSearchState("highlightedNodeIds", shouldEnable ? allMatchNodeIds : []);
+    setAllSearchState({
+      ...searchState,
+      highlightedNodeIds: shouldEnable ? allMatchNodeIds : [],
+      highlightedLinkIds: shouldEnable ? allMatchLinkIds : [],
+    });
   };
 
   const nodeResultSections = [
@@ -240,13 +256,13 @@ export function SearchSidebar() {
           <div className="search-empty-hint text-secondary">Enter a node or link query above to search graph data.</div>
         ) : (
           <>
-            {allMatchNodeIds.length > 0 && (
+            {allMatchCount > 0 && (
               <SwitchBlock
                 value={isHighlightAllActive}
                 setValue={handleHighlightAllToggle}
                 text={"Highlight all Matches"}
                 infoHeading={"Highlight all Matches"}
-                infoDescription={"Toggle to highlight every node that matches the current search."}
+                infoDescription={"Toggle to highlight every node or link that matches the current search."}
               />
             )}
             {hasActiveNodeSearch &&
