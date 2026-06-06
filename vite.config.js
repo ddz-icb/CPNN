@@ -3,11 +3,13 @@ import react from "@vitejs/plugin-react-swc";
 import path from "node:path";
 
 // Vite configuration for the React frontend. Keeps CRA conventions where possible.
+const srcDir = `${path.resolve(process.cwd(), "src")}${path.sep}`;
+
 const jsxInJs = () => ({
   name: "jsx-in-js",
   enforce: "pre",
   async transform(code, id) {
-    if (!id.match(/\.[jt]sx?$/)) return null;
+    if (!id.startsWith(srcDir) || !id.match(/\.[jt]sx?(?:\?.*)?$/)) return null;
     return transformWithEsbuild(code, id, {
       loader: "jsx",
       jsx: "automatic",

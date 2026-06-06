@@ -2,7 +2,7 @@ import log from "../logging/logger.js";
 import { useGraphFlags } from "../state/graphFlagsState.js";
 import { useGraphEnrichment } from "../state/graphEnrichmentState.js";
 import { useGraphState } from "../state/graphState.js";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useError } from "../state/errorState.js";
 import { useMappingState } from "../state/mappingState.js";
 import { useCommunityState } from "../state/communityState.js";
@@ -14,6 +14,7 @@ import { enrichGraphWithStringDb } from "../../domain/service/enrichment/stringD
 import { enrichGraphWithOmniPath } from "../../domain/service/enrichment/omniPathEnrichment.js";
 
 export const useGraphSetup = () => {
+  const [isAdditionalDataLoading, setIsAdditionalDataLoading] = useState(false);
   const { graphState, setGraphState } = useGraphState();
   const { graphFlags, setGraphFlags } = useGraphFlags();
   const { graphEnrichment } = useGraphEnrichment();
@@ -21,46 +22,66 @@ export const useGraphSetup = () => {
   const { setError } = useError();
   const { mappingState } = useMappingState();
   const stringDbCommunityResolution = graphEnrichment.stringDbGroupEnrichmentEnabled ? communityState.communityResolution : null;
+  const additionalDataEnabled =
+    graphEnrichment.stringDbEnrichmentEnabled ||
+    graphEnrichment.stringDbNodeAttributeEnrichmentEnabled ||
+    graphEnrichment.stringDbGroupEnrichmentEnabled ||
+    graphEnrichment.omniPathEnrichmentEnabled ||
+    graphEnrichment.omniPathPhosphataseEnrichmentEnabled ||
+    graphEnrichment.omniPathNodeAnnotationEnrichmentEnabled;
 
   // load graph
   useEffect(() => {
     if (!graphState.activeGraphNames) return;
     log.info("Loading graph");
+    let cancelled = false;
 
     const reloadGraph = async () => {
       let graph = await graphService.getJoinedGraph(graphState.activeGraphNames);
       graph.data = applyNodeMapping(graph.data, mappingState.mapping?.data);
-      graph.data = await enrichGraphWithStringDb(graph.data, {
-        enabled: graphEnrichment.stringDbEnrichmentEnabled,
-        includeEvidence: graphEnrichment.stringDbEvidenceEnrichmentEnabled,
-        nodeAttributeEnabled: graphEnrichment.stringDbNodeAttributeEnrichmentEnabled,
-        groupEnrichmentEnabled: graphEnrichment.stringDbGroupEnrichmentEnabled,
-        minConfidence: graphEnrichment.stringDbMinConfidence,
-        minEvidenceScore: graphEnrichment.stringDbMinEvidenceScore,
-        nodeAttributeType: graphEnrichment.stringDbNodeAttributeType,
-        nodeAttributeTermFilter: graphEnrichment.stringDbNodeAttributeTermFilter,
-        maxGroupEnrichmentFdr: graphEnrichment.stringDbGroupEnrichmentMaxFdr,
-        speciesId: graphEnrichment.stringDbSpeciesId,
-        communityResolution: stringDbCommunityResolution,
-      });
-      graph.data = await enrichGraphWithOmniPath(graph.data, {
-        kinaseEnabled: graphEnrichment.omniPathEnrichmentEnabled,
-        phosphataseEnabled: graphEnrichment.omniPathPhosphataseEnrichmentEnabled,
-        nodeAnnotationEnabled: graphEnrichment.omniPathNodeAnnotationEnrichmentEnabled,
-        nodeAnnotationMode: graphEnrichment.omniPathNodeAnnotationMode,
-        minCurationEffort: graphEnrichment.omniPathMinCurationEffort,
-      });
+      if (!cancelled && additionalDataEnabled) setIsAdditionalDataLoading(true);
 
+      try {
+        graph.data = await enrichGraphWithStringDb(graph.data, {
+          enabled: graphEnrichment.stringDbEnrichmentEnabled,
+          includeEvidence: graphEnrichment.stringDbEvidenceEnrichmentEnabled,
+          nodeAttributeEnabled: graphEnrichment.stringDbNodeAttributeEnrichmentEnabled,
+          groupEnrichmentEnabled: graphEnrichment.stringDbGroupEnrichmentEnabled,
+          minConfidence: graphEnrichment.stringDbMinConfidence,
+          minEvidenceScore: graphEnrichment.stringDbMinEvidenceScore,
+          nodeAttributeType: graphEnrichment.stringDbNodeAttributeType,
+          nodeAttributeTermFilter: graphEnrichment.stringDbNodeAttributeTermFilter,
+          maxGroupEnrichmentFdr: graphEnrichment.stringDbGroupEnrichmentMaxFdr,
+          speciesId: graphEnrichment.stringDbSpeciesId,
+          communityResolution: stringDbCommunityResolution,
+        });
+        graph.data = await enrichGraphWithOmniPath(graph.data, {
+          kinaseEnabled: graphEnrichment.omniPathEnrichmentEnabled,
+          phosphataseEnabled: graphEnrichment.omniPathPhosphataseEnrichmentEnabled,
+          nodeAnnotationEnabled: graphEnrichment.omniPathNodeAnnotationEnrichmentEnabled,
+          nodeAnnotationMode: graphEnrichment.omniPathNodeAnnotationMode,
+          minCurationEffort: graphEnrichment.omniPathMinCurationEffort,
+        });
+      } finally {
+        if (!cancelled) setIsAdditionalDataLoading(false);
+      }
+
+      if (cancelled) return;
       resetService.resetSimulation({ preserveSearch: true });
       applyGraphSettings(graph);
       setGraphState("originGraph", graph);
     };
 
     reloadGraph().catch((error) => {
+      if (cancelled) return;
       const message = error instanceof Error ? error.message : "Error loading graph";
       setError(message);
       log.error("Error loading graph:", error);
     });
+
+    return () => {
+      cancelled = true;
+    };
   }, [
     graphEnrichment.stringDbEnrichmentEnabled,
     graphEnrichment.stringDbEvidenceEnrichmentEnabled,
@@ -92,4 +113,6 @@ export const useGraphSetup = () => {
     setGraphState("graph", graph);
     setGraphFlags("isPreprocessed", true);
   }, [graphState.originGraph]);
+
+  return isAdditionalDataLoading;
 };

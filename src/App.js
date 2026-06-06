@@ -33,11 +33,12 @@ import { SearchControl } from "./components/adapters/controllers/searchControl.j
 import { Lasso } from "./components/adapters/controllers/lassoControl.js";
 import { Tooltips } from "./components/adapters/gui/tooltip/tooltips.js";
 import { HighlightControl } from "./components/adapters/controllers/highlightControl.js";
+import { AdditionalDataLoading } from "./components/adapters/gui/loading/additionalDataLoading.js";
 
 function App() {
   const { theme } = useTheme();
 
-  useGraphSetup();
+  const isAdditionalDataLoading = useGraphSetup();
   useEffect(() => {
     const themeName = theme?.name === "dark" ? "dark" : "light";
     document.body.classList.remove("light", "dark");
@@ -61,6 +62,7 @@ function App() {
         <Tooltips />
         <HeaderBar />
         <Sidebar />
+        <AdditionalDataLoading isLoading={isAdditionalDataLoading} />
         <div className="canvas-container">
           <RenderControl />
           <Error />

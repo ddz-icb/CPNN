@@ -91,3 +91,60 @@
 .popup-description p {
   margin: 0;
 }
+
+.additional-data-loading-overlay {
+  position: fixed;
+  z-index: 90;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.additional-data-loading-container {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  width: min(360px, calc(100vw - 2rem));
+  padding: 1rem 1.1rem;
+  box-sizing: border-box;
+  background: var(--color-surface);
+  border: var(--border-thin) solid var(--color-border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-soft);
+  color: var(--color-text-primary);
+}
+
+.additional-data-loading-spinner {
+  width: 1.6rem;
+  height: 1.6rem;
+  flex: 0 0 auto;
+  border: 0.2rem solid var(--color-border-subtle);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  animation: additional-data-loading-spin 0.8s linear infinite;
+}
+
+.additional-data-loading-heading {
+  font-size: var(--font-size-heading);
+  font-weight: var(--font-weight-medium);
+}
+
+.additional-data-loading-description {
+  margin-top: 0.2rem;
+  color: var(--color-text-secondary);
+  line-height: 1.35;
+}
+
+@keyframes additional-data-loading-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .additional-data-loading-spinner {
+    animation-duration: 1.6s;
+  }
+}
