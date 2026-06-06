@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useRef } from "react";
 
 import { useAppearance } from "../../state/appearanceState.js";
 import { useColorschemeState } from "../../state/colorschemeState.js";
@@ -28,7 +28,6 @@ import {
   applyKeyframe,
   buildKeyframeRows,
   captureCurrentView,
-  createCameraKeyframe,
   formatNumber,
   formatKeyframeView,
   getCameraPathDurationMs,
@@ -55,7 +54,7 @@ import {
   createTooltipOverlayController,
   describeKeyframeScene,
 } from "./videographyScene.js";
-import { isPopupOpen, isTypingTarget } from "../hooks/keyboardUtils.js";
+import { useAddKeyframe } from "../hooks/useAddKeyframe.js";
 
 const DeleteIcon = (props) => <SvgIcon svg={trashSvg} {...props} />;
 
@@ -91,6 +90,7 @@ export function VideographySidebar() {
   const { renderState } = useRenderState();
   const { theme } = useTheme();
   const { videography, setVideography, setKeyframes } = useVideography();
+  const { addKeyframe: handleAddKeyframe, canAddKeyframe } = useAddKeyframe();
   const lastProgressRef = useRef(0);
 
   const keyframes = videography.keyframes ?? [];
@@ -100,7 +100,7 @@ export function VideographySidebar() {
   const exportFormat = getVideoExportFormat(videography.exportFormat);
   const hasModeMismatch = Boolean(routeMode && routeMode !== currentMode);
   const hasReadyCanvas = Boolean(renderState.app && container.width && container.height && graphState.graph);
-  const canEditRoute = hasReadyCanvas && !videography.isRendering && !hasModeMismatch;
+  const canEditRoute = canAddKeyframe;
   const canPreviewRoute = hasReadyCanvas && !videography.isRendering && keyframes.length >= 2;
   const canDownloadRoute = hasReadyCanvas && !videography.isRendering && keyframes.length >= 2;
   const totalDurationSeconds = getCameraPathDurationMs(keyframes, videography.holdSeconds) / 1000;
@@ -130,59 +130,6 @@ export function VideographySidebar() {
     },
     [setKeyframes],
   );
-
-  const handleAddKeyframe = useCallback(() => {
-    const captured = captureCurrentView({ app: renderState.app, appearance, container });
-    if (!captured) {
-      setStatus("Canvas is not ready.", 0);
-      return;
-    }
-
-    const nextIndex = keyframes.length;
-    const nextKeyframe = {
-      ...createCameraKeyframe({
-        captured,
-        index: nextIndex,
-        transitionSeconds: videography.defaultTransitionSeconds,
-        holdSeconds: videography.holdSeconds,
-      }),
-      scene: createCapturedKeyframeScene({
-        graphData: graphState.graph?.data,
-        nodeMap: pixiState.nodeMap,
-        mode: captured.mode,
-      }),
-    };
-
-    setKeyframes([...keyframes, nextKeyframe]);
-    setVideography("selectedKeyframeId", nextKeyframe.id);
-    setStatus(`Added ${nextKeyframe.label}.`, 0);
-  }, [
-    appearance,
-    container,
-    graphState.graph?.data,
-    keyframes,
-    pixiState.nodeMap,
-    renderState.app,
-    setKeyframes,
-    setStatus,
-    setVideography,
-    videography.defaultTransitionSeconds,
-    videography.holdSeconds,
-  ]);
-
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (event.repeat || event.key?.toLowerCase() !== "k") return;
-      if (isTypingTarget(document.activeElement) || isPopupOpen()) return;
-      if (!canEditRoute) return;
-
-      event.preventDefault();
-      handleAddKeyframe();
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [canEditRoute, handleAddKeyframe]);
 
   const handleClear = () => {
     setKeyframes([]);

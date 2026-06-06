@@ -1,5 +1,6 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useSidebarKeyboard } from "../hooks/useSidebarKeyboard.js";
+import { useAddKeyframe } from "../hooks/useAddKeyframe.js";
 import { SvgIcon } from "../reusable_components/SvgIcon.jsx";
 import leftArrowSvg from "../../../../assets/icons/leftArrow.svg?raw";
 
@@ -17,6 +18,7 @@ import { VideographySidebar } from "./videographySidebar.js";
 export function Sidebar(props) {
   const [activeNavItem, setActiveNavItem] = useState("Selection");
   const [lastNavItem, setLastNavItem] = useState("Data");
+  const { addKeyframe } = useAddKeyframe();
 
   const handleSetActiveNavItem = useCallback((item) => {
     setActiveNavItem(item);
@@ -25,7 +27,8 @@ export function Sidebar(props) {
     }
   }, []);
 
-  useSidebarKeyboard(handleSetActiveNavItem);
+  const shortcutActions = useMemo(() => ({ k: addKeyframe }), [addKeyframe]);
+  useSidebarKeyboard(handleSetActiveNavItem, shortcutActions);
 
   const sidebarComponents = {
     Selection: <SelectionSidebar handleNavItemClick={handleSetActiveNavItem} activeNavItem={lastNavItem} />,
