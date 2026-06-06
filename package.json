@@ -23,6 +23,7 @@
     "bootstrap": "^5.3.3",
     "canvas-to-svg": "^1.0.3",
     "canvg": "^4.0.3",
+    "cargo": "^0.8.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "codemirror": "^5.65.19",
