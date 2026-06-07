@@ -1,9 +1,11 @@
 import { playCameraPath, renderCameraPathFrameSchedule } from "./cameraPathPlayback.js";
 import { createCameraPathTimeline, validateCameraPath } from "./cameraPathTimeline.js";
 import { getViewMode } from "./cameraView.js";
+import { createMp4CanvasEncoder } from "./mp4Encoding.js";
 import { createWebMCanvasEncoder, VIDEO_ENCODER_ERROR_CODE } from "./videoEncoding.js";
 import {
   VIDEO_EXPORT_FORMAT_DEFAULT,
+  VIDEO_EXPORT_FORMAT_MP4,
   VIDEO_EXPORT_FORMAT_WEBM,
   VIDEO_EXPORT_FPS,
   VIDEO_EXPORT_QUALITY_DEFAULT,
@@ -91,6 +93,26 @@ export async function recordCameraPathSceneVideo({
 
   try {
     const normalizedFormat = getVideoExportFormat(exportFormat);
+    if (normalizedFormat === VIDEO_EXPORT_FORMAT_MP4) {
+      const mp4Result = await recordGpuFramesWithMp4Encoder({
+        keyframes,
+        app,
+        appearance,
+        container,
+        graphName,
+        holdSeconds,
+        exportConfig,
+        outputContainer,
+        captureCanvas,
+        drawFrame,
+        onProgress,
+        onKeyframeEnter,
+        onTransitionStart,
+        onTransitionFrame,
+      });
+      if (mp4Result) return mp4Result;
+    }
+
     if (normalizedFormat === VIDEO_EXPORT_FORMAT_WEBM) {
       const webmResult = await recordGpuFramesWithWebCodecs({
         keyframes,
@@ -132,6 +154,48 @@ export async function recordCameraPathSceneVideo({
   }
 }
 
+async function recordGpuFramesWithMp4Encoder({
+  keyframes,
+  app,
+  appearance,
+  container,
+  graphName,
+  holdSeconds,
+  exportConfig,
+  outputContainer,
+  captureCanvas,
+  drawFrame,
+  onProgress,
+  onKeyframeEnter,
+  onTransitionStart,
+  onTransitionFrame,
+}) {
+  const encoder = await createMp4CanvasEncoder({
+    canvas: captureCanvas,
+    width: outputContainer.width,
+    height: outputContainer.height,
+    fps: VIDEO_EXPORT_FPS,
+    bitrate: exportConfig.bitrateMbps * 1000 * 1000,
+  });
+  if (!encoder) return null;
+
+  return recordGpuFramesWithOfflineEncoder({
+    encoder,
+    keyframes,
+    app,
+    appearance,
+    container,
+    graphName,
+    holdSeconds,
+    captureCanvas,
+    drawFrame,
+    onProgress,
+    onKeyframeEnter,
+    onTransitionStart,
+    onTransitionFrame,
+  });
+}
+
 async function recordGpuFramesWithWebCodecs({
   keyframes,
   app,
@@ -160,6 +224,46 @@ async function recordGpuFramesWithWebCodecs({
   if (!encoder) return null;
 
   try {
+    return await recordGpuFramesWithOfflineEncoder({
+      encoder,
+      keyframes,
+      app,
+      appearance,
+      container,
+      graphName,
+      holdSeconds,
+      captureCanvas,
+      drawFrame,
+      onProgress,
+      onKeyframeEnter,
+      onTransitionStart,
+      onTransitionFrame,
+    });
+  } catch (error) {
+    if (error?.code === VIDEO_ENCODER_ERROR_CODE) return null;
+    throw error;
+  }
+}
+
+async function recordGpuFramesWithOfflineEncoder({
+  encoder,
+  keyframes,
+  app,
+  appearance,
+  container,
+  graphName,
+  holdSeconds,
+  captureCanvas,
+  drawFrame,
+  onProgress,
+  onKeyframeEnter,
+  onTransitionStart,
+  onTransitionFrame,
+}) {
+  const timeline = createCameraPathTimeline(keyframes, holdSeconds);
+  const frameSchedule = createVideoFrameSchedule(timeline.totalMs, VIDEO_EXPORT_FPS);
+
+  try {
     await renderCameraPathFrameSchedule({
       keyframes,
       app,
@@ -183,7 +287,6 @@ async function recordGpuFramesWithWebCodecs({
     return { blob, filename };
   } catch (error) {
     encoder.close();
-    if (error?.code === VIDEO_ENCODER_ERROR_CODE) return null;
     throw error;
   }
 }

@@ -46,6 +46,7 @@
     "lucide-react": "^0.485.0",
     "math": "^0.0.3",
     "mathjs": "^15.2.0",
+    "mediabunny": "^1.46.0",
     "pandas-js": "^0.2.4",
     "papaparse": "^5.5.2",
     "path-browserify": "^1.0.1",

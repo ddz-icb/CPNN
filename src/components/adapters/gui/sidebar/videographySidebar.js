@@ -261,7 +261,7 @@ export function VideographySidebar() {
       <SelectFieldBlock
         text={"Export Format"}
         infoHeading={"Export Format"}
-        infoDescription={"WebM uses offline VP9/VP8 encoding and is recommended for large graphs. MP4 uses real-time browser recording and is better suited to smaller graphs."}
+        infoDescription={"MP4 uses offline H.264 encoding. WebM uses offline VP9 or VP8 encoding."}
         value={exportFormat}
         setValue={(value) => setVideography("exportFormat", getVideoExportFormat(value))}
         options={VIDEO_EXPORT_FORMAT_OPTIONS}
