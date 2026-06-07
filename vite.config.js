@@ -11,7 +11,9 @@ const jsxInJs = () => ({
   enforce: "pre",
   async load(id) {
     if (!id.startsWith(srcDir) || !id.match(/\.[jt]sx?(?:\?.*)?$/)) return null;
-    const code = fs.readFileSync(id.replace(/\//g, "\\"), "utf-8");
+    // Convert forward slashes back to backslashes only on Windows
+    const filePath = process.platform === "win32" ? id.replace(/\//g, "\\") : id;
+    const code = fs.readFileSync(filePath, "utf-8");
     return transformWithEsbuild(code, id, {
       loader: "jsx",
       jsx: "automatic",
