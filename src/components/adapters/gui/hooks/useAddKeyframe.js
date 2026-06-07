@@ -12,7 +12,7 @@ import {
   getRouteMode,
   getViewMode,
 } from "../../../domain/service/videography/videography.js";
-import { createCapturedKeyframeScene } from "../sidebar/videographyScene.js";
+import { createCapturedKeyframeScene, reuseEquivalentGraphSnapshot } from "../sidebar/videographyScene.js";
 
 export function useAddKeyframe() {
   const { appearance } = useAppearance();
@@ -41,6 +41,12 @@ export function useAddKeyframe() {
 
     let nextKeyframe;
     setKeyframes((currentKeyframes) => {
+      const previousScene = currentKeyframes[currentKeyframes.length - 1]?.scene;
+      const capturedScene = createCapturedKeyframeScene({
+        graphData: graphState.graph?.data,
+        nodeMap: pixiState.nodeMap,
+        mode: captured.mode,
+      });
       nextKeyframe = {
         ...createCameraKeyframe({
           captured,
@@ -48,11 +54,7 @@ export function useAddKeyframe() {
           transitionSeconds: videography.defaultTransitionSeconds,
           holdSeconds: videography.holdSeconds,
         }),
-        scene: createCapturedKeyframeScene({
-          graphData: graphState.graph?.data,
-          nodeMap: pixiState.nodeMap,
-          mode: captured.mode,
-        }),
+        scene: reuseEquivalentGraphSnapshot(capturedScene, previousScene),
       };
       return [...currentKeyframes, nextKeyframe];
     });

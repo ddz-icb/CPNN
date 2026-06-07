@@ -3,8 +3,10 @@ import { ease, finiteOr } from "./cameraPathMath.js";
 import { runTimedStep, throwIfAborted } from "./cameraPathTiming.js";
 import { applyCameraView, applyKeyframe, getViewMode, interpolateCameraView } from "./cameraView.js";
 import {
+  createCameraPathTimeline,
   getCameraPathDurationMs,
   getKeyframeHoldSeconds,
+  sampleCameraPathAtMs,
   validateCameraPath,
 } from "./cameraPathTimeline.js";
 
@@ -88,6 +90,69 @@ export async function playCameraPath({
 
   applyKeyframe(keyframes[keyframes.length - 1], { app, appearance, container, syncZoom: syncZoomAtEnd });
   onFrame?.();
+  onProgress?.(1);
+}
+
+export async function renderCameraPathFrameSchedule({
+  keyframes,
+  app,
+  appearance,
+  container,
+  holdSeconds = 0,
+  frameSchedule,
+  onProgress,
+  onFrame,
+  onKeyframeEnter,
+  onTransitionStart,
+  onTransitionFrame,
+  signal,
+  syncZoomAtEnd = true,
+}) {
+  validateCameraPath(keyframes, getViewMode(appearance));
+
+  const timeline = createCameraPathTimeline(keyframes, holdSeconds);
+  const frames = Array.isArray(frameSchedule) ? frameSchedule : [];
+  const keyframeIndices = new Map(keyframes.map((keyframe, index) => [keyframe, index]));
+  const firstKeyframe = keyframes[0];
+  let enteredKeyframe = firstKeyframe;
+  let activeTransitionTo = null;
+
+  applyKeyframe(firstKeyframe, { app, appearance, container });
+  await onKeyframeEnter?.(firstKeyframe, 0);
+
+  for (let frameIndex = 0; frameIndex < frames.length; frameIndex += 1) {
+    throwIfAborted(signal);
+
+    const frame = frames[frameIndex];
+    const sample = sampleCameraPathAtMs(timeline, frame.timeMs);
+    if (!sample?.view) continue;
+
+    if (sample.stepType === "transition") {
+      if (activeTransitionTo !== sample.to) {
+        activeTransitionTo = sample.to;
+        await onTransitionStart?.(sample.from, sample.to, keyframeIndices.get(sample.from) ?? 0);
+      }
+      await onTransitionFrame?.({
+        from: sample.from,
+        to: sample.to,
+        rawT: sample.rawT,
+        easedT: sample.easedT,
+        index: keyframeIndices.get(sample.from) ?? 0,
+      });
+    } else {
+      activeTransitionTo = null;
+      if (sample.keyframe !== enteredKeyframe) {
+        enteredKeyframe = sample.keyframe;
+        await onKeyframeEnter?.(sample.keyframe, keyframeIndices.get(sample.keyframe) ?? 0);
+      }
+    }
+
+    applyCameraView(sample.mode, sample.view, { app, appearance, container });
+    await onFrame?.({ frame, frameIndex, sample, timeline });
+    onProgress?.(frames.length <= 1 ? 1 : frameIndex / (frames.length - 1));
+  }
+
+  applyKeyframe(keyframes[keyframes.length - 1], { app, appearance, container, syncZoom: syncZoomAtEnd });
   onProgress?.(1);
 }
 

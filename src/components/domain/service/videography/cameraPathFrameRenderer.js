@@ -51,11 +51,16 @@ export function createCameraPathFrameRenderer({
     container,
   };
   const frameBackground = background ?? resolveCanvasBackground(sourceCanvas);
+  let lastStaticKeyframe = null;
+  let lastContext = null;
 
   return {
     drawFrameAtTime(context, timeline, timeMs) {
       const sample = sampleCameraPathAtMs(timeline, timeMs);
       if (!sample?.view) return;
+      if (sample.stepType === "hold" && sample.keyframe === lastStaticKeyframe && context === lastContext) {
+        return;
+      }
       const frameContext = getFrameRenderContext(sample, fallbackRenderContext);
 
       context.save();
@@ -74,6 +79,8 @@ export function createCameraPathFrameRenderer({
 
       drawOverlay?.(context, { sample, frameContext, sourceContainer: container, outputContainer });
       context.restore();
+      lastStaticKeyframe = sample.stepType === "hold" ? sample.keyframe : null;
+      lastContext = context;
     },
   };
 }

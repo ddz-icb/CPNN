@@ -6,7 +6,7 @@ import {
   createRenderedCameraPathExportSetup,
   createRenderedCameraPathPreviewSetup,
 } from "./renderedCameraPathSetup.js";
-import { createWebMCanvasEncoder } from "./videoEncoding.js";
+import { createWebMCanvasEncoder, VIDEO_ENCODER_ERROR_CODE } from "./videoEncoding.js";
 import {
   VIDEO_EXPORT_FORMAT_DEFAULT,
   VIDEO_EXPORT_FORMAT_MP4,
@@ -216,6 +216,18 @@ async function recordRenderedCameraPathWebm({ captureCanvas, context, timeline, 
     return { blob, filename };
   } catch (error) {
     webmEncoder.close();
+    if (error?.code === VIDEO_ENCODER_ERROR_CODE) {
+      return recordRenderedCameraPathWebmWithMediaRecorder({
+        captureCanvas,
+        context,
+        timeline,
+        frameSchedule,
+        frameRenderer,
+        exportConfig,
+        graphName,
+        onProgress,
+      });
+    }
     throw error;
   }
 }

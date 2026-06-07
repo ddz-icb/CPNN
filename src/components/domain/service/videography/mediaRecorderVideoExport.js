@@ -57,7 +57,9 @@ export async function recordRenderedFramesWithMediaRecorder({
 
 async function renderFramesToRecorder({ recorder, context, timeline, frameSchedule, frameRenderer, requestFrame, onProgress }) {
   try {
+    const recorderStarted = waitForRecorderStart(recorder);
     recorder.start(250);
+    await recorderStarted;
     await playRenderedCameraPathRecording({
       context,
       timeline,
@@ -76,6 +78,28 @@ async function renderFramesToRecorder({ recorder, context, timeline, frameSchedu
       recorder.stop();
     }
   }
+}
+
+function waitForRecorderStart(recorder) {
+  if (recorder.state === "recording") return Promise.resolve();
+
+  return new Promise((resolve, reject) => {
+    const handleStart = () => {
+      cleanup();
+      resolve();
+    };
+    const handleError = () => {
+      cleanup();
+      reject(recorder.error ?? new Error("Video recording failed to start."));
+    };
+    const cleanup = () => {
+      recorder.removeEventListener("start", handleStart);
+      recorder.removeEventListener("error", handleError);
+    };
+
+    recorder.addEventListener("start", handleStart, { once: true });
+    recorder.addEventListener("error", handleError, { once: true });
+  });
 }
 
 function createMediaRecorder(stream, mimeType, bitrate) {

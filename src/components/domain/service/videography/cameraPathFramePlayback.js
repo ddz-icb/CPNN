@@ -6,6 +6,8 @@ import { throwIfAborted } from "./cameraPathTiming.js";
 export function playRenderedCameraPathPreview({ context, timeline, totalMs, frameRenderer, onProgress, signal }) {
   return new Promise((resolve, reject) => {
     const startedAt = performance.now();
+    const frameIntervalMs = 1000 / VIDEO_EXPORT_FPS;
+    let lastRenderedAt = Number.NEGATIVE_INFINITY;
     let finished = false;
 
     const renderAt = (timeMs) => {
@@ -28,7 +30,10 @@ export function playRenderedCameraPathPreview({ context, timeline, totalMs, fram
       try {
         throwIfAborted(signal);
         const elapsedMs = totalMs > 0 ? clamp(now - startedAt, 0, totalMs) : 0;
-        renderAt(elapsedMs);
+        if (now - lastRenderedAt >= frameIntervalMs || elapsedMs >= totalMs) {
+          renderAt(elapsedMs);
+          lastRenderedAt = now;
+        }
 
         if (elapsedMs >= totalMs) {
           finish();
@@ -43,6 +48,7 @@ export function playRenderedCameraPathPreview({ context, timeline, totalMs, fram
 
     try {
       renderAt(0);
+      lastRenderedAt = startedAt;
       if (totalMs <= 0) {
         finish();
         return;
@@ -68,5 +74,11 @@ export async function playRenderedCameraPathRecording({ context, timeline, total
     frameRenderer.drawFrameAtTime(context, timeline, frame.timeMs);
     requestFrame();
     onProgress?.(frames.length <= 1 ? 1 : frameIndex / (frames.length - 1));
+
+    // MediaRecorder events run asynchronously. Yield even when rendering has
+    // fallen behind so start/data events are not starved by a tight frame loop.
+    if (delayMs <= 0) {
+      await wait(0);
+    }
   }
 }

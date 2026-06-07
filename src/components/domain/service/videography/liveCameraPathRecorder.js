@@ -1,9 +1,13 @@
-import { playCameraPath } from "./cameraPathPlayback.js";
-import { validateCameraPath } from "./cameraPathTimeline.js";
+import { playCameraPath, renderCameraPathFrameSchedule } from "./cameraPathPlayback.js";
+import { createCameraPathTimeline, validateCameraPath } from "./cameraPathTimeline.js";
 import { getViewMode } from "./cameraView.js";
+import { createWebMCanvasEncoder, VIDEO_ENCODER_ERROR_CODE } from "./videoEncoding.js";
 import {
+  VIDEO_EXPORT_FORMAT_DEFAULT,
+  VIDEO_EXPORT_FORMAT_WEBM,
   VIDEO_EXPORT_FPS,
   VIDEO_EXPORT_QUALITY_DEFAULT,
+  getVideoExportFormat,
   getVideoExportConfig,
 } from "./videoExportConfig.js";
 import {
@@ -13,6 +17,9 @@ import {
   triggerDownload,
 } from "./videoOutput.js";
 import {
+  createCanvasCaptureStream,
+  createVideoFrameSchedule,
+  getFrameScheduleDurationMs,
   getPixiCanvas,
   getVideoExportContainer,
   getVideoViewportTransform,
@@ -28,6 +35,7 @@ export async function recordCameraPathSceneVideo({
   graphName,
   holdSeconds = 0,
   exportQualityPreset = VIDEO_EXPORT_QUALITY_DEFAULT,
+  exportFormat = VIDEO_EXPORT_FORMAT_DEFAULT,
   onProgress,
   onKeyframeEnter,
   onTransitionStart,
@@ -35,10 +43,6 @@ export async function recordCameraPathSceneVideo({
   drawOverlay,
 }) {
   validateCameraPath(keyframes, getViewMode(appearance));
-
-  if (typeof MediaRecorder === "undefined") {
-    throw new Error("This browser does not support downloadable camera path video export.");
-  }
 
   const sourceCanvas = getPixiCanvas(app);
   if (!sourceCanvas) {
@@ -49,10 +53,6 @@ export async function recordCameraPathSceneVideo({
   const outputContainer = getVideoExportContainer(container, exportConfig);
   const captureCanvas = createCaptureCanvas(outputContainer);
 
-  if (typeof captureCanvas.captureStream !== "function") {
-    throw new Error("This browser does not support downloadable camera path video export.");
-  }
-
   const context = captureCanvas.getContext("2d", { alpha: false });
   if (!context) {
     throw new Error("Could not prepare the video export canvas.");
@@ -61,26 +61,160 @@ export async function recordCameraPathSceneVideo({
   const rendererScale = upscaleRendererForExport(app, container, outputContainer);
   const background = resolveCanvasBackground(sourceCanvas);
   const viewportTransform = getVideoViewportTransform(container, outputContainer);
-  const stream = captureCanvas.captureStream(VIDEO_EXPORT_FPS);
-  const requestFrame = () => stream.getVideoTracks().forEach((track) => track.requestFrame?.());
-  const { recorder, recorderStopped } = createCanvasRecorder(stream, exportConfig);
 
-  const drawFrame = () => {
+  const drawFrame = (frame = {}) => {
     context.save();
     context.fillStyle = background;
     context.fillRect(0, 0, outputContainer.width, outputContainer.height);
     context.imageSmoothingEnabled = true;
     context.imageSmoothingQuality = "high";
+    context.drawImage(
+      sourceCanvas,
+      0,
+      0,
+      sourceCanvas.width,
+      sourceCanvas.height,
+      viewportTransform.x,
+      viewportTransform.y,
+      container.width * viewportTransform.k,
+      container.height * viewportTransform.k,
+    );
     context.translate(viewportTransform.x, viewportTransform.y);
     context.scale(viewportTransform.k, viewportTransform.k);
-    context.drawImage(sourceCanvas, 0, 0, container.width, container.height);
-    drawOverlay?.(context);
+    drawOverlay?.(context, {
+      ...frame,
+      sourceContainer: container,
+      outputContainer,
+    });
     context.restore();
-    requestFrame();
   };
 
   try {
+    const normalizedFormat = getVideoExportFormat(exportFormat);
+    if (normalizedFormat === VIDEO_EXPORT_FORMAT_WEBM) {
+      const webmResult = await recordGpuFramesWithWebCodecs({
+        keyframes,
+        app,
+        appearance,
+        container,
+        graphName,
+        holdSeconds,
+        exportConfig,
+        outputContainer,
+        captureCanvas,
+        drawFrame,
+        onProgress,
+        onKeyframeEnter,
+        onTransitionStart,
+        onTransitionFrame,
+      });
+      if (webmResult) return webmResult;
+    }
+
+    return await recordGpuFramesWithMediaRecorder({
+      keyframes,
+      app,
+      appearance,
+      container,
+      captureCanvas,
+      drawFrame,
+      exportConfig,
+      exportFormat: normalizedFormat,
+      graphName,
+      holdSeconds,
+      onProgress,
+      onKeyframeEnter,
+      onTransitionStart,
+      onTransitionFrame,
+    });
+  } finally {
+    restoreRendererScale(app, container, rendererScale);
+  }
+}
+
+async function recordGpuFramesWithWebCodecs({
+  keyframes,
+  app,
+  appearance,
+  container,
+  graphName,
+  holdSeconds,
+  exportConfig,
+  outputContainer,
+  captureCanvas,
+  drawFrame,
+  onProgress,
+  onKeyframeEnter,
+  onTransitionStart,
+  onTransitionFrame,
+}) {
+  const timeline = createCameraPathTimeline(keyframes, holdSeconds);
+  const frameSchedule = createVideoFrameSchedule(timeline.totalMs, VIDEO_EXPORT_FPS);
+  const encoder = await createWebMCanvasEncoder({
+    width: outputContainer.width,
+    height: outputContainer.height,
+    fps: VIDEO_EXPORT_FPS,
+    bitrate: exportConfig.bitrateMbps * 1000 * 1000,
+    durationMs: getFrameScheduleDurationMs(frameSchedule),
+  });
+  if (!encoder) return null;
+
+  try {
+    await renderCameraPathFrameSchedule({
+      keyframes,
+      app,
+      appearance,
+      container,
+      holdSeconds,
+      frameSchedule,
+      onProgress,
+      onKeyframeEnter,
+      onTransitionStart,
+      onTransitionFrame,
+      onFrame: async (frame) => {
+        drawFrame(frame);
+        await encoder.encodeCanvasFrame(captureCanvas, frame.frame);
+      },
+    });
+
+    const blob = await encoder.finalize();
+    const filename = buildTrackingShotFilename(graphName, encoder.extension);
+    triggerDownload(blob, filename);
+    return { blob, filename };
+  } catch (error) {
+    encoder.close();
+    if (error?.code === VIDEO_ENCODER_ERROR_CODE) return null;
+    throw error;
+  }
+}
+
+async function recordGpuFramesWithMediaRecorder({
+  keyframes,
+  app,
+  appearance,
+  container,
+  captureCanvas,
+  drawFrame,
+  exportConfig,
+  exportFormat,
+  graphName,
+  holdSeconds,
+  onProgress,
+  onKeyframeEnter,
+  onTransitionStart,
+  onTransitionFrame,
+}) {
+  if (typeof MediaRecorder === "undefined" || typeof captureCanvas.captureStream !== "function") {
+    throw new Error("This browser does not support downloadable camera path video export.");
+  }
+
+  const { stream, requestFrame } = createCanvasCaptureStream(captureCanvas);
+  const { recorder, recorderStopped } = createCanvasRecorder(stream, exportConfig, exportFormat);
+
+  try {
+    const recorderStarted = waitForRecorderStart(recorder);
     recorder.start(250);
+    await recorderStarted;
     await playCameraPath({
       keyframes,
       app,
@@ -88,13 +222,17 @@ export async function recordCameraPathSceneVideo({
       container,
       holdSeconds,
       onProgress,
-      onFrame: drawFrame,
+      onFrame: () => {
+        drawFrame();
+        requestFrame();
+      },
       onKeyframeEnter,
       onTransitionStart,
       onTransitionFrame,
       syncZoomAtEnd: true,
     });
     drawFrame();
+    requestFrame();
     await wait(Math.max(50, Math.round(1000 / VIDEO_EXPORT_FPS) * 2));
     recorder.stop();
 
@@ -104,13 +242,10 @@ export async function recordCameraPathSceneVideo({
     triggerDownload(blob, filename);
     return { blob, filename };
   } catch (error) {
-    if (recorder.state !== "inactive") {
-      recorder.stop();
-    }
+    if (recorder.state !== "inactive") recorder.stop();
     throw error;
   } finally {
     stream.getTracks().forEach((track) => track.stop());
-    restoreRendererScale(app, container, rendererScale);
   }
 }
 
@@ -121,8 +256,12 @@ function createCaptureCanvas(outputContainer) {
   return captureCanvas;
 }
 
-function createCanvasRecorder(stream, exportConfig) {
-  const mimeType = getSupportedRecorderMimeType();
+function createCanvasRecorder(stream, exportConfig, exportFormat) {
+  const mimeType = getSupportedRecorderMimeType(exportFormat);
+  if (!mimeType) {
+    stream.getTracks().forEach((track) => track.stop());
+    throw new Error(`This browser does not support ${exportFormat.toUpperCase()} video export.`);
+  }
   const recorderOptions = {
     videoBitsPerSecond: exportConfig.bitrateMbps * 1000 * 1000,
   };
@@ -135,16 +274,44 @@ function createCanvasRecorder(stream, exportConfig) {
       if (event.data?.size > 0) chunks.push(event.data);
     };
     recorder.onerror = () => reject(recorder.error ?? new Error("Video recording failed."));
-    recorder.onstop = () => resolve(new Blob(chunks, { type: recorder.mimeType || mimeType || "video/webm" }));
+    recorder.onstop = () => {
+      if (chunks.length === 0) {
+        reject(new Error("No video frames were recorded."));
+        return;
+      }
+      resolve(new Blob(chunks, { type: recorder.mimeType || mimeType }));
+    };
   });
 
   return { recorder, recorderStopped };
 }
 
+function waitForRecorderStart(recorder) {
+  if (recorder.state === "recording") return Promise.resolve();
+
+  return new Promise((resolve, reject) => {
+    const cleanup = () => {
+      recorder.removeEventListener("start", handleStart);
+      recorder.removeEventListener("error", handleError);
+    };
+    const handleStart = () => {
+      cleanup();
+      resolve();
+    };
+    const handleError = () => {
+      cleanup();
+      reject(recorder.error ?? new Error("Video recording failed to start."));
+    };
+
+    recorder.addEventListener("start", handleStart, { once: true });
+    recorder.addEventListener("error", handleError, { once: true });
+  });
+}
+
 function upscaleRendererForExport(app, container, outputContainer) {
   const targetResolution = Math.min(
     4,
-    Math.ceil(Math.max(outputContainer.width / Math.max(1, container.width), outputContainer.height / Math.max(1, container.height))),
+    Math.max(outputContainer.width / Math.max(1, container.width), outputContainer.height / Math.max(1, container.height)),
   );
   const originalResolution = typeof app?.renderer?.resolution === "number" ? app.renderer.resolution : 1;
   const shouldUpscale = targetResolution > originalResolution && typeof app?.renderer?.resize === "function";

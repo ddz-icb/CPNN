@@ -1,12 +1,10 @@
 import { useCallback, useRef } from "react";
 
 import { useAppearance } from "../../state/appearanceState.js";
-import { useColorschemeState } from "../../state/colorschemeState.js";
 import { useContainer } from "../../state/containerState.js";
 import { useGraphState } from "../../state/graphState.js";
 import { usePixiState } from "../../state/pixiState.js";
 import { useRenderState } from "../../state/canvasState.js";
-import { useTheme } from "../../state/themeState.js";
 import { tooltipInit, useTooltipSettings } from "../../state/tooltipState.js";
 import { defaultTransitionSecondsInit, holdSecondsInit, useVideography } from "../../state/videographyState.js";
 import {
@@ -39,8 +37,8 @@ import {
   getViewMode,
   getViewModeLabel,
   moveKeyframeById,
-  previewCameraPathVideo,
-  recordCameraPathVideo,
+  playCameraPath,
+  recordCameraPathSceneVideo,
   removeKeyframeById,
   sanitizeNumber,
   updateKeyframeById,
@@ -49,10 +47,14 @@ import {
   VIDEO_EXPORT_QUALITY_OPTIONS,
 } from "../../../domain/service/videography/videography.js";
 import {
+  applyInterpolatedKeyframePhysics,
   applyKeyframeScene,
+  applyKeyframeTransitionScene,
   createCapturedKeyframeScene,
   createTooltipOverlayController,
   describeKeyframeScene,
+  refreshActiveTooltipPosition,
+  reuseEquivalentGraphSnapshot,
 } from "./videographyScene.js";
 import { useAddKeyframe } from "../hooks/useAddKeyframe.js";
 
@@ -83,12 +85,10 @@ const VIDEO_SETTING_FIELDS = [
 
 export function VideographySidebar() {
   const { appearance } = useAppearance();
-  const { colorschemeState } = useColorschemeState();
   const { container } = useContainer();
   const { graphState } = useGraphState();
   const { pixiState } = usePixiState();
   const { renderState } = useRenderState();
-  const { theme } = useTheme();
   const { videography, setVideography, setKeyframes } = useVideography();
   const { addKeyframe: handleAddKeyframe, canAddKeyframe } = useAddKeyframe();
   const lastProgressRef = useRef(0);
@@ -101,8 +101,8 @@ export function VideographySidebar() {
   const hasModeMismatch = Boolean(routeMode && routeMode !== currentMode);
   const hasReadyCanvas = Boolean(renderState.app && container.width && container.height && graphState.graph);
   const canEditRoute = canAddKeyframe;
-  const canPreviewRoute = hasReadyCanvas && !videography.isRendering && keyframes.length >= 2;
-  const canDownloadRoute = hasReadyCanvas && !videography.isRendering && keyframes.length >= 2;
+  const canPreviewRoute = hasReadyCanvas && !videography.isRendering && !hasModeMismatch && keyframes.length >= 2;
+  const canDownloadRoute = hasReadyCanvas && !videography.isRendering && !hasModeMismatch && keyframes.length >= 2;
   const totalDurationSeconds = getCameraPathDurationMs(keyframes, videography.holdSeconds) / 1000;
   const transitionLimits = CAMERA_PATH_LIMITS.transitionSeconds;
   const rows = buildKeyframeRows(keyframes);
@@ -159,47 +159,24 @@ export function VideographySidebar() {
 
   const handlePreview = () =>
     runWithCameraPathState(
-      async () => {
-        const tooltipOverlay = createTooltipOverlayController({ app: renderState.app });
-        try {
-          closeActivePopups();
-          await waitForUiFrame();
-          await tooltipOverlay.prepareKeyframes(keyframes, {
-            nodeMap: pixiState.nodeMap,
-            captureScale: getVideoExportScale(container, exportQualityPreset),
-          });
-          closeActivePopups();
-          await waitForUiFrame();
-          await previewCameraPathVideo({
-            keyframes,
-            app: renderState.app,
-            container,
-            graphData: graphState.graph?.data,
-            nodeMap: pixiState.nodeMap,
-            linkWidth: appearance.linkWidth,
-            linkColorscheme: colorschemeState.linkColorscheme?.data,
-            linkAttribsToColorIndices: colorschemeState.linkAttribsToColorIndices,
-            circleBorderColor: theme.circleBorderColor,
-            textColor: theme.textColor,
-            nodeColorscheme: colorschemeState.nodeColorscheme?.data,
-            nodeAttribsToColorIndices: colorschemeState.nodeAttribsToColorIndices,
-            highlightColor: theme.highlightColor,
-            communityHighlightColor: theme.communityHighlightColor,
-            showNodeLabels: appearance.showNodeLabels,
-            enableShading: appearance.enable3DShading,
-            showGrid: appearance.show3DGrid,
-            gridLines: pixiState.grid3D?.__gridLines,
-            holdSeconds: videography.holdSeconds,
-            drawOverlay: (context, frame) => tooltipOverlay.draw(context, frame),
-            onProgress: setRenderProgress,
-          });
-        } finally {
-          tooltipOverlay.dispose();
-        }
-      },
+      () =>
+        playCameraPath({
+          keyframes,
+          app: renderState.app,
+          appearance,
+          container,
+          holdSeconds: videography.holdSeconds,
+          onProgress: setRenderProgress,
+          onFrame: () => refreshActiveTooltipPosition({ app: renderState.app, nodeMap: pixiState.nodeMap }),
+          onKeyframeEnter: (keyframe, index) =>
+            index === 0 ? applyKeyframeScene(keyframe, { app: renderState.app, nodeMap: pixiState.nodeMap }) : undefined,
+          onTransitionStart: (from, to) =>
+            applyKeyframeTransitionScene(from, to, { app: renderState.app, nodeMap: pixiState.nodeMap }),
+          onTransitionFrame: ({ from, to, easedT }) => applyInterpolatedKeyframePhysics(from, to, easedT),
+          syncZoomAtEnd: true,
+        }),
       "Previewing camera path...",
       "Preview complete.",
-      { requireCurrentMode: false },
     );
 
   const handleDownload = () =>
@@ -215,32 +192,21 @@ export function VideographySidebar() {
           });
           closeActivePopups();
           await waitForUiFrame();
-          await recordCameraPathVideo({
+          await recordCameraPathSceneVideo({
             keyframes,
             app: renderState.app,
             appearance,
             container,
             graphName: graphState.graph?.name,
-            graphData: graphState.graph?.data,
-            nodeMap: pixiState.nodeMap,
-            linkWidth: appearance.linkWidth,
-            linkColorscheme: colorschemeState.linkColorscheme?.data,
-            linkAttribsToColorIndices: colorschemeState.linkAttribsToColorIndices,
-            circleBorderColor: theme.circleBorderColor,
-            textColor: theme.textColor,
-            nodeColorscheme: colorschemeState.nodeColorscheme?.data,
-            nodeAttribsToColorIndices: colorschemeState.nodeAttribsToColorIndices,
-            highlightColor: theme.highlightColor,
-            communityHighlightColor: theme.communityHighlightColor,
-            showNodeLabels: appearance.showNodeLabels,
-            enableShading: appearance.enable3DShading,
-            showGrid: appearance.show3DGrid,
-            gridLines: pixiState.grid3D?.__gridLines,
             holdSeconds: videography.holdSeconds,
             exportQualityPreset,
             exportFormat,
-            validateCurrentMode: false,
-            drawOverlay: (context, frame) => tooltipOverlay.draw(context, frame),
+            onKeyframeEnter: (keyframe, index) =>
+              index === 0 ? applyKeyframeScene(keyframe, { app: renderState.app, nodeMap: pixiState.nodeMap }) : undefined,
+            onTransitionStart: (from, to) =>
+              applyKeyframeTransitionScene(from, to, { app: renderState.app, nodeMap: pixiState.nodeMap }),
+            onTransitionFrame: ({ from, to, easedT }) => applyInterpolatedKeyframePhysics(from, to, easedT),
+            drawOverlay: (context, frame) => tooltipOverlay.draw(context, { ...frame, nodeMap: pixiState.nodeMap }),
             onProgress: setRenderProgress,
           });
         } finally {
@@ -249,10 +215,9 @@ export function VideographySidebar() {
       },
       "Rendering video...",
       "Video downloaded.",
-      { requireCurrentMode: false },
     );
 
-  const modeWarning = hasModeMismatch ? `Route is ${getViewModeLabel(routeMode)}. Switch back to edit it.` : "";
+  const modeWarning = hasModeMismatch ? `Route is ${getViewModeLabel(routeMode)}. Switch back to edit, preview, or export it.` : "";
   const primaryActions = [
     { text: "Add Keyframe", shortcut: "K", onClick: handleAddKeyframe, disabled: !canEditRoute },
     { text: "Preview", onClick: handlePreview, disabled: !canPreviewRoute },
@@ -287,7 +252,7 @@ export function VideographySidebar() {
       <SelectFieldBlock
         text={"Export Quality"}
         infoHeading={"Export Quality"}
-        infoDescription={"New exports default to High Quality 4K. 1080p and Medium 1440p are available for smaller files."}
+        infoDescription={"Exports default to native 4K at 60 FPS. Lower resolutions remain available for smaller files."}
         value={exportQualityPreset}
         setValue={(value) => setVideography("exportQualityPreset", getVideoExportQualityPreset(value))}
         options={VIDEO_EXPORT_QUALITY_OPTIONS}
@@ -296,7 +261,7 @@ export function VideographySidebar() {
       <SelectFieldBlock
         text={"Export Format"}
         infoHeading={"Export Format"}
-        infoDescription={"MP4 uses browser H.264 recording support. WebM uses VP9 or VP8 encoding."}
+        infoDescription={"WebM uses offline VP9/VP8 encoding and is recommended for large graphs. MP4 uses real-time browser recording and is better suited to smaller graphs."}
         value={exportFormat}
         setValue={(value) => setVideography("exportFormat", getVideoExportFormat(value))}
         options={VIDEO_EXPORT_FORMAT_OPTIONS}
@@ -401,14 +366,15 @@ function KeyframeDetails({
       setStatus("Canvas is not ready.", 0);
       return;
     }
+    const capturedScene = createCapturedKeyframeScene({
+      graphData,
+      nodeMap,
+      mode: captured.mode,
+    });
     updateKeyframe(keyframe.id, {
       mode: captured.mode,
       view: captured.view,
-      scene: createCapturedKeyframeScene({
-        graphData,
-        nodeMap,
-        mode: captured.mode,
-      }),
+      scene: reuseEquivalentGraphSnapshot(capturedScene, keyframe.scene),
     });
     setStatus(`Updated ${keyframe.label}.`);
   };

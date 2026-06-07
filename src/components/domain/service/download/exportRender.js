@@ -145,18 +145,22 @@ export function render3DQueue(ctx, items, drawParams, gridOptions) {
       const sourceScale = link.source?.scale ?? 1;
       const targetScale = link.target?.scale ?? 1;
       const widthScale = (sourceScale + targetScale) / 2;
-      ctx.save();
-      ctx.globalAlpha *= alpha;
+      if (alpha < 1) {
+        ctx.save();
+        ctx.globalAlpha *= alpha;
+      }
       drawLineCanvas(ctx, link, linkWidth, linkColorscheme, linkAttribsToColorIndices, { widthScale });
-      ctx.restore();
+      if (alpha < 1) ctx.restore();
     } else if (item.type === "node") {
       const { node, mapEntry } = item;
       const scale = node.scale ?? mapEntry?.circle?.scale?.x ?? 1;
       const tint = computeLightingTint(scale);
       const alpha = getRenderAlpha(node);
       if (alpha <= 0) continue;
-      ctx.save();
-      ctx.globalAlpha *= alpha;
+      if (alpha < 1) {
+        ctx.save();
+        ctx.globalAlpha *= alpha;
+      }
       drawCircleCanvas(ctx, node, mapEntry?.circle, circleBorderColor, nodeColorscheme, nodeAttribsToColorIndices, {
         scale,
         tint,
@@ -165,7 +169,7 @@ export function render3DQueue(ctx, items, drawParams, gridOptions) {
       });
       drawNodeHighlightIfActive(ctx, node, highlightNodeIdSet, highlightColor, scale, alpha);
       drawNodeHighlightIfActive(ctx, node, communityHighlightNodeIdSet, communityHighlightColor, scale, alpha);
-      ctx.restore();
+      if (alpha < 1) ctx.restore();
     } else if (item.type === "label") {
       const alpha = getRenderAlpha(item.node);
       if (alpha <= 0) continue;
@@ -197,18 +201,22 @@ export function render2DGraph(ctx, graphData, nodeMap, params) {
   for (const link of graphData.links) {
     const alpha = getRenderAlpha(link);
     if (alpha <= 0) continue;
-    ctx.save();
-    ctx.globalAlpha *= alpha;
+    if (alpha < 1) {
+      ctx.save();
+      ctx.globalAlpha *= alpha;
+    }
     drawLineCanvas(ctx, link, linkWidth, linkColorscheme, linkAttribsToColorIndices);
-    ctx.restore();
+    if (alpha < 1) ctx.restore();
   }
 
   for (const node of graphData.nodes) {
     const mapEntry = nodeMap?.[node.id];
     const alpha = getRenderAlpha(node);
     if (alpha <= 0) continue;
-    ctx.save();
-    ctx.globalAlpha *= alpha;
+    if (alpha < 1) {
+      ctx.save();
+      ctx.globalAlpha *= alpha;
+    }
     drawCircleCanvas(ctx, node, mapEntry?.circle, circleBorderColor, nodeColorscheme, nodeAttribsToColorIndices, { alpha });
     drawNodeHighlightIfActive(ctx, node, highlightNodeIdSet, highlightColor, 1, alpha);
     drawNodeHighlightIfActive(ctx, node, communityHighlightNodeIdSet, communityHighlightColor, 1, alpha);
@@ -216,7 +224,7 @@ export function render2DGraph(ctx, graphData, nodeMap, params) {
     if (labelVisible) {
       drawLabel(ctx, node, mapEntry, textColor);
     }
-    ctx.restore();
+    if (alpha < 1) ctx.restore();
   }
 }
 
@@ -239,8 +247,15 @@ export function build3DFrameGraphData(
     return { graph: null, gridSegments: [] };
   }
 
-  const worldNodes = graphData.nodes.map((node) => translateNodeForContainer(node, sourceContainer, targetContainer));
-  const frameCamera = translateCameraForContainer(camera, sourceContainer, targetContainer);
+  const sameContainerSize =
+    sourceContainer?.width === targetContainer.width &&
+    sourceContainer?.height === targetContainer.height;
+  const worldNodes = sameContainerSize
+    ? graphData.nodes
+    : graphData.nodes.map((node) => translateNodeForContainer(node, sourceContainer, targetContainer));
+  const frameCamera = sameContainerSize
+    ? camera
+    : translateCameraForContainer(camera, sourceContainer, targetContainer);
   const view = getCameraViewParams(frameCamera, targetContainer.width, targetContainer.height);
   const projections = computeProjections(worldNodes, view);
 
@@ -266,7 +281,9 @@ export function build3DFrameGraphData(
   });
 
   const links = buildFrameLinks(graphData.links, nodeLookup);
-  const shiftedGridLines = translateGridLinesForContainer(gridLines, sourceContainer, targetContainer);
+  const shiftedGridLines = sameContainerSize
+    ? gridLines
+    : translateGridLinesForContainer(gridLines, sourceContainer, targetContainer);
   const gridSegments = projectGridLines(shiftedGridLines, frameCamera, targetContainer);
 
   return {

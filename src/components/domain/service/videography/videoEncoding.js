@@ -1,6 +1,9 @@
 import { buildWebMFile, WEBM_MIME_TYPE } from "./webmEbml.js";
 
-const MAX_ENCODE_QUEUE_SIZE = 8;
+const MAX_ENCODE_QUEUE_SIZE = 3;
+const ENCODER_QUEUE_TIMEOUT_MS = 30000;
+const ENCODER_FLUSH_TIMEOUT_MS = 60000;
+export const VIDEO_ENCODER_ERROR_CODE = "VIDEO_ENCODER_FAILED";
 
 const VIDEO_CODEC_CANDIDATES = [
   {
@@ -56,7 +59,7 @@ export async function createWebMCanvasEncoder({
       });
     },
     error: (error) => {
-      encoderError = error instanceof Error ? error : new Error(String(error));
+      encoderError = toVideoEncoderError(error, "Video encoding failed.");
     },
   });
 
@@ -81,6 +84,8 @@ export async function createWebMCanvasEncoder({
 
       try {
         encoder.encode(frame, { keyFrame });
+      } catch (error) {
+        throw toVideoEncoderError(error, "Could not encode a video frame.");
       } finally {
         frame.close();
       }
@@ -88,7 +93,15 @@ export async function createWebMCanvasEncoder({
     async finalize() {
       if (encoderError) throw encoderError;
 
-      await encoder.flush();
+      try {
+        await withTimeout(
+          encoder.flush(),
+          ENCODER_FLUSH_TIMEOUT_MS,
+          "The video encoder did not finish.",
+        );
+      } catch (error) {
+        throw toVideoEncoderError(error, "The video encoder did not finish.");
+      }
 
       if (encoderError) throw encoderError;
       if (chunks.length === 0) {
@@ -149,11 +162,43 @@ async function getSupportedCodecCandidate({ width, height, fps, bitrate }) {
 }
 
 async function waitForEncoderCapacity(encoder) {
+  const startedAt = performance.now();
   while (encoder.encodeQueueSize > MAX_ENCODE_QUEUE_SIZE) {
-    await wait(0);
+    if (performance.now() - startedAt > ENCODER_QUEUE_TIMEOUT_MS) {
+      throw toVideoEncoderError(null, "The video encoder stopped accepting frames.");
+    }
+    await wait(4);
   }
 }
 
 function wait(ms) {
   return new Promise((resolve) => window.setTimeout(resolve, ms));
+}
+
+function withTimeout(promise, timeoutMs, message) {
+  return new Promise((resolve, reject) => {
+    const timeout = window.setTimeout(
+      () => reject(toVideoEncoderError(null, message)),
+      timeoutMs,
+    );
+    promise.then(
+      (value) => {
+        window.clearTimeout(timeout);
+        resolve(value);
+      },
+      (error) => {
+        window.clearTimeout(timeout);
+        reject(error);
+      },
+    );
+  });
+}
+
+function toVideoEncoderError(error, fallbackMessage) {
+  if (error?.code === VIDEO_ENCODER_ERROR_CODE) return error;
+  const result = new Error(error?.message || fallbackMessage);
+  result.name = "VideoEncoderError";
+  result.code = VIDEO_ENCODER_ERROR_CODE;
+  if (error) result.cause = error;
+  return result;
 }

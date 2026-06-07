@@ -76,6 +76,13 @@ export function createCapturedKeyframeScene(params = {}) {
   };
 }
 
+export function reuseEquivalentGraphSnapshot(scene, previousScene) {
+  const graphSnapshot = scene?.graphSnapshot;
+  const previousGraphSnapshot = previousScene?.graphSnapshot;
+  if (!areGraphSnapshotsEquivalent(graphSnapshot, previousGraphSnapshot)) return scene;
+  return { ...scene, graphSnapshot: previousGraphSnapshot };
+}
+
 export function getKeyframeScene(keyframe) {
   const scene = keyframe?.scene ?? {};
   const hasFilterSnapshot = scene.filterSnapshot != null;
@@ -800,7 +807,6 @@ function toPlainColorIndexMap(mapping) {
 
 function captureGraphSnapshot(graphData, nodeMap, mode) {
   if (!Array.isArray(graphData?.nodes) || !Array.isArray(graphData?.links)) return null;
-  const nodeEntries = new Map(graphData.nodes.map((node) => [String(node.id), node]));
   const snapshotNodes = graphData.nodes
     .filter((node) => shouldCaptureNode(node, nodeMap?.[node.id]))
     .map((node) => captureRenderedNode(node, nodeMap?.[node.id], mode));
@@ -819,14 +825,56 @@ function captureGraphSnapshot(graphData, nodeMap, mode) {
     })
     .filter(Boolean);
 
-  return cloneSerializable({
+  return {
     ...graphData,
-    nodes: snapshotNodes.map((node) => {
-      const sourceNode = nodeEntries.get(String(node.id));
-      return sourceNode ? { ...sourceNode, ...node } : node;
-    }),
+    nodes: snapshotNodes,
     links: snapshotLinks,
-  });
+  };
+}
+
+function areGraphSnapshotsEquivalent(first, second) {
+  if (first === second) return true;
+  if (!first || !second) return false;
+  if (first.nodes?.length !== second.nodes?.length || first.links?.length !== second.links?.length) return false;
+
+  for (let index = 0; index < first.nodes.length; index += 1) {
+    const left = first.nodes[index];
+    const right = second.nodes[index];
+    if (
+      String(left?.id) !== String(right?.id) ||
+      left?.x !== right?.x ||
+      left?.y !== right?.y ||
+      left?.z !== right?.z ||
+      left?.labelX !== right?.labelX ||
+      left?.labelY !== right?.labelY ||
+      left?.labelVisible !== right?.labelVisible ||
+      left?.labelText !== right?.labelText ||
+      left?.labelFontSize !== right?.labelFontSize ||
+      !areStringArraysEqual(left?.attribs, right?.attribs)
+    ) {
+      return false;
+    }
+  }
+
+  for (let index = 0; index < first.links.length; index += 1) {
+    const left = first.links[index];
+    const right = second.links[index];
+    if (
+      String(getEndpointId(left?.source)) !== String(getEndpointId(right?.source)) ||
+      String(getEndpointId(left?.target)) !== String(getEndpointId(right?.target)) ||
+      !areStringArraysEqual(left?.attribs, right?.attribs)
+    ) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function areStringArraysEqual(first, second) {
+  if (first === second) return true;
+  if (!Array.isArray(first) || !Array.isArray(second) || first.length !== second.length) return false;
+  return first.every((value, index) => String(value) === String(second[index]));
 }
 
 function shouldCaptureNode(node, entry) {

@@ -6,15 +6,16 @@ import {
   TRANSITION_FILTER_FADE_OUT_POWER,
 } from "./videoExportConfig.js";
 
+const transitionTopologyCache = new WeakMap();
+
 export function buildTransitionGraphData(fromGraph, toGraph, t) {
   if (!hasGraphData(fromGraph) || !hasGraphData(toGraph)) return null;
+  if (fromGraph === toGraph) return toGraph;
 
   const amount = clamp(Number.isFinite(t) ? t : 0, 0, 1);
-  const fromNodes = new Map(fromGraph.nodes.map((node) => [String(node.id), node]));
-  const toNodes = new Map(toGraph.nodes.map((node) => [String(node.id), node]));
-  const nodeIds = new Set([...fromNodes.keys(), ...toNodes.keys()]);
-  const { nodes, nodeAlpha } = buildTransitionNodes(nodeIds, fromNodes, toNodes, amount);
-  const links = buildTransitionLinks(nodeIds, nodeAlpha, fromGraph.links, toGraph.links, amount);
+  const topology = getTransitionTopology(fromGraph, toGraph);
+  const { nodes, nodeAlpha } = buildTransitionNodes(topology.nodes, amount);
+  const links = buildTransitionLinks(topology.links, nodeAlpha, amount);
 
   return {
     ...toGraph,
@@ -27,24 +28,33 @@ export function hasGraphData(graphData) {
   return Array.isArray(graphData?.nodes) && Array.isArray(graphData?.links);
 }
 
-function buildTransitionNodes(nodeIds, fromNodes, toNodes, amount) {
-  const nodes = [];
-  const nodeAlpha = new Map();
-
-  for (const nodeId of nodeIds) {
-    const fromNode = fromNodes.get(nodeId);
-    const toNode = toNodes.get(nodeId);
-    const alpha = getPresenceTransitionAlpha(Boolean(fromNode), Boolean(toNode), amount);
-    nodes.push(interpolateGraphNode(fromNode, toNode, amount, alpha));
-    nodeAlpha.set(nodeId, alpha);
+function getTransitionTopology(fromGraph, toGraph) {
+  let targets = transitionTopologyCache.get(fromGraph);
+  if (!targets) {
+    targets = new WeakMap();
+    transitionTopologyCache.set(fromGraph, targets);
   }
 
-  return { nodes, nodeAlpha };
+  let topology = targets.get(toGraph);
+  if (!topology) {
+    topology = createTransitionTopology(fromGraph, toGraph);
+    targets.set(toGraph, topology);
+  }
+  return topology;
 }
 
-function buildTransitionLinks(nodeIds, nodeAlpha, fromLinks = [], toLinks = [], amount) {
-  const fromLinksByKey = new Map(fromLinks.map((link) => [getTransitionLinkKey(link), link]));
-  const toLinksByKey = new Map(toLinks.map((link) => [getTransitionLinkKey(link), link]));
+function createTransitionTopology(fromGraph, toGraph) {
+  const fromNodes = new Map(fromGraph.nodes.map((node) => [String(node.id), node]));
+  const toNodes = new Map(toGraph.nodes.map((node) => [String(node.id), node]));
+  const nodeIds = new Set([...fromNodes.keys(), ...toNodes.keys()]);
+  const nodes = Array.from(nodeIds, (nodeId) => ({
+    nodeId,
+    fromNode: fromNodes.get(nodeId),
+    toNode: toNodes.get(nodeId),
+  }));
+
+  const fromLinksByKey = new Map(fromGraph.links.map((link) => [getTransitionLinkKey(link), link]));
+  const toLinksByKey = new Map(toGraph.links.map((link) => [getTransitionLinkKey(link), link]));
   const linkKeys = new Set([...fromLinksByKey.keys(), ...toLinksByKey.keys()]);
   const links = [];
 
@@ -55,7 +65,29 @@ function buildTransitionLinks(nodeIds, nodeAlpha, fromLinks = [], toLinks = [], 
     const source = getEndpointId(toLink?.source ?? fromLink?.source);
     const target = getEndpointId(toLink?.target ?? fromLink?.target);
     if (!nodeIds.has(String(source)) || !nodeIds.has(String(target))) continue;
+    links.push({ fromLink, toLink, source, target });
+  }
 
+  return { nodes, links };
+}
+
+function buildTransitionNodes(nodeEntries, amount) {
+  const nodes = [];
+  const nodeAlpha = new Map();
+
+  for (const { nodeId, fromNode, toNode } of nodeEntries) {
+    const alpha = getPresenceTransitionAlpha(Boolean(fromNode), Boolean(toNode), amount);
+    nodes.push(interpolateGraphNode(fromNode, toNode, amount, alpha));
+    nodeAlpha.set(nodeId, alpha);
+  }
+
+  return { nodes, nodeAlpha };
+}
+
+function buildTransitionLinks(linkEntries, nodeAlpha, amount) {
+  const links = [];
+
+  for (const { fromLink, toLink, source, target } of linkEntries) {
     const linkAlpha = getPresenceTransitionAlpha(Boolean(fromLink), Boolean(toLink), amount);
     const endpointAlpha = Math.min(nodeAlpha.get(String(source)) ?? 1, nodeAlpha.get(String(target)) ?? 1);
     links.push({
