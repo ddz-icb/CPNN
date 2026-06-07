@@ -1,15 +1,17 @@
 import { defineConfig, transformWithEsbuild } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "node:path";
+import fs from "node:fs";
 
 // Vite configuration for the React frontend. Keeps CRA conventions where possible.
-const srcDir = `${path.resolve(process.cwd(), "src")}${path.sep}`;
+const srcDir = path.resolve(process.cwd(), "src").replace(/\\/g, "/") + "/";
 
 const jsxInJs = () => ({
   name: "jsx-in-js",
   enforce: "pre",
-  async transform(code, id) {
+  async load(id) {
     if (!id.startsWith(srcDir) || !id.match(/\.[jt]sx?(?:\?.*)?$/)) return null;
+    const code = fs.readFileSync(id.replace(/\//g, "\\"), "utf-8");
     return transformWithEsbuild(code, id, {
       loader: "jsx",
       jsx: "automatic",
