@@ -49,6 +49,25 @@ export function getComponentData(graphData) {
   return [IdToComp, compToCompSize];
 }
 
+export function getComponentSizes(graphData) {
+  const [, componentSizes] = getComponentData(graphData);
+  return componentSizes.filter(Number.isFinite);
+}
+
+export function getNodeDegreeData(graphData) {
+  const degrees = new Map((graphData.nodes ?? []).map((node) => [node.id, 0]));
+
+  (graphData.links ?? []).forEach((link) => {
+    const sourceId = getEndpointId(link.source);
+    const targetId = getEndpointId(link.target);
+    if (!degrees.has(sourceId) || !degrees.has(targetId)) return;
+    degrees.set(sourceId, degrees.get(sourceId) + 1);
+    degrees.set(targetId, degrees.get(targetId) + 1);
+  });
+
+  return degrees;
+}
+
 export function getAdjacentData(graphData) {
   const neighborCount = {};
 
