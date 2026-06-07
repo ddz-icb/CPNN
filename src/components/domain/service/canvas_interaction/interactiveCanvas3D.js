@@ -6,7 +6,6 @@ import {
   getQuaternionAngle,
   multiplyQuaternions,
   quaternionFromAxisAngle,
-  resetCamera3D,
   rotateVectorByQuaternion,
   scaleQuaternionRotation,
   setCameraOrientation,
@@ -380,14 +379,6 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, cameraRef
     event.preventDefault();
   }
 
-  function handleKeyDown(event) {
-    if (event.key.toLowerCase() === "r") {
-      resetCamera3D(cameraRef.current, getViewport());
-      getControls().onReset?.();
-      event.preventDefault();
-    }
-  }
-
   function handleContextMenu(event) {
     event.preventDefault();
   }
@@ -397,7 +388,6 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, cameraRef
   canvas.addEventListener("pointerup", handlePointerEnd);
   canvas.addEventListener("pointercancel", handlePointerEnd);
   canvas.addEventListener("wheel", handleWheel, { passive: false });
-  canvas.addEventListener("keydown", handleKeyDown);
   canvas.addEventListener("contextmenu", handleContextMenu);
 
   return () => {
@@ -409,7 +399,6 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, cameraRef
     canvas.removeEventListener("pointerup", handlePointerEnd);
     canvas.removeEventListener("pointercancel", handlePointerEnd);
     canvas.removeEventListener("wheel", handleWheel);
-    canvas.removeEventListener("keydown", handleKeyDown);
     canvas.removeEventListener("contextmenu", handleContextMenu);
     canvas.style.touchAction = previousTouchAction;
     canvas.style.cursor = previousCursor;

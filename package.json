@@ -1,6 +1,6 @@
 {
   "type": "module",
-  "name": "bachelorarbeit-projekt",
+  "name": "cpnn",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
