@@ -3,15 +3,9 @@ import { updateHighlights } from "./highlights.js";
 import { computeLightingTint, updateSphereShading } from "./shading.js";
 import { drawGrid3D } from "./grid3D.js";
 import { updateLines3D } from "./lineGraphics.js";
+import { defaultCamera, getCameraViewParams, projectPoint3D } from "./camera3D.js";
 
-export const defaultCamera = {
-  x: null,
-  y: null,
-  z: -600,
-  fov: 600,
-  rotX: 0.5,
-  rotY: -0.2,
-};
+export { defaultCamera } from "./camera3D.js";
 
 export function redraw3D(
   graphData,
@@ -26,14 +20,14 @@ export function redraw3D(
   container,
   camera,
 ) {
-  const view = getViewParams(camera, container.width, container.height);
+  const view = getCameraViewParams(camera, container.width, container.height);
   const projections = computeProjections(graphData.nodes, view, camera?.projections);
 
   if (camera) {
     camera.projections = projections;
   }
 
-  drawGrid3D(grid3D, view, graphData.nodes, container, (point) => projectNode(point, view));
+  drawGrid3D(grid3D, view, graphData.nodes, container, (point) => projectPoint3D(point, view));
   updateNodes3D(graphData.nodes, nodeMap, showNodeLabels, projections);
   updateLines3D(graphData.links, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, projections);
   updateHighlights({ links: graphData.links, lineGraphics: lines, linkWidth });
@@ -41,73 +35,10 @@ export function redraw3D(
   app.renderer.render(app.stage);
 }
 
-function projectNode(node, params, out) {
-  const { cameraX, cameraY, cameraZ, fov, centerX, centerY, cosX, sinX, cosY, sinY } = params;
-
-  const shiftedX = node.x - centerX;
-  const shiftedY = node.y - centerY;
-  const zBase = node.z ?? 0;
-
-  let x = shiftedX * cosY - zBase * sinY;
-  let z = shiftedX * sinY + zBase * cosY;
-
-  let y = shiftedY * cosX - z * sinX;
-  z = shiftedY * sinX + z * cosX;
-
-  const dx = x + centerX - cameraX;
-  const dy = y + centerY - cameraY;
-  const dz = z - cameraZ;
-
-  const target = out || {};
-
-  if (dz <= 0.000001) {
-    if (!out) return null;
-    target.visible = false;
-    return target;
-  }
-
-  const depth = Math.abs(dz);
-  const scale = fov / depth;
-
-  target.x = centerX + dx * scale;
-  target.y = centerY + dy * scale;
-  target.scale = scale;
-  target.depth = depth;
-  target.visible = true;
-
-  return target;
-}
-
-function getViewParams(camera, width, height) {
-  const centerX = width / 2;
-  const centerY = height / 2;
-  const rotX = camera?.rotX ?? defaultCamera.rotX;
-  const rotY = camera?.rotY ?? defaultCamera.rotY;
-  const cosX = Math.cos(rotX);
-  const sinX = Math.sin(rotX);
-  const cosY = Math.cos(rotY);
-  const sinY = Math.sin(rotY);
-
-  return {
-    rotX,
-    rotY,
-    cosX,
-    sinX,
-    cosY,
-    sinY,
-    cameraX: camera?.x ?? centerX,
-    cameraY: camera?.y ?? centerY,
-    cameraZ: camera?.z ?? defaultCamera.z,
-    fov: camera?.fov ?? defaultCamera.fov,
-    centerX,
-    centerY,
-  };
-}
-
 function computeProjections(nodes, view, result = {}) {
   for (const node of nodes) {
     const existing = result[node.id];
-    const proj = projectNode(node, view, existing && typeof existing === "object" ? existing : undefined);
+    const proj = projectPoint3D(node, view, existing && typeof existing === "object" ? existing : undefined);
     result[node.id] = proj;
   }
 

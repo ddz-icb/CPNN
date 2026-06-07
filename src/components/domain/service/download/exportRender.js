@@ -3,10 +3,10 @@ import { drawCircleCanvas, radius } from "../canvas_drawing/nodes.js";
 import { drawLineCanvas } from "../canvas_drawing/lineGraphics.js";
 import { computeLightingTint, rimRadiusFactor, rimWidthFactor } from "../canvas_drawing/shading.js";
 import { getNodeLabelOffsetY } from "../canvas_drawing/drawingUtils.js";
+import { getCameraViewParams } from "../canvas_drawing/camera3D.js";
 import { getNodeIdName } from "../parsing/nodeIdParsing.js";
 import {
   computeProjections,
-  getViewParams,
   projectGridLines,
   translateCameraForContainer,
   translateGridLinesForContainer,
@@ -241,7 +241,7 @@ export function build3DFrameGraphData(
 
   const worldNodes = graphData.nodes.map((node) => translateNodeForContainer(node, sourceContainer, targetContainer));
   const frameCamera = translateCameraForContainer(camera, sourceContainer, targetContainer);
-  const view = getViewParams(frameCamera, targetContainer.width, targetContainer.height);
+  const view = getCameraViewParams(frameCamera, targetContainer.width, targetContainer.height);
   const projections = computeProjections(worldNodes, view);
 
   const nodes = [];

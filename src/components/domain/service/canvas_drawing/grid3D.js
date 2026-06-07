@@ -4,9 +4,12 @@ export function drawGrid3D(gridGraphic, view, nodes, container, project) {
   if (!gridGraphic?.visible || typeof project !== "function") return;
 
   const cache = gridGraphic.__gridCache || (gridGraphic.__gridCache = {});
+  const orientation = view.orientation;
   const viewChanged =
-    cache.viewRotX !== view.rotX ||
-    cache.viewRotY !== view.rotY ||
+    cache.orientationX !== orientation?.x ||
+    cache.orientationY !== orientation?.y ||
+    cache.orientationZ !== orientation?.z ||
+    cache.orientationW !== orientation?.w ||
     cache.viewCameraX !== view.cameraX ||
     cache.viewCameraY !== view.cameraY ||
     cache.viewCameraZ !== view.cameraZ ||
@@ -15,8 +18,10 @@ export function drawGrid3D(gridGraphic, view, nodes, container, project) {
     cache.viewCenterY !== view.centerY;
 
   if (viewChanged) {
-    cache.viewRotX = view.rotX;
-    cache.viewRotY = view.rotY;
+    cache.orientationX = orientation?.x;
+    cache.orientationY = orientation?.y;
+    cache.orientationZ = orientation?.z;
+    cache.orientationW = orientation?.w;
     cache.viewCameraX = view.cameraX;
     cache.viewCameraY = view.cameraY;
     cache.viewCameraZ = view.cameraZ;

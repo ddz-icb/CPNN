@@ -3,11 +3,12 @@ import * as PIXI from "pixi.js";
 import { initDragAndZoom2D } from "./interactiveCanvas2D";
 import { initDragAndZoom3D } from "./interactiveCanvas3D";
 
-export function initDragAndZoom(app, simulation, radius, setTooltipSettings, width, height, threeD, cameraRef) {
+export function initDragAndZoom(app, simulation, radius, setTooltipSettings, width, height, threeD, cameraRef, controlsRef) {
+  app.__interactionCleanup?.();
   if (threeD) {
-    initDragAndZoom3D(app, simulation, setTooltipSettings, width, height, cameraRef);
+    app.__interactionCleanup = initDragAndZoom3D(app, simulation, setTooltipSettings, cameraRef, controlsRef);
   } else {
-    initDragAndZoom2D(app, simulation, radius, setTooltipSettings, width, height);
+    app.__interactionCleanup = initDragAndZoom2D(app, simulation, radius, setTooltipSettings, width, height);
   }
 }
 

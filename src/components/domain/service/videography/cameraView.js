@@ -1,6 +1,12 @@
 import * as d3 from "d3";
 import { defaultCamera } from "../canvas_drawing/render3D.js";
 import {
+  getCameraOrientation,
+  quaternionFromEuler,
+  setCameraOrientation,
+  slerpQuaternions,
+} from "../canvas_drawing/camera3D.js";
+import {
   MAX_FOV,
   MAX_ZOOM,
   MIN_FOV,
@@ -8,7 +14,7 @@ import {
   VIEW_MODE_2D,
   VIEW_MODE_3D,
 } from "./videoExportConfig.js";
-import { clamp, finiteOr, interpolateZoom, lerp, lerpAngle } from "./cameraPathMath.js";
+import { clamp, finiteOr, interpolateZoom, lerp } from "./cameraPathMath.js";
 
 export function getViewMode(appearance) {
   return appearance?.threeD ? VIEW_MODE_3D : VIEW_MODE_2D;
@@ -34,8 +40,10 @@ export function captureCurrentView({ app, appearance, container }) {
         y: finiteOr(camera?.y, container.height / 2),
         z: finiteOr(camera?.z, defaultCamera.z),
         fov: clamp(finiteOr(camera?.fov, defaultCamera.fov), MIN_FOV, MAX_FOV),
+        orientation: { ...getCameraOrientation(camera) },
         rotX: finiteOr(camera?.rotX, defaultCamera.rotX),
         rotY: finiteOr(camera?.rotY, defaultCamera.rotY),
+        rotZ: finiteOr(camera?.rotZ, defaultCamera.rotZ),
       },
     };
   }
@@ -85,8 +93,7 @@ export function interpolateCameraView(fromKeyframe, toKeyframe, t) {
       y: lerp(from.y, to.y, amount),
       z: lerp(from.z, to.z, amount),
       fov: lerp(from.fov, to.fov, amount),
-      rotX: lerpAngle(from.rotX, to.rotX, amount),
-      rotY: lerpAngle(from.rotY, to.rotY, amount),
+      orientation: slerpQuaternions(getViewOrientation(from), getViewOrientation(to), amount),
     };
   }
 
@@ -105,14 +112,22 @@ function apply3DCameraView(view, { app, appearance, container }) {
   camera.y = finiteOr(view.y, container.height / 2);
   camera.z = finiteOr(view.z, defaultCamera.z);
   camera.fov = clamp(finiteOr(view.fov, defaultCamera.fov), MIN_FOV, MAX_FOV);
-  camera.rotX = finiteOr(view.rotX, defaultCamera.rotX);
-  camera.rotY = finiteOr(view.rotY, defaultCamera.rotY);
+  setCameraOrientation(camera, getViewOrientation(view));
 
   if (typeof camera.redraw === "function") {
     camera.redraw();
   } else {
     app.renderer?.render?.(app.stage);
   }
+}
+
+function getViewOrientation(view) {
+  if (view?.orientation) return view.orientation;
+  return quaternionFromEuler({
+    rotX: finiteOr(view?.rotX, defaultCamera.rotX),
+    rotY: finiteOr(view?.rotY, defaultCamera.rotY),
+    rotZ: finiteOr(view?.rotZ, defaultCamera.rotZ),
+  });
 }
 
 function apply2DCameraView(view, { app, container, syncZoom }) {

@@ -18,7 +18,16 @@ export const linkWidthDescription = (
 
 export const threeDDescription = (
   <div>
-    <p className="margin-0">Switches the graph rendering to a 3D perspective. Toggle back to return to the classic 2D canvas.</p>
+    <p className="margin-0">
+      Switches to a freely rotatable 3D view. Drag to orbit, Shift-drag or middle-drag to pan, Alt-drag or right-drag to roll, and scroll or pinch to
+      zoom. Press R to reset the view; predefined orientations are available under Adjust View.
+    </p>
+  </div>
+);
+
+export const adjustViewDescription = (
+  <div>
+    <p className="margin-0">Select a predefined orientation, fit the whole graph into view, or restore the default 3D view.</p>
   </div>
 );
 

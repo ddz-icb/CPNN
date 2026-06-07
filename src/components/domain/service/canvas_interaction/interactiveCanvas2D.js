@@ -66,4 +66,10 @@ export function initDragAndZoom2D(app, simulation, radius, setTooltipSettings, w
   canvas.call(d3.drag().subject(dragsubject).on("start", dragstarted).on("drag", dragged).on("end", dragended)).call(zoom);
 
   canvas.call(zoom.transform, state.transform);
+
+  return () => {
+    canvas.on(".drag", null).on(".zoom", null);
+    app.__zoomBehavior = null;
+    app.__zoomSelection = null;
+  };
 }

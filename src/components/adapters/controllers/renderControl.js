@@ -6,7 +6,7 @@ import { radius } from "../../domain/service/canvas_drawing/nodes.js";
 import { applyNode3DState } from "../../domain/service/canvas_drawing/shading.js";
 import { applyLineGraphicsState } from "../../domain/service/canvas_drawing/lineGraphics.js";
 import { usePhysics } from "../state/physicsState.js";
-import { useAppearance } from "../state/appearanceState.js";
+import { threeDFovInit, useAppearance } from "../state/appearanceState.js";
 import { graphInit, useGraphState } from "../state/graphState.js";
 import { useContainer } from "../state/containerState.js";
 import { tooltipInit, useTooltipSettings } from "../state/tooltipState.js";
@@ -37,6 +37,19 @@ export function RenderControl() {
 
   const containerRef = useRef(null);
   const cameraRef = useRef({ ...appearance.cameraRef }); // for 3D
+  const threeDControlsRef = useRef(null);
+  threeDControlsRef.current = {
+    orbitSensitivity: appearance.threeDOrbitSensitivity,
+    panSensitivity: appearance.threeDPanSensitivity,
+    zoomSensitivity: appearance.threeDZoomSensitivity,
+    inertia: appearance.threeDInertia,
+    inertiaDamping: appearance.threeDInertiaDamping,
+    invertVertical: appearance.threeDInvertVertical,
+    onReset: () => {
+      setAppearance("threeDFov", threeDFovInit);
+      setAppearance("threeDFovText", threeDFovInit);
+    },
+  };
 
   useEffect(() => {
     // share the live camera reference with subscribers (e.g., redraw bindings)
@@ -49,6 +62,17 @@ export function RenderControl() {
     cameraRef.current.x = container.width / 2;
     cameraRef.current.y = container.height / 2;
   }, [container.width, container.height]);
+
+  useEffect(() => {
+    const fov = Number(appearance.threeDFov);
+    if (!Number.isFinite(fov)) return;
+    cameraRef.current.fov = fov;
+    cameraRef.current.redraw?.();
+  }, [appearance.threeDFov]);
+
+  useEffect(() => {
+    return () => renderState.app?.__interactionCleanup?.();
+  }, [renderState.app]);
 
   // reset simulation //
   useEffect(() => {
@@ -164,7 +188,7 @@ export function RenderControl() {
 
     try {
       const newSimulation = getSimulation(physics.linkLength, appearance.threeD, physics.linkForce, graphState.graph.data);
-      initDragAndZoom(renderState.app, newSimulation, radius, setTooltipSettings, container.width, container.height, appearance.threeD, cameraRef);
+      initDragAndZoom(renderState.app, newSimulation, radius, setTooltipSettings, container.width, container.height, appearance.threeD, cameraRef, threeDControlsRef);
       setRenderState("simulation", newSimulation);
     } catch (error) {
       setError(error.message);
@@ -197,7 +221,7 @@ export function RenderControl() {
       resetGridVisibility(pixiState.grid3D, appearance.threeD && appearance.show3DGrid);
       resetStageTransform(renderState.app?.stage);
       const newSimulation = getSimulation(physics.linkLength, appearance.threeD, physics.linkForce, graphState.graph.data);
-      initDragAndZoom(renderState.app, newSimulation, radius, setTooltipSettings, container.width, container.height, appearance.threeD, cameraRef);
+      initDragAndZoom(renderState.app, newSimulation, radius, setTooltipSettings, container.width, container.height, appearance.threeD, cameraRef, threeDControlsRef);
       applyNode3DState(pixiState.nodeMap, appearance.threeD, appearance.enable3DShading);
       setRenderState("simulation", newSimulation);
     } catch (error) {
