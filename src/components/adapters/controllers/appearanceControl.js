@@ -25,13 +25,14 @@ export function AppearanceControl() {
   const { renderState } = useRenderState();
   const { container } = useContainer();
   const linkCount = graphState.graph?.data?.links?.length ?? 0;
+  const activeLines = appearance.threeD ? pixiState.lines3D : pixiState.lines2D;
 
   // rebind redraw function and run one cycle
   useEffect(() => {
     if (
       !renderState.simulation ||
       !graphState.graph ||
-      !pixiState.lines ||
+      !activeLines ||
       !appearance.linkWidth ||
       !colorschemeState.linkColorscheme ||
       !colorschemeState.linkAttribsToColorIndices ||
@@ -45,7 +46,7 @@ export function AppearanceControl() {
       const redraw = mountRedraw(
         renderState.simulation,
         graphState.graph.data,
-        pixiState.lines,
+        activeLines,
         appearance.linkWidth,
         colorschemeState.linkColorscheme,
         colorschemeState.linkAttribsToColorIndices,
@@ -62,7 +63,14 @@ export function AppearanceControl() {
       errorService.setError(error.message);
       log.error(error);
     }
-  }, [appearance.showNodeLabels, colorschemeState.linkColorscheme, colorschemeState.linkAttribsToColorIndices, appearance.linkWidth]);
+  }, [
+    appearance.showNodeLabels,
+    appearance.threeD,
+    colorschemeState.linkColorscheme,
+    colorschemeState.linkAttribsToColorIndices,
+    appearance.linkWidth,
+    activeLines,
+  ]);
 
   // enable/disable node labels
   useEffect(() => {

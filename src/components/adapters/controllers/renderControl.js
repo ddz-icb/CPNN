@@ -181,14 +181,24 @@ export function RenderControl() {
 
   // init simulation //
   useEffect(() => {
-    if (!renderState.app || !graphState.graph || renderState.simulation || graphFlags.filteredAfterStart) {
+    if (!renderState.app || !graphState.graph || renderState.simulation) {
       return;
     }
     log.info("Init simulation");
 
     try {
       const newSimulation = getSimulation(physics.linkLength, appearance.threeD, physics.linkForce, graphState.graph.data);
-      initDragAndZoom(renderState.app, newSimulation, radius, setTooltipSettings, container.width, container.height, appearance.threeD, cameraRef, threeDControlsRef);
+      initDragAndZoom(
+        renderState.app,
+        newSimulation,
+        radius,
+        setTooltipSettings,
+        container.width,
+        container.height,
+        appearance.threeD,
+        cameraRef,
+        threeDControlsRef,
+      );
       setRenderState("simulation", newSimulation);
     } catch (error) {
       setError(error.message);
@@ -221,7 +231,17 @@ export function RenderControl() {
       resetGridVisibility(pixiState.grid3D, appearance.threeD && appearance.show3DGrid);
       resetStageTransform(renderState.app?.stage);
       const newSimulation = getSimulation(physics.linkLength, appearance.threeD, physics.linkForce, graphState.graph.data);
-      initDragAndZoom(renderState.app, newSimulation, radius, setTooltipSettings, container.width, container.height, appearance.threeD, cameraRef, threeDControlsRef);
+      initDragAndZoom(
+        renderState.app,
+        newSimulation,
+        radius,
+        setTooltipSettings,
+        container.width,
+        container.height,
+        appearance.threeD,
+        cameraRef,
+        threeDControlsRef,
+      );
       applyNode3DState(pixiState.nodeMap, appearance.threeD, appearance.enable3DShading);
       setRenderState("simulation", newSimulation);
     } catch (error) {
@@ -232,22 +252,15 @@ export function RenderControl() {
 
   // running simulation //
   useEffect(() => {
-    if (
-      !pixiState.nodeContainers ||
-      !graphState.graph ||
-      !renderState.simulation ||
-      !graphFlags.filteredAfterStart ||
-      !pixiState.lines ||
-      !pixiState.grid3D
-    )
-      return;
+    const activeLines = appearance.threeD ? pixiState.lines3D : pixiState.lines2D;
+    if (!pixiState.nodeContainers || !graphState.graph || !renderState.simulation || !activeLines || !pixiState.grid3D) return;
     log.info("Running simulation with the following graph:", graphState.graph);
 
     try {
       const redraw = mountSimulation(
         renderState.simulation,
         graphState.graph.data,
-        pixiState.lines,
+        activeLines,
         appearance.linkWidth,
         colorschemeState.linkColorscheme,
         colorschemeState.linkAttribsToColorIndices,
@@ -257,11 +270,9 @@ export function RenderControl() {
         renderState.app,
         container,
         cameraRef,
-        appearance.threeD
+        appearance.threeD,
       );
       redraw();
-
-      setRenderState(renderState.simulation);
     } catch (error) {
       setError("Error loading graph. The graph data is most likely incorrect", error.message);
       log.error(error.message);
@@ -278,7 +289,7 @@ export function RenderControl() {
         renderState.simulation.stop();
       }
     };
-  }, [graphState.graph, pixiState.nodeContainers, pixiState.lines, pixiState.grid3D, renderState.simulation, graphFlags.filteredAfterStart]);
+  }, [graphState.graph, pixiState.nodeContainers, pixiState.lines2D, pixiState.lines3D, pixiState.grid3D, renderState.simulation, appearance.threeD]);
 
   // resize the canvas on window resize //
   useEffect(() => {

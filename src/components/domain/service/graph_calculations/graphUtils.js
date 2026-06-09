@@ -151,7 +151,7 @@ export function getLinkWeightMagnitudeExtent(graphData) {
 }
 
 export function getCommunityData(graphData, options = {}) {
-  if (graphData.nodes.length == 0) return [null, null];
+  if (graphData.nodes.length === 0 || !graphData.links?.length) return [null, null];
 
   const communityOptions = {
     ...options,
@@ -173,6 +173,8 @@ export function getCommunityData(graphData, options = {}) {
       newGraph.addUndirectedEdge(sourceId, targetId, { weight });
     }
   });
+
+  if (newGraph.size === 0) return [null, null];
 
   louvain.assign(newGraph, communityOptions);
 
