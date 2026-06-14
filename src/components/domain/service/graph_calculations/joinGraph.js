@@ -1,6 +1,18 @@
 import UnionFind from "union-find";
 import { getNodeIdEntries, getNodeIdNames } from "../parsing/nodeIdParsing.js";
-import { getEndpointId, getUndirectedLinkKey } from "./graphUtils.js";
+import {
+  getEndpointId,
+  getLinkDirection,
+  getUndirectedLinkKey,
+  mergeLinkDirections,
+  reverseLinkDirection,
+} from "./graphUtils.js";
+
+function getDirectionRelativeTo(link, index, sourceId, targetId) {
+  const direction = getLinkDirection(link, index);
+  const sameOrientation = getEndpointId(link.source) === sourceId && getEndpointId(link.target) === targetId;
+  return sameOrientation ? direction : reverseLinkDirection(direction);
+}
 
 function normalizeNodeEntry(entry) {
   const [idPart = "", namePart = "", phosphositesPart = ""] = entry.split("_").map((part) => part.trim());
@@ -62,7 +74,15 @@ export function joinGraphs(graphData, newGraphData) {
   const joinedNodes = Array.from(nodeMap.values());
 
   const linkMap = new Map(
-    graphData.links.map((link) => [getUndirectedLinkKey(getEndpointId(link.source), getEndpointId(link.target)), { ...link }]),
+    graphData.links.map((link) => [
+      getUndirectedLinkKey(getEndpointId(link.source), getEndpointId(link.target)),
+      {
+        ...link,
+        attribs: [...link.attribs],
+        weights: [...link.weights],
+        directions: link.attribs.map((_, index) => getLinkDirection(link, index)),
+      },
+    ]),
   );
 
   newGraphData.links.forEach((link) => {
@@ -72,18 +92,30 @@ export function joinGraphs(graphData, newGraphData) {
     if (baseLink) {
       const newAttribs = [];
       const newWeights = [];
+      const newDirections = [];
       for (let i = 0; i < link.attribs.length; i++) {
-        if (!baseLink.attribs.includes(link.attribs[i])) {
+        const existingIndex = baseLink.attribs.indexOf(link.attribs[i]);
+        const direction = getDirectionRelativeTo(link, i, getEndpointId(baseLink.source), getEndpointId(baseLink.target));
+        if (existingIndex === -1) {
           newAttribs.push(link.attribs[i]);
           newWeights.push(link.weights[i]);
+          newDirections.push(direction);
+        } else {
+          baseLink.directions[existingIndex] = mergeLinkDirections(baseLink.directions[existingIndex], direction);
         }
       }
       baseLink.attribs.push(...newAttribs);
       baseLink.weights.push(...newWeights);
+      baseLink.directions.push(...newDirections);
 
       linkMap.set(key, baseLink);
     } else {
-      linkMap.set(key, { ...link });
+      linkMap.set(key, {
+        ...link,
+        attribs: [...link.attribs],
+        weights: [...link.weights],
+        directions: link.attribs.map((_, index) => getLinkDirection(link, index)),
+      });
     }
   });
 
@@ -207,14 +239,17 @@ export function filterMergeByName(graphData, mergeByName, options = {}) {
 
     if (existingLink) {
       link.attribs.forEach((attrib, idx) => {
+        const direction = getDirectionRelativeTo(link, idx, existingLink.source, existingLink.target);
         const existingAttribIndex = existingLink.attribs.indexOf(attrib);
         if (existingAttribIndex !== -1) {
           const currentWeight = existingLink.weights[existingAttribIndex];
           const newWeight = link.weights[idx];
           existingLink.weights[existingAttribIndex] = Math.max(Math.abs(currentWeight), Math.abs(newWeight));
+          existingLink.directions[existingAttribIndex] = mergeLinkDirections(existingLink.directions[existingAttribIndex], direction);
         } else {
           existingLink.attribs.push(attrib);
           existingLink.weights.push(link.weights[idx]);
+          existingLink.directions.push(direction);
         }
       });
     } else {
@@ -223,6 +258,7 @@ export function filterMergeByName(graphData, mergeByName, options = {}) {
         target: targetMergedId,
         weights: [...link.weights],
         attribs: [...link.attribs],
+        directions: link.attribs.map((_, index) => getLinkDirection(link, index)),
       });
     }
   });

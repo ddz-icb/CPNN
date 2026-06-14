@@ -1,4 +1,9 @@
-import { getEndpointId, getUndirectedLinkKey } from "../graph_calculations/graphUtils.js";
+import {
+  getEndpointId,
+  getLinkDirection,
+  getUndirectedLinkKey,
+  reverseLinkDirection,
+} from "../graph_calculations/graphUtils.js";
 import { clamp, interpolateFiniteNumber } from "./cameraPathMath.js";
 import {
   TRANSITION_FILTER_ALPHA_CUTOFF,
@@ -135,8 +140,21 @@ function interpolateGraphNode(fromNode, toNode, t, alpha) {
 
 function getTransitionLinkKey(link) {
   if (!link) return "";
-  const endpoints = getUndirectedLinkKey(getEndpointId(link.source), getEndpointId(link.target), "\u001f");
+  const source = String(getEndpointId(link.source) ?? "");
+  const target = String(getEndpointId(link.target) ?? "");
+  const endpoints = getUndirectedLinkKey(source, target, "\u001f");
   if (!endpoints) return "";
   const attribs = Array.isArray(link.attribs) ? link.attribs.map((attrib) => String(attrib)).sort().join("\u001f") : "";
-  return `${endpoints}\u001e${attribs}`;
+  const usesCanonicalOrientation = source < target;
+  const directions = Array.isArray(link.attribs)
+    ? link.attribs
+        .map((attrib, index) => {
+          const direction = getLinkDirection(link, index);
+          const canonicalDirection = usesCanonicalOrientation ? direction : reverseLinkDirection(direction);
+          return `${String(attrib)}\u001d${canonicalDirection}`;
+        })
+        .sort()
+        .join("\u001f")
+    : "";
+  return `${endpoints}\u001e${attribs}\u001e${directions}`;
 }

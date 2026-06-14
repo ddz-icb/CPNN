@@ -1,4 +1,4 @@
-import { getEndpointId, getUndirectedLinkKey } from "../graph_calculations/graphUtils.js";
+import { getEndpointId, getUndirectedLinkKey, LINK_DIRECTIONS } from "../graph_calculations/graphUtils.js";
 import { verifyGraphSettings } from "../graph_settings/graphSettingsSchema.js";
 
 const PHOSPHOSITE_PATTERN = /^[STY]+\d*$/i;
@@ -150,6 +150,12 @@ export function verifyGraph(graph) {
     if (link.weights.length !== link.attribs.length) {
       throw new Error(`Link '${sourceId}' -> '${targetId}' has mismatching 'weights' and 'attribs' lengths.`);
     }
+    if (link.directions !== undefined && !Array.isArray(link.directions)) {
+      throw new Error(`Link '${sourceId}' -> '${targetId}' has an invalid 'directions' property. Expected an array.`);
+    }
+    if (link.directions?.length > link.attribs.length) {
+      throw new Error(`Link '${sourceId}' -> '${targetId}' has more directions than attributes.`);
+    }
 
     link.weights.forEach((weight, weightIndex) => {
       if (typeof weight !== "number" || !Number.isFinite(weight)) {
@@ -160,6 +166,14 @@ export function verifyGraph(graph) {
     link.attribs.forEach((attrib, attribIndex) => {
       if (attrib === undefined || attrib === null || String(attrib).trim() === "") {
         throw new Error(`Link '${sourceId}' -> '${targetId}' has an empty attribute at index ${attribIndex}.`);
+      }
+    });
+
+    link.directions?.forEach((direction, directionIndex) => {
+      if (!Object.values(LINK_DIRECTIONS).includes(direction)) {
+        throw new Error(
+          `Link '${sourceId}' -> '${targetId}' has invalid direction '${direction}' at index ${directionIndex}. Expected 'forward', 'both', or 'reverse'.`,
+        );
       }
     });
 

@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
-import { getEndpointId } from "../graph_calculations/graphUtils.js";
+import { getEndpointId, getLinkDirection, LINK_DIRECTIONS } from "../graph_calculations/graphUtils.js";
 import { isAdditionalLinkAttrib } from "../enrichment/additionalLinkEnrichment.js";
-import { getColor } from "./drawingUtils.js";
+import { getColor, toRgb } from "./drawingUtils.js";
 
 const LINK_WIDTH_MIN = 0.1;
 const LINK_WIDTH_MAX = 3;
@@ -10,6 +10,11 @@ const DOTTED_LINE_DASH_MULTIPLIER = 1.8;
 const DOTTED_LINE_GAP_MULTIPLIER = 1.8;
 const MIN_DOTTED_DASH = 10;
 const MIN_DOTTED_GAP = 2.5;
+const CHEVRON_MIN_SIZE = 5;
+const CHEVRON_MAX_SIZE = 10;
+const CHEVRON_POSITION_START = 0.38;
+const CHEVRON_POSITION_STEP = 0.06;
+const CHEVRON_POSITION_COUNT = 5;
 
 let dottedLineTexture3D = null;
 
@@ -20,6 +25,87 @@ function roundToDecimals(value, decimals = 1) {
 
 function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
+}
+
+function getChevronPosition(index) {
+  return CHEVRON_POSITION_START + (index % CHEVRON_POSITION_COUNT) * CHEVRON_POSITION_STEP;
+}
+
+function getChevronSize(width) {
+  return clamp(width * 3.5, CHEVRON_MIN_SIZE, CHEVRON_MAX_SIZE);
+}
+
+function getChevronOutlineColor(color) {
+  const rgb = toRgb(color);
+  if (!rgb) return "#ffffff";
+  const luminance = (0.299 * rgb.r + 0.587 * rgb.g + 0.114 * rgb.b) / 255;
+  return luminance > 0.55 ? "#111111" : "#ffffff";
+}
+
+function getChevronGeometry(x1, y1, x2, y2, direction, index, offsetX = 0, offsetY = 0, width = 1) {
+  if (direction === LINK_DIRECTIONS.BOTH) return null;
+
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+  const length = Math.sqrt(dx * dx + dy * dy);
+  if (!Number.isFinite(length) || length <= 0) return null;
+
+  const sign = direction === LINK_DIRECTIONS.REVERSE ? -1 : 1;
+  const unitX = (dx / length) * sign;
+  const unitY = (dy / length) * sign;
+  const perpendicularX = -unitY;
+  const perpendicularY = unitX;
+  const size = getChevronSize(width);
+  const ratio = getChevronPosition(index);
+  const centerX = x1 + dx * ratio + offsetX;
+  const centerY = y1 + dy * ratio + offsetY;
+  const tipX = centerX + unitX * size * 0.5;
+  const tipY = centerY + unitY * size * 0.5;
+  const backX = centerX - unitX * size * 0.5;
+  const backY = centerY - unitY * size * 0.5;
+  const wing = size * 0.55;
+
+  return {
+    tipX,
+    tipY,
+    firstX: backX + perpendicularX * wing,
+    firstY: backY + perpendicularY * wing,
+    secondX: backX - perpendicularX * wing,
+    secondY: backY - perpendicularY * wing,
+  };
+}
+
+function drawChevronGraphics(lines, geometry, color, width) {
+  if (!geometry) return;
+  lines
+    .moveTo(geometry.firstX, geometry.firstY)
+    .lineTo(geometry.tipX, geometry.tipY)
+    .lineTo(geometry.secondX, geometry.secondY)
+    .stroke({ color: getChevronOutlineColor(color), width: Math.max(3.5, width + 2), cap: "round", join: "round" });
+  lines
+    .moveTo(geometry.firstX, geometry.firstY)
+    .lineTo(geometry.tipX, geometry.tipY)
+    .lineTo(geometry.secondX, geometry.secondY)
+    .stroke({ color, width: Math.max(1.5, width), cap: "round", join: "round" });
+}
+
+function drawChevronCanvas(ctx, geometry, color, width) {
+  if (!geometry) return;
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(geometry.firstX, geometry.firstY);
+  ctx.lineTo(geometry.tipX, geometry.tipY);
+  ctx.lineTo(geometry.secondX, geometry.secondY);
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
+  ctx.setLineDash([]);
+  ctx.strokeStyle = getChevronOutlineColor(color);
+  ctx.lineWidth = Math.max(3.5, width + 2);
+  ctx.stroke();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = Math.max(1.5, width);
+  ctx.stroke();
+  ctx.restore();
 }
 
 function getDottedPattern(width) {
@@ -85,6 +171,11 @@ export function createLineSprites(link, nodeContainers) {
     sprite.eventMode = "none";
     sprite.zIndex = 0;
     nodeContainers.addChild(sprite);
+    const directionMarker = new PIXI.Graphics();
+    directionMarker.eventMode = "none";
+    directionMarker.visible = false;
+    nodeContainers.addChild(directionMarker);
+    sprite.directionMarker = directionMarker;
     return sprite;
   });
 }
@@ -117,6 +208,10 @@ function detachLineSprites(lines3D) {
       if (sprite?.parent) {
         sprite.parent.removeChild(sprite);
       }
+      if (sprite?.directionMarker?.parent) {
+        sprite.directionMarker.parent.removeChild(sprite.directionMarker);
+      }
+      sprite?.directionMarker?.destroy?.();
     });
   });
 }
@@ -137,6 +232,9 @@ function prepareLineGraphics3D({ graph, nodeContainers, lines3D, lines2D, setPix
         if (!sprite.parent) {
           nodeContainers.addChild(sprite);
         }
+        if (sprite.directionMarker && !sprite.directionMarker.parent) {
+          nodeContainers.addChild(sprite.directionMarker);
+        }
       });
     });
     setPixiState("lines", lines3D);
@@ -156,6 +254,7 @@ function prepareLineGraphics2D({ lines2D, lines3D, setPixiState }) {
       if (!Array.isArray(sprites)) return;
       sprites.forEach((sprite) => {
         if (sprite) sprite.visible = false;
+        if (sprite?.directionMarker) sprite.directionMarker.visible = false;
       });
     });
   } else if (lines3D) {
@@ -189,10 +288,22 @@ export function drawLine(lines, link, linkWidth, colorscheme, linkAttribsToColor
 
     if (isAdditionalLinkAttrib(attrib)) {
       drawDottedLine(lines, sourceX, sourceY, targetX, targetY, color, linkWidth);
+      drawChevronGraphics(
+        lines,
+        getChevronGeometry(sourceX, sourceY, targetX, targetY, getLinkDirection(link, 0), 0, 0, 0, linkWidth),
+        color,
+        linkWidth,
+      );
       return;
     }
 
     lines.moveTo(sourceX, sourceY).lineTo(targetX, targetY).stroke({ color, width: linkWidth });
+    drawChevronGraphics(
+      lines,
+      getChevronGeometry(sourceX, sourceY, targetX, targetY, getLinkDirection(link, 0), 0, 0, 0, linkWidth),
+      color,
+      linkWidth,
+    );
     return;
   }
 
@@ -216,10 +327,22 @@ export function drawLine(lines, link, linkWidth, colorscheme, linkAttribsToColor
 
     if (isAdditionalLinkAttrib(attrib)) {
       drawDottedLine(lines, sourceX, sourceY, targetX, targetY, color, linkWidth);
+      drawChevronGraphics(
+        lines,
+        getChevronGeometry(link.source.x, link.source.y, link.target.x, link.target.y, getLinkDirection(link, i), i, offsetX, offsetY, linkWidth),
+        color,
+        linkWidth,
+      );
       continue;
     }
 
     lines.moveTo(sourceX, sourceY).lineTo(targetX, targetY).stroke({ color, width: linkWidth });
+    drawChevronGraphics(
+      lines,
+      getChevronGeometry(link.source.x, link.source.y, link.target.x, link.target.y, getLinkDirection(link, i), i, offsetX, offsetY, linkWidth),
+      color,
+      linkWidth,
+    );
   }
 }
 
@@ -263,6 +386,7 @@ export function updateLines3D(links, lineGraphics, linkWidth, linkColorscheme, l
     if (!link) {
       sprites.forEach((sprite) => {
         if (sprite) sprite.visible = false;
+        if (sprite?.directionMarker) sprite.directionMarker.visible = false;
       });
       continue;
     }
@@ -273,6 +397,7 @@ export function updateLines3D(links, lineGraphics, linkWidth, linkColorscheme, l
     if (!source || !target || source.visible === false || target.visible === false) {
       sprites.forEach((sprite) => {
         if (sprite) sprite.visible = false;
+        if (sprite?.directionMarker) sprite.directionMarker.visible = false;
       });
       continue;
     }
@@ -296,6 +421,7 @@ export function updateLines3D(links, lineGraphics, linkWidth, linkColorscheme, l
       if (!sprite) continue;
       if (i >= attribCount) {
         sprite.visible = false;
+        if (sprite.directionMarker) sprite.directionMarker.visible = false;
         continue;
       }
 
@@ -303,6 +429,7 @@ export function updateLines3D(links, lineGraphics, linkWidth, linkColorscheme, l
       const offsetX = shift * normedPerpendicularVector.x;
       const offsetY = shift * normedPerpendicularVector.y;
       const attrib = attribs[i];
+      const direction = getLinkDirection(link, i);
 
       sprite.visible = true;
       sprite.position.set(midX + offsetX, midY + offsetY);
@@ -312,6 +439,17 @@ export function updateLines3D(links, lineGraphics, linkWidth, linkColorscheme, l
       sprite.texture = isAdditionalLinkAttrib(attrib) ? getDottedLineTexture3D() : PIXI.Texture.WHITE;
       sprite.tint = getColor(linkAttribsToColorIndices[attrib], linkColorscheme.data);
       sprite.zIndex = -(depth ?? 0);
+
+      const marker = sprite.directionMarker;
+      if (marker) {
+        marker.clear();
+        marker.visible = direction !== LINK_DIRECTIONS.BOTH;
+        if (marker.visible) {
+          const geometry = getChevronGeometry(source.x, source.y, target.x, target.y, direction, i, offsetX, offsetY, widthScaled);
+          drawChevronGraphics(marker, geometry, getColor(linkAttribsToColorIndices[attrib], linkColorscheme.data), widthScaled);
+          marker.zIndex = sprite.zIndex - 0.01;
+        }
+      }
     }
   }
 }
@@ -334,6 +472,12 @@ export function drawLineCanvas(ctx, link, linkWidth, colorscheme, attribToColorI
     }
     ctx.stroke();
     ctx.closePath();
+    drawChevronCanvas(
+      ctx,
+      getChevronGeometry(link.source.x, link.source.y, link.target.x, link.target.y, getLinkDirection(link, 0), 0, 0, 0, adjustedWidth),
+      getColor(attribToColorIndex[attrib], colorscheme),
+      adjustedWidth,
+    );
     ctx.setLineDash([]);
     return;
   }
@@ -361,6 +505,12 @@ export function drawLineCanvas(ctx, link, linkWidth, colorscheme, attribToColorI
     }
     ctx.stroke();
     ctx.closePath();
+    drawChevronCanvas(
+      ctx,
+      getChevronGeometry(link.source.x, link.source.y, link.target.x, link.target.y, getLinkDirection(link, i), i, offsetX, offsetY, adjustedWidth),
+      getColor(attribToColorIndex[attrib], colorscheme),
+      adjustedWidth,
+    );
   }
   ctx.setLineDash([]);
 }

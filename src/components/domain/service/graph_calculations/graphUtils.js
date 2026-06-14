@@ -2,6 +2,33 @@ import UnionFind from "union-find";
 import Graph from "graphology";
 import louvain from "graphology-communities-louvain";
 
+export const LINK_DIRECTIONS = Object.freeze({
+  FORWARD: "forward",
+  BOTH: "both",
+  REVERSE: "reverse",
+});
+
+export function getLinkDirection(link, index) {
+  return link?.directions?.[index] ?? LINK_DIRECTIONS.BOTH;
+}
+
+export function reverseLinkDirection(direction) {
+  if (direction === LINK_DIRECTIONS.FORWARD) return LINK_DIRECTIONS.REVERSE;
+  if (direction === LINK_DIRECTIONS.REVERSE) return LINK_DIRECTIONS.FORWARD;
+  return LINK_DIRECTIONS.BOTH;
+}
+
+export function mergeLinkDirections(first, second) {
+  const left = first ?? LINK_DIRECTIONS.BOTH;
+  const right = second ?? LINK_DIRECTIONS.BOTH;
+  return left === right ? left : LINK_DIRECTIONS.BOTH;
+}
+
+export function getDirectionsForIndices(link, indices) {
+  if (!Array.isArray(link?.directions)) return undefined;
+  return indices.map((index) => getLinkDirection(link, index));
+}
+
 export function groupBy(nodes, keyFn) {
   const map = new Map();
   for (const node of nodes) {
@@ -223,6 +250,7 @@ export function cloneLink(link) {
     ...link,
     weights: Array.isArray(link.weights) ? [...link.weights] : [],
     attribs: Array.isArray(link.attribs) ? [...link.attribs] : [],
+    ...(Array.isArray(link.directions) ? { directions: [...link.directions] } : {}),
   };
 }
 
@@ -284,6 +312,7 @@ export function hasGraphStructureChanged(currentGraphData, nextGraphData) {
     if (getEndpointId(currentLink?.target) !== getEndpointId(nextLink?.target)) return true;
     if (!sameArrayValues(currentLink?.attribs ?? [], nextLink?.attribs ?? [])) return true;
     if (!sameArrayValues(currentLink?.weights ?? [], nextLink?.weights ?? [])) return true;
+    if (!sameArrayValues(currentLink?.directions ?? [], nextLink?.directions ?? [])) return true;
   }
 
   return false;

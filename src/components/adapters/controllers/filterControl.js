@@ -42,7 +42,13 @@ export function FilterControl() {
   const { communityState, setCommunityState } = useCommunityState();
 
   useEffect(() => {
-    if (!graphState.graph || !graphState.originGraph || !graphFlags.isPreprocessed) {
+    if (
+      !graphState.graph ||
+      !graphState.originGraph ||
+      !(pixiState?.nodeContainers?.children?.length > 0) ||
+      !pixiState.nodeMap ||
+      !graphFlags.isPreprocessed
+    ) {
       return;
     }
     const debounceTimeout = setTimeout(() => {
@@ -128,10 +134,8 @@ export function FilterControl() {
           return;
         }
 
-        if (pixiState.nodeMap) {
-          syncNodeMapWithGraphData(filteredGraphData, pixiState.nodeMap, theme, colorschemeState);
-          filterActiveNodesForPixi(appearance.showNodeLabels, filteredGraphData, pixiState.nodeMap);
-        }
+        syncNodeMapWithGraphData(filteredGraphData, pixiState.nodeMap, theme, colorschemeState);
+        filterActiveNodesForPixi(appearance.showNodeLabels, filteredGraphData, pixiState.nodeMap);
         if (!graphFlags.filteredAfterStart) {
           setGraphFlags("filteredAfterStart", true);
         }

@@ -583,6 +583,7 @@ const exampleGraph = {
       target: "Q08043_ACTN3_S321",
       weights: [0.55, 0.55],
       attribs: ["samples1", "samples3"],
+      directions: ["forward", "reverse"],
       index: 0,
     },
     {

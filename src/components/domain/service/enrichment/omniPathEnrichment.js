@@ -124,6 +124,7 @@ function applyKinaseLinks(graphData, interactions, substrateProteinToEntries) {
           target: substrateNodeId,
           attribs: [OMNI_PATH_PHOSPHO_ATTRIB],
           weights: [1],
+          directions: ["forward"],
         });
       });
     });
@@ -178,6 +179,7 @@ function applyPhosphataseLinks(graphData, interactions, proteinToNodeIds) {
           target: substrateNodeId,
           attribs: [OMNI_PATH_DEPHOSPHO_ATTRIB],
           weights: [1],
+          directions: ["forward"],
         });
       });
     });

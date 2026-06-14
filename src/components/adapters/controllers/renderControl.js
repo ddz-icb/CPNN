@@ -181,7 +181,7 @@ export function RenderControl() {
 
   // init simulation //
   useEffect(() => {
-    if (!renderState.app || !graphState.graph || renderState.simulation) {
+    if (!renderState.app || !graphState.graph || renderState.simulation || graphFlags.filteredAfterStart) {
       return;
     }
     log.info("Init simulation");
@@ -253,7 +253,15 @@ export function RenderControl() {
   // running simulation //
   useEffect(() => {
     const activeLines = appearance.threeD ? pixiState.lines3D : pixiState.lines2D;
-    if (!pixiState.nodeContainers || !graphState.graph || !renderState.simulation || !activeLines || !pixiState.grid3D) return;
+    if (
+      !pixiState.nodeContainers ||
+      !graphState.graph ||
+      !renderState.simulation ||
+      !graphFlags.filteredAfterStart ||
+      !activeLines ||
+      !pixiState.grid3D
+    )
+      return;
     log.info("Running simulation with the following graph:", graphState.graph);
 
     try {
@@ -289,7 +297,16 @@ export function RenderControl() {
         renderState.simulation.stop();
       }
     };
-  }, [graphState.graph, pixiState.nodeContainers, pixiState.lines2D, pixiState.lines3D, pixiState.grid3D, renderState.simulation, appearance.threeD]);
+  }, [
+    graphState.graph,
+    pixiState.nodeContainers,
+    pixiState.lines2D,
+    pixiState.lines3D,
+    pixiState.grid3D,
+    renderState.simulation,
+    graphFlags.filteredAfterStart,
+    appearance.threeD,
+  ]);
 
   // resize the canvas on window resize //
   useEffect(() => {

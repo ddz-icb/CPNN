@@ -98,7 +98,10 @@ export const uploadGraphDataFormat = (
   <div>
     <p className="margin-0">
       <strong>Listed Data (JSON):</strong> Upload a JSON file that already contains nodes and links. JSON uploads keep their existing link attributes
-      and can use any finite numeric link weights.
+      and can use any finite numeric link weights. Links may optionally provide a <PopupTextField inline={true} textInside={"directions"} /> array
+      aligned with <PopupTextField inline={true} textInside={"attribs"} />. Supported values are{" "}
+      <PopupTextField inline={true} textInside={"forward"} />, <PopupTextField inline={true} textInside={"both"} />, and{" "}
+      <PopupTextField inline={true} textInside={"reverse"} />. Missing entries default to <PopupTextField inline={true} textInside={"both"} />.
     </p>
     <br></br>
     <p className="margin-0">
