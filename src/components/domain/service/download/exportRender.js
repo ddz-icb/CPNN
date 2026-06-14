@@ -1,6 +1,6 @@
 import canvasToSvg from "canvas-to-svg";
 import { drawCircleCanvas, radius } from "../canvas_drawing/nodes.js";
-import { drawLineCanvas } from "../canvas_drawing/lineGraphics.js";
+import { drawLineCanvas, MIN_3D_LINK_SCREEN_LENGTH } from "../canvas_drawing/lineGraphics.js";
 import { computeLightingTint, rimRadiusFactor, rimWidthFactor } from "../canvas_drawing/shading.js";
 import { getNodeLabelOffsetY } from "../canvas_drawing/drawingUtils.js";
 import { getCameraViewParams } from "../canvas_drawing/camera3D.js";
@@ -149,7 +149,10 @@ export function render3DQueue(ctx, items, drawParams, gridOptions) {
         ctx.save();
         ctx.globalAlpha *= alpha;
       }
-      drawLineCanvas(ctx, link, linkWidth, linkColorscheme, linkAttribsToColorIndices, { widthScale });
+      drawLineCanvas(ctx, link, linkWidth, linkColorscheme, linkAttribsToColorIndices, {
+        widthScale,
+        minLength: MIN_3D_LINK_SCREEN_LENGTH,
+      });
       if (alpha < 1) ctx.restore();
     } else if (item.type === "node") {
       const { node, mapEntry } = item;
