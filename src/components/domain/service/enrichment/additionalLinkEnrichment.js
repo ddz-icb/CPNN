@@ -51,7 +51,8 @@ function ensureLinkAttrib(link, attrib, weight = 1, direction = "both") {
   if (weights[attribIndex] == null) {
     weights[attribIndex] = weight;
   }
-  directions[attribIndex] = mergeLinkDirections(directions[attribIndex], direction);
+  const hasExplicitDirection = Array.isArray(link.directions) && link.directions[attribIndex] != null;
+  directions[attribIndex] = hasExplicitDirection ? mergeLinkDirections(directions[attribIndex], direction) : direction;
   return { ...link, attribs, weights, directions };
 }
 
