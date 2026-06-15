@@ -15,12 +15,14 @@ import { errorService } from "../../application/services/errorService.js";
 import { mountRedraw } from "../../domain/service/physics_calculations/simulation.js";
 import { useContainer } from "../state/containerState.js";
 import { useTheme } from "../state/themeState.js";
+import { useGraphFlags } from "../state/graphFlagsState.js";
 
 export function AppearanceControl() {
   const { appearance, setAppearance } = useAppearance();
   const { theme } = useTheme();
   const { colorschemeState } = useColorschemeState();
   const { graphState } = useGraphState();
+  const { graphFlags } = useGraphFlags();
   const { pixiState } = usePixiState();
   const { renderState } = useRenderState();
   const { container } = useContainer();
@@ -37,7 +39,8 @@ export function AppearanceControl() {
       !colorschemeState.linkColorscheme ||
       !colorschemeState.linkAttribsToColorIndices ||
       !pixiState.nodeMap ||
-      !renderState.app
+      !renderState.app ||
+      !graphFlags.filteredAfterStart
     )
       return;
     log.info("Updating redraw function");
