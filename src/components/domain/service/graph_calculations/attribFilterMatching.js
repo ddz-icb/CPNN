@@ -93,7 +93,7 @@ function matchesTextTerm(attributes, query, metrics) {
     return matchesFieldValue(metrics[fieldTerm.field], fieldTerm.value);
   }
 
-  return matchesFieldValue(metrics.text, query);
+  return false;
 }
 
 function parseFieldTerm(query) {

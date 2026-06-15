@@ -1,7 +1,6 @@
 import { getAdjacentData, getCommunityData, getComponentData, getEndpointId, getUniqueNeighborCountData } from "./graphUtils.js";
 import { matchesAttribsFilter } from "./attribFilterMatching.js";
 import { filterNodesExist } from "./filterGraphLinks.js";
-import { getNodeIdNames, getNodeIdsAndIsoform } from "../parsing/nodeIdParsing.js";
 
 function getGroupAvgDegree(graphData, idToGroup, groupToSize) {
   const groupEdgeCount = {};
@@ -155,13 +154,7 @@ export function filterNodeAttribs(graphData, filterRequest) {
     nodes: graphData.nodes.filter((node) =>
       matchesAttribsFilter(node.attribs, filterRequest, {
         neighbors: neighborCounts.get(node.id) ?? 0,
-        text: [
-          node.id,
-          ...getNodeIdsAndIsoform(node.id),
-          ...getNodeIdNames(node.id),
-          node.name,
-          node.label,
-        ].filter((value) => value !== undefined && value !== null && value !== ""),
+        name: [node.id, node.name, node.label].filter((value) => value !== undefined && value !== null && value !== ""),
         type: node.type,
       }),
     ),

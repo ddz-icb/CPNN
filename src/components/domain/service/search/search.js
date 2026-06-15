@@ -7,20 +7,18 @@ import {
 } from "../graph_calculations/graphUtils.js";
 import { matchesAttribsFilter } from "../graph_calculations/attribFilterMatching.js";
 import { parseAttribsFilter } from "../parsing/attribsFilterParsing.js";
-import { getNodeIdNames, getNodeIdsAndIsoform } from "../parsing/nodeIdParsing.js";
 
 export function getMatchingNodes(nodes, query, links = []) {
   const search = parseSearchQuery(query);
   if (!search.query) return [];
   const neighborCounts = getUniqueNeighborCountData({ nodes, links });
-  return (nodes ?? []).filter((node) => {
-    const nodeNames = getNodeIdNames(node.id);
-    return matchesSearchRequest(node, search, {
+  return (nodes ?? []).filter((node) =>
+    matchesSearchRequest(node, search, {
       neighbors: neighborCounts.get(node.id) ?? 0,
-      text: uniqueValues([node.id, ...getNodeIdsAndIsoform(node.id), ...nodeNames, node.name, node.label]),
+      name: uniqueValues([node.id, node.name, node.label]),
       type: node.type,
-    });
-  });
+    }),
+  );
 }
 
 export function getMatchingLinks(links, query) {
@@ -31,7 +29,7 @@ export function getMatchingLinks(links, query) {
     .filter((entry) => {
       const directionalEndpoints = getDirectionalLinkEndpoints(entry.link);
       return matchesSearchRequest(entry.link, search, {
-        text: uniqueValues([entry.linkId, entry.link?.name, entry.link?.label]),
+        name: uniqueValues([entry.linkId, entry.link?.name, entry.link?.label]),
         type: entry.link?.type,
         source: directionalEndpoints.sources,
         target: directionalEndpoints.targets,

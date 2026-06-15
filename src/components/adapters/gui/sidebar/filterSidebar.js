@@ -1,5 +1,5 @@
 import { Button, FieldBlock, SliderBlock, SwitchBlock, LassoFilterBlock } from "../reusable_components/sidebarComponents.js";
-import { getNumericControlValue, getSliderBoundsForDataRange } from "../handlers/buttonHandlerFunctions.js";
+import { getLinkThresholdBounds } from "../../../domain/service/graph_settings/linkThresholdRange.js";
 import { NodeIdFilterBlock } from "./nodeIdFilterBlock.js";
 import { LinkAttribFilterBlock, NodeAttribFilterBlock } from "./attribFilterBlock.js";
 import { useFilter } from "../../state/filterState.js";
@@ -30,29 +30,7 @@ export function FilterSidebar() {
   const { graphMetrics } = useGraphMetrics();
 
   const lassoSelectionCount = Array.isArray(filter.lassoSelection) ? filter.lassoSelection.length : 0;
-  const linkThresholdBounds = getSliderBoundsForDataRange({
-    dataMin: graphMetrics.linkWeightAbsMin,
-    dataMax: graphMetrics.linkWeightAbsMax,
-    fallbackMax: linkThresholdInit,
-  });
-  const minLinkThresholdValue = getNumericControlValue(filter.linkThreshold, linkThresholdBounds.min);
-  const maxLinkThresholdValue = getNumericControlValue(filter.maxLinkThreshold, linkThresholdBounds.max);
-
-  const handleSetMinLinkThreshold = (value) => {
-    setFilter("linkThreshold", value);
-    if (value > maxLinkThresholdValue) {
-      setFilter("maxLinkThreshold", value);
-      setFilter("maxLinkThresholdText", value);
-    }
-  };
-
-  const handleSetMaxLinkThreshold = (value) => {
-    setFilter("maxLinkThreshold", value);
-    if (value < minLinkThresholdValue) {
-      setFilter("linkThreshold", value);
-      setFilter("linkThresholdText", value);
-    }
-  };
+  const linkThresholdBounds = getLinkThresholdBounds(graphMetrics.linkWeightAbsMax, linkThresholdInit);
 
   const handleClearLassoSelection = () => {
     setFilter("lassoSelection", []);
@@ -78,9 +56,9 @@ export function FilterSidebar() {
       </div>
       <div className="table-list-heading">Link Filters</div>
       <SliderBlock
-        value={minLinkThresholdValue}
+        value={filter.linkThreshold}
         valueText={filter.linkThresholdText}
-        setValue={handleSetMinLinkThreshold}
+        setValue={(value) => setFilter("linkThreshold", value)}
         setValueText={(value) => setFilter("linkThresholdText", value)}
         fallbackValue={linkThresholdInit}
         min={linkThresholdBounds.min}
@@ -91,9 +69,9 @@ export function FilterSidebar() {
         infoDescription={linkThresholdDescription}
       />
       <SliderBlock
-        value={maxLinkThresholdValue}
+        value={filter.maxLinkThreshold}
         valueText={filter.maxLinkThresholdText}
-        setValue={handleSetMaxLinkThreshold}
+        setValue={(value) => setFilter("maxLinkThreshold", value)}
         setValueText={(value) => setFilter("maxLinkThresholdText", value)}
         fallbackValue={linkThresholdBounds.max}
         min={linkThresholdBounds.min}

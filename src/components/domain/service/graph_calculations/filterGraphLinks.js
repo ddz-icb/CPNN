@@ -53,7 +53,7 @@ export function filterLinkAttribs(graphData, filterRequest) {
       .map((link, index) => {
         const directionalEndpoints = getDirectionalLinkEndpoints(link);
         return matchesAttribsFilter(link.attribs, filterRequest, {
-          text: [getLinkIdText(link, index), link.name, link.label].filter(
+          name: [getLinkIdText(link, index), link.name, link.label].filter(
             (value) => value !== undefined && value !== null && value !== "",
           ),
           type: link.type,

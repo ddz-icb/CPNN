@@ -15,6 +15,10 @@ import {
   graphSettingsSchema,
   serializeGraphSettingValue,
 } from "../../domain/service/graph_settings/graphSettingsSchema.js";
+import {
+  getLinkThresholdBounds,
+  roundUpLinkThreshold,
+} from "../../domain/service/graph_settings/linkThresholdRange.js";
 
 const themesByName = {
   [lightTheme.name]: lightTheme,
@@ -129,10 +133,6 @@ function getFiniteFilterNumber(value) {
   return Number.isFinite(numericValue) ? numericValue : null;
 }
 
-function toFilterControlNumber(value) {
-  return Number(value.toPrecision(12));
-}
-
 function applyGraphFilterSettings(savedFilter, { minAbsWeight, maxAbsWeight }) {
   const { filter, setAllFilter } = useFilter.getState();
   let nextFilter = { ...filter };
@@ -143,24 +143,27 @@ function applyGraphFilterSettings(savedFilter, { minAbsWeight, maxAbsWeight }) {
   }
 
   if (Number.isFinite(minAbsWeight) && Number.isFinite(maxAbsWeight)) {
+    const thresholdBounds = getLinkThresholdBounds(maxAbsWeight, filterInit.linkThreshold);
+    const initialMinThreshold =
+      minAbsWeight > filterInit.linkThreshold
+        ? roundUpLinkThreshold(minAbsWeight, thresholdBounds)
+        : filterInit.linkThreshold;
     const currentMinThreshold = getFiniteFilterNumber(nextFilter.linkThreshold);
     const currentMaxThreshold = getFiniteFilterNumber(nextFilter.maxLinkThreshold);
 
-    if (currentMinThreshold === null || currentMinThreshold < minAbsWeight || currentMinThreshold > maxAbsWeight) {
-      const roundedMinWeight = toFilterControlNumber(minAbsWeight);
+    if (currentMinThreshold === null || currentMinThreshold < minAbsWeight || currentMinThreshold > thresholdBounds.max) {
       nextFilter = {
         ...nextFilter,
-        linkThreshold: roundedMinWeight,
-        linkThresholdText: roundedMinWeight,
+        linkThreshold: initialMinThreshold,
+        linkThresholdText: initialMinThreshold,
       };
     }
 
-    if (currentMaxThreshold === null || currentMaxThreshold < minAbsWeight || currentMaxThreshold > maxAbsWeight) {
-      const roundedMaxWeight = toFilterControlNumber(maxAbsWeight);
+    if (currentMaxThreshold === null || currentMaxThreshold < minAbsWeight || currentMaxThreshold > thresholdBounds.max) {
       nextFilter = {
         ...nextFilter,
-        maxLinkThreshold: roundedMaxWeight,
-        maxLinkThresholdText: roundedMaxWeight,
+        maxLinkThreshold: thresholdBounds.max,
+        maxLinkThresholdText: thresholdBounds.max,
       };
     }
 
