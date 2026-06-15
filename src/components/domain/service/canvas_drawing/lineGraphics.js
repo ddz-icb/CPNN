@@ -5,6 +5,8 @@ import { getColor } from "./drawingUtils.js";
 
 const LINK_WIDTH_MIN = 0.1;
 const LINK_WIDTH_MAX = 3;
+const LINK_DEPTH_SCALE_MIN = 0.5;
+const LINK_DEPTH_SCALE_MAX = 1.5;
 const LINK_WIDTH_LOG_COEFFS = [8.166, -2.791, 0.202];
 const DOTTED_LINE_DASH_MULTIPLIER = 1.8;
 const DOTTED_LINE_GAP_MULTIPLIER = 1.8;
@@ -411,8 +413,11 @@ export function updateLines3D(links, lineGraphics, linkWidth, linkColorscheme, l
       continue;
     }
 
-    const depth = Math.max(source.depth ?? 0, target.depth ?? 0);
-    const depthScale = (source.scale + target.scale) / 2;
+    const sourceDepth = source.depth ?? 0;
+    const targetDepth = target.depth ?? 0;
+    const depth = Math.max(sourceDepth, targetDepth);
+    const averageScale = 2 / (1 / source.scale + 1 / target.scale);
+    const depthScale = clamp(averageScale, LINK_DEPTH_SCALE_MIN, LINK_DEPTH_SCALE_MAX);
     const widthScaled = linkWidth * depthScale;
 
     const dx = target.x - source.x;
