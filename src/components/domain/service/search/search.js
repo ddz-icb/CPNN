@@ -1,19 +1,42 @@
-import { formatWeight, getEndpointIdText, getLinkIdText } from "../graph_calculations/graphUtils.js";
+import {
+  formatWeight,
+  getDirectionalLinkEndpoints,
+  getEndpointIdText,
+  getLinkIdText,
+  getUniqueNeighborCountData,
+} from "../graph_calculations/graphUtils.js";
 import { matchesAttribsFilter } from "../graph_calculations/attribFilterMatching.js";
 import { parseAttribsFilter } from "../parsing/attribsFilterParsing.js";
+import { getNodeIdNames, getNodeIdsAndIsoform } from "../parsing/nodeIdParsing.js";
 
-export function getMatchingNodes(nodes, query) {
-  const search = createSearchRequest(query);
+export function getMatchingNodes(nodes, query, links = []) {
+  const search = parseSearchQuery(query);
   if (!search.query) return [];
-  return (nodes ?? []).filter((node) => matchesSearchRequest(node, search, getNodeSearchValues));
+  const neighborCounts = getUniqueNeighborCountData({ nodes, links });
+  return (nodes ?? []).filter((node) => {
+    const nodeNames = getNodeIdNames(node.id);
+    return matchesSearchRequest(node, search, {
+      neighbors: neighborCounts.get(node.id) ?? 0,
+      text: uniqueValues([node.id, ...getNodeIdsAndIsoform(node.id), ...nodeNames, node.name, node.label]),
+      type: node.type,
+    });
+  });
 }
 
 export function getMatchingLinks(links, query) {
-  const search = createSearchRequest(query);
+  const search = parseSearchQuery(query);
   if (!search.query) return [];
   return (links ?? [])
     .map((link, index) => buildLinkSearchResult(link, index))
-    .filter((entry) => matchesSearchRequest(entry.link, search, () => getLinkSearchValues(entry)));
+    .filter((entry) => {
+      const directionalEndpoints = getDirectionalLinkEndpoints(entry.link);
+      return matchesSearchRequest(entry.link, search, {
+        text: uniqueValues([entry.linkId, entry.link?.name, entry.link?.label]),
+        type: entry.link?.type,
+        source: directionalEndpoints.sources,
+        target: directionalEndpoints.targets,
+      });
+    });
 }
 
 export function getSearchNodeIds(nodes = []) {
@@ -100,41 +123,19 @@ function formatSearchAttributeCount(count, singularLabel) {
   return `${numericCount} ${label}`;
 }
 
-function getNodeSearchValues(node) {
-  return [node?.label, node?.id, node?.attrib, node?.attribs, node?.type];
+function matchesSearchRequest(item, search, metrics) {
+  return matchesAttribsFilter(item?.attribs, search.attributeFilter, metrics);
 }
 
-function getLinkSearchValues(entry) {
-  return [entry?.link?.id, entry?.link?.label, entry?.link?.type, entry?.sourceId, entry?.targetId, entry?.link?.attrib, entry?.link?.attribs, entry?.link?.weights];
-}
-
-function matchesSearchRequest(item, search, getSearchValues) {
-  return matchesQuery(getSearchValues(item), search.query) || matchesAttribsFilter(item?.attribs, search.attributeFilter);
-}
-
-function matchesQuery(values, query) {
-  return values.some((value) => {
-    if (value === undefined || value === null) return false;
-    if (Array.isArray(value)) return matchesQuery(value, query);
-    return value.toString().toLowerCase().includes(query);
-  });
-}
-
-function createSearchRequest(query) {
+export function parseSearchQuery(query) {
   const normalizedQuery = normalizeSearchText(query);
+  if (!normalizedQuery) return { query: "", attributeFilter: null };
+
+  const parsedFilter = parseAttribsFilter(normalizedQuery);
   return {
     query: normalizedQuery,
-    attributeFilter: parseAttributeSearch(normalizedQuery),
+    attributeFilter: parsedFilter === true ? null : parsedFilter,
   };
-}
-
-function parseAttributeSearch(query) {
-  try {
-    const parsedFilter = parseAttribsFilter(query);
-    return parsedFilter === true ? null : parsedFilter;
-  } catch {
-    return null;
-  }
 }
 
 function normalizeSearchText(value) {
@@ -149,10 +150,10 @@ function hasValue(value) {
   return value !== undefined && value !== null && value !== "";
 }
 
-export function applySearch(query, nodes) {
+export function applySearch(query, nodes, links = []) {
   if (!query) return;
 
-  const matches = getMatchingNodes(nodes ?? [], query);
+  const matches = getMatchingNodes(nodes ?? [], query, links);
 
   return matches;
 }

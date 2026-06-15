@@ -1,4 +1,4 @@
-import { getDirectionsForIndices, getEndpointId } from "./graphUtils.js";
+import { getDirectionalLinkEndpoints, getDirectionsForIndices, getEndpointId, getLinkIdText } from "./graphUtils.js";
 import { matchesAttribsFilter } from "./attribFilterMatching.js";
 import { isAdditionalLinkAttrib } from "../enrichment/additionalLinkEnrichment.js";
 
@@ -50,7 +50,19 @@ export function filterLinkAttribs(graphData, filterRequest) {
   return {
     ...graphData,
     links: graphData.links
-      .map((link) => (matchesAttribsFilter(link.attribs, filterRequest) ? { ...link } : { ...link, attribs: [] }))
+      .map((link, index) => {
+        const directionalEndpoints = getDirectionalLinkEndpoints(link);
+        return matchesAttribsFilter(link.attribs, filterRequest, {
+          text: [getLinkIdText(link, index), link.name, link.label].filter(
+            (value) => value !== undefined && value !== null && value !== "",
+          ),
+          type: link.type,
+          source: directionalEndpoints.sources,
+          target: directionalEndpoints.targets,
+        })
+          ? { ...link }
+          : { ...link, attribs: [] };
+      })
       .filter((link) => link.attribs.length > 0),
   };
 }

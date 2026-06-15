@@ -211,55 +211,46 @@ export const communityFilterSizeDescription = (
 export const linkFilterDescription = (
   <div>
     <div className="margin-0">
-      You can filter the links by formulating a query. These queries must follow the Conjunctive Normal Form (CNF), meaning that conditions grouped
-      with <PopupTextField textInside={"or"} /> (e.g., <PopupTextField textInside={"(A or B)"} /> ) are combined using{" "}
-      <PopupTextField textInside={"and"} />. To address one (or multiple) attributes, parts of the attribute name can be used (e.g.{" "}
-      <PopupTextField textInside={"lean"} /> includes all attributes that contain the word "lean"). If the attribute consists of more than one word,
-      quotation marks can be used (e.g. <PopupTextField textInside={'"lean group"'} /> ). To forbid an attribute from occuring, the{" "}
-      <PopupTextField textInside={"not"} /> operator can be applied. To address multiple attributes simultaneously, you can group them as a set, for
-      example: <PopupTextField textInside={"{lean, obese, t2d}"} />. To restrict the number of links, you can use the{" "}
-      <PopupTextField textInside={">"} />, <PopupTextField textInside={">="} />, <PopupTextField textInside={"<"} />,{" "}
-      <PopupTextField textInside={"<="} /> or <PopupTextField textInside={"="} /> operators (e.g., <PopupTextField textInside={">= 2"} /> filters for
-      multilinks of size at least 2). Using this setting to filter the graph can significantly enhance performance.
+      Plain text matches a link ID or name. Available fields: <PopupTextField textInside={"attr:"} /> attribute,{" "}
+      <PopupTextField textInside={"attrs:"} /> number of attributes, <PopupTextField textInside={"type:"} />,{" "}
+      <PopupTextField textInside={"source:"} />, and <PopupTextField textInside={"target:"} />. For bidirectional links, either endpoint matches both
+      {" "}<PopupTextField textInside={"source:"} /> and <PopupTextField textInside={"target:"} />.
     </div>
     <div className="pad-top-1" />
     <div>
-      For example, with the link attributes <PopupTextField textInside={"lean group"} />, <PopupTextField textInside={"obese group"} />, and{" "}
-      <PopupTextField textInside={"t2d group"} />, some valid queries could be:
+      Combine conditions with <PopupTextField textInside={"and"} />, alternatives with <PopupTextField textInside={"or"} /> inside parentheses, and
+      exclusions with <PopupTextField textInside={"not"} />. Use quotes for values containing spaces. Numeric fields support{" "}
+      <PopupTextField textInside={"="} />, <PopupTextField textInside={"!="} />, <PopupTextField textInside={">"} />,{" "}
+      <PopupTextField textInside={">="} />, <PopupTextField textInside={"<"} />, and <PopupTextField textInside={"<="} />.
     </div>
     <div className="pad-top-05" />
-    <PopupTextField textInside={"t2d"} /> <PopupTextField textInside={"not lean"} /> <PopupTextField textInside={"> 2"} />{" "}
-    <PopupTextField textInside={"not {lean, obese}"} /> <PopupTextField textInside={'"t2d group" and lean'} />{" "}
-    <PopupTextField textInside={"(obese or lean) and >= 2"} /> <PopupTextField textInside={"(obese or lean) and t2d"} />{" "}
-    <PopupTextField textInside={"(not t2d or not obese) and lean"} />
+    <div>Examples:</div>
+    <PopupTextField textInside={"T2D"} /> <PopupTextField textInside={"attr:phosphorylation"} />{" "}
+    <PopupTextField textInside={'attr:"t2d group"'} /> <PopupTextField textInside={"source:AKT1 and target:MTOR"} />{" "}
+    <PopupTextField textInside={"(type:activation or type:inhibition) and not attr:predicted"} /> <PopupTextField textInside={"attrs:>=2"} />
   </div>
 );
 
 export const nodeFilterDescription = (
   <div>
     <div className="margin-0">
-      You can filter the nodes by formulating a query. These queries must follow the Conjunctive Normal Form (CNF), meaning that conditions grouped
-      with <PopupTextField textInside={"or"} /> (e.g., <PopupTextField textInside={"(A or B)"} /> ) are combined using{" "}
-      <PopupTextField textInside={"and"} />. To address one (or multiple) attributes, parts of the attribute name can be used (e.g.{" "}
-      <PopupTextField textInside={"signaling"} /> includes all attributes that contain the word "signaling"). If the attribute consists of more than
-      one word, quotation marks can be used (e.g. <PopupTextField textInside={'"mRNA splicing"'} /> ). To forbid an attribute from occuring, the{" "}
-      <PopupTextField textInside={"not"} /> operator can be applied. To address multiple attributes simultaneously, you can group them as a set, for
-      example: <PopupTextField textInside={'{mRNA splicing, signaling, "glucose metabolism"}'} />. To restrict the number of attributes of a node, you
-      can use the <PopupTextField textInside={">"} />, <PopupTextField textInside={">="} />, <PopupTextField textInside={"<"} />,{" "}
-      <PopupTextField textInside={"<="} /> or <PopupTextField textInside={"="} /> operators (e.g., <PopupTextField textInside={">= 2"} /> filters for
-      nodes with at least 2 attributes). Using this setting to filter the graph can significantly enhance performance.
+      Plain text matches a node ID or name. Available fields: <PopupTextField textInside={"attr:"} /> attribute,{" "}
+      <PopupTextField textInside={"attrs:"} /> number of attributes, <PopupTextField textInside={"type:"} />, and{" "}
+      <PopupTextField textInside={"neighbors:"} /> distinct adjacent nodes. Parallel links to the same node count as one neighbor.
     </div>
     <div className="pad-top-1" />
     <div>
-      For example, with the node attributes <PopupTextField textInside={"mRNA splicing"} />, <PopupTextField textInside={"glucose metabolism"} />,{" "}
-      <PopupTextField textInside={"VEGF signaling"} /> and <PopupTextField textInside={"MTOR signaling"} />, some valid queries could be:
+      Combine conditions with <PopupTextField textInside={"and"} />, alternatives with <PopupTextField textInside={"or"} /> inside parentheses, and
+      exclusions with <PopupTextField textInside={"not"} />. Use quotes for values containing spaces. Numeric fields support{" "}
+      <PopupTextField textInside={"="} />, <PopupTextField textInside={"!="} />, <PopupTextField textInside={">"} />,{" "}
+      <PopupTextField textInside={">="} />, <PopupTextField textInside={"<"} />, and <PopupTextField textInside={"<="} />.
     </div>
     <div className="pad-top-05" />
-    <PopupTextField textInside={"signaling"} /> <PopupTextField textInside={"not signaling"} /> <PopupTextField textInside={"> 2"} />{" "}
-    <PopupTextField textInside={"not {MTOR, VEGF, mRNA}"} /> <PopupTextField textInside={'signaling and "mRNA splicing"'} />{" "}
-    <PopupTextField textInside={"(metabolism or signaling) and >= 2"} />{" "}
-    <PopupTextField textInside={'("mRNA splicing" or VEGF) and ("glucose metabolism" or MTOR)'} />
-    <PopupTextField textInside={'(not "mRNA splicing" or not VEGF)'} />
+    <div>Examples:</div>
+    <PopupTextField textInside={"AKT1"} /> <PopupTextField textInside={'AKT1 and not attr:"phosphorylation"'} />{" "}
+    <PopupTextField textInside={"attr:signaling"} />{" "}
+    <PopupTextField textInside={"type:kinase and neighbors:>3"} />{" "}
+    <PopupTextField textInside={"(type:kinase or type:phosphatase) and not attr:predicted"} /> <PopupTextField textInside={"attrs:>=2"} />
   </div>
 );
 

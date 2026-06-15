@@ -26,7 +26,7 @@ export function SearchControl() {
       log.info("SearchControl: recomputing matches", { nodeQuery, linkQuery, nodeCount: nodes.length, linkCount: links.length });
     }
 
-    const matchingNodes = nodeQuery ? getMatchingNodes(nodes, nodeQuery) : [];
+    const matchingNodes = nodeQuery ? getMatchingNodes(nodes, nodeQuery, links) : [];
     const matchingLinks = linkQuery ? getMatchingLinks(links, linkQuery) : [];
     const currentSearchState = useSearchState.getState().searchState;
 

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 
 import { useSearchState, searchStateInit } from "../../state/searchState.js";
 import { useSidebarCodeEditor } from "../reusable_components/useSidebarCodeEditor.js";
@@ -18,6 +18,7 @@ import {
   getSearchNodeIds,
   getSearchNodeResults,
   hasSameValues,
+  parseSearchQuery,
 } from "../../../domain/service/search/search.js";
 import { useNodeDetails } from "../hooks/useNodeDetails.js";
 import { linkSearchDescription, nodeSearchDescription } from "./descriptions/searchDescriptions.js";
@@ -52,6 +53,8 @@ export function SearchSidebar() {
 
   const nodeTextareaRef = useRef(null);
   const linkTextareaRef = useRef(null);
+  const [nodeSearchError, setNodeSearchError] = useState(null);
+  const [linkSearchError, setLinkSearchError] = useState(null);
   const graphNodes = graphState.graph?.data?.nodes ?? [];
   const nodeById = useMemo(() => new Map(graphNodes.map((node) => [node.id, node])), [graphNodes]);
 
@@ -70,11 +73,17 @@ export function SearchSidebar() {
   const allMatchCount = allMatchNodeIds.length + allMatchLinkIds.length;
 
   const handleNodeEditorChange = useCallback(
-    (editor) => handleEditorChangeHelper(editor, (value) => setSearchState("nodeSearchValue", value)),
+    (editor) => {
+      setNodeSearchError(null);
+      handleEditorChangeHelper(editor, (value) => setSearchState("nodeSearchValue", value));
+    },
     [setSearchState],
   );
   const handleLinkEditorChange = useCallback(
-    (editor) => handleEditorChangeHelper(editor, (value) => setSearchState("linkSearchValue", value)),
+    (editor) => {
+      setLinkSearchError(null);
+      handleEditorChangeHelper(editor, (value) => setSearchState("linkSearchValue", value));
+    },
     [setSearchState],
   );
 
@@ -82,6 +91,14 @@ export function SearchSidebar() {
     const nextQuery = nodeSearchValue.trim().toLowerCase();
     if (!nextQuery) {
       handleClearNodeSearch();
+      return;
+    }
+
+    try {
+      parseSearchQuery(nextQuery);
+      setNodeSearchError(null);
+    } catch (error) {
+      setNodeSearchError(error instanceof Error ? error.message : String(error));
       return;
     }
 
@@ -101,6 +118,14 @@ export function SearchSidebar() {
       return;
     }
 
+    try {
+      parseSearchQuery(nextQuery);
+      setLinkSearchError(null);
+    } catch (error) {
+      setLinkSearchError(error instanceof Error ? error.message : String(error));
+      return;
+    }
+
     setAllSearchState({
       ...searchState,
       linkSearchValue,
@@ -111,6 +136,7 @@ export function SearchSidebar() {
   };
 
   const handleClearNodeSearch = () => {
+    setNodeSearchError(null);
     setAllSearchState({
       ...searchState,
       nodeSearchValue: searchStateInit.nodeSearchValue,
@@ -123,6 +149,7 @@ export function SearchSidebar() {
   };
 
   const handleClearLinkSearch = () => {
+    setLinkSearchError(null);
     setAllSearchState({
       ...searchState,
       linkSearchValue: searchStateInit.linkSearchValue,
@@ -234,6 +261,7 @@ export function SearchSidebar() {
       <CodeEditorBlock
         text={"Search Nodes"}
         textareaRef={nodeTextareaRef}
+        compilerError={nodeSearchError}
         defaultValue={nodeSearchValue}
         onClick={showNodeClearButton ? handleClearNodeSearch : handleNodeSearch}
         infoHeading={"Search Nodes"}
@@ -244,6 +272,7 @@ export function SearchSidebar() {
       <CodeEditorBlock
         text={"Search Links"}
         textareaRef={linkTextareaRef}
+        compilerError={linkSearchError}
         defaultValue={linkSearchValue}
         onClick={showLinkClearButton ? handleClearLinkSearch : handleLinkSearch}
         infoHeading={"Search Links"}

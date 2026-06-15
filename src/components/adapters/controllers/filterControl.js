@@ -93,12 +93,13 @@ export function FilterControl() {
           previousGraphData: graphState.graph.data,
         });
         filteredGraphData = filterLasso(filteredGraphData, filter.lassoSelection);
-        filteredGraphData = filterNodeAttribs(filteredGraphData, filter.nodeFilter);
         filteredGraphData = filterNodeIds(filteredGraphData, filter.nodeIdFilters);
         filteredGraphData = filterNodesExist(filteredGraphData);
 
         filteredGraphData = filterThreshold(filteredGraphData, filter.linkThreshold, filter.maxLinkThreshold);
         filteredGraphData = filterLinkAttribs(filteredGraphData, filter.linkFilter);
+        filteredGraphData = filterNodeAttribs(filteredGraphData, filter.nodeFilter);
+        filteredGraphData = filterNodesExist(filteredGraphData);
 
         // Additional enrichment links are excluded from structural filters (component/community/k-core)
         // prevents keeping nodes alive without regular connections.

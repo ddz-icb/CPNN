@@ -29,6 +29,35 @@ export function getDirectionsForIndices(link, indices) {
   return indices.map((index) => getLinkDirection(link, index));
 }
 
+export function getDirectionalLinkEndpoints(link) {
+  const source = getEndpointIdText(link?.source);
+  const target = getEndpointIdText(link?.target);
+  const sources = new Set();
+  const targets = new Set();
+  const laneCount = Math.max(link?.attribs?.length ?? 0, link?.directions?.length ?? 0, 1);
+
+  for (let index = 0; index < laneCount; index++) {
+    const direction = getLinkDirection(link, index);
+    if (direction === LINK_DIRECTIONS.FORWARD) {
+      sources.add(source);
+      targets.add(target);
+    } else if (direction === LINK_DIRECTIONS.REVERSE) {
+      sources.add(target);
+      targets.add(source);
+    } else {
+      sources.add(source);
+      sources.add(target);
+      targets.add(source);
+      targets.add(target);
+    }
+  }
+
+  return {
+    sources: Array.from(sources).filter(Boolean),
+    targets: Array.from(targets).filter(Boolean),
+  };
+}
+
 export function groupBy(nodes, keyFn) {
   const map = new Map();
   for (const node of nodes) {
@@ -111,6 +140,20 @@ export function getAdjacentData(graphData) {
   });
 
   return idToNeighborCount;
+}
+
+export function getUniqueNeighborCountData(graphData) {
+  const neighborIdsByNodeId = new Map((graphData.nodes ?? []).map((node) => [node.id, new Set()]));
+
+  (graphData.links ?? []).forEach((link) => {
+    const sourceId = getEndpointId(link.source);
+    const targetId = getEndpointId(link.target);
+    if (sourceId === targetId || !neighborIdsByNodeId.has(sourceId) || !neighborIdsByNodeId.has(targetId)) return;
+    neighborIdsByNodeId.get(sourceId).add(targetId);
+    neighborIdsByNodeId.get(targetId).add(sourceId);
+  });
+
+  return new Map(Array.from(neighborIdsByNodeId, ([nodeId, neighborIds]) => [nodeId, neighborIds.size]));
 }
 
 export function getNodeAttribsToColorIndices(graphData) {
