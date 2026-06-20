@@ -132,6 +132,7 @@
   -webkit-appearance: none;
   border: var(--border-thin) solid var(--color-input-border);
   border-radius: var(--radius);
+  background: var(--color-input-surface);
   color: var(--color-text-primary);
 }
 
@@ -144,8 +145,7 @@
   min-width: var(--sidebar-control-main-width);
 }
 
-.input-field:focus-visible,
-[data-slot="input"].input-field:focus-visible {
+.input-field:focus-visible {
   outline: none;
   border-color: var(--color-input-border-focus);
   box-shadow: 0 0 0 var(--focus-ring-size) color-mix(in srgb, var(--color-focus-ring) 35%, transparent 65%);

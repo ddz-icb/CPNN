@@ -102,38 +102,6 @@
   --color-red-500: var(--palette-red-500);
   --color-white: var(--palette-white);
 
-  /* shadcn aliases */
-  --background: var(--color-surface-muted);
-  --foreground: var(--color-text-primary);
-  --card: var(--color-surface);
-  --card-foreground: var(--color-text-primary);
-  --popover: var(--color-surface);
-  --popover-foreground: var(--color-text-primary);
-  --primary: var(--color-accent);
-  --primary-foreground: var(--color-accent-contrast);
-  --secondary: color-mix(in srgb, var(--color-accent) 15%, var(--color-surface) 85%);
-  --secondary-foreground: var(--color-text-primary);
-  --muted: color-mix(in srgb, var(--color-surface) 85%, var(--color-accent) 15%);
-  --muted-foreground: var(--color-text-secondary);
-  --accent: var(--color-accent-soft);
-  --accent-foreground: var(--color-accent-soft-contrast);
-  --destructive: var(--palette-red-500);
-  --border: var(--color-border-subtle);
-  --input: var(--color-input-surface);
-  --ring: var(--color-accent);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: var(--color-surface);
-  --sidebar-foreground: var(--color-text-primary);
-  --sidebar-primary: color-mix(in srgb, var(--color-accent) 60%, var(--color-surface) 40%);
-  --sidebar-primary-foreground: var(--color-text-inverse);
-  --sidebar-accent: var(--color-accent-soft);
-  --sidebar-accent-foreground: var(--color-accent-soft-contrast);
-  --sidebar-border: var(--color-border-subtle);
-  --sidebar-ring: var(--color-accent);
   --color-focus-ring: var(--color-accent);
 }
 
@@ -177,8 +145,6 @@
   --color-focus-ring: color-mix(in srgb, var(--color-accent) 65%, #dbe1ff 35%);
   --highlight-bg: color-mix(in srgb, var(--color-accent-soft) 36%, var(--color-accent) 35%);
   --highlight-color-text: var(--color-text-inverse);
-  --muted: color-mix(in srgb, var(--color-surface) 82%, var(--color-accent) 18%);
-  --sidebar-primary: color-mix(in srgb, var(--color-accent) 52%, var(--color-surface) 48%);
 }
 
 .light {
@@ -221,6 +187,4 @@
   --color-focus-ring: color-mix(in srgb, var(--color-accent) 80%, #ffffff 20%);
   --shadow-soft: var(--shadow-soft-light);
   --shadow-floating: var(--shadow-floating-light);
-  --muted: color-mix(in srgb, var(--color-surface) 80%, var(--color-accent-soft) 20%);
-  --sidebar-primary: var(--color-accent);
 }

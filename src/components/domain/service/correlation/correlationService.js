@@ -1,6 +1,8 @@
 import log from "../../../adapters/logging/logger.js";
+import { computePearsonEdgesJs, computeSpearmanEdgesJs } from "./correlationMath.js";
 
 let correlationWorker = null;
+let correlationWorkerUnavailable = false;
 let requestId = 0;
 const pendingRequests = new Map();
 
@@ -28,16 +30,19 @@ function getWorker() {
     const message = event?.message || "Correlation worker failed.";
     pendingRequests.forEach(({ reject }) => reject(new Error(message)));
     pendingRequests.clear();
+    correlationWorkerUnavailable = true;
+    correlationWorker?.terminate();
+    correlationWorker = null;
   };
 
   return correlationWorker;
 }
 
-function requestWorker(payload, transfer) {
+function requestWorker(payload) {
   return new Promise((resolve, reject) => {
     const id = ++requestId;
     pendingRequests.set(id, { resolve, reject });
-    getWorker().postMessage({ id, ...payload }, transfer || []);
+    getWorker().postMessage({ id, ...payload });
   });
 }
 
@@ -91,19 +96,29 @@ function toNumericMatrix(fileData) {
 }
 
 async function computeCorrelationEdges({ method, matrix, rows, cols, minEdgeCorr, ignoreNegatives }) {
-  const payload = await requestWorker(
-    {
+  const computeFallback = () => {
+    const compute = method === "spearman" ? computeSpearmanEdgesJs : computePearsonEdgesJs;
+    return compute(matrix, rows, cols, minEdgeCorr, ignoreNegatives);
+  };
+
+  if (correlationWorkerUnavailable) {
+    return computeFallback();
+  }
+
+  try {
+    return await requestWorker({
       type: method,
       matrix,
       rows,
       cols,
       minEdgeCorr,
       ignoreNegatives,
-    },
-    [matrix.buffer]
-  );
-
-  return payload;
+    });
+  } catch (error) {
+    correlationWorkerUnavailable = true;
+    log.warn(`Correlation worker unavailable; using JavaScript fallback. ${error.message}`);
+    return computeFallback();
+  }
 }
 
 export async function buildGraphFromRawTable(fileData, { takeSpearman, ignoreNegatives, minEdgeCorr, linkAttrib }) {

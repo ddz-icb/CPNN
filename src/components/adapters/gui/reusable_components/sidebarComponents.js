@@ -1,11 +1,9 @@
-import { ButtonCN } from "./shadcn_blocks/buttonCN.jsx";
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { SvgIcon } from "./SvgIcon.jsx";
 import infoCircleSvg from "../../../../assets/icons/infoCircle.svg?raw";
 import xSvg from "../../../../assets/icons/x.svg?raw";
 import { handleFieldBlur, handleFieldChange, handleSliderChange } from "../handlers/buttonHandlerFunctions.js";
-import { InputCN } from "./shadcn_blocks/inputFieldCN.jsx";
 import { useTheme } from "../../state/themeState.js";
 import { PortalTooltip } from "./tooltipComponents.js";
 export { DetailRow, TableList, ToggleList } from "./sidebarLists.js";
@@ -146,7 +144,7 @@ export function FieldApplyBlock({
         </span>
       </div>
       <div className="sidebar-control-body">
-        <InputCN
+        <input
           className="input-field default-width default-height"
           type="number"
           lang="en"
@@ -166,9 +164,10 @@ export function FieldApplyBlock({
 export function Button({ onClick, onChange, linkRef, tooltip, tooltipId, text, shortcut, className, variant, disabled, fileInputProps = {} }) {
   return (
     <>
-      <ButtonCN
+      <button
+        type="button"
         className={`button-rect default-height default-min-width ${className ?? ""}`}
-        variant={variant}
+        data-variant={variant}
         data-tooltip-id={tooltipId}
         data-tooltip-content={tooltip}
         onClick={onClick}
@@ -177,7 +176,7 @@ export function Button({ onClick, onChange, linkRef, tooltip, tooltipId, text, s
         <span>{text}</span>
         {shortcut && <kbd className="nav-shortcut">{shortcut}</kbd>}
         {(linkRef || onChange) && <input type="file" style={{ display: "none" }} onChange={onChange} ref={linkRef} {...fileInputProps} />}
-      </ButtonCN>
+      </button>
       <PortalTooltip id={tooltipId} place="top" effect="solid" className="tooltip-gui" positionStrategy="fixed" />
     </>
   );
@@ -235,7 +234,7 @@ export function DetailControlRow({ label, children, stack = false }) {
 export function DetailNumberRow({ label, value, min, max, step, onChange, onCommit }) {
   return (
     <DetailControlRow label={label}>
-      <InputCN
+      <input
         className="input-field default-width default-height"
         type="number"
         lang="en"
@@ -437,7 +436,7 @@ function NumericInput({ valueText, setValue, setValueText, fallbackValue, min, m
 
   return (
     <>
-      <InputCN
+      <input
         className="input-field default-width default-height"
         type="number"
         lang="en"
@@ -457,7 +456,7 @@ function NumericInput({ valueText, setValue, setValueText, fallbackValue, min, m
 function TextInput({ value, setValue, placeholder, size = "default" }) {
   const widthClass = size === "wide" ? "sidebar-control-input--wide" : "default-width";
   return (
-    <InputCN
+    <input
       className={`input-field input-field--text ${widthClass} default-height`}
       type="text"
       value={value}

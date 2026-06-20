@@ -15,7 +15,6 @@ import "./styles/tooltip.css";
 import "./styles/popup.css";
 import "./styles/colormapping_select.css";
 import "./styles/buttons.css";
-import "./styles/tailwind.css";
 
 import { useEffect } from "react";
 import { Sidebar } from "./components/adapters/gui/sidebar/sidebar.js";
