@@ -13,8 +13,20 @@ import {
   loadColorschemeNames,
   createColorschemeIfNotExists,
 } from "../../domain/models/colorscheme.js";
+import {
+  getLinkAttribsToColorIndices,
+  getNodeAttribsToColorIndices,
+} from "../../domain/service/graph_calculations/graphUtils.js";
 import { errorService } from "./errorService.js";
 import { processNamedFileUpload } from "./fileUploadService.js";
+
+export function reconcileAttribColorMappingsForGraph(graphData, colorschemeState) {
+  return {
+    ...colorschemeState,
+    nodeAttribsToColorIndices: getNodeAttribsToColorIndices(graphData, colorschemeState.nodeAttribsToColorIndices),
+    linkAttribsToColorIndices: getLinkAttribsToColorIndices(graphData, colorschemeState.linkAttribsToColorIndices),
+  };
+}
 
 export const colorschemeService = {
   async handleLoadColorschemeNames() {

@@ -4,11 +4,7 @@ import { useFilter } from "../../adapters/state/filterState.js";
 import { useGraphMetrics } from "../../adapters/state/graphMetricsState.js";
 import { usePhysics } from "../../adapters/state/physicsState.js";
 import { darkTheme, lightTheme, useTheme } from "../../adapters/state/themeState.js";
-import {
-  getLinkAttribsToColorIndices,
-  getLinkWeightMinMax,
-  getNodeAttribsToColorIndices,
-} from "../../domain/service/graph_calculations/graphUtils.js";
+import { getLinkWeightMinMax } from "../../domain/service/graph_calculations/graphUtils.js";
 import {
   deserializeGraphSettingValue,
   graphSettingKeys,
@@ -19,6 +15,7 @@ import {
   getLinkThresholdBounds,
   roundUpLinkThreshold,
 } from "../../domain/service/graph_settings/linkThresholdRange.js";
+import { reconcileAttribColorMappingsForGraph } from "./colorschemeService.js";
 
 const themesByName = {
   [lightTheme.name]: lightTheme,
@@ -183,18 +180,12 @@ function applyGraphFilterSettings(savedFilter, { minAbsWeight, maxAbsWeight }) {
 
 function applyGraphColorschemeSettings(graphData) {
   const { colorschemeState, setAllColorschemeState } = useColorschemeState.getState();
-  const graphColorschemeState = {
-    ...colorschemeState,
-    nodeAttribsToColorIndices: getNodeAttribsToColorIndices(graphData),
-    linkAttribsToColorIndices: getLinkAttribsToColorIndices(graphData),
-  };
+  const graphColorschemeState = mergeKnownSettings(colorschemeState, graphData.colorscheme, colorschemeStateInit, {
+    omittedKeys: graphSettingsSchema.colorscheme.importOmittedKeys,
+    skipNull: graphSettingsSchema.colorscheme.skipNullImport,
+  });
 
-  setAllColorschemeState(
-    mergeKnownSettings(graphColorschemeState, graphData.colorscheme, colorschemeStateInit, {
-      omittedKeys: graphSettingsSchema.colorscheme.importOmittedKeys,
-      skipNull: graphSettingsSchema.colorscheme.skipNullImport,
-    }),
-  );
+  setAllColorschemeState(reconcileAttribColorMappingsForGraph(graphData, graphColorschemeState));
 }
 
 function applyGraphAppearanceSettings(savedAppearance) {
