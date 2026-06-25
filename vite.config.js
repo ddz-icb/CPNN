@@ -10,9 +10,10 @@ const jsxInJs = () => ({
   name: "jsx-in-js",
   enforce: "pre",
   async load(id) {
-    if (!id.startsWith(srcDir) || !id.match(/\.[jt]sx?(?:\?.*)?$/)) return null;
+    const fileName = id.split("?")[0];
+    if (!fileName.startsWith(srcDir) || !fileName.match(/\.[jt]sx?$/)) return null;
     // Convert forward slashes back to backslashes only on Windows
-    const filePath = process.platform === "win32" ? id.replace(/\//g, "\\") : id;
+    const filePath = process.platform === "win32" ? fileName.replace(/\//g, "\\") : fileName;
     const code = fs.readFileSync(filePath, "utf-8");
     return transformWithEsbuild(code, id, {
       loader: "jsx",
