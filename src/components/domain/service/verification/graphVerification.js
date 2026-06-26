@@ -196,15 +196,17 @@ export function isCorrMatrix(fileData, tol = 1e-4) {
     if (!Array.isArray(data[i]) || data[i].length !== header.length) return false;
 
     for (let j = i + 1; j < data.length; j++) {
-      const a = Number(data[i][j]);
-      const b = Number(data[j][i]);
+      const aIsMissing = isMissingCorrelationValue(data[i][j]);
+      const bIsMissing = isMissingCorrelationValue(data[j][i]);
+      const a = getCorrelationMatrixWeight(data[i][j]);
+      const b = getCorrelationMatrixWeight(data[j][i]);
       if (!Number.isFinite(a) || !Number.isFinite(b)) return false;
-      if (Math.abs(a - b) > tol) return false;
+      if (!aIsMissing && !bIsMissing && Math.abs(a - b) > tol) return false;
     }
 
-    const diagonal = Number(data[i][i]);
+    const diagonal = getCorrelationMatrixWeight(data[i][i]);
     if (!Number.isFinite(diagonal)) return false;
-    if (Math.abs(diagonal - 1) > 1e-3) return false;
+    if (!isMissingCorrelationValue(data[i][i]) && Math.abs(diagonal - 1) > 1e-3) return false;
   }
 
   let mismatches = 0;
@@ -215,6 +217,20 @@ export function isCorrMatrix(fileData, tol = 1e-4) {
   if (mismatches / header.length > 0.1) return false;
 
   return true;
+}
+
+export function getCorrelationMatrixWeight(value) {
+  if (isMissingCorrelationValue(value)) return 0;
+
+  const numericValue = Number(value);
+  return Number.isFinite(numericValue) ? numericValue : Number.NaN;
+}
+
+function isMissingCorrelationValue(value) {
+  if (value === null || value === undefined || Number.isNaN(value)) return true;
+  if (typeof value !== "string") return false;
+
+  return ["", "na", "n/a", "nan"].includes(value.trim().toLowerCase());
 }
 
 export function isTableData(fileData) {

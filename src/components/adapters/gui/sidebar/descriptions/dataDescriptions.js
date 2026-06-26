@@ -106,7 +106,8 @@ export const uploadGraphDataFormat = (
     <br></br>
     <p className="margin-0">
       <strong>Correlation Matrix (TSV/CSV):</strong> Upload a symmetric matrix table. Use <PopupTextField inline={true} textInside={"id"} /> as the
-      first column header. Links are created directly from the matrix and use the uploaded file name as link attribute.
+      first column header. Missing values such as <PopupTextField inline={true} textInside={"NA"} /> are treated as zero-weight links. Links are created
+      directly from the matrix and use the uploaded file name as link attribute.
     </p>
     <br></br>
     <p className="margin-0">

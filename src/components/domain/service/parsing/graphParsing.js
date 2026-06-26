@@ -7,7 +7,7 @@ import {
   filterIgnoreNegatives,
   filterComponentSizeRange,
 } from "../graph_calculations/filterGraph.js";
-import { isCorrMatrix, isTableData, verifyGraph } from "../verification/graphVerification.js";
+import { getCorrelationMatrixWeight, isCorrMatrix, isTableData, verifyGraph } from "../verification/graphVerification.js";
 import { sortGraph } from "../graph_calculations/graphUtils.js";
 import { buildGraphFromRawTable } from "../correlation/correlationService.js";
 
@@ -209,7 +209,7 @@ function convertCorrMatrixToGraph(fileData, linkAttrib) {
       graphData.links.push({
         source: header[i],
         target: header[j],
-        weights: [round2(data[i][j])],
+        weights: [round2(getCorrelationMatrixWeight(data[i][j]))],
         attribs: [linkAttrib],
       });
     }
