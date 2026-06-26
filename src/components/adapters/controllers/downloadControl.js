@@ -7,29 +7,24 @@ import { useGraphState } from "../state/graphState.js";
 import { useMappingState } from "../state/mappingState.js";
 import {
   downloadAsPDF,
-  downloadAsPNG,
   downloadAsSVG,
   downloadGraphJson,
   downloadLegendPdf,
   downloadNodeIdsCsv,
 } from "../../domain/service/download/download.js";
-import { changeCircleBorderColor, changeNodeLabelColor } from "../../domain/service/canvas_drawing/nodes.js";
-import { lightTheme, themeInit, useTheme } from "../state/themeState.js";
+import { themeInit } from "../state/themeState.js";
 import { usePixiState } from "../state/pixiState.js";
-import { useRenderState } from "../state/canvasState.js";
 import { errorService } from "../../application/services/errorService.js";
 import { useContainer } from "../state/containerState.js";
 import { buildCurrentGraphSettingsExport } from "../../application/services/graphSettingsService.js";
 
 export function DownloadControl() {
   const { appearance } = useAppearance();
-  const { theme } = useTheme();
   const { colorschemeState } = useColorschemeState();
   const { graphState } = useGraphState();
   const { pixiState } = usePixiState();
   const { mappingState } = useMappingState();
   const { download } = useDownload();
-  const { renderState } = useRenderState();
   const { container } = useContainer();
 
   // download graph data as json //
@@ -57,25 +52,6 @@ export function DownloadControl() {
       log.error("Error downloading the graph as JSON with coordinates:", error);
     }
   }, [download.jsonCoordsPhysics]);
-
-  // download graph as png //
-  useEffect(() => {
-    if (!(download.png != null && graphState.graph)) return;
-    log.info("Downloading graph as PNG");
-
-    try {
-      changeCircleBorderColor(pixiState.nodeMap, lightTheme.circleBorderColor);
-      changeNodeLabelColor(pixiState.nodeMap, lightTheme.textColor);
-
-      downloadAsPNG(renderState.app, document, graphState.graph.name);
-
-      changeCircleBorderColor(pixiState.nodeMap, theme.circleBorderColor);
-      changeNodeLabelColor(pixiState.nodeMap, theme.textColor);
-    } catch (error) {
-      errorService.setError(error.message);
-      log.error("Error downloading the graph as PNG:", error);
-    }
-  }, [download.png]);
 
   // download graph as svg //
   useEffect(() => {

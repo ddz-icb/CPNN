@@ -4,7 +4,6 @@ import { create } from "zustand";
 export const downloadInit = {
   json: null,
   jsonCoordsPhysics: null,
-  png: null,
   svg: null,
   pdf: null,
   legendPdf: null,

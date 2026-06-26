@@ -76,30 +76,6 @@ function createGraphSvgElement(
 }
 
 
-export function downloadAsPNG(app, document, graphName) {
-  app.renderer.extract
-    .image(app.stage, "image/png")
-    .then((image) => {
-      const scale = 1.5; // Set higher for better resolution
-      const canvas = document.createElement("canvas");
-      const context = canvas.getContext("2d");
-      canvas.width = image.width * scale;
-      canvas.height = image.height * scale;
-      context.fillStyle = "#FFFFFF";
-      context.fillRect(0, 0, canvas.width, canvas.height);
-      context.drawImage(image, 0, 0, canvas.width, canvas.height);
-
-      const dataURL = canvas.toDataURL("image/png", 1.0);
-      const link = document.createElement("a");
-      link.href = dataURL;
-      link.download = getFileNameWithoutExtension(graphName);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    })
-    .catch((error) => log.error("Error downloading PNG:", error));
-}
-
 export function downloadAsSVG(
   graph,
   linkWidth,

@@ -9,7 +9,6 @@ export function ExportSidebar() {
   const exportData = [
     { id: "json", text: "Graph data (JSON File)", type: "json" },
     { id: "jsonCoordsPhysics", text: "Graph data and current settings (JSON file)", type: "jsonCoordsPhysics" },
-    { id: "png", text: "Graph as Picture (PNG File)", type: "png" },
     { id: "pdf", text: "Graph as Vector Graphic (PDF File)", type: "pdf" },
     { id: "svg", text: "Graph as Vector Graphic (SVG File)", type: "svg" },
     { id: "legendPdf", text: "Graph legend (PDF File)", type: "legendPdf" },
