@@ -86,7 +86,6 @@ export function normalizeQuerySyntax(input) {
   validateCanonicalSyntax(query);
   validateQueryFields(query);
   validateQueryFieldValues(query);
-  validateExplicitTerms(query);
 
   query = query.replace(/\bneighbors\s*:\s*(<=|>=|!=|=|<|>)\s*(\d+)\b/gi, "neighbors $1 $2");
   query = query.replace(/\battrs\s*:\s*(<=|>=|!=|=|<|>)\s*(\d+)\b/gi, "$1 $2");
@@ -146,18 +145,6 @@ function validateQueryFieldValues(query) {
     if (!/^\s*(?:"[^"]+"|[^\s(){} ,]+)/.test(suffix)) {
       throw new Error(`Expected a value after '${field}:'`);
     }
-  }
-}
-
-function validateExplicitTerms(query) {
-  const remaining = query
-    .replace(/\b(?:name|attr|type|source|target)\s*:\s*(?:"[^"]+"|[^\s(){} ,]+)/gi, " ")
-    .replace(/\b(?:neighbors|attrs)\s*:\s*(?:<=|>=|!=|=|<|>)\s*\d+/gi, " ")
-    .replace(/\b(?:and|or|not)\b/gi, " ")
-    .replace(/[()\s]/g, "");
-
-  if (remaining) {
-    throw new Error("Expected a field before each value. Use name:AKT1 for a node or link ID/name, or attr:phosphorylation for an attribute.");
   }
 }
 

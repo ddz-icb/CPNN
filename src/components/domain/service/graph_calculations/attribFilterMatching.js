@@ -93,7 +93,13 @@ function matchesTextTerm(attributes, query, metrics) {
     return matchesFieldValue(metrics[fieldTerm.field], fieldTerm.value);
   }
 
-  return false;
+  return matchesAnyTextField(attributes, query, metrics);
+}
+
+function matchesAnyTextField(attributes, query, metrics) {
+  if (matchesFieldValue(attributes, query)) return true;
+
+  return Object.entries(metrics).some(([field, value]) => field !== "neighbors" && field !== "attrs" && matchesFieldValue(value, query));
 }
 
 function parseFieldTerm(query) {
