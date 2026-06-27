@@ -9,7 +9,7 @@ import { useAppearance } from "../../state/appearanceState.js";
 import { useRenderState } from "../../state/canvasState.js";
 import { useContainer } from "../../state/containerState.js";
 import { useGraphState } from "../../state/graphState.js";
-import { centerOnNodes } from "../../../domain/service/canvas_interaction/centerView.js";
+import { centerOnNodes, clearViewOrbitCenter } from "../../../domain/service/canvas_interaction/centerView.js";
 import {
   getLinkEndpointIds,
   getNodesByIds,
@@ -109,6 +109,9 @@ export function SearchSidebar() {
       matchingNodes: [],
       selectedNodeId: null,
     });
+    if (selectedNodeId) {
+      clearViewOrbitCenter({ appearance });
+    }
   };
 
   const handleLinkSearch = () => {
@@ -137,6 +140,9 @@ export function SearchSidebar() {
 
   const handleClearNodeSearch = () => {
     setNodeSearchError(null);
+    if (selectedNodeId) {
+      clearViewOrbitCenter({ appearance });
+    }
     setAllSearchState({
       ...searchState,
       nodeSearchValue: searchStateInit.nodeSearchValue,
@@ -173,7 +179,10 @@ export function SearchSidebar() {
       highlightedNodeIds: node && nextSelection ? [node.id] : [],
       highlightedLinkIds: [],
     });
-    if (!node || !nextSelection) return;
+    if (!node || !nextSelection) {
+      clearViewOrbitCenter({ appearance });
+      return;
+    }
 
     centerOnNodes([node], {
       appearance,
@@ -186,6 +195,7 @@ export function SearchSidebar() {
     const linkId = item?.linkId;
     if (!linkId) return;
     const nextSelection = selectedLinkId === linkId ? null : linkId;
+    clearViewOrbitCenter({ appearance });
     setAllSearchState({
       ...searchState,
       selectedNodeId: null,
@@ -196,7 +206,7 @@ export function SearchSidebar() {
     if (!nextSelection) return;
 
     const endpointIds = getLinkEndpointIds(item);
-    centerOnNodes(getNodesByIds(endpointIds, nodeById), { appearance, renderState, container });
+    centerOnNodes(getNodesByIds(endpointIds, nodeById), { appearance, renderState, container, setOrbitCenter: false });
   };
 
   const isHighlightAllActive =

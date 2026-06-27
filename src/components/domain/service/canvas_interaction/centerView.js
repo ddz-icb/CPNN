@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import { defaultCamera } from "../canvas_drawing/render3D.js";
-import { focusCameraOnPoint } from "../canvas_drawing/camera3D.js";
+import { clearCameraOrbitCenter, focusCameraOnPoint, setCameraOrbitCenter } from "../canvas_drawing/camera3D.js";
 import { getCentroid } from "../graph_calculations/graphUtils.js";
 
 const MIN_TARGET_DEPTH = 1e-3;
@@ -16,7 +16,12 @@ function getTargetNodeScale() {
   return safeFov / getTargetNodeDepth();
 }
 
-export function centerOnNode(node, { appearance, renderState, container }) {
+export function clearViewOrbitCenter({ appearance } = {}) {
+  if (!appearance?.threeD) return;
+  clearCameraOrbitCenter(appearance?.cameraRef?.current);
+}
+
+export function centerOnNode(node, { appearance, renderState, container, setOrbitCenter = true }) {
   if (!node || !container?.width || !container?.height) return;
   if (!Number.isFinite(node.x) || !Number.isFinite(node.y)) return;
 
@@ -25,6 +30,9 @@ export function centerOnNode(node, { appearance, renderState, container }) {
     if (!camera) return;
 
     focusCameraOnPoint(camera, node, container, getTargetNodeDepth());
+    if (setOrbitCenter) {
+      setCameraOrbitCenter(camera, node);
+    }
     return;
   }
 

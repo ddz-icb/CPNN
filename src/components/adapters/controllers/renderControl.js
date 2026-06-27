@@ -20,6 +20,7 @@ import { filteredAfterStartInit, useGraphFlags } from "../state/graphFlagsState.
 import { simulationInit, useRenderState } from "../state/canvasState.js";
 import { setupStage } from "../../domain/service/canvas_drawing/stageSetup.js";
 import { resetGridVisibility, resetStageTransform, restoreProjectionHidden } from "../../domain/service/canvas_drawing/stageTransforms.js";
+import { clearCameraOrbitCenter } from "../../domain/service/canvas_drawing/camera3D.js";
 
 export function RenderControl() {
   const { appearance, setAppearance } = useAppearance();
@@ -88,6 +89,7 @@ export function RenderControl() {
     setPixiState("grid3D", grid3DInit);
 
     setAllTooltipSettings(tooltipInit);
+    clearCameraOrbitCenter(cameraRef.current);
 
     if (renderState.simulation) {
       renderState.simulation.__cancelDraw?.();

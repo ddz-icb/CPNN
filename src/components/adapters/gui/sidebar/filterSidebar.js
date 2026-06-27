@@ -31,6 +31,7 @@ export function FilterSidebar() {
 
   const lassoSelectionCount = Array.isArray(filter.lassoSelection) ? filter.lassoSelection.length : 0;
   const linkThresholdBounds = getLinkThresholdBounds(graphMetrics.linkWeightAbsMax, minLinkThresholdInit);
+  const defaultMaxLinkThreshold = linkThresholdBounds.defaultMax;
 
   const handleClearLassoSelection = () => {
     setFilter("lassoSelection", []);
@@ -43,8 +44,8 @@ export function FilterSidebar() {
   const handleResetFilters = () => {
     setAllFilter({
       ...filterInit,
-      maxLinkThreshold: linkThresholdBounds.max,
-      maxLinkThresholdText: linkThresholdBounds.max,
+      maxLinkThreshold: defaultMaxLinkThreshold,
+      maxLinkThresholdText: defaultMaxLinkThreshold,
     });
     setGraphFlags("mergeByName", false);
   };
@@ -73,7 +74,7 @@ export function FilterSidebar() {
         valueText={filter.maxLinkThresholdText}
         setValue={(value) => setFilter("maxLinkThreshold", value)}
         setValueText={(value) => setFilter("maxLinkThresholdText", value)}
-        fallbackValue={linkThresholdBounds.max}
+        fallbackValue={defaultMaxLinkThreshold}
         min={linkThresholdBounds.min}
         max={linkThresholdBounds.max}
         step={linkThresholdBounds.step}

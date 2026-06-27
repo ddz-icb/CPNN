@@ -12,7 +12,7 @@ import { useRenderState } from "../../state/canvasState.js";
 import { useContainer } from "../../state/containerState.js";
 import { communityForceStrengthInit, usePhysics } from "../../state/physicsState.js";
 import { getCentroid } from "../../../domain/service/graph_calculations/graphUtils.js";
-import { centerOnNode } from "../../../domain/service/canvas_interaction/centerView.js";
+import { centerOnNode, clearViewOrbitCenter } from "../../../domain/service/canvas_interaction/centerView.js";
 import { communityForceStrengthDescription } from "./descriptions/physicsDescriptions.js";
 import { communityFilterSizeDescription } from "./descriptions/filterDescriptions.js";
 
@@ -80,7 +80,10 @@ export function CommunitySidebar() {
     if (!communityId) return;
     const nextSelection = communityState.selectedCommunityId === communityId ? null : communityId;
     setCommunityState("selectedCommunityId", nextSelection);
-    if (!nextSelection) return;
+    if (!nextSelection) {
+      clearViewOrbitCenter({ appearance });
+      return;
+    }
 
     const nodeIds = communityState.communityToNodeIds?.[communityId];
     if (!Array.isArray(nodeIds) || nodeIds.length === 0) return;

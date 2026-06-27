@@ -1,10 +1,13 @@
 import {
+  clearCameraOrbitCenter,
   conjugateQuaternion,
   createIdentityQuaternion,
   defaultCamera,
   getCameraOrientation,
+  getCameraViewParams,
   getQuaternionAngle,
   multiplyQuaternions,
+  projectPoint3D,
   quaternionFromAxisAngle,
   rotateVectorByQuaternion,
   scaleQuaternionRotation,
@@ -33,7 +36,6 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, cameraRef
   const redrawScheduler = createFrameScheduler(() => cameraRef.current?.redraw?.());
   const previousTouchAction = canvas.style.touchAction;
   const previousCursor = canvas.style.cursor;
-  const previousTabIndex = canvas.getAttribute("tabindex");
 
   const state = {
     mode: null,
@@ -44,6 +46,7 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, cameraRef
     dragNode: null,
     rotationVelocity: createIdentityQuaternion(),
     orbitVelocity: { pitch: 0, yaw: 0 },
+    orbitPivot: null,
     panVelocity: { x: 0, y: 0 },
     inertiaFrame: null,
     inertiaTimestamp: null,
@@ -51,7 +54,6 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, cameraRef
 
   canvas.style.touchAction = "none";
   canvas.style.cursor = "grab";
-  canvas.tabIndex = 0;
 
   function getControls() {
     return { ...DEFAULT_CONTROLS, ...(controlsRef?.current ?? {}) };
@@ -104,13 +106,74 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, cameraRef
     state.inertiaTimestamp = null;
     state.rotationVelocity = createIdentityQuaternion();
     state.orbitVelocity = { pitch: 0, yaw: 0 };
+    state.orbitPivot = null;
     state.panVelocity = { x: 0, y: 0 };
   }
 
-  function applyRotation(delta) {
+  function getCameraNumber(camera, key, fallback) {
+    const value = camera?.[key];
+    return Number.isFinite(value) ? value : fallback;
+  }
+
+  function getPointPosition(point) {
+    return {
+      x: Number.isFinite(point?.x) ? point.x : 0,
+      y: Number.isFinite(point?.y) ? point.y : 0,
+      z: Number.isFinite(point?.z) ? point.z : 0,
+    };
+  }
+
+  function getRotatedPoint(point, orientation, viewport) {
+    const centerX = viewport.width / 2;
+    const centerY = viewport.height / 2;
+    const position = getPointPosition(point);
+    return rotateVectorByQuaternion(
+      {
+        x: position.x - centerX,
+        y: position.y - centerY,
+        z: position.z,
+      },
+      orientation,
+    );
+  }
+
+  function getOrbitCenterPivot() {
+    const camera = cameraRef.current;
+    if (!camera?.orbitCenter) return null;
+
+    const viewport = getViewport();
+    const projection = projectPoint3D(camera.orbitCenter, getCameraViewParams(camera, viewport.width, viewport.height));
+    if (!projection || projection.visible === false) return null;
+
+    return {
+      point: getPointPosition(camera.orbitCenter),
+      anchor: {
+        x: projection.x,
+        y: projection.y,
+        depth: Math.max(projection.depth, 1),
+      },
+    };
+  }
+
+  function applyPivotAnchor(camera, pivot) {
+    if (!pivot) return;
+
+    const viewport = getViewport();
+    const centerX = viewport.width / 2;
+    const centerY = viewport.height / 2;
+    const fov = Math.max(Math.abs(camera.fov ?? defaultCamera.fov), 1);
+    const rotatedPoint = getRotatedPoint(pivot.point, getCameraOrientation(camera), viewport);
+
+    camera.x = centerX + rotatedPoint.x - ((pivot.anchor.x - centerX) * pivot.anchor.depth) / fov;
+    camera.y = centerY + rotatedPoint.y - ((pivot.anchor.y - centerY) * pivot.anchor.depth) / fov;
+    camera.z = rotatedPoint.z - pivot.anchor.depth;
+  }
+
+  function applyRotation(delta, pivot = null) {
     const camera = cameraRef.current;
     if (!camera) return;
     setCameraOrientation(camera, multiplyQuaternions(delta, getCameraOrientation(camera)));
+    applyPivotAnchor(camera, pivot);
     redrawScheduler.schedule();
   }
 
@@ -121,7 +184,7 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, cameraRef
     return depth / fov;
   }
 
-  function applyPan(dx, dy) {
+  function applyPan(dx, dy, { clearOrbitCenter = true } = {}) {
     const camera = cameraRef.current;
     if (!camera) return;
 
@@ -130,6 +193,10 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, cameraRef
     const cameraDy = -dy * scale;
     camera.x = (camera.x ?? getViewport().width / 2) + cameraDx;
     camera.y = (camera.y ?? getViewport().height / 2) + cameraDy;
+    if (clearOrbitCenter && (cameraDx !== 0 || cameraDy !== 0)) {
+      clearCameraOrbitCenter(camera);
+      state.orbitPivot = null;
+    }
     state.panVelocity = { x: cameraDx, y: cameraDy };
     redrawScheduler.schedule();
   }
@@ -146,7 +213,7 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, cameraRef
   function applyOrbitRotation(pitch, yaw) {
     const pitchRotation = quaternionFromAxisAngle({ x: 1, y: 0, z: 0 }, pitch);
     const yawRotation = quaternionFromAxisAngle({ x: 0, y: 1, z: 0 }, -yaw);
-    applyRotation(multiplyQuaternions(pitchRotation, yawRotation));
+    applyRotation(multiplyQuaternions(pitchRotation, yawRotation), state.orbitPivot);
   }
 
   function orbit(dx, dy) {
@@ -226,17 +293,18 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, cameraRef
     applyPan(
       nextPinch.midpoint.x - state.lastPinch.midpoint.x,
       nextPinch.midpoint.y - state.lastPinch.midpoint.y,
+      { clearOrbitCenter: false },
     );
     state.lastPinch = nextPinch;
   }
 
   function startInertia() {
-    if (!getControls().inertia) return;
+    if (!getControls().inertia) return false;
     if (
       getQuaternionAngle(state.rotationVelocity) <= ROTATION_EPSILON &&
       Math.hypot(state.orbitVelocity.pitch, state.orbitVelocity.yaw) <= ROTATION_EPSILON &&
       Math.hypot(state.panVelocity.x, state.panVelocity.y) <= PAN_EPSILON
-    ) return;
+    ) return false;
 
     state.inertiaTimestamp = null;
     const animate = (timestamp) => {
@@ -281,6 +349,7 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, cameraRef
     };
 
     state.inertiaFrame = requestAnimationFrame(animate);
+    return true;
   }
 
   function handlePointerDown(event) {
@@ -288,7 +357,6 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, cameraRef
     stopInertia();
     pointers.set(event.pointerId, point);
     canvas.setPointerCapture?.(event.pointerId);
-    canvas.focus({ preventScroll: true });
     canvas.style.cursor = "grabbing";
     setTooltipSettings("isHoverTooltipActive", false);
 
@@ -307,6 +375,7 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, cameraRef
     state.previousPoint = point;
     state.distanceDragged = 0;
     state.dragNode = node;
+    state.orbitPivot = state.mode === "orbit" ? getOrbitCenterPivot() : null;
 
     if (node) {
       node.fx = Number.isFinite(node.x) ? node.x : 0;
@@ -353,13 +422,14 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, cameraRef
       state.activePointerId = pointerId;
       state.previousPoint = point;
       state.lastPinch = null;
+      state.orbitPivot = getOrbitCenterPivot();
       return;
     }
 
     if (event.pointerId !== state.activePointerId && state.mode !== "pinch") return;
 
     if (state.mode === "node") releaseDraggedNode(event);
-    else startInertia();
+    else if (!startInertia()) state.orbitPivot = null;
 
     if (state.distanceDragged > DRAG_CLICK_THRESHOLD) {
       setTooltipSettings("isClickTooltipActive", false);
@@ -402,7 +472,5 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, cameraRef
     canvas.removeEventListener("contextmenu", handleContextMenu);
     canvas.style.touchAction = previousTouchAction;
     canvas.style.cursor = previousCursor;
-    if (previousTabIndex === null) canvas.removeAttribute("tabindex");
-    else canvas.setAttribute("tabindex", previousTabIndex);
   };
 }

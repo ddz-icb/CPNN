@@ -173,12 +173,37 @@ export function applyCameraPreset(camera, presetName) {
   return true;
 }
 
+function normalizeOrbitCenter(point) {
+  if (!point || !Number.isFinite(point.x) || !Number.isFinite(point.y)) return null;
+  return {
+    x: point.x,
+    y: point.y,
+    z: Number.isFinite(point.z) ? point.z : 0,
+  };
+}
+
+export function setCameraOrbitCenter(camera, point) {
+  if (!camera) return false;
+
+  const orbitCenter = normalizeOrbitCenter(point);
+  if (!orbitCenter) return false;
+
+  camera.orbitCenter = orbitCenter;
+  return true;
+}
+
+export function clearCameraOrbitCenter(camera) {
+  if (!camera) return;
+  camera.orbitCenter = null;
+}
+
 export function resetCamera3D(camera, container) {
   if (!camera) return;
   camera.x = container?.width ? container.width / 2 : defaultCamera.x;
   camera.y = container?.height ? container.height / 2 : defaultCamera.y;
   camera.z = defaultCamera.z;
   camera.fov = defaultCamera.fov;
+  clearCameraOrbitCenter(camera);
   setCameraEuler(camera, defaultCamera);
   camera.redraw?.();
 }
@@ -222,6 +247,7 @@ export function fitCameraToNodes(camera, nodes, container) {
   camera.x = viewportCenterX + rotatedCenter.x;
   camera.y = viewportCenterY + rotatedCenter.y;
   camera.z = rotatedCenter.z - targetDepth;
+  clearCameraOrbitCenter(camera);
   camera.redraw?.();
   return true;
 }
