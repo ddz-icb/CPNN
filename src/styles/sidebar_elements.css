@@ -130,10 +130,12 @@
   -moz-appearance: textfield;
   appearance: none;
   -webkit-appearance: none;
+  color-scheme: inherit;
   border: var(--border-thin) solid var(--color-input-border);
   border-radius: var(--radius);
   background: var(--color-input-surface);
   color: var(--color-text-primary);
+  caret-color: var(--color-text-primary);
 }
 
 .input-field--text {
@@ -148,13 +150,20 @@
 .input-field:focus-visible {
   outline: none;
   border-color: var(--color-input-border-focus);
+  background: var(--color-input-focus);
   box-shadow: 0 0 0 var(--focus-ring-size) color-mix(in srgb, var(--color-focus-ring) 35%, transparent 65%);
+}
+
+.input-field::placeholder {
+  color: var(--color-input-placeholder);
+  opacity: 1;
 }
 
 .sidebar-select {
   flex-shrink: 0;
   min-width: 0;
   padding: 0 0.75rem;
+  color-scheme: inherit;
   border: var(--border-thin) solid var(--color-input-border);
   border-radius: var(--radius);
   background: var(--color-input-surface);
@@ -168,7 +177,27 @@
 .sidebar-select:focus-visible {
   outline: none;
   border-color: var(--color-input-border-focus);
+  background: var(--color-input-focus);
   box-shadow: 0 0 0 var(--focus-ring-size) color-mix(in srgb, var(--color-focus-ring) 35%, transparent 65%);
+}
+
+.sidebar-select option {
+  background-color: var(--color-input-surface);
+  color: var(--color-text-primary);
+}
+
+.sidebar-select option:checked {
+  background-color: var(--color-input-focus);
+  color: var(--color-text-primary);
+}
+
+.input-field:-webkit-autofill,
+.input-field:-webkit-autofill:hover,
+.input-field:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--color-text-primary);
+  caret-color: var(--color-text-primary);
+  box-shadow: 0 0 0 1000px var(--color-input-surface) inset;
+  transition: background-color 9999s ease-out;
 }
 
 .input-field::-webkit-inner-spin-button,

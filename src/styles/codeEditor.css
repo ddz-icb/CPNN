@@ -2,8 +2,16 @@
   display: flex;
   align-items: stretch;
   width: var(--sidebar-control-main-width);
+  color-scheme: inherit;
   border-radius: var(--radius);
   overflow: hidden;
+}
+
+.code-editor-container textarea {
+  color-scheme: inherit;
+  background-color: var(--color-input-surface);
+  color: var(--color-text-primary);
+  caret-color: var(--color-text-primary);
 }
 
 /* settings specific for code mirror */

@@ -106,6 +106,7 @@
 }
 
 .dark {
+  color-scheme: dark;
   --shadow-soft: var(--shadow-soft-dark);
   --shadow-floating: var(--shadow-floating-dark);
   --color-surface: #0f1229;
@@ -139,6 +140,7 @@
   --color-input-focus: color-mix(in srgb, var(--color-surface) 51%, var(--color-accent) 49%);
   --color-input-border: color-mix(in srgb, var(--color-surface-contrast) 51%, var(--color-accent) 49%);
   --color-input-border-focus: color-mix(in srgb, var(--color-accent) 68%, #c5cdff 32%);
+  --color-input-placeholder: color-mix(in srgb, var(--color-text-secondary) 62%, var(--color-input-surface) 38%);
   --color-button-surface: color-mix(in srgb, var(--color-surface) 43%, var(--color-accent) 57%);
   --color-button-hover: color-mix(in srgb, var(--color-accent) 73%, #b8c1ff 27%);
   --color-switch-track: color-mix(in srgb, var(--color-surface-contrast) 23%, var(--color-accent) 77%);
@@ -148,6 +150,7 @@
 }
 
 .light {
+  color-scheme: light;
   --color-surface: #f8f9ff;
   --color-surface-contrast: #ffffff;
   --color-surface-muted: #eef2ff;
@@ -181,6 +184,7 @@
   --color-input-focus: color-mix(in srgb, #ffffff 65%, var(--color-accent) 35%);
   --color-input-border: var(--color-border-subtle);
   --color-input-border-focus: color-mix(in srgb, var(--color-accent) 55%, #ffffff 45%);
+  --color-input-placeholder: color-mix(in srgb, var(--color-text-muted) 66%, #ffffff 34%);
   --color-button-surface: var(--color-accent);
   --color-button-hover: color-mix(in srgb, var(--color-accent) 80%, #ffffff 10%);
   --color-switch-track: color-mix(in srgb, var(--color-accent) 35%, #dce1ff 65%);
