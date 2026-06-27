@@ -2,9 +2,10 @@ import { appearanceInit } from "../../../adapters/state/appearanceState.js";
 import { colorschemeStateInit } from "../../../adapters/state/colorschemeState.js";
 import { filterInit } from "../../../adapters/state/filterState.js";
 import { physicsInit } from "../../../adapters/state/physicsState.js";
+import { themeInit } from "../../../adapters/state/themeState.js";
 
 const SERIALIZED_SET_TYPE = "Set";
-const appearanceGraphSettingsInit = { ...appearanceInit, themeName: "" };
+const appearanceGraphSettingsInit = { ...appearanceInit, themeName: themeInit.name };
 
 function isObject(value) {
   return value && typeof value === "object" && !Array.isArray(value);

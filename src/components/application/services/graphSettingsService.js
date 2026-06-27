@@ -36,28 +36,85 @@ function isObject(value) {
   return value && typeof value === "object" && !Array.isArray(value);
 }
 
-function pickKnownSettings(savedSettings, initSettings, { omittedKeys = new Set(), skipNull = false } = {}) {
+function isTextSettingKey(key) {
+  return key.endsWith("Text");
+}
+
+function isScalarTextMirrorValue(value) {
+  return typeof value === "string" || (typeof value === "number" && Number.isFinite(value));
+}
+
+function settingsEqual(left, right) {
+  if (left === right) return true;
+  if (left instanceof Set || right instanceof Set) {
+    if (!(left instanceof Set) || !(right instanceof Set) || left.size !== right.size) return false;
+    return Array.from(left).every((value) => right.has(value));
+  }
+  if (Array.isArray(left) || Array.isArray(right)) {
+    if (!Array.isArray(left) || !Array.isArray(right) || left.length !== right.length) return false;
+    return left.every((value, index) => settingsEqual(value, right[index]));
+  }
+  if (isObject(left) || isObject(right)) {
+    if (!isObject(left) || !isObject(right)) return false;
+    const leftKeys = Object.keys(left);
+    const rightKeys = Object.keys(right);
+    if (leftKeys.length !== rightKeys.length) return false;
+    return leftKeys.every((key) => Object.hasOwn(right, key) && settingsEqual(left[key], right[key]));
+  }
+  return false;
+}
+
+function pickKnownSettings(
+  savedSettings,
+  initSettings,
+  { omittedKeys = new Set(), skipNull = false, omitTextKeys = false, omitDefaults = false } = {},
+) {
   if (!isObject(savedSettings)) return {};
 
-  return Object.fromEntries(
-    Object.keys(initSettings)
-      .filter((key) => !omittedKeys.has(key))
-      .filter((key) => Object.hasOwn(savedSettings, key))
-      .filter((key) => savedSettings[key] !== undefined)
-      .filter((key) => !(skipNull && savedSettings[key] === null))
-      .map((key) => [key, deserializeGraphSettingValue(savedSettings[key])]),
-  );
+  const entries = [];
+  for (const key of Object.keys(initSettings)) {
+    if (omittedKeys.has(key)) continue;
+    if (omitTextKeys && isTextSettingKey(key)) continue;
+    if (!Object.hasOwn(savedSettings, key)) continue;
+    if (savedSettings[key] === undefined) continue;
+    if (skipNull && savedSettings[key] === null) continue;
+
+    const value = deserializeGraphSettingValue(savedSettings[key]);
+    if (omitDefaults && settingsEqual(value, initSettings[key])) continue;
+
+    entries.push([key, value]);
+  }
+
+  return Object.fromEntries(entries);
 }
 
 function mergeKnownSettings(baseSettings, savedSettings, initSettings, options) {
-  return {
+  const mergedSettings = {
     ...baseSettings,
     ...pickKnownSettings(savedSettings, initSettings, options),
   };
+  return options?.deriveMissingTextKeys ? deriveMissingTextSettings(mergedSettings, initSettings, savedSettings) : mergedSettings;
+}
+
+function deriveMissingTextSettings(settings, initSettings, savedSettings) {
+  const nextSettings = { ...settings };
+  const savedSettingsObject = isObject(savedSettings) ? savedSettings : {};
+
+  Object.keys(initSettings).forEach((key) => {
+    if (!isTextSettingKey(key) || Object.hasOwn(savedSettingsObject, key)) return;
+
+    const valueKey = key.slice(0, -"Text".length);
+    if (!Object.hasOwn(nextSettings, valueKey)) return;
+    if (!isScalarTextMirrorValue(nextSettings[valueKey])) return;
+
+    nextSettings[key] = nextSettings[valueKey];
+  });
+
+  return nextSettings;
 }
 
 function buildKnownSettingsExport(settings, initSettings, options) {
-  const knownSettings = pickKnownSettings(settings, initSettings, options);
+  const knownSettings = pickKnownSettings(settings, initSettings, { ...options, omitTextKeys: true, omitDefaults: true });
   return Object.fromEntries(Object.entries(knownSettings).map(([key, value]) => [key, serializeGraphSettingValue(value)]));
 }
 
@@ -73,14 +130,40 @@ function getSettingsSource(sources, sectionKey, sectionConfig) {
   return sources?.[sectionConfig.sourceKey ?? sectionKey];
 }
 
+function getSettingsDefaults(sources, sectionKey, sectionConfig) {
+  const sourceKey = sectionConfig.sourceKey ?? sectionKey;
+  const defaultOverrides = sources?.[`${sourceKey}Defaults`] ?? sources?.[`${sectionKey}Defaults`];
+  return isObject(defaultOverrides) ? { ...sectionConfig.init, ...defaultOverrides } : sectionConfig.init;
+}
+
+function getFilterDefaultsForGraphMetrics(graphMetrics) {
+  const { linkWeightAbsMin, linkWeightAbsMax } = graphMetrics ?? {};
+  if (!Number.isFinite(linkWeightAbsMin) || !Number.isFinite(linkWeightAbsMax)) return filterInit;
+
+  const thresholdBounds = getLinkThresholdBounds(linkWeightAbsMax, filterInit.linkThreshold);
+  const initialMinThreshold =
+    linkWeightAbsMin > filterInit.linkThreshold
+      ? roundUpLinkThreshold(linkWeightAbsMin, thresholdBounds)
+      : filterInit.linkThreshold;
+
+  return {
+    ...filterInit,
+    linkThreshold: initialMinThreshold,
+    linkThresholdText: initialMinThreshold,
+    maxLinkThreshold: thresholdBounds.max,
+    maxLinkThresholdText: thresholdBounds.max,
+  };
+}
+
 export function buildGraphSettingsExport(sources = {}) {
   const exportedSettings = {};
 
   for (const sectionKey of graphSettingKeys) {
     const sectionConfig = graphSettingsSchema[sectionKey];
     const sourceSettings = getSettingsSource(sources, sectionKey, sectionConfig);
+    const defaultSettings = getSettingsDefaults(sources, sectionKey, sectionConfig);
     const sectionSettings = {
-      ...buildKnownSettingsExport(sourceSettings, sectionConfig.init, { omittedKeys: sectionConfig.exportOmittedKeys }),
+      ...buildKnownSettingsExport(sourceSettings, defaultSettings, { omittedKeys: sectionConfig.exportOmittedKeys }),
     };
 
     if (Object.keys(sectionSettings).length > 0) {
@@ -95,6 +178,7 @@ export function buildCurrentGraphSettingsExport() {
   return buildGraphSettingsExport({
     physics: usePhysics.getState().physics,
     filter: useFilter.getState().filter,
+    filterDefaults: getFilterDefaultsForGraphMetrics(useGraphMetrics.getState().graphMetrics),
     appearance: {
       ...useAppearance.getState().appearance,
       themeName: useTheme.getState().theme?.name,
@@ -136,7 +220,7 @@ function applyGraphFilterSettings(savedFilter, { minAbsWeight, maxAbsWeight }) {
   const hasSavedFilter = isObject(savedFilter);
 
   if (hasSavedFilter) {
-    nextFilter = mergeKnownSettings(filterInit, savedFilter, filterInit);
+    nextFilter = mergeKnownSettings(filterInit, savedFilter, filterInit, { deriveMissingTextKeys: true });
   }
 
   if (Number.isFinite(minAbsWeight) && Number.isFinite(maxAbsWeight)) {
@@ -204,6 +288,7 @@ function applyGraphAppearanceSettings(savedAppearance) {
   const { appearance, setAllAppearance } = useAppearance.getState();
   const nextAppearance = mergeKnownSettings(appearance, savedAppearance, appearanceInit, {
     omittedKeys: graphSettingsSchema.appearance.importOmittedKeys,
+    deriveMissingTextKeys: true,
   });
 
   setAllAppearance(nextAppearance);
@@ -217,7 +302,7 @@ function applyGraphAppearanceSettings(savedAppearance) {
 function applyGraphPhysicsSettings(savedPhysics) {
   if (!isObject(savedPhysics)) return;
 
-  usePhysics.getState().setAllPhysics(mergeKnownSettings(physicsInit, savedPhysics, physicsInit));
+  usePhysics.getState().setAllPhysics(mergeKnownSettings(physicsInit, savedPhysics, physicsInit, { deriveMissingTextKeys: true }));
 }
 
 const graphSettingsAppliers = {
