@@ -37,10 +37,11 @@ function updateOverlay(circle, overlayKey, activeSet) {
   const overlay = circle?.[overlayKey];
   if (!overlay || overlay.destroyed) return;
   if (circle.visible === false) {
-    clearOverlay(circle, overlayKey, activeSet);
+    overlay.visible = false;
     return;
   }
 
+  overlay.visible = true;
   overlay.x = circle.x;
   overlay.y = circle.y;
   const scaleX = circle.scale?.x ?? 1;
@@ -51,11 +52,6 @@ function updateOverlay(circle, overlayKey, activeSet) {
 
 function drawOverlay(circle, highlightColor, overlayKey, activeSet) {
   if (!circle) return null;
-
-  if (circle.visible === false) {
-    clearOverlay(circle, overlayKey, activeSet);
-    return null;
-  }
 
   clearOverlay(circle, overlayKey, activeSet);
 
