@@ -8,6 +8,8 @@ export const downloadInit = {
   pdf: null,
   legendPdf: null,
   nodeIds: null,
+  nodeColorscheme: null,
+  linkColorscheme: null,
 };
 
 export const useDownload = create((set) => ({

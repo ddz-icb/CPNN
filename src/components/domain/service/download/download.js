@@ -202,6 +202,22 @@ export function downloadTsvFile(tsvContent, fileName) {
   triggerDownload(blob, `${getFileNameWithoutExtension(fileName)}.tsv`);
 }
 
+export function serializeColorschemeTsv(colorscheme) {
+  if (!colorscheme?.data) {
+    throw new Error("No color scheme selected for export.");
+  }
+  if (!Array.isArray(colorscheme.data) || !colorscheme.data.length) {
+    throw new Error("Color scheme export requires at least one color.");
+  }
+
+  return ["hex", ...colorscheme.data].join("\n") + "\n";
+}
+
+export function downloadColorschemeTsv(colorscheme, suffix = "colorscheme") {
+  const baseName = getFileNameWithoutExtension(colorscheme?.name || "colorscheme");
+  downloadTsvFile(serializeColorschemeTsv(colorscheme), `${baseName}_${suffix}`);
+}
+
 export function downloadNodeIdsCsv(nodes, fileName) {
   if (!nodes) return;
 

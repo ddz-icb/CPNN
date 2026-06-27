@@ -28,6 +28,7 @@
   box-shadow: var(--shadow-soft);
   box-sizing: border-box;
   color: var(--color-tooltip-text);
+  overflow: hidden;
 }
 
 .error-header {
@@ -40,4 +41,11 @@
 .error-header b {
   flex-grow: 1;
   text-align: center;
+}
+
+.error-message {
+  overflow-y: auto;
+  line-height: 1.35;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }

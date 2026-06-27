@@ -8,6 +8,7 @@ import { useMappingState } from "../state/mappingState.js";
 import {
   downloadAsPDF,
   downloadAsSVG,
+  downloadColorschemeTsv,
   downloadGraphJson,
   downloadLegendPdf,
   downloadNodeIdsCsv,
@@ -147,4 +148,30 @@ export function DownloadControl() {
       log.error("Error downloading the node ids as CSV:", error);
     }
   }, [download.nodeIds]);
+
+  // download active node color scheme as tsv //
+  useEffect(() => {
+    if (download.nodeColorscheme == null) return;
+    log.info("Downloading active node color scheme as TSV");
+
+    try {
+      downloadColorschemeTsv(colorschemeState.nodeColorscheme, "node_colorscheme");
+    } catch (error) {
+      errorService.setError(error.message);
+      log.error("Error downloading the active node color scheme as TSV:", error);
+    }
+  }, [download.nodeColorscheme]);
+
+  // download active link color scheme as tsv //
+  useEffect(() => {
+    if (download.linkColorscheme == null) return;
+    log.info("Downloading active link color scheme as TSV");
+
+    try {
+      downloadColorschemeTsv(colorschemeState.linkColorscheme, "link_colorscheme");
+    } catch (error) {
+      errorService.setError(error.message);
+      log.error("Error downloading the active link color scheme as TSV:", error);
+    }
+  }, [download.linkColorscheme]);
 }

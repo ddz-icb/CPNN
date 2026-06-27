@@ -16,7 +16,7 @@ export function Error() {
                 <SvgIcon svg={xSvg} />
               </button>
             </div>
-            <div>{error}</div>
+            <div className="error-message">{error}</div>
           </div>
         </div>
       )}

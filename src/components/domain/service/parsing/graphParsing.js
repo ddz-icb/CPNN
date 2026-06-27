@@ -7,7 +7,13 @@ import {
   filterIgnoreNegatives,
   filterComponentSizeRange,
 } from "../graph_calculations/filterGraph.js";
-import { getCorrelationMatrixWeight, isCorrMatrix, isTableData, verifyGraph } from "../verification/graphVerification.js";
+import {
+  getCorrelationMatrixIssue,
+  getCorrelationMatrixWeight,
+  getTableDataIssue,
+  isCorrMatrix,
+  verifyGraph,
+} from "../verification/graphVerification.js";
 import { sortGraph } from "../graph_calculations/graphUtils.js";
 import { buildGraphFromRawTable } from "../correlation/correlationService.js";
 
@@ -18,20 +24,20 @@ function normalizeIdValue(value) {
   return String(value ?? "").trim();
 }
 
-function assertUniqueIds(values, label) {
-  const seen = new Set();
+function assertUniqueIds(values, label, getPosition = (index) => `position ${index + 1}`) {
+  const seen = new Map();
 
   values.forEach((value, index) => {
     const normalized = normalizeIdValue(value);
     if (!normalized) {
-      throw new Error(`${label} at position ${index + 1} is empty.`);
+      throw new Error(`${label} at ${getPosition(index)} is empty.`);
     }
 
     const key = normalized.toLowerCase();
     if (seen.has(key)) {
-      throw new Error(`Duplicate ${label.toLowerCase()} '${normalized}' detected.`);
+      throw new Error(`Duplicate ${label.toLowerCase()} '${normalized}' detected at ${getPosition(index)}. First occurrence is at ${seen.get(key)}.`);
     }
-    seen.add(key);
+    seen.set(key, getPosition(index));
   });
 }
 
@@ -42,7 +48,8 @@ function verifySeparatedFileStructure(parsedData) {
 
   const firstHeader = normalizeIdValue(parsedData.firstHeader).toLowerCase();
   if (firstHeader !== "id") {
-    throw new Error("CSV/TSV files must use 'id' as the first column header.");
+    const foundHeader = parsedData.firstHeader ? `'${parsedData.firstHeader}'` : "an empty value";
+    throw new Error(`CSV/TSV files must use 'id' as the first column header. Found ${foundHeader} instead.`);
   }
 
   if (parsedData.header.length === 0) {
@@ -52,19 +59,33 @@ function verifySeparatedFileStructure(parsedData) {
     throw new Error("CSV/TSV file must contain at least one row.");
   }
 
-  assertUniqueIds(parsedData.header, "Column ID");
-  assertUniqueIds(parsedData.firstColumn, "Row ID");
+  parsedData.data.forEach((row, index) => {
+    const rowNumber = parsedData.rowNumbers?.[index] ?? index + 2;
+    if (!Array.isArray(row)) {
+      throw new Error(`CSV/TSV row ${rowNumber} could not be read as a list of values.`);
+    }
+    if (row.length !== parsedData.header.length) {
+      throw new Error(
+        `CSV/TSV row ${rowNumber} has ${row.length} data value(s), but the header defines ${parsedData.header.length} data column(s). Check for missing or extra delimiters.`,
+      );
+    }
+  });
+
+  assertUniqueIds(parsedData.header, "Column ID", (index) => `column ${index + 2}`);
+  assertUniqueIds(parsedData.firstColumn, "Row ID", (index) => `row ${parsedData.rowNumbers?.[index] ?? index + 2}`);
 }
 
 function verifyCorrelationMatrixIds(parsedData) {
   const { header, firstColumn } = parsedData;
   if (header.length !== firstColumn.length) {
-    throw new Error("Correlation matrix must have the same number of row and column IDs.");
+    throw new Error(`Correlation matrix must have the same number of row and column IDs. Found ${firstColumn.length} row ID(s) and ${header.length} column ID(s).`);
   }
 
   for (let i = 0; i < header.length; i++) {
     if (normalizeIdValue(header[i]) !== normalizeIdValue(firstColumn[i])) {
-      throw new Error(`Correlation matrix ID mismatch at row ${i + 1}: '${firstColumn[i]}' does not match '${header[i]}'.`);
+      throw new Error(
+        `Correlation matrix ID mismatch at row ${parsedData.rowNumbers?.[i] ?? i + 2}: row ID '${firstColumn[i]}' does not match column ${i + 2} '${header[i]}'.`,
+      );
     }
   }
 }
@@ -135,8 +156,8 @@ function parseJsonGraphFile(fileName, content) {
   log.info("Parsing JSON graph");
   try {
     return JSON.parse(content);
-  } catch {
-    throw new Error("Invalid JSON file format.");
+  } catch (error) {
+    throw new Error(`Invalid JSON file format: ${error.message}`);
   }
 }
 
@@ -154,8 +175,9 @@ function parseSeparatedGraphFile(fileName, content) {
 function parseCorrelationMatrixGraph(parsedData, generatedLinkAttrib) {
   verifyCorrelationMatrixIds(parsedData);
 
-  if (!isCorrMatrix(parsedData)) {
-    throw new Error("Selected data format is 'Correlation Matrix', but the uploaded TSV/CSV does not match matrix format.");
+  const matrixIssue = getCorrelationMatrixIssue(parsedData);
+  if (matrixIssue) {
+    throw new Error(`Selected data format is 'Correlation Matrix', but the uploaded TSV/CSV does not match matrix format. ${matrixIssue}`);
   }
 
   log.info("Parsing symmetrical matrix (CSV/TSV)");
@@ -164,10 +186,11 @@ function parseCorrelationMatrixGraph(parsedData, generatedLinkAttrib) {
 
 async function parseTabularDataGraph(parsedData, settings, generatedLinkAttrib) {
   if (isCorrMatrix(parsedData)) {
-    throw new Error("Selected data format is 'Tabular Data', but the uploaded TSV/CSV looks like a correlation matrix.");
+    throw new Error("Selected data format is 'Tabular Data', but the uploaded TSV/CSV looks like a correlation matrix. Select 'Correlation Matrix' instead.");
   }
-  if (!isTableData(parsedData)) {
-    throw new Error("Selected data format is 'Tabular Data', but the uploaded TSV/CSV does not match tabular format.");
+  const tableIssue = getTableDataIssue(parsedData);
+  if (tableIssue) {
+    throw new Error(`Selected data format is 'Tabular Data', but the uploaded TSV/CSV does not match tabular format. ${tableIssue}`);
   }
 
   log.info("Parsing tabular data (CSV/TSV)");

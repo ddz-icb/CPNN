@@ -13,6 +13,8 @@ export function ExportSidebar() {
     { id: "svg", text: "Graph as Vector Graphic (SVG File)", type: "svg" },
     { id: "legendPdf", text: "Graph legend (PDF File)", type: "legendPdf" },
     { id: "nodeIds", text: "Node-IDs (CSV File)", type: "nodeIds" },
+    { id: "nodeColorscheme", text: "Node color scheme (TSV File)", type: "nodeColorscheme" },
+    { id: "linkColorscheme", text: "Link color scheme (TSV File)", type: "linkColorscheme" },
   ];
 
   return (

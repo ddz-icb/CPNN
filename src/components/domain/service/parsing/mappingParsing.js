@@ -1,16 +1,18 @@
 import log from "../../../adapters/logging/logger.js";
 import Papa from "papaparse";
-import { getFileAsText, getFileNameWithoutExtension } from "./fileParsing.js";
+import { formatDelimitedParseError, getFatalDelimitedParseError, getFileAsText, getFileNameWithoutExtension } from "./fileParsing.js";
 import { verifyMapping } from "../verification/mappingVerification.js";
+
+const REQUIRED_MAPPING_HEADERS = ["id", "attribs"];
 
 export async function parseMappingFile(file) {
   if (!file) {
-    throw new Error(`No file found with the name ${file}.`);
+    throw new Error("No mapping file was provided.");
   }
 
   try {
-    const fileExtension = file.name.split(".").pop();
-    if (fileExtension !== "csv" && fileExtension !== "tsv") throw new Error(`Wrong file extension. Only .csv and .tsv is allowed.`);
+    const fileExtension = file.name.split(".").pop().toLowerCase();
+    if (fileExtension !== "csv" && fileExtension !== "tsv") throw new Error("Wrong file extension. Only .csv and .tsv are allowed.");
     const fileContent = await getFileAsText(file);
     const mappingData = parseMapping(fileContent);
     const mapping = { name: getFileNameWithoutExtension(file.name), data: mappingData };
@@ -23,7 +25,7 @@ export async function parseMappingFile(file) {
 }
 
 export function parseMapping(content) {
-  let fileData = Papa.parse(content, {
+  const fileData = Papa.parse(content, {
     header: true,
     dynamicTyping: true,
     skipEmptyLines: true,
@@ -45,16 +47,46 @@ export function parseMapping(content) {
     },
   });
 
-  const nodeMapping = {};
+  const fatalParseError = getFatalDelimitedParseError(fileData.errors);
+  if (fatalParseError) {
+    throw new Error(formatDelimitedParseError(fatalParseError));
+  }
 
-  for (let row of fileData.data) {
-    const id = row["id"];
-    const attribs = row["attribs"];
+  const fields = fileData.meta?.fields ?? [];
+  const missingHeaders = REQUIRED_MAPPING_HEADERS.filter((header) => !fields.includes(header));
+  if (missingHeaders.length > 0) {
+    const foundHeaders = fields.length ? fields.map((field) => `'${field}'`).join(", ") : "no headers";
+    throw new Error(`Mapping file must contain columns 'id' and 'attribs'. Missing ${missingHeaders.map((header) => `'${header}'`).join(", ")}. Found ${foundHeaders}.`);
+  }
+
+  if (!fileData.data?.length) {
+    throw new Error("Mapping file must contain at least one data row.");
+  }
+
+  const nodeMapping = {};
+  const seenIds = new Map();
+
+  fileData.data.forEach((row, index) => {
+    const rowNumber = index + 2;
+    const id = String(row?.id ?? "").trim();
+    const attribs = row?.attribs;
+
+    if (!id) {
+      throw new Error(`Mapping row ${rowNumber} is missing a node ID in the 'id' column.`);
+    }
+    const idKey = id.toLowerCase();
+    if (seenIds.has(idKey)) {
+      throw new Error(`Duplicate mapping ID '${id}' at row ${rowNumber}. First occurrence is at row ${seenIds.get(idKey)}.`);
+    }
+    seenIds.set(idKey, rowNumber);
+    if (!Array.isArray(attribs) || attribs.length === 0) {
+      throw new Error(`Mapping row ${rowNumber} for '${id}' has no attributes. Add one or more semicolon-separated values in the 'attribs' column.`);
+    }
 
     nodeMapping[id] = {
       attribs: attribs,
     };
-  }
+  });
 
   return nodeMapping;
 }

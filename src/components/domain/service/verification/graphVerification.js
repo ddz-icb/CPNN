@@ -3,6 +3,22 @@ import { verifyGraphSettings } from "../graph_settings/graphSettingsSchema.js";
 
 const PHOSPHOSITE_PATTERN = /^[STY]+\d*$/i;
 
+function formatValueForMessage(value) {
+  if (value === null) return "null";
+  if (value === undefined) return "undefined";
+  const text = String(value);
+  return text.length > 60 ? `${text.slice(0, 57)}...` : text;
+}
+
+function getDataRowNumber(fileData, rowIndex) {
+  return fileData?.rowNumbers?.[rowIndex] ?? rowIndex + 2;
+}
+
+function getColumnLabel(fileData, columnIndex) {
+  const header = fileData?.header?.[columnIndex];
+  return header ? `'${header}'` : `column ${columnIndex + 2}`;
+}
+
 function normalizeNodeIdEntry(entry, fullNodeId) {
   const parts = entry.split("_").map((part) => part.trim());
 
@@ -188,35 +204,73 @@ export function verifyGraph(graph) {
 }
 
 export function isCorrMatrix(fileData, tol = 1e-4) {
-  const { header, firstColumn, data } = fileData;
+  return getCorrelationMatrixIssue(fileData, tol) === null;
+}
 
-  if (!header?.length || header.length !== data.length) return false;
+export function getCorrelationMatrixIssue(fileData, tol = 1e-4) {
+  const { header = [], firstColumn = [], data = [] } = fileData || {};
+
+  if (!header.length) {
+    return "The header row has no matrix columns after the required 'id' column.";
+  }
+  if (header.length !== data.length) {
+    return `The matrix must be square, but it has ${header.length} column ID(s) and ${data.length} data row(s).`;
+  }
+  if (firstColumn.length !== data.length) {
+    return `The matrix has ${data.length} data row(s), but ${firstColumn.length} row ID(s) were parsed.`;
+  }
 
   for (let i = 0; i < data.length; i++) {
-    if (!Array.isArray(data[i]) || data[i].length !== header.length) return false;
-
+    const rowNumber = getDataRowNumber(fileData, i);
+    if (!Array.isArray(data[i])) {
+      return `Row ${rowNumber} is not a valid CSV/TSV row.`;
+    }
+    if (data[i].length !== header.length) {
+      return `Row ${rowNumber} has ${data[i].length} matrix value(s), but the header defines ${header.length} matrix column(s). Check for missing or extra delimiters.`;
+    }
+    for (let j = 0; j < data[i].length; j++) {
+      const value = data[i][j];
+      if (!Number.isFinite(getCorrelationMatrixWeight(value))) {
+        return `Cell at row ${rowNumber}, ${getColumnLabel(fileData, j)} contains '${formatValueForMessage(value)}'. Expected a number, blank, NA, N/A, or NaN.`;
+      }
+    }
     for (let j = i + 1; j < data.length; j++) {
       const aIsMissing = isMissingCorrelationValue(data[i][j]);
       const bIsMissing = isMissingCorrelationValue(data[j][i]);
       const a = getCorrelationMatrixWeight(data[i][j]);
       const b = getCorrelationMatrixWeight(data[j][i]);
-      if (!Number.isFinite(a) || !Number.isFinite(b)) return false;
-      if (!aIsMissing && !bIsMissing && Math.abs(a - b) > tol) return false;
+      if (!aIsMissing && !bIsMissing && Math.abs(a - b) > tol) {
+        return `Matrix is not symmetric: row ${getDataRowNumber(fileData, i)}, ${getColumnLabel(fileData, j)} is ${a}, but row ${getDataRowNumber(
+          fileData,
+          j,
+        )}, ${getColumnLabel(fileData, i)} is ${b}.`;
+      }
     }
 
     const diagonal = getCorrelationMatrixWeight(data[i][i]);
-    if (!Number.isFinite(diagonal)) return false;
-    if (!isMissingCorrelationValue(data[i][i]) && Math.abs(diagonal - 1) > 1e-3) return false;
+    if (!isMissingCorrelationValue(data[i][i]) && Math.abs(diagonal - 1) > 1e-3) {
+      return `Diagonal cell at row ${rowNumber}, ${getColumnLabel(fileData, i)} is ${diagonal}. Correlation matrix diagonal values must be 1 or blank.`;
+    }
   }
 
   let mismatches = 0;
+  let firstMismatch = null;
   header.forEach((val, i) => {
-    if (val !== firstColumn[i]) mismatches++;
+    if (val !== firstColumn[i]) {
+      mismatches++;
+      if (!firstMismatch) {
+        firstMismatch = { rowIndex: i, rowId: firstColumn[i], columnId: val };
+      }
+    }
   });
 
-  if (mismatches / header.length > 0.1) return false;
+  if (mismatches / header.length > 0.1) {
+    return `More than 10% of row IDs do not match the column IDs. First mismatch: row ${getDataRowNumber(fileData, firstMismatch.rowIndex)} has row ID '${
+      firstMismatch.rowId
+    }' but column ${firstMismatch.rowIndex + 2} is '${firstMismatch.columnId}'.`;
+  }
 
-  return true;
+  return null;
 }
 
 export function getCorrelationMatrixWeight(value) {
@@ -234,21 +288,59 @@ function isMissingCorrelationValue(value) {
 }
 
 export function isTableData(fileData) {
-  const { header, data, firstColumn } = fileData;
-  if (firstColumn.length < 1) return false;
+  return getTableDataIssue(fileData) === null;
+}
+
+export function getTableDataIssue(fileData) {
+  const { header = [], data = [], firstColumn = [] } = fileData || {};
+  if (firstColumn.length < 1) {
+    return "Tabular data must contain at least one data row after the header.";
+  }
 
   const columnCount = header.length;
-  if (columnCount < 1 || !data.every((r) => r.length === columnCount)) {
-    return false;
+  if (columnCount < 1) {
+    return "Tabular data must contain at least one measurement column after the required 'id' column.";
   }
 
-  if (!header.every((col) => typeof col === "string" && col.trim() !== "")) {
-    return false;
+  for (let i = 0; i < data.length; i++) {
+    const rowNumber = getDataRowNumber(fileData, i);
+    const row = data[i];
+    if (!Array.isArray(row)) {
+      return `Row ${rowNumber} is not a valid CSV/TSV row.`;
+    }
+    if (row.length !== columnCount) {
+      return `Row ${rowNumber} has ${row.length} measurement value(s), but the header defines ${columnCount} measurement column(s). Check for missing or extra delimiters.`;
+    }
   }
 
-  if (!firstColumn.every((rowName) => typeof rowName === "string" && rowName.trim() !== "")) {
-    return false;
+  const emptyHeaderIndex = header.findIndex((col) => typeof col !== "string" || col.trim() === "");
+  if (emptyHeaderIndex !== -1) {
+    return `Measurement column ${emptyHeaderIndex + 2} has an empty header.`;
   }
 
-  return true;
+  const emptyRowIdIndex = firstColumn.findIndex((rowName) => typeof rowName !== "string" || rowName.trim() === "");
+  if (emptyRowIdIndex !== -1) {
+    return `Row ${getDataRowNumber(fileData, emptyRowIdIndex)} has an empty node ID in the first column.`;
+  }
+
+  let numericValueCount = 0;
+  for (let i = 0; i < data.length; i++) {
+    for (let j = 0; j < columnCount; j++) {
+      const value = data[i][j];
+      if (isMissingCorrelationValue(value)) continue;
+      const numericValue = typeof value === "number" ? value : Number(value);
+      if (!Number.isFinite(numericValue)) {
+        return `Cell at row ${getDataRowNumber(fileData, i)}, ${getColumnLabel(fileData, j)} contains '${formatValueForMessage(
+          value,
+        )}'. Tabular data measurement values must be numeric, blank, NA, N/A, or NaN.`;
+      }
+      numericValueCount++;
+    }
+  }
+
+  if (numericValueCount === 0) {
+    return "Tabular data must contain at least one numeric measurement value.";
+  }
+
+  return null;
 }
