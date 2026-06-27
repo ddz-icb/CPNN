@@ -16,7 +16,7 @@ import "./styles/popup.css";
 import "./styles/colormapping_select.css";
 import "./styles/buttons.css";
 
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Sidebar } from "./components/adapters/gui/sidebar/sidebar.js";
 import { HeaderBar } from "./components/adapters/gui/headerbar/headerbar.js";
 import { useTheme } from "./components/adapters/state/themeState.js";
@@ -34,10 +34,44 @@ import { Tooltips } from "./components/adapters/gui/tooltip/tooltips.js";
 import { HighlightControl } from "./components/adapters/controllers/highlightControl.js";
 import { AdditionalDataLoading } from "./components/adapters/gui/loading/additionalDataLoading.js";
 
+const sidebarMobileQuery = "(max-width: 760px)";
+const sidebarStorageKey = "cpnn.sidebarCollapsed";
+
+function getStoredSidebarCollapsed() {
+  if (typeof window === "undefined") return null;
+  try {
+    const stored = window.localStorage.getItem(sidebarStorageKey);
+    return stored === null ? null : stored === "true";
+  } catch {
+    return null;
+  }
+}
+
+function getInitialSidebarCollapsed() {
+  if (typeof window === "undefined") return false;
+  const stored = getStoredSidebarCollapsed();
+  if (stored !== null) return stored;
+  return window.matchMedia?.(sidebarMobileQuery)?.matches ?? false;
+}
+
 function App() {
   const { theme } = useTheme();
+  const [sidebarCollapsed, setSidebarCollapsedState] = useState(getInitialSidebarCollapsed);
 
   const isAdditionalDataLoading = useGraphSetup();
+  const setSidebarCollapsed = useCallback((collapsed) => {
+    setSidebarCollapsedState(collapsed);
+    if (typeof window === "undefined") return;
+    const isMobile = window.matchMedia?.(sidebarMobileQuery)?.matches ?? false;
+    if (isMobile) return;
+
+    try {
+      window.localStorage.setItem(sidebarStorageKey, String(collapsed));
+    } catch {
+      // Ignore storage failures; the live UI state is still updated.
+    }
+  }, []);
+
   useEffect(() => {
     const themeName = theme?.name === "dark" ? "dark" : "light";
     document.body.classList.remove("light", "dark");
@@ -46,6 +80,28 @@ function App() {
       document.body.classList.remove(themeName);
     };
   }, [theme?.name]);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+
+    const mediaQuery = window.matchMedia(sidebarMobileQuery);
+    const syncSidebarForViewport = () => {
+      if (mediaQuery.matches) {
+        setSidebarCollapsedState(true);
+        return;
+      }
+
+      setSidebarCollapsedState(getStoredSidebarCollapsed() ?? false);
+    };
+
+    syncSidebarForViewport();
+    mediaQuery.addEventListener?.("change", syncSidebarForViewport);
+    return () => {
+      mediaQuery.removeEventListener?.("change", syncSidebarForViewport);
+    };
+  }, []);
+
+  const shellClassName = [theme.name, "app-shell", sidebarCollapsed ? "sidebar-is-collapsed" : "sidebar-is-open"].join(" ");
 
   return (
     <>
@@ -56,11 +112,11 @@ function App() {
       <PhysicsControl />
       <InitControl />
       <SearchControl />
-      <main className={theme.name}>
+      <main className={shellClassName}>
         <Lasso />
         <Tooltips />
         <HeaderBar />
-        <Sidebar />
+        <Sidebar collapsed={sidebarCollapsed} onCollapsedChange={setSidebarCollapsed} />
         <AdditionalDataLoading isLoading={isAdditionalDataLoading} />
         <div className="canvas-container">
           <RenderControl />

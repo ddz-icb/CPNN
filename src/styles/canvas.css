@@ -4,6 +4,19 @@
   height: 100dvh;
   overflow: hidden;
   overscroll-behavior: none;
+  transition: margin-left 200ms var(--motion-ease-standard);
+}
+
+.app-shell.sidebar-is-collapsed .canvas-container {
+  margin-left: 0;
+}
+
+@media (max-width: 760px) {
+  .canvas-container,
+  .app-shell.sidebar-is-open .canvas-container,
+  .app-shell.sidebar-is-collapsed .canvas-container {
+    margin-left: 0;
+  }
 }
 
 .canvas {
