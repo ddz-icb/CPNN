@@ -39,9 +39,26 @@ function createGraphSvgElement(
   nodeAttribsToColorIndices,
   options = {}
 ) {
-  const { threeD = false, enableShading = true, showGrid = false, gridSegments = [] } = options;
+  const {
+    threeD = false,
+    enableShading = true,
+    showGrid = false,
+    gridSegments = [],
+    highlightNodeIds = [],
+    highlightLinkIds = [],
+    communityHighlightNodeIds = [],
+    highlightColor,
+    communityHighlightColor,
+  } = options;
   const bounds = measureGraphBounds(graphData, nodeMap, { extraSegments: gridSegments });
   const { ctx, svgElement } = createSvgContext(bounds);
+  const highlightParams = {
+    highlightNodeIds,
+    highlightLinkIds,
+    communityHighlightNodeIds,
+    highlightColor,
+    communityHighlightColor,
+  };
 
   if (threeD) {
     const queue = build3DRenderQueue(graphData, nodeMap);
@@ -57,6 +74,7 @@ function createGraphSvgElement(
         nodeAttribsToColorIndices,
         textColor,
         enableShading,
+        ...highlightParams,
       },
       { showGrid, segments: gridSegments }
     );
@@ -69,6 +87,7 @@ function createGraphSvgElement(
       nodeColorscheme,
       nodeAttribsToColorIndices,
       textColor,
+      ...highlightParams,
     });
   }
 

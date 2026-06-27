@@ -5,6 +5,8 @@ import { useColorschemeState } from "../state/colorschemeState.js";
 import { useDownload } from "../state/downloadState.js";
 import { useGraphState } from "../state/graphState.js";
 import { useMappingState } from "../state/mappingState.js";
+import { useCommunityState } from "../state/communityState.js";
+import { useSearchState } from "../state/searchState.js";
 import {
   downloadAsPDF,
   downloadAsSVG,
@@ -27,6 +29,16 @@ export function DownloadControl() {
   const { mappingState } = useMappingState();
   const { download } = useDownload();
   const { container } = useContainer();
+  const { communityState } = useCommunityState();
+  const { searchState } = useSearchState();
+
+  const getHighlightExportOptions = () => ({
+    highlightNodeIds: Array.isArray(searchState.highlightedNodeIds) ? searchState.highlightedNodeIds : [],
+    highlightLinkIds: Array.isArray(searchState.highlightedLinkIds) ? searchState.highlightedLinkIds : [],
+    communityHighlightNodeIds: getCommunityHighlightNodeIds(communityState),
+    highlightColor: themeInit.highlightColor,
+    communityHighlightColor: themeInit.communityHighlightColor,
+  });
 
   // download graph data as json //
   useEffect(() => {
@@ -77,6 +89,7 @@ export function DownloadControl() {
           camera: appearance.cameraRef?.current,
           gridLines: pixiState.grid3D?.__gridLines,
           container,
+          ...getHighlightExportOptions(),
         }
       );
     } catch (error) {
@@ -108,6 +121,7 @@ export function DownloadControl() {
           camera: appearance.cameraRef?.current,
           gridLines: pixiState.grid3D?.__gridLines,
           container,
+          ...getHighlightExportOptions(),
         }
       );
     } catch (error) {
@@ -174,4 +188,15 @@ export function DownloadControl() {
       log.error("Error downloading the active link color scheme as TSV:", error);
     }
   }, [download.linkColorscheme]);
+}
+
+function getCommunityHighlightNodeIds(communityState) {
+  const selectedCommunityId = communityState?.selectedCommunityId;
+  if (selectedCommunityId == null || !communityState?.communityToNodeIds) return [];
+
+  const directMatch = communityState.communityToNodeIds[selectedCommunityId];
+  if (Array.isArray(directMatch)) return directMatch;
+
+  const stringMatch = communityState.communityToNodeIds[String(selectedCommunityId)];
+  return Array.isArray(stringMatch) ? stringMatch : [];
 }

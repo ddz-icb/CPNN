@@ -4,6 +4,7 @@ import { drawLineCanvas, MIN_3D_LINK_SCREEN_LENGTH } from "../canvas_drawing/lin
 import { computeLightingTint, rimRadiusFactor, rimWidthFactor } from "../canvas_drawing/shading.js";
 import { getNodeLabelOffsetY } from "../canvas_drawing/drawingUtils.js";
 import { getCameraViewParams } from "../canvas_drawing/camera3D.js";
+import { getLinkIdText } from "../graph_calculations/graphUtils.js";
 import { getNodeIdName } from "../parsing/nodeIdParsing.js";
 import {
   computeProjections,
@@ -12,6 +13,13 @@ import {
   translateGridLinesForContainer,
   translateNodeForContainer,
 } from "./exportProjection.js";
+
+const NODE_HIGHLIGHT_OUTER_RADIUS = radius + 11.5;
+const LINK_HIGHLIGHT_STROKES = [
+  { outset: 4.5, alpha: 0.5 },
+  { outset: 2, alpha: 0.7 },
+];
+const LINK_HIGHLIGHT_ENDPOINT_INSET = radius + 1;
 
 function computeNodeBounds(node, mapEntry, tempCtx) {
   const labelVisible = node.labelVisible ?? mapEntry?.nodeLabel?.visible ?? false;
@@ -22,7 +30,7 @@ function computeNodeBounds(node, mapEntry, tempCtx) {
   const fontSize = node.labelFontSize ?? mapEntry?.nodeLabel?._fontSize ?? 12;
   const nodeRadius = radius * scale;
   const rimOuterRadius = nodeRadius * (rimRadiusFactor + rimWidthFactor);
-  const highlightRadius = nodeRadius * 0.65;
+  const highlightRadius = NODE_HIGHLIGHT_OUTER_RADIUS * scale;
   const paddedRadius = Math.max(nodeRadius, rimOuterRadius, highlightRadius) + 2;
   const labelDrawY = labelY + 10;
 
@@ -81,9 +89,9 @@ export function createSvgContext(bounds, canvasFactory) {
 
 export function build3DRenderQueue(graphData, nodeMap) {
   const items = [];
-  for (const link of graphData.links) {
-    items.push({ type: "link", depth: link.depth ?? 0, link });
-  }
+  graphData.links.forEach((link, index) => {
+    items.push({ type: "link", depth: link.depth ?? 0, link, index });
+  });
   for (const node of graphData.nodes) {
     const mapEntry = nodeMap?.[node.id];
     items.push({ type: "node", depth: node.depth ?? 0, node, mapEntry });
@@ -126,11 +134,13 @@ export function render3DQueue(ctx, items, drawParams, gridOptions) {
     textColor,
     enableShading,
     highlightNodeIds,
+    highlightLinkIds,
     communityHighlightNodeIds,
     highlightColor,
     communityHighlightColor,
   } = drawParams;
   const highlightNodeIdSet = toNodeIdSet(highlightNodeIds);
+  const highlightLinkIdSet = toNodeIdSet(highlightLinkIds);
   const communityHighlightNodeIdSet = toNodeIdSet(communityHighlightNodeIds);
 
   if (gridOptions?.showGrid && Array.isArray(gridOptions.segments)) {
@@ -149,6 +159,7 @@ export function render3DQueue(ctx, items, drawParams, gridOptions) {
         ctx.save();
         ctx.globalAlpha *= alpha;
       }
+      drawLinkHighlightIfActive(ctx, link, item.index, highlightLinkIdSet, highlightColor, linkWidth, widthScale);
       drawLineCanvas(ctx, link, linkWidth, linkColorscheme, linkAttribsToColorIndices, {
         widthScale,
         minLength: MIN_3D_LINK_SCREEN_LENGTH,
@@ -194,20 +205,24 @@ export function render2DGraph(ctx, graphData, nodeMap, params) {
     nodeAttribsToColorIndices,
     textColor,
     highlightNodeIds,
+    highlightLinkIds,
     communityHighlightNodeIds,
     highlightColor,
     communityHighlightColor,
   } = params;
   const highlightNodeIdSet = toNodeIdSet(highlightNodeIds);
+  const highlightLinkIdSet = toNodeIdSet(highlightLinkIds);
   const communityHighlightNodeIdSet = toNodeIdSet(communityHighlightNodeIds);
 
-  for (const link of graphData.links) {
+  for (let index = 0; index < graphData.links.length; index += 1) {
+    const link = graphData.links[index];
     const alpha = getRenderAlpha(link);
     if (alpha <= 0) continue;
     if (alpha < 1) {
       ctx.save();
       ctx.globalAlpha *= alpha;
     }
+    drawLinkHighlightIfActive(ctx, link, index, highlightLinkIdSet, highlightColor, linkWidth);
     drawLineCanvas(ctx, link, linkWidth, linkColorscheme, linkAttribsToColorIndices);
     if (alpha < 1) ctx.restore();
   }
@@ -364,6 +379,79 @@ function drawNodeHighlightIfActive(ctx, node, nodeIdSet, color, scale = 1, alpha
   ctx.restore();
 }
 
+function drawLinkHighlightIfActive(ctx, link, index, linkIdSet, color, linkWidth, widthScale = 1) {
+  const linkIndex = Number.isInteger(link?.__linkIndex) ? link.__linkIndex : index;
+  const linkId = getLinkIdText(link, linkIndex, link?.__sourceId, link?.__targetId);
+  if (!link || !linkIdSet?.has?.(linkId) || !color) return;
+
+  const sourceX = link.source?.x;
+  const sourceY = link.source?.y;
+  const targetX = link.target?.x;
+  const targetY = link.target?.y;
+  if (![sourceX, sourceY, targetX, targetY].every(Number.isFinite)) return;
+
+  const trimmed = getTrimmedLineEndpoints(sourceX, sourceY, targetX, targetY, LINK_HIGHLIGHT_ENDPOINT_INSET * getDepthScale(widthScale));
+  const bundleWidth = getBaseLinkWidth(linkWidth) * getDepthScale(widthScale) * getLinkAttribCount(link);
+
+  ctx.save();
+  ctx.globalCompositeOperation = "lighter";
+  ctx.strokeStyle = color;
+  ctx.lineCap = "round";
+  ctx.setLineDash([]);
+  const baseAlpha = ctx.globalAlpha;
+
+  for (const stroke of LINK_HIGHLIGHT_STROKES) {
+    ctx.beginPath();
+    ctx.globalAlpha = baseAlpha * stroke.alpha;
+    ctx.lineWidth = bundleWidth + stroke.outset * getDepthScale(widthScale) * 2;
+    ctx.moveTo(trimmed.sourceX, trimmed.sourceY);
+    ctx.lineTo(trimmed.targetX, trimmed.targetY);
+    ctx.stroke();
+  }
+
+  ctx.restore();
+}
+
+function getBaseLinkWidth(width) {
+  const numericWidth = Number(width);
+  return Number.isFinite(numericWidth) && numericWidth > 0 ? numericWidth : 1;
+}
+
+function getDepthScale(scale) {
+  const numericScale = Number(scale);
+  return Number.isFinite(numericScale) && numericScale > 0 ? numericScale : 1;
+}
+
+function getLinkAttribCount(link) {
+  return Math.max(1, Array.isArray(link?.attribs) ? link.attribs.length : 1);
+}
+
+function getTrimmedLineEndpoints(x1, y1, x2, y2, endpointInset = 0) {
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+  const length = Math.sqrt(dx * dx + dy * dy);
+  const inset = Number(endpointInset);
+
+  if (!Number.isFinite(length) || length <= 0 || !Number.isFinite(inset) || inset <= 0) {
+    return { sourceX: x1, sourceY: y1, targetX: x2, targetY: y2 };
+  }
+
+  const safeInset = Math.min(inset, Math.max(0, length / 2 - 0.5));
+  if (safeInset <= 0) {
+    return { sourceX: x1, sourceY: y1, targetX: x2, targetY: y2 };
+  }
+
+  const unitX = dx / length;
+  const unitY = dy / length;
+
+  return {
+    sourceX: x1 + unitX * safeInset,
+    sourceY: y1 + unitY * safeInset,
+    targetX: x2 - unitX * safeInset,
+    targetY: y2 - unitY * safeInset,
+  };
+}
+
 function getRenderAlpha(item) {
   const alpha = Number.parseFloat(item?.__alpha);
   if (!Number.isFinite(alpha)) return 1;
@@ -398,7 +486,7 @@ function buildFrameNode(node, mapEntry, { showNodeLabels = false } = {}) {
 
 function buildFrameLinks(links, nodeLookup) {
   return (links ?? [])
-    .map((link) => {
+    .map((link, index) => {
       const sourceId = typeof link.source === "object" ? link.source.id : link.source;
       const targetId = typeof link.target === "object" ? link.target.id : link.target;
 
@@ -408,6 +496,9 @@ function buildFrameLinks(links, nodeLookup) {
 
       return {
         ...link,
+        __linkIndex: index,
+        __sourceId: sourceId,
+        __targetId: targetId,
         depth: Math.max(source.depth ?? 0, target.depth ?? 0),
         source: { x: source.x, y: source.y, scale: source.scale, depth: source.depth },
         target: { x: target.x, y: target.y, scale: target.scale, depth: target.depth },

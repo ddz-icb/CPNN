@@ -42,7 +42,7 @@ export function buildExportGraphData(graphData, nodeMap, { threeD } = {}) {
   }
 
   const links = graphData.links
-    .map((link) => {
+    .map((link, index) => {
       const sourceId = typeof link.source === "object" ? link.source.id : link.source;
       const targetId = typeof link.target === "object" ? link.target.id : link.target;
 
@@ -54,6 +54,9 @@ export function buildExportGraphData(graphData, nodeMap, { threeD } = {}) {
 
       return {
         ...link,
+        __linkIndex: index,
+        __sourceId: sourceId,
+        __targetId: targetId,
         depth,
         source: { x: source.x, y: source.y, scale: source.scale, depth: source.depth },
         target: { x: target.x, y: target.y, scale: target.scale, depth: target.depth },

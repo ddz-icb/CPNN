@@ -51,8 +51,13 @@ function getFrameDrawParams({ sample, colorscheme, theme, fromAppearance, toAppe
     textColor: theme.textColor ?? fallback.textColor,
     nodeColorscheme: getColorschemeData(colorscheme.nodeColorscheme, fallback.nodeColorscheme),
     nodeAttribsToColorIndices: getColorIndexMap(colorscheme.nodeAttribsToColorIndices, fallback.nodeAttribsToColorIndices),
-    highlightNodeIds: Array.isArray(scene.searchSnapshot?.highlightedNodeIds) ? scene.searchSnapshot.highlightedNodeIds : [],
-    communityHighlightNodeIds: getCommunityHighlightNodeIds(scene.communitySnapshot),
+    highlightNodeIds: Array.isArray(scene.searchSnapshot?.highlightedNodeIds)
+      ? scene.searchSnapshot.highlightedNodeIds
+      : fallback.highlightNodeIds ?? [],
+    highlightLinkIds: Array.isArray(scene.searchSnapshot?.highlightedLinkIds)
+      ? scene.searchSnapshot.highlightedLinkIds
+      : fallback.highlightLinkIds ?? [],
+    communityHighlightNodeIds: getCommunityHighlightNodeIds(scene.communitySnapshot, fallback.communityHighlightNodeIds),
     highlightColor: theme.highlightColor ?? fallback.highlightColor,
     communityHighlightColor: theme.communityHighlightColor ?? fallback.communityHighlightColor,
   };
@@ -83,13 +88,13 @@ function normalizeColorIndexMap(mapping) {
   );
 }
 
-function getCommunityHighlightNodeIds(communitySnapshot) {
+function getCommunityHighlightNodeIds(communitySnapshot, fallback = []) {
   const selectedCommunityId = communitySnapshot?.selectedCommunityId;
-  if (selectedCommunityId == null || !communitySnapshot?.communityToNodeIds) return [];
+  if (selectedCommunityId == null || !communitySnapshot?.communityToNodeIds) return fallback ?? [];
 
   const directMatch = communitySnapshot.communityToNodeIds[selectedCommunityId];
   if (Array.isArray(directMatch)) return directMatch;
 
   const stringMatch = communitySnapshot.communityToNodeIds[String(selectedCommunityId)];
-  return Array.isArray(stringMatch) ? stringMatch : [];
+  return Array.isArray(stringMatch) ? stringMatch : fallback ?? [];
 }
