@@ -69,11 +69,27 @@ export function buildExportGraphData(graphData, nodeMap, { threeD } = {}) {
 
 const round2 = (v) => Math.round(v * 100) / 100;
 
+function getExportAttribs(attribs) {
+  if (attribs === undefined || attribs === null) return undefined;
+  if (!Array.isArray(attribs)) return attribs;
+  if (attribs.length === 0) return undefined;
+  return attribs.length === 1 ? attribs[0] : attribs;
+}
+
+function applyExportAttribs(result, attribs) {
+  const exportAttribs = getExportAttribs(attribs);
+  if (exportAttribs !== undefined) {
+    result.attribs = exportAttribs;
+  }
+}
+
 export function cleanNodes(nodes) {
   return nodes.map((node) => {
     const { vx, vy, vz, fx, fy, fz, index, ...rest } = node;
 
     const result = { ...rest };
+    delete result.attribs;
+    applyExportAttribs(result, node.attribs);
 
     if (typeof node.x === "number") result.x = round2(node.x);
     if (typeof node.y === "number") result.y = round2(node.y);
@@ -88,6 +104,8 @@ export function cleanNodesNoCoords(nodes) {
     const { x, y, z, vx, vy, vz, fx, fy, fz, index, ...rest } = node;
 
     const result = { ...rest };
+    delete result.attribs;
+    applyExportAttribs(result, node.attribs);
 
     return result;
   });
@@ -98,13 +116,15 @@ export function cleanLinks(links) {
     const sourceId = typeof link.source === "object" ? link.source.id : link.source;
     const targetId = typeof link.target === "object" ? link.target.id : link.target;
 
-    const { source, target, index, ...rest } = link;
+    const { source, target, index, __linkIndex, __sourceId, __targetId, directed, ...rest } = link;
 
-    return {
+    const result = {
       ...rest,
       source: sourceId,
       target: targetId,
     };
+    if (directed === true) result.directed = true;
+    return result;
   });
 }
 

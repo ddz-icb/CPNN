@@ -1,18 +1,6 @@
 import UnionFind from "union-find";
 import { getNodeIdEntries, getNodeIdNames } from "../parsing/nodeIdParsing.js";
-import {
-  getEndpointId,
-  getLinkDirection,
-  getUndirectedLinkKey,
-  mergeLinkDirections,
-  reverseLinkDirection,
-} from "./graphUtils.js";
-
-function getDirectionRelativeTo(link, index, sourceId, targetId) {
-  const direction = getLinkDirection(link, index);
-  const sameOrientation = getEndpointId(link.source) === sourceId && getEndpointId(link.target) === targetId;
-  return sameOrientation ? direction : reverseLinkDirection(direction);
-}
+import { cloneLink, getEndpointId, getUndirectedLinkKey } from "./graphUtils.js";
 
 function normalizeNodeEntry(entry) {
   const [idPart = "", namePart = "", phosphositesPart = ""] = entry.split("_").map((part) => part.trim());
@@ -56,6 +44,35 @@ function setMergeMetadata(node, representativeId, mergedFromIds) {
   return node;
 }
 
+function getSemanticLinkKey(link) {
+  const sourceId = String(getEndpointId(link.source) ?? "");
+  const targetId = String(getEndpointId(link.target) ?? "");
+  const endpointKey = link.directed ? `${sourceId}->${targetId}` : getUndirectedLinkKey(sourceId, targetId);
+  if (!endpointKey) return null;
+  return `${endpointKey}::${String(link.attrib ?? "")}::${Boolean(link.directed)}`;
+}
+
+function mergeDuplicateSemanticLinks(links) {
+  const merged = new Map();
+
+  links.forEach((link) => {
+    const key = getSemanticLinkKey(link);
+    if (!key) return;
+
+    const existing = merged.get(key);
+    if (!existing) {
+      merged.set(key, cloneLink(link));
+      return;
+    }
+
+    if (Math.abs(link.weight) > Math.abs(existing.weight)) {
+      existing.weight = link.weight;
+    }
+  });
+
+  return Array.from(merged.values());
+}
+
 export function joinGraphs(graphData, newGraphData) {
   const nodeMap = new Map(graphData.nodes.map((node) => [node.id, { ...node }]));
 
@@ -71,62 +88,10 @@ export function joinGraphs(graphData, newGraphData) {
     }
   });
 
-  const joinedNodes = Array.from(nodeMap.values());
-
-  const linkMap = new Map(
-    graphData.links.map((link) => [
-      getUndirectedLinkKey(getEndpointId(link.source), getEndpointId(link.target)),
-      {
-        ...link,
-        attribs: [...link.attribs],
-        weights: [...link.weights],
-        directions: link.attribs.map((_, index) => getLinkDirection(link, index)),
-      },
-    ]),
-  );
-
-  newGraphData.links.forEach((link) => {
-    const key = getUndirectedLinkKey(getEndpointId(link.source), getEndpointId(link.target));
-    const baseLink = linkMap.get(key);
-
-    if (baseLink) {
-      const newAttribs = [];
-      const newWeights = [];
-      const newDirections = [];
-      for (let i = 0; i < link.attribs.length; i++) {
-        const existingIndex = baseLink.attribs.indexOf(link.attribs[i]);
-        const direction = getDirectionRelativeTo(link, i, getEndpointId(baseLink.source), getEndpointId(baseLink.target));
-        if (existingIndex === -1) {
-          newAttribs.push(link.attribs[i]);
-          newWeights.push(link.weights[i]);
-          newDirections.push(direction);
-        } else {
-          baseLink.directions[existingIndex] = mergeLinkDirections(baseLink.directions[existingIndex], direction);
-        }
-      }
-      baseLink.attribs.push(...newAttribs);
-      baseLink.weights.push(...newWeights);
-      baseLink.directions.push(...newDirections);
-
-      linkMap.set(key, baseLink);
-    } else {
-      linkMap.set(key, {
-        ...link,
-        attribs: [...link.attribs],
-        weights: [...link.weights],
-        directions: link.attribs.map((_, index) => getLinkDirection(link, index)),
-      });
-    }
-  });
-
-  const joinedLinks = Array.from(linkMap.values());
-
-  const joinedGraphData = {
-    nodes: joinedNodes,
-    links: joinedLinks,
+  return {
+    nodes: Array.from(nodeMap.values()),
+    links: mergeDuplicateSemanticLinks([...(graphData.links ?? []), ...(newGraphData.links ?? [])]),
   };
-
-  return joinedGraphData;
 }
 
 export function joinGraphNames(graphNames) {
@@ -217,9 +182,7 @@ export function filterMergeByName(graphData, mergeByName, options = {}) {
 
   graphData.nodes = Array.from(parentIndexToMergedNode.values());
 
-  const mergedLinksMap = new Map();
-
-  graphData.links.forEach((link) => {
+  const remappedLinks = graphData.links.flatMap((link) => {
     const sourceParentIndex = unionFind.find(nodeIndexMap.get(getEndpointId(link.source)));
     const targetParentIndex = unionFind.find(nodeIndexMap.get(getEndpointId(link.target)));
 
@@ -227,43 +190,19 @@ export function filterMergeByName(graphData, mergeByName, options = {}) {
     const targetMergedNode = parentIndexToMergedNode.get(targetParentIndex);
 
     if (!sourceMergedNode || !targetMergedNode || sourceMergedNode.id === targetMergedNode.id) {
-      return;
+      return [];
     }
 
-    const sourceMergedId = sourceMergedNode.id;
-    const targetMergedId = targetMergedNode.id;
-
-    const key = getUndirectedLinkKey(sourceMergedId, targetMergedId);
-
-    const existingLink = mergedLinksMap.get(key);
-
-    if (existingLink) {
-      link.attribs.forEach((attrib, idx) => {
-        const direction = getDirectionRelativeTo(link, idx, existingLink.source, existingLink.target);
-        const existingAttribIndex = existingLink.attribs.indexOf(attrib);
-        if (existingAttribIndex !== -1) {
-          const currentWeight = existingLink.weights[existingAttribIndex];
-          const newWeight = link.weights[idx];
-          existingLink.weights[existingAttribIndex] = Math.max(Math.abs(currentWeight), Math.abs(newWeight));
-          existingLink.directions[existingAttribIndex] = mergeLinkDirections(existingLink.directions[existingAttribIndex], direction);
-        } else {
-          existingLink.attribs.push(attrib);
-          existingLink.weights.push(link.weights[idx]);
-          existingLink.directions.push(direction);
-        }
-      });
-    } else {
-      mergedLinksMap.set(key, {
-        source: sourceMergedId,
-        target: targetMergedId,
-        weights: [...link.weights],
-        attribs: [...link.attribs],
-        directions: link.attribs.map((_, index) => getLinkDirection(link, index)),
-      });
-    }
+    return [
+      {
+        ...link,
+        source: sourceMergedNode.id,
+        target: targetMergedNode.id,
+      },
+    ];
   });
 
-  graphData.links = Array.from(mergedLinksMap.values());
+  graphData.links = mergeDuplicateSemanticLinks(remappedLinks);
 
   return graphData;
 }

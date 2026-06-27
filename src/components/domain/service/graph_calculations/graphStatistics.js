@@ -11,7 +11,7 @@ function getAttributeCounts(items) {
   const counts = new Map();
 
   items.forEach((item) => {
-    const attributes = Array.isArray(item?.attribs) ? item.attribs : [];
+    const attributes = Array.isArray(item?.attribs) ? item.attribs : item?.attrib !== undefined && item?.attrib !== null ? [item.attrib] : [];
     new Set(attributes.map((attribute) => String(attribute ?? "").trim()).filter(Boolean)).forEach((attribute) => {
       counts.set(attribute, (counts.get(attribute) ?? 0) + 1);
     });

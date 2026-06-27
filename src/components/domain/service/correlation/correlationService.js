@@ -148,8 +148,8 @@ export async function buildGraphFromRawTable(fileData, { takeSpearman, ignoreNeg
     links[i] = {
       source: rowNames[sourceIdx],
       target: rowNames[targetIdx],
-      weights: [weight],
-      attribs: [linkAttrib],
+      weight,
+      attrib: linkAttrib,
     };
   }
 

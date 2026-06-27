@@ -1,5 +1,6 @@
 import * as PIXI from "pixi.js";
 import { getLinkIdText } from "../graph_calculations/graphUtils.js";
+import { getParallelLinkLayoutData } from "./lineGraphics.js";
 import { radius } from "./nodes.js";
 
 const activeHighlights = new Set();
@@ -133,7 +134,7 @@ function getGlowLinkWidth(style, bundleWidth, depthScale = 1) {
 }
 
 function getLinkAttribCount(link) {
-  return Math.max(1, Array.isArray(link?.attribs) ? link.attribs.length : 1);
+  return link?.attrib === undefined || link?.attrib === null ? 0 : 1;
 }
 
 function getLinkBundleWidth(link, linkWidth) {
@@ -190,7 +191,7 @@ function ensureLinkHighlightLayer(lineGraphic) {
   return linkHighlightLayer;
 }
 
-function drawLinkGlow(layer, link, linkWidth) {
+function drawLinkGlow(layer, link, linkWidth, layout = null) {
   const sourceX = link?.source?.x;
   const sourceY = link?.source?.y;
   const targetX = link?.target?.x;
@@ -198,7 +199,15 @@ function drawLinkGlow(layer, link, linkWidth) {
 
   if (![sourceX, sourceY, targetX, targetY].every(Number.isFinite)) return;
 
-  const trimmed = getTrimmedLineEndpoints(sourceX, sourceY, targetX, targetY, LINK_GLOW_ENDPOINT_INSET);
+  const dx = targetX - sourceX;
+  const dy = targetY - sourceY;
+  const length = Math.sqrt(dx * dx + dy * dy);
+  if (!Number.isFinite(length) || length <= 0) return;
+
+  const shift = (layout?.laneOffset ?? 0) * getBaseLinkWidth(linkWidth);
+  const offsetX = shift * (-dy / length);
+  const offsetY = shift * (dx / length);
+  const trimmed = getTrimmedLineEndpoints(sourceX + offsetX, sourceY + offsetY, targetX + offsetX, targetY + offsetY, LINK_GLOW_ENDPOINT_INSET);
   const bundleWidth = getLinkBundleWidth(link, linkWidth);
 
   for (const style of LINK_GLOW_STROKES) {
@@ -228,9 +237,10 @@ function updateLineHighlights2D({ links, lineGraphics, linkWidth }) {
   layer.visible = lineGraphics?.visible !== false;
   if (!layer.visible) return;
 
+  const layouts = getParallelLinkLayoutData(links);
   (links ?? []).forEach((link, index) => {
     if (!activeLinkHighlightIds.has(getLinkIdText(link, index))) return;
-    drawLinkGlow(layer, link, linkWidth);
+    drawLinkGlow(layer, link, linkWidth, layouts.get(index));
   });
 }
 

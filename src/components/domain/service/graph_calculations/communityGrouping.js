@@ -81,15 +81,13 @@ export function buildCommunitySummary(graphData, options = {}) {
       const communityKey = sourceCommunity.toString();
       communityToLinkCount[communityKey] = (communityToLinkCount[communityKey] || 0) + 1;
 
-      const attribs = Array.isArray(link.attribs) ? link.attribs : [];
       if (!communityToLinkAttribCounts[communityKey]) {
         communityToLinkAttribCounts[communityKey] = {};
       }
-      attribs.forEach((attrib) => {
-        const name = attrib?.toString();
-        if (!name) return;
+      const name = link.attrib?.toString();
+      if (name) {
         communityToLinkAttribCounts[communityKey][name] = (communityToLinkAttribCounts[communityKey][name] || 0) + 1;
-      });
+      }
     } else {
       const sourceKey = sourceCommunity.toString();
       const targetKey = targetCommunity.toString();

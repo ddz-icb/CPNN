@@ -1,4 +1,4 @@
-import { getEndpointId, getUndirectedLinkKey, LINK_DIRECTIONS } from "../graph_calculations/graphUtils.js";
+import { getEndpointId } from "../graph_calculations/graphUtils.js";
 import { verifyGraphSettings } from "../graph_settings/graphSettingsSchema.js";
 
 const PHOSPHOSITE_PATTERN = /^[STY]+\d*$/i;
@@ -85,6 +85,19 @@ function getNormalizedEndpointId(endpoint, fieldName, linkIndex) {
   return normalizeNodeId(String(endpointId));
 }
 
+function normalizeNodeAttribs(node, nodeIndex) {
+  if (node.attribs === undefined || node.attribs === null) {
+    node.attribs = [];
+    return node.attribs;
+  }
+
+  if (!Array.isArray(node.attribs)) {
+    node.attribs = [node.attribs];
+  }
+
+  return node.attribs;
+}
+
 export function verifyGraph(graph) {
   if (!graph || typeof graph !== "object") {
     throw new Error("Error while parsing the graph file. It does not have the right format.");
@@ -113,20 +126,13 @@ export function verifyGraph(graph) {
     }
     normalizedNodeIds.add(normalizedNodeId.toLowerCase());
 
-    if (node.attribs === undefined || node.attribs === null) {
-      throw new Error(`Node at index ${i} is missing the 'attribs' property.`);
-    }
-    if (!Array.isArray(node.attribs)) {
-      throw new Error(`Node '${normalizedNodeId}' has an invalid 'attribs' property. Expected an array.`);
-    }
-    node.attribs.forEach((attrib, attribIndex) => {
+    normalizeNodeAttribs(node, i).forEach((attrib, attribIndex) => {
       if (attrib === undefined || attrib === null || String(attrib).trim() === "") {
         throw new Error(`Node '${normalizedNodeId}' has an empty attribute at index ${attribIndex}.`);
       }
     });
   });
 
-  const normalizedLinkPairs = new Set();
   links.forEach((link, i) => {
     if (!link || typeof link !== "object" || Array.isArray(link)) {
       throw new Error(`Link at index ${i} has an invalid format.`);
@@ -137,13 +143,15 @@ export function verifyGraph(graph) {
     if (link.target === undefined || link.target === null) {
       throw new Error(`Link at index ${i} is missing the 'target' property.`);
     }
-    if (link.weights === undefined || link.weights === null) {
-      throw new Error(`Link at index ${i} is missing the 'weights' property.`);
+    if (link.weight === undefined || link.weight === null) {
+      throw new Error(`Link at index ${i} is missing the 'weight' property.`);
     }
-    if (link.attribs === undefined || link.attribs === null) {
-      throw new Error(`Link at index ${i} is missing the 'attribs' property.`);
+    if (link.attrib === undefined || link.attrib === null) {
+      throw new Error(`Link at index ${i} is missing the 'attrib' property.`);
     }
-
+    if (link.attribs !== undefined || link.weights !== undefined || link.directions !== undefined) {
+      throw new Error(`Link at index ${i} uses the old multilink format. Use scalar 'attrib', scalar 'weight', and optional boolean 'directed'.`);
+    }
     const sourceId = getNormalizedEndpointId(link.source, "source", i);
     const targetId = getNormalizedEndpointId(link.target, "target", i);
 
@@ -157,47 +165,15 @@ export function verifyGraph(graph) {
       throw new Error(`Link at index ${i} is a self-link ('${sourceId}').`);
     }
 
-    if (!Array.isArray(link.weights) || link.weights.length === 0) {
-      throw new Error(`Link '${sourceId}' -> '${targetId}' has an invalid 'weights' property. Expected a non-empty array.`);
+    if (typeof link.weight !== "number" || !Number.isFinite(link.weight)) {
+      throw new Error(`Link '${sourceId}' -> '${targetId}' has an invalid 'weight' property. Expected a finite number.`);
     }
-    if (!Array.isArray(link.attribs) || link.attribs.length === 0) {
-      throw new Error(`Link '${sourceId}' -> '${targetId}' has an invalid 'attribs' property. Expected a non-empty array.`);
+    if (link.attrib === undefined || link.attrib === null || String(link.attrib).trim() === "") {
+      throw new Error(`Link '${sourceId}' -> '${targetId}' has an empty 'attrib' property.`);
     }
-    if (link.weights.length !== link.attribs.length) {
-      throw new Error(`Link '${sourceId}' -> '${targetId}' has mismatching 'weights' and 'attribs' lengths.`);
+    if (link.directed !== undefined && typeof link.directed !== "boolean") {
+      throw new Error(`Link '${sourceId}' -> '${targetId}' has an invalid 'directed' property. Expected a boolean.`);
     }
-    if (link.directions !== undefined && !Array.isArray(link.directions)) {
-      throw new Error(`Link '${sourceId}' -> '${targetId}' has an invalid 'directions' property. Expected an array.`);
-    }
-    if (link.directions?.length > link.attribs.length) {
-      throw new Error(`Link '${sourceId}' -> '${targetId}' has more directions than attributes.`);
-    }
-
-    link.weights.forEach((weight, weightIndex) => {
-      if (typeof weight !== "number" || !Number.isFinite(weight)) {
-        throw new Error(`Link '${sourceId}' -> '${targetId}' has an invalid weight at index ${weightIndex}.`);
-      }
-    });
-
-    link.attribs.forEach((attrib, attribIndex) => {
-      if (attrib === undefined || attrib === null || String(attrib).trim() === "") {
-        throw new Error(`Link '${sourceId}' -> '${targetId}' has an empty attribute at index ${attribIndex}.`);
-      }
-    });
-
-    link.directions?.forEach((direction, directionIndex) => {
-      if (!Object.values(LINK_DIRECTIONS).includes(direction)) {
-        throw new Error(
-          `Link '${sourceId}' -> '${targetId}' has invalid direction '${direction}' at index ${directionIndex}. Expected 'forward', 'both', or 'reverse'.`,
-        );
-      }
-    });
-
-    const linkPairKey = getUndirectedLinkKey(sourceId, targetId);
-    if (normalizedLinkPairs.has(linkPairKey.toLowerCase())) {
-      throw new Error(`Duplicate link between '${sourceId}' and '${targetId}'. Merge attributes into a single link.`);
-    }
-    normalizedLinkPairs.add(linkPairKey.toLowerCase());
   });
 
   verifyGraphSettings(graph.data);

@@ -5,56 +5,25 @@ import louvain from "graphology-communities-louvain";
 export const LINK_DIRECTIONS = Object.freeze({
   FORWARD: "forward",
   BOTH: "both",
-  REVERSE: "reverse",
 });
 
-export function getLinkDirection(link, index) {
-  return link?.directions?.[index] ?? LINK_DIRECTIONS.BOTH;
-}
-
-export function reverseLinkDirection(direction) {
-  if (direction === LINK_DIRECTIONS.FORWARD) return LINK_DIRECTIONS.REVERSE;
-  if (direction === LINK_DIRECTIONS.REVERSE) return LINK_DIRECTIONS.FORWARD;
-  return LINK_DIRECTIONS.BOTH;
-}
-
-export function mergeLinkDirections(first, second) {
-  const left = first ?? LINK_DIRECTIONS.BOTH;
-  const right = second ?? LINK_DIRECTIONS.BOTH;
-  return left === right ? left : LINK_DIRECTIONS.BOTH;
-}
-
-export function getDirectionsForIndices(link, indices) {
-  if (!Array.isArray(link?.directions)) return undefined;
-  return indices.map((index) => getLinkDirection(link, index));
+export function getLinkDirection(link) {
+  return link?.directed ? LINK_DIRECTIONS.FORWARD : LINK_DIRECTIONS.BOTH;
 }
 
 export function getDirectionalLinkEndpoints(link) {
   const source = getEndpointIdText(link?.source);
   const target = getEndpointIdText(link?.target);
-  const sources = new Set();
-  const targets = new Set();
-  const laneCount = Math.max(link?.attribs?.length ?? 0, link?.directions?.length ?? 0, 1);
-
-  for (let index = 0; index < laneCount; index++) {
-    const direction = getLinkDirection(link, index);
-    if (direction === LINK_DIRECTIONS.FORWARD) {
-      sources.add(source);
-      targets.add(target);
-    } else if (direction === LINK_DIRECTIONS.REVERSE) {
-      sources.add(target);
-      targets.add(source);
-    } else {
-      sources.add(source);
-      sources.add(target);
-      targets.add(source);
-      targets.add(target);
-    }
+  if (link?.directed) {
+    return {
+      sources: source ? [source] : [],
+      targets: target ? [target] : [],
+    };
   }
 
   return {
-    sources: Array.from(sources).filter(Boolean),
-    targets: Array.from(targets).filter(Boolean),
+    sources: [source, target].filter(Boolean),
+    targets: [source, target].filter(Boolean),
   };
 }
 
@@ -160,7 +129,7 @@ function getSortedAttribKeys(items) {
   const attribSet = new Set();
 
   (items ?? []).forEach((item) => {
-    const attribs = Array.isArray(item?.attribs) ? item.attribs : [];
+    const attribs = Array.isArray(item?.attribs) ? item.attribs : item?.attrib !== undefined && item?.attrib !== null ? [item.attrib] : [];
     attribs.forEach((attrib) => {
       const key = String(attrib ?? "").trim();
       if (!key) return;
@@ -221,13 +190,12 @@ export function getLinkWeightMinMax(graphData) {
   let maxAbsWeight = -Infinity;
 
   graphData.links.forEach((link) => {
-    link.weights.forEach((w) => {
-      if (w < minWeight) minWeight = w;
-      if (w > maxWeight) maxWeight = w;
-      const absWeight = Math.abs(w);
-      if (absWeight < minAbsWeight) minAbsWeight = absWeight;
-      if (absWeight > maxAbsWeight) maxAbsWeight = absWeight;
-    });
+    const w = link.weight;
+    if (w < minWeight) minWeight = w;
+    if (w > maxWeight) maxWeight = w;
+    const absWeight = Math.abs(w);
+    if (absWeight < minAbsWeight) minAbsWeight = absWeight;
+    if (absWeight > maxAbsWeight) maxAbsWeight = absWeight;
   });
 
   return { minWeight, maxWeight, minAbsWeight, maxAbsWeight };
@@ -252,12 +220,20 @@ export function getCommunityData(graphData, options = {}) {
     newGraph.addNode(node.id);
   });
 
+  const edgeWeights = new Map();
   graphData.links.forEach((link) => {
     const sourceId = getEndpointId(link.source);
     const targetId = getEndpointId(link.target);
+    const edgeKey = getUndirectedLinkKey(sourceId, targetId);
+    if (!edgeKey) return;
+    const weight = getLinkWeight(link);
+    edgeWeights.set(edgeKey, Math.max(edgeWeights.get(edgeKey) ?? 0, weight));
+  });
+
+  edgeWeights.forEach((weight, edgeKey) => {
+    const [sourceId, targetId] = edgeKey.split("---");
 
     if (newGraph.hasNode(sourceId) && newGraph.hasNode(targetId) && !newGraph.hasEdge(sourceId, targetId)) {
-      const weight = getLinkWeight(link);
       newGraph.addUndirectedEdge(sourceId, targetId, { weight });
     }
   });
@@ -284,19 +260,14 @@ export function sortGraph(graph) {
   graph.links.sort(
     (a, b) =>
       String(getEndpointId(a.source) ?? "").localeCompare(String(getEndpointId(b.source) ?? "")) ||
-      String(getEndpointId(a.target) ?? "").localeCompare(String(getEndpointId(b.target) ?? "")),
+      String(getEndpointId(a.target) ?? "").localeCompare(String(getEndpointId(b.target) ?? "")) ||
+      String(a.attrib ?? "").localeCompare(String(b.attrib ?? "")) ||
+      Number(Boolean(a.directed)) - Number(Boolean(b.directed)) ||
+      (Number(a.weight) || 0) - (Number(b.weight) || 0),
   );
 }
 
 export function getLinkWeight(link) {
-  // if multilink: take max value
-
-  if (Array.isArray(link.weights) && link.weights.length > 0) {
-    return link.weights.reduce((maxWeight, current) => {
-      const candidate = Math.abs(current);
-      return candidate > maxWeight ? candidate : maxWeight;
-    }, 0);
-  }
   return Math.abs(link.weight);
 }
 
@@ -309,9 +280,6 @@ export function formatWeight(value) {
 export function cloneLink(link) {
   return {
     ...link,
-    weights: Array.isArray(link.weights) ? [...link.weights] : [],
-    attribs: Array.isArray(link.attribs) ? [...link.attribs] : [],
-    ...(Array.isArray(link.directions) ? { directions: [...link.directions] } : {}),
   };
 }
 
@@ -341,16 +309,6 @@ export function getUndirectedLinkKey(source, target, separator = "---") {
   return sourceId < targetId ? `${sourceId}${separator}${targetId}` : `${targetId}${separator}${sourceId}`;
 }
 
-function sameArrayValues(a, b) {
-  if (a === b) return true;
-  if (!Array.isArray(a) || !Array.isArray(b)) return false;
-  if (a.length !== b.length) return false;
-  for (let i = 0; i < a.length; i++) {
-    if (a[i] !== b[i]) return false;
-  }
-  return true;
-}
-
 export function hasGraphStructureChanged(currentGraphData, nextGraphData) {
   if (!currentGraphData || !nextGraphData) return true;
 
@@ -371,9 +329,9 @@ export function hasGraphStructureChanged(currentGraphData, nextGraphData) {
 
     if (getEndpointId(currentLink?.source) !== getEndpointId(nextLink?.source)) return true;
     if (getEndpointId(currentLink?.target) !== getEndpointId(nextLink?.target)) return true;
-    if (!sameArrayValues(currentLink?.attribs ?? [], nextLink?.attribs ?? [])) return true;
-    if (!sameArrayValues(currentLink?.weights ?? [], nextLink?.weights ?? [])) return true;
-    if (!sameArrayValues(currentLink?.directions ?? [], nextLink?.directions ?? [])) return true;
+    if (currentLink?.attrib !== nextLink?.attrib) return true;
+    if (currentLink?.weight !== nextLink?.weight) return true;
+    if (Boolean(currentLink?.directed) !== Boolean(nextLink?.directed)) return true;
   }
 
   return false;
@@ -402,13 +360,9 @@ export function getAdjacentNodes(graphData, nodeId) {
       maxWeight: 0,
     };
 
-    const attribs = Array.isArray(link.attribs) ? link.attribs : [];
-    const weights = Array.isArray(link.weights) ? link.weights : [];
-    attribs.forEach((attrib, index) => {
-      entry.connections.push({
-        type: attrib,
-        weight: weights[index],
-      });
+    entry.connections.push({
+      type: link.attrib,
+      weight: link.weight,
     });
 
     entry.maxWeight = Math.max(entry.maxWeight, getLinkWeight(link) ?? 0);

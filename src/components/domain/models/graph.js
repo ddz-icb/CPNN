@@ -1,5 +1,6 @@
 import { createGraphDB, deleteGraphDB, getAllGraphNamesDB, getGraphDB } from "../../repository/graphRepo.js";
 import { parseGraphFile } from "../service/parsing/graphParsing.js";
+import { verifyGraph } from "../service/verification/graphVerification.js";
 
 export async function loadGraphNames() {
   const graphNames = await getAllGraphNamesDB();
@@ -8,6 +9,7 @@ export async function loadGraphNames() {
 
 export async function getGraph(filename) {
   const graph = await getGraphDB(filename);
+  verifyGraph(graph);
   return graph;
 }
 

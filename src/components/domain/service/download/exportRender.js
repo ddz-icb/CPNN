@@ -1,6 +1,6 @@
 import canvasToSvg from "canvas-to-svg";
 import { drawCircleCanvas, radius } from "../canvas_drawing/nodes.js";
-import { drawLineCanvas, MIN_3D_LINK_SCREEN_LENGTH } from "../canvas_drawing/lineGraphics.js";
+import { drawLineCanvas, getParallelLinkLayoutData, MIN_3D_LINK_SCREEN_LENGTH } from "../canvas_drawing/lineGraphics.js";
 import { computeLightingTint, rimRadiusFactor, rimWidthFactor } from "../canvas_drawing/shading.js";
 import { getNodeLabelOffsetY } from "../canvas_drawing/drawingUtils.js";
 import { getCameraViewParams } from "../canvas_drawing/camera3D.js";
@@ -89,8 +89,9 @@ export function createSvgContext(bounds, canvasFactory) {
 
 export function build3DRenderQueue(graphData, nodeMap) {
   const items = [];
+  const linkLayouts = getParallelLinkLayoutData(graphData.links);
   graphData.links.forEach((link, index) => {
-    items.push({ type: "link", depth: link.depth ?? 0, link, index });
+    items.push({ type: "link", depth: link.depth ?? 0, link, index, layout: linkLayouts.get(index) });
   });
   for (const node of graphData.nodes) {
     const mapEntry = nodeMap?.[node.id];
@@ -159,10 +160,11 @@ export function render3DQueue(ctx, items, drawParams, gridOptions) {
         ctx.save();
         ctx.globalAlpha *= alpha;
       }
-      drawLinkHighlightIfActive(ctx, link, item.index, highlightLinkIdSet, highlightColor, linkWidth, widthScale);
+      drawLinkHighlightIfActive(ctx, link, item.index, highlightLinkIdSet, highlightColor, linkWidth, widthScale, item.layout);
       drawLineCanvas(ctx, link, linkWidth, linkColorscheme, linkAttribsToColorIndices, {
         widthScale,
         minLength: MIN_3D_LINK_SCREEN_LENGTH,
+        layout: item.layout,
       });
       if (alpha < 1) ctx.restore();
     } else if (item.type === "node") {
@@ -214,6 +216,7 @@ export function render2DGraph(ctx, graphData, nodeMap, params) {
   const highlightLinkIdSet = toNodeIdSet(highlightLinkIds);
   const communityHighlightNodeIdSet = toNodeIdSet(communityHighlightNodeIds);
 
+  const linkLayouts = getParallelLinkLayoutData(graphData.links);
   for (let index = 0; index < graphData.links.length; index += 1) {
     const link = graphData.links[index];
     const alpha = getRenderAlpha(link);
@@ -222,8 +225,8 @@ export function render2DGraph(ctx, graphData, nodeMap, params) {
       ctx.save();
       ctx.globalAlpha *= alpha;
     }
-    drawLinkHighlightIfActive(ctx, link, index, highlightLinkIdSet, highlightColor, linkWidth);
-    drawLineCanvas(ctx, link, linkWidth, linkColorscheme, linkAttribsToColorIndices);
+    drawLinkHighlightIfActive(ctx, link, index, highlightLinkIdSet, highlightColor, linkWidth, 1, linkLayouts.get(index));
+    drawLineCanvas(ctx, link, linkWidth, linkColorscheme, linkAttribsToColorIndices, { layout: linkLayouts.get(index) });
     if (alpha < 1) ctx.restore();
   }
 
@@ -379,7 +382,7 @@ function drawNodeHighlightIfActive(ctx, node, nodeIdSet, color, scale = 1, alpha
   ctx.restore();
 }
 
-function drawLinkHighlightIfActive(ctx, link, index, linkIdSet, color, linkWidth, widthScale = 1) {
+function drawLinkHighlightIfActive(ctx, link, index, linkIdSet, color, linkWidth, widthScale = 1, layout = null) {
   const linkIndex = Number.isInteger(link?.__linkIndex) ? link.__linkIndex : index;
   const linkId = getLinkIdText(link, linkIndex, link?.__sourceId, link?.__targetId);
   if (!link || !linkIdSet?.has?.(linkId) || !color) return;
@@ -390,7 +393,22 @@ function drawLinkHighlightIfActive(ctx, link, index, linkIdSet, color, linkWidth
   const targetY = link.target?.y;
   if (![sourceX, sourceY, targetX, targetY].every(Number.isFinite)) return;
 
-  const trimmed = getTrimmedLineEndpoints(sourceX, sourceY, targetX, targetY, LINK_HIGHLIGHT_ENDPOINT_INSET * getDepthScale(widthScale));
+  const dx = targetX - sourceX;
+  const dy = targetY - sourceY;
+  const length = Math.sqrt(dx * dx + dy * dy);
+  if (!Number.isFinite(length) || length <= 0) return;
+
+  const depthScale = getDepthScale(widthScale);
+  const shift = (layout?.laneOffset ?? 0) * getBaseLinkWidth(linkWidth) * depthScale;
+  const offsetX = shift * (-dy / length);
+  const offsetY = shift * (dx / length);
+  const trimmed = getTrimmedLineEndpoints(
+    sourceX + offsetX,
+    sourceY + offsetY,
+    targetX + offsetX,
+    targetY + offsetY,
+    LINK_HIGHLIGHT_ENDPOINT_INSET * depthScale,
+  );
   const bundleWidth = getBaseLinkWidth(linkWidth) * getDepthScale(widthScale) * getLinkAttribCount(link);
 
   ctx.save();
@@ -423,7 +441,7 @@ function getDepthScale(scale) {
 }
 
 function getLinkAttribCount(link) {
-  return Math.max(1, Array.isArray(link?.attribs) ? link.attribs.length : 1);
+  return link?.attrib === undefined || link?.attrib === null ? 0 : 1;
 }
 
 function getTrimmedLineEndpoints(x1, y1, x2, y2, endpointInset = 0) {

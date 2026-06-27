@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { getEndpointId, getLinkDirection, LINK_DIRECTIONS } from "../graph_calculations/graphUtils.js";
+import { getEndpointId, getEndpointIdText, getLinkDirection, getUndirectedLinkKey, LINK_DIRECTIONS } from "../graph_calculations/graphUtils.js";
 import { isAdditionalLinkAttrib } from "../enrichment/additionalLinkEnrichment.js";
 import { getColor } from "./drawingUtils.js";
 
@@ -18,8 +18,6 @@ const CHEVRON_POSITION_START = 0.44;
 const CHEVRON_LENGTH_FACTOR = 0.9;
 const CHEVRON_FLARE_FACTOR = 0.7;
 const CHEVRON_STROKE_FACTOR = CHEVRON_LENGTH_FACTOR / Math.hypot(CHEVRON_LENGTH_FACTOR, CHEVRON_FLARE_FACTOR);
-const CHEVRON_INNER_EXTENSION_FACTOR =
-  CHEVRON_FLARE_FACTOR ** 2 / (CHEVRON_LENGTH_FACTOR ** 2 + CHEVRON_FLARE_FACTOR ** 2);
 export const MIN_3D_LINK_SCREEN_LENGTH = 2;
 
 let dottedLineTexture3D = null;
@@ -37,25 +35,6 @@ function getOutsideSign(offset) {
   return Math.sign(offset) || 1;
 }
 
-function getChevronExtension(index, count, laneSpacing) {
-  const center = (count - 1) / 2;
-  const distanceFromCenter = Math.abs(index - center);
-  const outerDistance = (count - 1) / 2;
-  const laneDepth = Math.max(0, outerDistance - distanceFromCenter);
-  return laneDepth * laneSpacing * CHEVRON_INNER_EXTENSION_FACTOR;
-}
-
-function getChevronRenderOrder(count) {
-  const center = (count - 1) / 2;
-  return Array.from({ length: count }, (_, index) => index).sort(
-    (a, b) => Math.abs(b - center) - Math.abs(a - center) || a - b,
-  );
-}
-
-function getChevronOutwardRank(index, count) {
-  return Math.abs(index - (count - 1) / 2);
-}
-
 function getChevronSize(width, scale = 1) {
   return clamp(width * 3.5, CHEVRON_MIN_SIZE, CHEVRON_MAX_SIZE) * scale;
 }
@@ -68,9 +47,8 @@ function getChevronGeometry(x1, y1, x2, y2, direction, offsetX = 0, offsetY = 0,
   const length = Math.sqrt(dx * dx + dy * dy);
   if (!Number.isFinite(length) || length <= 0) return null;
 
-  const sign = direction === LINK_DIRECTIONS.REVERSE ? -1 : 1;
-  const unitX = (dx / length) * sign;
-  const unitY = (dy / length) * sign;
+  const unitX = dx / length;
+  const unitY = dy / length;
   const perpendicularX = -dy / length;
   const perpendicularY = dx / length;
   const size = getChevronSize(width, scale);
@@ -88,6 +66,8 @@ function getChevronGeometry(x1, y1, x2, y2, direction, offsetX = 0, offsetY = 0,
     tipY,
     firstX: tipX - unitX * longitudinalSpan + perpendicularX * wing * outsideSign,
     firstY: tipY - unitY * longitudinalSpan + perpendicularY * wing * outsideSign,
+    secondX: tipX - unitX * longitudinalSpan - perpendicularX * wing * outsideSign,
+    secondY: tipY - unitY * longitudinalSpan - perpendicularY * wing * outsideSign,
   };
 }
 
@@ -98,6 +78,10 @@ function drawChevronGraphics(lines, geometry, color, width, scale = 1) {
     .moveTo(geometry.firstX, geometry.firstY)
     .lineTo(geometry.tipX, geometry.tipY)
     .stroke({ color, width: width * scale * CHEVRON_STROKE_FACTOR, cap: "butt" });
+  lines
+    .moveTo(geometry.secondX, geometry.secondY)
+    .lineTo(geometry.tipX, geometry.tipY)
+    .stroke({ color, width: width * scale * CHEVRON_STROKE_FACTOR, cap: "butt" });
 }
 
 function drawChevronCanvas(ctx, geometry, color, width, scale = 1) {
@@ -105,6 +89,8 @@ function drawChevronCanvas(ctx, geometry, color, width, scale = 1) {
   ctx.save();
   ctx.beginPath();
   ctx.moveTo(geometry.firstX, geometry.firstY);
+  ctx.lineTo(geometry.tipX, geometry.tipY);
+  ctx.moveTo(geometry.secondX, geometry.secondY);
   ctx.lineTo(geometry.tipX, geometry.tipY);
   ctx.lineCap = "butt";
   ctx.setLineDash([]);
@@ -170,20 +156,18 @@ export function calculateLinkWidth(linkCount) {
 }
 
 export function createLineSprites(link, nodeContainers) {
-  if (!link?.attribs || !nodeContainers) return [];
-  return link.attribs.map(() => {
-    const sprite = new PIXI.Sprite(PIXI.Texture.WHITE);
-    sprite.anchor.set(0.5);
-    sprite.eventMode = "none";
-    sprite.zIndex = 0;
-    nodeContainers.addChild(sprite);
-    const directionMarker = new PIXI.Graphics();
-    directionMarker.eventMode = "none";
-    directionMarker.visible = false;
-    nodeContainers.addChild(directionMarker);
-    sprite.directionMarker = directionMarker;
-    return sprite;
-  });
+  if (link?.attrib === undefined || link?.attrib === null || !nodeContainers) return [];
+  const sprite = new PIXI.Sprite(PIXI.Texture.WHITE);
+  sprite.anchor.set(0.5);
+  sprite.eventMode = "none";
+  sprite.zIndex = 0;
+  nodeContainers.addChild(sprite);
+  const directionMarker = new PIXI.Graphics();
+  directionMarker.eventMode = "none";
+  directionMarker.visible = false;
+  nodeContainers.addChild(directionMarker);
+  sprite.directionMarker = directionMarker;
+  return [sprite];
 }
 
 export function buildLineLayers(graph, nodeContainers, isThreeD) {
@@ -203,7 +187,9 @@ export function buildLineLayers(graph, nodeContainers, isThreeD) {
 function lineSpritesMatchLinks(lines3D, links) {
   if (!Array.isArray(lines3D) || !Array.isArray(links)) return false;
   if (lines3D.length !== links.length) return false;
-  return lines3D.every((sprites, index) => Array.isArray(sprites) && sprites.length === (links[index]?.attribs?.length ?? 0));
+  return lines3D.every(
+    (sprites, index) => Array.isArray(sprites) && sprites.length === (links[index]?.attrib === undefined || links[index]?.attrib === null ? 0 : 1),
+  );
 }
 
 function detachLineSprites(lines3D) {
@@ -283,84 +269,74 @@ export function applyLineGraphicsState(threeD, params) {
   }
 }
 
-export function drawLine(lines, link, linkWidth, colorscheme, linkAttribsToColorIndices) {
-  if (link.attribs.length === 1) {
-    const attrib = link.attribs[0];
-    const color = getColor(linkAttribsToColorIndices[attrib], colorscheme);
-    const sourceX = link.source.x;
-    const sourceY = link.source.y;
-    const targetX = link.target.x;
-    const targetY = link.target.y;
+export function getParallelLinkLayoutData(links = []) {
+  const groups = new Map();
 
-    if (isAdditionalLinkAttrib(attrib)) {
-      drawDottedLine(lines, sourceX, sourceY, targetX, targetY, color, linkWidth);
-      drawChevronGraphics(
-        lines,
-        getChevronGeometry(sourceX, sourceY, targetX, targetY, getLinkDirection(link, 0), 0, 0, linkWidth),
-        color,
-        linkWidth,
-      );
-      return;
-    }
+  links.forEach((link, index) => {
+    const sourceId = getEndpointIdText(link?.source);
+    const targetId = getEndpointIdText(link?.target);
+    const key = getUndirectedLinkKey(sourceId, targetId);
+    if (!key) return;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push({ link, index, sourceId, targetId });
+  });
 
-    lines.moveTo(sourceX, sourceY).lineTo(targetX, targetY).stroke({ color, width: linkWidth });
-    drawChevronGraphics(lines, getChevronGeometry(sourceX, sourceY, targetX, targetY, getLinkDirection(link, 0), 0, 0, linkWidth), color, linkWidth);
-    return;
-  }
+  const layouts = new Map();
+  groups.forEach((group) => {
+    const center = (group.length - 1) / 2;
+    group.forEach((entry, laneIndex) => {
+      const canonicalOrientation = entry.sourceId <= entry.targetId;
+      const laneOffset = (laneIndex - center) * (canonicalOrientation ? 1 : -1);
+      layouts.set(entry.index, { laneIndex, laneCount: group.length, laneOffset });
+    });
+  });
 
-  const dx = link.target.x - link.source.x;
-  const dy = link.target.y - link.source.y;
+  return layouts;
+}
+
+export function getParallelShift(layout, laneSpacing) {
+  return (layout?.laneOffset ?? 0) * laneSpacing;
+}
+
+export function drawLine(lines, link, linkWidth, colorscheme, linkAttribsToColorIndices, layout = null) {
+  const attrib = link.attrib;
+  const color = getColor(linkAttribsToColorIndices[attrib], colorscheme);
+  const sourceXBase = link.source.x;
+  const sourceYBase = link.source.y;
+  const targetXBase = link.target.x;
+  const targetYBase = link.target.y;
+  const dx = targetXBase - sourceXBase;
+  const dy = targetYBase - sourceYBase;
   const length = Math.sqrt(dx * dx + dy * dy);
   if (!Number.isFinite(length) || length <= 0) return;
 
-  const normedPerpendicularVector = { x: -dy / length, y: dx / length };
+  const shift = getParallelShift(layout, linkWidth);
+  const offsetX = shift * (-dy / length);
+  const offsetY = shift * (dx / length);
+  const sourceX = sourceXBase + offsetX;
+  const sourceY = sourceYBase + offsetY;
+  const targetX = targetXBase + offsetX;
+  const targetY = targetYBase + offsetY;
 
-  const lanes = link.attribs.map((attrib, i) => {
-    const shift = (i - (link.attribs.length - 1) / 2) * linkWidth;
-    const offsetX = shift * normedPerpendicularVector.x;
-    const offsetY = shift * normedPerpendicularVector.y;
-    const sourceX = link.source.x + offsetX;
-    const sourceY = link.source.y + offsetY;
-    const targetX = link.target.x + offsetX;
-    const targetY = link.target.y + offsetY;
-    const color = getColor(linkAttribsToColorIndices[attrib], colorscheme);
-
-    if (isAdditionalLinkAttrib(attrib)) {
-      drawDottedLine(lines, sourceX, sourceY, targetX, targetY, color, linkWidth);
-    } else {
-      lines.moveTo(sourceX, sourceY).lineTo(targetX, targetY).stroke({ color, width: linkWidth });
-    }
-
-    return { i, shift, offsetX, offsetY, color };
-  });
-
-  for (const i of getChevronRenderOrder(lanes.length)) {
-    const lane = lanes[i];
-    drawChevronGraphics(
-      lines,
-      getChevronGeometry(
-        link.source.x,
-        link.source.y,
-        link.target.x,
-        link.target.y,
-        getLinkDirection(link, lane.i),
-        lane.offsetX,
-        lane.offsetY,
-        linkWidth,
-        1,
-        getOutsideSign(lane.shift),
-        getChevronExtension(lane.i, lanes.length, linkWidth),
-      ),
-      lane.color,
-      linkWidth,
-    );
+  if (isAdditionalLinkAttrib(attrib)) {
+    drawDottedLine(lines, sourceX, sourceY, targetX, targetY, color, linkWidth);
+  } else {
+    lines.moveTo(sourceX, sourceY).lineTo(targetX, targetY).stroke({ color, width: linkWidth });
   }
+
+  drawChevronGraphics(
+    lines,
+    getChevronGeometry(sourceXBase, sourceYBase, targetXBase, targetYBase, getLinkDirection(link), offsetX, offsetY, linkWidth, 1, getOutsideSign(shift)),
+    color,
+    linkWidth,
+  );
 }
 
 export function updateLines(links, lineGraphics, linkWidth, linkColorscheme, linkAttribsToColorIndices) {
   if (!lineGraphics || !links) return;
 
   if (Array.isArray(lineGraphics)) {
+    const layouts = getParallelLinkLayoutData(links);
     for (let i = 0; i < lineGraphics.length; i++) {
       const link = links[i];
       const graphic = lineGraphics[i];
@@ -370,7 +346,7 @@ export function updateLines(links, lineGraphics, linkWidth, linkColorscheme, lin
         graphic.visible = false;
         continue;
       }
-      drawLine(graphic, link, linkWidth, linkColorscheme.data, linkAttribsToColorIndices);
+      drawLine(graphic, link, linkWidth, linkColorscheme.data, linkAttribsToColorIndices, layouts.get(i));
       graphic.visible = true;
       graphic.zIndex = 0;
     }
@@ -379,8 +355,9 @@ export function updateLines(links, lineGraphics, linkWidth, linkColorscheme, lin
 
   lineGraphics.clear();
   lineGraphics.visible = true;
-  for (const link of links) {
-    drawLine(lineGraphics, link, linkWidth, linkColorscheme.data, linkAttribsToColorIndices);
+  const layouts = getParallelLinkLayoutData(links);
+  for (let index = 0; index < links.length; index += 1) {
+    drawLine(lineGraphics, links[index], linkWidth, linkColorscheme.data, linkAttribsToColorIndices, layouts.get(index));
   }
 }
 
@@ -388,6 +365,7 @@ export function updateLines3D(links, lineGraphics, linkWidth, linkColorscheme, l
   if (!Array.isArray(lineGraphics)) return;
 
   const linkCount = Array.isArray(links) ? links.length : 0;
+  const layouts = getParallelLinkLayoutData(links);
 
   for (let linkIndex = 0; linkIndex < lineGraphics.length; linkIndex++) {
     const link = linkIndex < linkCount ? links[linkIndex] : null;
@@ -435,23 +413,20 @@ export function updateLines3D(links, lineGraphics, linkWidth, linkColorscheme, l
     const midY = (source.y + target.y) / 2;
     const normedPerpendicularVector = { x: -dy / length, y: dx / length };
 
-    const attribs = Array.isArray(link.attribs) ? link.attribs : [];
-    const attribCount = attribs.length;
-
     for (let i = 0; i < sprites.length; i++) {
       const sprite = sprites[i];
       if (!sprite) continue;
-      if (i >= attribCount) {
+      if (i > 0) {
         sprite.visible = false;
         if (sprite.directionMarker) sprite.directionMarker.visible = false;
         continue;
       }
 
-      const shift = (i - (attribCount - 1) / 2) * widthScaled;
+      const shift = getParallelShift(layouts.get(linkIndex), widthScaled);
       const offsetX = shift * normedPerpendicularVector.x;
       const offsetY = shift * normedPerpendicularVector.y;
-      const attrib = attribs[i];
-      const direction = getLinkDirection(link, i);
+      const attrib = link.attrib;
+      const direction = getLinkDirection(link);
 
       sprite.visible = true;
       sprite.position.set(midX + offsetX, midY + offsetY);
@@ -478,11 +453,9 @@ export function updateLines3D(links, lineGraphics, linkWidth, linkColorscheme, l
             linkWidth,
             depthScale,
             getOutsideSign(shift),
-            getChevronExtension(i, attribCount, widthScaled),
           );
           drawChevronGraphics(marker, geometry, getColor(linkAttribsToColorIndices[attrib], linkColorscheme.data), linkWidth, depthScale);
-          const maxOutwardRank = Math.max(1, (attribCount - 1) / 2);
-          marker.zIndex = sprite.zIndex - 0.005 - (getChevronOutwardRank(i, attribCount) / maxOutwardRank) * 0.005;
+          marker.zIndex = sprite.zIndex - 0.005 - Math.abs(layouts.get(linkIndex)?.laneOffset ?? 0) * 0.005;
         }
       }
     }
@@ -498,76 +471,46 @@ export function drawLineCanvas(ctx, link, linkWidth, colorscheme, attribToColorI
   ctx.lineWidth = adjustedWidth;
   ctx.setLineDash([]);
 
-  if (link.attribs.length === 1) {
-    const attrib = link.attribs[0];
-    ctx.beginPath();
-    ctx.moveTo(link.source.x, link.source.y);
-    ctx.lineTo(link.target.x, link.target.y);
-    ctx.strokeStyle = getColor(attribToColorIndex[attrib], colorscheme);
-    if (isAdditionalLinkAttrib(attrib)) {
-      const { dash, gap } = getDottedPattern(adjustedWidth);
-      ctx.setLineDash([dash, gap]);
-    }
-    ctx.stroke();
-    ctx.closePath();
-    drawChevronCanvas(
-      ctx,
-      getChevronGeometry(link.source.x, link.source.y, link.target.x, link.target.y, getLinkDirection(link, 0), 0, 0, linkWidth, widthScale),
-      getColor(attribToColorIndex[attrib], colorscheme),
-      linkWidth,
-      widthScale,
-    );
-    ctx.setLineDash([]);
-    return;
-  }
-
   const dx = link.target.x - link.source.x;
   const dy = link.target.y - link.source.y;
   const length = Math.sqrt(dx * dx + dy * dy);
+  if (!Number.isFinite(length) || length <= 0) return;
   const normedPerpendicularVector = { x: -dy / length, y: dx / length };
+  const shift = getParallelShift(options.layout, adjustedWidth);
+  const offsetX = shift * normedPerpendicularVector.x;
+  const offsetY = shift * normedPerpendicularVector.y;
+  const attrib = link.attrib;
+  const color = getColor(attribToColorIndex[attrib], colorscheme);
 
-  const lanes = link.attribs.map((attrib, i) => {
-    const shift = (i - (link.attribs.length - 1) / 2) * adjustedWidth;
-    const offsetX = shift * normedPerpendicularVector.x;
-    const offsetY = shift * normedPerpendicularVector.y;
-    const color = getColor(attribToColorIndex[attrib], colorscheme);
-
-    ctx.beginPath();
-    ctx.moveTo(link.source.x + offsetX, link.source.y + offsetY);
-    ctx.lineTo(link.target.x + offsetX, link.target.y + offsetY);
-    ctx.strokeStyle = color;
-    if (isAdditionalLinkAttrib(attrib)) {
-      const { dash, gap } = getDottedPattern(adjustedWidth);
-      ctx.setLineDash([dash, gap]);
-    } else {
-      ctx.setLineDash([]);
-    }
-    ctx.stroke();
-    ctx.closePath();
-    return { i, shift, offsetX, offsetY, color };
-  });
-
-  for (const i of getChevronRenderOrder(lanes.length)) {
-    const lane = lanes[i];
-    drawChevronCanvas(
-      ctx,
-      getChevronGeometry(
-        link.source.x,
-        link.source.y,
-        link.target.x,
-        link.target.y,
-        getLinkDirection(link, lane.i),
-        lane.offsetX,
-        lane.offsetY,
-        linkWidth,
-        widthScale,
-        getOutsideSign(lane.shift),
-        getChevronExtension(lane.i, lanes.length, adjustedWidth),
-      ),
-      lane.color,
+  ctx.beginPath();
+  ctx.moveTo(link.source.x + offsetX, link.source.y + offsetY);
+  ctx.lineTo(link.target.x + offsetX, link.target.y + offsetY);
+  ctx.strokeStyle = color;
+  if (isAdditionalLinkAttrib(attrib)) {
+    const { dash, gap } = getDottedPattern(adjustedWidth);
+    ctx.setLineDash([dash, gap]);
+  } else {
+    ctx.setLineDash([]);
+  }
+  ctx.stroke();
+  ctx.closePath();
+  drawChevronCanvas(
+    ctx,
+    getChevronGeometry(
+      link.source.x,
+      link.source.y,
+      link.target.x,
+      link.target.y,
+      getLinkDirection(link),
+      offsetX,
+      offsetY,
       linkWidth,
       widthScale,
-    );
-  }
+      getOutsideSign(shift),
+    ),
+    color,
+    linkWidth,
+    widthScale,
+  );
   ctx.setLineDash([]);
 }

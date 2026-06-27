@@ -232,8 +232,8 @@ function convertCorrMatrixToGraph(fileData, linkAttrib) {
       graphData.links.push({
         source: header[i],
         target: header[j],
-        weights: [round2(getCorrelationMatrixWeight(data[i][j]))],
-        attribs: [linkAttrib],
+        weight: round2(getCorrelationMatrixWeight(data[i][j])),
+        attrib: linkAttrib,
       });
     }
   }

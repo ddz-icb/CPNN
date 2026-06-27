@@ -1,4 +1,4 @@
-import { getDirectionalLinkEndpoints, getDirectionsForIndices, getEndpointId, getLinkIdText } from "./graphUtils.js";
+import { getDirectionalLinkEndpoints, getEndpointId, getLinkIdText } from "./graphUtils.js";
 import { matchesAttribsFilter } from "./attribFilterMatching.js";
 import { isAdditionalLinkAttrib } from "../enrichment/additionalLinkEnrichment.js";
 
@@ -19,26 +19,12 @@ export function filterThreshold(graphData, minLinkThreshold, maxLinkThreshold) {
 
   graphData = {
     ...graphData,
-    links: graphData.links
-      .map((link) => {
-        const keep = link.weights.map((weight, index) => {
-          if (isAdditionalLinkAttrib(link.attribs?.[index])) return true;
+    links: graphData.links.filter((link) => {
+      if (isAdditionalLinkAttrib(link.attrib)) return true;
 
-          const absoluteWeight = Math.abs(weight);
-          return (!hasMinThreshold || absoluteWeight >= minThreshold) && (!hasMaxThreshold || absoluteWeight <= maxThreshold);
-        });
-        const filteredAttribs = link.attribs.filter((_, i) => keep[i]);
-        const filteredWeights = link.weights.filter((_, i) => keep[i]);
-        const keepIndices = keep.flatMap((shouldKeep, index) => (shouldKeep ? [index] : []));
-
-        return {
-          ...link,
-          attribs: filteredAttribs,
-          weights: filteredWeights,
-          ...(Array.isArray(link.directions) ? { directions: getDirectionsForIndices(link, keepIndices) } : {}),
-        };
-      })
-      .filter((link) => link.attribs.length > 0),
+      const absoluteWeight = Math.abs(link.weight);
+      return (!hasMinThreshold || absoluteWeight >= minThreshold) && (!hasMaxThreshold || absoluteWeight <= maxThreshold);
+    }),
   };
   return graphData;
 }
@@ -49,21 +35,17 @@ export function filterLinkAttribs(graphData, filterRequest) {
 
   return {
     ...graphData,
-    links: graphData.links
-      .map((link, index) => {
-        const directionalEndpoints = getDirectionalLinkEndpoints(link);
-        return matchesAttribsFilter(link.attribs, filterRequest, {
-          name: [getLinkIdText(link, index), link.name, link.label].filter(
-            (value) => value !== undefined && value !== null && value !== "",
-          ),
-          type: link.type,
-          source: directionalEndpoints.sources,
-          target: directionalEndpoints.targets,
-        })
-          ? { ...link }
-          : { ...link, attribs: [] };
-      })
-      .filter((link) => link.attribs.length > 0),
+    links: graphData.links.filter((link, index) => {
+      const directionalEndpoints = getDirectionalLinkEndpoints(link);
+      return matchesAttribsFilter([link.attrib], filterRequest, {
+        name: [getLinkIdText(link, index), link.name, link.label].filter(
+          (value) => value !== undefined && value !== null && value !== "",
+        ),
+        type: link.type,
+        source: directionalEndpoints.sources,
+        target: directionalEndpoints.targets,
+      });
+    }),
   };
 }
 
@@ -79,19 +61,7 @@ export function filterNodesExist(graphData) {
 export function filterIgnoreNegatives(graphData, ignoreNegatives) {
   if (!ignoreNegatives) return graphData;
 
-  graphData.links = graphData.links.map((link) => {
-    const keep = link.weights.map((weight) => weight >= 0);
-    const filteredAttribs = link.attribs.filter((_, i) => keep[i]);
-    const filteredWeights = link.weights.filter((_, i) => keep[i]);
-    const keepIndices = keep.flatMap((shouldKeep, index) => (shouldKeep ? [index] : []));
-
-    return {
-      ...link,
-      attribs: filteredAttribs,
-      weights: filteredWeights,
-      ...(Array.isArray(link.directions) ? { directions: getDirectionsForIndices(link, keepIndices) } : {}),
-    };
-  });
+  graphData.links = graphData.links.filter((link) => link.weight >= 0);
   return graphData;
 }
 

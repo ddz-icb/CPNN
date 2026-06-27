@@ -70,7 +70,7 @@ export function getSearchLinkResults(entries = [], limit = Infinity) {
   return entries.slice(0, limit).map((entry) => ({
     ...entry,
     primaryText: formatSearchLinkLabel(entry),
-    secondaryText: formatSearchAttributeCount(entry.link?.attribs?.length, "attribute"),
+    secondaryText: entry.link?.attrib === undefined || entry.link?.attrib === null ? "0 attributes" : "1 attribute",
   }));
 }
 
@@ -122,7 +122,8 @@ function formatSearchAttributeCount(count, singularLabel) {
 }
 
 function matchesSearchRequest(item, search, metrics) {
-  return matchesAttribsFilter(item?.attribs, search.attributeFilter, metrics);
+  const attribs = Array.isArray(item?.attribs) ? item.attribs : item?.attrib !== undefined && item?.attrib !== null ? [item.attrib] : [];
+  return matchesAttribsFilter(attribs, search.attributeFilter, metrics);
 }
 
 export function parseSearchQuery(query) {

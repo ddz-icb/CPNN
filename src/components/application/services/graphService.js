@@ -8,6 +8,21 @@ import { joinGraphNames, joinGraphs } from "../../domain/service/graph_calculati
 import { useGraphFlags } from "../../adapters/state/graphFlagsState.js";
 import { processNamedFileUpload } from "./fileUploadService.js";
 
+function normalizeGraphForRuntime(graph) {
+  const data = typeof graph.data === "string" ? JSON.parse(graph.data) : graph.data;
+  return {
+    ...graph,
+    data: {
+      ...data,
+      nodes: data.nodes.map((node) => ({
+        ...node,
+        attribs: node.attribs === undefined || node.attribs === null ? [] : Array.isArray(node.attribs) ? [...node.attribs] : [node.attribs],
+      })),
+      links: data.links.map((link) => ({ ...link })),
+    },
+  };
+}
+
 export const graphService = {
   async handleLoadGraphNames() {
     log.info("Loading graph names");
@@ -136,7 +151,7 @@ export const graphService = {
       // temporary: to clear cache
       await deleteGraphDB(exampleGraphJson.name);
 
-      await createGraphIfNotExistsDB(exampleGraphJson);
+      await createGraphIfNotExistsDB(normalizeGraphForRuntime(exampleGraphJson));
       this.setActiveGraphNames([exampleGraphJson.name]);
     } catch (error) {
       errorService.setError("Error setting init graph");

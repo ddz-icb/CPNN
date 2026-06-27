@@ -88,17 +88,15 @@ export function buildEnrichmentLinks(interactions, proteinToNodeIds, minConfiden
 }
 
 function getEvidenceAttribs(interaction, minEvidenceScore) {
-  const attribs = [];
-  const weights = [];
+  const evidenceLinks = [];
 
   Object.entries(STRING_DB_EVIDENCE_ATTRIBS).forEach(([field, attrib]) => {
     const score = Number(interaction?.[field]);
     if (!Number.isFinite(score) || score < minEvidenceScore) return;
-    attribs.push(attrib);
-    weights.push(score);
+    evidenceLinks.push({ attrib, weight: score });
   });
 
-  return { attribs, weights };
+  return evidenceLinks;
 }
 
 export function buildStringDbLinks(interactions, proteinToNodeIds, options = {}) {
@@ -126,22 +124,26 @@ export function buildStringDbLinks(interactions, proteinToNodeIds, options = {})
 
         const key = getUndirectedLinkKey(sourceNodeId, targetNodeId);
         if (linksByKey.has(key)) return;
-        const attribs = [STRING_DB_LINK_ATTRIB];
-        const weights = [1];
-        if (includeEvidence) {
-          const evidence = getEvidenceAttribs(interaction, minEvidenceScore);
-          attribs.push(...evidence.attribs);
-          weights.push(...evidence.weights);
-        }
-        linksByKey.set(key, {
+        const links = [{
           source: sourceNodeId,
           target: targetNodeId,
-          weights,
-          attribs,
-        });
+          weight: 1,
+          attrib: STRING_DB_LINK_ATTRIB,
+        }];
+        if (includeEvidence) {
+          getEvidenceAttribs(interaction, minEvidenceScore).forEach((evidence) => {
+            links.push({
+              source: sourceNodeId,
+              target: targetNodeId,
+              weight: evidence.weight,
+              attrib: evidence.attrib,
+            });
+          });
+        }
+        linksByKey.set(key, links);
       });
     });
   });
 
-  return Array.from(linksByKey.values());
+  return Array.from(linksByKey.values()).flat();
 }

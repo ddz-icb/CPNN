@@ -73,8 +73,8 @@ export function SearchLinkDetails({ item }) {
     <div className="toggle-list-details">
       <DetailRow label={"Source"} value={formatSearchDetailValue(item.sourceId)} />
       <DetailRow label={"Target"} value={formatSearchDetailValue(item.targetId)} />
-      <DetailRow label={"Attributes"} value={formatSearchValues(item.link?.attribs)} />
-      <DetailRow label={"Weights"} value={formatSearchValues(item.link?.weights, formatSearchWeight)} />
+      <DetailRow label={"Attribute"} value={formatSearchDetailValue(item.link?.attrib)} />
+      <DetailRow label={"Weight"} value={formatSearchDetailValue(formatSearchWeight(item.link?.weight))} />
     </div>
   );
 }

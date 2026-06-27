@@ -1,5 +1,4 @@
 import log from "../../../adapters/logging/logger.js";
-import { getUndirectedLinkKey } from "../graph_calculations/graphUtils.js";
 import { getPhosphositesNodeIdEntry, isLikelyUniprotAccession } from "../parsing/nodeIdBioParsing.js";
 import { getNodeIdAndIsoformEntry, getNodeIdEntries } from "../parsing/nodeIdParsing.js";
 import { applyAdditionalLinks } from "./additionalLinkEnrichment.js";
@@ -114,17 +113,17 @@ function applyKinaseLinks(graphData, interactions, substrateProteinToEntries) {
 
     kinaseNodeIds.forEach((kinaseNodeId) => {
       substrateNodeIds.forEach((substrateNodeId) => {
-        const key = getUndirectedLinkKey(kinaseNodeId, substrateNodeId);
-        if (!key) return;
+        if (!kinaseNodeId || !substrateNodeId || kinaseNodeId === substrateNodeId) return;
+        const key = `${kinaseNodeId}->${substrateNodeId}`;
         if (seenLinkKeys.has(key)) return;
         seenLinkKeys.add(key);
         taggedKinaseNodeIds.add(kinaseNodeId);
         linksToAdd.push({
           source: kinaseNodeId,
           target: substrateNodeId,
-          attribs: [OMNI_PATH_PHOSPHO_ATTRIB],
-          weights: [1],
-          directions: ["forward"],
+          attrib: OMNI_PATH_PHOSPHO_ATTRIB,
+          weight: 1,
+          directed: true,
         });
       });
     });
@@ -169,17 +168,17 @@ function applyPhosphataseLinks(graphData, interactions, proteinToNodeIds) {
 
     phosphataseNodeIds.forEach((phosphataseNodeId) => {
       substrateNodeIds.forEach((substrateNodeId) => {
-        const key = getUndirectedLinkKey(phosphataseNodeId, substrateNodeId);
-        if (!key) return;
+        if (!phosphataseNodeId || !substrateNodeId || phosphataseNodeId === substrateNodeId) return;
+        const key = `${phosphataseNodeId}->${substrateNodeId}`;
         if (seenLinkKeys.has(key)) return;
         seenLinkKeys.add(key);
         taggedPhosphataseNodeIds.add(phosphataseNodeId);
         linksToAdd.push({
           source: phosphataseNodeId,
           target: substrateNodeId,
-          attribs: [OMNI_PATH_DEPHOSPHO_ATTRIB],
-          weights: [1],
-          directions: ["forward"],
+          attrib: OMNI_PATH_DEPHOSPHO_ATTRIB,
+          weight: 1,
+          directed: true,
         });
       });
     });

@@ -98,10 +98,12 @@ export const uploadGraphDataFormat = (
   <div>
     <p className="margin-0">
       <strong>Listed Data (JSON):</strong> Upload a JSON file that already contains nodes and links. JSON uploads keep their existing link attributes
-      and can use any finite numeric link weights. Links may optionally provide a <PopupTextField inline={true} textInside={"directions"} /> array
-      aligned with <PopupTextField inline={true} textInside={"attribs"} />. Supported values are{" "}
-      <PopupTextField inline={true} textInside={"forward"} />, <PopupTextField inline={true} textInside={"both"} />, and{" "}
-      <PopupTextField inline={true} textInside={"reverse"} />. Missing entries default to <PopupTextField inline={true} textInside={"both"} />.
+      and can use any finite numeric link weights. Node <PopupTextField inline={true} textInside={"attribs"} /> is optional and may be a single value
+      or an array when present. Graph exports omit node <PopupTextField inline={true} textInside={"attribs"} /> when no attributes are available, use
+      a single value for nodes with one attribute, and use an array for nodes with multiple attributes.
+      Each link entry has one <PopupTextField inline={true} textInside={"attrib"} /> and one <PopupTextField inline={true} textInside={"weight"} />.
+      Add multiple link entries for multiple relationships between the same nodes. Links may optionally provide{" "}
+      <PopupTextField inline={true} textInside={"directed: true"} /> to draw an arrow from source to target; missing or false values are undirected.
     </p>
     <br></br>
     <p className="margin-0">
