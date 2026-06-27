@@ -140,16 +140,16 @@ function getFilterDefaultsForGraphMetrics(graphMetrics) {
   const { linkWeightAbsMin, linkWeightAbsMax } = graphMetrics ?? {};
   if (!Number.isFinite(linkWeightAbsMin) || !Number.isFinite(linkWeightAbsMax)) return filterInit;
 
-  const thresholdBounds = getLinkThresholdBounds(linkWeightAbsMax, filterInit.linkThreshold);
+  const thresholdBounds = getLinkThresholdBounds(linkWeightAbsMax, filterInit.minLinkThreshold);
   const initialMinThreshold =
-    linkWeightAbsMin > filterInit.linkThreshold
+    linkWeightAbsMin > filterInit.minLinkThreshold
       ? roundUpLinkThreshold(linkWeightAbsMin, thresholdBounds)
-      : filterInit.linkThreshold;
+      : filterInit.minLinkThreshold;
 
   return {
     ...filterInit,
-    linkThreshold: initialMinThreshold,
-    linkThresholdText: initialMinThreshold,
+    minLinkThreshold: initialMinThreshold,
+    minLinkThresholdText: initialMinThreshold,
     maxLinkThreshold: thresholdBounds.max,
     maxLinkThresholdText: thresholdBounds.max,
   };
@@ -224,12 +224,12 @@ function applyGraphFilterSettings(savedFilter, { minAbsWeight, maxAbsWeight }) {
   }
 
   if (Number.isFinite(minAbsWeight) && Number.isFinite(maxAbsWeight)) {
-    const thresholdBounds = getLinkThresholdBounds(maxAbsWeight, filterInit.linkThreshold);
+    const thresholdBounds = getLinkThresholdBounds(maxAbsWeight, filterInit.minLinkThreshold);
     const initialMinThreshold =
-      minAbsWeight > filterInit.linkThreshold
+      minAbsWeight > filterInit.minLinkThreshold
         ? roundUpLinkThreshold(minAbsWeight, thresholdBounds)
-        : filterInit.linkThreshold;
-    const currentMinThreshold = getFiniteFilterNumber(nextFilter.linkThreshold);
+        : filterInit.minLinkThreshold;
+    const currentMinThreshold = getFiniteFilterNumber(nextFilter.minLinkThreshold);
     const currentMaxThreshold = getFiniteFilterNumber(nextFilter.maxLinkThreshold);
 
     if (
@@ -240,8 +240,8 @@ function applyGraphFilterSettings(savedFilter, { minAbsWeight, maxAbsWeight }) {
     ) {
       nextFilter = {
         ...nextFilter,
-        linkThreshold: initialMinThreshold,
-        linkThresholdText: initialMinThreshold,
+        minLinkThreshold: initialMinThreshold,
+        minLinkThresholdText: initialMinThreshold,
       };
     }
 
@@ -258,7 +258,7 @@ function applyGraphFilterSettings(savedFilter, { minAbsWeight, maxAbsWeight }) {
       };
     }
 
-    const nextMinThreshold = getFiniteFilterNumber(nextFilter.linkThreshold);
+    const nextMinThreshold = getFiniteFilterNumber(nextFilter.minLinkThreshold);
     const nextMaxThreshold = getFiniteFilterNumber(nextFilter.maxLinkThreshold);
     if (nextMinThreshold !== null && nextMaxThreshold !== null && nextMaxThreshold < nextMinThreshold) {
       nextFilter = {

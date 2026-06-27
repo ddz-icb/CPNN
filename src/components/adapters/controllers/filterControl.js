@@ -53,8 +53,8 @@ export function FilterControl() {
     }
     const debounceTimeout = setTimeout(() => {
       log.info(
-        "Filtering nodes and links.\n    Threshold:  ",
-        filter.linkThreshold,
+        "Filtering nodes and links.\n    Min Threshold:  ",
+        filter.minLinkThreshold,
         "\n    Max Threshold: ",
         filter.maxLinkThreshold,
         "\n    Link Attributes: ",
@@ -96,7 +96,7 @@ export function FilterControl() {
         filteredGraphData = filterNodeIds(filteredGraphData, filter.nodeIdFilters);
         filteredGraphData = filterNodesExist(filteredGraphData);
 
-        filteredGraphData = filterThreshold(filteredGraphData, filter.linkThreshold, filter.maxLinkThreshold);
+        filteredGraphData = filterThreshold(filteredGraphData, filter.minLinkThreshold, filter.maxLinkThreshold);
         filteredGraphData = filterLinkAttribs(filteredGraphData, filter.linkFilter);
         filteredGraphData = filterNodeAttribs(filteredGraphData, filter.nodeFilter);
         filteredGraphData = filterNodesExist(filteredGraphData);
@@ -155,7 +155,7 @@ export function FilterControl() {
   }, [
     graphFlags.isPreprocessed,
     graphFlags.mergeByName,
-    filter.linkThreshold,
+    filter.minLinkThreshold,
     filter.maxLinkThreshold,
     filter.linkFilter,
     filter.nodeFilter,

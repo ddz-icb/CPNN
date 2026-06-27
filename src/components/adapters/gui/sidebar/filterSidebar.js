@@ -7,7 +7,7 @@ import { useGraphMetrics } from "../../state/graphMetricsState.js";
 import { useGraphFlags } from "../../state/graphFlagsState.js";
 import {
   filterInit,
-  linkThresholdInit,
+  minLinkThresholdInit,
   minKCoreSizeInit,
   minCompSizeInit,
   maxCompSizeInit,
@@ -15,7 +15,7 @@ import {
 } from "../../../adapters/state/filterState.js";
 import {
   lassoDescription,
-  linkThresholdDescription,
+  minLinkThresholdDescription,
   maxLinkThresholdDescription,
   maxCompSizeDescription,
   componentDensityDescription,
@@ -30,7 +30,7 @@ export function FilterSidebar() {
   const { graphMetrics } = useGraphMetrics();
 
   const lassoSelectionCount = Array.isArray(filter.lassoSelection) ? filter.lassoSelection.length : 0;
-  const linkThresholdBounds = getLinkThresholdBounds(graphMetrics.linkWeightAbsMax, linkThresholdInit);
+  const linkThresholdBounds = getLinkThresholdBounds(graphMetrics.linkWeightAbsMax, minLinkThresholdInit);
 
   const handleClearLassoSelection = () => {
     setFilter("lassoSelection", []);
@@ -56,17 +56,17 @@ export function FilterSidebar() {
       </div>
       <div className="table-list-heading">Link Filters</div>
       <SliderBlock
-        value={filter.linkThreshold}
-        valueText={filter.linkThresholdText}
-        setValue={(value) => setFilter("linkThreshold", value)}
-        setValueText={(value) => setFilter("linkThresholdText", value)}
-        fallbackValue={linkThresholdInit}
+        value={filter.minLinkThreshold}
+        valueText={filter.minLinkThresholdText}
+        setValue={(value) => setFilter("minLinkThreshold", value)}
+        setValueText={(value) => setFilter("minLinkThresholdText", value)}
+        fallbackValue={minLinkThresholdInit}
         min={linkThresholdBounds.min}
         max={linkThresholdBounds.max}
         step={linkThresholdBounds.step}
         text={"Min Link Weight Threshold"}
         infoHeading={"Filtering Links by Threshold"}
-        infoDescription={linkThresholdDescription}
+        infoDescription={minLinkThresholdDescription}
       />
       <SliderBlock
         value={filter.maxLinkThreshold}

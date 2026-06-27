@@ -1,6 +1,6 @@
 import { PopupTextField } from "../../reusable_components/sidebarComponents.js";
 
-export const linkThresholdDescription = (
+export const minLinkThresholdDescription = (
   <div>
     <p className="margin-0">
       Filter links by minimum absolute weight. The slider range is based on the smallest and largest absolute link weight in the loaded graph, so
