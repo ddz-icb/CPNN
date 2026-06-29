@@ -363,6 +363,10 @@ export function getAdjacentNodes(graphData, nodeId) {
     entry.connections.push({
       type: link.attrib,
       weight: link.weight,
+      directed: Boolean(link.directed),
+      direction: link.directed ? (sourceId === nodeId ? "outgoing" : "incoming") : "undirected",
+      sourceId,
+      targetId,
     });
 
     entry.maxWeight = Math.max(entry.maxWeight, getLinkWeight(link) ?? 0);

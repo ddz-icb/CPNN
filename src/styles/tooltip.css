@@ -236,6 +236,7 @@
 
 .tooltip-popup-footer {
   display: flex;
+  box-sizing: border-box;
   justify-content: space-between;
   align-items: center;
   gap: 0.5rem;
@@ -250,12 +251,16 @@
   align-items: center;
   gap: 0.5rem;
   flex: 1;
+  min-width: 0;
 }
 
 .tooltip-popup-footer-actions {
   display: flex;
   align-items: center;
   gap: 0.35rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  min-width: 0;
 }
 
 .tooltip-popup-footer-link {
@@ -285,6 +290,7 @@
   font-size: var(--font-size-xs);
   cursor: pointer;
   height: 1.6rem;
+  max-width: 100%;
   white-space: nowrap;
 }
 
@@ -358,8 +364,8 @@
 
 .tooltip-adjacent-connection {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 0.4rem;
   padding: 0.15rem 0.4rem;
   border-radius: var(--radius);
   background: var(--color-surface);
@@ -367,11 +373,46 @@
   font-size: var(--font-size-xs, 0.75rem);
 }
 
+.tooltip-adjacent-direction {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  min-width: 3.2rem;
+  padding: 0.08rem 0.28rem;
+  color: var(--color-text-secondary);
+  border: var(--border-thin) solid var(--color-border-subtle);
+  border-radius: var(--radius-xs);
+  background: color-mix(in srgb, var(--color-surface-contrast) 66%, transparent 34%);
+  font-family: var(--font-family-mono);
+  font-size: 0.62rem;
+  font-weight: 650;
+  line-height: 1.2;
+}
+
+.tooltip-adjacent-direction--incoming,
+.tooltip-adjacent-direction--outgoing {
+  color: var(--color-accent-contrast);
+  background: color-mix(in srgb, var(--color-accent) 78%, var(--color-surface-contrast) 22%);
+  border-color: color-mix(in srgb, var(--color-accent) 65%, var(--color-border) 35%);
+}
+
+.tooltip-adjacent-direction-symbol {
+  font-weight: 800;
+}
+
 .tooltip-adjacent-connection-type {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
   font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .tooltip-adjacent-connection-weight {
+  flex: none;
   font-variant-numeric: tabular-nums;
   color: var(--color-text-secondary);
 }

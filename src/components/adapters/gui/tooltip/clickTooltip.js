@@ -386,7 +386,8 @@ function AdjacentNodesList({ adjacentNodes, nodeAttribsToColorIndices, nodeColor
           </div>
           <div className="tooltip-adjacent-connection-list">
             {connections.map((connection, index) => (
-              <div className="tooltip-adjacent-connection" key={`${node.id}-${connection.type}-${index}`}>
+              <div className="tooltip-adjacent-connection" key={`${node.id}-${connection.type}-${connection.direction}-${index}`}>
+                <ConnectionDirectionBadge direction={connection.direction} />
                 <span className="tooltip-adjacent-connection-type">{connection.type}</span>
                 <span className="tooltip-adjacent-connection-weight">weight: {formatWeight(connection.weight)}</span>
               </div>
@@ -395,6 +396,24 @@ function AdjacentNodesList({ adjacentNodes, nodeAttribsToColorIndices, nodeColor
         </div>
       ))}
     </div>
+  );
+}
+
+function ConnectionDirectionBadge({ direction }) {
+  const directionConfig = {
+    outgoing: { label: "out", symbol: "->", title: "Directed link from selected node to this neighbor" },
+    incoming: { label: "in", symbol: "<-", title: "Directed link from this neighbor to selected node" },
+    undirected: { label: "both", symbol: "<->", title: "Undirected link" },
+  };
+  const config = directionConfig[direction] ?? directionConfig.undirected;
+
+  return (
+    <span className={`tooltip-adjacent-direction tooltip-adjacent-direction--${direction ?? "undirected"}`} aria-label={config.title}>
+      <span className="tooltip-adjacent-direction-symbol" aria-hidden="true">
+        {config.symbol}
+      </span>
+      <span className="tooltip-adjacent-direction-label">{config.label}</span>
+    </span>
   );
 }
 
