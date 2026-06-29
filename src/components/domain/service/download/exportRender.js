@@ -1,6 +1,11 @@
 import canvasToSvg from "canvas-to-svg";
 import { drawCircleCanvas, radius } from "../canvas_drawing/nodes.js";
-import { drawLineCanvas, getParallelLinkLayoutData, MIN_3D_LINK_SCREEN_LENGTH } from "../canvas_drawing/lineGraphics.js";
+import {
+  drawLineCanvas,
+  drawLineChevronQueueCanvas,
+  getParallelLinkLayoutData,
+  MIN_3D_LINK_SCREEN_LENGTH,
+} from "../canvas_drawing/lineGraphics.js";
 import { computeLightingTint, rimRadiusFactor, rimWidthFactor } from "../canvas_drawing/shading.js";
 import { getNodeLabelOffsetY } from "../canvas_drawing/drawingUtils.js";
 import { getCameraViewParams } from "../canvas_drawing/camera3D.js";
@@ -143,6 +148,12 @@ export function render3DQueue(ctx, items, drawParams, gridOptions) {
   const highlightNodeIdSet = toNodeIdSet(highlightNodeIds);
   const highlightLinkIdSet = toNodeIdSet(highlightLinkIds);
   const communityHighlightNodeIdSet = toNodeIdSet(communityHighlightNodeIds);
+  const pendingLinkChevrons = [];
+  const flushLinkChevrons = () =>
+    drawLineChevronQueueCanvas(ctx, pendingLinkChevrons, linkWidth, linkColorscheme, linkAttribsToColorIndices, {
+      clear: true,
+      minLength: MIN_3D_LINK_SCREEN_LENGTH,
+    });
 
   if (gridOptions?.showGrid && Array.isArray(gridOptions.segments)) {
     drawGridExport(ctx, gridOptions.segments, textColor);
@@ -165,9 +176,12 @@ export function render3DQueue(ctx, items, drawParams, gridOptions) {
         widthScale,
         minLength: MIN_3D_LINK_SCREEN_LENGTH,
         layout: item.layout,
+        drawChevron: false,
       });
       if (alpha < 1) ctx.restore();
+      pendingLinkChevrons.push({ link, layout: item.layout, alpha, widthScale });
     } else if (item.type === "node") {
+      flushLinkChevrons();
       const { node, mapEntry } = item;
       const scale = node.scale ?? mapEntry?.circle?.scale?.x ?? 1;
       const tint = computeLightingTint(scale);
@@ -187,6 +201,7 @@ export function render3DQueue(ctx, items, drawParams, gridOptions) {
       drawNodeHighlightIfActive(ctx, node, communityHighlightNodeIdSet, communityHighlightColor, scale, alpha);
       if (alpha < 1) ctx.restore();
     } else if (item.type === "label") {
+      flushLinkChevrons();
       const alpha = getRenderAlpha(item.node);
       if (alpha <= 0) continue;
       ctx.save();
@@ -195,6 +210,8 @@ export function render3DQueue(ctx, items, drawParams, gridOptions) {
       ctx.restore();
     }
   }
+
+  flushLinkChevrons();
 }
 
 export function render2DGraph(ctx, graphData, nodeMap, params) {
@@ -226,9 +243,17 @@ export function render2DGraph(ctx, graphData, nodeMap, params) {
       ctx.globalAlpha *= alpha;
     }
     drawLinkHighlightIfActive(ctx, link, index, highlightLinkIdSet, highlightColor, linkWidth, 1, linkLayouts.get(index));
-    drawLineCanvas(ctx, link, linkWidth, linkColorscheme, linkAttribsToColorIndices, { layout: linkLayouts.get(index) });
+    drawLineCanvas(ctx, link, linkWidth, linkColorscheme, linkAttribsToColorIndices, { layout: linkLayouts.get(index), drawChevron: false });
     if (alpha < 1) ctx.restore();
   }
+
+  drawLineChevronQueueCanvas(
+    ctx,
+    graphData.links.map((link, index) => ({ link, layout: linkLayouts.get(index), alpha: getRenderAlpha(link) })),
+    linkWidth,
+    linkColorscheme,
+    linkAttribsToColorIndices,
+  );
 
   for (const node of graphData.nodes) {
     const mapEntry = nodeMap?.[node.id];
