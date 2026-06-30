@@ -2,12 +2,15 @@ import {
   DEFAULT_GROUP_ENRICHMENT_MAX_FDR,
   DEFAULT_MIN_CONFIDENCE,
   DEFAULT_MIN_EVIDENCE_SCORE,
+  DEFAULT_NODE_ATTRIBUTE_MAX_TERMS,
   MAX_CONFIDENCE,
   MAX_EVIDENCE_SCORE,
   MAX_GROUP_ENRICHMENT_MAX_FDR,
+  MAX_NODE_ATTRIBUTE_MAX_TERMS,
   MIN_CONFIDENCE,
   MIN_EVIDENCE_SCORE,
   MIN_GROUP_ENRICHMENT_MAX_FDR,
+  MIN_NODE_ATTRIBUTE_MAX_TERMS,
 } from "./stringDbConfig.js";
 import { getUndirectedLinkKey } from "../graph_calculations/graphUtils.js";
 
@@ -27,6 +30,12 @@ export function clampGroupEnrichmentMaxFdr(value) {
   const parsed = Number(value);
   if (!Number.isFinite(parsed)) return DEFAULT_GROUP_ENRICHMENT_MAX_FDR;
   return Math.min(Math.max(parsed, MIN_GROUP_ENRICHMENT_MAX_FDR), MAX_GROUP_ENRICHMENT_MAX_FDR);
+}
+
+export function clampNodeAttributeMaxTerms(value) {
+  const parsed = Number.parseInt(value, 10);
+  if (!Number.isFinite(parsed)) return DEFAULT_NODE_ATTRIBUTE_MAX_TERMS;
+  return Math.min(Math.max(parsed, MIN_NODE_ATTRIBUTE_MAX_TERMS), MAX_NODE_ATTRIBUTE_MAX_TERMS);
 }
 
 export function normalizeProteinId(value) {
@@ -70,8 +79,4 @@ export function deduplicateInteractions(interactions) {
   });
 
   return Array.from(byPair.values());
-}
-
-export function buildCacheKey(proteinIds, minConfidence, speciesId) {
-  return `${speciesId}::${minConfidence.toFixed(3)}::${proteinIds.sort((a, b) => a.localeCompare(b)).join("|")}`;
 }

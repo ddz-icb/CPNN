@@ -2,11 +2,9 @@ import log from "../../../adapters/logging/logger.js";
 import { cloneLink, getCommunityData, getComponentData } from "../graph_calculations/graphUtils.js";
 import { applyAdditionalLinkRecords } from "./additionalLinkEnrichment.js";
 import {
-  fetchFunctionalAnnotations,
+  fetchFunctionalEnrichmentAnnotations,
   fetchFunctionalEnrichmentLabels,
   fetchNetworkInteractions,
-  normalizeNodeAttributeType,
-  normalizeNodeAttributeTermFilter,
 } from "./stringDbApi.js";
 import { DEFAULT_SPECIES_ID } from "./stringDbConfig.js";
 import { buildNodeIdToProteinIdsMap, buildProteinToNodeIdsMap, buildStringDbLinks } from "./stringDbMapping.js";
@@ -14,6 +12,7 @@ import {
   clampConfidence,
   clampEvidenceScore,
   clampGroupEnrichmentMaxFdr,
+  clampNodeAttributeMaxTerms,
   normalizeProteinId,
 } from "./stringDbHelpers.js";
 
@@ -162,8 +161,8 @@ export async function enrichGraphWithStringDb(graphData, options = {}) {
   const minConfidence = clampConfidence(options.minConfidence);
   const includeEvidence = options.includeEvidence ?? false;
   const minEvidenceScore = clampEvidenceScore(options.minEvidenceScore);
-  const nodeAttributeType = normalizeNodeAttributeType(options.nodeAttributeType);
-  const nodeAttributeTermFilter = normalizeNodeAttributeTermFilter(options.nodeAttributeTermFilter);
+  const nodeAttributeMaxTerms = clampNodeAttributeMaxTerms(options.nodeAttributeMaxTerms);
+  const nodeAttributeMaxFdr = clampGroupEnrichmentMaxFdr(options.nodeAttributeMaxFdr);
   const maxGroupEnrichmentFdr = clampGroupEnrichmentMaxFdr(options.maxGroupEnrichmentFdr);
   const speciesId = options.speciesId ?? DEFAULT_SPECIES_ID;
   const proteinToNodeIds = buildProteinToNodeIdsMap(graphData.nodes);
@@ -175,24 +174,24 @@ export async function enrichGraphWithStringDb(graphData, options = {}) {
   let enrichedGraphData = graphData;
 
   if (nodeAttributeEnabled) {
-    const cacheKey = buildCacheKey("string-node-annotations", proteinIds, speciesId, nodeAttributeType, nodeAttributeTermFilter);
+    const cacheKey = buildCacheKey("string-node-enrichment", proteinIds, speciesId, nodeAttributeMaxTerms, nodeAttributeMaxFdr);
     let annotations = enrichmentCache.get(cacheKey);
     if (!annotations) {
       try {
-        annotations = await fetchFunctionalAnnotations(proteinIds, {
+        annotations = await fetchFunctionalEnrichmentAnnotations(proteinIds, {
           speciesId,
-          attributeType: nodeAttributeType,
-          termFilter: nodeAttributeTermFilter,
+          maxTerms: nodeAttributeMaxTerms,
+          maxFdr: nodeAttributeMaxFdr,
         });
         enrichmentCache.set(cacheKey, annotations);
-        log.info(`STRING-DB functional annotation generated ${annotations.length} node annotation(s).`);
+        log.info(`STRING-DB node enrichment generated ${annotations.length} node annotation(s).`);
       } catch (error) {
         const message = error instanceof Error ? error.message : "Unknown error";
-        log.warn(`STRING-DB functional annotation failed: ${message}`);
-        throw new Error("Failed to load STRING-DB functional annotations.");
+        log.warn(`STRING-DB node enrichment failed: ${message}`);
+        throw new Error("Failed to load STRING-DB node enrichment.");
       }
     } else {
-      log.debug(`Using cached STRING-DB functional annotations (${annotations.length})`);
+      log.debug(`Using cached STRING-DB node enrichment (${annotations.length})`);
     }
 
     enrichedGraphData = applyProteinAnnotations(enrichedGraphData, annotations, proteinToNodeIds);

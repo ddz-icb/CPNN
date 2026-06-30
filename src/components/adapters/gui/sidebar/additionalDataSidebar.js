@@ -1,4 +1,4 @@
-import { Button, FieldBlock, SelectFieldBlock, SliderBlock, SwitchBlock, TextFieldBlock } from "../reusable_components/sidebarComponents.js";
+import { Button, FieldBlock, SelectFieldBlock, SliderBlock, SwitchBlock } from "../reusable_components/sidebarComponents.js";
 import {
   omniPathMinCurationEffortInit,
   omniPathEnrichmentEnabledInit,
@@ -10,8 +10,8 @@ import {
   stringDbGroupEnrichmentMaxFdrInit,
   stringDbMinConfidenceInit,
   stringDbMinEvidenceScoreInit,
-  stringDbNodeAttributeTermFilterInit,
-  stringDbNodeAttributeTypeInit,
+  stringDbNodeAttributeMaxFdrInit,
+  stringDbNodeAttributeMaxTermsInit,
   stringDbNodeAttributeEnrichmentEnabledInit,
   stringDbSpeciesIdInit,
   useGraphEnrichment,
@@ -24,9 +24,10 @@ import {
 import {
   MAX_EVIDENCE_SCORE,
   MAX_GROUP_ENRICHMENT_MAX_FDR,
+  MAX_NODE_ATTRIBUTE_MAX_TERMS,
   MIN_EVIDENCE_SCORE,
   MIN_GROUP_ENRICHMENT_MAX_FDR,
-  STRING_DB_NODE_ATTRIBUTE_TYPE_OPTIONS,
+  MIN_NODE_ATTRIBUTE_MAX_TERMS,
   STRING_DB_SPECIES,
 } from "../../../domain/service/enrichment/stringDbConfig.js";
 import {
@@ -57,9 +58,10 @@ export function AdditionalDataSidebar() {
     setGraphEnrichment("stringDbMinConfidenceText", stringDbMinConfidenceInit);
     setGraphEnrichment("stringDbMinEvidenceScore", stringDbMinEvidenceScoreInit);
     setGraphEnrichment("stringDbMinEvidenceScoreText", stringDbMinEvidenceScoreInit);
-    setGraphEnrichment("stringDbNodeAttributeType", stringDbNodeAttributeTypeInit);
-    setGraphEnrichment("stringDbNodeAttributeTermFilter", stringDbNodeAttributeTermFilterInit);
-    setGraphEnrichment("stringDbNodeAttributeTermFilterText", stringDbNodeAttributeTermFilterInit);
+    setGraphEnrichment("stringDbNodeAttributeMaxTerms", stringDbNodeAttributeMaxTermsInit);
+    setGraphEnrichment("stringDbNodeAttributeMaxTermsText", stringDbNodeAttributeMaxTermsInit);
+    setGraphEnrichment("stringDbNodeAttributeMaxFdr", stringDbNodeAttributeMaxFdrInit);
+    setGraphEnrichment("stringDbNodeAttributeMaxFdrText", stringDbNodeAttributeMaxFdrInit);
     setGraphEnrichment("stringDbGroupEnrichmentMaxFdr", stringDbGroupEnrichmentMaxFdrInit);
     setGraphEnrichment("stringDbGroupEnrichmentMaxFdrText", stringDbGroupEnrichmentMaxFdrInit);
     setGraphEnrichment("stringDbSpeciesId", stringDbSpeciesIdInit);
@@ -75,9 +77,6 @@ export function AdditionalDataSidebar() {
     graphEnrichment.stringDbNodeAttributeEnrichmentEnabled ||
     graphEnrichment.stringDbGroupEnrichmentEnabled;
   const omniPathLinkEnabled = graphEnrichment.omniPathEnrichmentEnabled || graphEnrichment.omniPathPhosphataseEnrichmentEnabled;
-  const handleApplyStringDbNodeAttributeTermFilter = () => {
-    setGraphEnrichment("stringDbNodeAttributeTermFilter", graphEnrichment.stringDbNodeAttributeTermFilterText);
-  };
 
   return (
     <>
@@ -156,30 +155,31 @@ export function AdditionalDataSidebar() {
         </>
       )}
       {graphEnrichment.stringDbNodeAttributeEnrichmentEnabled && (
-        <SelectFieldBlock
-          value={graphEnrichment.stringDbNodeAttributeType}
-          setValue={(value) => setGraphEnrichment("stringDbNodeAttributeType", value)}
-          options={STRING_DB_NODE_ATTRIBUTE_TYPE_OPTIONS}
-          size={"wide"}
-          text={"STRING Attribute Type"}
-          infoHeading={"STRING node attribute type"}
-          infoDescription={stringDbNodeAttributeDescription}
-        />
-      )}
-      {graphEnrichment.stringDbNodeAttributeEnrichmentEnabled && (
         <>
-          <TextFieldBlock
-            value={graphEnrichment.stringDbNodeAttributeTermFilterText}
-            setValue={(value) => setGraphEnrichment("stringDbNodeAttributeTermFilterText", value)}
-            placeholder={"diabetes, insulin"}
-            size={"wide"}
-            text={"STRING Term Filter"}
-            infoHeading={"STRING node attribute term filter"}
+          <FieldBlock
+            valueText={graphEnrichment.stringDbNodeAttributeMaxTermsText}
+            setValue={(value) => setGraphEnrichment("stringDbNodeAttributeMaxTerms", value)}
+            setValueText={(value) => setGraphEnrichment("stringDbNodeAttributeMaxTermsText", value)}
+            fallbackValue={stringDbNodeAttributeMaxTermsInit}
+            min={MIN_NODE_ATTRIBUTE_MAX_TERMS}
+            max={MAX_NODE_ATTRIBUTE_MAX_TERMS}
+            step={1}
+            text={"STRING Max Terms"}
+            infoHeading={"STRING node attribute max terms"}
             infoDescription={stringDbNodeAttributeDescription}
           />
-          <div className="block-section">
-            <Button text={"Apply Term Filter"} onClick={handleApplyStringDbNodeAttributeTermFilter} />
-          </div>
+          <FieldBlock
+            valueText={graphEnrichment.stringDbNodeAttributeMaxFdrText}
+            setValue={(value) => setGraphEnrichment("stringDbNodeAttributeMaxFdr", value)}
+            setValueText={(value) => setGraphEnrichment("stringDbNodeAttributeMaxFdrText", value)}
+            fallbackValue={stringDbNodeAttributeMaxFdrInit}
+            min={MIN_GROUP_ENRICHMENT_MAX_FDR}
+            max={MAX_GROUP_ENRICHMENT_MAX_FDR}
+            step={0.01}
+            text={"STRING Max FDR"}
+            infoHeading={"STRING node attribute FDR"}
+            infoDescription={stringDbNodeAttributeDescription}
+          />
         </>
       )}
       {graphEnrichment.stringDbGroupEnrichmentEnabled && (

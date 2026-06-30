@@ -107,12 +107,11 @@ export const stringDbEvidenceDescription = (
 export const stringDbNodeAttributeDescription = (
   <div>
     <p className="margin-0">
-      Adds STRING functional annotation terms to existing nodes. Choose one attribute type such as Pathways, Disease, Tissue, Phenotype, GO Process,
-      or Domains to keep the labels focused.
+      Adds the top overrepresented STRING enrichment terms to existing nodes using STRING's returned enrichment order and categories.
     </p>
     <p className="margin-0 pad-top-05">
-      Use the term filter to keep only annotations whose source, term ID, or description contains the entered words. Commas separate alternatives,
-      e.g. diabetes, insulin.
+      Terms are ranked by false discovery rate and gene coverage. Max terms limits how many enriched terms are kept, and max FDR controls the
+      accepted significance threshold.
     </p>
   </div>
 );

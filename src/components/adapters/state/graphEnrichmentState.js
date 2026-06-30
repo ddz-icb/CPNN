@@ -6,8 +6,8 @@ import {
 import {
   DEFAULT_GROUP_ENRICHMENT_MAX_FDR,
   DEFAULT_MIN_EVIDENCE_SCORE,
+  DEFAULT_NODE_ATTRIBUTE_MAX_TERMS,
   DEFAULT_SPECIES_ID,
-  STRING_DB_NODE_ATTRIBUTE_TYPE_DEFAULT,
 } from "../../domain/service/enrichment/stringDbConfig.js";
 
 export const stringDbEnrichmentEnabledInit = false;
@@ -16,8 +16,8 @@ export const stringDbNodeAttributeEnrichmentEnabledInit = false;
 export const stringDbGroupEnrichmentEnabledInit = false;
 export const stringDbMinConfidenceInit = 0.9;
 export const stringDbMinEvidenceScoreInit = DEFAULT_MIN_EVIDENCE_SCORE;
-export const stringDbNodeAttributeTypeInit = STRING_DB_NODE_ATTRIBUTE_TYPE_DEFAULT;
-export const stringDbNodeAttributeTermFilterInit = "";
+export const stringDbNodeAttributeMaxTermsInit = DEFAULT_NODE_ATTRIBUTE_MAX_TERMS;
+export const stringDbNodeAttributeMaxFdrInit = DEFAULT_GROUP_ENRICHMENT_MAX_FDR;
 export const stringDbGroupEnrichmentMaxFdrInit = DEFAULT_GROUP_ENRICHMENT_MAX_FDR;
 export const stringDbSpeciesIdInit = DEFAULT_SPECIES_ID;
 export const omniPathEnrichmentEnabledInit = false;
@@ -35,9 +35,10 @@ const graphEnrichmentInit = {
   stringDbMinConfidenceText: stringDbMinConfidenceInit,
   stringDbMinEvidenceScore: stringDbMinEvidenceScoreInit,
   stringDbMinEvidenceScoreText: stringDbMinEvidenceScoreInit,
-  stringDbNodeAttributeType: stringDbNodeAttributeTypeInit,
-  stringDbNodeAttributeTermFilter: stringDbNodeAttributeTermFilterInit,
-  stringDbNodeAttributeTermFilterText: stringDbNodeAttributeTermFilterInit,
+  stringDbNodeAttributeMaxTerms: stringDbNodeAttributeMaxTermsInit,
+  stringDbNodeAttributeMaxTermsText: stringDbNodeAttributeMaxTermsInit,
+  stringDbNodeAttributeMaxFdr: stringDbNodeAttributeMaxFdrInit,
+  stringDbNodeAttributeMaxFdrText: stringDbNodeAttributeMaxFdrInit,
   stringDbGroupEnrichmentMaxFdr: stringDbGroupEnrichmentMaxFdrInit,
   stringDbGroupEnrichmentMaxFdrText: stringDbGroupEnrichmentMaxFdrInit,
   stringDbSpeciesId: stringDbSpeciesIdInit,
