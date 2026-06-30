@@ -3,9 +3,9 @@ import { SvgIcon } from "../reusable_components/SvgIcon.jsx";
 import eyeSvg from "../../../../assets/icons/eye.svg?raw";
 import piechartSvg from "../../../../assets/icons/piechart.svg?raw";
 import xSvg from "../../../../assets/icons/x.svg?raw";
-import { HeaderButton } from "../reusable_components/headerbarComponents.js";
-import { HeaderbarColorMapping } from "./headerbarMapping.js";
-import { HeaderbarStatistics } from "./headerbarStatistics.js";
+import { HeaderButton } from "../reusable_components/headerbarComponents.jsx";
+import { HeaderbarColorMapping } from "./headerbarMapping.jsx";
+import { HeaderbarStatistics } from "./headerbarStatistics.jsx";
 import { isTypingTarget, isPopupOpen } from "../hooks/keyboardUtils.js";
 
 export function HeaderBar() {

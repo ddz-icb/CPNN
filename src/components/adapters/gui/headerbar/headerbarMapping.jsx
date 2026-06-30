@@ -1,7 +1,7 @@
 import { useColorschemeState } from "../../../adapters/state/colorschemeState.js";
 import { fallbackColor, getColor } from "../../../domain/service/canvas_drawing/drawingUtils.js";
 import { isAdditionalLinkAttrib } from "../../../domain/service/enrichment/additionalLinkEnrichment.js";
-import { TableList } from "../reusable_components/sidebarComponents.js";
+import { TableList } from "../reusable_components/sidebarComponents.jsx";
 
 export function HeaderbarColorMapping() {
   const { colorschemeState } = useColorschemeState();

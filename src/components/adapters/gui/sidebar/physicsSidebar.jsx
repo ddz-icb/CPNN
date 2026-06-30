@@ -1,4 +1,4 @@
-import { Button, SliderBlock, SwitchBlock } from "../reusable_components/sidebarComponents.js";
+import { Button, SliderBlock, SwitchBlock } from "../reusable_components/sidebarComponents.jsx";
 
 import { communityForceStrengthInit, gravityStrengthInit, physicsInit } from "../../../adapters/state/physicsState.js";
 import {
@@ -11,7 +11,7 @@ import {
   checkBorderDescription,
   circleForceDescription,
   linkForceDescription,
-} from "./descriptions/physicsDescriptions.js";
+} from "./descriptions/physicsDescriptions.jsx";
 import { usePhysics } from "../../../adapters/state/physicsState.js";
 import { useAppearance } from "../../../adapters/state/appearanceState.js";
 

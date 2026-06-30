@@ -17,22 +17,22 @@ import "./styles/colormapping_select.css";
 import "./styles/buttons.css";
 
 import { useCallback, useEffect, useState } from "react";
-import { Sidebar } from "./components/adapters/gui/sidebar/sidebar.js";
-import { HeaderBar } from "./components/adapters/gui/headerbar/headerbar.js";
+import { Sidebar } from "./components/adapters/gui/sidebar/sidebar.jsx";
+import { HeaderBar } from "./components/adapters/gui/headerbar/headerbar.jsx";
 import { useTheme } from "./components/adapters/state/themeState.js";
-import { RenderControl } from "./components/adapters/controllers/renderControl.js";
+import { RenderControl } from "./components/adapters/controllers/renderControl.jsx";
 import { PhysicsControl } from "./components/adapters/controllers/physicsControl.js";
 import { InitControl } from "./components/adapters/controllers/initControl.js";
 import { DownloadControl } from "./components/adapters/controllers/downloadControl.js";
 import { FilterControl } from "./components/adapters/controllers/filterControl.js";
 import { AppearanceControl } from "./components/adapters/controllers/appearanceControl.js";
-import { Error } from "./components/adapters/gui/error/error.js";
+import { Error } from "./components/adapters/gui/error/error.jsx";
 import { useGraphSetup } from "./components/adapters/controllers/useGraphSetup.js";
 import { SearchControl } from "./components/adapters/controllers/searchControl.js";
 import { Lasso } from "./components/adapters/controllers/lassoControl.js";
-import { Tooltips } from "./components/adapters/gui/tooltip/tooltips.js";
+import { Tooltips } from "./components/adapters/gui/tooltip/tooltips.jsx";
 import { HighlightControl } from "./components/adapters/controllers/highlightControl.js";
-import { AdditionalDataLoading } from "./components/adapters/gui/loading/additionalDataLoading.js";
+import { AdditionalDataLoading } from "./components/adapters/gui/loading/additionalDataLoading.jsx";
 
 const sidebarMobileQuery = "(max-width: 760px)";
 const sidebarStorageKey = "cpnn.sidebarCollapsed";

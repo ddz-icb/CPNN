@@ -1,7 +1,7 @@
 import { Fragment, useId } from "react";
 import chevronSvg from "../../../../assets/icons/chevron.svg?raw";
 import { SvgIcon } from "./SvgIcon.jsx";
-import { PortalTooltip } from "./tooltipComponents.js";
+import { PortalTooltip } from "./tooltipComponents.jsx";
 
 export function TableList({
   heading,

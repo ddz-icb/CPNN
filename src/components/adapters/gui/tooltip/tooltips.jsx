@@ -1,6 +1,6 @@
 import { useTooltipSettings } from "../../../adapters/state/tooltipState.js";
-import { ClickTooltip } from "./clickTooltip.js";
-import { HoverTooltip } from "./hoverTooltip.js";
+import { ClickTooltip } from "./clickTooltip.jsx";
+import { HoverTooltip } from "./hoverTooltip.jsx";
 
 export function Tooltips() {
   const { tooltipSettings } = useTooltipSettings();

@@ -17,7 +17,7 @@ import {
   SliderBlock,
   StatusProgressBlock,
   ToggleList,
-} from "../reusable_components/sidebarComponents.js";
+} from "../reusable_components/sidebarComponents.jsx";
 import { SvgIcon } from "../reusable_components/SvgIcon.jsx";
 import trashSvg from "../../../../assets/icons/trash.svg?raw";
 import {

@@ -1,7 +1,7 @@
-import { Button, FieldBlock, SliderBlock, SwitchBlock, LassoFilterBlock } from "../reusable_components/sidebarComponents.js";
+import { Button, FieldBlock, SliderBlock, SwitchBlock, LassoFilterBlock } from "../reusable_components/sidebarComponents.jsx";
 import { getLinkThresholdBounds } from "../../../domain/service/graph_settings/linkThresholdRange.js";
-import { NodeIdFilterBlock } from "./nodeIdFilterBlock.js";
-import { LinkAttribFilterBlock, NodeAttribFilterBlock } from "./attribFilterBlock.js";
+import { NodeIdFilterBlock } from "./nodeIdFilterBlock.jsx";
+import { LinkAttribFilterBlock, NodeAttribFilterBlock } from "./attribFilterBlock.jsx";
 import { useFilter } from "../../state/filterState.js";
 import { useGraphMetrics } from "../../state/graphMetricsState.js";
 import { useGraphFlags } from "../../state/graphFlagsState.js";
@@ -22,7 +22,7 @@ import {
   mergeByNameDescription,
   minCompSizeDescription,
   minKCoreSizeDescription,
-} from "./descriptions/filterDescriptions.js";
+} from "./descriptions/filterDescriptions.jsx";
 
 export function FilterSidebar() {
   const { filter, setFilter, setAllFilter } = useFilter();

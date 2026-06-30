@@ -6,16 +6,16 @@ import leftArrowSvg from "../../../../assets/icons/leftArrow.svg?raw";
 import listSvg from "../../../../assets/icons/list.svg?raw";
 import xSvg from "../../../../assets/icons/x.svg?raw";
 
-import { FilterSidebar } from "./filterSidebar.js";
-import { AdditionalDataSidebar } from "./additionalDataSidebar.js";
-import { PhysicsSidebar } from "./physicsSidebar.js";
-import { DataSidebar } from "./dataSidebar.js";
-import { SelectionSidebar } from "./selectionSidebar.js";
-import { SearchSidebar } from "./searchSidebar.js";
-import { AppearanceSidebar } from "./appearanceSidebar.js";
-import { ExportSidebar } from "./exportSidebar.js";
-import { CommunitySidebar } from "./communitySidebar.js";
-import { VideographySidebar } from "./videographySidebar.js";
+import { FilterSidebar } from "./filterSidebar.jsx";
+import { AdditionalDataSidebar } from "./additionalDataSidebar.jsx";
+import { PhysicsSidebar } from "./physicsSidebar.jsx";
+import { DataSidebar } from "./dataSidebar.jsx";
+import { SelectionSidebar } from "./selectionSidebar.jsx";
+import { SearchSidebar } from "./searchSidebar.jsx";
+import { AppearanceSidebar } from "./appearanceSidebar.jsx";
+import { ExportSidebar } from "./exportSidebar.jsx";
+import { CommunitySidebar } from "./communitySidebar.jsx";
+import { VideographySidebar } from "./videographySidebar.jsx";
 
 export function Sidebar({ collapsed = false, onCollapsedChange, ...props }) {
   const [activeNavItem, setActiveNavItem] = useState("Selection");

@@ -2,7 +2,7 @@ import { useCallback, useMemo, useRef, useState } from "react";
 
 import { useSearchState, searchStateInit } from "../../state/searchState.js";
 import { useSidebarCodeEditor } from "../reusable_components/useSidebarCodeEditor.js";
-import { CodeEditorBlock, SwitchBlock } from "../reusable_components/sidebarComponents.js";
+import { CodeEditorBlock, SwitchBlock } from "../reusable_components/sidebarComponents.jsx";
 import { useTheme } from "../../state/themeState.js";
 import { handleEditorChange as handleEditorChangeHelper } from "../handlers/buttonHandlerFunctions.js";
 import { useAppearance } from "../../state/appearanceState.js";
@@ -21,12 +21,8 @@ import {
   parseSearchQuery,
 } from "../../../domain/service/search/search.js";
 import { useNodeDetails } from "../hooks/useNodeDetails.js";
-import { linkSearchDescription, nodeSearchDescription } from "./descriptions/searchDescriptions.js";
-import {
-  SearchLinkDetails,
-  SearchNodeDetails,
-  SearchResultSection,
-} from "./searchResultComponents.js";
+import { linkSearchDescription, nodeSearchDescription } from "./descriptions/searchDescriptions.jsx";
+import { SearchLinkDetails, SearchNodeDetails, SearchResultSection } from "../reusable_components/searchResultComponents.jsx";
 
 const MAX_RESULTS = 30;
 

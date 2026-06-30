@@ -5,8 +5,8 @@ import infoCircleSvg from "../../../../assets/icons/infoCircle.svg?raw";
 import xSvg from "../../../../assets/icons/x.svg?raw";
 import { handleFieldBlur, handleFieldChange, handleSliderChange } from "../handlers/buttonHandlerFunctions.js";
 import { useTheme } from "../../state/themeState.js";
-import { PortalTooltip } from "./tooltipComponents.js";
-export { DetailRow, TableList, ToggleList } from "./sidebarLists.js";
+import { PortalTooltip } from "./tooltipComponents.jsx";
+export { DetailRow, TableList, ToggleList } from "./sidebarLists.jsx";
 
 export function SliderBlock({ value, setValue, setValueText, min, max, step, text, infoHeading, infoDescription, ...props }) {
   return (

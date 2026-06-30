@@ -4,14 +4,14 @@ import deleteSvg from "../../../../assets/icons/delete.svg?raw";
 
 const DeleteIcon = (props) => <SvgIcon svg={deleteSvg} {...props} />;
 
-import { CodeEditorBlock, TableList } from "../reusable_components/sidebarComponents.js";
+import { CodeEditorBlock, TableList } from "../reusable_components/sidebarComponents.jsx";
 import { handleEditorChange, runCodeEditor } from "../handlers/buttonHandlerFunctions.js";
 import { parseNodeIdFilters } from "../../../domain/service/parsing/nodeIdFilterParsing.js";
 import { useFilter } from "../../state/filterState.js";
 import { useGraphState } from "../../state/graphState.js";
 import { useTheme } from "../../state/themeState.js";
 import { useSidebarCodeEditor } from "../reusable_components/useSidebarCodeEditor.js";
-import { nodeIdFilterDescription } from "./descriptions/filterDescriptions.js";
+import { nodeIdFilterDescription } from "./descriptions/filterDescriptions.jsx";
 
 export function NodeIdFilterBlock() {
   const { filter, setFilter } = useFilter();

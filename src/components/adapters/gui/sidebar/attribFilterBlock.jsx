@@ -1,12 +1,12 @@
 import { useCallback, useRef, useState } from "react";
 
-import { CodeEditorBlock } from "../reusable_components/sidebarComponents.js";
+import { CodeEditorBlock } from "../reusable_components/sidebarComponents.jsx";
 import { handleEditorChange, runCodeEditor } from "../handlers/buttonHandlerFunctions.js";
 import { useFilter } from "../../state/filterState.js";
 import { parseAttribsFilter } from "../../../domain/service/parsing/attribsFilterParsing.js";
 import { useTheme } from "../../state/themeState.js";
 import { useSidebarCodeEditor } from "../reusable_components/useSidebarCodeEditor.js";
-import { linkFilterDescription, nodeFilterDescription } from "./descriptions/filterDescriptions.js";
+import { linkFilterDescription, nodeFilterDescription } from "./descriptions/filterDescriptions.jsx";
 
 export function LinkAttribFilterBlock() {
   return (

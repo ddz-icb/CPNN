@@ -1,4 +1,4 @@
-import { DetailRow, FieldBlock, SliderBlock, ToggleList } from "../reusable_components/sidebarComponents.js";
+import { DetailRow, FieldBlock, SliderBlock, ToggleList } from "../reusable_components/sidebarComponents.jsx";
 import { SvgIcon } from "../reusable_components/SvgIcon.jsx";
 import eyeSvg from "../../../../assets/icons/eye.svg?raw";
 import rotateArrowSvg from "../../../../assets/icons/rotateArrow.svg?raw";
@@ -13,8 +13,8 @@ import { useContainer } from "../../state/containerState.js";
 import { communityForceStrengthInit, usePhysics } from "../../state/physicsState.js";
 import { getCentroid } from "../../../domain/service/graph_calculations/graphUtils.js";
 import { centerOnNode, clearViewOrbitCenter } from "../../../domain/service/canvas_interaction/centerView.js";
-import { communityForceStrengthDescription } from "./descriptions/physicsDescriptions.js";
-import { communityFilterSizeDescription } from "./descriptions/filterDescriptions.js";
+import { communityForceStrengthDescription } from "./descriptions/physicsDescriptions.jsx";
+import { communityFilterSizeDescription } from "./descriptions/filterDescriptions.jsx";
 
 const VisibilityIcon = ({ item, ...props }) => <SvgIcon svg={eyeSvg} className={item?.isHidden ? "icon-muted" : ""} {...props} />;
 

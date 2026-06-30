@@ -1,4 +1,4 @@
-import { Button, FieldBlock, SelectFieldBlock, SliderBlock, SwitchBlock } from "../reusable_components/sidebarComponents.js";
+import { Button, FieldBlock, SelectFieldBlock, SliderBlock, SwitchBlock } from "../reusable_components/sidebarComponents.jsx";
 import {
   omniPathMinCurationEffortInit,
   omniPathEnrichmentEnabledInit,
@@ -44,7 +44,7 @@ import {
   stringDbMinEvidenceDescription,
   stringDbNodeAttributeDescription,
   stringDbSpeciesDescription,
-} from "./descriptions/filterDescriptions.js";
+} from "./descriptions/filterDescriptions.jsx";
 
 export function AdditionalDataSidebar() {
   const { graphEnrichment, setGraphEnrichment } = useGraphEnrichment();

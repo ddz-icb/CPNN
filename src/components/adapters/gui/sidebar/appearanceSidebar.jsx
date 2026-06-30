@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { SvgIcon } from "../reusable_components/SvgIcon.jsx";
 import trashSvg from "../../../../assets/icons/trash.svg?raw";
-import { SwitchBlock, Popup, TableList, SliderBlock, Button, ButtonPopup, PopupTextField } from "../reusable_components/sidebarComponents.js";
+import { SwitchBlock, Popup, TableList, SliderBlock, Button, ButtonPopup, PopupTextField } from "../reusable_components/sidebarComponents.jsx";
 import { colorschemeTsv } from "../../../../assets/exampleColorschemeTSV.js";
 import { downloadTsvFile } from "../../../domain/service/download/download.js";
 import {
@@ -14,7 +14,7 @@ import {
   threeDShadingDescription,
   threeDGridDescription,
   uploadColorschemeDescription,
-} from "./descriptions/appearanceDescriptions.js";
+} from "./descriptions/appearanceDescriptions.jsx";
 import { useAppearance, linkWidthInit, threeDFovInit } from "../../../adapters/state/appearanceState.js";
 import { defaultColorschemeNames, useColorschemeState } from "../../../adapters/state/colorschemeState.js";
 import { colorschemeService } from "../../../application/services/colorschemeService.js";

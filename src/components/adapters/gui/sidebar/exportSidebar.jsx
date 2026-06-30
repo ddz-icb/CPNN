@@ -1,7 +1,7 @@
 import { SvgIcon } from "../reusable_components/SvgIcon.jsx";
 import downloadSvg from "../../../../assets/icons/download.svg?raw";
 import { useDownload } from "../../../adapters/state/downloadState.js";
-import { TableList } from "../reusable_components/sidebarComponents.js";
+import { TableList } from "../reusable_components/sidebarComponents.jsx";
 
 export function ExportSidebar() {
   const { download, setDownload } = useDownload();

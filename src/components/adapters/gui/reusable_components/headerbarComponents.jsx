@@ -1,4 +1,4 @@
-import { PortalTooltip } from "./tooltipComponents.js";
+import { PortalTooltip } from "./tooltipComponents.jsx";
 
 export function HeaderButton({ icon, onClick, children, tooltip, tooltipId, shortcut, ...buttonProps }) {
   return (

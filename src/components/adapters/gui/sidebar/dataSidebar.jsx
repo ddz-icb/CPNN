@@ -8,16 +8,16 @@ const DeleteIcon = (props) => <SvgIcon svg={deleteSvg} {...props} />;
 const TrashIcon = (props) => <SvgIcon svg={trashSvg} {...props} />;
 const PlusIcon = (props) => <SvgIcon svg={plusSvg} {...props} />;
 
-import { TableList, ButtonPopup, Button } from "../reusable_components/sidebarComponents.js";
+import { TableList, ButtonPopup, Button } from "../reusable_components/sidebarComponents.jsx";
 import { exampleGraphJson } from "../../../../assets/exampleGraphJSON.js";
 import { downloadTsvFile } from "../../../domain/service/download/download.js";
 import { exampleNodeMappingTsv } from "../../../../assets/exampleMappingTSV.js";
-import { uploadNodeMappingDescription } from "./descriptions/dataDescriptions.js";
+import { uploadNodeMappingDescription } from "./descriptions/dataDescriptions.jsx";
 import { graphService } from "../../../application/services/graphService.js";
 import { useMappingState } from "../../state/mappingState.js";
 import { mappingService } from "../../../application/services/mappingService.js";
 import { useGraphState } from "../../state/graphState.js";
-import { UploadGraph } from "./uploadGraph.js";
+import { UploadGraph } from "./uploadGraph.jsx";
 
 export function DataSidebar() {
   const { graphState } = useGraphState();

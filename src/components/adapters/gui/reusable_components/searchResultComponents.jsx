@@ -1,4 +1,4 @@
-import { DetailRow, ToggleList } from "../reusable_components/sidebarComponents.js";
+import { DetailRow, ToggleList } from "./sidebarComponents.jsx";
 import {
   formatSearchDetailValue,
   formatSearchValues,

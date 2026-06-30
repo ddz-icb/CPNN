@@ -7,7 +7,7 @@ import {
   CommunityStatisticsSection,
   StatisticMetric,
   StatisticRow,
-} from "./headerbarStatisticsSections.js";
+} from "./headerbarStatisticsSections.jsx";
 import {
   formatStatisticDecimal,
   formatStatisticInteger,

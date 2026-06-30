@@ -5,7 +5,7 @@ import { exampleGraphRaw } from "../../../../assets/exampleGraphRawTSV.js";
 import { exampleGraphTsv } from "../../../../assets/exampleGraphMatrixTSV.js";
 import { graphService } from "../../../application/services/graphService.js";
 import { downloadObjectAsFile, downloadTsvFile } from "../../../domain/service/download/download.js";
-import { Button, ButtonPopup, Popup, FieldBlock, SelectFieldBlock, SliderBlock, SwitchBlock } from "../reusable_components/sidebarComponents.js";
+import { Button, ButtonPopup, Popup, FieldBlock, SelectFieldBlock, SliderBlock, SwitchBlock } from "../reusable_components/sidebarComponents.jsx";
 import { isTypingTarget, isPopupOpen } from "../hooks/keyboardUtils.js";
 import {
   maxCompSizeDescriptionUpload,
@@ -15,8 +15,8 @@ import {
   ignoreNegativesDescription,
   uploadGraphDescription,
   uploadGraphDataFormat,
-} from "./descriptions/dataDescriptions.js";
-import { mergeByNameDescription } from "./descriptions/filterDescriptions.js";
+} from "./descriptions/dataDescriptions.jsx";
+import { mergeByNameDescription } from "./descriptions/filterDescriptions.jsx";
 
 const dataFormatOptions = [
   { value: "json", label: "Listed Data (JSON)" },
