@@ -10,6 +10,7 @@ import { isTypingTarget, isPopupOpen } from "../hooks/keyboardUtils.js";
 import {
   maxCompSizeDescriptionUpload,
   minCompSizeDescriptionUpload,
+  maxLinkCorrDescription,
   minLinkCorrDescription,
   spearmanCoefficientDescription,
   ignoreNegativesDescription,
@@ -45,6 +46,10 @@ function GraphPrefilterPopup({
   minEdgeCorrText,
   setMinEdgeCorr,
   setMinEdgeCorrText,
+  maxEdgeCorr,
+  maxEdgeCorrText,
+  setMaxEdgeCorr,
+  setMaxEdgeCorrText,
   minCompSizeText,
   setMinCompSize,
   setMinCompSizeText,
@@ -53,6 +58,7 @@ function GraphPrefilterPopup({
   setMaxCompSizeText,
 }) {
   const usesListedWeights = dataFormat === "json";
+  const maxLinkThresholdLabel = usesListedWeights ? "Maximum absolute link weight" : "Maximum absolute link correlation";
 
   return (
     <ButtonPopup buttonText={"Prefilter Graph"} heading={"Prefilter Graph"} onClose={onCloseUploadPopup}>
@@ -106,6 +112,19 @@ function GraphPrefilterPopup({
           )}
           <FieldBlock
             variant="popup"
+            valueText={maxEdgeCorrText}
+            setValue={(value) => setMaxEdgeCorr(value)}
+            setValueText={(value) => setMaxEdgeCorrText(value)}
+            fallbackValue={""}
+            min={0}
+            max={usesListedWeights ? undefined : 1}
+            step={0.05}
+            text={maxLinkThresholdLabel}
+            infoHeading={maxLinkThresholdLabel}
+            infoDescription={maxLinkCorrDescription}
+          />
+          <FieldBlock
+            variant="popup"
             valueText={minCompSizeText}
             setValue={(value) => setMinCompSize(value)}
             setValueText={(value) => setMinCompSizeText(value)}
@@ -137,11 +156,12 @@ function GraphPrefilterPopup({
   );
 }
 
-function buildCreateGraphSettings({ dataFormat, ignoreNegatives, minEdgeCorr, minCompSize, maxCompSize, takeSpearman, mergeByName }) {
+function buildCreateGraphSettings({ dataFormat, ignoreNegatives, minEdgeCorr, maxEdgeCorr, minCompSize, maxCompSize, takeSpearman, mergeByName }) {
   return {
     dataFormat,
     ignoreNegatives,
     minEdgeCorr,
+    maxEdgeCorr,
     minCompSize,
     maxCompSize,
     takeSpearman,
@@ -160,6 +180,8 @@ export function UploadGraph() {
 
   const [minEdgeCorr, setMinEdgeCorr] = useState(0);
   const [minEdgeCorrText, setMinEdgeCorrText] = useState(0);
+  const [maxEdgeCorr, setMaxEdgeCorr] = useState("");
+  const [maxEdgeCorrText, setMaxEdgeCorrText] = useState("");
 
   const [minCompSize, setMinCompSize] = useState(2);
   const [minCompSizeText, setMinCompSizeText] = useState(2);
@@ -171,10 +193,16 @@ export function UploadGraph() {
   const closePopup = () => setIsOpen(false);
 
   useEffect(() => {
-    if (dataFormat === "json" || Number(minEdgeCorr) <= 1) return;
-    setMinEdgeCorr(1);
-    setMinEdgeCorrText(1);
-  }, [dataFormat, minEdgeCorr]);
+    if (dataFormat === "json") return;
+    if (Number(minEdgeCorr) > 1) {
+      setMinEdgeCorr(1);
+      setMinEdgeCorrText(1);
+    }
+    if (maxEdgeCorr !== "" && Number(maxEdgeCorr) > 1) {
+      setMaxEdgeCorr(1);
+      setMaxEdgeCorrText(1);
+    }
+  }, [dataFormat, minEdgeCorr, maxEdgeCorr]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -229,6 +257,10 @@ export function UploadGraph() {
               minEdgeCorrText={minEdgeCorrText}
               setMinEdgeCorr={setMinEdgeCorr}
               setMinEdgeCorrText={setMinEdgeCorrText}
+              maxEdgeCorr={maxEdgeCorr}
+              maxEdgeCorrText={maxEdgeCorrText}
+              setMaxEdgeCorr={setMaxEdgeCorr}
+              setMaxEdgeCorrText={setMaxEdgeCorrText}
               minCompSizeText={minCompSizeText}
               setMinCompSize={setMinCompSize}
               setMinCompSizeText={setMinCompSizeText}
@@ -247,6 +279,7 @@ export function UploadGraph() {
                   dataFormat,
                   ignoreNegatives,
                   minEdgeCorr,
+                  maxEdgeCorr,
                   minCompSize,
                   maxCompSize,
                   takeSpearman,

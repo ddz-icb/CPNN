@@ -94,7 +94,7 @@ function applyFilters(graphData, settings) {
   let filteredGraph = graphData;
   filteredGraph = filterMergeByName(filteredGraph, settings.mergeByName);
   filteredGraph = filterIgnoreNegatives(filteredGraph, settings.ignoreNegatives);
-  filteredGraph = filterThreshold(filteredGraph, settings.minEdgeCorr);
+  filteredGraph = filterThreshold(filteredGraph, settings.minEdgeCorr, settings.maxEdgeCorr);
   filteredGraph = filterComponentSizeRange(filteredGraph, settings.minCompSize, settings.maxCompSize);
 
   return filterNodesExist(filteredGraph);

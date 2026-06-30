@@ -20,6 +20,15 @@ export const minLinkCorrDescription = (
   </div>
 );
 
+export const maxLinkCorrDescription = (
+  <div>
+    <p>
+      Maximum absolute correlation value or link weight allowed when creating links. Leave empty to keep the full upper range. Decreasing this value
+      removes stronger links before the graph is saved.
+    </p>
+  </div>
+);
+
 export const containsSitesDescription = (
   <div>
     <p>Allows optional phosphosite suffixes in node IDs.</p>
@@ -47,7 +56,7 @@ export const spearmanCoefficientDescription = (
 export const minCompSizeDescriptionUpload = (
   <div>
     <p>
-      Based on the specified minimum link threshold above, set the minimum component/cluster size required for a node to be included in the graph.
+      Based on the specified link weight filters above, set the minimum component/cluster size required for a node to be included in the graph.
       Increasing this value can significantly improve performance.
     </p>
   </div>
@@ -55,7 +64,7 @@ export const minCompSizeDescriptionUpload = (
 export const maxCompSizeDescriptionUpload = (
   <div>
     <p>
-      Based on the specified minimum link threshold above, set the maximum component/cluster size required for a node to be included in the graph.
+      Based on the specified link weight filters above, set the maximum component/cluster size required for a node to be included in the graph.
       Decreasing this value can significantly improve performance.
     </p>
   </div>
