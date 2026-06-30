@@ -1,8 +1,5 @@
 import { create } from "zustand";
-import {
-  OMNI_PATH_MIN_CURATION_EFFORT_DEFAULT,
-  OMNI_PATH_NODE_ANNOTATION_MODE_DEFAULT,
-} from "../../domain/service/enrichment/omniPathConfig.js";
+import { OMNI_PATH_MIN_CURATION_EFFORT_DEFAULT } from "../../domain/service/enrichment/omniPathConfig.js";
 import {
   DEFAULT_GROUP_ENRICHMENT_MAX_FDR,
   DEFAULT_MIN_EVIDENCE_SCORE,
@@ -22,8 +19,6 @@ export const stringDbGroupEnrichmentMaxFdrInit = DEFAULT_GROUP_ENRICHMENT_MAX_FD
 export const stringDbSpeciesIdInit = DEFAULT_SPECIES_ID;
 export const omniPathEnrichmentEnabledInit = false;
 export const omniPathPhosphataseEnrichmentEnabledInit = false;
-export const omniPathNodeAnnotationEnrichmentEnabledInit = false;
-export const omniPathNodeAnnotationModeInit = OMNI_PATH_NODE_ANNOTATION_MODE_DEFAULT;
 export const omniPathMinCurationEffortInit = OMNI_PATH_MIN_CURATION_EFFORT_DEFAULT;
 
 const graphEnrichmentInit = {
@@ -44,8 +39,6 @@ const graphEnrichmentInit = {
   stringDbSpeciesId: stringDbSpeciesIdInit,
   omniPathEnrichmentEnabled: omniPathEnrichmentEnabledInit,
   omniPathPhosphataseEnrichmentEnabled: omniPathPhosphataseEnrichmentEnabledInit,
-  omniPathNodeAnnotationEnrichmentEnabled: omniPathNodeAnnotationEnrichmentEnabledInit,
-  omniPathNodeAnnotationMode: omniPathNodeAnnotationModeInit,
   omniPathMinCurationEffort: omniPathMinCurationEffortInit,
   omniPathMinCurationEffortText: omniPathMinCurationEffortInit,
 };

@@ -2,8 +2,6 @@ import { Button, FieldBlock, SelectFieldBlock, SliderBlock, SwitchBlock } from "
 import {
   omniPathMinCurationEffortInit,
   omniPathEnrichmentEnabledInit,
-  omniPathNodeAnnotationEnrichmentEnabledInit,
-  omniPathNodeAnnotationModeInit,
   omniPathPhosphataseEnrichmentEnabledInit,
   stringDbEvidenceEnrichmentEnabledInit,
   stringDbGroupEnrichmentEnabledInit,
@@ -19,7 +17,6 @@ import {
 import {
   OMNI_PATH_MIN_CURATION_EFFORT_MAX,
   OMNI_PATH_MIN_CURATION_EFFORT_MIN,
-  OMNI_PATH_NODE_ANNOTATION_MODE_OPTIONS,
 } from "../../../domain/service/enrichment/omniPathConfig.js";
 import {
   MAX_EVIDENCE_SCORE,
@@ -33,8 +30,6 @@ import {
 import {
   omniPathCurationEffortDescription,
   omniPathEnrichmentDescription,
-  omniPathNodeAnnotationEnrichmentDescription,
-  omniPathNodeAnnotationModeDescription,
   omniPathPhosphataseEnrichmentDescription,
   stringDbEvidenceDescription,
   stringDbEnrichmentDescription,
@@ -67,8 +62,6 @@ export function AdditionalDataSidebar() {
     setGraphEnrichment("stringDbSpeciesId", stringDbSpeciesIdInit);
     setGraphEnrichment("omniPathEnrichmentEnabled", omniPathEnrichmentEnabledInit);
     setGraphEnrichment("omniPathPhosphataseEnrichmentEnabled", omniPathPhosphataseEnrichmentEnabledInit);
-    setGraphEnrichment("omniPathNodeAnnotationEnrichmentEnabled", omniPathNodeAnnotationEnrichmentEnabledInit);
-    setGraphEnrichment("omniPathNodeAnnotationMode", omniPathNodeAnnotationModeInit);
     setGraphEnrichment("omniPathMinCurationEffort", omniPathMinCurationEffortInit);
     setGraphEnrichment("omniPathMinCurationEffortText", omniPathMinCurationEffortInit);
   };
@@ -211,26 +204,6 @@ export function AdditionalDataSidebar() {
         infoHeading={"OmniPath Phosphatase Enrichment"}
         infoDescription={omniPathPhosphataseEnrichmentDescription}
       />
-      <SwitchBlock
-        value={graphEnrichment.omniPathNodeAnnotationEnrichmentEnabled}
-        setValue={() =>
-          setGraphEnrichment("omniPathNodeAnnotationEnrichmentEnabled", !graphEnrichment.omniPathNodeAnnotationEnrichmentEnabled)
-        }
-        text={"Add OmniPath Node Attributes"}
-        infoHeading={"OmniPath Node Annotation Enrichment"}
-        infoDescription={omniPathNodeAnnotationEnrichmentDescription}
-      />
-      {graphEnrichment.omniPathNodeAnnotationEnrichmentEnabled && (
-        <SelectFieldBlock
-          value={graphEnrichment.omniPathNodeAnnotationMode}
-          setValue={(value) => setGraphEnrichment("omniPathNodeAnnotationMode", value)}
-          options={OMNI_PATH_NODE_ANNOTATION_MODE_OPTIONS}
-          size={"wide"}
-          text={"OmniPath Node Attributes"}
-          infoHeading={"OmniPath node annotation type"}
-          infoDescription={omniPathNodeAnnotationModeDescription}
-        />
-      )}
       {omniPathLinkEnabled && (
         <FieldBlock
           valueText={graphEnrichment.omniPathMinCurationEffortText}

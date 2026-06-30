@@ -48,29 +48,15 @@ export const omniPathEnrichmentDescription = (
 export const omniPathPhosphataseEnrichmentDescription = (
   <div>
     <p className="margin-0">
-      Tags existing nodes as phosphatases and adds dephosphorylation links from OmniPath interaction records supported by the DEPOD phosphatase
-      resource. These records are protein-level interactions, so they do not require a phosphosite match.
+      Tags existing nodes as phosphatases and adds dephosphorylation links from OmniPath enzyme-substrate records supported by the DEPOD phosphatase
+      resource.
+    </p>
+    <p className="margin-0 pad-top-05">
+      Matching is phosphosite-aware: if a substrate node includes phosphosites, an OmniPath record must match one of those sites. Nodes without
+      phosphosite annotations are matched at protein level.
     </p>
     <p className="margin-0 pad-top-05">
       Note: OmniPath dephosphorylation links are excluded from structural filters (k-core, component/community size and density).
-    </p>
-  </div>
-);
-
-export const omniPathNodeAnnotationEnrichmentDescription = (
-  <div>
-    <p className="margin-0">
-      Adds pathway and/or intercellular role attributes to existing graph nodes from OmniPath annotations. Only proteins already present in the graph
-      are queried, and attributes are added only when OmniPath returns a matching annotation for that node.
-    </p>
-  </div>
-);
-
-export const omniPathNodeAnnotationModeDescription = (
-  <div>
-    <p className="margin-0">
-      Pathways use OmniPath annotation records from SignaLink pathway. Intercell roles use OmniPath composite functional annotations such as receptor,
-      ligand regulator, and adhesion.
     </p>
   </div>
 );

@@ -27,8 +27,7 @@ export const useGraphSetup = () => {
     graphEnrichment.stringDbNodeAttributeEnrichmentEnabled ||
     graphEnrichment.stringDbGroupEnrichmentEnabled ||
     graphEnrichment.omniPathEnrichmentEnabled ||
-    graphEnrichment.omniPathPhosphataseEnrichmentEnabled ||
-    graphEnrichment.omniPathNodeAnnotationEnrichmentEnabled;
+    graphEnrichment.omniPathPhosphataseEnrichmentEnabled;
 
   // load graph
   useEffect(() => {
@@ -58,8 +57,6 @@ export const useGraphSetup = () => {
         graph.data = await enrichGraphWithOmniPath(graph.data, {
           kinaseEnabled: graphEnrichment.omniPathEnrichmentEnabled,
           phosphataseEnabled: graphEnrichment.omniPathPhosphataseEnrichmentEnabled,
-          nodeAnnotationEnabled: graphEnrichment.omniPathNodeAnnotationEnrichmentEnabled,
-          nodeAnnotationMode: graphEnrichment.omniPathNodeAnnotationMode,
           minCurationEffort: graphEnrichment.omniPathMinCurationEffort,
         });
       } finally {
@@ -95,8 +92,6 @@ export const useGraphSetup = () => {
     graphEnrichment.stringDbSpeciesId,
     graphEnrichment.omniPathEnrichmentEnabled,
     graphEnrichment.omniPathPhosphataseEnrichmentEnabled,
-    graphEnrichment.omniPathNodeAnnotationEnrichmentEnabled,
-    graphEnrichment.omniPathNodeAnnotationMode,
     graphEnrichment.omniPathMinCurationEffort,
     stringDbCommunityResolution,
     mappingState.mapping,
