@@ -24,6 +24,7 @@ const LINK_HIGHLIGHT_STROKES = [
   { outset: 4.5, alpha: 0.6 },
   { outset: 2, alpha: 0.8 },
 ];
+const SVG_LINK_HIGHLIGHT_ALPHA_SCALE = 0.7;
 const LINK_HIGHLIGHT_ENDPOINT_INSET = radius + 1;
 
 function computeNodeBounds(node, mapEntry, tempCtx) {
@@ -451,7 +452,7 @@ function drawLinkHighlightIfActive(ctx, link, index, linkIdSet, color, linkWidth
   let previousTargetAlpha = 0;
 
   for (const stroke of LINK_HIGHLIGHT_STROKES) {
-    const targetAlpha = baseAlpha * stroke.alpha;
+    const targetAlpha = baseAlpha * stroke.alpha * (useSvgOpacityCompensation ? SVG_LINK_HIGHLIGHT_ALPHA_SCALE : 1);
     ctx.beginPath();
     ctx.globalAlpha = useSvgOpacityCompensation
       ? getLayerAlphaForTarget(targetAlpha, previousTargetAlpha)
