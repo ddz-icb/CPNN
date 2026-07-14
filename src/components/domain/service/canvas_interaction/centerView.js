@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 import { defaultCamera } from "../canvas_drawing/render3D.js";
 import { clearCameraOrbitCenter, focusCameraOnPoint, setCameraOrbitCenter } from "../canvas_drawing/camera3D.js";
-import { getCentroid } from "../graph_calculations/graphUtils.js";
+import { getCentroid, getEndpointId } from "../graph_calculations/graphUtils.js";
 
 const MIN_TARGET_DEPTH = 1e-3;
 export const TARGET_NODE_DEPTH = 300;
@@ -66,4 +66,18 @@ export function centerOnNodes(nodes, viewState) {
   if (positionedNodes.length === 0) return;
 
   centerOnNode(positionedNodes.length === 1 ? positionedNodes[0] : getCentroid(positionedNodes), viewState);
+}
+
+export function centerOnLink(link, viewState = {}) {
+  const source = getLinkEndpointPosition(link?.source, viewState.nodeById);
+  const target = getLinkEndpointPosition(link?.target, viewState.nodeById);
+  centerOnNodes([source, target], viewState);
+}
+
+function getLinkEndpointPosition(endpoint, nodeById) {
+  if (Number.isFinite(endpoint?.x) && Number.isFinite(endpoint?.y)) return endpoint;
+
+  const endpointId = getEndpointId(endpoint);
+  if (endpointId == null || !nodeById?.get) return null;
+  return nodeById.get(endpointId) ?? nodeById.get(String(endpointId)) ?? null;
 }

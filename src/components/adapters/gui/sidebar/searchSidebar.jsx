@@ -9,10 +9,8 @@ import { useAppearance } from "../../state/appearanceState.js";
 import { useRenderState } from "../../state/canvasState.js";
 import { useContainer } from "../../state/containerState.js";
 import { useGraphState } from "../../state/graphState.js";
-import { centerOnNodes, clearViewOrbitCenter } from "../../../domain/service/canvas_interaction/centerView.js";
+import { centerOnLink, centerOnNodes, clearViewOrbitCenter } from "../../../domain/service/canvas_interaction/centerView.js";
 import {
-  getLinkEndpointIds,
-  getNodesByIds,
   getSearchLinkIds,
   getSearchLinkResults,
   getSearchNodeIds,
@@ -191,7 +189,6 @@ export function SearchSidebar() {
     const linkId = item?.linkId;
     if (!linkId) return;
     const nextSelection = selectedLinkId === linkId ? null : linkId;
-    clearViewOrbitCenter({ appearance });
     setAllSearchState({
       ...searchState,
       selectedNodeId: null,
@@ -199,10 +196,12 @@ export function SearchSidebar() {
       highlightedNodeIds: [],
       highlightedLinkIds: nextSelection ? [linkId] : [],
     });
-    if (!nextSelection) return;
+    if (!nextSelection) {
+      clearViewOrbitCenter({ appearance });
+      return;
+    }
 
-    const endpointIds = getLinkEndpointIds(item);
-    centerOnNodes(getNodesByIds(endpointIds, nodeById), { appearance, renderState, container, setOrbitCenter: false });
+    centerOnLink(item?.link, { appearance, renderState, container, nodeById });
   };
 
   const isHighlightAllActive =
