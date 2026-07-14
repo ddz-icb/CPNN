@@ -3,6 +3,7 @@ import { drawCircleCanvas, radius } from "../canvas_drawing/nodes.js";
 import {
   drawLineCanvas,
   drawLineChevronQueueCanvas,
+  get3DLinkDepthScale,
   getParallelLinkLayoutData,
   MIN_3D_LINK_SCREEN_LENGTH,
 } from "../canvas_drawing/lineGraphics.js";
@@ -168,7 +169,7 @@ export function render3DQueue(ctx, items, drawParams, gridOptions) {
       if (alpha <= 0) continue;
       const sourceScale = link.source?.scale ?? 1;
       const targetScale = link.target?.scale ?? 1;
-      const widthScale = (sourceScale + targetScale) / 2;
+      const widthScale = get3DLinkDepthScale(sourceScale, targetScale);
       if (alpha < 1) {
         ctx.save();
         ctx.globalAlpha *= alpha;

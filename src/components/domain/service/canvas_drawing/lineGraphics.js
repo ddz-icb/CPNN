@@ -5,7 +5,7 @@ import { getColor } from "./drawingUtils.js";
 
 const LINK_WIDTH_MIN = 0.1;
 const LINK_WIDTH_MAX = 3;
-const LINK_DEPTH_SCALE_MIN = 0.5;
+const LINK_DEPTH_SCALE_MIN = 0.1;
 const LINK_DEPTH_SCALE_MAX = 15;
 const LINK_WIDTH_LOG_COEFFS = [8.166, -2.791, 0.202];
 const DOTTED_LINE_DASH_MULTIPLIER = 1.8;
@@ -168,6 +168,16 @@ export function calculateLinkWidth(linkCount) {
   const [a, b, c] = LINK_WIDTH_LOG_COEFFS;
   const width = a + b * logCount + c * logCount * logCount;
   return roundToDecimals(clamp(width, LINK_WIDTH_MIN, LINK_WIDTH_MAX), 1);
+}
+
+export function get3DLinkDepthScale(sourceScale = 1, targetScale = sourceScale) {
+  const source = Number(sourceScale);
+  const target = Number(targetScale);
+  const safeSource = Number.isFinite(source) && source > 0 ? source : 1;
+  const safeTarget = Number.isFinite(target) && target > 0 ? target : safeSource;
+  const averageScale = 2 / (1 / safeSource + 1 / safeTarget);
+
+  return clamp(averageScale, LINK_DEPTH_SCALE_MIN, LINK_DEPTH_SCALE_MAX);
 }
 
 export function createLineSprites(link, nodeContainers) {
@@ -449,8 +459,7 @@ export function updateLines3D(links, lineGraphics, linkWidth, linkColorscheme, l
     const sourceDepth = source.depth ?? 0;
     const targetDepth = target.depth ?? 0;
     const depth = Math.max(sourceDepth, targetDepth);
-    const averageScale = 2 / (1 / source.scale + 1 / target.scale);
-    const depthScale = clamp(averageScale, LINK_DEPTH_SCALE_MIN, LINK_DEPTH_SCALE_MAX);
+    const depthScale = get3DLinkDepthScale(source.scale, target.scale);
     const widthScaled = linkWidth * depthScale;
 
     const dx = target.x - source.x;
