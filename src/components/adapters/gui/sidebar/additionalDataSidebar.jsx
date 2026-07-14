@@ -8,16 +8,14 @@ import {
   stringDbGroupEnrichmentMaxFdrInit,
   stringDbMinConfidenceInit,
   stringDbMinEvidenceScoreInit,
+  stringDbNodeAttributeCategoryInit,
   stringDbNodeAttributeMaxFdrInit,
   stringDbNodeAttributeMaxTermsInit,
   stringDbNodeAttributeEnrichmentEnabledInit,
   stringDbSpeciesIdInit,
   useGraphEnrichment,
 } from "../../state/graphEnrichmentState.js";
-import {
-  OMNI_PATH_MIN_CURATION_EFFORT_MAX,
-  OMNI_PATH_MIN_CURATION_EFFORT_MIN,
-} from "../../../domain/service/enrichment/omniPathConfig.js";
+import { OMNI_PATH_MIN_CURATION_EFFORT_MAX, OMNI_PATH_MIN_CURATION_EFFORT_MIN } from "../../../domain/service/enrichment/omniPathConfig.js";
 import {
   MAX_EVIDENCE_SCORE,
   MAX_GROUP_ENRICHMENT_MAX_FDR,
@@ -25,6 +23,7 @@ import {
   MIN_EVIDENCE_SCORE,
   MIN_GROUP_ENRICHMENT_MAX_FDR,
   MIN_NODE_ATTRIBUTE_MAX_TERMS,
+  STRING_DB_NODE_ATTRIBUTE_CATEGORY_OPTIONS,
   STRING_DB_SPECIES,
 } from "../../../domain/service/enrichment/stringDbConfig.js";
 import {
@@ -37,6 +36,7 @@ import {
   stringDbGroupEnrichmentFdrDescription,
   stringDbMinConfidenceDescription,
   stringDbMinEvidenceDescription,
+  stringDbNodeAttributeCategoryDescription,
   stringDbNodeAttributeDescription,
   stringDbSpeciesDescription,
 } from "./descriptions/filterDescriptions.jsx";
@@ -57,6 +57,7 @@ export function AdditionalDataSidebar() {
     setGraphEnrichment("stringDbNodeAttributeMaxTermsText", stringDbNodeAttributeMaxTermsInit);
     setGraphEnrichment("stringDbNodeAttributeMaxFdr", stringDbNodeAttributeMaxFdrInit);
     setGraphEnrichment("stringDbNodeAttributeMaxFdrText", stringDbNodeAttributeMaxFdrInit);
+    setGraphEnrichment("stringDbNodeAttributeCategory", stringDbNodeAttributeCategoryInit);
     setGraphEnrichment("stringDbGroupEnrichmentMaxFdr", stringDbGroupEnrichmentMaxFdrInit);
     setGraphEnrichment("stringDbGroupEnrichmentMaxFdrText", stringDbGroupEnrichmentMaxFdrInit);
     setGraphEnrichment("stringDbSpeciesId", stringDbSpeciesIdInit);
@@ -149,6 +150,15 @@ export function AdditionalDataSidebar() {
       )}
       {graphEnrichment.stringDbNodeAttributeEnrichmentEnabled && (
         <>
+          <SelectFieldBlock
+            value={graphEnrichment.stringDbNodeAttributeCategory ?? stringDbNodeAttributeCategoryInit}
+            setValue={(value) => setGraphEnrichment("stringDbNodeAttributeCategory", value)}
+            options={STRING_DB_NODE_ATTRIBUTE_CATEGORY_OPTIONS}
+            size={"wide"}
+            text={"STRING Annotation Source"}
+            infoHeading={"STRING annotation source"}
+            infoDescription={stringDbNodeAttributeCategoryDescription}
+          />
           <FieldBlock
             valueText={graphEnrichment.stringDbNodeAttributeMaxTermsText}
             setValue={(value) => setGraphEnrichment("stringDbNodeAttributeMaxTerms", value)}

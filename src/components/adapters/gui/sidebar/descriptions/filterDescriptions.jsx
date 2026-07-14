@@ -102,6 +102,15 @@ export const stringDbNodeAttributeDescription = (
   </div>
 );
 
+export const stringDbNodeAttributeCategoryDescription = (
+  <div>
+    <p className="margin-0">
+      Choose whether node attributes use all STRING enrichment sources together or only one source such as Reactome, KEGG, Gene Ontology, or
+      WikiPathways.
+    </p>
+  </div>
+);
+
 export const stringDbGroupEnrichmentDescription = (
   <div>
     <p className="margin-0">

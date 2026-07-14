@@ -11,8 +11,13 @@ import {
   MIN_EVIDENCE_SCORE,
   MIN_GROUP_ENRICHMENT_MAX_FDR,
   MIN_NODE_ATTRIBUTE_MAX_TERMS,
+  STRING_DB_CATEGORY_ALL,
+  STRING_DB_ENRICHMENT_CATEGORIES,
 } from "./stringDbConfig.js";
 import { getUndirectedLinkKey } from "../graph_calculations/graphUtils.js";
+
+const categoryById = new Map(STRING_DB_ENRICHMENT_CATEGORIES.map((category) => [normalizeCategoryKey(category.id), category]));
+const categoryByLabel = new Map(STRING_DB_ENRICHMENT_CATEGORIES.map((category) => [normalizeCategoryKey(category.label), category]));
 
 export function clampConfidence(value) {
   const parsed = Number(value);
@@ -43,6 +48,31 @@ export function normalizeProteinId(value) {
     .trim()
     .split("-")[0]
     .trim();
+}
+
+export function normalizeStringDbCategory(value) {
+  const categoryKey = normalizeCategoryKey(value);
+  if (!categoryKey || categoryKey === STRING_DB_CATEGORY_ALL) return STRING_DB_CATEGORY_ALL;
+  return categoryById.get(categoryKey)?.id ?? categoryByLabel.get(categoryKey)?.id ?? STRING_DB_CATEGORY_ALL;
+}
+
+export function getStringDbCategoryLabel(value) {
+  const categoryKey = normalizeCategoryKey(value);
+  if (!categoryKey) return "";
+  return categoryById.get(categoryKey)?.label ?? categoryByLabel.get(categoryKey)?.label ?? String(value).trim();
+}
+
+export function getStringDbCategoryAttributeLabel(value) {
+  const categoryKey = normalizeCategoryKey(value);
+  if (!categoryKey) return "";
+  const category = categoryById.get(categoryKey) ?? categoryByLabel.get(categoryKey);
+  return category?.attributeLabel ?? category?.label ?? String(value).trim();
+}
+
+export function matchesStringDbCategory(rowCategory, selectedCategory) {
+  const normalizedSelection = normalizeStringDbCategory(selectedCategory);
+  if (normalizedSelection === STRING_DB_CATEGORY_ALL) return true;
+  return normalizeCategoryKey(rowCategory) === normalizeCategoryKey(normalizedSelection);
 }
 
 export function chunkArray(items, chunkSize) {
@@ -79,4 +109,10 @@ export function deduplicateInteractions(interactions) {
   });
 
   return Array.from(byPair.values());
+}
+
+function normalizeCategoryKey(value) {
+  return String(value ?? "")
+    .trim()
+    .toLowerCase();
 }

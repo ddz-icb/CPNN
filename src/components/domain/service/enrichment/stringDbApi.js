@@ -16,7 +16,10 @@ import {
   clampNodeAttributeMaxTerms,
   chunkArray,
   deduplicateInteractions,
+  getStringDbCategoryAttributeLabel,
+  matchesStringDbCategory,
   normalizeProteinId,
+  normalizeStringDbCategory,
 } from "./stringDbHelpers.js";
 
 const MAX_NODE_ANNOTATION_LABEL_LENGTH = 52;
@@ -187,14 +190,18 @@ function resolveAnnotationProteinIds(record, proteinIdLookup, preferredNameToPro
   return Array.from(proteinIds);
 }
 
-function mapFunctionalEnrichmentRowsToAnnotations(rows, proteinIds, mappings, maxTerms, maxFdr) {
+function mapFunctionalEnrichmentRowsToAnnotations(rows, proteinIds, mappings, options = {}) {
   const uniqueProteinIds = Array.from(new Set(proteinIds.map((proteinId) => normalizeProteinId(proteinId)).filter(Boolean)));
   const { proteinIdLookup, preferredNameToProteinIds } = buildIdentifierMappingLookups(uniqueProteinIds, mappings);
+  const maxTerms = clampNodeAttributeMaxTerms(options.maxTerms);
+  const maxFdr = clampGroupEnrichmentMaxFdr(options.maxFdr);
+  const category = normalizeStringDbCategory(options.category);
   const annotations = [];
   let selectedTermCount = 0;
 
   for (const record of rows) {
     if (selectedTermCount >= maxTerms) break;
+    if (!matchesStringDbCategory(record?.category, category)) continue;
 
     const fdr = Number(record?.fdr);
     const description = formatTermDescription(record?.description);
@@ -203,7 +210,7 @@ function mapFunctionalEnrichmentRowsToAnnotations(rows, proteinIds, mappings, ma
     const resolvedProteinIds = new Set(resolveAnnotationProteinIds(record, proteinIdLookup, preferredNameToProteinIds));
     if (resolvedProteinIds.size === 0) continue;
 
-    const attrib = buildNodeAnnotationAttrib(String(record?.category ?? "").trim(), description);
+    const attrib = buildNodeAnnotationAttrib(getStringDbCategoryAttributeLabel(record?.category), description);
     if (!attrib) continue;
 
     selectedTermCount += 1;
@@ -265,6 +272,7 @@ export async function fetchFunctionalEnrichmentAnnotations(proteinIds, options =
   const speciesId = options.speciesId ?? DEFAULT_SPECIES_ID;
   const maxTerms = clampNodeAttributeMaxTerms(options.maxTerms);
   const maxFdr = clampGroupEnrichmentMaxFdr(options.maxFdr);
+  const category = normalizeStringDbCategory(options.category);
   const mappingChunks = chunkArray(uniqueProteinIds, IDENTIFIER_MAPPING_CHUNK_SIZE);
   const rows = await fetchFunctionalEnrichmentChunk(uniqueProteinIds, speciesId);
   const mappings = [];
@@ -273,7 +281,7 @@ export async function fetchFunctionalEnrichmentAnnotations(proteinIds, options =
     mappings.push(...(await fetchIdentifierMappingsChunk(mappingChunk, speciesId)));
   }
 
-  return mapFunctionalEnrichmentRowsToAnnotations(rows, uniqueProteinIds, mappings, maxTerms, maxFdr);
+  return mapFunctionalEnrichmentRowsToAnnotations(rows, uniqueProteinIds, mappings, { maxTerms, maxFdr, category });
 }
 
 export async function fetchFunctionalEnrichmentLabels(groups, options = {}) {

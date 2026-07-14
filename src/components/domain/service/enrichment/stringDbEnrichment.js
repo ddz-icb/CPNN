@@ -13,6 +13,7 @@ import {
   clampEvidenceScore,
   clampGroupEnrichmentMaxFdr,
   clampNodeAttributeMaxTerms,
+  normalizeStringDbCategory,
   normalizeProteinId,
 } from "./stringDbHelpers.js";
 
@@ -163,6 +164,7 @@ export async function enrichGraphWithStringDb(graphData, options = {}) {
   const minEvidenceScore = clampEvidenceScore(options.minEvidenceScore);
   const nodeAttributeMaxTerms = clampNodeAttributeMaxTerms(options.nodeAttributeMaxTerms);
   const nodeAttributeMaxFdr = clampGroupEnrichmentMaxFdr(options.nodeAttributeMaxFdr);
+  const nodeAttributeCategory = normalizeStringDbCategory(options.nodeAttributeCategory);
   const maxGroupEnrichmentFdr = clampGroupEnrichmentMaxFdr(options.maxGroupEnrichmentFdr);
   const speciesId = options.speciesId ?? DEFAULT_SPECIES_ID;
   const proteinToNodeIds = buildProteinToNodeIdsMap(graphData.nodes);
@@ -174,12 +176,13 @@ export async function enrichGraphWithStringDb(graphData, options = {}) {
   let enrichedGraphData = graphData;
 
   if (nodeAttributeEnabled) {
-    const cacheKey = buildCacheKey("string-node-enrichment", proteinIds, speciesId, nodeAttributeMaxTerms, nodeAttributeMaxFdr);
+    const cacheKey = buildCacheKey("string-node-enrichment", proteinIds, speciesId, nodeAttributeCategory, nodeAttributeMaxTerms, nodeAttributeMaxFdr);
     let annotations = enrichmentCache.get(cacheKey);
     if (!annotations) {
       try {
         annotations = await fetchFunctionalEnrichmentAnnotations(proteinIds, {
           speciesId,
+          category: nodeAttributeCategory,
           maxTerms: nodeAttributeMaxTerms,
           maxFdr: nodeAttributeMaxFdr,
         });
