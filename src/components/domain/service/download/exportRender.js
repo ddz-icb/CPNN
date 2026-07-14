@@ -9,7 +9,7 @@ import {
 import { computeLightingTint, rimRadiusFactor, rimWidthFactor } from "../canvas_drawing/shading.js";
 import { getNodeLabelOffsetY } from "../canvas_drawing/drawingUtils.js";
 import { getCameraViewParams } from "../canvas_drawing/camera3D.js";
-import { getLinkIdText } from "../graph_calculations/graphUtils.js";
+import { getEndpointIdText, getLinkIdText, getUndirectedLinkKey } from "../graph_calculations/graphUtils.js";
 import { getNodeIdName } from "../parsing/nodeIdParsing.js";
 import {
   computeProjections,
@@ -21,8 +21,8 @@ import {
 
 const NODE_HIGHLIGHT_OUTER_RADIUS = radius + 11.5;
 const LINK_HIGHLIGHT_STROKES = [
-  { outset: 4.5, alpha: 0.5 },
-  { outset: 2, alpha: 0.7 },
+  { outset: 4.5, alpha: 0.6 },
+  { outset: 2, alpha: 0.8 },
 ];
 const LINK_HIGHLIGHT_ENDPOINT_INSET = radius + 1;
 
@@ -148,6 +148,7 @@ export function render3DQueue(ctx, items, drawParams, gridOptions) {
   const highlightNodeIdSet = toNodeIdSet(highlightNodeIds);
   const highlightLinkIdSet = toNodeIdSet(highlightLinkIds);
   const communityHighlightNodeIdSet = toNodeIdSet(communityHighlightNodeIds);
+  const highlightedLinkBundles = new Set();
   const pendingLinkChevrons = [];
   const flushLinkChevrons = () =>
     drawLineChevronQueueCanvas(ctx, pendingLinkChevrons, linkWidth, linkColorscheme, linkAttribsToColorIndices, {
@@ -171,7 +172,7 @@ export function render3DQueue(ctx, items, drawParams, gridOptions) {
         ctx.save();
         ctx.globalAlpha *= alpha;
       }
-      drawLinkHighlightIfActive(ctx, link, item.index, highlightLinkIdSet, highlightColor, linkWidth, widthScale, item.layout);
+      drawLinkHighlightIfActive(ctx, link, item.index, highlightLinkIdSet, highlightColor, linkWidth, widthScale, item.layout, highlightedLinkBundles);
       drawLineCanvas(ctx, link, linkWidth, linkColorscheme, linkAttribsToColorIndices, {
         widthScale,
         minLength: MIN_3D_LINK_SCREEN_LENGTH,
@@ -232,6 +233,7 @@ export function render2DGraph(ctx, graphData, nodeMap, params) {
   const highlightNodeIdSet = toNodeIdSet(highlightNodeIds);
   const highlightLinkIdSet = toNodeIdSet(highlightLinkIds);
   const communityHighlightNodeIdSet = toNodeIdSet(communityHighlightNodeIds);
+  const highlightedLinkBundles = new Set();
 
   const linkLayouts = getParallelLinkLayoutData(graphData.links);
   for (let index = 0; index < graphData.links.length; index += 1) {
@@ -242,7 +244,7 @@ export function render2DGraph(ctx, graphData, nodeMap, params) {
       ctx.save();
       ctx.globalAlpha *= alpha;
     }
-    drawLinkHighlightIfActive(ctx, link, index, highlightLinkIdSet, highlightColor, linkWidth, 1, linkLayouts.get(index));
+    drawLinkHighlightIfActive(ctx, link, index, highlightLinkIdSet, highlightColor, linkWidth, 1, linkLayouts.get(index), highlightedLinkBundles);
     drawLineCanvas(ctx, link, linkWidth, linkColorscheme, linkAttribsToColorIndices, { layout: linkLayouts.get(index), drawChevron: false });
     if (alpha < 1) ctx.restore();
   }
@@ -407,10 +409,20 @@ function drawNodeHighlightIfActive(ctx, node, nodeIdSet, color, scale = 1, alpha
   ctx.restore();
 }
 
-function drawLinkHighlightIfActive(ctx, link, index, linkIdSet, color, linkWidth, widthScale = 1, layout = null) {
+function getHighlightBundleKey(link, index) {
+  const sourceId = getEndpointIdText(link?.__sourceId ?? link?.source);
+  const targetId = getEndpointIdText(link?.__targetId ?? link?.target);
+  return getUndirectedLinkKey(sourceId, targetId) ?? getLinkIdText(link, index, link?.__sourceId, link?.__targetId);
+}
+
+function drawLinkHighlightIfActive(ctx, link, index, linkIdSet, color, linkWidth, widthScale = 1, layout = null, highlightedBundles = null) {
   const linkIndex = Number.isInteger(link?.__linkIndex) ? link.__linkIndex : index;
   const linkId = getLinkIdText(link, linkIndex, link?.__sourceId, link?.__targetId);
   if (!link || !linkIdSet?.has?.(linkId) || !color) return;
+
+  const bundleKey = getHighlightBundleKey(link, linkIndex);
+  if (highlightedBundles?.has(bundleKey)) return;
+  highlightedBundles?.add(bundleKey);
 
   const sourceX = link.source?.x;
   const sourceY = link.source?.y;
@@ -424,17 +436,9 @@ function drawLinkHighlightIfActive(ctx, link, index, linkIdSet, color, linkWidth
   if (!Number.isFinite(length) || length <= 0) return;
 
   const depthScale = getDepthScale(widthScale);
-  const shift = (layout?.laneOffset ?? 0) * getBaseLinkWidth(linkWidth) * depthScale;
-  const offsetX = shift * (-dy / length);
-  const offsetY = shift * (dx / length);
-  const trimmed = getTrimmedLineEndpoints(
-    sourceX + offsetX,
-    sourceY + offsetY,
-    targetX + offsetX,
-    targetY + offsetY,
-    LINK_HIGHLIGHT_ENDPOINT_INSET * depthScale,
-  );
-  const bundleWidth = getBaseLinkWidth(linkWidth) * getDepthScale(widthScale) * getLinkAttribCount(link);
+  const trimmed = getTrimmedLineEndpoints(sourceX, sourceY, targetX, targetY, LINK_HIGHLIGHT_ENDPOINT_INSET * depthScale);
+  const laneCount = Math.max(1, layout?.laneCount ?? 1);
+  const bundleWidth = getBaseLinkWidth(linkWidth) * getDepthScale(widthScale) * getLinkAttribCount(link) * laneCount;
 
   ctx.save();
   ctx.globalCompositeOperation = "lighter";
@@ -442,17 +446,36 @@ function drawLinkHighlightIfActive(ctx, link, index, linkIdSet, color, linkWidth
   ctx.lineCap = "round";
   ctx.setLineDash([]);
   const baseAlpha = ctx.globalAlpha;
+  // canvas-to-svg ignores lighter compositing, so prevent nested strokes from stacking darker in SVG/PDF exports.
+  const useSvgOpacityCompensation = isSvgContext(ctx);
+  let previousTargetAlpha = 0;
 
   for (const stroke of LINK_HIGHLIGHT_STROKES) {
+    const targetAlpha = baseAlpha * stroke.alpha;
     ctx.beginPath();
-    ctx.globalAlpha = baseAlpha * stroke.alpha;
+    ctx.globalAlpha = useSvgOpacityCompensation
+      ? getLayerAlphaForTarget(targetAlpha, previousTargetAlpha)
+      : targetAlpha;
     ctx.lineWidth = bundleWidth + stroke.outset * getDepthScale(widthScale) * 2;
     ctx.moveTo(trimmed.sourceX, trimmed.sourceY);
     ctx.lineTo(trimmed.targetX, trimmed.targetY);
     ctx.stroke();
+    previousTargetAlpha = Math.max(previousTargetAlpha, targetAlpha);
   }
 
   ctx.restore();
+}
+
+function isSvgContext(ctx) {
+  return typeof ctx?.getSvg === "function";
+}
+
+function getLayerAlphaForTarget(targetAlpha, previousTargetAlpha) {
+  const target = clamp(targetAlpha, 0, 1);
+  const previous = clamp(previousTargetAlpha, 0, target);
+  if (target <= previous) return 0;
+  if (previous >= 1) return 0;
+  return (target - previous) / (1 - previous);
 }
 
 function getBaseLinkWidth(width) {

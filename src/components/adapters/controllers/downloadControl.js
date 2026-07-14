@@ -15,7 +15,7 @@ import {
   downloadLegendPdf,
   downloadNodeIdsCsv,
 } from "../../domain/service/download/download.js";
-import { themeInit } from "../state/themeState.js";
+import { themeInit, useTheme } from "../state/themeState.js";
 import { usePixiState } from "../state/pixiState.js";
 import { errorService } from "../../application/services/errorService.js";
 import { useContainer } from "../state/containerState.js";
@@ -31,13 +31,14 @@ export function DownloadControl() {
   const { container } = useContainer();
   const { communityState } = useCommunityState();
   const { searchState } = useSearchState();
+  const { theme } = useTheme();
 
   const getHighlightExportOptions = () => ({
     highlightNodeIds: Array.isArray(searchState.highlightedNodeIds) ? searchState.highlightedNodeIds : [],
     highlightLinkIds: Array.isArray(searchState.highlightedLinkIds) ? searchState.highlightedLinkIds : [],
     communityHighlightNodeIds: getCommunityHighlightNodeIds(communityState),
-    highlightColor: themeInit.highlightColor,
-    communityHighlightColor: themeInit.communityHighlightColor,
+    highlightColor: theme.highlightColor,
+    communityHighlightColor: theme.communityHighlightColor,
   });
 
   // download graph data as json //

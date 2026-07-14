@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { getLinkIdText } from "../graph_calculations/graphUtils.js";
+import { getEndpointIdText, getLinkIdText, getUndirectedLinkKey } from "../graph_calculations/graphUtils.js";
 import { getParallelLinkLayoutData } from "./lineGraphics.js";
 import { radius } from "./nodes.js";
 
@@ -7,8 +7,8 @@ const activeHighlights = new Set();
 const activeCommunityHighlights = new Set();
 const activeLinkGlowGraphics = new Map();
 const LINK_GLOW_STROKES = [
-  { outset: 4.5, alpha: 0.5 },
-  { outset: 2, alpha: 0.7 },
+  { outset: 4.5, alpha: 0.6 },
+  { outset: 2, alpha: 0.8 },
 ];
 const LINK_GLOW_ENDPOINT_INSET = radius + 1;
 const LINK_GLOW_Z_OFFSET = 0.08;
@@ -137,6 +137,12 @@ function getLinkBundleWidth(link, linkWidth) {
   return getBaseLinkWidth(linkWidth) * getLinkAttribCount(link);
 }
 
+function getHighlightBundleKey(link, index) {
+  const sourceId = getEndpointIdText(link?.source);
+  const targetId = getEndpointIdText(link?.target);
+  return getUndirectedLinkKey(sourceId, targetId) ?? getLinkIdText(link, index);
+}
+
 function getTrimmedLineEndpoints(x1, y1, x2, y2, endpointInset = 0) {
   const dx = x2 - x1;
   const dy = y2 - y1;
@@ -200,11 +206,9 @@ function drawLinkGlow(layer, link, linkWidth, layout = null) {
   const length = Math.sqrt(dx * dx + dy * dy);
   if (!Number.isFinite(length) || length <= 0) return;
 
-  const shift = (layout?.laneOffset ?? 0) * getBaseLinkWidth(linkWidth);
-  const offsetX = shift * (-dy / length);
-  const offsetY = shift * (dx / length);
-  const trimmed = getTrimmedLineEndpoints(sourceX + offsetX, sourceY + offsetY, targetX + offsetX, targetY + offsetY, LINK_GLOW_ENDPOINT_INSET);
-  const bundleWidth = getLinkBundleWidth(link, linkWidth);
+  const trimmed = getTrimmedLineEndpoints(sourceX, sourceY, targetX, targetY, LINK_GLOW_ENDPOINT_INSET);
+  const laneCount = Math.max(1, layout?.laneCount ?? 1);
+  const bundleWidth = getLinkBundleWidth(link, linkWidth) * laneCount;
 
   for (const style of LINK_GLOW_STROKES) {
     layer
@@ -234,19 +238,25 @@ function updateLineHighlights2D({ links, lineGraphics, linkWidth }) {
   if (!layer.visible) return;
 
   const layouts = getParallelLinkLayoutData(links);
+  const highlightedBundles = new Set();
   (links ?? []).forEach((link, index) => {
     if (!activeLinkHighlightIds.has(getLinkIdText(link, index))) return;
+    const bundleKey = getHighlightBundleKey(link, index);
+    if (highlightedBundles.has(bundleKey)) return;
+    highlightedBundles.add(bundleKey);
     drawLinkGlow(layer, link, linkWidth, layouts.get(index));
   });
 }
 
-function getVisibleEdgeSpriteGeometry(sprites, linkWidth) {
+function getVisibleEdgeSpriteGeometry(sprites, linkWidth, layout = null) {
   const visibleSprites = (sprites ?? []).filter((sprite) => sprite && sprite.visible !== false);
   if (visibleSprites.length === 0) return null;
 
   const sourceSprite = visibleSprites[0];
   const stripeHeight = visibleSprites.reduce((sum, sprite) => sum + getBaseLinkWidth(sprite.height), 0) / visibleSprites.length;
   const depthScale = stripeHeight / getBaseLinkWidth(linkWidth);
+  const laneCount = Math.max(1, layout?.laneCount ?? visibleSprites.length);
+  const laneOffset = layout?.laneOffset ?? 0;
   const position = visibleSprites.reduce(
     (sum, sprite) => {
       sum.x += sprite.x ?? 0;
@@ -255,14 +265,18 @@ function getVisibleEdgeSpriteGeometry(sprites, linkWidth) {
     },
     { x: 0, y: 0 },
   );
+  const x = position.x / visibleSprites.length;
+  const y = position.y / visibleSprites.length;
+  const perpendicularX = -Math.sin(sourceSprite.rotation);
+  const perpendicularY = Math.cos(sourceSprite.rotation);
 
   return {
     parent: sourceSprite.parent,
-    x: position.x / visibleSprites.length,
-    y: position.y / visibleSprites.length,
+    x: x - laneOffset * stripeHeight * perpendicularX,
+    y: y - laneOffset * stripeHeight * perpendicularY,
     rotation: sourceSprite.rotation,
     width: sourceSprite.width,
-    bundleWidth: stripeHeight * visibleSprites.length,
+    bundleWidth: stripeHeight * laneCount,
     depthScale,
     zIndex: sourceSprite.zIndex ?? 0,
   };
@@ -323,17 +337,23 @@ function updateLineHighlights3D({ links, lineGraphics, linkWidth }) {
   }
 
   const usedGlowKeys = new Set();
+  const highlightedBundles = new Set();
+  const layouts = getParallelLinkLayoutData(links);
 
   (links ?? []).forEach((link, index) => {
     if (!activeLinkHighlightIds.has(getLinkIdText(link, index))) return;
+    const bundleKey = getHighlightBundleKey(link, index);
+    if (highlightedBundles.has(bundleKey)) return;
+    highlightedBundles.add(bundleKey);
+
     const sprites = lineGraphics[index];
     if (!Array.isArray(sprites)) return;
 
-    const edgeGeometry = getVisibleEdgeSpriteGeometry(sprites, linkWidth);
+    const edgeGeometry = getVisibleEdgeSpriteGeometry(sprites, linkWidth, layouts.get(index));
     if (!edgeGeometry) return;
 
     LINK_GLOW_STROKES.forEach((style, styleIndex) => {
-      const key = `${index}:${styleIndex}`;
+      const key = `${bundleKey}:${styleIndex}`;
       const glowGraphic = ensureLineGlowGraphic(key, edgeGeometry);
       if (!glowGraphic) return;
       updateLineGlowGraphic(glowGraphic, edgeGeometry, style, styleIndex);
