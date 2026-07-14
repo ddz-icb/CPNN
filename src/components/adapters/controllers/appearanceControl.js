@@ -151,7 +151,7 @@ export function AppearanceControl() {
   }, [appearance.show3DGrid, appearance.threeD, pixiState.grid3D, appearance.cameraRef]);
 
   useEffect(() => {
-    if (!graphState.graph || appearance.linkWidthManuallySet) return;
+    if (!graphState.graph || appearance.linkWidthManuallySet || graphFlags.filteredAfterStart) return;
 
     const linkWidth = calculateLinkWidth(linkCount);
     const linkWidthText = linkWidth.toFixed(1);
@@ -162,5 +162,5 @@ export function AppearanceControl() {
     if (appearance.linkWidthText !== linkWidthText) {
       setAppearance("linkWidthText", linkWidthText);
     }
-  }, [graphState.graph, linkCount, appearance.linkWidthManuallySet]);
+  }, [graphState.graph, linkCount, appearance.linkWidthManuallySet, graphFlags.filteredAfterStart]);
 }
