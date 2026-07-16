@@ -20,7 +20,7 @@ import {
 import { mergeByNameDescription } from "./descriptions/filterDescriptions.jsx";
 
 const dataFormatOptions = [
-  { value: "json", label: "Listed Data (JSON)" },
+  { value: "json", label: "JSON" },
   { value: "matrix", label: "Correlation Matrix (TSV/CSV)" },
   { value: "tabular", label: "Tabular Data (TSV/CSV)" },
 ];

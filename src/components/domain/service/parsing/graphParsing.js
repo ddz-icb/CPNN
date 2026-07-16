@@ -150,7 +150,7 @@ async function parseGraphBySelectedFormat({ fileName, content, settings, dataFor
 function parseJsonGraphFile(fileName, content) {
   const fileExtension = getFileExtension(fileName);
   if (fileExtension !== "json") {
-    throw new Error("Selected data format 'Listed Data (JSON)' requires a .json file.");
+    throw new Error("Selected data format 'JSON' requires a .json file.");
   }
 
   log.info("Parsing JSON graph");

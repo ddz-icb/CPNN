@@ -143,14 +143,14 @@ export function verifyGraph(graph) {
     if (link.target === undefined || link.target === null) {
       throw new Error(`Link at index ${i} is missing the 'target' property.`);
     }
-    if (link.weight === undefined || link.weight === null) {
-      throw new Error(`Link at index ${i} is missing the 'weight' property.`);
+    if (link.weight === undefined) {
+      link.weight = 1;
     }
     if (link.attrib === undefined || link.attrib === null) {
       throw new Error(`Link at index ${i} is missing the 'attrib' property.`);
     }
     if (link.attribs !== undefined || link.weights !== undefined || link.directions !== undefined) {
-      throw new Error(`Link at index ${i} uses the old multilink format. Use scalar 'attrib', scalar 'weight', and optional boolean 'directed'.`);
+      throw new Error(`Link at index ${i} uses the old multilink format. Use scalar 'attrib', optional scalar 'weight', and optional boolean 'directed'.`);
     }
     const sourceId = getNormalizedEndpointId(link.source, "source", i);
     const targetId = getNormalizedEndpointId(link.target, "target", i);

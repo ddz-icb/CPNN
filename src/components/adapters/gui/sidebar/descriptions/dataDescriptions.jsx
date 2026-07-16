@@ -14,8 +14,8 @@ import { PopupTextField } from "../../reusable_components/sidebarComponents.jsx"
 export const minLinkCorrDescription = (
   <div>
     <p>
-      Minimum absolute correlation value or link weight required for display as a link. Correlation-derived data uses values from 0 to 1; listed JSON
-      graphs can use any finite numeric weights. Increasing this value can significantly improve performance.
+      Minimum absolute correlation value or link weight required for display as a link. Correlation-derived data uses values from 0 to 1; JSON graphs
+      can use any finite numeric weights, and links without a weight use 1. Increasing this value can significantly improve performance.
     </p>
   </div>
 );
@@ -96,57 +96,62 @@ export const uploadNodeMappingDescription = (
 export const uploadGraphDescription = (
   <div>
     <p className="margin-0">
-      Select your preferred data format. You can read more about the different data formats by clicking the small info icon next to the selection.
+      Choose the upload format that matches your file: JSON for files with nodes and links, correlation matrix for square correlation tables, or
+      tabular data for measurement tables.
     </p>
-    <p className="margin-0">You can also enable prefilters for the graph to reduce it's base size, significantly enhancing it's performance.</p>
+    <p className="margin-0 pad-top-05">
+      Prefilters are optional. They reduce the graph during upload, which is useful for very large files, but removed nodes and links will not be
+      saved in the uploaded graph.
+    </p>
     <br></br>
   </div>
 );
 
 export const uploadGraphDataFormat = (
   <div>
-    <p className="margin-0">
-      <strong>Listed Data (JSON):</strong> Upload a JSON file that already contains nodes and links. JSON uploads keep their existing link attributes
-      and can use any finite numeric link weights. Node <PopupTextField inline={true} textInside={"attribs"} /> is optional and may be a single value
-      or an array when present. Graph exports omit node <PopupTextField inline={true} textInside={"attribs"} /> when no attributes are available, use
-      a single value for nodes with one attribute, and use an array for nodes with multiple attributes.
-      Each link entry has one <PopupTextField inline={true} textInside={"attrib"} /> and one <PopupTextField inline={true} textInside={"weight"} />.
-      Add multiple link entries for multiple relationships between the same nodes. Links may optionally provide{" "}
-      <PopupTextField inline={true} textInside={"directed: true"} /> to draw an arrow from source to target; missing or false values are undirected.
-    </p>
-    <br></br>
-    <p className="margin-0">
-      <strong>Correlation Matrix (TSV/CSV):</strong> Upload a symmetric matrix table. Use <PopupTextField inline={true} textInside={"id"} /> as the
-      first column header. Missing values such as <PopupTextField inline={true} textInside={"NA"} /> are treated as zero-weight links. Links are created
-      directly from the matrix and use the uploaded file name as link attribute.
-    </p>
-    <br></br>
-    <p className="margin-0">
-      <strong>Tabular Data (TSV/CSV):</strong> Upload tabular measurements (also with <PopupTextField inline={true} textInside={"id"} /> as the first
-      column header). The table is converted to a correlation graph using Pearson (default) or Spearman. NaN values are ignored, and generated links
-      use the uploaded file name as link attribute.
-    </p>
-    <br></br>
-    <p className="margin-0">
-      <strong>Node IDs:</strong> they can be as simple as <PopupTextField inline={true} textInside={"ID_Name"} /> (or{" "}
-      <PopupTextField inline={true} textInside={"ID1_Name1; ID2_Name2"} />
-      ). Optional site information can be appended (for example <PopupTextField inline={true} textInside={"P08590_MYL3_T165"} />
-      ). Using UniProt IDs adds more biological information via API references.
-    </p>
-    <div className="pad-bottom-05" />
-    Format:
-    <div className="pad-bottom-05" />
-    <PopupTextField textInside={nodeIdFormat} />
-    <div className="pad-bottom-05" />
-    Examples:
-    <div className="pad-bottom-05" />
-    <div style={{ display: "flex", gap: "0.5rem", rowGap: "0.75rem", flexWrap: "wrap" }}>
-      <PopupTextField textInside={nodeIdExample0} />
-      <PopupTextField textInside={nodeIdExample1} />
-      <PopupTextField textInside={nodeIdExample2} />
-      <PopupTextField textInside={nodeIdExample3} />
-      <PopupTextField textInside={nodeIdExample4} />
+    <div className="pad-bottom-2">
+      <p className="margin-0">
+        <strong>Node IDs:</strong> Simple IDs like <PopupTextField inline={true} textInside={"ID_Name"} /> work. You can group several IDs in one node
+        with semicolons, for example <PopupTextField inline={true} textInside={"ID1_Name1; ID2_Name2"} />. Optional phosphosite information can be
+        appended, for example <PopupTextField inline={true} textInside={"P08590_MYL3_T165"} />. UniProt-style IDs allow CPNN to fetch more biological
+        context from external services.
+      </p>
+      <div className="pad-bottom-05" />
+      Format:
+      <div className="pad-bottom-05" />
+      <PopupTextField textInside={nodeIdFormat} />
+      <div className="pad-bottom-05" />
+      Examples:
+      <div className="pad-bottom-05" />
+      <div style={{ display: "flex", gap: "0.5rem", rowGap: "0.75rem", flexWrap: "wrap" }}>
+        <PopupTextField textInside={nodeIdExample0} />
+        <PopupTextField textInside={nodeIdExample1} />
+        <PopupTextField textInside={nodeIdExample2} />
+        <PopupTextField textInside={nodeIdExample3} />
+        <PopupTextField textInside={nodeIdExample4} />
+      </div>
     </div>
+    <p className="margin-0">
+      <strong>JSON:</strong> The file contains a <PopupTextField inline={true} textInside={"nodes"} /> list and a{" "}
+      <PopupTextField inline={true} textInside={"links"} /> list. Each node needs an <PopupTextField inline={true} textInside={"id"} />. Node{" "}
+      <PopupTextField inline={true} textInside={"attribs"} /> is optional and can be one attribute or a list. Each link needs{" "}
+      <PopupTextField inline={true} textInside={"source"} />, <PopupTextField inline={true} textInside={"target"} />, and{" "}
+      <PopupTextField inline={true} textInside={"attrib"} />. <PopupTextField inline={true} textInside={"weight"} /> is optional and defaults to{" "}
+      <PopupTextField inline={true} textInside={"1"} />. Add <PopupTextField inline={true} textInside={"directed: true"} /> only for directed links.
+    </p>
+    <div className="pad-bottom-1" />
+    <p className="margin-0">
+      <strong>Correlation Matrix (TSV/CSV):</strong> the file is a square correlation matrix. The first column header must be{" "}
+      <PopupTextField inline={true} textInside={"id"} />, and the row IDs must match the column IDs. Missing values such as{" "}
+      <PopupTextField inline={true} textInside={"NA"} /> are treated as zero-weight links. Created links use the uploaded file name as their
+      attribute.
+    </p>
+    <div className="pad-bottom-1" />
+    <p className="margin-0">
+      <strong>Tabular Data (TSV/CSV):</strong> rows are IDs and columns are measurements or samples. The first column header must be{" "}
+      <PopupTextField inline={true} textInside={"id"} />. CPNN computes correlations between rows using Pearson by default, or Spearman if enabled.
+      Generated links use the uploaded file name as their attribute.
+    </p>
     <div className="pad-bottom-1" />
   </div>
 );

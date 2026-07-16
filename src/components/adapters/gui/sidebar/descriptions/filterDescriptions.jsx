@@ -205,43 +205,45 @@ export const communityFilterSizeDescription = (
 export const linkFilterDescription = (
   <div>
     <div className="margin-0">
-      Available fields: <PopupTextField textInside={"name:"} /> link ID or name, <PopupTextField textInside={"attr:"} /> attribute,{" "}
-      <PopupTextField textInside={"attrs:"} /> number of attributes, <PopupTextField textInside={"source:"} />, and{" "}
-      <PopupTextField textInside={"target:"} />. For bidirectional links, either endpoint matches both
-      {" "}<PopupTextField textInside={"source:"} /> and <PopupTextField textInside={"target:"} />.
+      Type a word to keep links whose ID, name, attribute, source, or target contains that word. Use a field prefix when you want to search one part of
+      the link only.
     </div>
     <div className="pad-top-1" />
     <div>
-      Text fields use substring matching, so the query does not need to match the entire field value. Without a field prefix, text is matched across link
-      IDs, names, attributes, sources, and targets. Combine conditions with{" "}
-      <PopupTextField textInside={"and"} />, alternatives with <PopupTextField textInside={"or"} /> inside parentheses, and exclusions with{" "}
-      <PopupTextField textInside={"not"} />. Use quotes for values containing spaces. Numeric fields support{" "}
-      <PopupTextField textInside={"="} />, <PopupTextField textInside={"!="} />, <PopupTextField textInside={">"} />,{" "}
-      <PopupTextField textInside={">="} />, <PopupTextField textInside={"<"} />, and <PopupTextField textInside={"<="} />.
+      Link fields are <PopupTextField textInside={"name:"} /> for link ID or name, <PopupTextField textInside={"attr:"} /> for link attribute,{" "}
+      <PopupTextField textInside={"source:"} />, and <PopupTextField textInside={"target:"} />. For undirected links, either endpoint can match source
+      or target. Use <PopupTextField textInside={"attrs:"} /> to filter by the number of attributes, for example{" "}
+      <PopupTextField textInside={"attrs:>=1"} />.
+    </div>
+    <div className="pad-top-1" />
+    <div>
+      Combine filters with <PopupTextField textInside={"and"} />. Put alternatives in parentheses with <PopupTextField textInside={"or"} />. Exclude a
+      term with <PopupTextField textInside={"not"} />. Use quotes when a value contains spaces.
     </div>
     <div className="pad-top-05" />
     <div>Examples:</div>
-    <PopupTextField textInside={"AKT"} /> <PopupTextField textInside={"name:T2D"} /> <PopupTextField textInside={"attr:phosphorylation"} />{" "}
-    <PopupTextField textInside={'attr:"t2d group"'} /> <PopupTextField textInside={"source:AKT1 and target:MTOR"} />{" "}
-    <PopupTextField textInside={"(attr:activation or attr:inhibition) and not attr:predicted"} /> <PopupTextField textInside={"attrs:>=2"} />
+    <PopupTextField textInside={"AKT"} /> <PopupTextField textInside={"attr:phosphorylation"} />{" "}
+    <PopupTextField textInside={"source:AKT1 and target:MTOR"} /> <PopupTextField textInside={'attr:"t2d group" and not attr:predicted'} />{" "}
+    <PopupTextField textInside={"(attr:activation or attr:inhibition) and attrs:>=1"} />
   </div>
 );
 
 export const nodeFilterDescription = (
   <div>
     <div className="margin-0">
-      Available fields: <PopupTextField textInside={"name:"} /> full node ID or name, <PopupTextField textInside={"attr:"} /> attribute,{" "}
-      <PopupTextField textInside={"attrs:"} /> number of attributes, and <PopupTextField textInside={"neighbors:"} /> distinct adjacent nodes.
-      Parallel links to the same node count as one neighbor.
+      Type a word to keep nodes whose ID, name, label, or attributes contain that word. Use a field prefix when you want to search one part of the node
+      only.
     </div>
     <div className="pad-top-1" />
     <div>
-      Text fields use substring matching, so the query does not need to match the entire field value. Without a field prefix, text is matched across node
-      IDs, names, and attributes. Combine conditions with{" "}
-      <PopupTextField textInside={"and"} />, alternatives with <PopupTextField textInside={"or"} /> inside parentheses, and exclusions with{" "}
-      <PopupTextField textInside={"not"} />. Use quotes for values containing spaces. Numeric fields support{" "}
-      <PopupTextField textInside={"="} />, <PopupTextField textInside={"!="} />, <PopupTextField textInside={">"} />,{" "}
-      <PopupTextField textInside={">="} />, <PopupTextField textInside={"<"} />, and <PopupTextField textInside={"<="} />.
+      Node fields are <PopupTextField textInside={"name:"} /> for node ID or name and <PopupTextField textInside={"attr:"} /> for attributes. Use{" "}
+      <PopupTextField textInside={"attrs:"} /> for the number of attributes and <PopupTextField textInside={"neighbors:"} /> for distinct adjacent
+      nodes, for example <PopupTextField textInside={"neighbors:>3"} />. Parallel links to the same node count as one neighbor.
+    </div>
+    <div className="pad-top-1" />
+    <div>
+      Combine filters with <PopupTextField textInside={"and"} />. Put alternatives in parentheses with <PopupTextField textInside={"or"} />. Exclude a
+      term with <PopupTextField textInside={"not"} />. Use quotes when a value contains spaces.
     </div>
     <div className="pad-top-05" />
     <div>Examples:</div>

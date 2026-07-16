@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { defaultCamera } from "../../domain/service/canvas_drawing/render3D";
+import { defaultCamera } from "../../domain/service/canvas_drawing/render3D.js";
 
 export const showNodeLabelsInit = true;
 export const linkWidthInit = 2;
