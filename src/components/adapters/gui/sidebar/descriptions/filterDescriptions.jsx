@@ -218,12 +218,14 @@ export const linkFilterDescription = (
     <div className="pad-top-1" />
     <div>
       Combine filters with <PopupTextField textInside={"and"} />. Put alternatives in parentheses with <PopupTextField textInside={"or"} />. Exclude a
-      term with <PopupTextField textInside={"not"} />. Use quotes when a value contains spaces.
+      term with <PopupTextField textInside={"not"} />. Use <PopupTextField textInside={"{...}"} /> when all listed terms must match, and use quotes for
+      attributes with multiple words.
     </div>
     <div className="pad-top-05" />
     <div>Examples:</div>
     <PopupTextField textInside={"AKT"} /> <PopupTextField textInside={"attr:phosphorylation"} />{" "}
     <PopupTextField textInside={"source:AKT1 and target:MTOR"} /> <PopupTextField textInside={'attr:"t2d group" and not attr:predicted'} />{" "}
+    <PopupTextField textInside={'{attr:phosphorylation, source:AKT1}'} />{" "}
     <PopupTextField textInside={"(attr:activation or attr:inhibition) and attrs:>=1"} />
   </div>
 );
@@ -243,13 +245,15 @@ export const nodeFilterDescription = (
     <div className="pad-top-1" />
     <div>
       Combine filters with <PopupTextField textInside={"and"} />. Put alternatives in parentheses with <PopupTextField textInside={"or"} />. Exclude a
-      term with <PopupTextField textInside={"not"} />. Use quotes when a value contains spaces.
+      term with <PopupTextField textInside={"not"} />. Use <PopupTextField textInside={"{...}"} /> when all listed terms must match, and use quotes for
+      attributes with multiple words.
     </div>
     <div className="pad-top-05" />
     <div>Examples:</div>
     <PopupTextField textInside={"AKT"} /> <PopupTextField textInside={"name:AKT1"} />{" "}
     <PopupTextField textInside={'name:AKT1 and not attr:"phosphorylation"'} />{" "}
     <PopupTextField textInside={"attr:signaling and neighbors:>3"} />{" "}
+    <PopupTextField textInside={'{attr:kinase, attr:"t2d group"}'} />{" "}
     <PopupTextField textInside={"(attr:kinase or attr:phosphatase) and not attr:predicted"} /> <PopupTextField textInside={"attrs:>=2"} />
   </div>
 );

@@ -9,3 +9,7 @@ export function defaultNodes() {
 export function linkIds(graphData) {
   return graphData.links.map((link) => link.id);
 }
+
+export function nodeIds(graphData) {
+  return graphData.nodes.map((node) => node.id);
+}
