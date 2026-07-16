@@ -41,7 +41,6 @@ export function filterLinkAttribs(graphData, filterRequest) {
         name: [getLinkIdText(link, index), link.name, link.label].filter(
           (value) => value !== undefined && value !== null && value !== "",
         ),
-        type: link.type,
         source: directionalEndpoints.sources,
         target: directionalEndpoints.targets,
       });

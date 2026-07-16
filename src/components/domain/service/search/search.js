@@ -16,7 +16,6 @@ export function getMatchingNodes(nodes, query, links = []) {
     matchesSearchRequest(node, search, {
       neighbors: neighborCounts.get(node.id) ?? 0,
       name: uniqueValues([node.id, node.name, node.label]),
-      type: node.type,
     }),
   );
 }
@@ -30,7 +29,6 @@ export function getMatchingLinks(links, query) {
       const directionalEndpoints = getDirectionalLinkEndpoints(entry.link);
       return matchesSearchRequest(entry.link, search, {
         name: uniqueValues([entry.linkId, entry.link?.name, entry.link?.label]),
-        type: entry.link?.type,
         source: directionalEndpoints.sources,
         target: directionalEndpoints.targets,
       });

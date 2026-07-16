@@ -155,7 +155,6 @@ export function filterNodeAttribs(graphData, filterRequest) {
       matchesAttribsFilter(node.attribs, filterRequest, {
         neighbors: neighborCounts.get(node.id) ?? 0,
         name: [node.id, node.name, node.label].filter((value) => value !== undefined && value !== null && value !== ""),
-        type: node.type,
       }),
     ),
   };

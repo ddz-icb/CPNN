@@ -206,14 +206,14 @@ export const linkFilterDescription = (
   <div>
     <div className="margin-0">
       Available fields: <PopupTextField textInside={"name:"} /> link ID or name, <PopupTextField textInside={"attr:"} /> attribute,{" "}
-      <PopupTextField textInside={"attrs:"} /> number of attributes, <PopupTextField textInside={"type:"} />,{" "}
-      <PopupTextField textInside={"source:"} />, and <PopupTextField textInside={"target:"} />. For bidirectional links, either endpoint matches both
+      <PopupTextField textInside={"attrs:"} /> number of attributes, <PopupTextField textInside={"source:"} />, and{" "}
+      <PopupTextField textInside={"target:"} />. For bidirectional links, either endpoint matches both
       {" "}<PopupTextField textInside={"source:"} /> and <PopupTextField textInside={"target:"} />.
     </div>
     <div className="pad-top-1" />
     <div>
       Text fields use substring matching, so the query does not need to match the entire field value. Without a field prefix, text is matched across link
-      IDs, names, types, attributes, sources, and targets. Combine conditions with{" "}
+      IDs, names, attributes, sources, and targets. Combine conditions with{" "}
       <PopupTextField textInside={"and"} />, alternatives with <PopupTextField textInside={"or"} /> inside parentheses, and exclusions with{" "}
       <PopupTextField textInside={"not"} />. Use quotes for values containing spaces. Numeric fields support{" "}
       <PopupTextField textInside={"="} />, <PopupTextField textInside={"!="} />, <PopupTextField textInside={">"} />,{" "}
@@ -223,7 +223,7 @@ export const linkFilterDescription = (
     <div>Examples:</div>
     <PopupTextField textInside={"AKT"} /> <PopupTextField textInside={"name:T2D"} /> <PopupTextField textInside={"attr:phosphorylation"} />{" "}
     <PopupTextField textInside={'attr:"t2d group"'} /> <PopupTextField textInside={"source:AKT1 and target:MTOR"} />{" "}
-    <PopupTextField textInside={"(type:activation or type:inhibition) and not attr:predicted"} /> <PopupTextField textInside={"attrs:>=2"} />
+    <PopupTextField textInside={"(attr:activation or attr:inhibition) and not attr:predicted"} /> <PopupTextField textInside={"attrs:>=2"} />
   </div>
 );
 
@@ -231,13 +231,13 @@ export const nodeFilterDescription = (
   <div>
     <div className="margin-0">
       Available fields: <PopupTextField textInside={"name:"} /> full node ID or name, <PopupTextField textInside={"attr:"} /> attribute,{" "}
-      <PopupTextField textInside={"attrs:"} /> number of attributes, <PopupTextField textInside={"type:"} />, and{" "}
-      <PopupTextField textInside={"neighbors:"} /> distinct adjacent nodes. Parallel links to the same node count as one neighbor.
+      <PopupTextField textInside={"attrs:"} /> number of attributes, and <PopupTextField textInside={"neighbors:"} /> distinct adjacent nodes.
+      Parallel links to the same node count as one neighbor.
     </div>
     <div className="pad-top-1" />
     <div>
       Text fields use substring matching, so the query does not need to match the entire field value. Without a field prefix, text is matched across node
-      IDs, names, types, and attributes. Combine conditions with{" "}
+      IDs, names, and attributes. Combine conditions with{" "}
       <PopupTextField textInside={"and"} />, alternatives with <PopupTextField textInside={"or"} /> inside parentheses, and exclusions with{" "}
       <PopupTextField textInside={"not"} />. Use quotes for values containing spaces. Numeric fields support{" "}
       <PopupTextField textInside={"="} />, <PopupTextField textInside={"!="} />, <PopupTextField textInside={">"} />,{" "}
@@ -247,9 +247,8 @@ export const nodeFilterDescription = (
     <div>Examples:</div>
     <PopupTextField textInside={"AKT"} /> <PopupTextField textInside={"name:AKT1"} />{" "}
     <PopupTextField textInside={'name:AKT1 and not attr:"phosphorylation"'} />{" "}
-    <PopupTextField textInside={"attr:signaling"} />{" "}
-    <PopupTextField textInside={"type:kinase and neighbors:>3"} />{" "}
-    <PopupTextField textInside={"(type:kinase or type:phosphatase) and not attr:predicted"} /> <PopupTextField textInside={"attrs:>=2"} />
+    <PopupTextField textInside={"attr:signaling and neighbors:>3"} />{" "}
+    <PopupTextField textInside={"(attr:kinase or attr:phosphatase) and not attr:predicted"} /> <PopupTextField textInside={"attrs:>=2"} />
   </div>
 );
 

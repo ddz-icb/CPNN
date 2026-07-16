@@ -361,7 +361,7 @@ export function getAdjacentNodes(graphData, nodeId) {
     };
 
     entry.connections.push({
-      type: link.attrib,
+      attribs: link.attrib === undefined || link.attrib === null ? [] : [link.attrib],
       weight: link.weight,
       directed: Boolean(link.directed),
       direction: link.directed ? (sourceId === nodeId ? "outgoing" : "incoming") : "undirected",

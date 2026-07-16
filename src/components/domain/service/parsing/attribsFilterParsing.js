@@ -17,7 +17,7 @@ const TOKENS = {
   NEIGHBORS: /^neighbors$/i,
 };
 
-const QUERY_FIELDS = new Set(["name", "attr", "attrs", "type", "neighbors", "source", "target"]);
+const QUERY_FIELDS = new Set(["name", "attr", "attrs", "neighbors", "source", "target"]);
 
 export function parseAttribsFilter(input) {
   try {
@@ -91,7 +91,7 @@ export function normalizeQuerySyntax(input) {
   query = query.replace(/\battrs\s*:\s*(<=|>=|!=|=|<|>)\s*(\d+)\b/gi, "$1 $2");
 
   query = query.replace(
-    /\b(name|attr|type|source|target)\s*:\s*("[^"]*"|[^\s(){} ,]+)/gi,
+    /\b(name|attr|source|target)\s*:\s*("[^"]*"|[^\s(){} ,]+)/gi,
     (_, field, rawValue) => {
       const value = rawValue.startsWith('"') ? rawValue.slice(1, -1) : rawValue;
       return `"${QUERY_FIELD_PREFIX}${field.toLowerCase()}:${value}"`;
@@ -122,7 +122,7 @@ function validateQueryFields(query) {
   for (const match of unquotedQuery.matchAll(/\b([a-z][a-z0-9_-]*)\s*:/gi)) {
     const field = match[1].toLowerCase();
     if (!QUERY_FIELDS.has(field)) {
-      throw new Error(`Unknown field '${field}'. Use name, attr, attrs, type, neighbors, source, or target.`);
+      throw new Error(`Unknown field '${field}'. Use name, attr, attrs, neighbors, source, or target.`);
     }
   }
 }
@@ -130,7 +130,7 @@ function validateQueryFields(query) {
 function validateQueryFieldValues(query) {
   const maskedQuery = maskQuotedValues(query);
 
-  for (const match of maskedQuery.matchAll(/\b(name|attr|attrs|type|neighbors|source|target)\s*:/gi)) {
+  for (const match of maskedQuery.matchAll(/\b(name|attr|attrs|neighbors|source|target)\s*:/gi)) {
     const field = match[1].toLowerCase();
     const suffix = query.slice((match.index ?? 0) + match[0].length);
 

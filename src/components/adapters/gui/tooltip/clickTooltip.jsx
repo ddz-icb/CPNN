@@ -386,9 +386,9 @@ function AdjacentNodesList({ adjacentNodes, nodeAttribsToColorIndices, nodeColor
           </div>
           <div className="tooltip-adjacent-connection-list">
             {connections.map((connection, index) => (
-              <div className="tooltip-adjacent-connection" key={`${node.id}-${connection.type}-${connection.direction}-${index}`}>
+              <div className="tooltip-adjacent-connection" key={`${node.id}-${formatConnectionAttribs(connection.attribs)}-${connection.direction}-${index}`}>
                 <ConnectionDirectionBadge direction={connection.direction} />
-                <span className="tooltip-adjacent-connection-type">{connection.type}</span>
+                <span className="tooltip-adjacent-connection-attribs">{formatConnectionAttribs(connection.attribs)}</span>
                 <span className="tooltip-adjacent-connection-weight">weight: {formatWeight(connection.weight)}</span>
               </div>
             ))}
@@ -397,6 +397,10 @@ function AdjacentNodesList({ adjacentNodes, nodeAttribsToColorIndices, nodeColor
       ))}
     </div>
   );
+}
+
+function formatConnectionAttribs(attribs) {
+  return Array.isArray(attribs) && attribs.length > 0 ? attribs.join(", ") : "No attributes";
 }
 
 function ConnectionDirectionBadge({ direction }) {
