@@ -126,8 +126,10 @@ export function filterMinNeighborhood(graphData, minKCoreSize) {
 }
 
 export function filterComponentSizeRange(graphData, minCompSize, maxCompSize) {
-  const applyMin = minCompSize !== 1;
-  const applyMax = maxCompSize != "";
+  const minSize = getComponentSizeLimit(minCompSize);
+  const maxSize = getComponentSizeLimit(maxCompSize);
+  const applyMin = minSize !== null && minSize > 1;
+  const applyMax = maxSize !== null && maxSize > 0;
 
   if (!applyMin && !applyMax) return graphData;
 
@@ -137,11 +139,18 @@ export function filterComponentSizeRange(graphData, minCompSize, maxCompSize) {
     ...graphData,
     nodes: graphData.nodes.filter((node) => {
       const size = compToCompSize[IdToComp[node.id]];
-      if (applyMin && size < minCompSize) return false;
-      if (applyMax && size > maxCompSize) return false;
+      if (applyMin && size < minSize) return false;
+      if (applyMax && size > maxSize) return false;
       return true;
     }),
   };
+}
+
+function getComponentSizeLimit(value) {
+  if (value === "" || value === null || value === undefined) return null;
+
+  const limit = Number(value);
+  return Number.isFinite(limit) ? limit : null;
 }
 
 export function filterNodeAttribs(graphData, filterRequest) {
