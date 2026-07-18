@@ -1,6 +1,7 @@
 import log from "../../../adapters/logging/logger.js";
 import * as PIXI from "pixi.js";
-import { collectNodesWithinPolygon, drawDashedOutline, normalizeColor, pointerToWorld, tracePolygonPath } from "./interactiveCanvas.js";
+import { drawDashedOutline, normalizeColor, pointerToWorld, tracePolygonPath } from "./interactiveCanvas.js";
+import { collectNodesWithinPolygon } from "./lassoSelection.js";
 
 const DEFAULT_LINE_COLOR = 0x3b82f6;
 const DEFAULT_LINE_ALPHA = 0.85;
