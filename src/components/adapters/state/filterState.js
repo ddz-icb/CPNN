@@ -16,6 +16,8 @@ export const minCommunitySizeTextInit = 0;
 export const maxCommunitySizeInit = "";
 export const maxCommunitySizeTextInit = "";
 export const componentDensityInit = 0;
+export const maxComponentDensityInit = "";
+export const maxComponentDensityTextInit = "";
 export const minCompSizeInit = 2;
 export const minCompSizeTextInit = 2;
 export const maxCompSizeInit = "";
@@ -43,6 +45,8 @@ export const filterInit = {
   maxCommunitySizeText: maxCommunitySizeTextInit,
   componentDensity: componentDensityInit,
   componentDensityText: componentDensityInit,
+  maxComponentDensity: maxComponentDensityInit,
+  maxComponentDensityText: maxComponentDensityTextInit,
   minCompSize: minCompSizeInit,
   minCompSizeText: minCompSizeTextInit,
   maxCompSize: maxCompSizeInit,

@@ -12,12 +12,14 @@ import {
   minCompSizeInit,
   maxCompSizeInit,
   componentDensityInit,
+  maxComponentDensityInit,
 } from "../../../adapters/state/filterState.js";
 import {
   lassoDescription,
   minLinkThresholdDescription,
   maxLinkThresholdDescription,
   maxCompSizeDescription,
+  maxComponentDensityDescription,
   componentDensityDescription,
   mergeByNameDescription,
   minCompSizeDescription,
@@ -123,6 +125,17 @@ export function FilterSidebar() {
         text={"Min Component Density"}
         infoHeading={"Filter by Component Density"}
         infoDescription={componentDensityDescription}
+      />
+      <FieldBlock
+        valueText={filter.maxComponentDensityText}
+        setValue={(value) => setFilter("maxComponentDensity", value)}
+        setValueText={(value) => setFilter("maxComponentDensityText", value)}
+        fallbackValue={maxComponentDensityInit}
+        min={0}
+        step={1}
+        text={"Max Component Density"}
+        infoHeading={"Filter by Component Density"}
+        infoDescription={maxComponentDensityDescription}
       />
       <FieldBlock
         valueText={filter.minCompSizeText}

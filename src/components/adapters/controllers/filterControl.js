@@ -71,8 +71,10 @@ export function FilterControl() {
         filter.minCommunitySize,
         "\n    Max Community Size: ",
         filter.maxCommunitySize,
-        "\n    Component Density: ",
+        "\n    Min Component Density: ",
         filter.componentDensity,
+        "\n    Max Component Density: ",
+        filter.maxComponentDensity,
         "\n    Lasso Selection: ",
         filter.lassoSelection,
         "\n    Min Component Size: ",
@@ -106,7 +108,7 @@ export function FilterControl() {
         const linksBeforeStructural = filteredGraphData.links;
         filteredGraphData = { ...filteredGraphData, links: withoutAdditionalLinkAttribs(filteredGraphData.links) };
 
-        filteredGraphData = filterComponentDensity(filteredGraphData, filter.componentDensity);
+        filteredGraphData = filterComponentDensity(filteredGraphData, filter.componentDensity, filter.maxComponentDensity);
         filteredGraphData = filterCommunityDensity(filteredGraphData, filter.communityDensity, communityState.communityResolution);
         filteredGraphData = filterMinNeighborhood(filteredGraphData, filter.minKCoreSize);
         filteredGraphData = filterComponentSizeRange(filteredGraphData, filter.minCompSize, filter.maxCompSize);
@@ -164,6 +166,7 @@ export function FilterControl() {
     filter.minCommunitySize,
     filter.maxCommunitySize,
     filter.componentDensity,
+    filter.maxComponentDensity,
     filter.minKCoreSize,
     filter.minCompSize,
     filter.maxCompSize,

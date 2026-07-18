@@ -44,16 +44,31 @@ function getCommunitySizeData(graphData, communityResolution) {
   return { idToCommunity, communityToSize };
 }
 
-export function filterComponentDensity(graphData, componentDensity) {
-  if (componentDensity <= 0) return graphData;
+export function filterComponentDensity(graphData, minComponentDensity, maxComponentDensity) {
+  const minDensity = getDensityLimit(minComponentDensity);
+  const maxDensity = getDensityLimit(maxComponentDensity);
+  const applyMin = minDensity !== null && minDensity > 0;
+  const applyMax = maxDensity !== null && maxDensity >= 0;
+
+  if (!applyMin && !applyMax) return graphData;
   const { IdToComp, componentAvgDegree } = getComponentDensityData(graphData);
   return {
     ...graphData,
     nodes: graphData.nodes.filter((node) => {
       const comp = IdToComp[node.id];
-      return componentAvgDegree[comp] >= componentDensity;
+      const density = componentAvgDegree[comp];
+      if (applyMin && density < minDensity) return false;
+      if (applyMax && density > maxDensity) return false;
+      return true;
     }),
   };
+}
+
+function getDensityLimit(value) {
+  if (value === "" || value === null || value === undefined) return null;
+
+  const limit = Number(value);
+  return Number.isFinite(limit) ? limit : null;
 }
 
 export function filterCommunityDensity(graphData, communityDensity, communityResolution) {
