@@ -60,8 +60,10 @@ export function filterNodesExist(graphData) {
 export function filterIgnoreNegatives(graphData, ignoreNegatives) {
   if (!ignoreNegatives) return graphData;
 
-  graphData.links = graphData.links.filter((link) => link.weight >= 0);
-  return graphData;
+  return {
+    ...graphData,
+    links: graphData.links.filter((link) => link.weight >= 0),
+  };
 }
 
 export function filterLasso(graphData, selectedNodeIds) {
