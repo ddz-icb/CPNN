@@ -1,12 +1,12 @@
 import log from "../../adapters/logging/logger.js";
 import { useGraphState } from "../../adapters/state/graphState.js";
-import { exampleGraphJson } from "../../../assets/exampleGraphJSON.js";
+import { defaultExampleGraph, getExampleGraphByName, isExampleGraphName } from "../../../assets/exampleGraphs.js";
 import { createGraph, deleteGraph, loadGraphNames, getGraph } from "../../domain/models/graph.js";
-import { createGraphIfNotExistsDB, deleteGraphDB } from "../../repository/graphRepo.js";
 import { errorService } from "./errorService.js";
 import { joinGraphNames, joinGraphs } from "../../domain/service/graph_calculations/joinGraph.js";
 import { useGraphFlags } from "../../adapters/state/graphFlagsState.js";
 import { processNamedFileUpload } from "./fileUploadService.js";
+import { getFileNameWithoutExtension } from "../../domain/service/parsing/fileParsing.js";
 
 function normalizeGraphForRuntime(graph) {
   const data = typeof graph.data === "string" ? JSON.parse(graph.data) : graph.data;
@@ -27,7 +27,7 @@ export const graphService = {
   async handleLoadGraphNames() {
     log.info("Loading graph names");
     try {
-      const graphNames = await loadGraphNames();
+      const graphNames = (await loadGraphNames()).filter((name) => !isExampleGraphName(name));
       this.setUploadedGraphNames(graphNames);
     } catch (error) {
       errorService.setError("Error setting init graph");
@@ -39,7 +39,7 @@ export const graphService = {
       await processNamedFileUpload({
         files,
         entityLabel: "graph",
-        uploadSingleFile: (file) => createGraph(file, createGraphSettings),
+        uploadSingleFile: (file) => createUploadedGraph(file, createGraphSettings),
         getExistingNames: () => this.getUploadedGraphNames(),
         setMergedNames: (names) => this.setUploadedGraphNames(names),
         log,
@@ -92,10 +92,10 @@ export const graphService = {
       log.error("Selected invalid graphs");
       return;
     }
-    let graph = await getGraph(fileNames[0]);
+    let graph = await getGraphByName(fileNames[0]);
     let joinedGraphData = graph.data;
     for (let i = 1; i < fileNames.length; i++) {
-      graph = await getGraph(fileNames[i]);
+      graph = await getGraphByName(fileNames[i]);
       joinedGraphData = joinGraphs(joinedGraphData, graph.data);
     }
     const joinedGraphName = joinGraphNames(fileNames);
@@ -113,7 +113,7 @@ export const graphService = {
     try {
       let remainingGraphNames = this.getActiveGraphNames()?.filter((name) => name !== filename);
       if (remainingGraphNames.length === 0) {
-        remainingGraphNames = [exampleGraphJson.name];
+        remainingGraphNames = [defaultExampleGraph.name];
       }
       this.setActiveGraphNames(remainingGraphNames);
     } catch (error) {
@@ -130,9 +130,9 @@ export const graphService = {
     if (this.getActiveGraphNames()?.includes(filename)) {
       this.handleRemoveActiveGraph(filename);
     }
-    if (filename === exampleGraphJson.name) {
-      errorService.setError("Cannot delete default graph");
-      log.error("Cannot delete default graph");
+    if (isExampleGraphName(filename)) {
+      errorService.setError("Cannot delete example graph");
+      log.error("Cannot delete example graph");
       return;
     }
     log.info("Deleting files with name", filename);
@@ -148,11 +148,7 @@ export const graphService = {
   },
   async handleSetInitGraph() {
     try {
-      // temporary: to clear cache
-      await deleteGraphDB(exampleGraphJson.name);
-
-      await createGraphIfNotExistsDB(normalizeGraphForRuntime(exampleGraphJson));
-      this.setActiveGraphNames([exampleGraphJson.name]);
+      this.setActiveGraphNames([defaultExampleGraph.name]);
     } catch (error) {
       errorService.setError("Error setting init graph");
       log.error("Error setting init graph");
@@ -237,3 +233,17 @@ export const graphService = {
     this.setGraphState("mapping", val);
   },
 };
+
+async function getGraphByName(filename) {
+  const exampleGraph = getExampleGraphByName(filename);
+  if (exampleGraph) return normalizeGraphForRuntime(exampleGraph);
+  return getGraph(filename);
+}
+
+function createUploadedGraph(file, createGraphSettings) {
+  const graphName = getFileNameWithoutExtension(file?.name ?? "");
+  if (isExampleGraphName(graphName)) {
+    throw new Error(`'${graphName}' is a built-in example graph. Rename the file before uploading it as a custom graph.`);
+  }
+  return createGraph(file, createGraphSettings);
+}

@@ -9,7 +9,7 @@ const TrashIcon = (props) => <SvgIcon svg={trashSvg} {...props} />;
 const PlusIcon = (props) => <SvgIcon svg={plusSvg} {...props} />;
 
 import { TableList, ButtonPopup, Button } from "../reusable_components/sidebarComponents.jsx";
-import { exampleGraphJson } from "../../../../assets/exampleGraphJSON.js";
+import { exampleGraphs, isExampleGraphName } from "../../../../assets/exampleGraphs.js";
 import { downloadTsvFile } from "../../../domain/service/download/download.js";
 import { exampleNodeMappingTsv } from "../../../../assets/exampleMappingTSV.js";
 import { uploadNodeMappingDescription } from "./descriptions/dataDescriptions.jsx";
@@ -28,6 +28,7 @@ export function DataSidebar() {
       <TopDataButtons />
       <ActiveGraphFiles activeGraphNames={graphState.activeGraphNames} />
       <UploadedGraphFiles uploadedGraphNames={graphState.uploadedGraphNames} activeGraphNames={graphState.activeGraphNames} />
+      <ExampleGraphFiles activeGraphNames={graphState.activeGraphNames} />
       <Mapping mapping={mappingState.mapping} />
       <UploadedMappings uploadedMappingNames={mappingState.uploadedMappingNames} />
     </>
@@ -58,9 +59,24 @@ function ActiveGraphFiles({ activeGraphNames }) {
   );
 }
 
+function ExampleGraphFiles({ activeGraphNames }) {
+  const isActiveGraph = (graph) => activeGraphNames && activeGraphNames.includes(graph.name);
+
+  return (
+    <TableList
+      heading={"Example Graphs"}
+      data={exampleGraphs}
+      displayKey={"label"}
+      secondaryKey={"description"}
+      onItemClick={(graph) => graphService.handleSelectGraph(graph.name)}
+      itemTooltipContent={(graph) => (isActiveGraph(graph) ? "Currently active" : "Load example graph")}
+    />
+  );
+}
+
 function UploadedGraphFiles({ uploadedGraphNames, activeGraphNames }) {
-  let uploadedGraphNamesNoExample = uploadedGraphNames?.filter((name) => name !== exampleGraphJson.name);
-  let onlyExampleGraph = activeGraphNames && activeGraphNames.length === 1 && activeGraphNames[0] === exampleGraphJson.name;
+  let uploadedGraphNamesNoExample = uploadedGraphNames?.filter((name) => !isExampleGraphName(name));
+  let onlyExampleGraph = activeGraphNames && activeGraphNames.length === 1 && isExampleGraphName(activeGraphNames[0]);
   const isActiveGraph = (graph) => activeGraphNames && activeGraphNames.includes(graph);
 
   return (
