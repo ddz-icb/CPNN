@@ -64,6 +64,28 @@
     transform var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
+.button-rect-shortcut {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+}
+
+.button-rect-shortcut .button-rect-label {
+  min-width: 0;
+}
+
+.button-rect-shortcut .nav-shortcut {
+  margin-left: 0;
+  color: #ffffff;
+  border-color: color-mix(in srgb, #ffffff 45%, transparent 55%);
+}
+
+.light .button-rect-shortcut[data-variant="secondary"] .nav-shortcut {
+  color: var(--color-text-secondary);
+  border-color: var(--color-border-subtle);
+}
+
 .button-rect:hover,
 .button-rect:focus-visible {
   background-color: var(--color-button-hover);

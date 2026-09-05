@@ -252,13 +252,13 @@
 }
 
 .dark .nav-shortcut {
-  color: color-mix(in srgb, var(--color-accent-contrast) 82%, var(--color-accent) 18%);
+  color: #ffffff;
   background: color-mix(in srgb, var(--color-surface-contrast) 56%, var(--color-accent) 44%);
   border-color: var(--color-border-accent);
 }
 
 .dark .nav-link:hover .nav-shortcut {
-  color: var(--color-accent-contrast);
+  color: #ffffff;
   background: color-mix(in srgb, var(--color-accent) 66%, #9ea9ff 34%);
   border-color: color-mix(in srgb, var(--color-accent-contrast) 50%, var(--color-accent) 50%);
 }

@@ -162,18 +162,20 @@ export function FieldApplyBlock({
 }
 
 export function Button({ onClick, onChange, linkRef, tooltip, tooltipId, text, shortcut, className, variant, disabled, fileInputProps = {} }) {
+  const buttonClassName = ["button-rect default-height default-min-width", shortcut ? "button-rect-shortcut" : "", className ?? ""].filter(Boolean).join(" ");
+
   return (
     <>
       <button
         type="button"
-        className={`button-rect default-height default-min-width ${className ?? ""}`}
+        className={buttonClassName}
         data-variant={variant}
         data-tooltip-id={tooltipId}
         data-tooltip-content={tooltip}
         onClick={onClick}
         disabled={disabled}
       >
-        <span>{text}</span>
+        <span className="button-rect-label">{text}</span>
         {shortcut && <kbd className="nav-shortcut">{shortcut}</kbd>}
         {(linkRef || onChange) && <input type="file" style={{ display: "none" }} onChange={onChange} ref={linkRef} {...fileInputProps} />}
       </button>
