@@ -68,10 +68,11 @@
     "start": "vite dev",
     "test": "node --test \"tests/unit/**/*.test.js\"",
     "build:wasm": "sh -c \"cd wasm/corr_matrix && cargo build --release --target wasm32-unknown-unknown && cp target/wasm32-unknown-unknown/release/corr_matrix.wasm ../../public/wasm/corr_matrix.wasm\"",
-    "build": "npm run build:wasm && vite build",
+    "build": "vite build",
+    "build:with-wasm": "npm run build:wasm && npm run build",
     "preview": "vite preview",
     "serve": "vite preview",
-    "build:serve": "npm run build && npm run serve"
+    "build:serve": "npm run build:with-wasm && npm run serve"
   },
   "overrides": {
     "react-codemirror2": {

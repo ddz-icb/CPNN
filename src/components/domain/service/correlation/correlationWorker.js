@@ -1,6 +1,7 @@
 import { computePearsonEdgesJs, computeSpearmanEdgesJs } from "./correlationMath.js";
 
 let wasmReady = null;
+const wasmUrl = new URL(`${import.meta.env.BASE_URL}wasm/corr_matrix.wasm`, self.location.origin);
 
 async function initWasm() {
   if (wasmReady) return wasmReady;
@@ -8,20 +9,11 @@ async function initWasm() {
   wasmReady = (async () => {
     if (!("WebAssembly" in self)) return null;
     try {
-      const response = await fetch("/wasm/corr_matrix.wasm");
+      const response = await fetch(wasmUrl);
       if (!response.ok) throw new Error(`Failed to fetch wasm: ${response.status}`);
 
-      let result;
-      if (WebAssembly.instantiateStreaming) {
-        try {
-          result = await WebAssembly.instantiateStreaming(response, {});
-        } catch (streamError) {
-          const buffer = await response.clone().arrayBuffer();
-          result = await WebAssembly.instantiate(buffer, {});
-        }
-      } else {
-        result = await WebAssembly.instantiate(await response.arrayBuffer(), {});
-      }
+      const buffer = await response.arrayBuffer();
+      const result = await WebAssembly.instantiate(buffer, {});
 
       return result.instance.exports;
     } catch (error) {
