@@ -1,20 +1,6 @@
 import { useEffect } from "react";
 import log from "../logging/logger.js";
-import {
-  filterLinkAttribs,
-  filterNodeAttribs,
-  filterNodeIds,
-  filterThreshold,
-  filterCommunityDensity,
-  filterCommunitySizeRange,
-  filterComponentDensity,
-  filterMinNeighborhood,
-  filterComponentSizeRange,
-  filterNodesExist,
-  filterLasso,
-  filterCommunityVisibility,
-  filterMergeByName,
-} from "../../domain/service/graph_calculations/filterGraph.js";
+import { applyGraphFilters } from "../../domain/service/graph_calculations/filterGraphPipeline.js";
 import { hasGraphStructureChanged } from "../../domain/service/graph_calculations/graphUtils.js";
 import { useFilter } from "../state/filterState.js";
 import { useAppearance } from "../state/appearanceState.js";
@@ -23,8 +9,6 @@ import { usePixiState } from "../state/pixiState.js";
 import { useGraphFlags } from "../state/graphFlagsState.js";
 import { errorService } from "../../application/services/errorService.js";
 import { useCommunityState } from "../state/communityState.js";
-import { buildCommunitySummary } from "../../domain/service/graph_calculations/communityGrouping.js";
-import { withoutAdditionalLinkAttribs } from "../../domain/service/enrichment/additionalLinkEnrichment.js";
 import { useColorschemeState } from "../state/colorschemeState.js";
 import { useTheme } from "../state/themeState.js";
 import { filterActiveNodesForPixi, syncNodeMapWithGraphData } from "../../domain/service/canvas_drawing/nodes.js";
@@ -84,46 +68,17 @@ export function FilterControl() {
       );
 
       try {
-        let filteredGraphData = {
-          ...graphState.graph.data,
-          nodes: graphState.originGraph.data.nodes,
-          links: graphState.originGraph.data.links,
-        };
-
-        filteredGraphData = filterMergeByName(filteredGraphData, graphFlags.mergeByName, {
-          preserveRepresentativeNodes: true,
-          previousGraphData: graphState.graph.data,
+        const { graphData: filteredGraphData, communitySummary } = applyGraphFilters({
+          graphData: graphState.graph.data,
+          originGraphData: graphState.originGraph.data,
+          filter,
+          mergeByName: graphFlags.mergeByName,
+          mergeOptions: {
+            preserveRepresentativeNodes: true,
+            previousGraphData: graphState.graph.data,
+          },
+          communityResolution: communityState.communityResolution,
         });
-        filteredGraphData = filterLasso(filteredGraphData, filter.lassoSelection);
-        filteredGraphData = filterNodeIds(filteredGraphData, filter.nodeIdFilters);
-        filteredGraphData = filterNodesExist(filteredGraphData);
-
-        filteredGraphData = filterThreshold(filteredGraphData, filter.minLinkThreshold, filter.maxLinkThreshold);
-        filteredGraphData = filterLinkAttribs(filteredGraphData, filter.linkFilter);
-        filteredGraphData = filterNodeAttribs(filteredGraphData, filter.nodeFilter);
-        filteredGraphData = filterNodesExist(filteredGraphData);
-
-        // Additional enrichment links are excluded from structural filters (component/community/k-core)
-        // prevents keeping nodes alive without regular connections.
-        const linksBeforeStructural = filteredGraphData.links;
-        filteredGraphData = { ...filteredGraphData, links: withoutAdditionalLinkAttribs(filteredGraphData.links) };
-
-        filteredGraphData = filterComponentDensity(filteredGraphData, filter.componentDensity, filter.maxComponentDensity);
-        filteredGraphData = filterCommunityDensity(filteredGraphData, filter.communityDensity, communityState.communityResolution);
-        filteredGraphData = filterMinNeighborhood(filteredGraphData, filter.minKCoreSize);
-        filteredGraphData = filterComponentSizeRange(filteredGraphData, filter.minCompSize, filter.maxCompSize);
-        filteredGraphData = filterCommunitySizeRange(
-          filteredGraphData,
-          filter.minCommunitySize,
-          filter.maxCommunitySize,
-          communityState.communityResolution,
-        );
-
-        const communitySummary = buildCommunitySummary(filteredGraphData, { resolution: communityState.communityResolution });
-        filteredGraphData = filterCommunityVisibility(filteredGraphData, communitySummary.idToCommunity, filter.communityHiddenIds);
-        filteredGraphData = filterNodesExist(filteredGraphData);
-
-        filteredGraphData = { ...filteredGraphData, links: filterNodesExist({ ...filteredGraphData, links: linksBeforeStructural }).links };
 
         const filteredGraph = { name: graphState.graph.name, data: filteredGraphData };
         const graphChanged = hasGraphStructureChanged(graphState.graph.data, filteredGraphData);

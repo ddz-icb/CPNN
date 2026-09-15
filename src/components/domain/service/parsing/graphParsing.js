@@ -1,12 +1,8 @@
 import log from "../../../adapters/logging/logger.js";
 import { getFileAsText, getFileNameWithoutExtension, parseSVFile } from "./fileParsing.js";
-import {
-  filterThreshold,
-  filterMergeByName,
-  filterNodesExist,
-  filterIgnoreNegatives,
-  filterComponentSizeRange,
-} from "../graph_calculations/filterGraph.js";
+import { filterIgnoreNegatives, filterNodesExist, filterThreshold } from "../graph_calculations/filterGraphLinks.js";
+import { filterComponentSizeRange } from "../graph_calculations/filterGraphNodes.js";
+import { filterMergeByName } from "../graph_calculations/joinGraph.js";
 import {
   getCorrelationMatrixIssue,
   getCorrelationMatrixWeight,

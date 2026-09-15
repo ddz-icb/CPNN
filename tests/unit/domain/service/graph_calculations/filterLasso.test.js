@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 
-import { filterLasso } from "../../../../../src/components/domain/service/graph_calculations/filterGraph.js";
+import { filterLasso } from "../../../../../src/components/domain/service/graph_calculations/filterGraphLinks.js";
 import { createGraph, linkIds, nodeIds } from "../../../../support/graphFixtures.js";
 
 describe("filterLasso", () => {

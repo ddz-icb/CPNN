@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 
-import { filterMergeByName } from "../../../../../src/components/domain/service/graph_calculations/filterGraph.js";
+import { filterMergeByName } from "../../../../../src/components/domain/service/graph_calculations/joinGraph.js";
 import { createGraph, nodeIds } from "../../../../support/graphFixtures.js";
 
 function findNode(graph, id) {
