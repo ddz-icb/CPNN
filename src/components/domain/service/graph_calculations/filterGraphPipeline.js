@@ -1,6 +1,6 @@
 import { withoutAdditionalLinkAttribs } from "../enrichment/additionalLinkEnrichment.js";
 import { buildCommunitySummary } from "./communityGrouping.js";
-import { filterLasso, filterLinkAttribs, filterNodesExist, filterThreshold } from "./filterGraphLinks.js";
+import { filterIgnoreNegatives, filterLasso, filterLinkAttribs, filterNodesExist, filterThreshold } from "./filterGraphLinks.js";
 import {
   filterCommunityDensity,
   filterCommunitySizeRange,
@@ -14,6 +14,7 @@ import {
 import { filterMergeByName } from "./joinGraph.js";
 
 const inactiveFilter = {
+  ignoreNegatives: false,
   lassoSelection: [],
   nodeIdFilters: [],
   minLinkThreshold: 0,
@@ -41,6 +42,7 @@ export function applyGraphFilters({ graphData, originGraphData = graphData, filt
   };
 
   filteredGraphData = filterMergeByName(filteredGraphData, mergeByName, mergeOptions);
+  filteredGraphData = filterIgnoreNegatives(filteredGraphData, filterSettings.ignoreNegatives);
   filteredGraphData = filterLasso(filteredGraphData, filterSettings.lassoSelection);
   filteredGraphData = filterNodeIds(filteredGraphData, filterSettings.nodeIdFilters);
   filteredGraphData = filterNodesExist(filteredGraphData);
@@ -71,4 +73,19 @@ export function applyGraphFilters({ graphData, originGraphData = graphData, filt
   filteredGraphData = { ...filteredGraphData, links: filterNodesExist({ ...filteredGraphData, links: linksBeforeStructural }).links };
 
   return { graphData: filteredGraphData, communitySummary };
+}
+
+export function applyGraphPrefilters(graphData, settings = {}) {
+  return applyGraphFilters({
+    graphData,
+    originGraphData: graphData,
+    filter: {
+      ignoreNegatives: settings.ignoreNegatives,
+      minLinkThreshold: settings.minEdgeCorr,
+      maxLinkThreshold: settings.maxEdgeCorr,
+      minCompSize: settings.minCompSize,
+      maxCompSize: settings.maxCompSize,
+    },
+    mergeByName: settings.mergeByName,
+  }).graphData;
 }

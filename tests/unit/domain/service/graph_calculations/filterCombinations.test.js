@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 
-import { applyGraphFilters } from "../../../../../src/components/domain/service/graph_calculations/filterGraphPipeline.js";
+import { applyGraphFilters, applyGraphPrefilters } from "../../../../../src/components/domain/service/graph_calculations/filterGraphPipeline.js";
 import { STRING_DB_LINK_ATTRIB } from "../../../../../src/components/domain/service/enrichment/stringDbConfig.js";
 import { parseAttribsFilter } from "../../../../../src/components/domain/service/parsing/attribsFilterParsing.js";
 import { parseNodeIdFilters } from "../../../../../src/components/domain/service/parsing/nodeIdFilterParsing.js";

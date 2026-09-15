@@ -1,8 +1,6 @@
 import log from "../../../adapters/logging/logger.js";
 import { getFileAsText, getFileNameWithoutExtension, parseSVFile } from "./fileParsing.js";
-import { filterIgnoreNegatives, filterNodesExist, filterThreshold } from "../graph_calculations/filterGraphLinks.js";
-import { filterComponentSizeRange } from "../graph_calculations/filterGraphNodes.js";
-import { filterMergeByName } from "../graph_calculations/joinGraph.js";
+import { applyGraphPrefilters } from "../graph_calculations/filterGraphPipeline.js";
 import {
   getCorrelationMatrixIssue,
   getCorrelationMatrixWeight,
@@ -86,16 +84,6 @@ function verifyCorrelationMatrixIds(parsedData) {
   }
 }
 
-function applyFilters(graphData, settings) {
-  let filteredGraph = graphData;
-  filteredGraph = filterMergeByName(filteredGraph, settings.mergeByName);
-  filteredGraph = filterIgnoreNegatives(filteredGraph, settings.ignoreNegatives);
-  filteredGraph = filterThreshold(filteredGraph, settings.minEdgeCorr, settings.maxEdgeCorr);
-  filteredGraph = filterComponentSizeRange(filteredGraph, settings.minCompSize, settings.maxCompSize);
-
-  return filterNodesExist(filteredGraph);
-}
-
 export async function parseGraphFile(file, settings) {
   if (!file) {
     throw new Error("No file was provided.");
@@ -113,7 +101,7 @@ export async function parseGraphFile(file, settings) {
   });
   verifyGraph({ name: resolvedGraphName, data: graphData });
 
-  graphData = applyFilters(graphData, settings);
+  graphData = applyGraphPrefilters(graphData, settings);
   sortGraph(graphData);
 
   const graph = { name: resolvedGraphName, data: graphData };
