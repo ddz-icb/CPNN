@@ -6,7 +6,7 @@ export function mockUploadedFilesLookup(t, table, { record = undefined } = {}) {
       lookups.push({ indexName, value });
       return {
         async first() {
-          return record;
+          return typeof record === "function" ? record({ indexName, value }) : record;
         },
       };
     },

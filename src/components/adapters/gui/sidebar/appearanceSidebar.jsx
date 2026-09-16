@@ -17,7 +17,7 @@ import {
 } from "./descriptions/appearanceDescriptions.jsx";
 import { useAppearance, linkWidthInit, threeDFovInit } from "../../../adapters/state/appearanceState.js";
 import { defaultColorschemeNames, useColorschemeState } from "../../../adapters/state/colorschemeState.js";
-import { colorschemeService } from "../../../application/services/colorschemeService.js";
+import { colorschemeService, updateAttribColorMapping } from "../../../application/services/colorschemeService.js";
 import { darkTheme, useTheme } from "../../state/themeState.js";
 import { themeService } from "../../../application/services/themeService.js";
 import { applyCameraPreset, fitCameraToNodes, resetCamera3D } from "../../../domain/service/canvas_drawing/camera3D.js";
@@ -270,30 +270,7 @@ function ColorSelection() {
 
 export function ColorMappingSelect({ heading, colorschemeData, attribsToColorIndices, setMapping }) {
   const handleColorChange = (colorIndex, newAttribute) => {
-    const updatedMapping = { ...attribsToColorIndices };
-
-    const oldAttribute = Object.keys(updatedMapping).find((key) => updatedMapping[key] === colorIndex);
-
-    const previousColorIndex = updatedMapping[newAttribute];
-
-    updatedMapping[newAttribute] = colorIndex;
-
-    if (oldAttribute) {
-      if (previousColorIndex !== undefined) {
-        updatedMapping[oldAttribute] = previousColorIndex;
-      } else {
-        const usedColors = Object.values(updatedMapping);
-        const firstAvailableColor = Object.keys(colorschemeData)?.find((index) => !usedColors.includes(parseInt(index, 10)));
-
-        if (firstAvailableColor !== undefined) {
-          updatedMapping[oldAttribute] = parseInt(firstAvailableColor, 10);
-        } else {
-          delete updatedMapping[oldAttribute];
-        }
-      }
-    }
-
-    setMapping(updatedMapping);
+    setMapping(updateAttribColorMapping({ attribsToColorIndices, colorschemeData, colorIndex, newAttribute }));
   };
 
   return (

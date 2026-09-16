@@ -28,6 +28,38 @@ export function reconcileAttribColorMappingsForGraph(graphData, colorschemeState
   };
 }
 
+export function updateAttribColorMapping({ attribsToColorIndices = {}, colorschemeData = [], colorIndex, newAttribute }) {
+  const normalizedColorIndex = Number(colorIndex);
+  const attribute = newAttribute == null ? "" : String(newAttribute);
+  const updatedMapping = { ...(attribsToColorIndices ?? {}) };
+
+  if (!Number.isInteger(normalizedColorIndex) || normalizedColorIndex < 0 || normalizedColorIndex >= colorschemeData.length || !attribute.trim()) {
+    return updatedMapping;
+  }
+
+  const oldAttribute = Object.keys(updatedMapping).find((key) => updatedMapping[key] === normalizedColorIndex);
+  const previousColorIndex = updatedMapping[attribute];
+
+  updatedMapping[attribute] = normalizedColorIndex;
+
+  if (oldAttribute && oldAttribute !== attribute) {
+    if (previousColorIndex !== undefined) {
+      updatedMapping[oldAttribute] = previousColorIndex;
+    } else {
+      const usedColors = Object.values(updatedMapping);
+      const firstAvailableColor = colorschemeData.findIndex((_, index) => !usedColors.includes(index));
+
+      if (firstAvailableColor !== -1) {
+        updatedMapping[oldAttribute] = firstAvailableColor;
+      } else {
+        delete updatedMapping[oldAttribute];
+      }
+    }
+  }
+
+  return updatedMapping;
+}
+
 export const colorschemeService = {
   async handleLoadColorschemeNames() {
     log.info("Loading color scheme names");
