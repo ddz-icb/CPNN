@@ -1,31 +1,20 @@
 import log from "../../../adapters/logging/logger.js";
 import { jsPDF } from "jspdf";
-import { svg2pdf } from "svg2pdf.js";
+import * as svg2pdfPackage from "svg2pdf.js";
 import { getFileNameWithoutExtension } from "../parsing/fileParsing.js";
-import { buildExportGraphData, cleanLinks, cleanNodes, cleanNodesNoCoords, drawLegendOnPdf } from "./exportGraph.js";
+import { buildExportGraphData, drawLegendOnPdf } from "./exportGraph.js";
 import { build3DRenderQueue, createSvgContext, measureGraphBounds, render2DGraph, render3DQueue } from "./exportRender.js";
 import { buildExportGridLines } from "./exportGrid.js";
 import { projectGridLines } from "./exportProjection.js";
+import { triggerDownload } from "./fileDownload.js";
+import { downloadGraphJson } from "./graphJsonDownload.js";
 
 const pdfPadding = 10;
+const svg2pdf = svg2pdfPackage.svg2pdf ?? svg2pdfPackage.default?.svg2pdf;
 
 const serializeSvgElement = (svgElement) => new XMLSerializer().serializeToString(svgElement);
 
-function isObject(value) {
-  return value && typeof value === "object" && !Array.isArray(value);
-}
-
-function triggerDownload(blob, filename) {
-  log.info(`Downloading ${filename}`);
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
+export { downloadGraphJson };
 
 function createGraphSvgElement(
   graphData,
@@ -176,33 +165,6 @@ export async function downloadAsPDF(
     .catch((error) => {
       log.error("Error generating PDF export:", error);
     });
-}
-
-function normalizeGraphJsonOptions(options) {
-  if (!isObject(options)) return {};
-  if (Object.hasOwn(options, "settings") || Object.hasOwn(options, "includeCoordinates")) return options;
-
-  return {
-    includeCoordinates: Boolean(options.physics),
-    settings: options,
-  };
-}
-
-export function downloadGraphJson(graph, options = {}) {
-  const { includeCoordinates = false, settings = null } = normalizeGraphJsonOptions(options);
-  const nodes = includeCoordinates ? cleanNodes(graph.data.nodes) : cleanNodesNoCoords(graph.data.nodes);
-  const links = cleanLinks(graph.data.links);
-
-  const data = { nodes, links };
-  if (isObject(settings)) {
-    Object.assign(data, settings);
-  }
-
-  const blob = new Blob([JSON.stringify(data, null, 4)], {
-    type: "application/json",
-  });
-
-  triggerDownload(blob, `${getFileNameWithoutExtension(graph.name)}.json`);
 }
 
 export function downloadObjectAsFile(object, name) {

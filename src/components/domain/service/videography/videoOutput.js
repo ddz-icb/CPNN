@@ -6,6 +6,8 @@ import {
   VIDEO_EXPORT_FORMAT_WEBM,
 } from "./videoExportConfig.js";
 
+export { triggerDownload } from "../download/fileDownload.js";
+
 export function getSupportedRecorderMimeType(format = VIDEO_EXPORT_FORMAT_WEBM) {
   if (typeof MediaRecorder === "undefined" || typeof MediaRecorder.isTypeSupported !== "function") {
     return "";
@@ -19,17 +21,6 @@ export function getVideoExtension(mimeType) {
 
 export function buildTrackingShotFilename(graphName, extension) {
   return `${getFileNameWithoutExtension(graphName ?? "graph")}_tracking_shot.${extension}`;
-}
-
-export function triggerDownload(blob, filename) {
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = filename;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
 }
 
 function getRecorderMimeTypeCandidates(format) {
