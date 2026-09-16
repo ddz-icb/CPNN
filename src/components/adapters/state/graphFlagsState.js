@@ -4,14 +4,14 @@ export const mergeByNameInit = false;
 export const filteredAfterStartInit = false;
 export const isPreprocessedInit = false;
 
-const graphFlagsInit = {
+export const graphFlagsStateInit = {
   mergeByName: mergeByNameInit,
   filteredAfterStart: filteredAfterStartInit,
   isPreprocessed: isPreprocessedInit,
 };
 
 export const useGraphFlags = create((set) => ({
-  graphFlags: graphFlagsInit,
+  graphFlags: graphFlagsStateInit,
   setGraphFlags: (key, value) =>
     set((state) => ({
       graphFlags: { ...state.graphFlags, [key]: value },

@@ -1,6 +1,7 @@
 import { exampleGraphJson } from "./exampleGraphJSON.js";
 import gloBISpeciesInteractionsData from "./GloBISpeciesInteractions.json";
 import tokyoRailwaySystemData from "./TokyoRailwaySystem.json";
+import { defaultExampleGraphName, exampleGraphNames, isExampleGraphName as isKnownExampleGraphName } from "./exampleGraphMetadata.js";
 
 export const exampleGraphs = [
   {
@@ -22,8 +23,7 @@ export const exampleGraphs = [
   },
 ];
 
-export const defaultExampleGraph = exampleGraphs[0];
-export const exampleGraphNames = exampleGraphs.map((graph) => graph.name);
+export const defaultExampleGraph = exampleGraphs.find((graph) => graph.name === defaultExampleGraphName) ?? exampleGraphs[0];
 const exampleGraphsByName = new Map(exampleGraphs.map((graph) => [graph.name, graph]));
 
 export function getExampleGraphByName(name) {
@@ -31,5 +31,7 @@ export function getExampleGraphByName(name) {
 }
 
 export function isExampleGraphName(name) {
-  return exampleGraphsByName.has(name);
+  return isKnownExampleGraphName(name);
 }
+
+export { exampleGraphNames };

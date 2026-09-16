@@ -1,6 +1,6 @@
 import log from "../../adapters/logging/logger.js";
 import { useGraphState } from "../../adapters/state/graphState.js";
-import { defaultExampleGraph, getExampleGraphByName, isExampleGraphName } from "../../../assets/exampleGraphs.js";
+import { defaultExampleGraphName, isExampleGraphName } from "../../../assets/exampleGraphMetadata.js";
 import { createGraph, deleteGraph, loadGraphNames, getGraph } from "../../domain/models/graph.js";
 import { errorService } from "./errorService.js";
 import { joinGraphDataList, joinGraphNames } from "../../domain/service/graph_calculations/joinGraph.js";
@@ -21,6 +21,29 @@ function normalizeGraphForRuntime(graph) {
       links: data.links.map((link) => ({ ...link })),
     },
   };
+}
+
+export function getSelectedActiveGraphNames(filename) {
+  if (!filename) throw new Error("Selected invalid graph");
+  return [filename];
+}
+
+export function getAddedActiveGraphNames(activeGraphNames, filename) {
+  if (!filename) throw new Error("Selected invalid graph");
+
+  const currentGraphNames = activeGraphNames ?? [];
+  if (currentGraphNames.some((name) => name === filename)) {
+    throw new Error("Graph already active");
+  }
+
+  return [...currentGraphNames, filename];
+}
+
+export function getRemainingActiveGraphNames(activeGraphNames, filename, fallbackGraphName = defaultExampleGraphName) {
+  if (!filename) throw new Error("Selected invalid graph");
+
+  const remainingGraphNames = (activeGraphNames ?? []).filter((name) => name !== filename);
+  return remainingGraphNames.length === 0 ? [fallbackGraphName] : remainingGraphNames;
 }
 
 export const graphService = {
@@ -51,38 +74,22 @@ export const graphService = {
     }
   },
   async handleSelectGraph(filename) {
-    if (!filename) {
-      errorService.setError("Selected invalid graph");
-      log.error("Selected invalid graph");
-      return;
-    }
     log.info("Replacing graph");
 
     try {
-      this.setActiveGraphNames([filename]);
-      this.setMergeByName(false);
+      this.setActiveGraphNames(getSelectedActiveGraphNames(filename));
     } catch (error) {
       errorService.setError(error.message);
       log.error(error);
     }
   },
   async handleAddActiveGraph(filename) {
-    if (!filename) {
-      errorService.setError("Selected invalid graph");
-      log.error("Selected invalid graph");
-      return;
-    }
-    if (this.getActiveGraphNames().some((name) => name === filename)) {
-      errorService.setError("Graph already active");
-      log.error("Graph already active");
-      return;
-    }
     log.info("Adding file with name: ", filename);
 
     try {
-      this.setActiveGraphNames([...this.getActiveGraphNames(), filename]);
+      this.setActiveGraphNames(getAddedActiveGraphNames(this.getActiveGraphNames(), filename));
     } catch (error) {
-      errorService.setError("Error loading graph");
+      errorService.setError(error.message);
       log.error(error);
     }
   },
@@ -110,13 +117,9 @@ export const graphService = {
     log.info("removing graph file with name:", filename);
 
     try {
-      let remainingGraphNames = this.getActiveGraphNames()?.filter((name) => name !== filename);
-      if (remainingGraphNames.length === 0) {
-        remainingGraphNames = [defaultExampleGraph.name];
-      }
-      this.setActiveGraphNames(remainingGraphNames);
+      this.setActiveGraphNames(getRemainingActiveGraphNames(this.getActiveGraphNames(), filename));
     } catch (error) {
-      errorService.setError("Error removing graph");
+      errorService.setError(error.message);
       log.error(error);
     }
   },
@@ -147,7 +150,7 @@ export const graphService = {
   },
   async handleSetInitGraph() {
     try {
-      this.setActiveGraphNames([defaultExampleGraph.name]);
+      this.setActiveGraphNames([defaultExampleGraphName]);
     } catch (error) {
       errorService.setError("Error setting init graph");
       log.error("Error setting init graph");
@@ -234,9 +237,9 @@ export const graphService = {
 };
 
 async function getGraphByName(filename) {
-  const exampleGraph = getExampleGraphByName(filename);
-  if (exampleGraph) return normalizeGraphForRuntime(exampleGraph);
-  return getGraph(filename);
+  return isExampleGraphName(filename)
+    ? normalizeGraphForRuntime((await import("../../../assets/exampleGraphs.js")).getExampleGraphByName(filename))
+    : getGraph(filename);
 }
 
 function createUploadedGraph(file, createGraphSettings) {
