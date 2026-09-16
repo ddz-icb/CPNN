@@ -15,6 +15,19 @@ const svg2pdf = svg2pdfPackage.svg2pdf ?? svg2pdfPackage.default?.svg2pdf;
 const serializeSvgElement = (svgElement) => new XMLSerializer().serializeToString(svgElement);
 
 export { downloadGraphJson };
+export {
+  buildColorschemeTsvDownload,
+  buildCsvFileDownload,
+  buildNodeIdsCsvDownload,
+  buildObjectJsonDownload,
+  buildTsvFileDownload,
+  downloadColorschemeTsv,
+  downloadCsvFile,
+  downloadNodeIdsCsv,
+  downloadObjectAsFile,
+  downloadTsvFile,
+  serializeColorschemeTsv,
+} from "./dataDownload.js";
 
 function createGraphSvgElement(
   graphData,
@@ -165,46 +178,6 @@ export async function downloadAsPDF(
     .catch((error) => {
       log.error("Error generating PDF export:", error);
     });
-}
-
-export function downloadObjectAsFile(object, name) {
-  const formattedJson = typeof object === "string" ? JSON.stringify(JSON.parse(object), null, 4) : JSON.stringify(object, null, 4);
-  const blob = new Blob([formattedJson], { type: "application/json" });
-  triggerDownload(blob, name);
-}
-
-export function downloadCsvFile(csvContent, fileName) {
-  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-  triggerDownload(blob, `${getFileNameWithoutExtension(fileName)}.csv`);
-}
-
-export function downloadTsvFile(tsvContent, fileName) {
-  const blob = new Blob([tsvContent], { type: "text/tab-separated-values;charset=utf-8;" });
-  triggerDownload(blob, `${getFileNameWithoutExtension(fileName)}.tsv`);
-}
-
-export function serializeColorschemeTsv(colorscheme) {
-  if (!colorscheme?.data) {
-    throw new Error("No color scheme selected for export.");
-  }
-  if (!Array.isArray(colorscheme.data) || !colorscheme.data.length) {
-    throw new Error("Color scheme export requires at least one color.");
-  }
-
-  return ["hex", ...colorscheme.data].join("\n") + "\n";
-}
-
-export function downloadColorschemeTsv(colorscheme, suffix = "colorscheme") {
-  const baseName = getFileNameWithoutExtension(colorscheme?.name || "colorscheme");
-  downloadTsvFile(serializeColorschemeTsv(colorscheme), `${baseName}_${suffix}`);
-}
-
-export function downloadNodeIdsCsv(nodes, fileName) {
-  if (!nodes) return;
-
-  const rows = nodes.map((node) => node.id ?? "");
-  const baseName = getFileNameWithoutExtension(fileName);
-  downloadCsvFile(rows.join("\n"), `${baseName}_node_ids`);
 }
 
 export function downloadLegendPdf(graphName, linkColorscheme, linkAttribsToColorIndices, nodeColorscheme, nodeAttribsToColorIndices, mapping) {

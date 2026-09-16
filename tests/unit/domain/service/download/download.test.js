@@ -6,6 +6,14 @@ import { filterInit, useFilter } from "../../../../../src/components/adapters/st
 import { physicsInit, usePhysics } from "../../../../../src/components/adapters/state/physicsState.js";
 import { buildCurrentGraphSettingsExport } from "../../../../../src/components/application/services/graphSettingsService.js";
 import {
+  buildColorschemeTsvDownload,
+  buildCsvFileDownload,
+  buildNodeIdsCsvDownload,
+  buildObjectJsonDownload,
+  buildTsvFileDownload,
+  serializeColorschemeTsv,
+} from "../../../../../src/components/domain/service/download/dataDownload.js";
+import {
   buildGraphJsonData,
   buildGraphJsonDownload,
 } from "../../../../../src/components/domain/service/download/graphJsonDownload.js";
@@ -156,5 +164,48 @@ describe("downloadGraphJson", () => {
     assert.equal(Object.hasOwn(data.appearance, "linkWidthText"), false);
     assert.equal(Object.hasOwn(data.filter, "minKCoreSizeText"), false);
     assert.equal(Object.hasOwn(data.physics, "linkLengthText"), false);
+  });
+});
+
+describe("data download builders", () => {
+  test("builds JSON object downloads from objects and JSON strings", async () => {
+    const objectDownload = buildObjectJsonDownload({ nodes: ["A"], settings: { linkWidth: 2 } }, "graph.json");
+    const stringDownload = buildObjectJsonDownload('{"nodes":["A"]}', "graph-string.json");
+
+    assert.equal(objectDownload.filename, "graph.json");
+    assert.equal(objectDownload.blob.type, "application/json");
+    assert.deepEqual(JSON.parse(await objectDownload.blob.text()), { nodes: ["A"], settings: { linkWidth: 2 } });
+    assert.deepEqual(JSON.parse(await stringDownload.blob.text()), { nodes: ["A"] });
+  });
+
+  test("builds CSV and TSV downloads with normalized extensions", async () => {
+    const csvDownload = buildCsvFileDownload("id\nA", "nodes.tsv");
+    const tsvDownload = buildTsvFileDownload("id\tattribs\nA\tKinase", "mapping.csv");
+
+    assert.equal(csvDownload.filename, "nodes.csv");
+    assert.equal(csvDownload.blob.type, "text/csv;charset=utf-8;");
+    assert.equal(await csvDownload.blob.text(), "id\nA");
+    assert.equal(tsvDownload.filename, "mapping.tsv");
+    assert.equal(tsvDownload.blob.type, "text/tab-separated-values;charset=utf-8;");
+    assert.equal(await tsvDownload.blob.text(), "id\tattribs\nA\tKinase");
+  });
+
+  test("builds colorscheme TSV downloads and rejects missing color data", async () => {
+    const colorscheme = { name: "palette.csv", data: ["#111111", "#222222"] };
+    const download = buildColorschemeTsvDownload(colorscheme, "node_colorscheme");
+
+    assert.equal(serializeColorschemeTsv(colorscheme), "hex\n#111111\n#222222\n");
+    assert.equal(download.filename, "palette_node_colorscheme.tsv");
+    assert.equal(await download.blob.text(), "hex\n#111111\n#222222\n");
+    assert.throws(() => serializeColorschemeTsv(null), /No color scheme selected/);
+    assert.throws(() => serializeColorschemeTsv({ data: [] }), /at least one color/);
+  });
+
+  test("builds node id CSV downloads and skips missing node lists", async () => {
+    const download = buildNodeIdsCsvDownload([{ id: "P1_AKT1" }, { id: "P2_MAPK1" }], "graph.json");
+
+    assert.equal(download.filename, "graph_node_ids.csv");
+    assert.equal(await download.blob.text(), "P1_AKT1\nP2_MAPK1");
+    assert.equal(buildNodeIdsCsvDownload(null, "graph.json"), null);
   });
 });
