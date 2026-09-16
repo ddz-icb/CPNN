@@ -31,4 +31,10 @@ describe("parseColorschemeFile uploads", () => {
 
     await assert.rejects(() => parseColorschemeFile(file), /Invalid hex color value at row 3/);
   });
+
+  test("rejects color scheme uploads with missing hex values", async () => {
+    const file = createTextFile("palette-upload.csv", ["hex", "#56b4e9", "\"   \""].join("\n"), "text/csv");
+
+    await assert.rejects(() => parseColorschemeFile(file), /Missing hex color value at row 3/);
+  });
 });

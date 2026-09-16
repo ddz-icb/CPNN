@@ -34,4 +34,12 @@ describe("parseMappingFile uploads", () => {
 
     await assert.rejects(() => parseMappingFile(file), /Mapping file must contain columns 'id' and 'attribs'/);
   });
+
+  test("rejects mapping uploads with missing node IDs or missing attribute values", async () => {
+    const missingIdFile = createTextFile("mapping-missing-id.csv", ["id,attribs", ",Kinase"].join("\n"), "text/csv");
+    const missingAttribsFile = createTextFile("mapping-missing-attribs.csv", ["id,attribs", "P1_AKT1,"].join("\n"), "text/csv");
+
+    await assert.rejects(() => parseMappingFile(missingIdFile), /missing a node ID/);
+    await assert.rejects(() => parseMappingFile(missingAttribsFile), /has no attributes/);
+  });
 });

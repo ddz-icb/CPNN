@@ -38,6 +38,19 @@ function getWorker() {
   return correlationWorker;
 }
 
+function toMeasurementNumber(value) {
+  if (value === null || value === undefined || Number.isNaN(value)) return Number.NaN;
+  if (typeof value === "string") {
+    const normalizedValue = value.trim().toLowerCase();
+    if (!normalizedValue || normalizedValue === "na" || normalizedValue === "n/a" || normalizedValue === "nan") {
+      return Number.NaN;
+    }
+  }
+
+  const numberValue = typeof value === "number" ? value : Number(value);
+  return Number.isFinite(numberValue) ? numberValue : Number.NaN;
+}
+
 function requestWorker(payload) {
   return new Promise((resolve, reject) => {
     const id = ++requestId;
@@ -62,8 +75,7 @@ function toNumericMatrix(fileData) {
     const row = data[i];
     let hasValue = false;
     for (let j = 0; j < colCount; j++) {
-      const val = row[j];
-      const num = typeof val === "number" ? val : Number(val);
+      const num = toMeasurementNumber(row[j]);
       if (Number.isFinite(num)) {
         hasValue = true;
         break;
@@ -85,9 +97,7 @@ function toNumericMatrix(fileData) {
     rowNames[outRow] = String(firstColumn[i]);
     const base = outRow * colCount;
     for (let j = 0; j < colCount; j++) {
-      const val = row[j];
-      const num = typeof val === "number" ? val : Number(val);
-      matrix[base + j] = Number.isFinite(num) ? num : Number.NaN;
+      matrix[base + j] = toMeasurementNumber(row[j]);
     }
     outRow += 1;
   }

@@ -85,7 +85,11 @@ function getNormalizedEndpointId(endpoint, fieldName, linkIndex) {
   return normalizeNodeId(String(endpointId));
 }
 
-function normalizeNodeAttribs(node, nodeIndex) {
+function isBlankAttribute(value) {
+  return value === undefined || value === null || String(value).trim() === "";
+}
+
+function normalizeNodeAttribs(node, normalizedNodeId) {
   if (node.attribs === undefined || node.attribs === null) {
     node.attribs = [];
     return node.attribs;
@@ -95,7 +99,22 @@ function normalizeNodeAttribs(node, nodeIndex) {
     node.attribs = [node.attribs];
   }
 
+  node.attribs.forEach((attrib, attribIndex) => {
+    if (isBlankAttribute(attrib)) {
+      throw new Error(`Node '${normalizedNodeId}' has an empty attribute at index ${attribIndex}.`);
+    }
+  });
+
   return node.attribs;
+}
+
+function normalizeLinkAttrib(link, linkIndex) {
+  if (link.attrib === undefined || link.attrib === null) {
+    throw new Error(`Link at index ${linkIndex} is missing the 'attrib' property.`);
+  }
+  if (String(link.attrib).trim() === "") {
+    throw new Error(`Link at index ${linkIndex} has an empty 'attrib' property.`);
+  }
 }
 
 export function verifyGraph(graph) {
@@ -126,11 +145,7 @@ export function verifyGraph(graph) {
     }
     normalizedNodeIds.add(normalizedNodeId.toLowerCase());
 
-    normalizeNodeAttribs(node, i).forEach((attrib, attribIndex) => {
-      if (attrib === undefined || attrib === null || String(attrib).trim() === "") {
-        throw new Error(`Node '${normalizedNodeId}' has an empty attribute at index ${attribIndex}.`);
-      }
-    });
+    normalizeNodeAttribs(node, normalizedNodeId);
   });
 
   links.forEach((link, i) => {
@@ -146,9 +161,7 @@ export function verifyGraph(graph) {
     if (link.weight === undefined) {
       link.weight = 1;
     }
-    if (link.attrib === undefined || link.attrib === null) {
-      throw new Error(`Link at index ${i} is missing the 'attrib' property.`);
-    }
+    normalizeLinkAttrib(link, i);
     if (link.attribs !== undefined || link.weights !== undefined || link.directions !== undefined) {
       throw new Error(`Link at index ${i} uses the old multilink format. Use scalar 'attrib', optional scalar 'weight', and optional boolean 'directed'.`);
     }
@@ -167,9 +180,6 @@ export function verifyGraph(graph) {
 
     if (typeof link.weight !== "number" || !Number.isFinite(link.weight)) {
       throw new Error(`Link '${sourceId}' -> '${targetId}' has an invalid 'weight' property. Expected a finite number.`);
-    }
-    if (link.attrib === undefined || link.attrib === null || String(link.attrib).trim() === "") {
-      throw new Error(`Link '${sourceId}' -> '${targetId}' has an empty 'attrib' property.`);
     }
     if (link.directed !== undefined && typeof link.directed !== "boolean") {
       throw new Error(`Link '${sourceId}' -> '${targetId}' has an invalid 'directed' property. Expected a boolean.`);

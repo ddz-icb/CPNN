@@ -196,4 +196,58 @@ describe("combined graph filters", () => {
     assert.deepEqual(nodeIds(filteredGraph), ["A", "B", "C"]);
     assert.deepEqual(linkIds(filteredGraph), ["a-b", "a-c", "b-c"]);
   });
+
+  test("maps upload prefilters into the shared filter pipeline", () => {
+    const mergedAktId = "P111_AKT1; P222_AKT1";
+    const graph = createGraph({
+      nodes: [
+        { id: "P111_AKT1", attribs: [] },
+        { id: "P222_AKT1", attribs: [] },
+        { id: "Q333_MAPK1", attribs: [] },
+        { id: "N111_BAD", attribs: [] },
+        { id: "N222_BAD", attribs: [] },
+        { id: "S111_SOLO", attribs: [] },
+      ],
+      links: [
+        { id: "akt-mapk-low", source: "P111_AKT1", target: "Q333_MAPK1", weight: 0.4, attrib: "primary" },
+        { id: "akt-mapk-high", source: "P222_AKT1", target: "Q333_MAPK1", weight: 0.8, attrib: "primary" },
+        { id: "negative", source: "N111_BAD", target: "N222_BAD", weight: -0.9, attrib: "primary" },
+        { id: "too-high", source: "Q333_MAPK1", target: "S111_SOLO", weight: 0.95, attrib: "primary" },
+      ],
+    });
+    const prefilterSettings = {
+      mergeByName: true,
+      ignoreNegatives: true,
+      minEdgeCorr: 0.5,
+      maxEdgeCorr: 0.9,
+      minCompSize: 2,
+      maxCompSize: 2,
+    };
+
+    const prefilteredGraph = applyGraphPrefilters(graph, prefilterSettings);
+    const { graphData: directPipelineGraph } = applyGraphFilters({
+      graphData: graph,
+      originGraphData: graph,
+      filter: {
+        ignoreNegatives: true,
+        minLinkThreshold: 0.5,
+        maxLinkThreshold: 0.9,
+        minCompSize: 2,
+        maxCompSize: 2,
+      },
+      mergeByName: true,
+    });
+
+    assert.deepEqual(prefilteredGraph, directPipelineGraph);
+    assert.deepEqual(nodeIds(prefilteredGraph), [mergedAktId, "Q333_MAPK1"]);
+    assert.deepEqual(linkSummaries(prefilteredGraph), [
+      {
+        id: "akt-mapk-low",
+        source: mergedAktId,
+        target: "Q333_MAPK1",
+        weight: 0.8,
+        attrib: "primary",
+      },
+    ]);
+  });
 });

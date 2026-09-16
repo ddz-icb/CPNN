@@ -69,6 +69,64 @@ describe("parseGraphFile uploads", () => {
     ]);
   });
 
+  test("normalizes optional JSON node attributes", async () => {
+    const file = createTextFile(
+      "json-defaults.json",
+      JSON.stringify({
+        nodes: [{ id: "P1_AKT1" }, { id: "P2_MAPK1", attribs: "Kinase" }, { id: "P3_PTEN", attribs: ["Phosphatase", "T2D"] }],
+        links: [
+          { source: "P1_AKT1", target: "P2_MAPK1", attrib: "primary" },
+          { source: "P2_MAPK1", target: "P3_PTEN", weight: 0.4, attrib: "secondary" },
+        ],
+      }),
+      "application/json",
+    );
+
+    const graph = await parseGraphFile(file, { dataFormat: "json" });
+
+    assert.deepEqual(graph.data.nodes, [
+      { id: "P1_AKT1", attribs: [] },
+      { id: "P2_MAPK1", attribs: ["Kinase"] },
+      { id: "P3_PTEN", attribs: ["Phosphatase", "T2D"] },
+    ]);
+    assert.deepEqual(graphLinkSummaries(graph), [
+      {
+        source: "P1_AKT1",
+        target: "P2_MAPK1",
+        weight: 1,
+        attrib: "primary",
+      },
+      {
+        source: "P2_MAPK1",
+        target: "P3_PTEN",
+        weight: 0.4,
+        attrib: "secondary",
+      },
+    ]);
+  });
+
+  test("rejects JSON graph uploads with missing link attributes or empty node attributes", async () => {
+    const missingLinkAttribFile = createTextFile(
+      "missing-link-attrib.json",
+      JSON.stringify({
+        nodes: [{ id: "P1_AKT1" }, { id: "P2_MAPK1" }],
+        links: [{ source: "P1_AKT1", target: "P2_MAPK1", weight: 1 }],
+      }),
+      "application/json",
+    );
+    const emptyNodeAttribFile = createTextFile(
+      "empty-node-attrib.json",
+      JSON.stringify({
+        nodes: [{ id: "P1_AKT1", attribs: "" }, { id: "P2_MAPK1" }],
+        links: [{ source: "P1_AKT1", target: "P2_MAPK1", weight: 1, attrib: "primary" }],
+      }),
+      "application/json",
+    );
+
+    await assert.rejects(() => parseGraphFile(missingLinkAttribFile, { dataFormat: "json" }), /missing the 'attrib' property/);
+    await assert.rejects(() => parseGraphFile(emptyNodeAttribFile, { dataFormat: "json" }), /empty attribute/);
+  });
+
   test("loads correlation matrix uploads and converts them to weighted graph links", async () => {
     const file = createTextFile(
       "matrix-upload.csv",
@@ -93,6 +151,25 @@ describe("parseGraphFile uploads", () => {
         weight: 0.75,
         attrib: "matrix-upload",
       },
+    ]);
+  });
+
+  test("treats missing correlation matrix values as zero-weight links", async () => {
+    const file = createTextFile(
+      "matrix-missing-values.csv",
+      ["id,P1_AKT1,P2_MAPK1,P3_PTEN,P4_MTOR", "P1_AKT1,1,NA,,N/A", "P2_MAPK1,NA,1,NaN,0.6", "P3_PTEN,,NaN,1,0.7", "P4_MTOR,N/A,0.6,0.7,1"].join("\n"),
+      "text/csv",
+    );
+
+    const graph = await parseGraphFile(file, { dataFormat: "matrix" });
+
+    assert.deepEqual(graphLinkSummaries(graph), [
+      { source: "P2_MAPK1", target: "P1_AKT1", weight: 0, attrib: "matrix-missing-values" },
+      { source: "P3_PTEN", target: "P1_AKT1", weight: 0, attrib: "matrix-missing-values" },
+      { source: "P3_PTEN", target: "P2_MAPK1", weight: 0, attrib: "matrix-missing-values" },
+      { source: "P4_MTOR", target: "P1_AKT1", weight: 0, attrib: "matrix-missing-values" },
+      { source: "P4_MTOR", target: "P2_MAPK1", weight: 0.6, attrib: "matrix-missing-values" },
+      { source: "P4_MTOR", target: "P3_PTEN", weight: 0.7, attrib: "matrix-missing-values" },
     ]);
   });
 
@@ -122,6 +199,42 @@ describe("parseGraphFile uploads", () => {
         attrib: "tabular-upload",
       },
     ]);
+  });
+
+  test("ignores NAN values in tabular data when computing correlations", async () => {
+    const file = createTextFile(
+      "tabular-missing-values.tsv",
+      ["id\tsample1\tsample2\tsample3\tsample4", "P1_AKT1\t1\t2\tNA\t4", "P2_MAPK1\t2\t4\tN/A\t8", "P3_PTEN\tNaN\t\t3\t1"].join("\n"),
+      "text/tab-separated-values",
+    );
+
+    const graph = await parseGraphFile(file, {
+      dataFormat: "tabular",
+      ignoreNegatives: true,
+      minEdgeCorr: 0.9,
+      minCompSize: 2,
+      maxCompSize: 2,
+    });
+
+    assert.deepEqual(graphNodeIds(graph), ["P1_AKT1", "P2_MAPK1"]);
+    assert.deepEqual(graphLinkSummaries(graph), [
+      {
+        source: "P2_MAPK1",
+        target: "P1_AKT1",
+        weight: 1,
+        attrib: "tabular-missing-values",
+      },
+    ]);
+  });
+
+  test("rejects tabular data uploads with non-numeric measurement values", async () => {
+    const file = createTextFile(
+      "tabular-invalid.tsv",
+      ["id\tsample1\tsample2", "P1_AKT1\t1\tbad", "P2_MAPK1\t2\t4"].join("\n"),
+      "text/tab-separated-values",
+    );
+
+    await assert.rejects(() => parseGraphFile(file, { dataFormat: "tabular" }), /measurement values must be numeric/);
   });
 
   test("rejects uploads whose selected format does not match the file content", async () => {
