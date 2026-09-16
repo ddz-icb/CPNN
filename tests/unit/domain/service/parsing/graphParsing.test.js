@@ -105,6 +105,31 @@ describe("parseGraphFile uploads", () => {
     ]);
   });
 
+  test("strips non-persistable settings from JSON graph uploads", async () => {
+    const file = createTextFile(
+      "json-settings.json",
+      JSON.stringify({
+        nodes: [{ id: "P1_AKT1" }, { id: "P2_MAPK1" }],
+        links: [{ source: "P1_AKT1", target: "P2_MAPK1", attrib: "primary" }],
+        appearance: {
+          linkWidth: 2.5,
+          themeName: "dark",
+          cameraRef: { current: null },
+        },
+        colorscheme: {
+          nodeColorscheme: null,
+          uploadedColorschemeNames: ["custom"],
+        },
+      }),
+      "application/json",
+    );
+
+    const graph = await parseGraphFile(file, { dataFormat: "json" });
+
+    assert.deepEqual(graph.data.appearance, { linkWidth: 2.5 });
+    assert.deepEqual(graph.data.colorscheme, { nodeColorscheme: null });
+  });
+
   test("rejects JSON graph uploads with missing link attributes or empty node attributes", async () => {
     const missingLinkAttribFile = createTextFile(
       "missing-link-attrib.json",

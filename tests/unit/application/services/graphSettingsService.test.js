@@ -1,7 +1,11 @@
 import assert from "node:assert/strict";
 import { afterEach, describe, test } from "node:test";
 
-import { applyGraphSettings } from "../../../../src/components/application/services/graphSettingsService.js";
+import {
+  applyGraphSettings,
+  buildAppearanceSettingsExport,
+  buildGraphSettingsExport,
+} from "../../../../src/components/application/services/graphSettingsService.js";
 import { appearanceInit, useAppearance } from "../../../../src/components/adapters/state/appearanceState.js";
 import { lightTheme, useTheme } from "../../../../src/components/adapters/state/themeState.js";
 
@@ -19,7 +23,7 @@ afterEach(() => {
 });
 
 describe("applyGraphSettings", () => {
-  test("restores saved 3D appearance settings from graph data", () => {
+  test("restores saved 3D appearance settings from graph data without changing the theme", () => {
     const cameraRef = { current: { redraw: null } };
     useAppearance.getState().setAllAppearance({
       ...appearanceInit,
@@ -48,6 +52,6 @@ describe("applyGraphSettings", () => {
     assert.equal(appearance.show3DGrid, false);
     assert.equal(appearance.linkWidth, 2.5);
     assert.equal(appearance.cameraRef, cameraRef);
-    assert.equal(useTheme.getState().theme.name, "dark");
+    assert.equal(useTheme.getState().theme.name, "light");
   });
 });

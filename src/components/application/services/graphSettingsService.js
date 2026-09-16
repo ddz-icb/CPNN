@@ -3,7 +3,6 @@ import { useColorschemeState } from "../../adapters/state/colorschemeState.js";
 import { useFilter } from "../../adapters/state/filterState.js";
 import { useGraphMetrics } from "../../adapters/state/graphMetricsState.js";
 import { usePhysics } from "../../adapters/state/physicsState.js";
-import { darkTheme, lightTheme, useTheme } from "../../adapters/state/themeState.js";
 import { getLinkWeightMinMax } from "../../domain/service/graph_calculations/graphUtils.js";
 import {
   deserializeGraphSettingValue,
@@ -16,11 +15,6 @@ import {
   roundUpLinkThreshold,
 } from "../../domain/service/graph_settings/linkThresholdRange.js";
 import { reconcileAttribColorMappingsForGraph } from "./colorschemeService.js";
-
-const themesByName = {
-  [lightTheme.name]: lightTheme,
-  [darkTheme.name]: darkTheme,
-};
 
 function getStateInit(sectionKey) {
   const sectionConfig = graphSettingsSchema[sectionKey];
@@ -118,8 +112,8 @@ function buildKnownSettingsExport(settings, initSettings, options) {
   return Object.fromEntries(Object.entries(knownSettings).map(([key, value]) => [key, serializeGraphSettingValue(value)]));
 }
 
-export function buildAppearanceSettingsExport(appearance, theme) {
-  return buildGraphSettingsExport({ appearance: { ...appearance, themeName: theme?.name } }).appearance ?? {};
+export function buildAppearanceSettingsExport(appearance) {
+  return buildGraphSettingsExport({ appearance }).appearance ?? {};
 }
 
 export function buildColorschemeSettingsExport(colorschemeState) {
@@ -180,10 +174,7 @@ export function buildCurrentGraphSettingsExport() {
     physics: usePhysics.getState().physics,
     filter: useFilter.getState().filter,
     filterDefaults: getFilterDefaultsForGraphMetrics(useGraphMetrics.getState().graphMetrics),
-    appearance: {
-      ...useAppearance.getState().appearance,
-      themeName: useTheme.getState().theme?.name,
-    },
+    appearance: useAppearance.getState().appearance,
     colorschemeState: useColorschemeState.getState().colorschemeState,
   });
 }
@@ -294,11 +285,6 @@ function applyGraphAppearanceSettings(savedAppearance) {
   });
 
   setAllAppearance(nextAppearance);
-
-  const savedTheme = themesByName[savedAppearance?.themeName];
-  if (savedTheme) {
-    useTheme.getState().setTheme(savedTheme);
-  }
 }
 
 function applyGraphPhysicsSettings(savedPhysics) {

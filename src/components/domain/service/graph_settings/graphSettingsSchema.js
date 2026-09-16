@@ -2,10 +2,8 @@ import { appearanceInit } from "../../../adapters/state/appearanceState.js";
 import { colorschemeStateInit } from "../../../adapters/state/colorschemeState.js";
 import { filterInit } from "../../../adapters/state/filterState.js";
 import { physicsInit } from "../../../adapters/state/physicsState.js";
-import { themeInit } from "../../../adapters/state/themeState.js";
 
 const SERIALIZED_SET_TYPE = "Set";
-const appearanceGraphSettingsInit = { ...appearanceInit, themeName: themeInit.name };
 
 function isObject(value) {
   return value && typeof value === "object" && !Array.isArray(value);
@@ -106,6 +104,15 @@ function validateGraphSettingsSection(sectionKey, sectionValue, initSettings) {
   }
 }
 
+function pruneOmittedGraphSettingsSection(sectionValue, sectionConfig) {
+  const omittedKeys = sectionConfig.exportOmittedKeys;
+  if (!isObject(sectionValue) || !(omittedKeys instanceof Set)) return;
+
+  omittedKeys.forEach((key) => {
+    delete sectionValue[key];
+  });
+}
+
 export const graphSettingsSchema = {
   physics: {
     init: physicsInit,
@@ -114,9 +121,9 @@ export const graphSettingsSchema = {
     init: filterInit,
   },
   appearance: {
-    init: appearanceGraphSettingsInit,
+    init: appearanceInit,
     stateInit: appearanceInit,
-    exportOmittedKeys: new Set(["cameraRef"]),
+    exportOmittedKeys: new Set(["cameraRef", "themeName"]),
     importOmittedKeys: new Set(["cameraRef", "themeName"]),
   },
   colorscheme: {
@@ -150,6 +157,8 @@ export function getPersistableGraphSettingsDefaults() {
 export function verifyGraphSettings(graphData) {
   for (const sectionKey of graphSettingKeys) {
     if (!Object.hasOwn(graphData, sectionKey) || graphData[sectionKey] === undefined) continue;
-    validateGraphSettingsSection(sectionKey, graphData[sectionKey], graphSettingsSchema[sectionKey].init);
+    const sectionConfig = graphSettingsSchema[sectionKey];
+    pruneOmittedGraphSettingsSection(graphData[sectionKey], sectionConfig);
+    validateGraphSettingsSection(sectionKey, graphData[sectionKey], sectionConfig.init);
   }
 }
