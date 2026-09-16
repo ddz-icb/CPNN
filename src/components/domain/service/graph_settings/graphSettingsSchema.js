@@ -131,6 +131,22 @@ export const graphSettingsSchema = {
 export const graphSettingKeys = Object.keys(graphSettingsSchema);
 export { deserializeGraphSettingValue, serializeGraphSettingValue };
 
+function buildSettingsDefaultsExport(sectionConfig) {
+  const omittedKeys = sectionConfig.exportOmittedKeys ?? new Set();
+
+  return Object.fromEntries(
+    Object.entries(sectionConfig.init)
+      .filter(([key]) => !omittedKeys.has(key))
+      .map(([key, value]) => [key, serializeGraphSettingValue(value)]),
+  );
+}
+
+export function getPersistableGraphSettingsDefaults() {
+  return Object.fromEntries(
+    graphSettingKeys.map((sectionKey) => [sectionKey, buildSettingsDefaultsExport(graphSettingsSchema[sectionKey])]),
+  );
+}
+
 export function verifyGraphSettings(graphData) {
   for (const sectionKey of graphSettingKeys) {
     if (!Object.hasOwn(graphData, sectionKey) || graphData[sectionKey] === undefined) continue;

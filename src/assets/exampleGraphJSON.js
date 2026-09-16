@@ -1,3 +1,5 @@
+import { getPersistableGraphSettingsDefaults } from "../components/domain/service/graph_settings/graphSettingsSchema.js";
+
 const exampleGraph = {
   "nodes": [
     {
@@ -4456,7 +4458,8 @@ const exampleGraph = {
       "weight": 0.6,
       "attrib": "samples5"
     }
-  ]
+  ],
+  ...getPersistableGraphSettingsDefaults()
 };
 
 export const exampleGraphJson = { name: "ExampleGraph", data: exampleGraph };
