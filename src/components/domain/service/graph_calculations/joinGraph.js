@@ -94,6 +94,14 @@ export function joinGraphs(graphData, newGraphData) {
   };
 }
 
+export function joinGraphDataList(graphDataList) {
+  if (!Array.isArray(graphDataList) || graphDataList.length === 0) {
+    return { nodes: [], links: [] };
+  }
+
+  return graphDataList.slice(1).reduce((joinedGraphData, graphData) => joinGraphs(joinedGraphData, graphData), graphDataList[0]);
+}
+
 export function joinGraphNames(graphNames) {
   return graphNames.join("-");
 }

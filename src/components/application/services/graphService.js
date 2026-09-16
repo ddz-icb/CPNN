@@ -3,7 +3,7 @@ import { useGraphState } from "../../adapters/state/graphState.js";
 import { defaultExampleGraph, getExampleGraphByName, isExampleGraphName } from "../../../assets/exampleGraphs.js";
 import { createGraph, deleteGraph, loadGraphNames, getGraph } from "../../domain/models/graph.js";
 import { errorService } from "./errorService.js";
-import { joinGraphNames, joinGraphs } from "../../domain/service/graph_calculations/joinGraph.js";
+import { joinGraphDataList, joinGraphNames } from "../../domain/service/graph_calculations/joinGraph.js";
 import { useGraphFlags } from "../../adapters/state/graphFlagsState.js";
 import { processNamedFileUpload } from "./fileUploadService.js";
 import { getFileNameWithoutExtension } from "../../domain/service/parsing/fileParsing.js";
@@ -92,12 +92,11 @@ export const graphService = {
       log.error("Selected invalid graphs");
       return;
     }
-    let graph = await getGraphByName(fileNames[0]);
-    let joinedGraphData = graph.data;
-    for (let i = 1; i < fileNames.length; i++) {
-      graph = await getGraphByName(fileNames[i]);
-      joinedGraphData = joinGraphs(joinedGraphData, graph.data);
+    const graphDataList = [];
+    for (const fileName of fileNames) {
+      graphDataList.push((await getGraphByName(fileName)).data);
     }
+    const joinedGraphData = joinGraphDataList(graphDataList);
     const joinedGraphName = joinGraphNames(fileNames);
     const joinedGraph = { name: joinedGraphName, data: joinedGraphData };
     return joinedGraph;
