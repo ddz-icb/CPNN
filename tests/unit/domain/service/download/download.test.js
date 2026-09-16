@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { afterEach, describe, test } from "node:test";
+import { DOMImplementation, XMLSerializer } from "@xmldom/xmldom";
 
 import { useAppearance, appearanceInit } from "../../../../../src/components/adapters/state/appearanceState.js";
 import { filterInit, useFilter } from "../../../../../src/components/adapters/state/filterState.js";
@@ -17,6 +18,7 @@ import {
   buildGraphJsonData,
   buildGraphJsonDownload,
 } from "../../../../../src/components/domain/service/download/graphJsonDownload.js";
+import { buildGraphSvgDownload } from "../../../../../src/components/domain/service/download/svgDownload.js";
 
 function createGraph() {
   return {
@@ -64,6 +66,55 @@ function createGraph() {
           directed: true,
         },
       ],
+    },
+  };
+}
+
+function installSvgDocument(t) {
+  const originalDocument = globalThis.document;
+  const document = new DOMImplementation().createDocument("http://www.w3.org/2000/svg", "svg", null);
+  const createElement = document.createElement.bind(document);
+
+  document.createElement = (tagName) => {
+    if (tagName === "canvas") {
+      return {
+        getContext(contextType) {
+          assert.equal(contextType, "2d");
+          return {
+            font: "10px sans-serif",
+            measureText(text) {
+              return { width: String(text).length * 6 };
+            },
+          };
+        },
+        toDataURL() {
+          return "data:,";
+        },
+      };
+    }
+
+    return createElement(tagName);
+  };
+  globalThis.document = document;
+
+  t.after(() => {
+    if (originalDocument === undefined) {
+      delete globalThis.document;
+    } else {
+      globalThis.document = originalDocument;
+    }
+  });
+}
+
+function createNodeMap() {
+  return {
+    P1_AKT1: {
+      circle: { x: 10, y: 20, scale: { x: 1 } },
+      nodeLabel: { visible: true, x: 10, y: -5, text: "AKT1", _fontSize: 12 },
+    },
+    P2_MAPK1: {
+      circle: { x: 70, y: 80, scale: { x: 1 } },
+      nodeLabel: { visible: false, x: 70, y: 55, text: "MAPK1", _fontSize: 12 },
     },
   };
 }
@@ -207,5 +258,32 @@ describe("data download builders", () => {
     assert.equal(download.filename, "graph_node_ids.csv");
     assert.equal(await download.blob.text(), "P1_AKT1\nP2_MAPK1");
     assert.equal(buildNodeIdsCsvDownload(null, "graph.json"), null);
+  });
+});
+
+describe("vector graphic downloads", () => {
+  test("builds SVG downloads through the production renderer", async (t) => {
+    installSvgDocument(t);
+
+    const download = buildGraphSvgDownload(
+      createGraph(),
+      2,
+      ["#aa0000", "#0000aa"],
+      { primary: 0, feedback: 1 },
+      "#111111",
+      "#222222",
+      ["#00aa00"],
+      { Kinase: 0 },
+      createNodeMap(),
+      {
+        xmlSerializer: new XMLSerializer(),
+      },
+    );
+
+    const svg = await download.blob.text();
+
+    assert.equal(download.filename, "export-test.svg");
+    assert.equal(download.blob.type, "image/svg+xml;charset=utf-8");
+    assert.match(svg, /^<svg\b/);
   });
 });
