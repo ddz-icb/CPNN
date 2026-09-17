@@ -34,7 +34,12 @@ export const manyColors = {
   ],
 };
 
-export const defaultColorschemes = [ibmAntiBlindness, okabe_ItoAntiBlindness, manyColors];
+export const greenOrangeRed = {
+  name: "Green-Orange-Red (8 colors)",
+  data: ["#006400", "#cd6600", "#8b0000", "#66a266", "#e1a366", "#b96666", "#CBBD93", "#000000"],
+};
+
+export const defaultColorschemes = [ibmAntiBlindness, okabe_ItoAntiBlindness, manyColors, greenOrangeRed];
 export const defaultColorschemeNames = defaultColorschemes.map((c) => c.name);
 
 export const linkAttribsToColorIndicesInit = null;

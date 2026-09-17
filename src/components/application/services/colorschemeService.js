@@ -1,9 +1,9 @@
 import log from "../../adapters/logging/logger.js";
 import {
   defaultColorschemeNames,
+  defaultColorschemes,
   ibmAntiBlindness,
   manyColors,
-  okabe_ItoAntiBlindness,
   useColorschemeState,
 } from "../../adapters/state/colorschemeState.js";
 import {
@@ -149,9 +149,9 @@ export const colorschemeService = {
   },
   async handleSetInitColorschemes() {
     try {
-      await createColorschemeIfNotExists(ibmAntiBlindness);
-      await createColorschemeIfNotExists(okabe_ItoAntiBlindness);
-      await createColorschemeIfNotExists(manyColors);
+      for (const colorscheme of defaultColorschemes) {
+        await createColorschemeIfNotExists(colorscheme);
+      }
 
       this.setLinkColorscheme(ibmAntiBlindness);
       this.setNodeColorscheme(manyColors);
