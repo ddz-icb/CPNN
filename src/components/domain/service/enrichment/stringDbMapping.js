@@ -112,7 +112,7 @@ export function buildStringDbLinks(interactions, proteinToNodeIds, options = {})
     if (!sourceProteinId || !targetProteinId || sourceProteinId === targetProteinId) return;
 
     const score = Number(interaction?.score);
-    if (Number.isFinite(score) && score < minConfidence) return;
+    if (!Number.isFinite(score) || score < minConfidence) return;
 
     const sourceNodeIds = proteinToNodeIds.get(sourceProteinId);
     const targetNodeIds = proteinToNodeIds.get(targetProteinId);
