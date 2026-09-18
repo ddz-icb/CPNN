@@ -1,4 +1,5 @@
 import { DetailRow, ToggleList } from "./sidebarComponents.jsx";
+import { AttributeList } from "./AttributeLabel.jsx";
 import {
   formatSearchDetailValue,
   formatSearchValues,
@@ -63,7 +64,7 @@ export function SearchNodeDetails({ item, displayName, entries }) {
     <div className="toggle-list-details">
       <DetailRow label={"Name"} value={formatSearchDetailValue(displayName || item?.nodeId)} />
       <NodeEntriesBlock entries={entries} />
-      <DetailRow label={"Annotations"} value={formatSearchValues(item?.node?.attribs)} />
+      <DetailRow label={"Annotations"} value={<AttributeList values={item?.node?.attribs} />} />
     </div>
   );
 }

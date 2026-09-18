@@ -97,7 +97,7 @@ test("STRING annotations respect category, FDR, term limit, and identifier mappi
     nodeAttributeMaxFdr: 0.05,
     nodeAttributeMaxTerms: 1,
   });
-  assert.deepEqual(result.nodes[0].attribs, ["original", "GO Process: Cell cycle"]);
+  assert.deepEqual(result.nodes[0].attribs, ["original", "Cell cycle [GO Process]"]);
   assert.deepEqual(result.nodes.slice(1), graph.nodes.slice(1));
   assert.deepEqual(result.links, graph.links);
 });
@@ -105,8 +105,17 @@ test("STRING annotations respect category, FDR, term limit, and identifier mappi
 test("STRING adds attributes to nodes without existing attributes", async () => {
   axios.post.mock.mockImplementation(async (url) => ({ data: url.endsWith("/get_string_ids") ? [] : [{ ...term, inputGenes: ["P04637"] }] }));
   const result = await stringDb(graph, { nodeAttributeEnabled: true });
-  assert.deepEqual(result.nodes[1].attribs, ["GO Process: Cell cycle"]);
-  assert.deepEqual(result.nodes[2].attribs, ["GO Process: Cell cycle"]);
+  assert.deepEqual(result.nodes[1].attribs, ["Cell cycle [GO Process]"]);
+  assert.deepEqual(result.nodes[2].attribs, ["Cell cycle [GO Process]"]);
+});
+
+test("STRING keeps full annotation names with the source at the end", async () => {
+  const description = "Actin cytoskeleton organization and regulation of cellular component assembly";
+  axios.post.mock.mockImplementation(async (url) => ({
+    data: url.endsWith("/get_string_ids") ? [] : [{ ...term, category: "COMPARTMENTS", description }],
+  }));
+  const result = await stringDb(graph, { nodeAttributeEnabled: true });
+  assert.deepEqual(result.nodes[0].attribs, ["original", `${description} [COMPARTMENTS]`]);
 });
 
 test("STRING community labels apply only to eligible connected groups", async () => {

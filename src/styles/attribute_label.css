@@ -1,0 +1,38 @@
+.attribute-label {
+  display: inline-flex;
+  align-items: baseline;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  letter-spacing: 0;
+}
+
+.attribute-label-term {
+  flex-shrink: 0;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.attribute-label--with-source .attribute-label-term {
+  max-width: calc(100% - min(5ch, 30%) - 0.35em);
+}
+
+.attribute-label-source {
+  min-width: min(5ch, 30%);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-left: 0.35em;
+  color: var(--color-text-secondary);
+  font-size: 0.85em;
+  white-space: nowrap;
+}
+
+.attribute-list {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 0.2em;
+}

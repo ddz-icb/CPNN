@@ -22,7 +22,6 @@ import {
   normalizeStringDbCategory,
 } from "./stringDbHelpers.js";
 
-const MAX_NODE_ANNOTATION_LABEL_LENGTH = 52;
 const MAX_COMMUNITY_ANNOTATION_LABEL_LENGTH = 48;
 
 function logRequestIssue(source, identifier, error) {
@@ -129,9 +128,8 @@ function shortenText(value, maxLength) {
 }
 
 function buildNodeAnnotationAttrib(category, description) {
-  const prefix = category ? `${category}: ` : "";
-  const shortDescription = shortenText(description, MAX_NODE_ANNOTATION_LABEL_LENGTH - prefix.length);
-  return shortDescription ? `${prefix}${shortDescription}` : "";
+  const term = formatTermDescription(description);
+  return term ? `${term}${category ? ` [${category}]` : ""}` : "";
 }
 
 function buildCommunityAttrib(description) {

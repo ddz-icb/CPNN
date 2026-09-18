@@ -12,6 +12,7 @@ import { useGraphState } from "../../state/graphState.js";
 import { useColorschemeState } from "../../state/colorschemeState.js";
 import { TooltipPopup, TooltipPopupItem, TooltipPopupLinkItem } from "../reusable_components/tooltipComponents.jsx";
 import { Button } from "../reusable_components/sidebarComponents.jsx";
+import { AttributeList } from "../reusable_components/AttributeLabel.jsx";
 import { describeSector, getColor } from "../../../domain/service/canvas_drawing/drawingUtils.js";
 import { downloadNodeIdsCsv } from "../../../domain/service/download/download.js";
 import { usePixiState } from "../../state/pixiState.js";
@@ -249,7 +250,7 @@ function NodeDetails({
       <TooltipPopupItem heading={"Node ID"} value={nodeId} />
       <TooltipPopupItem heading={`Node Entries${hasPhosphosites ? " and Phosphosites" : ""}`} value={entryContent} />
       {fullName && <TooltipPopupItem heading={"Full Name"} value={fullName} />}
-      <TooltipPopupItem heading={"Annotations"} value={nodeAttribs.join(", ")} />
+      <TooltipPopupItem heading={"Annotations"} value={nodeAttribs.length ? <AttributeList values={nodeAttribs} /> : null} />
       {description && <TooltipPopupItem heading={"Description"} value={description} />}
       {pdbValue && <TooltipPopupItem heading={"PDB Structure"} value={pdbValue} />}
       <div className={`pdb-viewer${responsePdb?.data ? "" : " pdb-viewer--pending"}`} ref={viewerRef} />
@@ -381,7 +382,7 @@ function AdjacentNodesList({ adjacentNodes, nodeAttribsToColorIndices, nodeColor
                 <div className="tooltip-adjacent-node-id">{node.id}</div>
                 {onViewNode && <Button className="tooltip-popup-action" text="View node" onClick={() => onViewNode(node)} />}
               </div>
-              <div className="tooltip-adjacent-node-attribs">{node.attribs?.join(", ")}</div>
+              <div className="tooltip-adjacent-node-attribs"><AttributeList values={node.attribs} /></div>
             </div>
           </div>
           <div className="tooltip-adjacent-connection-list">

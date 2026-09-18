@@ -2,6 +2,7 @@ import { useColorschemeState } from "../../../adapters/state/colorschemeState.js
 import { fallbackColor, getColor } from "../../../domain/service/canvas_drawing/drawingUtils.js";
 import { isAdditionalLinkAttrib } from "../../../domain/service/enrichment/additionalLinkEnrichment.js";
 import { TableList } from "../reusable_components/sidebarComponents.jsx";
+import { AttributeLabel } from "../reusable_components/AttributeLabel.jsx";
 
 export function HeaderbarColorMapping() {
   const { colorschemeState } = useColorschemeState();
@@ -18,7 +19,7 @@ export function HeaderbarColorMapping() {
           content: (
             <span className="headerbar-colormapping-row">
               <span className={swatchClassName} style={{ "--headerbar-swatch-color": color, backgroundColor: color }}></span>
-              <span className="headerbar-colormapping-label">{key}</span>
+              <span className="headerbar-colormapping-label"><AttributeLabel value={key} /></span>
             </span>
           ),
         };
