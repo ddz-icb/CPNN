@@ -100,7 +100,7 @@ export function updateSphereShading(circle, scale = 1) {
 export function computeLightingTint(scale) {
   const normalized = Math.max(0, Math.min(1, (scale - 0.4) / 0.8));
   const eased = Math.pow(normalized, 1.2);
-  const factor = 0.7 + 0.3 * eased;
+  const factor = 0.8 + 0.2 * eased;
   const channel = Math.round(255 * factor);
   return (channel << 16) | (channel << 8) | channel;
 }
