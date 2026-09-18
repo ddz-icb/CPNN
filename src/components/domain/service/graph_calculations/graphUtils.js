@@ -298,7 +298,6 @@ export function getEndpointIdText(endpoint) {
 }
 
 export function getLinkIdText(link, index, sourceId = getEndpointIdText(link?.source), targetId = getEndpointIdText(link?.target)) {
-  if (link?.id !== undefined && link?.id !== null && link.id !== "") return link.id.toString();
   return `${sourceId || "unknown"}::${targetId || "unknown"}::${index}`;
 }
 
