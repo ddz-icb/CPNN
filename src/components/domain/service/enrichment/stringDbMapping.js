@@ -93,7 +93,7 @@ function getEvidenceAttribs(interaction, minEvidenceScore) {
   Object.entries(STRING_DB_EVIDENCE_ATTRIBS).forEach(([field, attrib]) => {
     const score = Number(interaction?.[field]);
     if (!Number.isFinite(score) || score < minEvidenceScore) return;
-    evidenceLinks.push({ attrib, weight: score });
+    evidenceLinks.push({ attrib, confidence: score });
   });
 
   return evidenceLinks;
@@ -127,7 +127,7 @@ export function buildStringDbLinks(interactions, proteinToNodeIds, options = {})
         const links = [{
           source: sourceNodeId,
           target: targetNodeId,
-          weight: 1,
+          confidence: score,
           attrib: STRING_DB_LINK_ATTRIB,
         }];
         if (includeEvidence) {
@@ -135,7 +135,7 @@ export function buildStringDbLinks(interactions, proteinToNodeIds, options = {})
             links.push({
               source: sourceNodeId,
               target: targetNodeId,
-              weight: evidence.weight,
+              confidence: evidence.confidence,
               attrib: evidence.attrib,
             });
           });

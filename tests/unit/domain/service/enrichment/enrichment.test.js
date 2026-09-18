@@ -67,7 +67,9 @@ test("STRING adds unique links and evidence at the configured thresholds", async
     result.links.map((link) => link.attrib),
     ["original", "STRING-DB", "STRING Experimental", "STRING-DB", "STRING Experimental"],
   );
-  assert.ok(result.links.filter((link) => link.attrib === "STRING Experimental").every((link) => link.weight === 0.5));
+  assert.ok(result.links.slice(1).every((link) => !Object.hasOwn(link, "weight")));
+  assert.ok(result.links.filter((link) => link.attrib === "STRING Experimental").every((link) => link.confidence === 0.5));
+  assert.ok(result.links.filter((link) => link.attrib === "STRING-DB").every((link) => link.confidence === 0.9));
   assert.deepEqual(result.nodes, graph.nodes);
 });
 
@@ -153,7 +155,7 @@ test("OmniPath matches sites and curation thresholds for kinase and phosphatase 
   const result = await omniPath(graph, { kinaseEnabled: true, phosphataseEnabled: true, minCurationEffort: 2 });
   assert.deepEqual(
     result.links.slice(1),
-    ["Phosphorylation", "Dephosphorylation"].map((attrib) => ({ source: enzyme, target: substrate, attrib, weight: 1, directed: true })),
+    ["Phosphorylation", "Dephosphorylation"].map((attrib) => ({ source: enzyme, target: substrate, attrib, directed: true })),
   );
   assert.deepEqual(result.nodes[0].attribs, ["original", "Kinase", "Phosphatase"]);
   assert.equal(fetch.mock.callCount(), 2);

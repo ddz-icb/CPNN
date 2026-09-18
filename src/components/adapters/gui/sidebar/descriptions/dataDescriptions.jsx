@@ -15,7 +15,7 @@ export const minLinkCorrDescription = (
   <div>
     <p>
       Minimum absolute correlation value or link weight required for display as a link. Correlation-derived data uses values from 0 to 1; JSON graphs
-      can use any finite numeric weights, and links without a weight use 1. Increasing this value can significantly improve performance.
+      can use any finite numeric weights. Unweighted links are retained. Increasing this value can significantly improve performance.
     </p>
   </div>
 );
@@ -136,8 +136,9 @@ export const uploadGraphDataFormat = (
       <PopupTextField inline={true} textInside={"links"} /> list. Each node needs an <PopupTextField inline={true} textInside={"id"} />. Node{" "}
       <PopupTextField inline={true} textInside={"attribs"} /> is optional and can be one attribute or a list. Each link needs{" "}
       <PopupTextField inline={true} textInside={"source"} />, <PopupTextField inline={true} textInside={"target"} />, and{" "}
-      <PopupTextField inline={true} textInside={"attrib"} />. <PopupTextField inline={true} textInside={"weight"} /> is optional and defaults to{" "}
-      <PopupTextField inline={true} textInside={"1"} />. Add <PopupTextField inline={true} textInside={"directed: true"} /> only for directed links.
+      <PopupTextField inline={true} textInside={"attrib"} />. <PopupTextField inline={true} textInside={"weight"} /> is optional; omit it for an
+      unweighted relationship. If supplied, it must be a finite number. Unweighted links are retained by weight filters.
+      Add <PopupTextField inline={true} textInside={"directed: true"} /> only for directed links.
     </p>
     <div className="pad-bottom-1" />
     <p className="margin-0">

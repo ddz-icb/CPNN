@@ -180,21 +180,15 @@ export function buildCurrentGraphSettingsExport() {
 }
 
 function applyGraphMetrics(graphData) {
-  const { setGraphMetrics } = useGraphMetrics.getState();
+  const { setAllGraphMetrics } = useGraphMetrics.getState();
   const { minWeight, maxWeight, minAbsWeight, maxAbsWeight } = getLinkWeightMinMax(graphData);
 
-  if (minWeight !== Infinity) {
-    setGraphMetrics("linkWeightMin", minWeight);
-  }
-  if (maxWeight !== -Infinity) {
-    setGraphMetrics("linkWeightMax", maxWeight);
-  }
-  if (minAbsWeight !== Infinity) {
-    setGraphMetrics("linkWeightAbsMin", minAbsWeight);
-  }
-  if (maxAbsWeight !== -Infinity) {
-    setGraphMetrics("linkWeightAbsMax", maxAbsWeight);
-  }
+  setAllGraphMetrics({
+    linkWeightMin: minWeight,
+    linkWeightMax: maxWeight,
+    linkWeightAbsMin: minAbsWeight,
+    linkWeightAbsMax: maxAbsWeight,
+  });
 
   return { minWeight, maxWeight, minAbsWeight, maxAbsWeight };
 }

@@ -47,17 +47,18 @@ describe("filterThreshold", () => {
     assert.deepEqual(linkIds(filteredGraph), ["zero"]);
   });
 
-  test("always keeps additional links", () => {
+  test("filters explicit weights regardless of their source and preserves unweighted links", () => {
     const graph = createGraph({
       links: [
         { id: "regular-low", source: "A", target: "B", weight: 0.1 },
         { id: "string-db-low", source: "B", target: "C", weight: 0.1, attrib: STRING_DB_LINK_ATTRIB },
         { id: "regular-high", source: "A", target: "C", weight: 0.9 },
+        { source: "B", target: "C", attrib: "custom unweighted" },
       ],
     });
 
     const filteredGraph = filterThreshold(graph, 0.5, null);
 
-    assert.deepEqual(linkIds(filteredGraph), ["string-db-low", "regular-high"]);
+    assert.deepEqual(filteredGraph.links, graph.links.slice(2));
   });
 });

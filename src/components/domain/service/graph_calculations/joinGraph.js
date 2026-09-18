@@ -1,6 +1,6 @@
 import UnionFind from "union-find";
 import { getNodeIdEntries, getNodeIdNames } from "../parsing/nodeIdParsing.js";
-import { cloneLink, getEndpointId, getUndirectedLinkKey } from "./graphUtils.js";
+import { cloneLink, getEndpointId, getUndirectedLinkKey, getLinkWeight, hasLinkWeight } from "./graphUtils.js";
 
 function normalizeNodeEntry(entry) {
   const [idPart = "", namePart = "", phosphositesPart = ""] = entry.split("_").map((part) => part.trim());
@@ -65,7 +65,7 @@ function mergeDuplicateSemanticLinks(links) {
       return;
     }
 
-    if (Math.abs(link.weight) > Math.abs(existing.weight)) {
+    if (hasLinkWeight(link) && (!hasLinkWeight(existing) || getLinkWeight(link) > getLinkWeight(existing))) {
       existing.weight = link.weight;
     }
   });

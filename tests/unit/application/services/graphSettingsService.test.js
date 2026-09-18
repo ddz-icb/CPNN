@@ -8,6 +8,7 @@ import {
 } from "../../../../src/components/application/services/graphSettingsService.js";
 import { appearanceInit, useAppearance } from "../../../../src/components/adapters/state/appearanceState.js";
 import { lightTheme, useTheme } from "../../../../src/components/adapters/state/themeState.js";
+import { graphMetricsInit, useGraphMetrics } from "../../../../src/components/adapters/state/graphMetricsState.js";
 
 function createGraphData(settings = {}) {
   return {
@@ -20,9 +21,17 @@ function createGraphData(settings = {}) {
 afterEach(() => {
   useAppearance.getState().setAllAppearance(appearanceInit);
   useTheme.getState().setTheme(lightTheme);
+  useGraphMetrics.getState().setAllGraphMetrics(graphMetricsInit);
 });
 
 describe("applyGraphSettings", () => {
+  test("clears weight statistics when switching to an unweighted graph", () => {
+    applyGraphSettings({ name: "weighted", data: createGraphData() });
+    assert.equal(useGraphMetrics.getState().graphMetrics.linkWeightMax, 1);
+    applyGraphSettings({ name: "unweighted", data: createGraphData({ links: [{ source: "A", target: "B", attrib: "connected" }] }) });
+    assert.deepEqual(useGraphMetrics.getState().graphMetrics, graphMetricsInit);
+  });
+
   test("restores saved 3D appearance settings from graph data without changing the theme", () => {
     const cameraRef = { current: { redraw: null } };
     useAppearance.getState().setAllAppearance({

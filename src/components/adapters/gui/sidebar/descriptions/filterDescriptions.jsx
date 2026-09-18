@@ -4,7 +4,7 @@ export const minLinkThresholdDescription = (
   <div>
     <p className="margin-0">
       Filter links by minimum absolute weight. The slider range is based on the smallest and largest absolute link weight in the loaded graph, so
-      weights do not need to be limited to 0 to 1. Increasing this value keeps only stronger links.
+      weights do not need to be limited to 0 to 1. Increasing this value keeps only stronger weighted links. Unweighted links are retained.
     </p>
   </div>
 );
@@ -13,7 +13,7 @@ export const maxLinkThresholdDescription = (
   <div>
     <p className="margin-0">
       Filter links by maximum absolute weight. The slider range is based on the smallest and largest absolute link weight in the loaded graph.
-      Decreasing this value removes links above the selected weight.
+      Decreasing this value removes links above the selected weight. Unweighted links are retained.
     </p>
   </div>
 );
@@ -74,8 +74,8 @@ export const stringDbEnrichmentDescription = (
   <div>
     <p className="margin-0">
       Adds protein–protein interaction links from <strong>STRING</strong> (Szklarczyk et al., <em>Nucleic Acids Res.</em> 2023; string-db.org) for
-      nodes with UniProt IDs. STRING integrates evidence from genomic context, co-expression, text mining, and experimental data. Added links use a
-      separate attribute with a fixed weight of 1.
+      nodes with UniProt IDs. STRING integrates evidence from genomic context, co-expression, text mining, and experimental data. Added links store a
+      confidence value that controls enrichment filtering.
     </p>
     <p className="margin-0 pad-top-05">Note: STRING-DB links are excluded from structural filters (k-core, component/community size and density).</p>
   </div>
@@ -96,8 +96,8 @@ export const stringDbNodeAttributeDescription = (
       Adds the top overrepresented STRING enrichment terms to existing nodes using STRING's returned enrichment order and categories.
     </p>
     <p className="margin-0 pad-top-05">
-      Terms are ranked by false discovery rate and gene coverage. Max terms limits how many enriched terms are kept, and max FDR controls the
-      accepted significance threshold.
+      Terms are ranked by false discovery rate and gene coverage. Max terms limits how many enriched terms are kept, and max FDR controls the accepted
+      significance threshold.
     </p>
   </div>
 );
@@ -214,8 +214,8 @@ export const communityFilterSizeDescription = (
 export const linkFilterDescription = (
   <div>
     <div className="margin-0">
-      Type a word to keep links whose ID, name, attribute, source, or target contains that word. Use a field prefix when you want to search one part of
-      the link only.
+      Type a word to keep links whose ID, name, attribute, source, or target contains that word. Use a field prefix when you want to search one part
+      of the link only.
     </div>
     <div className="pad-top-1" />
     <div>
@@ -227,14 +227,14 @@ export const linkFilterDescription = (
     <div className="pad-top-1" />
     <div>
       Combine filters with <PopupTextField textInside={"and"} />. Put alternatives in parentheses with <PopupTextField textInside={"or"} />. Exclude a
-      term with <PopupTextField textInside={"not"} />. Use <PopupTextField textInside={"{...}"} /> when all listed terms must match, and use quotes for
-      attributes with multiple words.
+      term with <PopupTextField textInside={"not"} />. Use <PopupTextField textInside={"{...}"} /> when all listed terms must match, and use quotes
+      for attributes with multiple words.
     </div>
     <div className="pad-top-05" />
     <div>Examples:</div>
     <PopupTextField textInside={"AKT"} /> <PopupTextField textInside={"attr:phosphorylation"} />{" "}
     <PopupTextField textInside={"source:AKT1 and target:MTOR"} /> <PopupTextField textInside={'attr:"t2d group" and not attr:predicted'} />{" "}
-    <PopupTextField textInside={'{attr:phosphorylation, source:AKT1}'} />{" "}
+    <PopupTextField textInside={"{attr:phosphorylation, source:AKT1}"} />{" "}
     <PopupTextField textInside={"(attr:activation or attr:inhibition) and attrs:>=1"} />
   </div>
 );
@@ -242,8 +242,8 @@ export const linkFilterDescription = (
 export const nodeFilterDescription = (
   <div>
     <div className="margin-0">
-      Type a word to keep nodes whose ID, name, label, or attributes contain that word. Use a field prefix when you want to search one part of the node
-      only.
+      Type a word to keep nodes whose ID, name, label, or attributes contain that word. Use a field prefix when you want to search one part of the
+      node only.
     </div>
     <div className="pad-top-1" />
     <div>
@@ -254,14 +254,13 @@ export const nodeFilterDescription = (
     <div className="pad-top-1" />
     <div>
       Combine filters with <PopupTextField textInside={"and"} />. Put alternatives in parentheses with <PopupTextField textInside={"or"} />. Exclude a
-      term with <PopupTextField textInside={"not"} />. Use <PopupTextField textInside={"{...}"} /> when all listed terms must match, and use quotes for
-      attributes with multiple words.
+      term with <PopupTextField textInside={"not"} />. Use <PopupTextField textInside={"{...}"} /> when all listed terms must match, and use quotes
+      for attributes with multiple words.
     </div>
     <div className="pad-top-05" />
     <div>Examples:</div>
     <PopupTextField textInside={"AKT"} /> <PopupTextField textInside={"name:AKT1"} />{" "}
-    <PopupTextField textInside={'name:AKT1 and not attr:"phosphorylation"'} />{" "}
-    <PopupTextField textInside={"attr:signaling and neighbors:>3"} />{" "}
+    <PopupTextField textInside={'name:AKT1 and not attr:"phosphorylation"'} /> <PopupTextField textInside={"attr:signaling and neighbors:>3"} />{" "}
     <PopupTextField textInside={'{attr:kinase, attr:"t2d group"}'} />{" "}
     <PopupTextField textInside={"(attr:kinase or attr:phosphatase) and not attr:predicted"} /> <PopupTextField textInside={"attrs:>=2"} />
   </div>

@@ -1,4 +1,4 @@
-import { getEndpointId } from "../graph_calculations/graphUtils.js";
+import { getEndpointId, hasLinkWeight } from "../graph_calculations/graphUtils.js";
 import { verifyGraphSettings } from "../graph_settings/graphSettingsSchema.js";
 
 const PHOSPHOSITE_PATTERN = /^[STY]+\d*$/i;
@@ -158,9 +158,6 @@ export function verifyGraph(graph) {
     if (link.target === undefined || link.target === null) {
       throw new Error(`Link at index ${i} is missing the 'target' property.`);
     }
-    if (link.weight === undefined) {
-      link.weight = 1;
-    }
     normalizeLinkAttrib(link, i);
     if (link.attribs !== undefined || link.weights !== undefined || link.directions !== undefined) {
       throw new Error(`Link at index ${i} uses the old multilink format. Use scalar 'attrib', optional scalar 'weight', and optional boolean 'directed'.`);
@@ -178,7 +175,7 @@ export function verifyGraph(graph) {
       throw new Error(`Link at index ${i} is a self-link ('${sourceId}').`);
     }
 
-    if (typeof link.weight !== "number" || !Number.isFinite(link.weight)) {
+    if (link.weight !== undefined && !hasLinkWeight(link)) {
       throw new Error(`Link '${sourceId}' -> '${targetId}' has an invalid 'weight' property. Expected a finite number.`);
     }
     if (link.directed !== undefined && typeof link.directed !== "boolean") {

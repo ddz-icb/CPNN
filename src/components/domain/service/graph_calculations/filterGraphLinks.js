@@ -1,6 +1,5 @@
-import { getDirectionalLinkEndpoints, getEndpointId, getLinkIdText } from "./graphUtils.js";
+import { getDirectionalLinkEndpoints, getEndpointId, getLinkIdText, getLinkWeight, hasLinkWeight } from "./graphUtils.js";
 import { matchesAttribsFilter } from "./attribFilterMatching.js";
-import { isAdditionalLinkAttrib } from "../enrichment/additionalLinkEnrichment.js";
 
 function getFiniteThreshold(value) {
   if (value === "" || value === null || value === undefined) return null;
@@ -20,9 +19,9 @@ export function filterThreshold(graphData, minLinkThreshold, maxLinkThreshold) {
   graphData = {
     ...graphData,
     links: graphData.links.filter((link) => {
-      if (isAdditionalLinkAttrib(link.attrib)) return true;
+      if (!hasLinkWeight(link)) return true;
 
-      const absoluteWeight = Math.abs(link.weight);
+      const absoluteWeight = getLinkWeight(link);
       return (!hasMinThreshold || absoluteWeight >= minThreshold) && (!hasMaxThreshold || absoluteWeight <= maxThreshold);
     }),
   };
@@ -62,7 +61,7 @@ export function filterIgnoreNegatives(graphData, ignoreNegatives) {
 
   return {
     ...graphData,
-    links: graphData.links.filter((link) => link.weight >= 0),
+    links: graphData.links.filter((link) => !hasLinkWeight(link) || link.weight >= 0),
   };
 }
 

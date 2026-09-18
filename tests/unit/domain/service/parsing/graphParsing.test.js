@@ -93,7 +93,7 @@ describe("parseGraphFile uploads", () => {
       {
         source: "P1_AKT1",
         target: "P2_MAPK1",
-        weight: 1,
+        weight: undefined,
         attrib: "primary",
       },
       {

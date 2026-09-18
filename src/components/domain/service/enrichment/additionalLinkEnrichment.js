@@ -44,14 +44,13 @@ export function applyAdditionalLinkRecords(graphData, additionalLinks) {
   };
 }
 
-export function applyAdditionalLinks(graphData, additionalLinks, attrib, weight = 1) {
+export function applyAdditionalLinks(graphData, additionalLinks, attrib) {
   if (!Array.isArray(additionalLinks) || additionalLinks.length === 0) return graphData;
 
   const normalizedLinks = additionalLinks.map((link) => ({
     source: getEndpointIdText(link.source),
     target: getEndpointIdText(link.target),
     attrib,
-    weight,
     ...(link.directed ? { directed: true } : {}),
   }));
 

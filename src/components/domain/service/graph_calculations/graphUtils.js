@@ -190,6 +190,7 @@ export function getLinkWeightMinMax(graphData) {
   let maxAbsWeight = -Infinity;
 
   graphData.links.forEach((link) => {
+    if (!hasLinkWeight(link)) return;
     const w = link.weight;
     if (w < minWeight) minWeight = w;
     if (w > maxWeight) maxWeight = w;
@@ -198,7 +199,12 @@ export function getLinkWeightMinMax(graphData) {
     if (absWeight > maxAbsWeight) maxAbsWeight = absWeight;
   });
 
-  return { minWeight, maxWeight, minAbsWeight, maxAbsWeight };
+  return {
+    minWeight: Number.isFinite(minWeight) ? minWeight : null,
+    maxWeight: Number.isFinite(maxWeight) ? maxWeight : null,
+    minAbsWeight: Number.isFinite(minAbsWeight) ? minAbsWeight : null,
+    maxAbsWeight: Number.isFinite(maxAbsWeight) ? maxAbsWeight : null,
+  };
 }
 
 export function getLinkWeightMagnitudeExtent(graphData) {
@@ -226,7 +232,8 @@ export function getCommunityData(graphData, options = {}) {
     const targetId = getEndpointId(link.target);
     const edgeKey = getUndirectedLinkKey(sourceId, targetId);
     if (!edgeKey) return;
-    const weight = getLinkWeight(link);
+    // Community detection needs numeric edge strength; keep this fallback out of graph data.
+    const weight = getLinkWeight(link) ?? 1;
     edgeWeights.set(edgeKey, Math.max(edgeWeights.get(edgeKey) ?? 0, weight));
   });
 
@@ -267,12 +274,17 @@ export function sortGraph(graph) {
   );
 }
 
+export function hasLinkWeight(link) {
+  return Number.isFinite(link?.weight);
+}
+
 export function getLinkWeight(link) {
-  return Math.abs(link.weight);
+  return hasLinkWeight(link) ? Math.abs(link.weight) : undefined;
 }
 
 export function formatWeight(value) {
-  if (typeof value !== "number" || Number.isNaN(value)) return "n/a";
+  if (value === undefined) return "Unweighted";
+  if (!Number.isFinite(value)) return "n/a";
   if (Math.abs(value) >= 1) return value.toFixed(2);
   return value.toPrecision(2);
 }

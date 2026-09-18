@@ -93,7 +93,7 @@ export function formatSearchValues(values, formatter = stringifySearchValue) {
 }
 
 export function formatSearchWeight(weight) {
-  return typeof weight === "number" && Number.isFinite(weight) ? formatWeight(weight) : stringifySearchValue(weight);
+  return formatWeight(weight);
 }
 
 export function stringifySearchValue(value) {

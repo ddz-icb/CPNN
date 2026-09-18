@@ -13,17 +13,25 @@ function graphWithLink(link) {
 }
 
 describe("verifyGraph", () => {
-  test("defaults missing link weight to one", () => {
+  test("preserves omitted link weights", () => {
     const graph = graphWithLink();
 
     verifyGraph(graph);
 
-    assert.equal(graph.data.links[0].weight, 1);
+    assert.equal(Object.hasOwn(graph.data.links[0], "weight"), false);
   });
 
-  test("rejects null link weight", () => {
-    const graph = graphWithLink({ weight: null });
+  test("rejects invalid explicit weights", () => {
+    for (const weight of [null, NaN, Infinity, -Infinity, "1", "", false]) {
+      assert.throws(() => verifyGraph(graphWithLink({ weight })), /invalid 'weight' property/);
+    }
+  });
 
-    assert.throws(() => verifyGraph(graph), /invalid 'weight' property/);
+  test("accepts finite weights including zero and negative values", () => {
+    for (const weight of [0, -0.5, 0.5, 10]) {
+      const graph = graphWithLink({ weight });
+      verifyGraph(graph);
+      assert.equal(graph.data.links[0].weight, weight);
+    }
   });
 });
