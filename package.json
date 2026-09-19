@@ -67,7 +67,9 @@
   "scripts": {
     "dev": "vite dev",
     "start": "vite dev",
-    "test": "node --test \"tests/unit/**/*.test.js\"",
+    "test": "npm run test:unit && npm run test:integration",
+    "test:unit": "node --test \"tests/unit/**/*.test.js\"",
+    "test:integration": "vitest run",
     "build:wasm": "sh -c \"cd wasm/corr_matrix && cargo build --release --target wasm32-unknown-unknown && cp target/wasm32-unknown-unknown/release/corr_matrix.wasm ../../public/wasm/corr_matrix.wasm\"",
     "build": "vite build",
     "build:with-wasm": "npm run build:wasm && npm run build",
@@ -114,7 +116,9 @@
     "autoprefixer": "^10.4.21",
     "eslint": "^9.39.4",
     "eslint-plugin-jsx-a11y": "^6.10.2",
+    "jsdom": "^26.1.0",
     "jsx-ast-utils": "^3.3.5",
-    "vite": "^7.2.4"
+    "vite": "^7.2.4",
+    "vitest": "^3.2.7"
   }
 }
