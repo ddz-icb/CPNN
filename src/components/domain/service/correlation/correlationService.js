@@ -149,18 +149,19 @@ export async function buildGraphFromRawTable(fileData, { takeSpearman, ignoreNeg
   });
 
   const nodes = rowNames.map((id) => ({ id, attribs: [] }));
-  const links = new Array(weights.length);
+  const links = [];
 
   for (let i = 0; i < weights.length; i++) {
+    if (!Number.isFinite(weights[i])) continue;
     const sourceIdx = sources[i];
     const targetIdx = targets[i];
     const weight = Math.round(weights[i] * 100) / 100;
-    links[i] = {
+    links.push({
       source: rowNames[sourceIdx],
       target: rowNames[targetIdx],
       weight,
       attrib: linkAttrib,
-    };
+    });
   }
 
   log.info(`Client-side correlation produced ${links.length} links.`);

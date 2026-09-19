@@ -213,10 +213,12 @@ function convertCorrMatrixToGraph(fileData, linkAttrib) {
 
   for (let i = 0; i < header.length; i++) {
     for (let j = 0; j < i; j++) {
+      const weight = getCorrelationMatrixWeight(data[i][j]);
+      if (!Number.isFinite(weight) || !Number.isFinite(getCorrelationMatrixWeight(data[j][i]))) continue;
       graphData.links.push({
         source: header[i],
         target: header[j],
-        weight: round2(getCorrelationMatrixWeight(data[i][j])),
+        weight: round2(weight),
         attrib: linkAttrib,
       });
     }

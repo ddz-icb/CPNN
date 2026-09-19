@@ -179,7 +179,7 @@ describe("parseGraphFile uploads", () => {
     ]);
   });
 
-  test("treats missing correlation matrix values as zero-weight links", async () => {
+  test("excludes missing correlation matrix values instead of creating zero-weight links", async () => {
     const file = createTextFile(
       "matrix-missing-values.csv",
       ["id,P1_AKT1,P2_MAPK1,P3_PTEN,P4_MTOR", "P1_AKT1,1,NA,,N/A", "P2_MAPK1,NA,1,NaN,0.6", "P3_PTEN,,NaN,1,0.7", "P4_MTOR,N/A,0.6,0.7,1"].join("\n"),
@@ -189,14 +189,41 @@ describe("parseGraphFile uploads", () => {
     const graph = await parseGraphFile(file, { dataFormat: "matrix" });
 
     assert.deepEqual(graphLinkSummaries(graph), [
-      { source: "P2_MAPK1", target: "P1_AKT1", weight: 0, attrib: "matrix-missing-values" },
-      { source: "P3_PTEN", target: "P1_AKT1", weight: 0, attrib: "matrix-missing-values" },
-      { source: "P3_PTEN", target: "P2_MAPK1", weight: 0, attrib: "matrix-missing-values" },
-      { source: "P4_MTOR", target: "P1_AKT1", weight: 0, attrib: "matrix-missing-values" },
       { source: "P4_MTOR", target: "P2_MAPK1", weight: 0.6, attrib: "matrix-missing-values" },
       { source: "P4_MTOR", target: "P3_PTEN", weight: 0.7, attrib: "matrix-missing-values" },
     ]);
   });
+
+  test("keeps numeric zero but excludes pairs missing either matrix entry", async () => {
+    const file = createTextFile("matrix-zero.csv", [
+      "id,P1_AKT1,P2_MAPK1,P3_PTEN",
+      "P1_AKT1,1,0,0.5",
+      "P2_MAPK1,0,1,NA",
+      "P3_PTEN,NA,0.8,1",
+    ].join("\n"), "text/csv");
+    const graph = await parseGraphFile(file, { dataFormat: "matrix" });
+    assert.deepEqual(graph.data.links, [{ source: "P2_MAPK1", target: "P1_AKT1", weight: 0, attrib: "matrix-zero" }]);
+  });
+
+  test("rejects malformed matrix values instead of replacing them with zero", async () => {
+    const file = createTextFile("invalid.csv", "id,P1_AKT1,P2_MAPK1\nP1_AKT1,1,bad\nP2_MAPK1,bad,1", "text/csv");
+    await assert.rejects(parseGraphFile(file, { dataFormat: "matrix" }), /Expected a number/);
+  });
+
+  for (const takeSpearman of [false, true]) {
+    test(`excludes uncomputable ${takeSpearman ? "Spearman" : "Pearson"} links without inserting filler weights`, async () => {
+      const file = createTextFile("missing.csv", [
+        "id,sample1,sample2,sample3",
+        "P1_AKT1,1,2,3",
+        "P2_MAPK1,2,4,6",
+        "P3_PTEN,NA,NaN,",
+        "P4_MTOR,5,5,5",
+        "P5_OTHER,1,NA,",
+      ].join("\n"), "text/csv");
+      const graph = await parseGraphFile(file, { dataFormat: "tabular", takeSpearman, minLinkThreshold: 0 });
+      assert.deepEqual(graph.data.links, [{ source: "P2_MAPK1", target: "P1_AKT1", weight: 1, attrib: "missing" }]);
+    });
+  }
 
   test("loads tabular data uploads by computing correlations before prefiltering", async () => {
     const file = createTextFile(

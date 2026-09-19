@@ -144,7 +144,7 @@ export const uploadGraphDataFormat = (
     <p className="margin-0">
       <strong>Correlation Matrix (TSV/CSV):</strong> the file is a square correlation matrix. The first column header must be{" "}
       <PopupTextField inline={true} textInside={"id"} />, and the row IDs must match the column IDs. Missing values such as{" "}
-      <PopupTextField inline={true} textInside={"NA"} /> are treated as zero-weight links. Created links use the uploaded file name as their
+      <PopupTextField inline={true} textInside={"NA"} /> are excluded rather than creating links. Numeric zero remains a valid weight. Created links use the uploaded file name as their
       attribute.
     </p>
     <div className="pad-bottom-1" />

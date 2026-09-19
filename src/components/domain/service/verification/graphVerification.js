@@ -213,7 +213,7 @@ export function getCorrelationMatrixIssue(fileData, tol = 1e-4) {
     }
     for (let j = 0; j < data[i].length; j++) {
       const value = data[i][j];
-      if (!Number.isFinite(getCorrelationMatrixWeight(value))) {
+      if (!isMissingCorrelationValue(value) && !Number.isFinite(getCorrelationMatrixWeight(value))) {
         return `Cell at row ${rowNumber}, ${getColumnLabel(fileData, j)} contains '${formatValueForMessage(value)}'. Expected a number, blank, NA, N/A, or NaN.`;
       }
     }
@@ -257,7 +257,7 @@ export function getCorrelationMatrixIssue(fileData, tol = 1e-4) {
 }
 
 export function getCorrelationMatrixWeight(value) {
-  if (isMissingCorrelationValue(value)) return 0;
+  if (isMissingCorrelationValue(value)) return undefined;
 
   const numericValue = Number(value);
   return Number.isFinite(numericValue) ? numericValue : Number.NaN;
