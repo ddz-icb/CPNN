@@ -52,6 +52,12 @@ const mountSimulation = simulation.mountSimulation;
 const readyAtMount = [];
 let root, host;
 
+function deferred() {
+  let resolve, reject;
+  const promise = new Promise((res, rej) => { resolve = res; reject = rej; });
+  return { promise, resolve, reject };
+}
+
 function savedGraph(name, ids) {
   return { name, data: {
     nodes: ids.map((id) => ({ id, attribs: [] })),
@@ -183,29 +189,37 @@ test("loading, replacing and removing a mapping updates the rendered attributes"
   }
 });
 
-test("changing a filter updates the running simulation", async () => {
+test("filtering everything out and restoring it reuses the running simulation", async () => {
   await update(() => graphService.handleSelectGraph("A"));
   const previous = useRenderState.getState().renderState.simulation;
   const graph = await update(async () => useFilter.getState().setFilter("minLinkThreshold", 0.95));
   expect(graph.data.links).toHaveLength(0);
+  expect(graph.data.nodes).toHaveLength(0);
   expect(useRenderState.getState().renderState.simulation).toBe(previous);
+
+  const restored = await update(async () => useFilter.getState().setFilter("minLinkThreshold", 0.7));
+  expect(nodeIds(restored.data)).toEqual(nodeIds(graphs.A.data));
+  expect(restored.data.links).toHaveLength(1);
+  expect(useRenderState.getState().renderState.simulation).toBe(previous);
+  expect(Application).toHaveBeenCalledTimes(1);
 });
 
-test("a late graph load cannot replace the latest selection", async () => {
-  let resolveOld;
-  vi.mocked(graphRepo.getGraphDB).mockImplementationOnce(() => new Promise((resolve) => { resolveOld = resolve; }));
+test.each(["resolve", "reject"])("a stale graph load cannot overwrite the latest graph or error (%s)", async (outcome) => {
+  const pending = deferred();
+  vi.mocked(graphRepo.getGraphDB).mockReturnValueOnce(pending.promise);
   await act(() => graphService.handleSelectGraph("A"));
   await update(() => graphService.handleSelectGraph("B"));
   const draws = redraw.mock.calls.length;
 
-  await act(async () => resolveOld(structuredClone(graphs.A)));
+  await act(async () => pending[outcome](outcome === "resolve" ? structuredClone(graphs.A) : new Error("Stale failure")));
 
+  expect(errorService.getError()).toBeNull();
   expect(graphService.getOriginGraph().name).toBe("B");
   expect(graphService.getGraph().name).toBe("B");
   expect(redraw).toHaveBeenCalledTimes(draws);
 });
 
-test("a failed load reports the error without replacing the current graph", async () => {
+test("a failed load preserves the current graph and a subsequent load recovers", async () => {
   const graph = await update(() => graphService.handleSelectGraph("A"));
   const previous = useRenderState.getState().renderState.simulation;
   const draws = redraw.mock.calls.length;
@@ -218,6 +232,41 @@ test("a failed load reports the error without replacing the current graph", asyn
   expect(graphService.getGraph()).toBe(graph);
   expect(useRenderState.getState().renderState.simulation).toBe(previous);
   expect(redraw).toHaveBeenCalledTimes(draws);
+
+  const recovered = await update(() => graphService.handleSelectGraph("B"));
+  expect(nodeIds(recovered.data)).toEqual(nodeIds(graphs.B.data));
+  expect(Application).toHaveBeenCalledTimes(1);
+});
+
+test("changing the mapping during a pending graph load keeps the latest mapping", async () => {
+  const pending = deferred();
+  vi.mocked(graphRepo.getGraphDB).mockReturnValueOnce(pending.promise);
+  await act(() => graphService.handleSelectGraph("A"));
+  const mapped = await update(() => mappingService.handleSelectMapping("Kinase"));
+  expect(mapped.data.nodes.find((node) => node.id === "A1_AKT1").attribs).toEqual(["Kinase"]);
+  const draws = redraw.mock.calls.length;
+
+  await act(async () => pending.resolve(structuredClone(graphs.A)));
+
+  expect(graphService.getGraph()).toBe(mapped);
+  expect(redraw).toHaveBeenCalledTimes(draws);
+  expect(errorService.getError()).toBeNull();
+});
+
+test.each(["resolve", "reject"])("a pending load has no effects after unmount (%s)", async (outcome) => {
+  const pending = deferred();
+  vi.mocked(graphRepo.getGraphDB).mockReturnValueOnce(pending.promise);
+  await act(() => graphService.handleSelectGraph("A"));
+  await act(async () => root.unmount());
+  root = null;
+
+  await act(async () => pending[outcome](outcome === "resolve" ? structuredClone(graphs.A) : new Error("Late failure")));
+
+  expect(graphService.getOriginGraph()).toBeNull();
+  expect(graphService.getGraph()).toBeNull();
+  expect(errorService.getError()).toBeNull();
+  expect(Application).not.toHaveBeenCalled();
+  expect(simulation.getSimulation).not.toHaveBeenCalled();
 });
 
 test("unmounting cancels drawing and stops the simulation", async () => {
