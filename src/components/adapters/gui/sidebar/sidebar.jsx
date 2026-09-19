@@ -22,18 +22,21 @@ export function Sidebar({ collapsed = false, onCollapsedChange, ...props }) {
   const [lastNavItem, setLastNavItem] = useState("Data");
   const { addKeyframe } = useAddKeyframe();
 
-  const handleSetActiveNavItem = useCallback((item) => {
-    if (item === "Selection" && activeNavItem === "Selection" && !collapsed) {
-      onCollapsedChange?.(true);
-      return;
-    }
+  const handleSetActiveNavItem = useCallback(
+    (item) => {
+      if (item === "Selection" && activeNavItem === "Selection" && !collapsed) {
+        onCollapsedChange?.(true);
+        return;
+      }
 
-    setActiveNavItem(item);
-    if (item && item !== "Selection") {
-      setLastNavItem(item);
-      onCollapsedChange?.(false);
-    }
-  }, [activeNavItem, collapsed, onCollapsedChange]);
+      setActiveNavItem(item);
+      if (item && item !== "Selection") {
+        setLastNavItem(item);
+        onCollapsedChange?.(false);
+      }
+    },
+    [activeNavItem, collapsed, onCollapsedChange],
+  );
 
   const openSidebar = useCallback(() => {
     onCollapsedChange?.(false);
@@ -49,9 +52,9 @@ export function Sidebar({ collapsed = false, onCollapsedChange, ...props }) {
   const sidebarComponents = {
     Selection: <SelectionSidebar handleNavItemClick={handleSetActiveNavItem} activeNavItem={lastNavItem} />,
     Data: <DataSidebar {...props} />,
+    "Additional Data": <AdditionalDataSidebar />,
     Search: <SearchSidebar />,
     Filter: <FilterSidebar />,
-    "Additional Data": <AdditionalDataSidebar />,
     Communities: <CommunitySidebar />,
     Physics: <PhysicsSidebar />,
     Appearance: <AppearanceSidebar {...props} />,

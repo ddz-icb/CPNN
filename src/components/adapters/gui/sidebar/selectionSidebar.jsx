@@ -21,6 +21,13 @@ export function SelectionSidebar({ handleNavItemClick, activeNavItem }) {
         onClick={() => handleNavItemClick("Data")}
       />
       <NavItem
+        text={"Additional Data"}
+        shortcut={SIDEBAR_SHORTCUT_BY_KEY["Additional Data"]}
+        icon={<SvgIcon svg={fileWaveformSvg} />}
+        isActive={activeNavItem === "Additional Data"}
+        onClick={() => handleNavItemClick("Additional Data")}
+      />
+      <NavItem
         text={"Search"}
         shortcut={SIDEBAR_SHORTCUT_BY_KEY["Search"]}
         icon={<SvgIcon svg={searchSvg} />}
@@ -33,13 +40,6 @@ export function SelectionSidebar({ handleNavItemClick, activeNavItem }) {
         icon={<SvgIcon svg={filterSvg} />}
         isActive={activeNavItem === "Filter"}
         onClick={() => handleNavItemClick("Filter")}
-      />
-      <NavItem
-        text={"Additional Data"}
-        shortcut={SIDEBAR_SHORTCUT_BY_KEY["Additional Data"]}
-        icon={<SvgIcon svg={fileWaveformSvg} />}
-        isActive={activeNavItem === "Additional Data"}
-        onClick={() => handleNavItemClick("Additional Data")}
       />
       <NavItem
         text={"Communities"}
