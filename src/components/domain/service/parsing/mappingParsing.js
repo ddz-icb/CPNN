@@ -27,7 +27,7 @@ export async function parseMappingFile(file) {
 export function parseMapping(content) {
   const fileData = Papa.parse(content, {
     header: true,
-    dynamicTyping: true,
+    dynamicTyping: false,
     skipEmptyLines: true,
     delimiter: "",
     transformHeader: function (header) {
@@ -63,8 +63,7 @@ export function parseMapping(content) {
     throw new Error("Mapping file must contain at least one data row.");
   }
 
-  const nodeMapping = {};
-  const seenIds = new Map();
+  const nodeMapping = new Map();
 
   fileData.data.forEach((row, index) => {
     const rowNumber = index + 2;
@@ -74,19 +73,13 @@ export function parseMapping(content) {
     if (!id) {
       throw new Error(`Mapping row ${rowNumber} is missing a node ID in the 'id' column.`);
     }
-    const idKey = id.toLowerCase();
-    if (seenIds.has(idKey)) {
-      throw new Error(`Duplicate mapping ID '${id}' at row ${rowNumber}. First occurrence is at row ${seenIds.get(idKey)}.`);
-    }
-    seenIds.set(idKey, rowNumber);
     if (!Array.isArray(attribs) || attribs.length === 0) {
       throw new Error(`Mapping row ${rowNumber} for '${id}' has no attributes. Add one or more semicolon-separated values in the 'attribs' column.`);
     }
 
-    nodeMapping[id] = {
-      attribs: attribs,
-    };
+    const combined = new Set([...(nodeMapping.get(id)?.attribs ?? []), ...attribs]);
+    nodeMapping.set(id, { attribs: [...combined] });
   });
 
-  return nodeMapping;
+  return Object.fromEntries(nodeMapping);
 }

@@ -80,7 +80,7 @@ beforeEach(async () => {
   vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockReturnValue({ width: 800, height: 600 });
   vi.spyOn(graphRepo, "getGraphDB").mockImplementation(async (name) => structuredClone(graphs[name]));
   vi.spyOn(mappingRepo, "getMappingDB").mockImplementation(async (name) => ({
-    name, data: { A1: { attribs: [name] } },
+    name, data: { A1_AKT1: { attribs: [name] } },
   }));
   // Keep real forces and mounting; only stop the background animation timer.
   vi.spyOn(simulation, "getSimulation").mockImplementation((...args) => {
@@ -187,6 +187,19 @@ test("loading, replacing and removing a mapping updates the rendered attributes"
     expect(graph.data.nodes.find((node) => node.id === "A1_AKT1").attribs).toEqual(name ? [name] : []);
     expect(Application).toHaveBeenCalledTimes(1);
   }
+});
+
+test("case-insensitive field mappings add attributes and removal preserves original attributes", async () => {
+  const record = structuredClone(graphs.A);
+  record.data.nodes[0].attribs = ["Original"];
+  vi.mocked(graphRepo.getGraphDB).mockImplementation(async () => structuredClone(record));
+  vi.mocked(mappingRepo.getMappingDB).mockResolvedValue({ name: "Protein IDs", data: { a1: { attribs: ["Kinase"] } } });
+  await update(() => graphService.handleSelectGraph("A"));
+  const mapped = await update(() => mappingService.handleSelectMapping("Protein IDs"));
+  expect(mapped.data.nodes[0].attribs).toEqual(["Original", "Kinase"]);
+  expect(mapped.data.nodes[1].attribs).toEqual([]);
+  const removed = await update(() => mappingService.handleRemoveMapping());
+  expect(removed.data.nodes[0].attribs).toEqual(["Original"]);
 });
 
 test("filtering everything out and restoring it reuses the running simulation", async () => {

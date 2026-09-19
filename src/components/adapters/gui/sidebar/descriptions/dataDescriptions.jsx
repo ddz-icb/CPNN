@@ -72,15 +72,19 @@ export const maxCompSizeDescriptionUpload = (
 
 export const uploadNodeMappingDescription = (
   <div>
-    Uploading node mappings can provide additional context to classify nodes, determining their color. Nodes can be associated with one or more
-    attributes. Nodes belonging to the same attribute will then be colored accordingly.
+    Add attributes to nodes to group and color them.
     <br />
     Node mappings can be uploaded as TSV (preferred) or CSV files. The file must contain two columns:{" "}
     <PopupTextField inline={true} textInside={"id"} /> and <PopupTextField inline={true} textInside={"attribs"} />. In the{" "}
     <PopupTextField inline={true} textInside={"attribs"} /> column, separate multiple attributes with{" "}
-    <PopupTextField inline={true} textInside={";"} /> (semicolon). A mapping row is applied to all nodes whose ID contains the mapping{" "}
-    <PopupTextField inline={true} textInside={"id"} /> value as a substring. To better understand the required format, you can look at examples or
-    download an example mapping below.
+    <PopupTextField inline={true} textInside={";"} /> (semicolon), or repeat an ID across multiple rows. Attributes from repeated IDs are combined
+    without duplicates and added to the existing node attributes.
+    <br />
+    Use the full node ID, just the protein ID, name or site, or neighboring parts together. For example when matching{" "}
+    <PopupTextField inline={true} textInside={"P31749_AKT1_S473"} />, you could use <PopupTextField inline={true} textInside={"AKT1"} />,{" "}
+    <PopupTextField inline={true} textInside={"P31749"} />, <PopupTextField inline={true} textInside={"S473"} />,
+    <PopupTextField inline={true} textInside={"AKT1_S473"} /> or <PopupTextField inline={true} textInside={"P31749_AKT1_S473"} />. Use complete names
+    and numbers: AKT1 will not match AKT10.
     <div className="pad-bottom-05" />
     <PopupTextField textInside={nodeMappingFormat} />
     <div className="pad-bottom-05" />
@@ -137,15 +141,15 @@ export const uploadGraphDataFormat = (
       <PopupTextField inline={true} textInside={"attribs"} /> is optional and can be one attribute or a list. Each link needs{" "}
       <PopupTextField inline={true} textInside={"source"} />, <PopupTextField inline={true} textInside={"target"} />, and{" "}
       <PopupTextField inline={true} textInside={"attrib"} />. <PopupTextField inline={true} textInside={"weight"} /> is optional; omit it for an
-      unweighted relationship. If supplied, it must be a finite number. Unweighted links are retained by weight filters.
-      Add <PopupTextField inline={true} textInside={"directed: true"} /> only for directed links.
+      unweighted relationship. If supplied, it must be a finite number. Unweighted links are retained by weight filters. Add{" "}
+      <PopupTextField inline={true} textInside={"directed: true"} /> only for directed links.
     </p>
     <div className="pad-bottom-1" />
     <p className="margin-0">
       <strong>Correlation Matrix (TSV/CSV):</strong> the file is a square correlation matrix. The first column header must be{" "}
       <PopupTextField inline={true} textInside={"id"} />, and the row IDs must match the column IDs. Missing values such as{" "}
-      <PopupTextField inline={true} textInside={"NA"} /> are excluded rather than creating links. Numeric zero remains a valid weight. Created links use the uploaded file name as their
-      attribute.
+      <PopupTextField inline={true} textInside={"NA"} /> are excluded rather than creating links. Numeric zero remains a valid weight. Created links
+      use the uploaded file name as their attribute.
     </p>
     <div className="pad-bottom-1" />
     <p className="margin-0">

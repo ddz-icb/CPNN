@@ -16,7 +16,7 @@ export function verifyMapping(mapping) {
     if (!node || typeof node !== "object" || Array.isArray(node)) {
       throw new Error(`Mapping entry '${key}' has an invalid row format.`);
     }
-    if (!node.hasOwnProperty("attribs")) {
+    if (!Object.hasOwn(node, "attribs")) {
       throw new Error(`${key} is missing the 'attribs' property.`);
     }
     if (!Array.isArray(node.attribs) || node.attribs.length === 0) {

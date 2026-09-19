@@ -1,19 +1,40 @@
+import { getNodeIdEntries, getNodeIdsAndIsoform, getNodeIdNames, getNodeIdName, getNodeIdAndNameEntry } from "../parsing/nodeIdParsing.js";
+import { getPhosphositesNodeIdEntry } from "../parsing/nodeIdBioParsing.js";
+
+const normalizeMatch = (value) => value.trim().toLowerCase();
+
 export function applyNodeMapping(graphData, mappingData) {
   if (!mappingData) return graphData;
 
-  const nodeMapping = mappingData;
-  const mappingEntries = Object.entries(nodeMapping);
+  const mappingEntries = Object.entries(mappingData)
+    .filter(([id]) => id.trim())
+    .map(([id, node]) => ({
+      id: normalizeMatch(id),
+      attribs: Array.isArray(node?.attribs) ? node.attribs : [],
+    }));
 
   graphData.nodes.forEach((node) => {
     const nodeId = String(node.id);
-    const attribsSet = new Set();
+    const entries = getNodeIdEntries(nodeId);
+    const matchValues = new Set([
+      nodeId,
+      ...entries,
+      ...getNodeIdsAndIsoform(nodeId),
+      ...getNodeIdNames(nodeId),
+      ...entries.flatMap(getPhosphositesNodeIdEntry),
+      ...entries.flatMap((entry) => {
+        const idAndName = getNodeIdAndNameEntry(entry);
+        const name = getNodeIdName(entry);
+        return [idAndName, ...getPhosphositesNodeIdEntry(entry).flatMap((site) => [
+          `${name}_${site}`, `${idAndName}_${site}`,
+        ])];
+      }),
+    ].map(normalizeMatch));
+    const attribsSet = new Set(node.attribs ?? []);
 
-    mappingEntries.forEach(([mappingId, mappingNode]) => {
-      const mappingIdStr = String(mappingId).trim();
-      if (!mappingIdStr || !nodeId.includes(mappingIdStr)) return;
-
-      const mappedAttribs = Array.isArray(mappingNode?.attribs) ? mappingNode.attribs : [];
-      mappedAttribs.forEach((attrib) => attribsSet.add(attrib));
+    mappingEntries.forEach(({ id, attribs }) => {
+      if (!matchValues.has(id)) return;
+      attribs.forEach((attrib) => attribsSet.add(attrib));
     });
 
     node.attribs = Array.from(attribsSet);

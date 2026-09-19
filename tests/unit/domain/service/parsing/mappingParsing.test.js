@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { after, before, describe, test } from "node:test";
 
-import { parseMappingFile } from "../../../../../src/components/domain/service/parsing/mappingParsing.js";
+import { parseMapping, parseMappingFile } from "../../../../../src/components/domain/service/parsing/mappingParsing.js";
 import { createTextFile, installFileReaderMock } from "../../../../support/fileUploadTestUtils.js";
 
 let restoreFileReader;
@@ -15,6 +15,16 @@ after(() => {
 });
 
 describe("parseMappingFile uploads", () => {
+  test("combines repeated IDs and deduplicates attributes while preserving text IDs", () => {
+    const data = parseMapping("id,attribs\n00123,Kinase; Signal\n00123,Signal; Other\nakt1,Lowercase\nAKT1,Uppercase");
+    assert.deepEqual(data, {
+      "00123": { attribs: ["Kinase", "Signal", "Other"] },
+      akt1: { attribs: ["Lowercase"] },
+      AKT1: { attribs: ["Uppercase"] },
+    });
+    assert.throws(() => parseMapping("id,attribs\nA,Kinase\nA,"), /has no attributes/);
+  });
+
   test("loads CSV mapping uploads and splits semicolon-separated attributes", async () => {
     const file = createTextFile("mapping-upload.csv", ["id,attribs", "P1_AKT1,Kinase; T2D", "P2_MAPK1,Signal"].join("\n"), "text/csv");
 
