@@ -1,11 +1,6 @@
-const id = "ID";
-const name = "Name";
-const sites = "SiteA, SiteB, ...";
-const sites2 = "SiteU, SiteV, ...";
+export const nodeIdFormat = "ID_Name[_Sites]";
 
-export const nodeIdFormat = `${id}1_${name}1_${sites}; ${id}2_${name}2_${sites2}; ...`;
-
-export const nodeIdExample0 = `ID1_MYL3; ID2_TTN`;
+export const nodeIdExample0 = `ID1_Name1; ID2_Name2`;
 export const nodeIdExample1 = `P08590_MYL3`;
 export const nodeIdExample2 = `P08590_MYL3_T165`;
 export const nodeIdExample3 = `Q8WZ42_TTN_T719,S721`;

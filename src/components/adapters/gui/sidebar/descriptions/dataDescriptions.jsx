@@ -115,25 +115,41 @@ export const uploadGraphDataFormat = (
   <div>
     <div className="pad-bottom-2">
       <p className="margin-0">
-        <strong>Node IDs:</strong> Simple IDs like <PopupTextField inline={true} textInside={"ID_Name"} /> work. You can group several IDs in one node
-        with semicolons, for example <PopupTextField inline={true} textInside={"ID1_Name1; ID2_Name2"} />. Optional phosphosite information can be
-        appended, for example <PopupTextField inline={true} textInside={"P08590_MYL3_T165"} />. UniProt-style IDs allow CPNN to fetch more biological
-        context from external services.
+        <strong>Node IDs:</strong> Start with an ID and a name, separated by an underscore. Add phosphosites if needed. UniProt-style IDs allow CPNN
+        to fetch more biological context from external services.
       </p>
       <div className="pad-bottom-05" />
       Format:
       <div className="pad-bottom-05" />
       <PopupTextField textInside={nodeIdFormat} />
+      <p className="margin-0 pad-top-05">Brackets mark the optional part; do not include the brackets in your file.</p>
+      <ul>
+        <li><code>_</code> separates the ID, name, and optional phosphosites.</li>
+        <li><code>,</code> separates phosphosites within an entry.</li>
+        <li><code>;</code> groups multiple entries into a single node.</li>
+        <li>An isoform suffix belongs to the ID, for example <code>Q8WZ42-12</code>.</li>
+      </ul>
       <div className="pad-bottom-05" />
       Examples:
       <div className="pad-bottom-05" />
-      <div style={{ display: "flex", gap: "0.5rem", rowGap: "0.75rem", flexWrap: "wrap" }}>
-        <PopupTextField textInside={nodeIdExample0} />
-        <PopupTextField textInside={nodeIdExample1} />
-        <PopupTextField textInside={nodeIdExample2} />
-        <PopupTextField textInside={nodeIdExample3} />
-        <PopupTextField textInside={nodeIdExample4} />
+      <div style={{ display: "grid", gap: "0.25rem" }}>
+        {[
+          ["Basic node", "ID_Name"],
+          ["Protein", nodeIdExample1],
+          ["One phosphosite", nodeIdExample2],
+          ["Multiple phosphosites", nodeIdExample3],
+          ["Grouped entries", nodeIdExample0],
+          ["With isoform", nodeIdExample4],
+        ].map(([label, example]) => (
+          <div key={label}>
+            {label}: <PopupTextField inline={true} textInside={example} />
+          </div>
+        ))}
       </div>
+      <p className="margin-0 pad-top-05">
+        TSV avoids conflicts with commas in phosphosite lists. In CSV files, quote any field containing commas, for example
+        {" "}<code>{'"Q8WZ42_TTN_T719,S721"'}</code>.
+      </p>
     </div>
     <p className="margin-0">
       <strong>JSON:</strong> The file contains a <PopupTextField inline={true} textInside={"nodes"} /> list and a{" "}
