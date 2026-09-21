@@ -1,7 +1,12 @@
 import React, { act } from "react";
 import { createRoot } from "react-dom/client";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
-import { Application } from "pixi.js";
+import { Application, Container, Graphics } from "pixi.js";
+import { AppearanceControl } from "../../src/components/adapters/controllers/appearanceControl.js";
+import { useAppearance } from "../../src/components/adapters/state/appearanceState.js";
+import { usePixiState } from "../../src/components/adapters/state/pixiState.js";
+import { initDragAndZoom } from "../../src/components/domain/service/canvas_interaction/interactiveCanvas.js";
+import { redraw3D } from "../../src/components/domain/service/canvas_drawing/render3D.js";
 import { useGraphSetup } from "../../src/components/adapters/controllers/useGraphSetup.js";
 import { FilterControl } from "../../src/components/adapters/controllers/filterControl.js";
 import { PhysicsControl } from "../../src/components/adapters/controllers/physicsControl.js";
@@ -31,13 +36,21 @@ vi.mock("pixi.js", async (importOriginal) => ({
   }),
 }));
 vi.mock("../../src/components/domain/service/canvas_drawing/stageSetup.js", () => ({
-  setupStage: vi.fn(({ graph }) => ({
-    nodeContainers: { children: graph.data.nodes }, nodeMap: {},
-    lines: {}, lines2D: {}, lines3D: {}, grid3D: {},
-  })),
+  setupStage: vi.fn(({ graph }) => {
+    const nodeContainers = new Container();
+    const nodeMap = Object.fromEntries(graph.data.nodes.map((node) => {
+      const circle = new Container();
+      const nodeLabel = new Container();
+      nodeContainers.addChild(circle, nodeLabel);
+      return [node.id, { node, circle, nodeLabel }];
+    }));
+    const lines2D = new Graphics();
+    return { nodeContainers, nodeMap, lines: lines2D, lines2D, lines3D: [], grid3D: new Graphics() };
+  }),
 }));
 vi.mock("../../src/components/domain/service/canvas_drawing/nodes.js", () => ({
   radius: 10, syncNodeMapWithGraphData: vi.fn(), filterActiveNodesForPixi: vi.fn(),
+  changeCircleBorderColor: vi.fn(), changeNodeColors: vi.fn(), changeNodeLabelColor: vi.fn(),
 }));
 vi.mock("../../src/components/domain/service/canvas_interaction/interactiveCanvas.js", () => ({
   handleResize: vi.fn(), initDragAndZoom: vi.fn(),
@@ -48,6 +61,7 @@ vi.mock("../../src/components/domain/service/canvas_drawing/render3D.js", () => 
 const stateModules = import.meta.glob("../../src/components/adapters/state/*.js", { eager: true });
 const stores = Object.values(stateModules).flatMap(Object.values).filter((value) => value?.getInitialState);
 const getSimulation = simulation.getSimulation;
+const createApplication = Application.getMockImplementation();
 const mountSimulation = simulation.mountSimulation;
 const readyAtMount = [];
 let root, host;
@@ -68,7 +82,7 @@ const graphs = { A: savedGraph("A", ["A1_AKT1", "A2_MAPK1"]), B: savedGraph("B",
 
 function Controllers() {
   useGraphSetup();
-  return <><FilterControl /><PhysicsControl /><RenderControl /></>;
+  return <><AppearanceControl /><FilterControl /><PhysicsControl /><RenderControl /></>;
 }
 
 beforeEach(async () => {
@@ -109,14 +123,14 @@ afterEach(async () => {
 });
 
 async function update(action) {
-  const previousDraws = redraw.mock.calls.length;
+  const previousDraws = redraw.mock.calls.length + redraw3D.mock.calls.length;
   await act(action);
   await act(async () => {
     await vi.dynamicImportSettled();
     await vi.advanceTimersByTimeAsync(100);
   });
   expect(errorService.getError()).toBeNull();
-  expect(redraw.mock.calls.length).toBeGreaterThan(previousDraws);
+  expect(redraw.mock.calls.length + redraw3D.mock.calls.length).toBeGreaterThan(previousDraws);
   expect(graphService.getFilteredAfterStart()).toBe(true);
   expect(readyAtMount).not.toContain(false);
   expect(setupStage.mock.invocationCallOrder.at(-1)).toBeLessThan(simulation.mountSimulation.mock.invocationCallOrder.at(-1));
@@ -128,11 +142,97 @@ async function update(action) {
   return graph;
 }
 
+test("switching 2D to 3D and back replaces the simulation and restores the display", async () => {
+  await update(() => graphService.handleSelectGraph("A"));
+  for (const threeD of [true, false]) {
+    if (!threeD) for (const { circle, nodeLabel } of Object.values(usePixiState.getState().pixiState.nodeMap)) {
+      circle.scale.set(0.5);
+      circle.tint = 0x888888;
+      circle.visible = nodeLabel.visible = false;
+      circle.__hiddenByProjection = nodeLabel.__hiddenByProjection = true;
+    }
+    const previous = useRenderState.getState().renderState.simulation;
+    previous.stop.mockClear();
+    const draw = threeD ? redraw3D : redraw;
+    const previousDraws = draw.mock.calls.length;
+
+    const graph = await update(async () => useAppearance.getState().setAppearance("threeD", threeD));
+
+    expect(previous.stop).toHaveBeenCalled();
+    expect(useRenderState.getState().renderState.simulation).not.toBe(previous);
+    expect(draw.mock.calls.length).toBeGreaterThan(previousDraws);
+    const { lines, lines2D, lines3D, nodeMap } = usePixiState.getState().pixiState;
+    expect(lines).toBe(threeD ? lines3D : lines2D);
+    expect(lines2D.visible).toBe(!threeD);
+    expect(Application).toHaveBeenCalledTimes(1);
+    if (threeD) expect(graph.data.nodes.every((node) => Number.isFinite(node.z))).toBe(true);
+    else for (const { circle, nodeLabel } of Object.values(nodeMap)) {
+      expect(circle.scale.x).toBe(1);
+      expect(circle.tint).toBe(0xffffff);
+      expect(circle.sphereShading.highlight.visible).toBe(false);
+      expect(circle.visible).toBe(true);
+      expect(nodeLabel.visible).toBe(true);
+      expect(usePixiState.getState().pixiState.grid3D.visible).toBe(false);
+    }
+  }
+});
+
+test("3D shading, grid and field of view update without replacing the simulation", async () => {
+  await update(() => graphService.handleSelectGraph("A"));
+  await update(async () => useAppearance.getState().setAppearance("threeD", true));
+  const previous = useRenderState.getState().renderState.simulation;
+  const { setAppearance } = useAppearance.getState();
+  const { nodeMap, grid3D } = usePixiState.getState().pixiState;
+
+  for (const enabled of [false, true]) {
+    await act(async () => { setAppearance("enable3DShading", enabled); setAppearance("show3DGrid", enabled); });
+    expect(grid3D.visible).toBe(enabled);
+    for (const { circle } of Object.values(nodeMap)) {
+      expect(circle.sphereShading.highlight.visible).toBe(enabled);
+      expect(circle.sphereShading.shadow.visible).toBe(enabled);
+    }
+  }
+  const draws = redraw3D.mock.calls.length;
+  await act(async () => setAppearance("threeDFov", 700));
+  expect(useAppearance.getState().appearance.cameraRef.current.fov).toBe(700);
+  expect(redraw3D.mock.calls.length).toBeGreaterThan(draws);
+  expect(useRenderState.getState().renderState.simulation).toBe(previous);
+  expect(errorService.getError()).toBeNull();
+});
+
+test("node labels toggle and manual link width survives graph changes", async () => {
+  await update(() => graphService.handleSelectGraph("A"));
+  const { setAppearance } = useAppearance.getState();
+  for (const visible of [false, true]) {
+    await act(async () => setAppearance("showNodeLabels", visible));
+    const { nodeMap } = usePixiState.getState().pixiState;
+    expect(Object.values(nodeMap).every(({ nodeLabel }) => nodeLabel.visible === visible)).toBe(true);
+  }
+  await act(async () => { setAppearance("linkWidthManuallySet", true); setAppearance("linkWidth", 2.5); });
+  expect(redraw.mock.lastCall[2]).toBe(2.5);
+  await update(() => graphService.handleSelectGraph("B"));
+  expect(useAppearance.getState().appearance.linkWidth).toBe(2.5);
+  expect(redraw.mock.lastCall[2]).toBe(2.5);
+});
+
+test("3D camera control settings reach the active interaction handlers", async () => {
+  await update(() => graphService.handleSelectGraph("A"));
+  await update(async () => useAppearance.getState().setAppearance("threeD", true));
+  const controls = initDragAndZoom.mock.lastCall.at(-1);
+  const values = { OrbitSensitivity: 2, PanSensitivity: 0.5, ZoomSensitivity: 1.5, Inertia: false, InertiaDamping: 0.8, InvertVertical: true };
+  await act(async () => {
+    for (const [key, value] of Object.entries(values)) useAppearance.getState().setAppearance(`threeD${key}`, value);
+  });
+  expect(controls.current).toMatchObject({
+    orbitSensitivity: 2, panSensitivity: 0.5, zoomSensitivity: 1.5,
+    inertia: false, inertiaDamping: 0.8, invertVertical: true,
+  });
+});
+
 test("loads settings and stage before mounting the filtered graph", async () => {
   let finishInit;
-  const createApp = Application.getMockImplementation();
   Application.mockImplementationOnce(function () {
-    createApp.call(this);
+    createApplication.call(this);
     this.init.mockImplementation(() => new Promise((resolve) => { finishInit = resolve; }));
   });
   const record = structuredClone(graphs.A);
