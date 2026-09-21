@@ -7,6 +7,7 @@ import { useAppearance } from "../../src/components/adapters/state/appearanceSta
 import { usePixiState } from "../../src/components/adapters/state/pixiState.js";
 import { initDragAndZoom } from "../../src/components/domain/service/canvas_interaction/interactiveCanvas.js";
 import { redraw3D } from "../../src/components/domain/service/canvas_drawing/render3D.js";
+import { calculateLinkWidth } from "../../src/components/domain/service/canvas_drawing/lineGraphics.js";
 import { useGraphSetup } from "../../src/components/adapters/controllers/useGraphSetup.js";
 import { FilterControl } from "../../src/components/adapters/controllers/filterControl.js";
 import { PhysicsControl } from "../../src/components/adapters/controllers/physicsControl.js";
@@ -198,6 +199,21 @@ test("3D shading, grid and field of view update without replacing the simulation
   expect(redraw3D.mock.calls.length).toBeGreaterThan(draws);
   expect(useRenderState.getState().renderState.simulation).toBe(previous);
   expect(errorService.getError()).toBeNull();
+});
+
+test("automatic link width follows the filtered graph rather than the original", async () => {
+  const nodes = Array.from({ length: 201 }, (_, i) => ({ id: `P${i}_NODE${i}`, attribs: [] }));
+  const links = nodes.slice(1).map((node, i) => ({ source: nodes[i].id, target: node.id, weight: 0.9, attrib: "test" }));
+  vi.mocked(graphRepo.getGraphDB).mockResolvedValue({ name: "A", data: { nodes, links } });
+  await update(() => graphService.handleSelectGraph("A"));
+  const originalWidth = useAppearance.getState().appearance.linkWidth;
+  expect(originalWidth).toBe(calculateLinkWidth(links.length));
+
+  const filtered = await update(async () => useFilter.getState().setFilter("minLinkThreshold", 0.95));
+
+  expect(filtered.data.links).toHaveLength(0);
+  expect(useAppearance.getState().appearance.linkWidth).toBe(calculateLinkWidth(0));
+  expect(useAppearance.getState().appearance.linkWidth).not.toBe(originalWidth);
 });
 
 test("node labels toggle and manual link width survives graph changes", async () => {
