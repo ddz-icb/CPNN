@@ -370,3 +370,21 @@ input:checked + .switch-button:before {
   opacity: 0.55;
   transform: none;
 }
+
+/* Dataset attribution stays readable in both sidebar themes. */
+.graph-references {
+  margin: var(--sidebar-section-gap-y) var(--sidebar-control-padding-x);
+  padding: 0.6rem 0;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-s);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.graph-references summary { cursor: pointer; font-weight: var(--font-weight-medium); }
+.graph-references summary:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+.graph-references h4 { margin: 0.9rem 0 0.4rem; font-size: var(--font-size-m); }
+.graph-references p { margin: 0.4rem 0; }
+.graph-references ul { padding-left: 1.4rem; }
+.graph-references li { margin: 0.5rem 0; }
+.graph-references a { color: inherit; text-decoration: underline; text-underline-offset: 0.15em; }
+.graph-references-note { border-left: 2px solid currentColor; padding-left: 0.65rem; }

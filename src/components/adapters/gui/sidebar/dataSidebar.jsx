@@ -18,6 +18,7 @@ import { useMappingState } from "../../state/mappingState.js";
 import { mappingService } from "../../../application/services/mappingService.js";
 import { useGraphState } from "../../state/graphState.js";
 import { UploadGraph } from "./uploadGraph.jsx";
+import { GraphReferences } from "./graphReferences.jsx";
 
 export function DataSidebar() {
   const { graphState } = useGraphState();
@@ -28,7 +29,7 @@ export function DataSidebar() {
       <TopDataButtons />
       <ActiveGraphFiles activeGraphNames={graphState.activeGraphNames} />
       <UploadedGraphFiles uploadedGraphNames={graphState.uploadedGraphNames} activeGraphNames={graphState.activeGraphNames} />
-      <ExampleGraphFiles activeGraphNames={graphState.activeGraphNames} />
+      <ExampleGraphFiles activeGraphNames={graphState.activeGraphNames} activeMetadata={graphState.graph?.data?.metadata} />
       <Mapping mapping={mappingState.mapping} />
       <UploadedMappings uploadedMappingNames={mappingState.uploadedMappingNames} />
     </>
@@ -59,18 +60,24 @@ function ActiveGraphFiles({ activeGraphNames }) {
   );
 }
 
-function ExampleGraphFiles({ activeGraphNames }) {
+function ExampleGraphFiles({ activeGraphNames, activeMetadata }) {
   const isActiveGraph = (graph) => activeGraphNames && activeGraphNames.includes(graph.name);
 
   return (
-    <TableList
-      heading={"Example Graphs"}
-      data={exampleGraphs}
-      displayKey={"label"}
-      secondaryKey={"description"}
-      onItemClick={(graph) => graphService.handleSelectGraph(graph.name)}
-      itemTooltipContent={(graph) => (isActiveGraph(graph) ? "Currently active" : "Load example graph")}
-    />
+    <>
+      <TableList
+        heading={"Example Graphs"}
+        data={exampleGraphs}
+        displayKey={"label"}
+        secondaryKey={"description"}
+        onItemClick={(graph) => graphService.handleSelectGraph(graph.name)}
+        itemTooltipContent={(graph) => (isActiveGraph(graph) ? "Currently active" : "Load example graph")}
+      />
+      <GraphReferences
+        label="References"
+        metadata={{ sourceGraphs: [activeMetadata, ...exampleGraphs.map((graph) => graph.data?.metadata)].filter(Boolean) }}
+      />
+    </>
   );
 }
 

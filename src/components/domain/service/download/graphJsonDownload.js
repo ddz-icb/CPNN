@@ -26,6 +26,11 @@ export function buildGraphJsonData(graph, options = {}) {
     Object.assign(data, settings);
   }
 
+  // Attribution travels with the graph, including exports without settings.
+  // Settings must not overwrite the graph's source/license information.
+  if (isObject(graph.data.metadata)) {
+    data.metadata = structuredClone(graph.data.metadata);
+  }
   return data;
 }
 

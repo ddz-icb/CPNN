@@ -1,4 +1,5 @@
 import UnionFind from "union-find";
+import { mergeGraphMetadata } from "./graphMetadata.js";
 import { getNodeIdEntries, getNodeIdNames } from "../parsing/nodeIdParsing.js";
 import { cloneLink, getEndpointId, getUndirectedLinkKey, getLinkWeight, hasLinkWeight } from "./graphUtils.js";
 
@@ -88,7 +89,9 @@ export function joinGraphs(graphData, newGraphData) {
     }
   });
 
+  const metadata = mergeGraphMetadata(graphData.metadata, newGraphData.metadata);
   return {
+    ...(metadata ? { metadata } : {}),
     nodes: Array.from(nodeMap.values()),
     links: mergeDuplicateSemanticLinks([...(graphData.links ?? []), ...(newGraphData.links ?? [])]),
   };
