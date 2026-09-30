@@ -1,0 +1,36 @@
+import React, { act } from "react";
+import { createRoot } from "react-dom/client";
+import { afterEach, expect, test, vi } from "vitest";
+vi.mock("3dmol/build/3Dmol.js", () => ({ createViewer: vi.fn(() => ({ clear() {}, render() {}, setBackgroundColor() {} })) }));
+vi.mock("../../src/components/adapters/gui/hooks/useProteinDetails.js", () => ({ useProteinDetails: () => ({ uniprotStatus: "done", isApiComplete: true }) }));
+vi.mock("../../src/components/domain/service/download/download.js", () => ({ downloadNodeIdsCsv: vi.fn() }));
+vi.mock("../../src/components/adapters/gui/reusable_components/sidebarComponents.jsx", () => ({ Button: ({ text, ...props }) => <button {...props}>{text}</button> }));
+import { ClickTooltip } from "../../src/components/adapters/gui/tooltip/clickTooltip.jsx";
+import { useGraphState } from "../../src/components/adapters/state/graphState.js";
+import { useTooltipSettings } from "../../src/components/adapters/state/tooltipState.js";
+let root, host;
+afterEach(async () => {
+  if (root) await act(async () => root.unmount());
+  host?.remove();
+});
+test("node popup switches between statistics, adjacency and details and updates with filters", async () => {
+  globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  const data = { nodes: [{ id: "a", attribs: [] }, { id: "b", attribs: ["plant"] }], links: [{ source: "a", target: "b", attrib: "eats", directed: true }] };
+  useGraphState.getState().setGraphState("graph", { data });
+  useTooltipSettings.getState().setTooltipSettings("clickTooltipData", { node: "a", x: 30, y: 30 });
+  useTooltipSettings.getState().setTooltipSettings("isClickTooltipActive", true);
+  host = document.createElement("div"); document.body.appendChild(host); root = createRoot(host);
+  await act(async () => root.render(<ClickTooltip />));
+  const click = async (text) => act(async () => [...host.querySelectorAll("button")].find((b) => b.textContent === text).click());
+  await click("Statistics");
+  expect(host.querySelector(".node-statistics").textContent).toContain("eats");
+  expect(host.querySelector(".node-statistics").textContent).toContain("plant");
+  await click("Adjacent nodes");
+  expect(host.querySelector(".tooltip-adjacent-node-id").textContent).toBe("b");
+  await click("Statistics");
+  await act(async () => useGraphState.getState().setGraphState("graph", { data: { ...data, links: [] } }));
+  expect(host.querySelector(".node-statistics").textContent).toContain("No adjacent nodes.");
+  await click("Back to node");
+  expect(host.querySelector(".node-statistics")).toBeNull();
+  expect(host.querySelector(".tooltip-popup-body-inner > div").hidden).toBe(false);
+});

@@ -19,6 +19,9 @@ import { usePixiState } from "../../state/pixiState.js";
 import { useRenderState } from "../../state/canvasState.js";
 import { formatWeight, getAdjacentNodes } from "../../../domain/service/graph_calculations/graphUtils.js";
 
+import { getNodeStatistics } from "../../../domain/service/graph_calculations/nodeStatistics.js";
+import { NodeStatistics } from "./nodeStatistics.jsx";
+
 export function ClickTooltip() {
   const { theme } = useTheme();
   const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
@@ -28,7 +31,8 @@ export function ClickTooltip() {
   const { renderState } = useRenderState();
 
   const viewerRef = useRef(null);
-  const [isAdjacentView, setIsAdjacentView] = useState(false);
+  const [view, setView] = useState("details");
+  const isAdjacentView = view === "adjacent";
   const [history, setHistory] = useState([]);
   const isGoingBack = useRef(false);
 
@@ -38,16 +42,7 @@ export function ClickTooltip() {
   const isTooltipActive = tooltipSettings.isClickTooltipActive;
   const { displayName, entries: nodeEntries, hasPhosphosites } = useNodeDetails(nodeId);
   const proteinDetails = useProteinDetails(nodeId);
-  const {
-    fullName,
-    description,
-    pdbId,
-    protIdNoIsoform,
-    responsePdb,
-    uniprotStatus,
-    pdbStatus,
-    isApiComplete,
-  } = proteinDetails;
+  const { fullName, description, pdbId, protIdNoIsoform, responsePdb, uniprotStatus, pdbStatus, isApiComplete } = proteinDetails;
   const heading = displayName || nodeId;
   const [isPdbModelReady, setIsPdbModelReady] = useState(false);
   const hasPdbModel = Boolean(responsePdb?.data);
@@ -67,7 +62,7 @@ export function ClickTooltip() {
   }, [clickData]);
 
   useEffect(() => {
-    if (nodeId) setIsAdjacentView(false);
+    if (nodeId) setView("details");
   }, [nodeId]);
 
   useEffect(() => {
@@ -83,12 +78,17 @@ export function ClickTooltip() {
 
   usePdbViewer(viewerRef, responsePdb, theme.name, isTooltipActive, setIsPdbModelReady);
 
-  const { tooltipRef, isPositioned } = useTooltipPosition(isTooltipActive, clickData);
+  const { tooltipRef, isPositioned } = useTooltipPosition(isTooltipActive, clickData, view);
 
   const nodeColors = colorschemeState.nodeColorscheme?.data ?? [];
   const nodeAttribsToColorIndices = colorschemeState.nodeAttribsToColorIndices ?? [];
 
   const adjacentNodes = useMemo(() => getAdjacentNodes(graphState.graph?.data, nodeId), [graphState.graph, nodeId]);
+
+  const statistics = useMemo(
+    () => (view === "statistics" ? getNodeStatistics(graphState.graph?.data, nodeId) : null),
+    [graphState.graph, nodeId, view],
+  );
 
   const adjacentNodeList = useMemo(() => adjacentNodes.map(({ node }) => node), [adjacentNodes]);
 
@@ -120,7 +120,7 @@ export function ClickTooltip() {
     (node) => {
       if (!node) return;
       const pos = getNodeScreenPosition(node);
-      setIsAdjacentView(false);
+      setView("details");
       setTooltipSettings("clickTooltipData", {
         node: node.id,
         nodeAttribs: node.attribs ?? [],
@@ -146,19 +146,21 @@ export function ClickTooltip() {
   const canGoBack = history.length > 1;
 
   const footerContent = useMemo(() => {
-    if (isAdjacentView) {
+    if (view !== "details") {
       return (
         <>
           <div className="tooltip-popup-footer-links" />
           <div className="tooltip-popup-footer-actions">
             {canGoBack && <Button className="tooltip-popup-action" text="Back" onClick={handleBack} />}
+            {isAdjacentView && (
+              <Button className="tooltip-popup-action" text="Export" onClick={handleExportAdjacent} disabled={!adjacentNodeList.length} />
+            )}
             <Button
               className="tooltip-popup-action"
-              text="Export"
-              onClick={handleExportAdjacent}
-              disabled={!adjacentNodeList.length}
+              text={isAdjacentView ? "Statistics" : "Adjacent nodes"}
+              onClick={() => setView(isAdjacentView ? "statistics" : "adjacent")}
             />
-            <Button className="tooltip-popup-action" text="Back to node" onClick={() => setIsAdjacentView(false)} />
+            <Button className="tooltip-popup-action" text="Back to node" onClick={() => setView("details")} />
           </div>
         </>
       );
@@ -172,13 +174,14 @@ export function ClickTooltip() {
         </div>
         <div className="tooltip-popup-footer-actions">
           {canGoBack && <Button className="tooltip-popup-action" text="Back" onClick={handleBack} />}
-          <Button className="tooltip-popup-action" text="Adjacent nodes" onClick={() => setIsAdjacentView(true)} />
+          <Button className="tooltip-popup-action" text="Statistics" onClick={() => setView("statistics")} />
+          <Button className="tooltip-popup-action" text="Adjacent nodes" onClick={() => setView("adjacent")} />
         </div>
       </>
     );
-  }, [adjacentNodeList.length, canGoBack, handleBack, handleExportAdjacent, isAdjacentView, pdbId, protIdNoIsoform]);
+  }, [adjacentNodeList.length, canGoBack, handleBack, handleExportAdjacent, isAdjacentView, view, pdbId, protIdNoIsoform]);
 
-  const showDetails = !isAdjacentView;
+  const showDetails = view === "details";
 
   return (
     <TooltipPopup
@@ -195,7 +198,7 @@ export function ClickTooltip() {
         "data-tooltip-pdb-model-ready": hasPdbModel ? (isPdbModelReady ? "true" : "false") : "not-applicable",
       }}
     >
-      {showDetails ? (
+      <div hidden={!showDetails}>
         <NodeDetails
           nodeId={nodeId}
           nodeEntries={nodeEntries}
@@ -208,7 +211,9 @@ export function ClickTooltip() {
           responsePdb={responsePdb}
           viewerRef={viewerRef}
         />
-      ) : (
+      </div>
+      {view === "statistics" && <NodeStatistics statistics={statistics} />}
+      {isAdjacentView && (
         <AdjacentNodesList
           adjacentNodes={adjacentNodes}
           nodeAttribsToColorIndices={nodeAttribsToColorIndices}
@@ -221,18 +226,7 @@ export function ClickTooltip() {
   );
 }
 
-function NodeDetails({
-  nodeId,
-  nodeEntries,
-  hasPhosphosites,
-  fullName,
-  nodeAttribs,
-  description,
-  pdbId,
-  pdbStatus,
-  responsePdb,
-  viewerRef,
-}) {
+function NodeDetails({ nodeId, nodeEntries, hasPhosphosites, fullName, nodeAttribs, description, pdbId, pdbStatus, responsePdb, viewerRef }) {
   const entryContent =
     Array.isArray(nodeEntries) && nodeEntries.length > 0
       ? nodeEntries.map(({ id, name, phosphosites }, index) => (
@@ -259,9 +253,9 @@ function NodeDetails({
 }
 
 const TOOLTIP_OFFSET = 14; // gap between click point and tooltip edge (px)
-const SCREEN_MARGIN = 8;   // minimum distance from viewport edges (px)
+const SCREEN_MARGIN = 8; // minimum distance from viewport edges (px)
 
-function useTooltipPosition(isActive, clickData) {
+function useTooltipPosition(isActive, clickData, view) {
   const tooltipRef = useRef(null);
   const [isPositioned, setIsPositioned] = useState(false);
 
@@ -293,12 +287,12 @@ function useTooltipPosition(isActive, clickData) {
 
     // Final clamp to guarantee it stays within the viewport
     left = Math.max(SCREEN_MARGIN, Math.min(left, vw - width - SCREEN_MARGIN));
-    top  = Math.max(SCREEN_MARGIN, Math.min(top,  vh - height - SCREEN_MARGIN));
+    top = Math.max(SCREEN_MARGIN, Math.min(top, vh - height - SCREEN_MARGIN));
 
     el.style.left = `${left}px`;
-    el.style.top  = `${top}px`;
+    el.style.top = `${top}px`;
     setIsPositioned(true);
-  }, [isActive, clickData]);
+  }, [isActive, clickData, view]);
 
   return { tooltipRef, isPositioned };
 }
@@ -382,12 +376,17 @@ function AdjacentNodesList({ adjacentNodes, nodeAttribsToColorIndices, nodeColor
                 <div className="tooltip-adjacent-node-id">{node.id}</div>
                 {onViewNode && <Button className="tooltip-popup-action" text="View node" onClick={() => onViewNode(node)} />}
               </div>
-              <div className="tooltip-adjacent-node-attribs"><AttributeList values={node.attribs} /></div>
+              <div className="tooltip-adjacent-node-attribs">
+                <AttributeList values={node.attribs} />
+              </div>
             </div>
           </div>
           <div className="tooltip-adjacent-connection-list">
             {connections.map((connection, index) => (
-              <div className="tooltip-adjacent-connection" key={`${node.id}-${formatConnectionAttribs(connection.attribs)}-${connection.direction}-${index}`}>
+              <div
+                className="tooltip-adjacent-connection"
+                key={`${node.id}-${formatConnectionAttribs(connection.attribs)}-${connection.direction}-${index}`}
+              >
                 <ConnectionDirectionBadge direction={connection.direction} />
                 <span className="tooltip-adjacent-connection-attribs">{formatConnectionAttribs(connection.attribs)}</span>
                 <span className="tooltip-adjacent-connection-weight">weight: {formatWeight(connection.weight)}</span>
