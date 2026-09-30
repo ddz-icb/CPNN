@@ -35,7 +35,11 @@
       "x": 480.243369,
       "y": -210.384482,
       "z": 69.6,
-      "attribs": ["JR Yamanotesen - JR山手線", "Tokyo Metro Chiyodasen - 東京メトロ千代田線", "Tokyo Metro Fukutoshinsen - 東京メトロ副都心線"]
+      "attribs": [
+        "JR Yamanotesen - JR山手線",
+        "Tokyo Metro Chiyodasen - 東京メトロ千代田線",
+        "Tokyo Metro Fukutoshinsen - 東京メトロ副都心線"
+      ]
     },
     {
       "id": "100_Hinatawada - 日向和田",
@@ -134,7 +138,11 @@
       "x": 461.545702,
       "y": -58.802271,
       "z": -116.05,
-      "attribs": ["JR Chuo Sobusen - JR中央・総武線", "JR Yamanotesen - JR山手線", "Toei Oedosen - 都営大江戸線"]
+      "attribs": [
+        "JR Chuo Sobusen - JR中央・総武線",
+        "JR Yamanotesen - JR山手線",
+        "Toei Oedosen - 都営大江戸線"
+      ]
     },
     {
       "id": "110_Okutama - 奥多摩",
@@ -266,7 +274,10 @@
       "x": 931.060888,
       "y": 645.738399,
       "z": -133.48,
-      "attribs": ["JR Takasakisen - JR高崎線", "Utsunomiyasen - 宇都宮線"]
+      "attribs": [
+        "JR Takasakisen - JR高崎線",
+        "Utsunomiyasen - 宇都宮線"
+      ]
     },
     {
       "id": "122_Akabane - 赤羽",
@@ -327,7 +338,10 @@
       "x": 1574.566248,
       "y": 815.933899,
       "z": -457.55,
-      "attribs": ["JR Jobansen Ueno Toride - JR常磐線(上野～取手)", "Tokyo Metro Chiyodasen - 東京メトロ千代田線"]
+      "attribs": [
+        "JR Jobansen Ueno Toride - JR常磐線(上野～取手)",
+        "Tokyo Metro Chiyodasen - 東京メトロ千代田線"
+      ]
     },
     {
       "id": "127_Kameari - 亀有",
@@ -345,7 +359,10 @@
       "x": 1985.187097,
       "y": 891.173978,
       "z": -772.45,
-      "attribs": ["JR Jobansen Ueno Toride - JR常磐線(上野～取手)", "Keiseikanamachisen - 京成金町線"]
+      "attribs": [
+        "JR Jobansen Ueno Toride - JR常磐線(上野～取手)",
+        "Keiseikanamachisen - 京成金町線"
+      ]
     },
     {
       "id": "129_Itabashi - 板橋",
@@ -399,7 +416,10 @@
       "x": 1143.511778,
       "y": -151.455912,
       "z": -84.26,
-      "attribs": ["JR Keiyosen - JR京葉線", "Tokyo Metro Hibiyasen - 東京メトロ日比谷線"]
+      "attribs": [
+        "JR Keiyosen - JR京葉線",
+        "Tokyo Metro Hibiyasen - 東京メトロ日比谷線"
+      ]
     },
     {
       "id": "134_Etchushima - 越中島",
@@ -426,7 +446,11 @@
       "x": 1592.652112,
       "y": -468.530543,
       "z": -77.92,
-      "attribs": ["JR Keiyosen - JR京葉線", "Rinkaisen - りんかい線", "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線"]
+      "attribs": [
+        "JR Keiyosen - JR京葉線",
+        "Rinkaisen - りんかい線",
+        "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線"
+      ]
     },
     {
       "id": "137_Kasairinkaikoen - 葛西臨海公園",
@@ -466,7 +490,11 @@
       "x": 480.909421,
       "y": 270.53133,
       "z": 241.94,
-      "attribs": ["JR Yamanotesen - JR山手線", "Seibu Shinjukusen - 西武新宿線", "Tokyo Metro Tozaisen - 東京メトロ東西線"]
+      "attribs": [
+        "JR Yamanotesen - JR山手線",
+        "Seibu Shinjukusen - 西武新宿線",
+        "Tokyo Metro Tozaisen - 東京メトロ東西線"
+      ]
     },
     {
       "id": "140_Kaminakasato - 上中里",
@@ -484,7 +512,11 @@
       "x": 760.364806,
       "y": -899.212587,
       "z": 4.1,
-      "attribs": ["JR Keihintohokusen - JR京浜東北線", "Rinkaisen - りんかい線", "Tokyu Oimachisen - 東急大井町線"]
+      "attribs": [
+        "JR Keihintohokusen - JR京浜東北線",
+        "Rinkaisen - りんかい線",
+        "Tokyu Oimachisen - 東急大井町線"
+      ]
     },
     {
       "id": "142_Omori - 大森",
@@ -502,7 +534,11 @@
       "x": 580.693604,
       "y": -1397.812868,
       "z": 161.93,
-      "attribs": ["JR Keihintohokusen - JR京浜東北線", "Tokyu Ikegamisen - 東急池上線", "Tokyu Tamagawasen - 東急多摩川線"]
+      "attribs": [
+        "JR Keihintohokusen - JR京浜東北線",
+        "Tokyu Ikegamisen - 東急池上線",
+        "Tokyu Tamagawasen - 東急多摩川線"
+      ]
     },
     {
       "id": "144_Kitaikefukuro - 北池袋",
@@ -583,7 +619,11 @@
       "x": -60.524276,
       "y": 903.545365,
       "z": -231.06,
-      "attribs": ["Tobu Tojosen - 東武東上線", "Tokyo Metro Fukutoshinsen - 東京メトロ副都心線", "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線"]
+      "attribs": [
+        "Tobu Tojosen - 東武東上線",
+        "Tokyo Metro Fukutoshinsen - 東京メトロ副都心線",
+        "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線"
+      ]
     },
     {
       "id": "152_Chikatetsunarimasu - 地下鉄成増",
@@ -592,7 +632,11 @@
       "x": -171.498729,
       "y": 978.739371,
       "z": -60.16,
-      "attribs": ["Tobu Tojosen - 東武東上線", "Tokyo Metro Fukutoshinsen - 東京メトロ副都心線", "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線"]
+      "attribs": [
+        "Tobu Tojosen - 東武東上線",
+        "Tokyo Metro Fukutoshinsen - 東京メトロ副都心線",
+        "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線"
+      ]
     },
     {
       "id": "153_Asakusa - 浅草",
@@ -601,7 +645,11 @@
       "x": 1326.587077,
       "y": 246.149763,
       "z": 459.84,
-      "attribs": ["Tobu Isezakisen - 東武伊勢崎線", "Toei Asakusasen - 都営浅草線", "Tokyo Metro Ginzasen - 東京メトロ銀座線"]
+      "attribs": [
+        "Tobu Isezakisen - 東武伊勢崎線",
+        "Toei Asakusasen - 都営浅草線",
+        "Tokyo Metro Ginzasen - 東京メトロ銀座線"
+      ]
     },
     {
       "id": "154_Tokyosukaitsurii - とうきょうスカイツリー",
@@ -633,7 +681,10 @@
       "x": 1498.753897,
       "y": 331.57555,
       "z": -251.83,
-      "attribs": ["Tobu Isezakisen - 東武伊勢崎線", "Tobu Kameidosen - 東武亀戸線"]
+      "attribs": [
+        "Tobu Isezakisen - 東武伊勢崎線",
+        "Tobu Kameidosen - 東武亀戸線"
+      ]
     },
     {
       "id": "157_Higashimukishima - 東向島",
@@ -687,7 +738,10 @@
       "x": 1455.2556,
       "y": 617.558615,
       "z": -499.25,
-      "attribs": ["Keiseihonsen - 京成本線", "Tobu Isezakisen - 東武伊勢崎線"]
+      "attribs": [
+        "Keiseihonsen - 京成本線",
+        "Tobu Isezakisen - 東武伊勢崎線"
+      ]
     },
     {
       "id": "161_Kosuge - 小菅",
@@ -723,7 +777,10 @@
       "x": 1261.307987,
       "y": 982.911697,
       "z": -331.52,
-      "attribs": ["Tobu Isezakisen - 東武伊勢崎線", "Tobu Taishisen - 東武大師線"]
+      "attribs": [
+        "Tobu Isezakisen - 東武伊勢崎線",
+        "Tobu Taishisen - 東武大師線"
+      ]
     },
     {
       "id": "165_Takenotsuka - 竹ノ塚",
@@ -777,7 +834,10 @@
       "x": 706.042417,
       "y": 476.200813,
       "z": -228.73,
-      "attribs": ["JR Yamanotesen - JR山手線", "Tokyosakuratoramu Todenarakawasen - 東京さくらトラム（都電荒川線）"]
+      "attribs": [
+        "JR Yamanotesen - JR山手線",
+        "Tokyosakuratoramu Todenarakawasen - 東京さくらトラム（都電荒川線）"
+      ]
     },
     {
       "id": "170_Shiinamachi - 椎名町",
@@ -881,7 +941,10 @@
       "x": 796.027202,
       "y": 498.050236,
       "z": -356.97,
-      "attribs": ["JR Yamanotesen - JR山手線", "Toei Mitasen - 都営三田線"]
+      "attribs": [
+        "JR Yamanotesen - JR山手線",
+        "Toei Mitasen - 都営三田線"
+      ]
     },
     {
       "id": "180_Hoya - 保谷",
@@ -957,7 +1020,10 @@
       "x": -21.745047,
       "y": 595.764717,
       "z": -610.03,
-      "attribs": ["Seibu Toyoshimasen - 西武豊島線", "Toei Oedosen - 都営大江戸線"]
+      "attribs": [
+        "Seibu Toyoshimasen - 西武豊島線",
+        "Toei Oedosen - 都営大江戸線"
+      ]
     },
     {
       "id": "188_Tamamizumi - 多摩湖",
@@ -966,7 +1032,10 @@
       "x": -1881.717469,
       "y": 856.392926,
       "z": -882.13,
-      "attribs": ["Reorainaa - レオライナー", "Seibu Tamamizumisen - 西武多摩湖線"]
+      "attribs": [
+        "Reorainaa - レオライナー",
+        "Seibu Tamamizumisen - 西武多摩湖線"
+      ]
     },
     {
       "id": "189_Seibushinjuku - 西武新宿",
@@ -984,7 +1053,10 @@
       "x": 871.401043,
       "y": 535.849957,
       "z": -336.66,
-      "attribs": ["JR Yamanotesen - JR山手線", "Tokyo Metro Nanbokusen - 東京メトロ南北線"]
+      "attribs": [
+        "JR Yamanotesen - JR山手線",
+        "Tokyo Metro Nanbokusen - 東京メトロ南北線"
+      ]
     },
     {
       "id": "190_Shimochiai - 下落合",
@@ -1002,7 +1074,10 @@
       "x": 323.617252,
       "y": 289.032203,
       "z": 220.76,
-      "attribs": ["Seibu Shinjukusen - 西武新宿線", "Toei Oedosen - 都営大江戸線"]
+      "attribs": [
+        "Seibu Shinjukusen - 西武新宿線",
+        "Toei Oedosen - 都営大江戸線"
+      ]
     },
     {
       "id": "192_Araikusurishimae - 新井薬師前",
@@ -1100,7 +1175,10 @@
       "x": 997.81373,
       "y": 545.679986,
       "z": -506.34,
-      "attribs": ["JR Keihintohokusen - JR京浜東北線", "JR Yamanotesen - JR山手線"]
+      "attribs": [
+        "JR Keihintohokusen - JR京浜東北線",
+        "JR Yamanotesen - JR山手線"
+      ]
     },
     {
       "id": "200_Kamiishikamii - 上石神井",
@@ -1163,7 +1241,10 @@
       "x": -1468.126512,
       "y": 536.635033,
       "z": -325.68,
-      "attribs": ["Seibu Haishimasen - 西武拝島線", "Seibu Shinjukusen - 西武新宿線"]
+      "attribs": [
+        "Seibu Haishimasen - 西武拝島線",
+        "Seibu Shinjukusen - 西武新宿線"
+      ]
     },
     {
       "id": "207_Kumegawa - 久米川",
@@ -1181,7 +1262,11 @@
       "x": -1672.932877,
       "y": 792.027801,
       "z": -231.37,
-      "attribs": ["Seibu Kokubunjisen - 西武国分寺線", "Seibu Seibu Sonosen - 西武西武園線", "Seibu Shinjukusen - 西武新宿線"]
+      "attribs": [
+        "Seibu Kokubunjisen - 西武国分寺線",
+        "Seibu Seibu Sonosen - 西武西武園線",
+        "Seibu Shinjukusen - 西武新宿線"
+      ]
     },
     {
       "id": "209_Hagiyama - 萩山",
@@ -1190,7 +1275,10 @@
       "x": -1572.898548,
       "y": 578.608923,
       "z": -323.8,
-      "attribs": ["Seibu Haishimasen - 西武拝島線", "Seibu Tamamizumisen - 西武多摩湖線"]
+      "attribs": [
+        "Seibu Haishimasen - 西武拝島線",
+        "Seibu Tamamizumisen - 西武多摩湖線"
+      ]
     },
     {
       "id": "21_Nishinippori - 西日暮里",
@@ -1213,7 +1301,10 @@
       "x": -1694.144061,
       "y": 543.380047,
       "z": -164.53,
-      "attribs": ["Seibu Haishimasen - 西武拝島線", "Seibu Kokubunjisen - 西武国分寺線"]
+      "attribs": [
+        "Seibu Haishimasen - 西武拝島線",
+        "Seibu Kokubunjisen - 西武国分寺線"
+      ]
     },
     {
       "id": "211_Higashiyamatoshi - 東大和市",
@@ -1231,7 +1322,10 @@
       "x": -2104.104885,
       "y": 481.652111,
       "z": 29.92,
-      "attribs": ["Seibu Haishimasen - 西武拝島線", "Tamamonoreeru - 多摩モノレール"]
+      "attribs": [
+        "Seibu Haishimasen - 西武拝島線",
+        "Tamamonoreeru - 多摩モノレール"
+      ]
     },
     {
       "id": "213_Musashisunagawa - 武蔵砂川",
@@ -1382,7 +1476,10 @@
       "x": 1109.403001,
       "y": 252.117073,
       "z": -110.75,
-      "attribs": ["Keiseihonsen - 京成本線", "Naritasukaiakusesu - 成田スカイアクセス"]
+      "attribs": [
+        "Keiseihonsen - 京成本線",
+        "Naritasukaiakusesu - 成田スカイアクセス"
+      ]
     },
     {
       "id": "228_Shinzokawashima - 新三河島",
@@ -1413,7 +1510,10 @@
       "x": 1149.583095,
       "y": 365.477538,
       "z": -134.39,
-      "attribs": ["JR Keihintohokusen - JR京浜東北線", "JR Yamanotesen - JR山手線"]
+      "attribs": [
+        "JR Keihintohokusen - JR京浜東北線",
+        "JR Yamanotesen - JR山手線"
+      ]
     },
     {
       "id": "230_Senjuohashi - 千住大橋",
@@ -1449,7 +1549,11 @@
       "x": 1857.31874,
       "y": 635.267041,
       "z": -374.57,
-      "attribs": ["Keiseihonsen - 京成本線", "Keiseioshiagesen - 京成押上線", "Naritasukaiakusesu - 成田スカイアクセス"]
+      "attribs": [
+        "Keiseihonsen - 京成本線",
+        "Keiseioshiagesen - 京成押上線",
+        "Naritasukaiakusesu - 成田スカイアクセス"
+      ]
     },
     {
       "id": "234_Keiseitakasago - 京成高砂",
@@ -1554,7 +1658,10 @@
       "x": 148.118667,
       "y": -162.247934,
       "z": -243.85,
-      "attribs": ["Keio Sen - 京王線", "Keio Shinsen - 京王新線"]
+      "attribs": [
+        "Keio Sen - 京王線",
+        "Keio Shinsen - 京王新線"
+      ]
     },
     {
       "id": "243_Shirotahashi - 代田橋",
@@ -1572,7 +1679,10 @@
       "x": -4.672378,
       "y": -217.534934,
       "z": -412.75,
-      "attribs": ["Keio Inokashirasen - 京王井の頭線", "Keio Sen - 京王線"]
+      "attribs": [
+        "Keio Inokashirasen - 京王井の頭線",
+        "Keio Sen - 京王線"
+      ]
     },
     {
       "id": "245_Shimotakaido - 下高井戸",
@@ -1581,7 +1691,10 @@
       "x": -85.864377,
       "y": -246.372633,
       "z": -259.68,
-      "attribs": ["Keio Sen - 京王線", "Tokyu Setagayasen - 東急世田谷線"]
+      "attribs": [
+        "Keio Sen - 京王線",
+        "Tokyu Setagayasen - 東急世田谷線"
+      ]
     },
     {
       "id": "246_Sakurajosui - 桜上水",
@@ -1695,7 +1808,10 @@
       "x": -966.354534,
       "y": -400.833454,
       "z": -1664.08,
-      "attribs": ["Keio Sagamiharasen - 京王相模原線", "Keio Sen - 京王線"]
+      "attribs": [
+        "Keio Sagamiharasen - 京王相模原線",
+        "Keio Sen - 京王線"
+      ]
     },
     {
       "id": "257_Nishichofu - 西調布",
@@ -1755,7 +1871,10 @@
       "x": -1406.952229,
       "y": -217.446475,
       "z": 94.47,
-      "attribs": ["Keio Keibajosen - 京王競馬場線", "Keio Sen - 京王線"]
+      "attribs": [
+        "Keio Keibajosen - 京王競馬場線",
+        "Keio Sen - 京王線"
+      ]
     },
     {
       "id": "262_Fuchu - 府中",
@@ -1800,7 +1919,11 @@
       "x": -2144.373887,
       "y": -291.516312,
       "z": 485.75,
-      "attribs": ["Keio Dobutsuensen - 京王動物園線", "Keio Sen - 京王線", "Tamamonoreeru - 多摩モノレール"]
+      "attribs": [
+        "Keio Dobutsuensen - 京王動物園線",
+        "Keio Sen - 京王線",
+        "Tamamonoreeru - 多摩モノレール"
+      ]
     },
     {
       "id": "267_Minamitaira - 南平",
@@ -1850,7 +1973,10 @@
       "x": -2679.695579,
       "y": -485.997549,
       "z": 588.94,
-      "attribs": ["Keio Sen - 京王線", "Keio Takaosen - 京王高尾線"]
+      "attribs": [
+        "Keio Sen - 京王線",
+        "Keio Takaosen - 京王高尾線"
+      ]
     },
     {
       "id": "271_Keiohachioji - 京王八王子",
@@ -1895,7 +2021,10 @@
       "x": -1833.558317,
       "y": -645.68852,
       "z": -762.85,
-      "attribs": ["Keio Sagamiharasen - 京王相模原線", "Odakyu Tamasen - 小田急多摩線"]
+      "attribs": [
+        "Keio Sagamiharasen - 京王相模原線",
+        "Odakyu Tamasen - 小田急多摩線"
+      ]
     },
     {
       "id": "276_Keiotamasentaa - 京王多摩センター",
@@ -1904,7 +2033,11 @@
       "x": -2053.929496,
       "y": -705.785489,
       "z": -594.87,
-      "attribs": ["Keio Sagamiharasen - 京王相模原線", "Odakyu Tamasen - 小田急多摩線", "Tamamonoreeru - 多摩モノレール"]
+      "attribs": [
+        "Keio Sagamiharasen - 京王相模原線",
+        "Odakyu Tamasen - 小田急多摩線",
+        "Tamamonoreeru - 多摩モノレール"
+      ]
     },
     {
       "id": "277_Keiohorinochi - 京王堀之内",
@@ -2010,7 +2143,10 @@
       "x": -2230.69388,
       "y": -436.664959,
       "z": 330.61,
-      "attribs": ["Keio Dobutsuensen - 京王動物園線", "Tamamonoreeru - 多摩モノレール"]
+      "attribs": [
+        "Keio Dobutsuensen - 京王動物園線",
+        "Tamamonoreeru - 多摩モノレール"
+      ]
     },
     {
       "id": "287_Kamiizumi - 神泉",
@@ -2046,7 +2182,11 @@
       "x": 959.628778,
       "y": -364.325605,
       "z": -145.18,
-      "attribs": ["JR Keihintohokusen - JR京浜東北線", "JR Yamanotesen - JR山手線", "Tokyomonoreeru - 東京モノレール"]
+      "attribs": [
+        "JR Keihintohokusen - JR京浜東北線",
+        "JR Yamanotesen - JR山手線",
+        "Tokyomonoreeru - 東京モノレール"
+      ]
     },
     {
       "id": "292_Higashimatsubara - 東松原",
@@ -2142,7 +2282,10 @@
       "x": 874.36211,
       "y": -472.098397,
       "z": -69.83,
-      "attribs": ["JR Keihintohokusen - JR京浜東北線", "JR Yamanotesen - JR山手線"]
+      "attribs": [
+        "JR Keihintohokusen - JR京浜東北線",
+        "JR Yamanotesen - JR山手線"
+      ]
     },
     {
       "id": "300_Inogashirakoen - 井の頭公園",
@@ -2196,7 +2339,10 @@
       "x": 344.814874,
       "y": -209.872156,
       "z": -117.51,
-      "attribs": ["Odakyu Sen - 小田急線", "Tokyo Metro Chiyodasen - 東京メトロ千代田線"]
+      "attribs": [
+        "Odakyu Sen - 小田急線",
+        "Tokyo Metro Chiyodasen - 東京メトロ千代田線"
+      ]
     },
     {
       "id": "306_Yoyogiuehara - 代々木上原",
@@ -2205,7 +2351,10 @@
       "x": 264.771136,
       "y": -213.100917,
       "z": -98.69,
-      "attribs": ["Odakyu Sen - 小田急線", "Tokyo Metro Chiyodasen - 東京メトロ千代田線"]
+      "attribs": [
+        "Odakyu Sen - 小田急線",
+        "Tokyo Metro Chiyodasen - 東京メトロ千代田線"
+      ]
     },
     {
       "id": "307_Higashikitazawa - 東北沢",
@@ -2241,7 +2390,10 @@
       "x": 812.202311,
       "y": -585.281943,
       "z": 73.41,
-      "attribs": ["JR Keihintohokusen - JR京浜東北線", "JR Yamanotesen - JR山手線"]
+      "attribs": [
+        "JR Keihintohokusen - JR京浜東北線",
+        "JR Yamanotesen - JR山手線"
+      ]
     },
     {
       "id": "310_Gotokuji - 豪徳寺",
@@ -2250,7 +2402,10 @@
       "x": -35.476514,
       "y": -382.64956,
       "z": 1134.29,
-      "attribs": ["Odakyu Sen - 小田急線", "Tokyu Setagayasen - 東急世田谷線"]
+      "attribs": [
+        "Odakyu Sen - 小田急線",
+        "Tokyu Setagayasen - 東急世田谷線"
+      ]
     },
     {
       "id": "311_Kyodo - 経堂",
@@ -2358,7 +2513,10 @@
       "x": 431.748178,
       "y": -492.908424,
       "z": 154.6,
-      "attribs": ["Tokyo Metro Hibiyasen - 東京メトロ日比谷線", "Tokyu Toyokosen - 東急東横線"]
+      "attribs": [
+        "Tokyo Metro Hibiyasen - 東京メトロ日比谷線",
+        "Tokyu Toyokosen - 東急東横線"
+      ]
     },
     {
       "id": "323_Yutenji - 祐天寺",
@@ -2394,7 +2552,10 @@
       "x": 160.894201,
       "y": -897.940986,
       "z": 953.44,
-      "attribs": ["Tokyu Oimachisen - 東急大井町線", "Tokyu Toyokosen - 東急東横線"]
+      "attribs": [
+        "Tokyu Oimachisen - 東急大井町線",
+        "Tokyu Toyokosen - 東急東横線"
+      ]
     },
     {
       "id": "327_DenEnchofu - 田園調布",
@@ -2403,7 +2564,10 @@
       "x": 149.068017,
       "y": -1013.037462,
       "z": 1145.23,
-      "attribs": ["Tokyu Megurosen - 東急目黒線", "Tokyu Toyokosen - 東急東横線"]
+      "attribs": [
+        "Tokyu Megurosen - 東急目黒線",
+        "Tokyu Toyokosen - 東急東横線"
+      ]
     },
     {
       "id": "328_Tamagawa - 多摩川",
@@ -2412,7 +2576,11 @@
       "x": 161.427645,
       "y": -1092.91612,
       "z": 1328.24,
-      "attribs": ["Tokyu Megurosen - 東急目黒線", "Tokyu Tamagawasen - 東急多摩川線", "Tokyu Toyokosen - 東急東横線"]
+      "attribs": [
+        "Tokyu Megurosen - 東急目黒線",
+        "Tokyu Tamagawasen - 東急多摩川線",
+        "Tokyu Toyokosen - 東急東横線"
+      ]
     },
     {
       "id": "329_Fudomae - 不動前",
@@ -2466,7 +2634,10 @@
       "x": 316.81358,
       "y": -895.375669,
       "z": 777.03,
-      "attribs": ["Tokyu Megurosen - 東急目黒線", "Tokyu Oimachisen - 東急大井町線"]
+      "attribs": [
+        "Tokyu Megurosen - 東急目黒線",
+        "Tokyu Oimachisen - 東急大井町線"
+      ]
     },
     {
       "id": "334_Okusawa - 奥沢",
@@ -2493,7 +2664,10 @@
       "x": 174.384008,
       "y": -494.434345,
       "z": -312.54,
-      "attribs": ["Tokyu Den Entoshisen - 東急田園都市線", "Tokyu Setagayasen - 東急世田谷線"]
+      "attribs": [
+        "Tokyu Den Entoshisen - 東急田園都市線",
+        "Tokyu Setagayasen - 東急世田谷線"
+      ]
     },
     {
       "id": "337_Komazawadaigaku - 駒沢大学",
@@ -2538,7 +2712,10 @@
       "x": -218.65579,
       "y": -847.475012,
       "z": -28.57,
-      "attribs": ["Tokyu Den Entoshisen - 東急田園都市線", "Tokyu Oimachisen - 東急大井町線"]
+      "attribs": [
+        "Tokyu Den Entoshisen - 東急田園都市線",
+        "Tokyu Oimachisen - 東急大井町線"
+      ]
     },
     {
       "id": "341_Tsukushino - つくし野",
@@ -2592,7 +2769,10 @@
       "x": 562.939258,
       "y": -914.355696,
       "z": -484.24,
-      "attribs": ["Toei Asakusasen - 都営浅草線", "Tokyu Oimachisen - 東急大井町線"]
+      "attribs": [
+        "Toei Asakusasen - 都営浅草線",
+        "Tokyu Oimachisen - 東急大井町線"
+      ]
     },
     {
       "id": "348_Hatanodai - 旗の台",
@@ -2601,7 +2781,10 @@
       "x": 464.885001,
       "y": -923.384063,
       "z": 447.98,
-      "attribs": ["Tokyu Ikegamisen - 東急池上線", "Tokyu Oimachisen - 東急大井町線"]
+      "attribs": [
+        "Tokyu Ikegamisen - 東急池上線",
+        "Tokyu Oimachisen - 東急大井町線"
+      ]
     },
     {
       "id": "349_Kitasenzoku - 北千束",
@@ -2619,7 +2802,10 @@
       "x": -1570.737647,
       "y": -250.618675,
       "z": -238.43,
-      "attribs": ["JR Musashinosen - JR武蔵野線", "JR Nanbusen - JR南武線"]
+      "attribs": [
+        "JR Musashinosen - JR武蔵野線",
+        "JR Nanbusen - JR南武線"
+      ]
     },
     {
       "id": "350_Midorigaoka - 緑が丘",
@@ -2673,7 +2859,10 @@
       "x": 585.972289,
       "y": -808.857043,
       "z": -290.16,
-      "attribs": ["Toei Asakusasen - 都営浅草線", "Tokyu Ikegamisen - 東急池上線"]
+      "attribs": [
+        "Toei Asakusasen - 都営浅草線",
+        "Tokyu Ikegamisen - 東急池上線"
+      ]
     },
     {
       "id": "357_Eharanakanobe - 荏原中延",
@@ -2691,7 +2880,10 @@
       "x": -1646.1793,
       "y": -220.465145,
       "z": -146.77,
-      "attribs": ["JR Nanbusen - JR南武線", "Keio Sen - 京王線"]
+      "attribs": [
+        "JR Nanbusen - JR南武線",
+        "Keio Sen - 京王線"
+      ]
     },
     {
       "id": "361_Yukigataniotsuka - 雪が谷大塚",
@@ -2826,7 +3018,10 @@
       "x": 806.054142,
       "y": -549.986723,
       "z": 81.96,
-      "attribs": ["Keikyu Honsen - 京急本線", "Toei Asakusasen - 都営浅草線"]
+      "attribs": [
+        "Keikyu Honsen - 京急本線",
+        "Toei Asakusasen - 都営浅草線"
+      ]
     },
     {
       "id": "38_Yaho - 谷保",
@@ -2916,7 +3111,10 @@
       "x": 658.326295,
       "y": -1411.313953,
       "z": -1377.53,
-      "attribs": ["Keikyu Honsen - 京急本線", "Keikyu Kukosen - 京急空港線"]
+      "attribs": [
+        "Keikyu Honsen - 京急本線",
+        "Keikyu Kukosen - 京急空港線"
+      ]
     },
     {
       "id": "39_Yagawa - 矢川",
@@ -2979,7 +3177,10 @@
       "x": 934.532795,
       "y": -1542.764324,
       "z": -772.62,
-      "attribs": ["Keikyu Kukosen - 京急空港線", "Tokyomonoreeru - 東京モノレール"]
+      "attribs": [
+        "Keikyu Kukosen - 京急空港線",
+        "Tokyomonoreeru - 東京モノレール"
+      ]
     },
     {
       "id": "396_Hanedakukodai3taaminaru - 3",
@@ -2988,7 +3189,10 @@
       "x": 1064.340537,
       "y": -1592.362292,
       "z": -601.02,
-      "attribs": ["Keikyu Kukosen - 京急空港線", "Tokyomonoreeru - 東京モノレール"]
+      "attribs": [
+        "Keikyu Kukosen - 京急空港線",
+        "Tokyomonoreeru - 東京モノレール"
+      ]
     },
     {
       "id": "397_Hanedakukodai1Dai2taaminaru - 12",
@@ -2997,7 +3201,10 @@
       "x": 1223.569078,
       "y": -1531.773269,
       "z": -538.33,
-      "attribs": ["Keikyu Kukosen - 京急空港線", "Tokyomonoreeru - 東京モノレール"]
+      "attribs": [
+        "Keikyu Kukosen - 京急空港線",
+        "Tokyomonoreeru - 東京モノレール"
+      ]
     },
     {
       "id": "398_Tawaramachi - 田原町",
@@ -3059,7 +3266,11 @@
       "x": 1115.55117,
       "y": -71.687828,
       "z": 277.87,
-      "attribs": ["Toei Asakusasen - 都営浅草線", "Tokyo Metro Ginzasen - 東京メトロ銀座線", "Tokyo Metro Tozaisen - 東京メトロ東西線"]
+      "attribs": [
+        "Toei Asakusasen - 都営浅草線",
+        "Tokyo Metro Ginzasen - 東京メトロ銀座線",
+        "Tokyo Metro Tozaisen - 東京メトロ東西線"
+      ]
     },
     {
       "id": "402_Kyobashi - 京橋",
@@ -3068,7 +3279,10 @@
       "x": 1085.67378,
       "y": -135.704645,
       "z": 376.71,
-      "attribs": ["Toei Asakusasen - 都営浅草線", "Tokyo Metro Ginzasen - 東京メトロ銀座線"]
+      "attribs": [
+        "Toei Asakusasen - 都営浅草線",
+        "Tokyo Metro Ginzasen - 東京メトロ銀座線"
+      ]
     },
     {
       "id": "403_Ginza - 銀座",
@@ -3091,7 +3305,10 @@
       "x": 885.483063,
       "y": -216.628227,
       "z": 74.32,
-      "attribs": ["Tokyo Metro Ginzasen - 東京メトロ銀座線", "Tokyo Metro Hibiyasen - 東京メトロ日比谷線"]
+      "attribs": [
+        "Tokyo Metro Ginzasen - 東京メトロ銀座線",
+        "Tokyo Metro Hibiyasen - 東京メトロ日比谷線"
+      ]
     },
     {
       "id": "405_Tameikesanno - 溜池山王",
@@ -3100,7 +3317,10 @@
       "x": 818.703096,
       "y": -163.762798,
       "z": -88.63,
-      "attribs": ["Tokyo Metro Ginzasen - 東京メトロ銀座線", "Tokyo Metro Nanbokusen - 東京メトロ南北線"]
+      "attribs": [
+        "Tokyo Metro Ginzasen - 東京メトロ銀座線",
+        "Tokyo Metro Nanbokusen - 東京メトロ南北線"
+      ]
     },
     {
       "id": "406_Nagatacho - 永田町",
@@ -3124,7 +3344,11 @@
       "x": 662.048348,
       "y": -172.623461,
       "z": -186.26,
-      "attribs": ["Toei Oedosen - 都営大江戸線", "Tokyo Metro Ginzasen - 東京メトロ銀座線", "Tokyo Metro Hanzomonsen - 東京メトロ半蔵門線"]
+      "attribs": [
+        "Toei Oedosen - 都営大江戸線",
+        "Tokyo Metro Ginzasen - 東京メトロ銀座線",
+        "Tokyo Metro Hanzomonsen - 東京メトロ半蔵門線"
+      ]
     },
     {
       "id": "408_Gaienmae - 外苑前",
@@ -3187,7 +3411,10 @@
       "x": 913.140783,
       "y": 215.251702,
       "z": 206.43,
-      "attribs": ["Tokyo Metro Marunochisen - 東京メトロ丸ノ内線", "Tokyo Metro Nanbokusen - 東京メトロ南北線"]
+      "attribs": [
+        "Tokyo Metro Marunochisen - 東京メトロ丸ノ内線",
+        "Tokyo Metro Nanbokusen - 東京メトロ南北線"
+      ]
     },
     {
       "id": "413_Hongosanchome - 本郷三丁目",
@@ -3196,7 +3423,10 @@
       "x": 986.742505,
       "y": 206.057474,
       "z": 193.26,
-      "attribs": ["Toei Oedosen - 都営大江戸線", "Tokyo Metro Marunochisen - 東京メトロ丸ノ内線"]
+      "attribs": [
+        "Toei Oedosen - 都営大江戸線",
+        "Tokyo Metro Marunochisen - 東京メトロ丸ノ内線"
+      ]
     },
     {
       "id": "414_Otemachi - 大手町",
@@ -3233,7 +3463,10 @@
       "x": 853.060512,
       "y": -160.346061,
       "z": -451.94,
-      "attribs": ["Tokyo Metro Chiyodasen - 東京メトロ千代田線", "Tokyo Metro Marunochisen - 東京メトロ丸ノ内線"]
+      "attribs": [
+        "Tokyo Metro Chiyodasen - 東京メトロ千代田線",
+        "Tokyo Metro Marunochisen - 東京メトロ丸ノ内線"
+      ]
     },
     {
       "id": "417_Yotsuyasanchome - 四谷三丁目",
@@ -3260,7 +3493,11 @@
       "x": 492.419155,
       "y": 25.882669,
       "z": -55.91,
-      "attribs": ["Toei Shinjukusen - 都営新宿線", "Tokyo Metro Fukutoshinsen - 東京メトロ副都心線", "Tokyo Metro Marunochisen - 東京メトロ丸ノ内線"]
+      "attribs": [
+        "Toei Shinjukusen - 都営新宿線",
+        "Tokyo Metro Fukutoshinsen - 東京メトロ副都心線",
+        "Tokyo Metro Marunochisen - 東京メトロ丸ノ内線"
+      ]
     },
     {
       "id": "42_Hokufunaka - 北府中",
@@ -3287,7 +3524,10 @@
       "x": 286.845776,
       "y": 100.332144,
       "z": -40.25,
-      "attribs": ["Toei Oedosen - 都営大江戸線", "Tokyo Metro Marunochisen - 東京メトロ丸ノ内線"]
+      "attribs": [
+        "Toei Oedosen - 都営大江戸線",
+        "Tokyo Metro Marunochisen - 東京メトロ丸ノ内線"
+      ]
     },
     {
       "id": "422_Shinchuno - 新中野",
@@ -3368,7 +3608,10 @@
       "x": -1671.531456,
       "y": 125.089662,
       "z": 21.46,
-      "attribs": ["JR Chuosen Kaisoku - JR中央線(快速)", "JR Musashinosen - JR武蔵野線"]
+      "attribs": [
+        "JR Chuosen Kaisoku - JR中央線(快速)",
+        "JR Musashinosen - JR武蔵野線"
+      ]
     },
     {
       "id": "430_Iriya - 入谷",
@@ -3395,7 +3638,11 @@
       "x": 1197.508676,
       "y": -36.845961,
       "z": 197.9,
-      "attribs": ["Toei Asakusasen - 都営浅草線", "Tokyo Metro Hanzomonsen - 東京メトロ半蔵門線", "Tokyo Metro Hibiyasen - 東京メトロ日比谷線"]
+      "attribs": [
+        "Toei Asakusasen - 都営浅草線",
+        "Tokyo Metro Hanzomonsen - 東京メトロ半蔵門線",
+        "Tokyo Metro Hibiyasen - 東京メトロ日比谷線"
+      ]
     },
     {
       "id": "433_Kayabacho - 茅場町",
@@ -3404,7 +3651,10 @@
       "x": 1167.575531,
       "y": -95.969879,
       "z": 174.15,
-      "attribs": ["Tokyo Metro Hibiyasen - 東京メトロ日比谷線", "Tokyo Metro Tozaisen - 東京メトロ東西線"]
+      "attribs": [
+        "Tokyo Metro Hibiyasen - 東京メトロ日比谷線",
+        "Tokyo Metro Tozaisen - 東京メトロ東西線"
+      ]
     },
     {
       "id": "434_Tsukiji - 築地",
@@ -3413,7 +3663,10 @@
       "x": 1105.659851,
       "y": -211.668983,
       "z": 84.58,
-      "attribs": ["Tokyo Metro Hibiyasen - 東京メトロ日比谷線", "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線"]
+      "attribs": [
+        "Tokyo Metro Hibiyasen - 東京メトロ日比谷線",
+        "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線"
+      ]
     },
     {
       "id": "435_Higashiginza - 東銀座",
@@ -3422,7 +3675,10 @@
       "x": 1052.279276,
       "y": -209.72841,
       "z": 176.07,
-      "attribs": ["Toei Asakusasen - 都営浅草線", "Tokyo Metro Hibiyasen - 東京メトロ日比谷線"]
+      "attribs": [
+        "Toei Asakusasen - 都営浅草線",
+        "Tokyo Metro Hibiyasen - 東京メトロ日比谷線"
+      ]
     },
     {
       "id": "436_Kamiyacho - 神谷町",
@@ -3440,7 +3696,10 @@
       "x": 729.066406,
       "y": -277.018217,
       "z": 11.12,
-      "attribs": ["Toei Oedosen - 都営大江戸線", "Tokyo Metro Hibiyasen - 東京メトロ日比谷線"]
+      "attribs": [
+        "Toei Oedosen - 都営大江戸線",
+        "Tokyo Metro Hibiyasen - 東京メトロ日比谷線"
+      ]
     },
     {
       "id": "438_Hiro - 広尾",
@@ -3494,7 +3753,11 @@
       "x": 913.900263,
       "y": 79.146165,
       "z": -1.63,
-      "attribs": ["Toei Shinjukusen - 都営新宿線", "Tokyo Metro Hanzomonsen - 東京メトロ半蔵門線", "Tokyo Metro Tozaisen - 東京メトロ東西線"]
+      "attribs": [
+        "Toei Shinjukusen - 都営新宿線",
+        "Tokyo Metro Hanzomonsen - 東京メトロ半蔵門線",
+        "Tokyo Metro Tozaisen - 東京メトロ東西線"
+      ]
     },
     {
       "id": "443_Takebashi - 竹橋",
@@ -3512,7 +3775,10 @@
       "x": 1314.082786,
       "y": -183.334396,
       "z": 353.41,
-      "attribs": ["Toei Oedosen - 都営大江戸線", "Tokyo Metro Tozaisen - 東京メトロ東西線"]
+      "attribs": [
+        "Toei Oedosen - 都営大江戸線",
+        "Tokyo Metro Tozaisen - 東京メトロ東西線"
+      ]
     },
     {
       "id": "445_Kiba - 木場",
@@ -3629,7 +3895,10 @@
       "x": 26.158882,
       "y": 767.734693,
       "z": -408.79,
-      "attribs": ["Tokyo Metro Fukutoshinsen - 東京メトロ副都心線", "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線"]
+      "attribs": [
+        "Tokyo Metro Fukutoshinsen - 東京メトロ副都心線",
+        "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線"
+      ]
     },
     {
       "id": "458_Hikawadai - 氷川台",
@@ -3638,7 +3907,10 @@
       "x": 132.892907,
       "y": 675.814527,
       "z": -572.18,
-      "attribs": ["Tokyo Metro Fukutoshinsen - 東京メトロ副都心線", "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線"]
+      "attribs": [
+        "Tokyo Metro Fukutoshinsen - 東京メトロ副都心線",
+        "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線"
+      ]
     },
     {
       "id": "459_Senkawa - 千川",
@@ -3647,7 +3919,10 @@
       "x": 347.210852,
       "y": 550.633701,
       "z": -450.02,
-      "attribs": ["Tokyo Metro Fukutoshinsen - 東京メトロ副都心線", "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線"]
+      "attribs": [
+        "Tokyo Metro Fukutoshinsen - 東京メトロ副都心線",
+        "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線"
+      ]
     },
     {
       "id": "46_Naruse - 成瀬",
@@ -3665,7 +3940,10 @@
       "x": 432.598072,
       "y": 495.357759,
       "z": -283.29,
-      "attribs": ["Tokyo Metro Fukutoshinsen - 東京メトロ副都心線", "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線"]
+      "attribs": [
+        "Tokyo Metro Fukutoshinsen - 東京メトロ副都心線",
+        "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線"
+      ]
     },
     {
       "id": "461_Higashiikebukuro - 東池袋",
@@ -3674,7 +3952,10 @@
       "x": 623.046653,
       "y": 409.950401,
       "z": 27.53,
-      "attribs": ["Tokyo Metro Yurakuchosen - 東京メトロ有楽町線", "Tokyosakuratoramu Todenarakawasen - 東京さくらトラム（都電荒川線）"]
+      "attribs": [
+        "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線",
+        "Tokyosakuratoramu Todenarakawasen - 東京さくらトラム（都電荒川線）"
+      ]
     },
     {
       "id": "462_Gokokuji - 護国寺",
@@ -3719,7 +4000,10 @@
       "x": 1205.802677,
       "y": -260.515048,
       "z": 271.44,
-      "attribs": ["Toei Oedosen - 都営大江戸線", "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線"]
+      "attribs": [
+        "Toei Oedosen - 都営大江戸線",
+        "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線"
+      ]
     },
     {
       "id": "467_Toyosu - 豊洲",
@@ -3728,7 +4012,10 @@
       "x": 1310.49334,
       "y": -376.849953,
       "z": 281.46,
-      "attribs": ["Tokyo Metro Yurakuchosen - 東京メトロ有楽町線", "Yurikamome - ゆりかもめ"]
+      "attribs": [
+        "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線",
+        "Yurikamome - ゆりかもめ"
+      ]
     },
     {
       "id": "468_Tatsumi - 辰巳",
@@ -3755,7 +4042,10 @@
       "x": -1857.662757,
       "y": -1606.841957,
       "z": -205.43,
-      "attribs": ["JR Yokohamasen - JR横浜線", "Odakyu Sen - 小田急線"]
+      "attribs": [
+        "JR Yokohamasen - JR横浜線",
+        "Odakyu Sen - 小田急線"
+      ]
     },
     {
       "id": "470_Jinbocho - 神保町",
@@ -3764,7 +4054,11 @@
       "x": 966.605744,
       "y": 81.567736,
       "z": 104.14,
-      "attribs": ["Toei Mitasen - 都営三田線", "Toei Shinjukusen - 都営新宿線", "Tokyo Metro Hanzomonsen - 東京メトロ半蔵門線"]
+      "attribs": [
+        "Toei Mitasen - 都営三田線",
+        "Toei Shinjukusen - 都営新宿線",
+        "Tokyo Metro Hanzomonsen - 東京メトロ半蔵門線"
+      ]
     },
     {
       "id": "471_Kiyosumishirakawa - 清澄白河",
@@ -3773,7 +4067,10 @@
       "x": 1337.970232,
       "y": -69.951816,
       "z": 239.79,
-      "attribs": ["Toei Oedosen - 都営大江戸線", "Tokyo Metro Hanzomonsen - 東京メトロ半蔵門線"]
+      "attribs": [
+        "Toei Oedosen - 都営大江戸線",
+        "Tokyo Metro Hanzomonsen - 東京メトロ半蔵門線"
+      ]
     },
     {
       "id": "472_Sumiyoshi - 住吉",
@@ -3782,7 +4079,10 @@
       "x": 1490.137419,
       "y": 7.096147,
       "z": 157.18,
-      "attribs": ["Toei Shinjukusen - 都営新宿線", "Tokyo Metro Hanzomonsen - 東京メトロ半蔵門線"]
+      "attribs": [
+        "Toei Shinjukusen - 都営新宿線",
+        "Tokyo Metro Hanzomonsen - 東京メトロ半蔵門線"
+      ]
     },
     {
       "id": "473_Akabaneiwabuchi - 赤羽岩淵",
@@ -3791,7 +4091,10 @@
       "x": 644.058926,
       "y": 1050.295492,
       "z": -1020.63,
-      "attribs": ["Saitamakosokutetsudosen - 埼玉高速鉄道線", "Tokyo Metro Nanbokusen - 東京メトロ南北線"]
+      "attribs": [
+        "Saitamakosokutetsudosen - 埼玉高速鉄道線",
+        "Tokyo Metro Nanbokusen - 東京メトロ南北線"
+      ]
     },
     {
       "id": "474_Shimo - 志茂",
@@ -3863,7 +4166,10 @@
       "x": 774.983284,
       "y": -363.111134,
       "z": 209.3,
-      "attribs": ["Toei Oedosen - 都営大江戸線", "Tokyo Metro Nanbokusen - 東京メトロ南北線"]
+      "attribs": [
+        "Toei Oedosen - 都営大江戸線",
+        "Tokyo Metro Nanbokusen - 東京メトロ南北線"
+      ]
     },
     {
       "id": "481_Shiroganetakanawa - 白金高輪",
@@ -3872,7 +4178,10 @@
       "x": 752.56507,
       "y": -503.424011,
       "z": 393.78,
-      "attribs": ["Toei Mitasen - 都営三田線", "Tokyo Metro Nanbokusen - 東京メトロ南北線"]
+      "attribs": [
+        "Toei Mitasen - 都営三田線",
+        "Tokyo Metro Nanbokusen - 東京メトロ南北線"
+      ]
     },
     {
       "id": "482_Shiroganedai - 白金台",
@@ -3881,7 +4190,10 @@
       "x": 680.49587,
       "y": -558.556208,
       "z": 260.88,
-      "attribs": ["Toei Mitasen - 都営三田線", "Tokyo Metro Nanbokusen - 東京メトロ南北線"]
+      "attribs": [
+        "Toei Mitasen - 都営三田線",
+        "Tokyo Metro Nanbokusen - 東京メトロ南北線"
+      ]
     },
     {
       "id": "483_Zatsutsukasagatani - 雑司が谷",
@@ -3890,7 +4202,10 @@
       "x": 578.910936,
       "y": 352.197601,
       "z": -8.71,
-      "attribs": ["Tokyo Metro Fukutoshinsen - 東京メトロ副都心線", "Tokyosakuratoramu Todenarakawasen - 東京さくらトラム（都電荒川線）"]
+      "attribs": [
+        "Tokyo Metro Fukutoshinsen - 東京メトロ副都心線",
+        "Tokyosakuratoramu Todenarakawasen - 東京さくらトラム（都電荒川線）"
+      ]
     },
     {
       "id": "484_Nishiwaseda - 西早稲田",
@@ -3908,7 +4223,10 @@
       "x": 512.668934,
       "y": 110.422021,
       "z": -30.07,
-      "attribs": ["Toei Oedosen - 都営大江戸線", "Tokyo Metro Fukutoshinsen - 東京メトロ副都心線"]
+      "attribs": [
+        "Toei Oedosen - 都営大江戸線",
+        "Tokyo Metro Fukutoshinsen - 東京メトロ副都心線"
+      ]
     },
     {
       "id": "486_Kitasando - 北参道",
@@ -3971,7 +4289,10 @@
       "x": 925.672198,
       "y": 234.049282,
       "z": 194.35,
-      "attribs": ["Toei Mitasen - 都営三田線", "Toei Oedosen - 都営大江戸線"]
+      "attribs": [
+        "Toei Mitasen - 都営三田線",
+        "Toei Oedosen - 都営大江戸線"
+      ]
     },
     {
       "id": "493_Shinokachimachi - 新御徒町",
@@ -3980,7 +4301,10 @@
       "x": 1185.233435,
       "y": 205.81974,
       "z": 174.34,
-      "attribs": ["Toei Oedosen - 都営大江戸線", "Tsukubaekusupuresu - つくばエクスプレス"]
+      "attribs": [
+        "Toei Oedosen - 都営大江戸線",
+        "Tsukubaekusupuresu - つくばエクスプレス"
+      ]
     },
     {
       "id": "494_Kuramae - 蔵前",
@@ -3989,7 +4313,10 @@
       "x": 1266.362143,
       "y": 163.702103,
       "z": 365.99,
-      "attribs": ["Toei Asakusasen - 都営浅草線", "Toei Oedosen - 都営大江戸線"]
+      "attribs": [
+        "Toei Asakusasen - 都営浅草線",
+        "Toei Oedosen - 都営大江戸線"
+      ]
     },
     {
       "id": "495_Morishita - 森下",
@@ -3998,7 +4325,10 @@
       "x": 1321.614293,
       "y": -5.210739,
       "z": 119.38,
-      "attribs": ["Toei Oedosen - 都営大江戸線", "Toei Shinjukusen - 都営新宿線"]
+      "attribs": [
+        "Toei Oedosen - 都営大江戸線",
+        "Toei Shinjukusen - 都営新宿線"
+      ]
     },
     {
       "id": "496_Kachidoki - 勝どき",
@@ -4025,7 +4355,10 @@
       "x": 989.536306,
       "y": -278.02997,
       "z": 357.74,
-      "attribs": ["Toei Oedosen - 都営大江戸線", "Yurikamome - ゆりかもめ"]
+      "attribs": [
+        "Toei Oedosen - 都営大江戸線",
+        "Yurikamome - ゆりかもめ"
+      ]
     },
     {
       "id": "499_Daimon - 大門",
@@ -4034,7 +4367,10 @@
       "x": 938.420608,
       "y": -349.925184,
       "z": 173.35,
-      "attribs": ["Toei Asakusasen - 都営浅草線", "Toei Oedosen - 都営大江戸線"]
+      "attribs": [
+        "Toei Asakusasen - 都営浅草線",
+        "Toei Oedosen - 都営大江戸線"
+      ]
     },
     {
       "id": "5_Osaki - 大崎",
@@ -4171,7 +4507,10 @@
       "x": 885.21182,
       "y": -445.074111,
       "z": 259.51,
-      "attribs": ["Toei Asakusasen - 都営浅草線", "Toei Mitasen - 都営三田線"]
+      "attribs": [
+        "Toei Asakusasen - 都営浅草線",
+        "Toei Mitasen - 都営三田線"
+      ]
     },
     {
       "id": "511_Honjoazumabashi - 本所吾妻橋",
@@ -4261,7 +4600,11 @@
       "x": 640.677433,
       "y": -959.950885,
       "z": -72.28,
-      "attribs": ["JR Shonanshinjukurain - JR湘南新宿ライン", "JR Yokosukasen - JR横須賀線", "Sotetsu JR Chokutsusen - 相鉄・JR直通線"]
+      "attribs": [
+        "JR Shonanshinjukurain - JR湘南新宿ライン",
+        "JR Yokosukasen - JR横須賀線",
+        "Sotetsu JR Chokutsusen - 相鉄・JR直通線"
+      ]
     },
     {
       "id": "520_Itabashihoncho - 板橋本町",
@@ -4479,7 +4822,10 @@
       "x": 1072.138767,
       "y": 670.750237,
       "z": -319.75,
-      "attribs": ["Nippori Tonerirainaa - 日暮里・舎人ライナー", "Tokyosakuratoramu Todenarakawasen - 東京さくらトラム（都電荒川線）"]
+      "attribs": [
+        "Nippori Tonerirainaa - 日暮里・舎人ライナー",
+        "Tokyosakuratoramu Todenarakawasen - 東京さくらトラム（都電荒川線）"
+      ]
     },
     {
       "id": "55_Mitaka - 三鷹",
@@ -4488,7 +4834,11 @@
       "x": -818.64477,
       "y": 157.587361,
       "z": -52.01,
-      "attribs": ["JR Chuo Sobusen - JR中央・総武線", "JR Chuohonsen Tokyo Shiojiri - JR中央本線(東京～塩尻)", "JR Chuosen Kaisoku - JR中央線(快速)"]
+      "attribs": [
+        "JR Chuo Sobusen - JR中央・総武線",
+        "JR Chuohonsen Tokyo Shiojiri - JR中央本線(東京～塩尻)",
+        "JR Chuosen Kaisoku - JR中央線(快速)"
+      ]
     },
     {
       "id": "56_Kokubunji - 国分寺",
@@ -4556,7 +4906,10 @@
       "x": -2323.092726,
       "y": -101.587038,
       "z": 130.23,
-      "attribs": ["JR Chuohonsen Tokyo Shiojiri - JR中央本線(東京～塩尻)", "JR Chuosen Kaisoku - JR中央線(快速)"]
+      "attribs": [
+        "JR Chuohonsen Tokyo Shiojiri - JR中央本線(東京～塩尻)",
+        "JR Chuosen Kaisoku - JR中央線(快速)"
+      ]
     },
     {
       "id": "570_Shibaurafuatama - 芝浦ふ頭",
@@ -4655,7 +5008,10 @@
       "x": -2435.522849,
       "y": -319.882229,
       "z": 172.15,
-      "attribs": ["JR Chuohonsen Tokyo Shiojiri - JR中央本線(東京～塩尻)", "JR Chuosen Kaisoku - JR中央線(快速)"]
+      "attribs": [
+        "JR Chuohonsen Tokyo Shiojiri - JR中央本線(東京～塩尻)",
+        "JR Chuosen Kaisoku - JR中央線(快速)"
+      ]
     },
     {
       "id": "580_Shintoyosu - 新豊洲",
@@ -4754,7 +5110,10 @@
       "x": -3058.070185,
       "y": -351.738598,
       "z": 250.17,
-      "attribs": ["JR Chuohonsen Tokyo Shiojiri - JR中央本線(東京～塩尻)", "JR Chuosen Kaisoku - JR中央線(快速)"]
+      "attribs": [
+        "JR Chuohonsen Tokyo Shiojiri - JR中央本線(東京～塩尻)",
+        "JR Chuosen Kaisoku - JR中央線(快速)"
+      ]
     },
     {
       "id": "590_Takamatsu - 高松",
@@ -4799,7 +5158,10 @@
       "x": 902.923972,
       "y": -737.487054,
       "z": -272.42,
-      "attribs": ["Rinkaisen - りんかい線", "Tokyomonoreeru - 東京モノレール"]
+      "attribs": [
+        "Rinkaisen - りんかい線",
+        "Tokyomonoreeru - 東京モノレール"
+      ]
     },
     {
       "id": "597_Oikeibabamae - 大井競馬場前",
@@ -4835,7 +5197,11 @@
       "x": 661.728885,
       "y": -689.081443,
       "z": -100.92,
-      "attribs": ["JR Yamanotesen - JR山手線", "Toei Asakusasen - 都営浅草線", "Tokyu Ikegamisen - 東急池上線"]
+      "attribs": [
+        "JR Yamanotesen - JR山手線",
+        "Toei Asakusasen - 都営浅草線",
+        "Tokyu Ikegamisen - 東急池上線"
+      ]
     },
     {
       "id": "60_Takao - 高尾",
@@ -4844,7 +5210,11 @@
       "x": -3334.716701,
       "y": -514.525641,
       "z": 291.45,
-      "attribs": ["JR Chuohonsen Tokyo Shiojiri - JR中央本線(東京～塩尻)", "JR Chuosen Kaisoku - JR中央線(快速)", "Keio Takaosen - 京王高尾線"]
+      "attribs": [
+        "JR Chuohonsen Tokyo Shiojiri - JR中央本線(東京～塩尻)",
+        "JR Chuosen Kaisoku - JR中央線(快速)",
+        "Keio Takaosen - 京王高尾線"
+      ]
     },
     {
       "id": "600_Seibiba - 整備場",
@@ -5012,7 +5382,11 @@
       "x": 135.316009,
       "y": 191.666268,
       "z": 28.11,
-      "attribs": ["JR Chuo Sobusen - JR中央・総武線", "JR Chuosen Kaisoku - JR中央線(快速)", "Tokyo Metro Tozaisen - 東京メトロ東西線"]
+      "attribs": [
+        "JR Chuo Sobusen - JR中央・総武線",
+        "JR Chuosen Kaisoku - JR中央線(快速)",
+        "Tokyo Metro Tozaisen - 東京メトロ東西線"
+      ]
     },
     {
       "id": "63_Koenji - 高円寺",
@@ -5021,7 +5395,10 @@
       "x": -10.892879,
       "y": 186.812069,
       "z": 131.9,
-      "attribs": ["JR Chuo Sobusen - JR中央・総武線", "JR Chuosen Kaisoku - JR中央線(快速)"]
+      "attribs": [
+        "JR Chuo Sobusen - JR中央・総武線",
+        "JR Chuosen Kaisoku - JR中央線(快速)"
+      ]
     },
     {
       "id": "64_Asaketani - 阿佐ケ谷",
@@ -5030,7 +5407,10 @@
       "x": -135.628381,
       "y": 181.19491,
       "z": 100.48,
-      "attribs": ["JR Chuo Sobusen - JR中央・総武線", "JR Chuosen Kaisoku - JR中央線(快速)"]
+      "attribs": [
+        "JR Chuo Sobusen - JR中央・総武線",
+        "JR Chuosen Kaisoku - JR中央線(快速)"
+      ]
     },
     {
       "id": "65_Ogikubo - 荻窪",
@@ -5039,7 +5419,11 @@
       "x": -278.091105,
       "y": 177.125787,
       "z": -21.74,
-      "attribs": ["JR Chuo Sobusen - JR中央・総武線", "JR Chuosen Kaisoku - JR中央線(快速)", "Tokyo Metro Marunochisen - 東京メトロ丸ノ内線"]
+      "attribs": [
+        "JR Chuo Sobusen - JR中央・総武線",
+        "JR Chuosen Kaisoku - JR中央線(快速)",
+        "Tokyo Metro Marunochisen - 東京メトロ丸ノ内線"
+      ]
     },
     {
       "id": "66_Nishiogikubo - 西荻窪",
@@ -5048,7 +5432,10 @@
       "x": -465.703693,
       "y": 170.402887,
       "z": -134.07,
-      "attribs": ["JR Chuo Sobusen - JR中央・総武線", "JR Chuosen Kaisoku - JR中央線(快速)"]
+      "attribs": [
+        "JR Chuo Sobusen - JR中央・総武線",
+        "JR Chuosen Kaisoku - JR中央線(快速)"
+      ]
     },
     {
       "id": "67_Musashisakai - 武蔵境",
@@ -5057,7 +5444,10 @@
       "x": -971.652809,
       "y": 150.952921,
       "z": -62.88,
-      "attribs": ["JR Chuosen Kaisoku - JR中央線(快速)", "Seibu Tamagawasen - 西武多摩川線"]
+      "attribs": [
+        "JR Chuosen Kaisoku - JR中央線(快速)",
+        "Seibu Tamagawasen - 西武多摩川線"
+      ]
     },
     {
       "id": "68_Higashikoganei - 東小金井",
@@ -5107,7 +5497,10 @@
       "x": 296.945048,
       "y": 202.115511,
       "z": 139.04,
-      "attribs": ["JR Chuo Sobusen - JR中央・総武線", "Toei Oedosen - 都営大江戸線"]
+      "attribs": [
+        "JR Chuo Sobusen - JR中央・総武線",
+        "Toei Oedosen - 都営大江戸線"
+      ]
     },
     {
       "id": "72_Okubo - 大久保",
@@ -5172,7 +5565,10 @@
       "x": 939.107756,
       "y": 157.979899,
       "z": 235.56,
-      "attribs": ["JR Chuo Sobusen - JR中央・総武線", "Toei Mitasen - 都営三田線"]
+      "attribs": [
+        "JR Chuo Sobusen - JR中央・総武線",
+        "Toei Mitasen - 都営三田線"
+      ]
     },
     {
       "id": "78_Asakusabashi - 浅草橋",
@@ -5181,7 +5577,10 @@
       "x": 1216.046612,
       "y": 99.469666,
       "z": 303.81,
-      "attribs": ["JR Chuo Sobusen - JR中央・総武線", "Toei Asakusasen - 都営浅草線"]
+      "attribs": [
+        "JR Chuo Sobusen - JR中央・総武線",
+        "Toei Asakusasen - 都営浅草線"
+      ]
     },
     {
       "id": "79_Ryogoku - 両国",
@@ -5190,7 +5589,10 @@
       "x": 1306.564841,
       "y": 87.400514,
       "z": 198.78,
-      "attribs": ["JR Chuo Sobusen - JR中央・総武線", "Toei Oedosen - 都営大江戸線"]
+      "attribs": [
+        "JR Chuo Sobusen - JR中央・総武線",
+        "Toei Oedosen - 都営大江戸線"
+      ]
     },
     {
       "id": "8_Ebisu - 恵比寿",
@@ -5214,7 +5616,11 @@
       "x": 1478.594532,
       "y": 95.418972,
       "z": 26.01,
-      "attribs": ["JR Chuo Sobusen - JR中央・総武線", "JR Sobuhonsen - JR総武本線", "Tokyo Metro Hanzomonsen - 東京メトロ半蔵門線"]
+      "attribs": [
+        "JR Chuo Sobusen - JR中央・総武線",
+        "JR Sobuhonsen - JR総武本線",
+        "Tokyo Metro Hanzomonsen - 東京メトロ半蔵門線"
+      ]
     },
     {
       "id": "81_Kameido - 亀戸",
@@ -5223,7 +5629,10 @@
       "x": 1588.196196,
       "y": 100.569878,
       "z": -60.54,
-      "attribs": ["JR Chuo Sobusen - JR中央・総武線", "Tobu Kameidosen - 東武亀戸線"]
+      "attribs": [
+        "JR Chuo Sobusen - JR中央・総武線",
+        "Tobu Kameidosen - 東武亀戸線"
+      ]
     },
     {
       "id": "82_Hirai - 平井",
@@ -5241,7 +5650,10 @@
       "x": 1870.745256,
       "y": 314.823589,
       "z": -81.24,
-      "attribs": ["JR Chuo Sobusen - JR中央・総武線", "JR Sobuhonsen - JR総武本線"]
+      "attribs": [
+        "JR Chuo Sobusen - JR中央・総武線",
+        "JR Sobuhonsen - JR総武本線"
+      ]
     },
     {
       "id": "84_Koiwa - 小岩",
@@ -5259,7 +5671,11 @@
       "x": 1107.166755,
       "y": -16.946327,
       "z": 6.44,
-      "attribs": ["JR Sobuhonsen - JR総武本線", "Tokyo Metro Ginzasen - 東京メトロ銀座線", "Tokyo Metro Hanzomonsen - 東京メトロ半蔵門線"]
+      "attribs": [
+        "JR Sobuhonsen - JR総武本線",
+        "Tokyo Metro Ginzasen - 東京メトロ銀座線",
+        "Tokyo Metro Hanzomonsen - 東京メトロ半蔵門線"
+      ]
     },
     {
       "id": "86_Bakurocho - 馬喰町",
@@ -5268,7 +5684,11 @@
       "x": 1197.57498,
       "y": 45.39898,
       "z": 54.37,
-      "attribs": ["JR Sobuhonsen - JR総武本線", "Toei Asakusasen - 都営浅草線", "Toei Shinjukusen - 都営新宿線"]
+      "attribs": [
+        "JR Sobuhonsen - JR総武本線",
+        "Toei Asakusasen - 都営浅草線",
+        "Toei Shinjukusen - 都営新宿線"
+      ]
     },
     {
       "id": "87_Nishitachikawa - 西立川",
@@ -5412,6 +5832,491 @@
       "y": 1095.94044,
       "z": -404.13,
       "attribs": "JR Omesen - JR青梅線"
+    },
+    {
+      "id": "617_Shimokitazawa - 下北沢",
+      "attribs": [
+        "Keio Inokashirasen - 京王井の頭線",
+        "Odakyu Sen - 小田急線"
+      ],
+      "x": 147.779369,
+      "y": -296.732302,
+      "z": 0,
+      "name_ja": "下北沢",
+      "name_en": "Shimokitazawa"
+    },
+    {
+      "id": "290_Shinshirota - 新代田",
+      "attribs": [
+        "Keio Inokashirasen - 京王井の頭線"
+      ],
+      "x": 87.300976,
+      "y": -285.719207,
+      "z": 0,
+      "name_ja": "新代田",
+      "name_en": "Shinshirota"
+    },
+    {
+      "id": "618_Izumitamagawa - 和泉多摩川",
+      "attribs": [
+        "Odakyu Sen - 小田急線"
+      ],
+      "x": -697.760821,
+      "y": -675.423562,
+      "z": 0,
+      "name_ja": "和泉多摩川",
+      "name_en": "Izumitamagawa"
+    },
+    {
+      "id": "619_Eharamachi - 荏原町",
+      "attribs": [
+        "Tokyu Oimachisen - 東急大井町線"
+      ],
+      "x": 512.675013,
+      "y": -935.591359,
+      "z": 0,
+      "name_ja": "荏原町",
+      "name_en": "Eharamachi"
+    },
+    {
+      "id": "620_Oyamadai - 尾山台",
+      "attribs": [
+        "Tokyu Oimachisen - 東急大井町線"
+      ],
+      "x": 27.066702,
+      "y": -900.749729,
+      "z": 0,
+      "name_ja": "尾山台",
+      "name_en": "Oyamadai"
+    },
+    {
+      "id": "621_Nagahara - 長原",
+      "attribs": [
+        "Tokyu Ikegamisen - 東急池上線"
+      ],
+      "x": 425.06317,
+      "y": -953.614798,
+      "z": 0,
+      "name_ja": "長原",
+      "name_en": "Nagahara"
+    },
+    {
+      "id": "358_Senzokuike - 洗足池",
+      "attribs": [
+        "Tokyu Ikegamisen - 東急池上線"
+      ],
+      "x": 361.908502,
+      "y": -981.722518,
+      "z": 0,
+      "name_ja": "洗足池",
+      "name_en": "Senzokuike"
+    },
+    {
+      "id": "359_Ishikawadai - 石川台",
+      "attribs": [
+        "Tokyu Ikegamisen - 東急池上線"
+      ],
+      "x": 309.169608,
+      "y": -1012.240735,
+      "z": 0,
+      "name_ja": "石川台",
+      "name_en": "Ishikawadai"
+    },
+    {
+      "id": "622_Nishitaishido - 西太子堂",
+      "attribs": [
+        "Tokyu Setagayasen - 東急世田谷線"
+      ],
+      "x": 140.265906,
+      "y": -485.281805,
+      "z": 0,
+      "name_ja": "西太子堂",
+      "name_en": "Nishitaishido"
+    },
+    {
+      "id": "372_Wakabayashi - 若林",
+      "attribs": [
+        "Tokyu Setagayasen - 東急世田谷線"
+      ],
+      "x": 81.758555,
+      "y": -469.934238,
+      "z": 0,
+      "name_ja": "若林",
+      "name_en": "Wakabayashi"
+    },
+    {
+      "id": "373_Shoinjinjamae - 松陰神社前",
+      "attribs": [
+        "Tokyu Setagayasen - 東急世田谷線"
+      ],
+      "x": 39.263645,
+      "y": -491.894085,
+      "z": 0,
+      "name_ja": "松陰神社前",
+      "name_en": "Shoinjinjamae"
+    },
+    {
+      "id": "374_Setagaya - 世田谷",
+      "attribs": [
+        "Tokyu Setagayasen - 東急世田谷線"
+      ],
+      "x": 0.692734,
+      "y": -496.12904,
+      "z": 0,
+      "name_ja": "世田谷",
+      "name_en": "Setagaya"
+    },
+    {
+      "id": "375_Uemachi - 上町",
+      "attribs": [
+        "Tokyu Setagayasen - 東急世田谷線"
+      ],
+      "x": -41.521888,
+      "y": -495.111767,
+      "z": 0,
+      "name_ja": "上町",
+      "name_en": "Uemachi"
+    },
+    {
+      "id": "623_Kitashinagawa - 北品川",
+      "attribs": [
+        "Keikyu Honsen - 京急本線"
+      ],
+      "x": 798.566294,
+      "y": -729.504939,
+      "z": 0,
+      "name_ja": "北品川",
+      "name_en": "Kitashinagawa"
+    },
+    {
+      "id": "624_Nijubashimae - 二重橋前",
+      "attribs": [
+        "Tokyo Metro Chiyodasen - 東京メトロ千代田線"
+      ],
+      "x": 1004.323027,
+      "y": -81.401959,
+      "z": 0,
+      "name_ja": "二重橋前",
+      "name_en": "Nijubashimae"
+    },
+    {
+      "id": "625_Tochomae - 都庁前",
+      "attribs": [
+        "Toei Oedosen - 都営大江戸線"
+      ],
+      "x": 377.043923,
+      "y": 23.421481,
+      "z": 0,
+      "name_ja": "都庁前",
+      "name_en": "Tochomae"
+    },
+    {
+      "id": "626_Ogawacho - 小川町",
+      "attribs": [
+        "Toei Shinjukusen - 都営新宿線"
+      ],
+      "x": 1054.982384,
+      "y": 78.000436,
+      "z": 0,
+      "name_ja": "小川町",
+      "name_en": "Ogawacho"
+    },
+    {
+      "id": "540_Sannowahashi - 三ノ輪橋",
+      "attribs": [
+        "Todenarakawasen - 都電荒川線"
+      ],
+      "x": 1270.720898,
+      "y": 484.478754,
+      "z": 0,
+      "name_ja": "三ノ輪橋",
+      "name_en": "Sannowahashi"
+    },
+    {
+      "id": "541_Arakawaitchumae - 荒川一中前",
+      "attribs": [
+        "Todenarakawasen - 都電荒川線"
+      ],
+      "x": 1248.804376,
+      "y": 500.08064,
+      "z": 0,
+      "name_ja": "荒川一中前",
+      "name_en": "Arakawaitchumae"
+    },
+    {
+      "id": "542_Arakawakuyakushomae - 荒川区役所前",
+      "attribs": [
+        "Todenarakawasen - 都電荒川線"
+      ],
+      "x": 1225.911373,
+      "y": 514.134499,
+      "z": 0,
+      "name_ja": "荒川区役所前",
+      "name_en": "Arakawakuyakushomae"
+    },
+    {
+      "id": "543_Arakawanichome - 荒川二丁目",
+      "attribs": [
+        "Todenarakawasen - 都電荒川線"
+      ],
+      "x": 1209.998386,
+      "y": 554.9692,
+      "z": 0,
+      "name_ja": "荒川二丁目",
+      "name_en": "Arakawanichome"
+    },
+    {
+      "id": "544_Arakawashichichome - 荒川七丁目",
+      "attribs": [
+        "Todenarakawasen - 都電荒川線"
+      ],
+      "x": 1205.242572,
+      "y": 592.033353,
+      "z": 0,
+      "name_ja": "荒川七丁目",
+      "name_en": "Arakawashichichome"
+    },
+    {
+      "id": "545_Machiyanichome - 町屋二丁目",
+      "attribs": [
+        "Todenarakawasen - 都電荒川線"
+      ],
+      "x": 1137.024681,
+      "y": 612.622092,
+      "z": 0,
+      "name_ja": "町屋二丁目",
+      "name_en": "Machiyanichome"
+    },
+    {
+      "id": "546_Higashiogusanchome - 東尾久三丁目",
+      "attribs": [
+        "Todenarakawasen - 都電荒川線"
+      ],
+      "x": 1116.78083,
+      "y": 629.882576,
+      "z": 0,
+      "name_ja": "東尾久三丁目",
+      "name_en": "Higashiogusanchome"
+    },
+    {
+      "id": "548_Miyanomae - 宮ノ前",
+      "attribs": [
+        "Todenarakawasen - 都電荒川線"
+      ],
+      "x": 1031.510727,
+      "y": 682.261123,
+      "z": 0,
+      "name_ja": "宮ノ前",
+      "name_en": "Miyanomae"
+    },
+    {
+      "id": "549_Odai - 小台",
+      "attribs": [
+        "Todenarakawasen - 都電荒川線"
+      ],
+      "x": 1002.795018,
+      "y": 687.170576,
+      "z": 0,
+      "name_ja": "小台",
+      "name_en": "Odai"
+    },
+    {
+      "id": "550_Arakawayuenchimae - 荒川遊園地前",
+      "attribs": [
+        "Todenarakawasen - 都電荒川線"
+      ],
+      "x": 966.52064,
+      "y": 688.995035,
+      "z": 0,
+      "name_ja": "荒川遊園地前",
+      "name_en": "Arakawayuenchimae"
+    },
+    {
+      "id": "551_Arakawashakomae - 荒川車庫前",
+      "attribs": [
+        "Todenarakawasen - 都電荒川線"
+      ],
+      "x": 919.95707,
+      "y": 690.819493,
+      "z": 0,
+      "name_ja": "荒川車庫前",
+      "name_en": "Arakawashakomae"
+    },
+    {
+      "id": "552_Kajiwara - 梶原",
+      "attribs": [
+        "Todenarakawasen - 都電荒川線"
+      ],
+      "x": 872.814846,
+      "y": 693.616996,
+      "z": 0,
+      "name_ja": "梶原",
+      "name_en": "Kajiwara"
+    },
+    {
+      "id": "553_Sakaemachi - 栄町",
+      "attribs": [
+        "Todenarakawasen - 都電荒川線"
+      ],
+      "x": 825.084926,
+      "y": 690.819493,
+      "z": 0,
+      "name_ja": "栄町",
+      "name_en": "Sakaemachi"
+    },
+    {
+      "id": "554_Asukayama - 飛鳥山",
+      "attribs": [
+        "Todenarakawasen - 都電荒川線"
+      ],
+      "x": 782.210275,
+      "y": 683.510601,
+      "z": 0,
+      "name_ja": "飛鳥山",
+      "name_en": "Asukayama"
+    },
+    {
+      "id": "555_Takinogawaitchome - 滝野川一丁目",
+      "attribs": [
+        "Todenarakawasen - 都電荒川線"
+      ],
+      "x": 764.073087,
+      "y": 651.73185,
+      "z": 0,
+      "name_ja": "滝野川一丁目",
+      "name_en": "Takinogawaitchome"
+    },
+    {
+      "id": "556_Nishikeharashiteime - 西ヶ原四丁目",
+      "attribs": [
+        "Todenarakawasen - 都電荒川線"
+      ],
+      "x": 740.592389,
+      "y": 619.964155,
+      "z": 0,
+      "name_ja": "西ヶ原四丁目",
+      "name_en": "Nishikeharashiteime"
+    },
+    {
+      "id": "557_Shinkoshintsuka - 新庚申塚",
+      "attribs": [
+        "Todenarakawasen - 都電荒川線"
+      ],
+      "x": 719.543847,
+      "y": 585.10041,
+      "z": 0,
+      "name_ja": "新庚申塚",
+      "name_en": "Shinkoshintsuka"
+    },
+    {
+      "id": "558_Koshintsuka - 庚申塚",
+      "attribs": [
+        "Todenarakawasen - 都電荒川線"
+      ],
+      "x": 713.142486,
+      "y": 565.363085,
+      "z": 0,
+      "name_ja": "庚申塚",
+      "name_en": "Koshintsuka"
+    },
+    {
+      "id": "559_Sugamonitta - 巣鴨新田",
+      "attribs": [
+        "Todenarakawasen - 都電荒川線"
+      ],
+      "x": 695.294624,
+      "y": 520.304487,
+      "z": 0,
+      "name_ja": "巣鴨新田",
+      "name_en": "Sugamonitta"
+    },
+    {
+      "id": "560_Mukaihara - 向原",
+      "attribs": [
+        "Todenarakawasen - 都電荒川線"
+      ],
+      "x": 669.300399,
+      "y": 447.879009,
+      "z": 0,
+      "name_ja": "向原",
+      "name_en": "Mukaihara"
+    },
+    {
+      "id": "561_Todenzatsutsukasaketani - 都電雑司ヶ谷",
+      "attribs": [
+        "Todenarakawasen - 都電荒川線"
+      ],
+      "x": 607.022753,
+      "y": 396.1639,
+      "z": 0,
+      "name_ja": "都電雑司ヶ谷",
+      "name_en": "Todenzatsutsukasaketani"
+    },
+    {
+      "id": "562_Gakushuinshita - 学習院下",
+      "attribs": [
+        "Todenarakawasen - 都電荒川線"
+      ],
+      "x": 556.969175,
+      "y": 307.561557,
+      "z": 0,
+      "name_ja": "学習院下",
+      "name_en": "Gakushuinshita"
+    },
+    {
+      "id": "563_Omokagehashi - 面影橋",
+      "attribs": [
+        "Todenarakawasen - 都電荒川線"
+      ],
+      "x": 574.817037,
+      "y": 271.437276,
+      "z": 0,
+      "name_ja": "面影橋",
+      "name_en": "Omokagehashi"
+    },
+    {
+      "id": "564_Waseda - 早稲田",
+      "attribs": [
+        "Todenarakawasen - 都電荒川線"
+      ],
+      "x": 615.358988,
+      "y": 258.909328,
+      "z": 0,
+      "name_ja": "早稲田",
+      "name_en": "Waseda"
+    },
+    {
+      "id": "591_Tachihi - 立飛",
+      "attribs": [
+        "Tamamonoreeru - 多摩モノレール"
+      ],
+      "x": -2111.014911,
+      "y": 290.632793,
+      "z": 0,
+      "name_ja": "立飛",
+      "name_en": "Tachihi"
+    },
+    {
+      "id": "592_Izumitaiikukan - 泉体育館",
+      "attribs": [
+        "Tamamonoreeru - 多摩モノレール"
+      ],
+      "x": -2091.684249,
+      "y": 335.503417,
+      "z": 0,
+      "name_ja": "泉体育館",
+      "name_en": "Izumitaiikukan"
+    },
+    {
+      "id": "610_Takano - 高野",
+      "attribs": [
+        "Nippori Tonerirainaa - 日暮里・舎人ライナー"
+      ],
+      "x": 1083.264101,
+      "y": 883.769812,
+      "z": 0,
+      "name_ja": "高野",
+      "name_en": "Takano"
     }
   ],
   "links": [
@@ -5422,28 +6327,16 @@
       "target": "133_Hatchobori - 八丁堀"
     },
     {
-      "attrib": "JR Naritaekusupuresu - JR成田エクスプレス",
-      "weight": 6.355,
-      "source": "1_Tokyo - 東京",
-      "target": "2_Shinagawa - 品川"
-    },
-    {
-      "attrib": "Tokaidoshinkansen - 東海道新幹線",
-      "weight": 6.355,
-      "source": "1_Tokyo - 東京",
-      "target": "2_Shinagawa - 品川"
-    },
-    {
       "attrib": "Uenotokyorain - 上野東京ライン",
       "weight": 3.674,
       "source": "1_Tokyo - 東京",
       "target": "24_Ueno - 上野"
     },
     {
-      "attrib": "Utsunomiyasen - 宇都宮線",
-      "weight": 3.674,
+      "attrib": "JR Yamanotesen - JR山手線",
+      "weight": 1.228,
       "source": "1_Tokyo - 東京",
-      "target": "24_Ueno - 上野"
+      "target": "27_Kanda - 神田"
     },
     {
       "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
@@ -5459,51 +6352,15 @@
     },
     {
       "attrib": "JR Yamanotesen - JR山手線",
-      "weight": 1.228,
+      "weight": 0.792,
       "source": "1_Tokyo - 東京",
-      "target": "27_Kanda - 神田"
+      "target": "28_Yurakucho - 有楽町"
     },
     {
       "attrib": "JR Keihintohokusen - JR京浜東北線",
       "weight": 0.792,
       "source": "1_Tokyo - 東京",
       "target": "28_Yurakucho - 有楽町"
-    },
-    {
-      "attrib": "JR Yamanotesen - JR山手線",
-      "weight": 0.792,
-      "source": "1_Tokyo - 東京",
-      "target": "28_Yurakucho - 有楽町"
-    },
-    {
-      "attrib": "Akitashinkansen - 秋田新幹線",
-      "weight": 3.735,
-      "source": "1_Tokyo - 東京",
-      "target": "3_Ueno - 上野"
-    },
-    {
-      "attrib": "Hokurikushinkansen - 北陸新幹線",
-      "weight": 3.735,
-      "source": "1_Tokyo - 東京",
-      "target": "3_Ueno - 上野"
-    },
-    {
-      "attrib": "Joetsushinkansen - 上越新幹線",
-      "weight": 3.735,
-      "source": "1_Tokyo - 東京",
-      "target": "3_Ueno - 上野"
-    },
-    {
-      "attrib": "Tohokushinkansen - 東北新幹線",
-      "weight": 3.735,
-      "source": "1_Tokyo - 東京",
-      "target": "3_Ueno - 上野"
-    },
-    {
-      "attrib": "Yamagatashinkansen - 山形新幹線",
-      "weight": 3.735,
-      "source": "1_Tokyo - 東京",
-      "target": "3_Ueno - 上野"
     },
     {
       "attrib": "JR Tokaidohonsen Tokyo Atami - JR東海道本線(東京～熱海)",
@@ -5518,10 +6375,23 @@
       "target": "4_Shinbashi - 新橋"
     },
     {
+      "attrib": "JR Naritaekusupuresu - JR成田エクスプレス",
+      "weight": 6.355,
+      "source": "1_Tokyo - 東京",
+      "target": "2_Shinagawa - 品川"
+    },
+    {
       "attrib": "Tokyo Metro Marunochisen - 東京メトロ丸ノ内線",
       "weight": 0.989,
       "source": "1_Tokyo - 東京",
       "target": "403_Ginza - 銀座"
+    },
+    {
+      "attrib": "Tokyo Metro Marunochisen - 東京メトロ丸ノ内線",
+      "weight": 0.508,
+      "source": "1_Tokyo - 東京",
+      "target": "414_Otemachi - 大手町",
+      "directed": false
     },
     {
       "attrib": "JR Chuohonsen Tokyo Shiojiri - JR中央本線(東京～塩尻)",
@@ -5534,6 +6404,292 @@
       "weight": 0.898,
       "source": "1_Tokyo - 東京",
       "target": "85_Mitsukoshimae - 三越前"
+    },
+    {
+      "attrib": "JR Yamanotesen - JR山手線",
+      "weight": 1.038,
+      "source": "4_Shinbashi - 新橋",
+      "target": "28_Yurakucho - 有楽町"
+    },
+    {
+      "attrib": "JR Keihintohokusen - JR京浜東北線",
+      "weight": 1.038,
+      "source": "4_Shinbashi - 新橋",
+      "target": "28_Yurakucho - 有楽町"
+    },
+    {
+      "attrib": "JR Yamanotesen - JR山手線",
+      "weight": 1.202,
+      "source": "4_Shinbashi - 新橋",
+      "target": "29_Hamamatsucho - 浜松町"
+    },
+    {
+      "attrib": "JR Keihintohokusen - JR京浜東北線",
+      "weight": 1.202,
+      "source": "4_Shinbashi - 新橋",
+      "target": "29_Hamamatsucho - 浜松町"
+    },
+    {
+      "attrib": "JR Tokaidohonsen Tokyo Atami - JR東海道本線(東京～熱海)",
+      "weight": 4.543,
+      "source": "2_Shinagawa - 品川",
+      "target": "4_Shinbashi - 新橋"
+    },
+    {
+      "attrib": "JR Yokosukasen - JR横須賀線",
+      "weight": 4.543,
+      "source": "2_Shinagawa - 品川",
+      "target": "4_Shinbashi - 新橋"
+    },
+    {
+      "attrib": "Tokyo Metro Ginzasen - 東京メトロ銀座線",
+      "weight": 0.888,
+      "source": "4_Shinbashi - 新橋",
+      "target": "403_Ginza - 銀座"
+    },
+    {
+      "attrib": "Tokyo Metro Ginzasen - 東京メトロ銀座線",
+      "weight": 0.953,
+      "source": "4_Shinbashi - 新橋",
+      "target": "404_Toranomon - 虎ノ門"
+    },
+    {
+      "attrib": "Toei Asakusasen - 都営浅草線",
+      "weight": 0.843,
+      "source": "4_Shinbashi - 新橋",
+      "target": "435_Higashiginza - 東銀座"
+    },
+    {
+      "attrib": "Yurikamome - ゆりかもめ",
+      "weight": 0.349,
+      "source": "4_Shinbashi - 新橋",
+      "target": "498_Shiodome - 汐留",
+      "directed": false
+    },
+    {
+      "attrib": "Toei Asakusasen - 都営浅草線",
+      "weight": 1.111,
+      "source": "4_Shinbashi - 新橋",
+      "target": "499_Daimon - 大門"
+    },
+    {
+      "attrib": "JR Keihintohokusen - JR京浜東北線",
+      "weight": 2.426,
+      "source": "2_Shinagawa - 品川",
+      "target": "141_Oicho - 大井町"
+    },
+    {
+      "attrib": "JR Yamanotesen - JR山手線",
+      "weight": 0.775,
+      "source": "2_Shinagawa - 品川",
+      "target": "31_Takanawageetoei - 高輪ゲートウェイ"
+    },
+    {
+      "attrib": "JR Keihintohokusen - JR京浜東北線",
+      "weight": 0.775,
+      "source": "2_Shinagawa - 品川",
+      "target": "31_Takanawageetoei - 高輪ゲートウェイ"
+    },
+    {
+      "attrib": "Keikyu Honsen - 京急本線",
+      "weight": 1.117,
+      "source": "2_Shinagawa - 品川",
+      "target": "379_Sengakuji - 泉岳寺"
+    },
+    {
+      "attrib": "Keikyu Honsen - 京急本線",
+      "weight": 0.693,
+      "source": "2_Shinagawa - 品川",
+      "target": "623_Kitashinagawa - 北品川",
+      "directed": false
+    },
+    {
+      "attrib": "JR Yamanotesen - JR山手線",
+      "weight": 1.366,
+      "source": "2_Shinagawa - 品川",
+      "target": "5_Osaki - 大崎",
+      "directed": false
+    },
+    {
+      "attrib": "JR Yokosukasen - JR横須賀線",
+      "weight": 3.386,
+      "source": "2_Shinagawa - 品川",
+      "target": "52_Nishioi - 西大井"
+    },
+    {
+      "attrib": "JR Naritaekusupuresu - JR成田エクスプレス",
+      "weight": 4.768,
+      "source": "2_Shinagawa - 品川",
+      "target": "9_Shibuya - 渋谷"
+    },
+    {
+      "attrib": "Rinkaisen - りんかい線",
+      "weight": 1.527,
+      "source": "5_Osaki - 大崎",
+      "target": "141_Oicho - 大井町"
+    },
+    {
+      "attrib": "JR Shonanshinjukurain - JR湘南新宿ライン",
+      "weight": 2.108,
+      "source": "5_Osaki - 大崎",
+      "target": "52_Nishioi - 西大井"
+    },
+    {
+      "attrib": "JR Yamanotesen - JR山手線",
+      "weight": 0.809,
+      "source": "5_Osaki - 大崎",
+      "target": "6_Gotanda - 五反田"
+    },
+    {
+      "attrib": "JR Saikyosen - JR埼京線",
+      "weight": 3.444,
+      "source": "5_Osaki - 大崎",
+      "target": "8_Ebisu - 恵比寿"
+    },
+    {
+      "attrib": "JR Shonanshinjukurain - JR湘南新宿ライン",
+      "weight": 3.444,
+      "source": "5_Osaki - 大崎",
+      "target": "8_Ebisu - 恵比寿"
+    },
+    {
+      "attrib": "Tokyu Ikegamisen - 東急池上線",
+      "weight": 0.457,
+      "source": "6_Gotanda - 五反田",
+      "target": "355_Osakihirokoji - 大崎広小路",
+      "directed": false
+    },
+    {
+      "attrib": "Toei Asakusasen - 都営浅草線",
+      "weight": 1.423,
+      "source": "6_Gotanda - 五反田",
+      "target": "356_Tokoshiginza - 戸越銀座"
+    },
+    {
+      "attrib": "Toei Asakusasen - 都営浅草線",
+      "weight": 0.838,
+      "source": "6_Gotanda - 五反田",
+      "target": "509_Takanawadai - 高輪台"
+    },
+    {
+      "attrib": "JR Yamanotesen - JR山手線",
+      "weight": 1.119,
+      "source": "6_Gotanda - 五反田",
+      "target": "7_Meguro - 目黒"
+    },
+    {
+      "attrib": "Tokyu Megurosen - 東急目黒線",
+      "weight": 0.772,
+      "source": "7_Meguro - 目黒",
+      "target": "329_Fudomae - 不動前"
+    },
+    {
+      "attrib": "Tokyo Metro Nanbokusen - 東京メトロ南北線",
+      "weight": 1.077,
+      "source": "7_Meguro - 目黒",
+      "target": "482_Shiroganedai - 白金台"
+    },
+    {
+      "attrib": "Toei Mitasen - 都営三田線",
+      "weight": 1.077,
+      "source": "7_Meguro - 目黒",
+      "target": "482_Shiroganedai - 白金台"
+    },
+    {
+      "attrib": "JR Yamanotesen - JR山手線",
+      "weight": 1.575,
+      "source": "7_Meguro - 目黒",
+      "target": "8_Ebisu - 恵比寿"
+    },
+    {
+      "attrib": "Tokyo Metro Hibiyasen - 東京メトロ日比谷線",
+      "weight": 1.067,
+      "source": "8_Ebisu - 恵比寿",
+      "target": "322_Nakameguro - 中目黒"
+    },
+    {
+      "attrib": "Tokyo Metro Hibiyasen - 東京メトロ日比谷線",
+      "weight": 1.27,
+      "source": "8_Ebisu - 恵比寿",
+      "target": "438_Hiro - 広尾"
+    },
+    {
+      "attrib": "JR Yamanotesen - JR山手線",
+      "weight": 1.547,
+      "source": "8_Ebisu - 恵比寿",
+      "target": "9_Shibuya - 渋谷"
+    },
+    {
+      "attrib": "JR Saikyosen - JR埼京線",
+      "weight": 1.547,
+      "source": "8_Ebisu - 恵比寿",
+      "target": "9_Shibuya - 渋谷"
+    },
+    {
+      "attrib": "JR Shonanshinjukurain - JR湘南新宿ライン",
+      "weight": 1.547,
+      "source": "8_Ebisu - 恵比寿",
+      "target": "9_Shibuya - 渋谷"
+    },
+    {
+      "attrib": "JR Saikyosen - JR埼京線",
+      "weight": 3.44,
+      "source": "9_Shibuya - 渋谷",
+      "target": "12_Shinjuku - 新宿"
+    },
+    {
+      "attrib": "JR Naritaekusupuresu - JR成田エクスプレス",
+      "weight": 3.44,
+      "source": "9_Shibuya - 渋谷",
+      "target": "12_Shinjuku - 新宿"
+    },
+    {
+      "attrib": "JR Shonanshinjukurain - JR湘南新宿ライン",
+      "weight": 3.44,
+      "source": "9_Shibuya - 渋谷",
+      "target": "12_Shinjuku - 新宿"
+    },
+    {
+      "attrib": "Keio Inokashirasen - 京王井の頭線",
+      "weight": 0.736,
+      "source": "9_Shibuya - 渋谷",
+      "target": "287_Kamiizumi - 神泉"
+    },
+    {
+      "attrib": "Tokyu Toyokosen - 東急東横線",
+      "weight": 1.206,
+      "source": "9_Shibuya - 渋谷",
+      "target": "321_Daikanyama - 代官山"
+    },
+    {
+      "attrib": "Tokyu Den Entoshisen - 東急田園都市線",
+      "weight": 1.805,
+      "source": "9_Shibuya - 渋谷",
+      "target": "335_Ikejiriohashi - 池尻大橋"
+    },
+    {
+      "attrib": "Tokyo Metro Ginzasen - 東京メトロ銀座線",
+      "weight": 1.206,
+      "source": "9_Shibuya - 渋谷",
+      "target": "409_Omotesando - 表参道"
+    },
+    {
+      "attrib": "Tokyo Metro Hanzomonsen - 東京メトロ半蔵門線",
+      "weight": 1.206,
+      "source": "9_Shibuya - 渋谷",
+      "target": "409_Omotesando - 表参道"
+    },
+    {
+      "attrib": "JR Yamanotesen - JR山手線",
+      "weight": 1.186,
+      "source": "9_Shibuya - 渋谷",
+      "target": "10_MeijijingumaeHarajuku - 明治神宮前原宿"
+    },
+    {
+      "attrib": "Tokyo Metro Fukutoshinsen - 東京メトロ副都心線",
+      "weight": 1.186,
+      "source": "9_Shibuya - 渋谷",
+      "target": "10_MeijijingumaeHarajuku - 明治神宮前原宿"
     },
     {
       "attrib": "JR Yamanotesen - JR山手線",
@@ -5558,6 +6714,1483 @@
       "weight": 1.015,
       "source": "10_MeijijingumaeHarajuku - 明治神宮前原宿",
       "target": "486_Kitasando - 北参道"
+    },
+    {
+      "attrib": "JR Yamanotesen - JR山手線",
+      "weight": 0.769,
+      "source": "11_Yoyogi - 代々木",
+      "target": "12_Shinjuku - 新宿"
+    },
+    {
+      "attrib": "JR Chuo Sobusen - JR中央・総武線",
+      "weight": 0.769,
+      "source": "11_Yoyogi - 代々木",
+      "target": "12_Shinjuku - 新宿"
+    },
+    {
+      "attrib": "Toei Oedosen - 都営大江戸線",
+      "weight": 0.769,
+      "source": "11_Yoyogi - 代々木",
+      "target": "12_Shinjuku - 新宿"
+    },
+    {
+      "attrib": "Toei Oedosen - 都営大江戸線",
+      "weight": 1.231,
+      "source": "11_Yoyogi - 代々木",
+      "target": "501_Kokuritsukyogijo - 国立競技場"
+    },
+    {
+      "attrib": "JR Chuo Sobusen - JR中央・総武線",
+      "weight": 0.903,
+      "source": "11_Yoyogi - 代々木",
+      "target": "73_Sendaketani - 千駄ケ谷"
+    },
+    {
+      "attrib": "JR Yamanotesen - JR山手線",
+      "weight": 1.227,
+      "source": "12_Shinjuku - 新宿",
+      "target": "13_ShinOkubo - 新大久保"
+    },
+    {
+      "attrib": "JR Saikyosen - JR埼京線",
+      "weight": 4.596,
+      "source": "12_Shinjuku - 新宿",
+      "target": "16_Ikebukuro - 池袋"
+    },
+    {
+      "attrib": "JR Naritaekusupuresu - JR成田エクスプレス",
+      "weight": 4.596,
+      "source": "12_Shinjuku - 新宿",
+      "target": "16_Ikebukuro - 池袋",
+      "directed": false
+    },
+    {
+      "attrib": "JR Shonanshinjukurain - JR湘南新宿ライン",
+      "weight": 4.596,
+      "source": "12_Shinjuku - 新宿",
+      "target": "16_Ikebukuro - 池袋"
+    },
+    {
+      "attrib": "Keio Sen - 京王線",
+      "weight": 3.455,
+      "source": "12_Shinjuku - 新宿",
+      "target": "242_Sasazuka - 笹塚"
+    },
+    {
+      "attrib": "Keio Shinsen - 京王新線",
+      "weight": 1.559,
+      "source": "12_Shinjuku - 新宿",
+      "target": "301_Shodai - 初台"
+    },
+    {
+      "attrib": "Odakyu Sen - 小田急線",
+      "weight": 0.717,
+      "source": "12_Shinjuku - 新宿",
+      "target": "303_Minamishinjuku - 南新宿"
+    },
+    {
+      "attrib": "Tokyo Metro Marunochisen - 東京メトロ丸ノ内線",
+      "weight": 0.498,
+      "source": "12_Shinjuku - 新宿",
+      "target": "419_Shinjukusanchome - 新宿三丁目",
+      "directed": false
+    },
+    {
+      "attrib": "Toei Shinjukusen - 都営新宿線",
+      "weight": 0.498,
+      "source": "12_Shinjuku - 新宿",
+      "target": "419_Shinjukusanchome - 新宿三丁目",
+      "directed": false
+    },
+    {
+      "attrib": "Tokyo Metro Marunochisen - 東京メトロ丸ノ内線",
+      "weight": 0.817,
+      "source": "12_Shinjuku - 新宿",
+      "target": "420_Nishishinjuku - 西新宿"
+    },
+    {
+      "attrib": "Toei Oedosen - 都営大江戸線",
+      "weight": 0.67,
+      "source": "12_Shinjuku - 新宿",
+      "target": "625_Tochomae - 都庁前",
+      "directed": false
+    },
+    {
+      "attrib": "JR Chuohonsen Tokyo Shiojiri - JR中央本線(東京～塩尻)",
+      "weight": 2.775,
+      "source": "12_Shinjuku - 新宿",
+      "target": "53_Shitsutani - 四ツ谷"
+    },
+    {
+      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
+      "weight": 2.775,
+      "source": "12_Shinjuku - 新宿",
+      "target": "53_Shitsutani - 四ツ谷"
+    },
+    {
+      "attrib": "JR Chuohonsen Tokyo Shiojiri - JR中央本線(東京～塩尻)",
+      "weight": 10.94,
+      "source": "12_Shinjuku - 新宿",
+      "target": "54_Kichijoji - 吉祥寺"
+    },
+    {
+      "attrib": "JR Naritaekusupuresu - JR成田エクスプレス",
+      "weight": 10.939,
+      "source": "12_Shinjuku - 新宿",
+      "target": "54_Kichijoji - 吉祥寺",
+      "directed": false
+    },
+    {
+      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
+      "weight": 3.555,
+      "source": "12_Shinjuku - 新宿",
+      "target": "62_Nakano - 中野"
+    },
+    {
+      "attrib": "JR Chuo Sobusen - JR中央・総武線",
+      "weight": 1.24,
+      "source": "12_Shinjuku - 新宿",
+      "target": "72_Okubo - 大久保"
+    },
+    {
+      "attrib": "JR Yamanotesen - JR山手線",
+      "weight": 1.38,
+      "source": "13_ShinOkubo - 新大久保",
+      "target": "14_Takadanobaba - 高田馬場"
+    },
+    {
+      "attrib": "JR Yamanotesen - JR山手線",
+      "weight": 0.865,
+      "source": "14_Takadanobaba - 高田馬場",
+      "target": "15_Mejiro - 目白"
+    },
+    {
+      "attrib": "Seibu Shinjukusen - 西武新宿線",
+      "weight": 1.887,
+      "source": "14_Takadanobaba - 高田馬場",
+      "target": "189_Seibushinjuku - 西武新宿"
+    },
+    {
+      "attrib": "Seibu Shinjukusen - 西武新宿線",
+      "weight": 0.848,
+      "source": "14_Takadanobaba - 高田馬場",
+      "target": "190_Shimochiai - 下落合"
+    },
+    {
+      "attrib": "Tokyo Metro Tozaisen - 東京メトロ東西線",
+      "weight": 1.529,
+      "source": "14_Takadanobaba - 高田馬場",
+      "target": "439_Ochiai - 落合"
+    },
+    {
+      "attrib": "Tokyo Metro Tozaisen - 東京メトロ東西線",
+      "weight": 1.751,
+      "source": "14_Takadanobaba - 高田馬場",
+      "target": "440_Waseda - 早稲田"
+    },
+    {
+      "attrib": "JR Yamanotesen - JR山手線",
+      "weight": 1.158,
+      "source": "15_Mejiro - 目白",
+      "target": "16_Ikebukuro - 池袋"
+    },
+    {
+      "attrib": "JR Shonanshinjukurain - JR湘南新宿ライン",
+      "weight": 5.392,
+      "source": "16_Ikebukuro - 池袋",
+      "target": "122_Akabane - 赤羽"
+    },
+    {
+      "attrib": "JR Saikyosen - JR埼京線",
+      "weight": 1.868,
+      "source": "16_Ikebukuro - 池袋",
+      "target": "129_Itabashi - 板橋"
+    },
+    {
+      "attrib": "Tobu Tojosen - 東武東上線",
+      "weight": 1.345,
+      "source": "16_Ikebukuro - 池袋",
+      "target": "144_Kitaikefukuro - 北池袋"
+    },
+    {
+      "attrib": "Seibu Ikebukurosen - 西武池袋線",
+      "weight": 1.523,
+      "source": "16_Ikebukuro - 池袋",
+      "target": "170_Shiinamachi - 椎名町"
+    },
+    {
+      "attrib": "JR Yamanotesen - JR山手線",
+      "weight": 1.662,
+      "source": "16_Ikebukuro - 池袋",
+      "target": "17_Otsuka - 大塚"
+    },
+    {
+      "attrib": "Tokyo Metro Marunochisen - 東京メトロ丸ノ内線",
+      "weight": 1.82,
+      "source": "16_Ikebukuro - 池袋",
+      "target": "410_ShinOtsuka - 新大塚"
+    },
+    {
+      "attrib": "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線",
+      "weight": 1.123,
+      "source": "16_Ikebukuro - 池袋",
+      "target": "460_Kanamecho - 要町"
+    },
+    {
+      "attrib": "Tokyo Metro Fukutoshinsen - 東京メトロ副都心線",
+      "weight": 1.123,
+      "source": "16_Ikebukuro - 池袋",
+      "target": "460_Kanamecho - 要町"
+    },
+    {
+      "attrib": "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線",
+      "weight": 0.982,
+      "source": "16_Ikebukuro - 池袋",
+      "target": "461_Higashiikebukuro - 東池袋"
+    },
+    {
+      "attrib": "Tokyo Metro Fukutoshinsen - 東京メトロ副都心線",
+      "weight": 1.175,
+      "source": "16_Ikebukuro - 池袋",
+      "target": "483_Zatsutsukasagatani - 雑司が谷"
+    },
+    {
+      "attrib": "JR Yamanotesen - JR山手線",
+      "weight": 0.925,
+      "source": "17_Otsuka - 大塚",
+      "target": "18_Sugamo - 巣鴨"
+    },
+    {
+      "attrib": "Todenarakawasen - 都電荒川線",
+      "weight": 0.433,
+      "source": "17_Otsuka - 大塚",
+      "target": "559_Sugamonitta - 巣鴨新田",
+      "directed": false
+    },
+    {
+      "attrib": "Todenarakawasen - 都電荒川線",
+      "weight": 0.491,
+      "source": "17_Otsuka - 大塚",
+      "target": "560_Mukaihara - 向原",
+      "directed": false
+    },
+    {
+      "attrib": "JR Yamanotesen - JR山手線",
+      "weight": 0.843,
+      "source": "18_Sugamo - 巣鴨",
+      "target": "19_Komagome - 駒込"
+    },
+    {
+      "attrib": "Toei Mitasen - 都営三田線",
+      "weight": 0.811,
+      "source": "18_Sugamo - 巣鴨",
+      "target": "516_Sengoku - 千石"
+    },
+    {
+      "attrib": "Toei Mitasen - 都営三田線",
+      "weight": 1.446,
+      "source": "18_Sugamo - 巣鴨",
+      "target": "517_Nishisugamo - 西巣鴨"
+    },
+    {
+      "attrib": "JR Yamanotesen - JR山手線",
+      "weight": 1.266,
+      "source": "19_Komagome - 駒込",
+      "target": "20_Tabata - 田端"
+    },
+    {
+      "attrib": "Tokyo Metro Nanbokusen - 東京メトロ南北線",
+      "weight": 1.107,
+      "source": "19_Komagome - 駒込",
+      "target": "476_Nishikehara - 西ケ原"
+    },
+    {
+      "attrib": "Tokyo Metro Nanbokusen - 東京メトロ南北線",
+      "weight": 1.536,
+      "source": "19_Komagome - 駒込",
+      "target": "477_Honkomagome - 本駒込"
+    },
+    {
+      "attrib": "JR Keihintohokusen - JR京浜東北線",
+      "weight": 1.75,
+      "source": "20_Tabata - 田端",
+      "target": "140_Kaminakasato - 上中里"
+    },
+    {
+      "attrib": "JR Yamanotesen - JR山手線",
+      "weight": 0.812,
+      "source": "20_Tabata - 田端",
+      "target": "21_Nishinippori - 西日暮里"
+    },
+    {
+      "attrib": "JR Keihintohokusen - JR京浜東北線",
+      "weight": 0.812,
+      "source": "20_Tabata - 田端",
+      "target": "21_Nishinippori - 西日暮里"
+    },
+    {
+      "attrib": "JR Yamanotesen - JR山手線",
+      "weight": 0.613,
+      "source": "21_Nishinippori - 西日暮里",
+      "target": "22_Nippori - 日暮里",
+      "directed": false
+    },
+    {
+      "attrib": "JR Keihintohokusen - JR京浜東北線",
+      "weight": 0.613,
+      "source": "21_Nishinippori - 西日暮里",
+      "target": "22_Nippori - 日暮里",
+      "directed": false
+    },
+    {
+      "attrib": "Nippori Tonerirainaa - 日暮里・舎人ライナー",
+      "weight": 0.613,
+      "source": "21_Nishinippori - 西日暮里",
+      "target": "22_Nippori - 日暮里",
+      "directed": false
+    },
+    {
+      "attrib": "Tokyo Metro Chiyodasen - 東京メトロ千代田線",
+      "weight": 1.745,
+      "source": "21_Nishinippori - 西日暮里",
+      "target": "229_Machiya - 町屋"
+    },
+    {
+      "attrib": "Tokyo Metro Chiyodasen - 東京メトロ千代田線",
+      "weight": 0.788,
+      "source": "21_Nishinippori - 西日暮里",
+      "target": "451_Sendagi - 千駄木"
+    },
+    {
+      "attrib": "Nippori Tonerirainaa - 日暮里・舎人ライナー",
+      "weight": 1.176,
+      "source": "21_Nishinippori - 西日暮里",
+      "target": "607_Shakudoshogakkomae - 赤土小学校前"
+    },
+    {
+      "attrib": "JR Jobansen Ueno Toride - JR常磐線(上野～取手)",
+      "weight": 0.806,
+      "source": "22_Nippori - 日暮里",
+      "target": "123_Mikawashima - 三河島"
+    },
+    {
+      "attrib": "Keiseihonsen - 京成本線",
+      "weight": 1.866,
+      "source": "22_Nippori - 日暮里",
+      "target": "227_Keiseiueno - 京成上野"
+    },
+    {
+      "attrib": "Naritasukaiakusesu - 成田スカイアクセス",
+      "weight": 1.866,
+      "source": "22_Nippori - 日暮里",
+      "target": "227_Keiseiueno - 京成上野"
+    },
+    {
+      "attrib": "Keiseihonsen - 京成本線",
+      "weight": 1.052,
+      "source": "22_Nippori - 日暮里",
+      "target": "228_Shinzokawashima - 新三河島"
+    },
+    {
+      "attrib": "JR Yamanotesen - JR山手線",
+      "weight": 0.938,
+      "source": "22_Nippori - 日暮里",
+      "target": "23_Uguisudani - 鶯谷"
+    },
+    {
+      "attrib": "JR Keihintohokusen - JR京浜東北線",
+      "weight": 0.938,
+      "source": "22_Nippori - 日暮里",
+      "target": "23_Uguisudani - 鶯谷"
+    },
+    {
+      "attrib": "Naritasukaiakusesu - 成田スカイアクセス",
+      "weight": 7.928,
+      "source": "22_Nippori - 日暮里",
+      "target": "233_Aoto - 青砥"
+    },
+    {
+      "attrib": "JR Jobansen Ueno Toride - JR常磐線(上野～取手)",
+      "weight": 1.715,
+      "source": "22_Nippori - 日暮里",
+      "target": "24_Ueno - 上野"
+    },
+    {
+      "attrib": "JR Yamanotesen - JR山手線",
+      "weight": 0.924,
+      "source": "23_Uguisudani - 鶯谷",
+      "target": "24_Ueno - 上野"
+    },
+    {
+      "attrib": "JR Keihintohokusen - JR京浜東北線",
+      "weight": 0.924,
+      "source": "23_Uguisudani - 鶯谷",
+      "target": "24_Ueno - 上野"
+    },
+    {
+      "attrib": "Utsunomiyasen - 宇都宮線",
+      "weight": 4.285,
+      "source": "24_Ueno - 上野",
+      "target": "121_Oku - 尾久"
+    },
+    {
+      "attrib": "JR Takasakisen - JR高崎線",
+      "weight": 4.285,
+      "source": "24_Ueno - 上野",
+      "target": "121_Oku - 尾久"
+    },
+    {
+      "attrib": "JR Yamanotesen - JR山手線",
+      "weight": 0.689,
+      "source": "24_Ueno - 上野",
+      "target": "25_Okachimachi - 御徒町",
+      "directed": false
+    },
+    {
+      "attrib": "JR Keihintohokusen - JR京浜東北線",
+      "weight": 0.689,
+      "source": "24_Ueno - 上野",
+      "target": "25_Okachimachi - 御徒町",
+      "directed": false
+    },
+    {
+      "attrib": "Tokyo Metro Ginzasen - 東京メトロ銀座線",
+      "weight": 0.689,
+      "source": "24_Ueno - 上野",
+      "target": "25_Okachimachi - 御徒町",
+      "directed": false
+    },
+    {
+      "attrib": "Tokyo Metro Hibiyasen - 東京メトロ日比谷線",
+      "weight": 0.689,
+      "source": "24_Ueno - 上野",
+      "target": "25_Okachimachi - 御徒町",
+      "directed": false
+    },
+    {
+      "attrib": "Tokyo Metro Ginzasen - 東京メトロ銀座線",
+      "weight": 0.544,
+      "source": "24_Ueno - 上野",
+      "target": "399_Inaricho - 稲荷町",
+      "directed": false
+    },
+    {
+      "attrib": "Tokyo Metro Hibiyasen - 東京メトロ日比谷線",
+      "weight": 0.965,
+      "source": "24_Ueno - 上野",
+      "target": "430_Iriya - 入谷"
+    },
+    {
+      "attrib": "JR Yamanotesen - JR山手線",
+      "weight": 0.978,
+      "source": "25_Okachimachi - 御徒町",
+      "target": "26_Akihabara - 秋葉原"
+    },
+    {
+      "attrib": "JR Keihintohokusen - JR京浜東北線",
+      "weight": 0.978,
+      "source": "25_Okachimachi - 御徒町",
+      "target": "26_Akihabara - 秋葉原"
+    },
+    {
+      "attrib": "Tokyo Metro Hibiyasen - 東京メトロ日比谷線",
+      "weight": 0.978,
+      "source": "25_Okachimachi - 御徒町",
+      "target": "26_Akihabara - 秋葉原"
+    },
+    {
+      "attrib": "Tokyo Metro Ginzasen - 東京メトロ銀座線",
+      "weight": 0.551,
+      "source": "25_Okachimachi - 御徒町",
+      "target": "400_Suehirocho - 末広町",
+      "directed": false
+    },
+    {
+      "attrib": "Toei Oedosen - 都営大江戸線",
+      "weight": 1.315,
+      "source": "25_Okachimachi - 御徒町",
+      "target": "413_Hongosanchome - 本郷三丁目"
+    },
+    {
+      "attrib": "Toei Oedosen - 都営大江戸線",
+      "weight": 0.669,
+      "source": "25_Okachimachi - 御徒町",
+      "target": "493_Shinokachimachi - 新御徒町",
+      "directed": false
+    },
+    {
+      "attrib": "JR Yamanotesen - JR山手線",
+      "weight": 0.81,
+      "source": "26_Akihabara - 秋葉原",
+      "target": "27_Kanda - 神田"
+    },
+    {
+      "attrib": "JR Keihintohokusen - JR京浜東北線",
+      "weight": 0.81,
+      "source": "26_Akihabara - 秋葉原",
+      "target": "27_Kanda - 神田"
+    },
+    {
+      "attrib": "Tokyo Metro Hibiyasen - 東京メトロ日比谷線",
+      "weight": 0.963,
+      "source": "26_Akihabara - 秋葉原",
+      "target": "431_Kodenmacho - 小伝馬町"
+    },
+    {
+      "attrib": "Tsukubaekusupuresu - つくばエクスプレス",
+      "weight": 1.189,
+      "source": "26_Akihabara - 秋葉原",
+      "target": "493_Shinokachimachi - 新御徒町"
+    },
+    {
+      "attrib": "JR Chuo Sobusen - JR中央・総武線",
+      "weight": 0.747,
+      "source": "26_Akihabara - 秋葉原",
+      "target": "61_Ochanomizu - 御茶ノ水"
+    },
+    {
+      "attrib": "JR Chuo Sobusen - JR中央・総武線",
+      "weight": 1.042,
+      "source": "26_Akihabara - 秋葉原",
+      "target": "78_Asakusabashi - 浅草橋"
+    },
+    {
+      "attrib": "Tokyo Metro Ginzasen - 東京メトロ銀座線",
+      "weight": 1.248,
+      "source": "27_Kanda - 神田",
+      "target": "400_Suehirocho - 末広町"
+    },
+    {
+      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
+      "weight": 0.833,
+      "source": "27_Kanda - 神田",
+      "target": "61_Ochanomizu - 御茶ノ水"
+    },
+    {
+      "attrib": "Tokyo Metro Ginzasen - 東京メトロ銀座線",
+      "weight": 0.592,
+      "source": "27_Kanda - 神田",
+      "target": "85_Mitsukoshimae - 三越前",
+      "directed": false
+    },
+    {
+      "attrib": "Tokyo Metro Hibiyasen - 東京メトロ日比谷線",
+      "weight": 0.408,
+      "source": "28_Yurakucho - 有楽町",
+      "target": "403_Ginza - 銀座",
+      "directed": false
+    },
+    {
+      "attrib": "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線",
+      "weight": 0.408,
+      "source": "28_Yurakucho - 有楽町",
+      "target": "403_Ginza - 銀座",
+      "directed": false
+    },
+    {
+      "attrib": "Toei Mitasen - 都営三田線",
+      "weight": 1.208,
+      "source": "28_Yurakucho - 有楽町",
+      "target": "414_Otemachi - 大手町"
+    },
+    {
+      "attrib": "Tokyo Metro Hibiyasen - 東京メトロ日比谷線",
+      "weight": 0.982,
+      "source": "28_Yurakucho - 有楽町",
+      "target": "415_Kasumigaseki - 霞ケ関"
+    },
+    {
+      "attrib": "Tokyo Metro Chiyodasen - 東京メトロ千代田線",
+      "weight": 0.982,
+      "source": "28_Yurakucho - 有楽町",
+      "target": "415_Kasumigaseki - 霞ケ関"
+    },
+    {
+      "attrib": "Tokyo Metro Chiyodasen - 東京メトロ千代田線",
+      "weight": 0.649,
+      "source": "28_Yurakucho - 有楽町",
+      "target": "624_Nijubashimae - 二重橋前",
+      "directed": false
+    },
+    {
+      "attrib": "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線",
+      "weight": 0.947,
+      "source": "28_Yurakucho - 有楽町",
+      "target": "465_Sakuradamon - 桜田門"
+    },
+    {
+      "attrib": "Toei Mitasen - 都営三田線",
+      "weight": 0.818,
+      "source": "28_Yurakucho - 有楽町",
+      "target": "514_Uchisaiwaicho - 内幸町"
+    },
+    {
+      "attrib": "JR Yamanotesen - JR山手線",
+      "weight": 1.379,
+      "source": "29_Hamamatsucho - 浜松町",
+      "target": "30_Tamachi - 田町"
+    },
+    {
+      "attrib": "JR Keihintohokusen - JR京浜東北線",
+      "weight": 1.379,
+      "source": "29_Hamamatsucho - 浜松町",
+      "target": "30_Tamachi - 田町"
+    },
+    {
+      "attrib": "Tokyomonoreeru - 東京モノレール",
+      "weight": 3.795,
+      "source": "29_Hamamatsucho - 浜松町",
+      "target": "596_Tennozuairu - 天王洲アイル"
+    },
+    {
+      "attrib": "JR Yamanotesen - JR山手線",
+      "weight": 1.297,
+      "source": "30_Tamachi - 田町",
+      "target": "31_Takanawageetoei - 高輪ゲートウェイ"
+    },
+    {
+      "attrib": "JR Keihintohokusen - JR京浜東北線",
+      "weight": 1.297,
+      "source": "30_Tamachi - 田町",
+      "target": "31_Takanawageetoei - 高輪ゲートウェイ"
+    },
+    {
+      "attrib": "JR Nanbusen - JR南武線",
+      "weight": 1.661,
+      "source": "32_Yanoguchi - 矢野口",
+      "target": "33_Inaginaganuma - 稲城長沼"
+    },
+    {
+      "attrib": "JR Nanbusen - JR南武線",
+      "weight": 1.305,
+      "source": "33_Inaginaganuma - 稲城長沼",
+      "target": "34_Minamitama - 南多摩"
+    },
+    {
+      "attrib": "JR Nanbusen - JR南武線",
+      "weight": 2.163,
+      "source": "34_Minamitama - 南多摩",
+      "target": "35_Fuchuhonmachi - 府中本町"
+    },
+    {
+      "attrib": "JR Nanbusen - JR南武線",
+      "weight": 0.812,
+      "source": "35_Fuchuhonmachi - 府中本町",
+      "target": "36_Bubaigawara - 分倍河原"
+    },
+    {
+      "attrib": "JR Musashinosen - JR武蔵野線",
+      "weight": 1.749,
+      "source": "35_Fuchuhonmachi - 府中本町",
+      "target": "42_Hokufunaka - 北府中"
+    },
+    {
+      "attrib": "Keio Sen - 京王線",
+      "weight": 1.086,
+      "source": "36_Bubaigawara - 分倍河原",
+      "target": "262_Fuchu - 府中"
+    },
+    {
+      "attrib": "Keio Sen - 京王線",
+      "weight": 1.418,
+      "source": "36_Bubaigawara - 分倍河原",
+      "target": "263_Nakagawara - 中河原"
+    },
+    {
+      "attrib": "JR Nanbusen - JR南武線",
+      "weight": 1.057,
+      "source": "36_Bubaigawara - 分倍河原",
+      "target": "37_Seifu - 西府"
+    },
+    {
+      "attrib": "JR Nanbusen - JR南武線",
+      "weight": 1.516,
+      "source": "38_Yaho - 谷保",
+      "target": "37_Seifu - 西府"
+    },
+    {
+      "attrib": "JR Nanbusen - JR南武線",
+      "weight": 1.426,
+      "source": "38_Yaho - 谷保",
+      "target": "39_Yagawa - 矢川"
+    },
+    {
+      "attrib": "JR Nanbusen - JR南武線",
+      "weight": 1.19,
+      "source": "39_Yagawa - 矢川",
+      "target": "40_Nishikokuritsu - 西国立"
+    },
+    {
+      "attrib": "JR Nanbusen - JR南武線",
+      "weight": 1.044,
+      "source": "40_Nishikokuritsu - 西国立",
+      "target": "41_Tachikawa - 立川"
+    },
+    {
+      "attrib": "JR Naritaekusupuresu - JR成田エクスプレス",
+      "weight": 8.248,
+      "source": "41_Tachikawa - 立川",
+      "target": "51_Hachioji - 八王子",
+      "directed": false
+    },
+    {
+      "attrib": "JR Chuohonsen Tokyo Shiojiri - JR中央本線(東京～塩尻)",
+      "weight": 6.038,
+      "source": "41_Tachikawa - 立川",
+      "target": "56_Kokubunji - 国分寺"
+    },
+    {
+      "attrib": "JR Naritaekusupuresu - JR成田エクスプレス",
+      "weight": 6.043,
+      "source": "41_Tachikawa - 立川",
+      "target": "56_Kokubunji - 国分寺",
+      "directed": false
+    },
+    {
+      "attrib": "JR Chuohonsen Tokyo Shiojiri - JR中央本線(東京～塩尻)",
+      "weight": 2.763,
+      "source": "41_Tachikawa - 立川",
+      "target": "57_Hino - 日野"
+    },
+    {
+      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
+      "weight": 2.763,
+      "source": "41_Tachikawa - 立川",
+      "target": "57_Hino - 日野"
+    },
+    {
+      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
+      "weight": 2.949,
+      "source": "41_Tachikawa - 立川",
+      "target": "70_Kokuritsu - 国立"
+    },
+    {
+      "attrib": "JR Omesen - JR青梅線",
+      "weight": 1.913,
+      "source": "41_Tachikawa - 立川",
+      "target": "87_Nishitachikawa - 西立川"
+    },
+    {
+      "attrib": "JR Musashinosen - JR武蔵野線",
+      "weight": 2.162,
+      "source": "42_Hokufunaka - 北府中",
+      "target": "43_Nishikokubunji - 西国分寺"
+    },
+    {
+      "attrib": "JR Musashinosen - JR武蔵野線",
+      "weight": 3.533,
+      "source": "43_Nishikokubunji - 西国分寺",
+      "target": "44_Shinkodaira - 新小平"
+    },
+    {
+      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
+      "weight": 1.313,
+      "source": "43_Nishikokubunji - 西国分寺",
+      "target": "56_Kokubunji - 国分寺"
+    },
+    {
+      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
+      "weight": 1.776,
+      "source": "43_Nishikokubunji - 西国分寺",
+      "target": "70_Kokuritsu - 国立"
+    },
+    {
+      "attrib": "JR Musashinosen - JR武蔵野線",
+      "weight": 5.623,
+      "source": "44_Shinkodaira - 新小平",
+      "target": "45_Shinshutsu - 新秋津"
+    },
+    {
+      "attrib": "JR Yokohamasen - JR横浜線",
+      "weight": 2.629,
+      "source": "46_Naruse - 成瀬",
+      "target": "47_Machida - 町田"
+    },
+    {
+      "attrib": "Odakyu Sen - 小田急線",
+      "weight": 2.789,
+      "source": "47_Machida - 町田",
+      "target": "319_Tamagawagakuenmae - 玉川学園前"
+    },
+    {
+      "attrib": "JR Yokohamasen - JR横浜線",
+      "weight": 2.64,
+      "source": "48_Aihara - 相原",
+      "target": "49_Hachiojiminamino - 八王子みなみ野"
+    },
+    {
+      "attrib": "JR Yokohamasen - JR横浜線",
+      "weight": 1.383,
+      "source": "49_Hachiojiminamino - 八王子みなみ野",
+      "target": "50_Katakura - 片倉"
+    },
+    {
+      "attrib": "JR Yokohamasen - JR横浜線",
+      "weight": 1.774,
+      "source": "50_Katakura - 片倉",
+      "target": "51_Hachioji - 八王子"
+    },
+    {
+      "attrib": "JR Hakkosen Hachioji Komagawa - JR八高線(八王子～高麗川)",
+      "weight": 2.674,
+      "source": "51_Hachioji - 八王子",
+      "target": "117_Kitahachioji - 北八王子"
+    },
+    {
+      "attrib": "JR Chuohonsen Tokyo Shiojiri - JR中央本線(東京～塩尻)",
+      "weight": 3.865,
+      "source": "51_Hachioji - 八王子",
+      "target": "58_Toyoda - 豊田"
+    },
+    {
+      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
+      "weight": 3.865,
+      "source": "51_Hachioji - 八王子",
+      "target": "58_Toyoda - 豊田"
+    },
+    {
+      "attrib": "JR Chuohonsen Tokyo Shiojiri - JR中央本線(東京～塩尻)",
+      "weight": 2.384,
+      "source": "51_Hachioji - 八王子",
+      "target": "59_Nishihachioji - 西八王子"
+    },
+    {
+      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
+      "weight": 2.384,
+      "source": "51_Hachioji - 八王子",
+      "target": "59_Nishihachioji - 西八王子"
+    },
+    {
+      "attrib": "JR Naritaekusupuresu - JR成田エクスプレス",
+      "weight": 5.359,
+      "source": "51_Hachioji - 八王子",
+      "target": "60_Takao - 高尾",
+      "directed": false
+    },
+    {
+      "attrib": "Tokyo Metro Marunochisen - 東京メトロ丸ノ内線",
+      "weight": 1.16,
+      "source": "53_Shitsutani - 四ツ谷",
+      "target": "406_Nagatacho - 永田町"
+    },
+    {
+      "attrib": "Tokyo Metro Nanbokusen - 東京メトロ南北線",
+      "weight": 1.16,
+      "source": "53_Shitsutani - 四ツ谷",
+      "target": "406_Nagatacho - 永田町"
+    },
+    {
+      "attrib": "Tokyo Metro Marunochisen - 東京メトロ丸ノ内線",
+      "weight": 0.952,
+      "source": "53_Shitsutani - 四ツ谷",
+      "target": "417_Yotsuyasanchome - 四谷三丁目"
+    },
+    {
+      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
+      "weight": 3.477,
+      "source": "53_Shitsutani - 四ツ谷",
+      "target": "61_Ochanomizu - 御茶ノ水"
+    },
+    {
+      "attrib": "JR Chuo Sobusen - JR中央・総武線",
+      "weight": 1.072,
+      "source": "53_Shitsutani - 四ツ谷",
+      "target": "74_Shinanocho - 信濃町"
+    },
+    {
+      "attrib": "JR Chuo Sobusen - JR中央・総武線",
+      "weight": 0.868,
+      "source": "53_Shitsutani - 四ツ谷",
+      "target": "75_Ichigaya - 市ケ谷"
+    },
+    {
+      "attrib": "Tokyo Metro Nanbokusen - 東京メトロ南北線",
+      "weight": 0.868,
+      "source": "53_Shitsutani - 四ツ谷",
+      "target": "75_Ichigaya - 市ケ谷"
+    },
+    {
+      "attrib": "Keio Inokashirasen - 京王井の頭線",
+      "weight": 0.693,
+      "source": "54_Kichijoji - 吉祥寺",
+      "target": "300_Inogashirakoen - 井の頭公園",
+      "directed": false
+    },
+    {
+      "attrib": "JR Chuohonsen Tokyo Shiojiri - JR中央本線(東京～塩尻)",
+      "weight": 1.768,
+      "source": "54_Kichijoji - 吉祥寺",
+      "target": "55_Mitaka - 三鷹"
+    },
+    {
+      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
+      "weight": 1.768,
+      "source": "54_Kichijoji - 吉祥寺",
+      "target": "55_Mitaka - 三鷹"
+    },
+    {
+      "attrib": "JR Chuo Sobusen - JR中央・総武線",
+      "weight": 1.768,
+      "source": "54_Kichijoji - 吉祥寺",
+      "target": "55_Mitaka - 三鷹"
+    },
+    {
+      "attrib": "JR Naritaekusupuresu - JR成田エクスプレス",
+      "weight": 1.765,
+      "source": "54_Kichijoji - 吉祥寺",
+      "target": "55_Mitaka - 三鷹",
+      "directed": false
+    },
+    {
+      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
+      "weight": 1.76,
+      "source": "54_Kichijoji - 吉祥寺",
+      "target": "66_Nishiogikubo - 西荻窪"
+    },
+    {
+      "attrib": "JR Chuo Sobusen - JR中央・総武線",
+      "weight": 1.76,
+      "source": "54_Kichijoji - 吉祥寺",
+      "target": "66_Nishiogikubo - 西荻窪"
+    },
+    {
+      "attrib": "JR Chuohonsen Tokyo Shiojiri - JR中央本線(東京～塩尻)",
+      "weight": 7.211,
+      "source": "55_Mitaka - 三鷹",
+      "target": "56_Kokubunji - 国分寺"
+    },
+    {
+      "attrib": "JR Naritaekusupuresu - JR成田エクスプレス",
+      "weight": 7.206,
+      "source": "55_Mitaka - 三鷹",
+      "target": "56_Kokubunji - 国分寺",
+      "directed": false
+    },
+    {
+      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
+      "weight": 1.53,
+      "source": "55_Mitaka - 三鷹",
+      "target": "67_Musashisakai - 武蔵境"
+    },
+    {
+      "attrib": "Seibu Kokubunjisen - 西武国分寺線",
+      "weight": 1.939,
+      "source": "56_Kokubunji - 国分寺",
+      "target": "216_Koigakubo - 恋ヶ窪"
+    },
+    {
+      "attrib": "Seibu Tamamizumisen - 西武多摩湖線",
+      "weight": 2.432,
+      "source": "56_Kokubunji - 国分寺",
+      "target": "218_Hitotsubashigakuen - 一橋学園"
+    },
+    {
+      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
+      "weight": 2.347,
+      "source": "56_Kokubunji - 国分寺",
+      "target": "69_Musashikoganei - 武蔵小金井"
+    },
+    {
+      "attrib": "JR Chuohonsen Tokyo Shiojiri - JR中央本線(東京～塩尻)",
+      "weight": 2.466,
+      "source": "57_Hino - 日野",
+      "target": "58_Toyoda - 豊田"
+    },
+    {
+      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
+      "weight": 2.466,
+      "source": "57_Hino - 日野",
+      "target": "58_Toyoda - 豊田"
+    },
+    {
+      "attrib": "JR Chuohonsen Tokyo Shiojiri - JR中央本線(東京～塩尻)",
+      "weight": 3.213,
+      "source": "59_Nishihachioji - 西八王子",
+      "target": "60_Takao - 高尾"
+    },
+    {
+      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
+      "weight": 3.213,
+      "source": "59_Nishihachioji - 西八王子",
+      "target": "60_Takao - 高尾"
+    },
+    {
+      "attrib": "Keio Takaosen - 京王高尾線",
+      "weight": 1.072,
+      "source": "60_Takao - 高尾",
+      "target": "283_Hazama - 狭間"
+    },
+    {
+      "attrib": "Keio Takaosen - 京王高尾線",
+      "weight": 1.528,
+      "source": "60_Takao - 高尾",
+      "target": "284_Takaosanguchi - 高尾山口"
+    },
+    {
+      "attrib": "Tokyo Metro Marunochisen - 東京メトロ丸ノ内線",
+      "weight": 1.126,
+      "source": "61_Ochanomizu - 御茶ノ水",
+      "target": "413_Hongosanchome - 本郷三丁目"
+    },
+    {
+      "attrib": "Tokyo Metro Marunochisen - 東京メトロ丸ノ内線",
+      "weight": 1.361,
+      "source": "61_Ochanomizu - 御茶ノ水",
+      "target": "414_Otemachi - 大手町"
+    },
+    {
+      "attrib": "Tokyo Metro Chiyodasen - 東京メトロ千代田線",
+      "weight": 1.361,
+      "source": "61_Ochanomizu - 御茶ノ水",
+      "target": "414_Otemachi - 大手町"
+    },
+    {
+      "attrib": "Tokyo Metro Chiyodasen - 東京メトロ千代田線",
+      "weight": 1.196,
+      "source": "61_Ochanomizu - 御茶ノ水",
+      "target": "453_Yushima - 湯島"
+    },
+    {
+      "attrib": "JR Chuo Sobusen - JR中央・総武線",
+      "weight": 1.116,
+      "source": "61_Ochanomizu - 御茶ノ水",
+      "target": "77_Suidobashi - 水道橋"
+    },
+    {
+      "attrib": "Tokyo Metro Tozaisen - 東京メトロ東西線",
+      "weight": 2.021,
+      "source": "62_Nakano - 中野",
+      "target": "439_Ochiai - 落合"
+    },
+    {
+      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
+      "weight": 1.461,
+      "source": "62_Nakano - 中野",
+      "target": "63_Koenji - 高円寺"
+    },
+    {
+      "attrib": "JR Chuo Sobusen - JR中央・総武線",
+      "weight": 1.461,
+      "source": "62_Nakano - 中野",
+      "target": "63_Koenji - 高円寺"
+    },
+    {
+      "attrib": "JR Chuo Sobusen - JR中央・総武線",
+      "weight": 1.618,
+      "source": "62_Nakano - 中野",
+      "target": "71_Higashinakano - 東中野"
+    },
+    {
+      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
+      "weight": 1.247,
+      "source": "63_Koenji - 高円寺",
+      "target": "64_Asaketani - 阿佐ケ谷"
+    },
+    {
+      "attrib": "JR Chuo Sobusen - JR中央・総武線",
+      "weight": 1.247,
+      "source": "63_Koenji - 高円寺",
+      "target": "64_Asaketani - 阿佐ケ谷"
+    },
+    {
+      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
+      "weight": 1.423,
+      "source": "64_Asaketani - 阿佐ケ谷",
+      "target": "65_Ogikubo - 荻窪"
+    },
+    {
+      "attrib": "JR Chuo Sobusen - JR中央・総武線",
+      "weight": 1.423,
+      "source": "64_Asaketani - 阿佐ケ谷",
+      "target": "65_Ogikubo - 荻窪"
+    },
+    {
+      "attrib": "Tokyo Metro Marunochisen - 東京メトロ丸ノ内線",
+      "weight": 1.512,
+      "source": "65_Ogikubo - 荻窪",
+      "target": "425_Minamiasaketani - 南阿佐ケ谷"
+    },
+    {
+      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
+      "weight": 1.875,
+      "source": "65_Ogikubo - 荻窪",
+      "target": "66_Nishiogikubo - 西荻窪"
+    },
+    {
+      "attrib": "JR Chuo Sobusen - JR中央・総武線",
+      "weight": 1.875,
+      "source": "65_Ogikubo - 荻窪",
+      "target": "66_Nishiogikubo - 西荻窪"
+    },
+    {
+      "attrib": "Seibu Tamagawasen - 西武多摩川線",
+      "weight": 1.665,
+      "source": "67_Musashisakai - 武蔵境",
+      "target": "222_Shinkoganei - 新小金井"
+    },
+    {
+      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
+      "weight": 1.677,
+      "source": "67_Musashisakai - 武蔵境",
+      "target": "68_Higashikoganei - 東小金井"
+    },
+    {
+      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
+      "weight": 1.658,
+      "source": "68_Higashikoganei - 東小金井",
+      "target": "69_Musashikoganei - 武蔵小金井"
+    },
+    {
+      "attrib": "Toei Oedosen - 都営大江戸線",
+      "weight": 0.914,
+      "source": "71_Higashinakano - 東中野",
+      "target": "191_Nakai - 中井"
+    },
+    {
+      "attrib": "Toei Oedosen - 都営大江戸線",
+      "weight": 1.029,
+      "source": "71_Higashinakano - 東中野",
+      "target": "421_Nakanosakaue - 中野坂上"
+    },
+    {
+      "attrib": "JR Chuo Sobusen - JR中央・総武線",
+      "weight": 1.394,
+      "source": "71_Higashinakano - 東中野",
+      "target": "72_Okubo - 大久保"
+    },
+    {
+      "attrib": "JR Chuo Sobusen - JR中央・総武線",
+      "weight": 0.831,
+      "source": "73_Sendaketani - 千駄ケ谷",
+      "target": "74_Shinanocho - 信濃町"
+    },
+    {
+      "attrib": "Toei Shinjukusen - 都営新宿線",
+      "weight": 1.463,
+      "source": "75_Ichigaya - 市ケ谷",
+      "target": "442_Kudanshita - 九段下"
+    },
+    {
+      "attrib": "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線",
+      "weight": 0.865,
+      "source": "75_Ichigaya - 市ケ谷",
+      "target": "464_Kojimachi - 麹町"
+    },
+    {
+      "attrib": "Toei Shinjukusen - 都営新宿線",
+      "weight": 1.229,
+      "source": "75_Ichigaya - 市ケ谷",
+      "target": "529_Akebonobashi - 曙橋"
+    },
+    {
+      "attrib": "JR Chuo Sobusen - JR中央・総武線",
+      "weight": 1.369,
+      "source": "75_Ichigaya - 市ケ谷",
+      "target": "76_Iidabashi - 飯田橋"
+    },
+    {
+      "attrib": "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線",
+      "weight": 1.369,
+      "source": "75_Ichigaya - 市ケ谷",
+      "target": "76_Iidabashi - 飯田橋"
+    },
+    {
+      "attrib": "Tokyo Metro Nanbokusen - 東京メトロ南北線",
+      "weight": 1.369,
+      "source": "75_Ichigaya - 市ケ谷",
+      "target": "76_Iidabashi - 飯田橋"
+    },
+    {
+      "attrib": "Tokyo Metro Nanbokusen - 東京メトロ南北線",
+      "weight": 0.916,
+      "source": "76_Iidabashi - 飯田橋",
+      "target": "412_Korakuen - 後楽園"
+    },
+    {
+      "attrib": "Tokyo Metro Tozaisen - 東京メトロ東西線",
+      "weight": 0.936,
+      "source": "76_Iidabashi - 飯田橋",
+      "target": "441_Kagurazaka - 神楽坂"
+    },
+    {
+      "attrib": "Tokyo Metro Tozaisen - 東京メトロ東西線",
+      "weight": 0.974,
+      "source": "76_Iidabashi - 飯田橋",
+      "target": "442_Kudanshita - 九段下"
+    },
+    {
+      "attrib": "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線",
+      "weight": 1.302,
+      "source": "76_Iidabashi - 飯田橋",
+      "target": "463_Edogawahashi - 江戸川橋"
+    },
+    {
+      "attrib": "Toei Oedosen - 都営大江戸線",
+      "weight": 0.814,
+      "source": "76_Iidabashi - 飯田橋",
+      "target": "491_Ushigomekagurazaka - 牛込神楽坂"
+    },
+    {
+      "attrib": "Toei Oedosen - 都営大江戸線",
+      "weight": 1.139,
+      "source": "76_Iidabashi - 飯田橋",
+      "target": "492_Kasuga - 春日"
+    },
+    {
+      "attrib": "JR Chuo Sobusen - JR中央・総武線",
+      "weight": 0.91,
+      "source": "76_Iidabashi - 飯田橋",
+      "target": "77_Suidobashi - 水道橋"
+    },
+    {
+      "attrib": "Toei Mitasen - 都営三田線",
+      "weight": 0.816,
+      "source": "77_Suidobashi - 水道橋",
+      "target": "470_Jinbocho - 神保町"
+    },
+    {
+      "attrib": "Toei Mitasen - 都営三田線",
+      "weight": 0.777,
+      "source": "77_Suidobashi - 水道橋",
+      "target": "492_Kasuga - 春日"
+    },
+    {
+      "attrib": "Toei Asakusasen - 都営浅草線",
+      "weight": 0.818,
+      "source": "78_Asakusabashi - 浅草橋",
+      "target": "494_Kuramae - 蔵前"
+    },
+    {
+      "attrib": "JR Chuo Sobusen - JR中央・総武線",
+      "weight": 0.912,
+      "source": "78_Asakusabashi - 浅草橋",
+      "target": "79_Ryogoku - 両国"
+    },
+    {
+      "attrib": "Toei Asakusasen - 都営浅草線",
+      "weight": 0.574,
+      "source": "78_Asakusabashi - 浅草橋",
+      "target": "86_Bakurocho - 馬喰町",
+      "directed": false
+    },
+    {
+      "attrib": "Toei Oedosen - 都営大江戸線",
+      "weight": 0.866,
+      "source": "79_Ryogoku - 両国",
+      "target": "494_Kuramae - 蔵前"
+    },
+    {
+      "attrib": "Toei Oedosen - 都営大江戸線",
+      "weight": 0.943,
+      "source": "79_Ryogoku - 両国",
+      "target": "495_Morishita - 森下"
+    },
+    {
+      "attrib": "JR Chuo Sobusen - JR中央・総武線",
+      "weight": 1.72,
+      "source": "79_Ryogoku - 両国",
+      "target": "80_Kinshicho - 錦糸町"
+    },
+    {
+      "attrib": "Tokyo Metro Hanzomonsen - 東京メトロ半蔵門線",
+      "weight": 1.523,
+      "source": "80_Kinshicho - 錦糸町",
+      "target": "155_OshiageSukaitsuriimae - 押上スカイツリー前"
+    },
+    {
+      "attrib": "Tokyo Metro Hanzomonsen - 東京メトロ半蔵門線",
+      "weight": 0.896,
+      "source": "80_Kinshicho - 錦糸町",
+      "target": "472_Sumiyoshi - 住吉"
+    },
+    {
+      "attrib": "JR Chuo Sobusen - JR中央・総武線",
+      "weight": 1.096,
+      "source": "80_Kinshicho - 錦糸町",
+      "target": "81_Kameido - 亀戸"
+    },
+    {
+      "attrib": "JR Sobuhonsen - JR総武本線",
+      "weight": 4.495,
+      "source": "80_Kinshicho - 錦糸町",
+      "target": "83_Shinkoiwa - 新小岩"
+    },
+    {
+      "attrib": "JR Sobuhonsen - JR総武本線",
+      "weight": 2.852,
+      "source": "80_Kinshicho - 錦糸町",
+      "target": "86_Bakurocho - 馬喰町"
+    },
+    {
+      "attrib": "Tobu Kameidosen - 東武亀戸線",
+      "weight": 0.68,
+      "source": "81_Kameido - 亀戸",
+      "target": "168_Kameidosuijin - 亀戸水神",
+      "directed": false
+    },
+    {
+      "attrib": "JR Chuo Sobusen - JR中央・総武線",
+      "weight": 1.726,
+      "source": "81_Kameido - 亀戸",
+      "target": "82_Hirai - 平井"
+    },
+    {
+      "attrib": "JR Chuo Sobusen - JR中央・総武線",
+      "weight": 1.827,
+      "source": "82_Hirai - 平井",
+      "target": "83_Shinkoiwa - 新小岩"
+    },
+    {
+      "attrib": "JR Chuo Sobusen - JR中央・総武線",
+      "weight": 2.823,
+      "source": "83_Shinkoiwa - 新小岩",
+      "target": "84_Koiwa - 小岩"
+    },
+    {
+      "attrib": "Tokyo Metro Ginzasen - 東京メトロ銀座線",
+      "weight": 0.557,
+      "source": "85_Mitsukoshimae - 三越前",
+      "target": "401_Nihonbashi - 日本橋",
+      "directed": false
+    },
+    {
+      "attrib": "Tokyo Metro Hanzomonsen - 東京メトロ半蔵門線",
+      "weight": 0.801,
+      "source": "85_Mitsukoshimae - 三越前",
+      "target": "414_Otemachi - 大手町"
+    },
+    {
+      "attrib": "Tokyo Metro Hanzomonsen - 東京メトロ半蔵門線",
+      "weight": 0.924,
+      "source": "85_Mitsukoshimae - 三越前",
+      "target": "432_Ningyocho - 人形町"
+    },
+    {
+      "attrib": "JR Sobuhonsen - JR総武本線",
+      "weight": 1.099,
+      "source": "85_Mitsukoshimae - 三越前",
+      "target": "86_Bakurocho - 馬喰町"
+    },
+    {
+      "attrib": "Toei Asakusasen - 都営浅草線",
+      "weight": 0.827,
+      "source": "86_Bakurocho - 馬喰町",
+      "target": "432_Ningyocho - 人形町"
+    },
+    {
+      "attrib": "Toei Shinjukusen - 都営新宿線",
+      "weight": 0.751,
+      "source": "86_Bakurocho - 馬喰町",
+      "target": "530_Iwamotomachi - 岩本町"
+    },
+    {
+      "attrib": "Toei Shinjukusen - 都営新宿線",
+      "weight": 0.625,
+      "source": "86_Bakurocho - 馬喰町",
+      "target": "531_Hamacho - 浜町",
+      "directed": false
+    },
+    {
+      "attrib": "JR Omesen - JR青梅線",
+      "weight": 0.873,
+      "source": "87_Nishitachikawa - 西立川",
+      "target": "88_Higashinakakami - 東中神"
+    },
+    {
+      "attrib": "JR Omesen - JR青梅線",
+      "weight": 0.843,
+      "source": "88_Higashinakakami - 東中神",
+      "target": "89_Nakagami - 中神"
+    },
+    {
+      "attrib": "JR Omesen - JR青梅線",
+      "weight": 1.371,
+      "source": "89_Nakagami - 中神",
+      "target": "90_Akirashima - 昭島"
+    },
+    {
+      "attrib": "JR Omesen - JR青梅線",
+      "weight": 1.859,
+      "source": "90_Akirashima - 昭島",
+      "target": "91_Haishima - 拝島"
+    },
+    {
+      "attrib": "JR Itsukaichisen - JR五日市線",
+      "weight": 1.043,
+      "source": "91_Haishima - 拝島",
+      "target": "111_Kumakawa - 熊川"
+    },
+    {
+      "attrib": "JR Hakkosen Hachioji Komagawa - JR八高線(八王子～高麗川)",
+      "weight": 4.546,
+      "source": "91_Haishima - 拝島",
+      "target": "118_Komiya - 小宮"
+    },
+    {
+      "attrib": "JR Hakkosen Hachioji Komagawa - JR八高線(八王子～高麗川)",
+      "weight": 2.811,
+      "source": "91_Haishima - 拝島",
+      "target": "119_Tofukunama - 東福生"
+    },
+    {
+      "attrib": "Seibu Haishimasen - 西武拝島線",
+      "weight": 2.468,
+      "source": "91_Haishima - 拝島",
+      "target": "214_Seibutachikawa - 西武立川"
+    },
+    {
+      "attrib": "JR Omesen - JR青梅線",
+      "weight": 1.72,
+      "source": "91_Haishima - 拝島",
+      "target": "92_Ushihama - 牛浜"
+    },
+    {
+      "attrib": "JR Omesen - JR青梅線",
+      "weight": 1.029,
+      "source": "92_Ushihama - 牛浜",
+      "target": "93_Fussa - 福生"
+    },
+    {
+      "attrib": "JR Omesen - JR青梅線",
+      "weight": 2.026,
+      "source": "93_Fussa - 福生",
+      "target": "94_Hamura - 羽村"
+    },
+    {
+      "attrib": "JR Omesen - JR青梅線",
+      "weight": 2.362,
+      "source": "94_Hamura - 羽村",
+      "target": "95_Ozaku - 小作"
+    },
+    {
+      "attrib": "JR Omesen - JR青梅線",
+      "weight": 1.905,
+      "source": "95_Ozaku - 小作",
+      "target": "96_Kawabe - 河辺"
+    },
+    {
+      "attrib": "JR Omesen - JR青梅線",
+      "weight": 1.154,
+      "source": "96_Kawabe - 河辺",
+      "target": "97_Higashiome - 東青梅"
+    },
+    {
+      "attrib": "JR Omesen - JR青梅線",
+      "weight": 1.333,
+      "source": "97_Higashiome - 東青梅",
+      "target": "98_Ome - 青梅"
+    },
+    {
+      "attrib": "JR Omesen - JR青梅線",
+      "weight": 1.906,
+      "source": "98_Ome - 青梅",
+      "target": "99_Miyanotaira - 宮ノ平"
+    },
+    {
+      "attrib": "JR Omesen - JR青梅線",
+      "weight": 0.712,
+      "source": "99_Miyanotaira - 宮ノ平",
+      "target": "100_Hinatawada - 日向和田"
     },
     {
       "attrib": "JR Omesen - JR青梅線",
@@ -5620,36 +8253,6 @@
       "target": "110_Okutama - 奥多摩"
     },
     {
-      "attrib": "JR Chuo Sobusen - JR中央・総武線",
-      "weight": 0.769,
-      "source": "11_Yoyogi - 代々木",
-      "target": "12_Shinjuku - 新宿"
-    },
-    {
-      "attrib": "JR Yamanotesen - JR山手線",
-      "weight": 0.769,
-      "source": "11_Yoyogi - 代々木",
-      "target": "12_Shinjuku - 新宿"
-    },
-    {
-      "attrib": "Toei Oedosen - 都営大江戸線",
-      "weight": 0.769,
-      "source": "11_Yoyogi - 代々木",
-      "target": "12_Shinjuku - 新宿"
-    },
-    {
-      "attrib": "Toei Oedosen - 都営大江戸線",
-      "weight": 1.231,
-      "source": "11_Yoyogi - 代々木",
-      "target": "501_Kokuritsukyogijo - 国立競技場"
-    },
-    {
-      "attrib": "JR Chuo Sobusen - JR中央・総武線",
-      "weight": 0.903,
-      "source": "11_Yoyogi - 代々木",
-      "target": "73_Sendaketani - 千駄ケ谷"
-    },
-    {
       "attrib": "JR Itsukaichisen - JR五日市線",
       "weight": 2.199,
       "source": "111_Kumakawa - 熊川",
@@ -5692,91 +8295,13 @@
       "target": "120_Hakonekesaki - 箱根ケ崎"
     },
     {
-      "attrib": "JR Yamanotesen - JR山手線",
-      "weight": 1.227,
-      "source": "12_Shinjuku - 新宿",
-      "target": "13_ShinOkubo - 新大久保"
-    },
-    {
-      "attrib": "JR Saikyosen - JR埼京線",
-      "weight": 4.596,
-      "source": "12_Shinjuku - 新宿",
-      "target": "16_Ikebukuro - 池袋"
-    },
-    {
-      "attrib": "JR Shonanshinjukurain - JR湘南新宿ライン",
-      "weight": 4.596,
-      "source": "12_Shinjuku - 新宿",
-      "target": "16_Ikebukuro - 池袋"
-    },
-    {
-      "attrib": "Keio Sen - 京王線",
-      "weight": 3.455,
-      "source": "12_Shinjuku - 新宿",
-      "target": "242_Sasazuka - 笹塚"
-    },
-    {
-      "attrib": "Keio Shinsen - 京王新線",
-      "weight": 1.559,
-      "source": "12_Shinjuku - 新宿",
-      "target": "301_Shodai - 初台"
-    },
-    {
-      "attrib": "Odakyu Sen - 小田急線",
-      "weight": 0.717,
-      "source": "12_Shinjuku - 新宿",
-      "target": "303_Minamishinjuku - 南新宿"
-    },
-    {
-      "attrib": "Tokyo Metro Marunochisen - 東京メトロ丸ノ内線",
-      "weight": 0.817,
-      "source": "12_Shinjuku - 新宿",
-      "target": "420_Nishishinjuku - 西新宿"
-    },
-    {
-      "attrib": "Toei Oedosen - 都営大江戸線",
-      "weight": 1.415,
-      "source": "12_Shinjuku - 新宿",
-      "target": "502_Nishishinjukugochome - 西新宿五丁目"
-    },
-    {
-      "attrib": "JR Chuohonsen Tokyo Shiojiri - JR中央本線(東京～塩尻)",
-      "weight": 2.775,
-      "source": "12_Shinjuku - 新宿",
-      "target": "53_Shitsutani - 四ツ谷"
-    },
-    {
-      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
-      "weight": 2.775,
-      "source": "12_Shinjuku - 新宿",
-      "target": "53_Shitsutani - 四ツ谷"
-    },
-    {
-      "attrib": "JR Chuohonsen Tokyo Shiojiri - JR中央本線(東京～塩尻)",
-      "weight": 10.94,
-      "source": "12_Shinjuku - 新宿",
-      "target": "54_Kichijoji - 吉祥寺"
-    },
-    {
-      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
-      "weight": 3.555,
-      "source": "12_Shinjuku - 新宿",
-      "target": "62_Nakano - 中野"
-    },
-    {
-      "attrib": "JR Chuo Sobusen - JR中央・総武線",
-      "weight": 1.24,
-      "source": "12_Shinjuku - 新宿",
-      "target": "72_Okubo - 大久保"
-    },
-    {
-      "attrib": "JR Takasakisen - JR高崎線",
+      "attrib": "Utsunomiyasen - 宇都宮線",
       "weight": 4.567,
       "source": "121_Oku - 尾久",
       "target": "122_Akabane - 赤羽"
     },
     {
-      "attrib": "Utsunomiyasen - 宇都宮線",
+      "attrib": "JR Takasakisen - JR高崎線",
       "weight": 4.567,
       "source": "121_Oku - 尾久",
       "target": "122_Akabane - 赤羽"
@@ -5902,12 +8427,6 @@
       "target": "130_Jujo - 十条"
     },
     {
-      "attrib": "JR Yamanotesen - JR山手線",
-      "weight": 1.38,
-      "source": "13_ShinOkubo - 新大久保",
-      "target": "14_Takadanobaba - 高田馬場"
-    },
-    {
       "attrib": "JR Saikyosen - JR埼京線",
       "weight": 1.376,
       "source": "131_Kitaakabane - 北赤羽",
@@ -5918,6 +8437,13 @@
       "weight": 1.58,
       "source": "133_Hatchobori - 八丁堀",
       "target": "134_Etchushima - 越中島"
+    },
+    {
+      "attrib": "Tokyo Metro Hibiyasen - 東京メトロ日比谷線",
+      "weight": 0.608,
+      "source": "133_Hatchobori - 八丁堀",
+      "target": "433_Kayabacho - 茅場町",
+      "directed": false
     },
     {
       "attrib": "Tokyo Metro Hibiyasen - 東京メトロ日比谷線",
@@ -5980,34 +8506,18 @@
       "target": "476_Nishikehara - 西ケ原"
     },
     {
-      "attrib": "JR Yamanotesen - JR山手線",
-      "weight": 0.865,
-      "source": "14_Takadanobaba - 高田馬場",
-      "target": "15_Mejiro - 目白"
+      "attrib": "Todenarakawasen - 都電荒川線",
+      "weight": 0.469,
+      "source": "139_Oji - 王子",
+      "target": "553_Sakaemachi - 栄町",
+      "directed": false
     },
     {
-      "attrib": "Seibu Shinjukusen - 西武新宿線",
-      "weight": 1.887,
-      "source": "14_Takadanobaba - 高田馬場",
-      "target": "189_Seibushinjuku - 西武新宿"
-    },
-    {
-      "attrib": "Seibu Shinjukusen - 西武新宿線",
-      "weight": 0.848,
-      "source": "14_Takadanobaba - 高田馬場",
-      "target": "190_Shimochiai - 下落合"
-    },
-    {
-      "attrib": "Tokyo Metro Tozaisen - 東京メトロ東西線",
-      "weight": 1.529,
-      "source": "14_Takadanobaba - 高田馬場",
-      "target": "439_Ochiai - 落合"
-    },
-    {
-      "attrib": "Tokyo Metro Tozaisen - 東京メトロ東西線",
-      "weight": 1.751,
-      "source": "14_Takadanobaba - 高田馬場",
-      "target": "440_Waseda - 早稲田"
+      "attrib": "Todenarakawasen - 都電荒川線",
+      "weight": 0.334,
+      "source": "139_Oji - 王子",
+      "target": "554_Asukayama - 飛鳥山",
+      "directed": false
     },
     {
       "attrib": "JR Keihintohokusen - JR京浜東北線",
@@ -6034,10 +8544,24 @@
       "target": "143_Kamata - 蒲田"
     },
     {
+      "attrib": "Tokyu Ikegamisen - 東急池上線",
+      "weight": 0.639,
+      "source": "143_Kamata - 蒲田",
+      "target": "366_Hasunuma - 蓮沼",
+      "directed": false
+    },
+    {
       "attrib": "Tokyu Tamagawasen - 東急多摩川線",
       "weight": 1.331,
       "source": "143_Kamata - 蒲田",
       "target": "371_Yaguchiwatari - 矢口渡"
+    },
+    {
+      "attrib": "Tobu Tojosen - 東武東上線",
+      "weight": 0.524,
+      "source": "144_Kitaikefukuro - 北池袋",
+      "target": "145_Shitaitahashi - 下板橋",
+      "directed": false
     },
     {
       "attrib": "Tobu Tojosen - 東武東上線",
@@ -6053,6 +8577,13 @@
     },
     {
       "attrib": "Tobu Tojosen - 東武東上線",
+      "weight": 0.581,
+      "source": "147_Nakaitabashi - 中板橋",
+      "target": "148_Tokiwadai - ときわ台",
+      "directed": false
+    },
+    {
+      "attrib": "Tobu Tojosen - 東武東上線",
       "weight": 1.258,
       "source": "148_Tokiwadai - ときわ台",
       "target": "149_Kamiitabashi - 上板橋"
@@ -6062,12 +8593,6 @@
       "weight": 1.422,
       "source": "149_Kamiitabashi - 上板橋",
       "target": "150_Tobunerima - 東武練馬"
-    },
-    {
-      "attrib": "JR Yamanotesen - JR山手線",
-      "weight": 1.158,
-      "source": "15_Mejiro - 目白",
-      "target": "16_Ikebukuro - 池袋"
     },
     {
       "attrib": "Tobu Tojosen - 東武東上線",
@@ -6082,12 +8607,6 @@
       "target": "152_Chikatetsunarimasu - 地下鉄成増"
     },
     {
-      "attrib": "Tokyo Metro Fukutoshinsen - 東京メトロ副都心線",
-      "weight": 1.341,
-      "source": "151_Chikatetsuakatsuka - 地下鉄赤塚",
-      "target": "152_Chikatetsunarimasu - 地下鉄成増"
-    },
-    {
       "attrib": "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線",
       "weight": 1.341,
       "source": "151_Chikatetsuakatsuka - 地下鉄赤塚",
@@ -6095,12 +8614,18 @@
     },
     {
       "attrib": "Tokyo Metro Fukutoshinsen - 東京メトロ副都心線",
+      "weight": 1.341,
+      "source": "151_Chikatetsuakatsuka - 地下鉄赤塚",
+      "target": "152_Chikatetsunarimasu - 地下鉄成増"
+    },
+    {
+      "attrib": "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線",
       "weight": 1.617,
       "source": "151_Chikatetsuakatsuka - 地下鉄赤塚",
       "target": "457_Heiwadai - 平和台"
     },
     {
-      "attrib": "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線",
+      "attrib": "Tokyo Metro Fukutoshinsen - 東京メトロ副都心線",
       "weight": 1.617,
       "source": "151_Chikatetsuakatsuka - 地下鉄赤塚",
       "target": "457_Heiwadai - 平和台"
@@ -6112,10 +8637,31 @@
       "target": "154_Tokyosukaitsurii - とうきょうスカイツリー"
     },
     {
+      "attrib": "Tokyo Metro Ginzasen - 東京メトロ銀座線",
+      "weight": 0.611,
+      "source": "153_Asakusa - 浅草",
+      "target": "398_Tawaramachi - 田原町",
+      "directed": false
+    },
+    {
       "attrib": "Toei Asakusasen - 都営浅草線",
       "weight": 1.024,
       "source": "153_Asakusa - 浅草",
       "target": "494_Kuramae - 蔵前"
+    },
+    {
+      "attrib": "Toei Asakusasen - 都営浅草線",
+      "weight": 0.677,
+      "source": "153_Asakusa - 浅草",
+      "target": "511_Honjoazumabashi - 本所吾妻橋",
+      "directed": false
+    },
+    {
+      "attrib": "Tobu Isezakisen - 東武伊勢崎線",
+      "weight": 0.327,
+      "source": "154_Tokyosukaitsurii - とうきょうスカイツリー",
+      "target": "155_OshiageSukaitsuriimae - 押上スカイツリー前",
+      "directed": false
     },
     {
       "attrib": "Tobu Isezakisen - 東武伊勢崎線",
@@ -6160,64 +8706,11 @@
       "target": "159_Horikiri - 堀切"
     },
     {
-      "attrib": "JR Shonanshinjukurain - JR湘南新宿ライン",
-      "weight": 5.392,
-      "source": "16_Ikebukuro - 池袋",
-      "target": "122_Akabane - 赤羽"
-    },
-    {
-      "attrib": "JR Saikyosen - JR埼京線",
-      "weight": 1.868,
-      "source": "16_Ikebukuro - 池袋",
-      "target": "129_Itabashi - 板橋"
-    },
-    {
-      "attrib": "Tobu Tojosen - 東武東上線",
-      "weight": 1.345,
-      "source": "16_Ikebukuro - 池袋",
-      "target": "144_Kitaikefukuro - 北池袋"
-    },
-    {
-      "attrib": "JR Yamanotesen - JR山手線",
-      "weight": 1.662,
-      "source": "16_Ikebukuro - 池袋",
-      "target": "17_Otsuka - 大塚"
-    },
-    {
-      "attrib": "Seibu Ikebukurosen - 西武池袋線",
-      "weight": 1.523,
-      "source": "16_Ikebukuro - 池袋",
-      "target": "170_Shiinamachi - 椎名町"
-    },
-    {
-      "attrib": "Tokyo Metro Marunochisen - 東京メトロ丸ノ内線",
-      "weight": 1.82,
-      "source": "16_Ikebukuro - 池袋",
-      "target": "410_ShinOtsuka - 新大塚"
-    },
-    {
-      "attrib": "Tokyo Metro Fukutoshinsen - 東京メトロ副都心線",
-      "weight": 1.123,
-      "source": "16_Ikebukuro - 池袋",
-      "target": "460_Kanamecho - 要町"
-    },
-    {
-      "attrib": "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線",
-      "weight": 1.123,
-      "source": "16_Ikebukuro - 池袋",
-      "target": "460_Kanamecho - 要町"
-    },
-    {
-      "attrib": "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線",
-      "weight": 0.982,
-      "source": "16_Ikebukuro - 池袋",
-      "target": "461_Higashiikebukuro - 東池袋"
-    },
-    {
-      "attrib": "Tokyo Metro Fukutoshinsen - 東京メトロ副都心線",
-      "weight": 1.175,
-      "source": "16_Ikebukuro - 池袋",
-      "target": "483_Zatsutsukasagatani - 雑司が谷"
+      "attrib": "Tobu Isezakisen - 東武伊勢崎線",
+      "weight": 0.552,
+      "source": "159_Horikiri - 堀切",
+      "target": "160_Ushita - 牛田",
+      "directed": false
     },
     {
       "attrib": "Keiseihonsen - 京成本線",
@@ -6263,15 +8756,16 @@
     },
     {
       "attrib": "Tobu Kameidosen - 東武亀戸線",
+      "weight": 0.53,
+      "source": "166_Komurai - 小村井",
+      "target": "167_Higashiazuma - 東あずま",
+      "directed": false
+    },
+    {
+      "attrib": "Tobu Kameidosen - 東武亀戸線",
       "weight": 0.801,
       "source": "167_Higashiazuma - 東あずま",
       "target": "168_Kameidosuijin - 亀戸水神"
-    },
-    {
-      "attrib": "JR Yamanotesen - JR山手線",
-      "weight": 0.925,
-      "source": "17_Otsuka - 大塚",
-      "target": "18_Sugamo - 巣鴨"
     },
     {
       "attrib": "Seibu Ikebukurosen - 西武池袋線",
@@ -6358,24 +8852,6 @@
       "target": "180_Hoya - 保谷"
     },
     {
-      "attrib": "JR Yamanotesen - JR山手線",
-      "weight": 0.843,
-      "source": "18_Sugamo - 巣鴨",
-      "target": "19_Komagome - 駒込"
-    },
-    {
-      "attrib": "Toei Mitasen - 都営三田線",
-      "weight": 0.811,
-      "source": "18_Sugamo - 巣鴨",
-      "target": "516_Sengoku - 千石"
-    },
-    {
-      "attrib": "Toei Mitasen - 都営三田線",
-      "weight": 1.446,
-      "source": "18_Sugamo - 巣鴨",
-      "target": "517_Nishisugamo - 西巣鴨"
-    },
-    {
       "attrib": "Seibu Ikebukurosen - 西武池袋線",
       "weight": 2.009,
       "source": "180_Hoya - 保谷",
@@ -6406,12 +8882,6 @@
       "target": "186_Shinsakuradai - 新桜台"
     },
     {
-      "attrib": "Tokyo Metro Fukutoshinsen - 東京メトロ副都心線",
-      "weight": 1.336,
-      "source": "185_Kotakemukaihara - 小竹向原",
-      "target": "458_Hikawadai - 氷川台"
-    },
-    {
       "attrib": "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線",
       "weight": 1.336,
       "source": "185_Kotakemukaihara - 小竹向原",
@@ -6419,12 +8889,18 @@
     },
     {
       "attrib": "Tokyo Metro Fukutoshinsen - 東京メトロ副都心線",
+      "weight": 1.336,
+      "source": "185_Kotakemukaihara - 小竹向原",
+      "target": "458_Hikawadai - 氷川台"
+    },
+    {
+      "attrib": "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線",
       "weight": 1.147,
       "source": "185_Kotakemukaihara - 小竹向原",
       "target": "459_Senkawa - 千川"
     },
     {
-      "attrib": "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線",
+      "attrib": "Tokyo Metro Fukutoshinsen - 東京メトロ副都心線",
       "weight": 1.147,
       "source": "185_Kotakemukaihara - 小竹向原",
       "target": "459_Senkawa - 千川"
@@ -6440,24 +8916,6 @@
       "weight": 1.057,
       "source": "188_Tamamizumi - 多摩湖",
       "target": "221_Musashidaiwa - 武蔵大和"
-    },
-    {
-      "attrib": "JR Yamanotesen - JR山手線",
-      "weight": 1.266,
-      "source": "19_Komagome - 駒込",
-      "target": "20_Tabata - 田端"
-    },
-    {
-      "attrib": "Tokyo Metro Nanbokusen - 東京メトロ南北線",
-      "weight": 1.107,
-      "source": "19_Komagome - 駒込",
-      "target": "476_Nishikehara - 西ケ原"
-    },
-    {
-      "attrib": "Tokyo Metro Nanbokusen - 東京メトロ南北線",
-      "weight": 1.536,
-      "source": "19_Komagome - 駒込",
-      "target": "477_Honkomagome - 本駒込"
     },
     {
       "attrib": "Seibu Shinjukusen - 西武新宿線",
@@ -6497,6 +8955,13 @@
     },
     {
       "attrib": "Seibu Shinjukusen - 西武新宿線",
+      "weight": 0.535,
+      "source": "195_Toritsukasei - 都立家政",
+      "target": "196_Saginomiya - 鷺ノ宮",
+      "directed": false
+    },
+    {
+      "attrib": "Seibu Shinjukusen - 西武新宿線",
       "weight": 1.292,
       "source": "196_Saginomiya - 鷺ノ宮",
       "target": "197_Shimoigusa - 下井草"
@@ -6518,72 +8983,6 @@
       "weight": 0.968,
       "source": "199_Kamiigusa - 上井草",
       "target": "200_Kamiishikamii - 上石神井"
-    },
-    {
-      "attrib": "JR Keihintohokusen - JR京浜東北線",
-      "weight": 2.426,
-      "source": "2_Shinagawa - 品川",
-      "target": "141_Oicho - 大井町"
-    },
-    {
-      "attrib": "JR Keihintohokusen - JR京浜東北線",
-      "weight": 0.775,
-      "source": "2_Shinagawa - 品川",
-      "target": "31_Takanawageetoei - 高輪ゲートウェイ"
-    },
-    {
-      "attrib": "JR Yamanotesen - JR山手線",
-      "weight": 0.775,
-      "source": "2_Shinagawa - 品川",
-      "target": "31_Takanawageetoei - 高輪ゲートウェイ"
-    },
-    {
-      "attrib": "Keikyu Honsen - 京急本線",
-      "weight": 1.117,
-      "source": "2_Shinagawa - 品川",
-      "target": "379_Sengakuji - 泉岳寺"
-    },
-    {
-      "attrib": "JR Tokaidohonsen Tokyo Atami - JR東海道本線(東京～熱海)",
-      "weight": 4.543,
-      "source": "2_Shinagawa - 品川",
-      "target": "4_Shinbashi - 新橋"
-    },
-    {
-      "attrib": "JR Yokosukasen - JR横須賀線",
-      "weight": 4.543,
-      "source": "2_Shinagawa - 品川",
-      "target": "4_Shinbashi - 新橋"
-    },
-    {
-      "attrib": "JR Yokosukasen - JR横須賀線",
-      "weight": 3.386,
-      "source": "2_Shinagawa - 品川",
-      "target": "52_Nishioi - 西大井"
-    },
-    {
-      "attrib": "JR Naritaekusupuresu - JR成田エクスプレス",
-      "weight": 4.768,
-      "source": "2_Shinagawa - 品川",
-      "target": "9_Shibuya - 渋谷"
-    },
-    {
-      "attrib": "JR Keihintohokusen - JR京浜東北線",
-      "weight": 1.75,
-      "source": "20_Tabata - 田端",
-      "target": "140_Kaminakasato - 上中里"
-    },
-    {
-      "attrib": "JR Keihintohokusen - JR京浜東北線",
-      "weight": 0.812,
-      "source": "20_Tabata - 田端",
-      "target": "21_Nishinippori - 西日暮里"
-    },
-    {
-      "attrib": "JR Yamanotesen - JR山手線",
-      "weight": 0.812,
-      "source": "20_Tabata - 田端",
-      "target": "21_Nishinippori - 西日暮里"
     },
     {
       "attrib": "Seibu Shinjukusen - 西武新宿線",
@@ -6670,24 +9069,6 @@
       "target": "220_Yasaka - 八坂"
     },
     {
-      "attrib": "Tokyo Metro Chiyodasen - 東京メトロ千代田線",
-      "weight": 1.745,
-      "source": "21_Nishinippori - 西日暮里",
-      "target": "229_Machiya - 町屋"
-    },
-    {
-      "attrib": "Tokyo Metro Chiyodasen - 東京メトロ千代田線",
-      "weight": 0.788,
-      "source": "21_Nishinippori - 西日暮里",
-      "target": "451_Sendagi - 千駄木"
-    },
-    {
-      "attrib": "Nippori Tonerirainaa - 日暮里・舎人ライナー",
-      "weight": 1.176,
-      "source": "21_Nishinippori - 西日暮里",
-      "target": "607_Shakudoshogakkomae - 赤土小学校前"
-    },
-    {
       "attrib": "Seibu Haishimasen - 西武拝島線",
       "weight": 2.692,
       "source": "210_Ogawa - 小川",
@@ -6742,54 +9123,6 @@
       "target": "219_Omekaido - 青梅街道"
     },
     {
-      "attrib": "JR Jobansen Ueno Toride - JR常磐線(上野～取手)",
-      "weight": 0.806,
-      "source": "22_Nippori - 日暮里",
-      "target": "123_Mikawashima - 三河島"
-    },
-    {
-      "attrib": "Keiseihonsen - 京成本線",
-      "weight": 1.866,
-      "source": "22_Nippori - 日暮里",
-      "target": "227_Keiseiueno - 京成上野"
-    },
-    {
-      "attrib": "Naritasukaiakusesu - 成田スカイアクセス",
-      "weight": 1.866,
-      "source": "22_Nippori - 日暮里",
-      "target": "227_Keiseiueno - 京成上野"
-    },
-    {
-      "attrib": "Keiseihonsen - 京成本線",
-      "weight": 1.052,
-      "source": "22_Nippori - 日暮里",
-      "target": "228_Shinzokawashima - 新三河島"
-    },
-    {
-      "attrib": "JR Keihintohokusen - JR京浜東北線",
-      "weight": 0.938,
-      "source": "22_Nippori - 日暮里",
-      "target": "23_Uguisudani - 鶯谷"
-    },
-    {
-      "attrib": "JR Yamanotesen - JR山手線",
-      "weight": 0.938,
-      "source": "22_Nippori - 日暮里",
-      "target": "23_Uguisudani - 鶯谷"
-    },
-    {
-      "attrib": "Naritasukaiakusesu - 成田スカイアクセス",
-      "weight": 7.928,
-      "source": "22_Nippori - 日暮里",
-      "target": "233_Aoto - 青砥"
-    },
-    {
-      "attrib": "JR Jobansen Ueno Toride - JR常磐線(上野～取手)",
-      "weight": 1.715,
-      "source": "22_Nippori - 日暮里",
-      "target": "24_Ueno - 上野"
-    },
-    {
       "attrib": "Seibu Tamamizumisen - 西武多摩湖線",
       "weight": 2.49,
       "source": "220_Yasaka - 八坂",
@@ -6832,16 +9165,18 @@
       "target": "230_Senjuohashi - 千住大橋"
     },
     {
-      "attrib": "JR Keihintohokusen - JR京浜東北線",
-      "weight": 0.924,
-      "source": "23_Uguisudani - 鶯谷",
-      "target": "24_Ueno - 上野"
+      "attrib": "Todenarakawasen - 都電荒川線",
+      "weight": 0.291,
+      "source": "229_Machiya - 町屋",
+      "target": "544_Arakawashichichome - 荒川七丁目",
+      "directed": false
     },
     {
-      "attrib": "JR Yamanotesen - JR山手線",
-      "weight": 0.924,
-      "source": "23_Uguisudani - 鶯谷",
-      "target": "24_Ueno - 上野"
+      "attrib": "Todenarakawasen - 都電荒川線",
+      "weight": 0.422,
+      "source": "229_Machiya - 町屋",
+      "target": "545_Machiyanichome - 町屋二丁目",
+      "directed": false
     },
     {
       "attrib": "Keiseihonsen - 京成本線",
@@ -6922,28 +9257,16 @@
       "target": "240_Keiseitateishi - 京成立石"
     },
     {
-      "attrib": "JR Takasakisen - JR高崎線",
-      "weight": 4.285,
-      "source": "24_Ueno - 上野",
-      "target": "121_Oku - 尾久"
-    },
-    {
-      "attrib": "Utsunomiyasen - 宇都宮線",
-      "weight": 4.285,
-      "source": "24_Ueno - 上野",
-      "target": "121_Oku - 尾久"
-    },
-    {
-      "attrib": "Tokyo Metro Hibiyasen - 東京メトロ日比谷線",
-      "weight": 0.965,
-      "source": "24_Ueno - 上野",
-      "target": "430_Iriya - 入谷"
-    },
-    {
       "attrib": "Keio Sen - 京王線",
       "weight": 0.768,
       "source": "242_Sasazuka - 笹塚",
       "target": "243_Shirotahashi - 代田橋"
+    },
+    {
+      "attrib": "Keio Shinsen - 京王新線",
+      "weight": 0.886,
+      "source": "302_Hatagaya - 幡ヶ谷",
+      "target": "242_Sasazuka - 笹塚"
     },
     {
       "attrib": "Keio Sen - 京王線",
@@ -6976,6 +9299,13 @@
       "target": "246_Sakurajosui - 桜上水"
     },
     {
+      "attrib": "Tokyu Setagayasen - 東急世田谷線",
+      "weight": 0.681,
+      "source": "245_Shimotakaido - 下高井戸",
+      "target": "378_Matsubara - 松原",
+      "directed": false
+    },
+    {
       "attrib": "Keio Sen - 京王線",
       "weight": 0.734,
       "source": "246_Sakurajosui - 桜上水",
@@ -6989,33 +9319,16 @@
     },
     {
       "attrib": "Keio Sen - 京王線",
+      "weight": 0.606,
+      "source": "248_Yahatayama - 八幡山",
+      "target": "249_Rokakoen - 芦花公園",
+      "directed": false
+    },
+    {
+      "attrib": "Keio Sen - 京王線",
       "weight": 0.741,
       "source": "249_Rokakoen - 芦花公園",
       "target": "250_Chitosekarasuyama - 千歳烏山"
-    },
-    {
-      "attrib": "JR Keihintohokusen - JR京浜東北線",
-      "weight": 0.978,
-      "source": "25_Okachimachi - 御徒町",
-      "target": "26_Akihabara - 秋葉原"
-    },
-    {
-      "attrib": "JR Yamanotesen - JR山手線",
-      "weight": 0.978,
-      "source": "25_Okachimachi - 御徒町",
-      "target": "26_Akihabara - 秋葉原"
-    },
-    {
-      "attrib": "Tokyo Metro Hibiyasen - 東京メトロ日比谷線",
-      "weight": 0.978,
-      "source": "25_Okachimachi - 御徒町",
-      "target": "26_Akihabara - 秋葉原"
-    },
-    {
-      "attrib": "Toei Oedosen - 都営大江戸線",
-      "weight": 1.315,
-      "source": "25_Okachimachi - 御徒町",
-      "target": "413_Hongosanchome - 本郷三丁目"
     },
     {
       "attrib": "Keio Sen - 京王線",
@@ -7043,6 +9356,13 @@
     },
     {
       "attrib": "Keio Sen - 京王線",
+      "weight": 0.586,
+      "source": "254_Kokuryo - 国領",
+      "target": "255_Fuda - 布田",
+      "directed": false
+    },
+    {
+      "attrib": "Keio Sen - 京王線",
       "weight": 0.729,
       "source": "255_Fuda - 布田",
       "target": "256_Chofu - 調布"
@@ -7061,6 +9381,13 @@
     },
     {
       "attrib": "Keio Sen - 京王線",
+      "weight": 0.646,
+      "source": "257_Nishichofu - 西調布",
+      "target": "258_Tobitakyu - 飛田給",
+      "directed": false
+    },
+    {
+      "attrib": "Keio Sen - 京王線",
       "weight": 1.205,
       "source": "258_Tobitakyu - 飛田給",
       "target": "259_Musashinodai - 武蔵野台"
@@ -7070,42 +9397,6 @@
       "weight": 0.816,
       "source": "259_Musashinodai - 武蔵野台",
       "target": "260_Tamareien - 多磨霊園"
-    },
-    {
-      "attrib": "JR Keihintohokusen - JR京浜東北線",
-      "weight": 0.81,
-      "source": "26_Akihabara - 秋葉原",
-      "target": "27_Kanda - 神田"
-    },
-    {
-      "attrib": "JR Yamanotesen - JR山手線",
-      "weight": 0.81,
-      "source": "26_Akihabara - 秋葉原",
-      "target": "27_Kanda - 神田"
-    },
-    {
-      "attrib": "Tokyo Metro Hibiyasen - 東京メトロ日比谷線",
-      "weight": 0.963,
-      "source": "26_Akihabara - 秋葉原",
-      "target": "431_Kodenmacho - 小伝馬町"
-    },
-    {
-      "attrib": "Tsukubaekusupuresu - つくばエクスプレス",
-      "weight": 1.189,
-      "source": "26_Akihabara - 秋葉原",
-      "target": "493_Shinokachimachi - 新御徒町"
-    },
-    {
-      "attrib": "JR Chuo Sobusen - JR中央・総武線",
-      "weight": 0.747,
-      "source": "26_Akihabara - 秋葉原",
-      "target": "61_Ochanomizu - 御茶ノ水"
-    },
-    {
-      "attrib": "JR Chuo Sobusen - JR中央・総武線",
-      "weight": 1.042,
-      "source": "26_Akihabara - 秋葉原",
-      "target": "78_Asakusabashi - 浅草橋"
     },
     {
       "attrib": "Keio Sen - 京王線",
@@ -7186,18 +9477,6 @@
       "target": "270_Kitano - 北野"
     },
     {
-      "attrib": "Tokyo Metro Ginzasen - 東京メトロ銀座線",
-      "weight": 1.248,
-      "source": "27_Kanda - 神田",
-      "target": "400_Suehirocho - 末広町"
-    },
-    {
-      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
-      "weight": 0.833,
-      "source": "27_Kanda - 神田",
-      "target": "61_Ochanomizu - 御茶ノ水"
-    },
-    {
       "attrib": "Keio Sen - 京王線",
       "weight": 1.73,
       "source": "270_Kitano - 北野",
@@ -7258,36 +9537,6 @@
       "target": "279_Tamasakai - 多摩境"
     },
     {
-      "attrib": "Toei Mitasen - 都営三田線",
-      "weight": 1.208,
-      "source": "28_Yurakucho - 有楽町",
-      "target": "414_Otemachi - 大手町"
-    },
-    {
-      "attrib": "Tokyo Metro Chiyodasen - 東京メトロ千代田線",
-      "weight": 0.982,
-      "source": "28_Yurakucho - 有楽町",
-      "target": "415_Kasumigaseki - 霞ケ関"
-    },
-    {
-      "attrib": "Tokyo Metro Hibiyasen - 東京メトロ日比谷線",
-      "weight": 0.982,
-      "source": "28_Yurakucho - 有楽町",
-      "target": "415_Kasumigaseki - 霞ケ関"
-    },
-    {
-      "attrib": "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線",
-      "weight": 0.947,
-      "source": "28_Yurakucho - 有楽町",
-      "target": "465_Sakuradamon - 桜田門"
-    },
-    {
-      "attrib": "Toei Mitasen - 都営三田線",
-      "weight": 0.818,
-      "source": "28_Yurakucho - 有楽町",
-      "target": "514_Uchisaiwaicho - 内幸町"
-    },
-    {
       "attrib": "Keio Takaosen - 京王高尾線",
       "weight": 1.442,
       "source": "280_Keiokatakura - 京王片倉",
@@ -7330,22 +9579,39 @@
       "target": "289_Ikenoe - 池ノ上"
     },
     {
-      "attrib": "JR Keihintohokusen - JR京浜東北線",
-      "weight": 1.379,
-      "source": "29_Hamamatsucho - 浜松町",
-      "target": "30_Tamachi - 田町"
+      "attrib": "Keio Inokashirasen - 京王井の頭線",
+      "weight": 0.578,
+      "source": "289_Ikenoe - 池ノ上",
+      "target": "617_Shimokitazawa - 下北沢",
+      "directed": false
     },
     {
-      "attrib": "JR Yamanotesen - JR山手線",
-      "weight": 1.379,
-      "source": "29_Hamamatsucho - 浜松町",
-      "target": "30_Tamachi - 田町"
+      "attrib": "Keio Inokashirasen - 京王井の頭線",
+      "weight": 0.614,
+      "source": "617_Shimokitazawa - 下北沢",
+      "target": "290_Shinshirota - 新代田",
+      "directed": false
     },
     {
-      "attrib": "Tokyomonoreeru - 東京モノレール",
-      "weight": 3.795,
-      "source": "29_Hamamatsucho - 浜松町",
-      "target": "596_Tennozuairu - 天王洲アイル"
+      "attrib": "Odakyu Sen - 小田急線",
+      "weight": 0.672,
+      "source": "617_Shimokitazawa - 下北沢",
+      "target": "307_Higashikitazawa - 東北沢",
+      "directed": false
+    },
+    {
+      "attrib": "Odakyu Sen - 小田急線",
+      "weight": 0.626,
+      "source": "617_Shimokitazawa - 下北沢",
+      "target": "308_Setagayadaita - 世田谷代田",
+      "directed": false
+    },
+    {
+      "attrib": "Keio Inokashirasen - 京王井の頭線",
+      "weight": 0.451,
+      "source": "290_Shinshirota - 新代田",
+      "target": "292_Higashimatsubara - 東松原",
+      "directed": false
     },
     {
       "attrib": "Keio Inokashirasen - 京王井の頭線",
@@ -7390,28 +9656,10 @@
       "target": "300_Inogashirakoen - 井の頭公園"
     },
     {
-      "attrib": "JR Keihintohokusen - JR京浜東北線",
-      "weight": 1.297,
-      "source": "30_Tamachi - 田町",
-      "target": "31_Takanawageetoei - 高輪ゲートウェイ"
-    },
-    {
-      "attrib": "JR Yamanotesen - JR山手線",
-      "weight": 1.297,
-      "source": "30_Tamachi - 田町",
-      "target": "31_Takanawageetoei - 高輪ゲートウェイ"
-    },
-    {
       "attrib": "Keio Shinsen - 京王新線",
       "weight": 1.029,
       "source": "301_Shodai - 初台",
       "target": "302_Hatagaya - 幡ヶ谷"
-    },
-    {
-      "attrib": "Keio Shinsen - 京王新線",
-      "weight": 0.886,
-      "source": "302_Hatagaya - 幡ヶ谷",
-      "target": "242_Sasazuka - 笹塚"
     },
     {
       "attrib": "Odakyu Sen - 小田急線",
@@ -7448,6 +9696,13 @@
       "weight": 0.761,
       "source": "308_Setagayadaita - 世田谷代田",
       "target": "309_Umekeoka - 梅ヶ丘"
+    },
+    {
+      "attrib": "Odakyu Sen - 小田急線",
+      "weight": 0.651,
+      "source": "309_Umekeoka - 梅ヶ丘",
+      "target": "310_Gotokuji - 豪徳寺",
+      "directed": false
     },
     {
       "attrib": "Odakyu Sen - 小田急線",
@@ -7499,15 +9754,23 @@
     },
     {
       "attrib": "Odakyu Sen - 小田急線",
+      "weight": 0.603,
+      "source": "316_Komae - 狛江",
+      "target": "618_Izumitamagawa - 和泉多摩川",
+      "directed": false
+    },
+    {
+      "attrib": "Odakyu Sen - 小田急線",
       "weight": 2.74,
       "source": "318_Tsurukawa - 鶴川",
       "target": "319_Tamagawagakuenmae - 玉川学園前"
     },
     {
-      "attrib": "JR Nanbusen - JR南武線",
-      "weight": 1.661,
-      "source": "32_Yanoguchi - 矢野口",
-      "target": "33_Inaginaganuma - 稲城長沼"
+      "attrib": "Tokyu Toyokosen - 東急東横線",
+      "weight": 0.641,
+      "source": "321_Daikanyama - 代官山",
+      "target": "322_Nakameguro - 中目黒",
+      "directed": false
     },
     {
       "attrib": "Tokyu Toyokosen - 東急東横線",
@@ -7552,13 +9815,13 @@
       "target": "351_Kuhonbutsu - 九品仏"
     },
     {
-      "attrib": "Tokyu Megurosen - 東急目黒線",
+      "attrib": "Tokyu Toyokosen - 東急東横線",
       "weight": 0.813,
       "source": "327_DenEnchofu - 田園調布",
       "target": "328_Tamagawa - 多摩川"
     },
     {
-      "attrib": "Tokyu Toyokosen - 東急東横線",
+      "attrib": "Tokyu Megurosen - 東急目黒線",
       "weight": 0.813,
       "source": "327_DenEnchofu - 田園調布",
       "target": "328_Tamagawa - 多摩川"
@@ -7582,16 +9845,17 @@
       "target": "330_Musashikoyama - 武蔵小山"
     },
     {
-      "attrib": "JR Nanbusen - JR南武線",
-      "weight": 1.305,
-      "source": "33_Inaginaganuma - 稲城長沼",
-      "target": "34_Minamitama - 南多摩"
-    },
-    {
       "attrib": "Tokyu Megurosen - 東急目黒線",
       "weight": 0.773,
       "source": "330_Musashikoyama - 武蔵小山",
       "target": "331_Nishioyama - 西小山"
+    },
+    {
+      "attrib": "Tokyu Megurosen - 東急目黒線",
+      "weight": 0.682,
+      "source": "331_Nishioyama - 西小山",
+      "target": "332_Sensoku - 洗足",
+      "directed": false
     },
     {
       "attrib": "Tokyu Megurosen - 東急目黒線",
@@ -7606,6 +9870,20 @@
       "target": "334_Okusawa - 奥沢"
     },
     {
+      "attrib": "Tokyu Oimachisen - 東急大井町線",
+      "weight": 0.68,
+      "source": "333_Ookayama - 大岡山",
+      "target": "349_Kitasenzoku - 北千束",
+      "directed": false
+    },
+    {
+      "attrib": "Tokyu Oimachisen - 東急大井町線",
+      "weight": 0.593,
+      "source": "333_Ookayama - 大岡山",
+      "target": "350_Midorigaoka - 緑が丘",
+      "directed": false
+    },
+    {
       "attrib": "Tokyu Den Entoshisen - 東急田園都市線",
       "weight": 1.491,
       "source": "335_Ikejiriohashi - 池尻大橋",
@@ -7616,6 +9894,13 @@
       "weight": 1.372,
       "source": "336_Sangenjaya - 三軒茶屋",
       "target": "337_Komazawadaigaku - 駒沢大学"
+    },
+    {
+      "attrib": "Tokyu Setagayasen - 東急世田谷線",
+      "weight": 0.353,
+      "source": "336_Sangenjaya - 三軒茶屋",
+      "target": "622_Nishitaishido - 西太子堂",
+      "directed": false
     },
     {
       "attrib": "Tokyu Den Entoshisen - 東急田園都市線",
@@ -7634,12 +9919,6 @@
       "weight": 1.755,
       "source": "339_Yoga - 用賀",
       "target": "340_Futagotamagawa - 二子玉川"
-    },
-    {
-      "attrib": "JR Nanbusen - JR南武線",
-      "weight": 2.163,
-      "source": "34_Minamitama - 南多摩",
-      "target": "35_Fuchuhonmachi - 府中本町"
     },
     {
       "attrib": "Tokyu Oimachisen - 東急大井町線",
@@ -7666,6 +9945,20 @@
       "target": "345_Tokoshikoen - 戸越公園"
     },
     {
+      "attrib": "Tokyu Oimachisen - 東急大井町線",
+      "weight": 0.572,
+      "source": "345_Tokoshikoen - 戸越公園",
+      "target": "346_Nakanobe - 中延",
+      "directed": false
+    },
+    {
+      "attrib": "Tokyu Oimachisen - 東急大井町線",
+      "weight": 0.546,
+      "source": "346_Nakanobe - 中延",
+      "target": "619_Eharamachi - 荏原町",
+      "directed": false
+    },
+    {
       "attrib": "Toei Asakusasen - 都営浅草線",
       "weight": 1.086,
       "source": "346_Nakanobe - 中延",
@@ -7676,6 +9969,13 @@
       "weight": 1.042,
       "source": "346_Nakanobe - 中延",
       "target": "508_Umagome - 馬込"
+    },
+    {
+      "attrib": "Tokyu Oimachisen - 東急大井町線",
+      "weight": 0.493,
+      "source": "619_Eharamachi - 荏原町",
+      "target": "348_Hatanodai - 旗の台",
+      "directed": false
     },
     {
       "attrib": "Tokyu Oimachisen - 東急大井町線",
@@ -7690,16 +9990,25 @@
       "target": "357_Eharanakanobe - 荏原中延"
     },
     {
-      "attrib": "JR Nanbusen - JR南武線",
-      "weight": 0.812,
-      "source": "35_Fuchuhonmachi - 府中本町",
-      "target": "36_Bubaigawara - 分倍河原"
+      "attrib": "Tokyu Ikegamisen - 東急池上線",
+      "weight": 0.501,
+      "source": "348_Hatanodai - 旗の台",
+      "target": "621_Nagahara - 長原",
+      "directed": false
     },
     {
-      "attrib": "JR Musashinosen - JR武蔵野線",
-      "weight": 1.749,
-      "source": "35_Fuchuhonmachi - 府中本町",
-      "target": "42_Hokufunaka - 北府中"
+      "attrib": "Tokyu Oimachisen - 東急大井町線",
+      "weight": 0.668,
+      "source": "351_Kuhonbutsu - 九品仏",
+      "target": "620_Oyamadai - 尾山台",
+      "directed": false
+    },
+    {
+      "attrib": "Tokyu Oimachisen - 東急大井町線",
+      "weight": 0.558,
+      "source": "620_Oyamadai - 尾山台",
+      "target": "353_Todoroki - 等々力",
+      "directed": false
     },
     {
       "attrib": "Tokyu Oimachisen - 東急大井町線",
@@ -7714,22 +10023,32 @@
       "target": "356_Tokoshiginza - 戸越銀座"
     },
     {
-      "attrib": "Keio Sen - 京王線",
-      "weight": 1.086,
-      "source": "36_Bubaigawara - 分倍河原",
-      "target": "262_Fuchu - 府中"
+      "attrib": "Tokyu Ikegamisen - 東急池上線",
+      "weight": 0.661,
+      "source": "356_Tokoshiginza - 戸越銀座",
+      "target": "357_Eharanakanobe - 荏原中延",
+      "directed": false
     },
     {
-      "attrib": "Keio Sen - 京王線",
-      "weight": 1.418,
-      "source": "36_Bubaigawara - 分倍河原",
-      "target": "263_Nakagawara - 中河原"
+      "attrib": "Tokyu Ikegamisen - 東急池上線",
+      "weight": 0.692,
+      "source": "621_Nagahara - 長原",
+      "target": "358_Senzokuike - 洗足池",
+      "directed": false
     },
     {
-      "attrib": "JR Nanbusen - JR南武線",
-      "weight": 1.057,
-      "source": "36_Bubaigawara - 分倍河原",
-      "target": "37_Seifu - 西府"
+      "attrib": "Tokyu Ikegamisen - 東急池上線",
+      "weight": 0.61,
+      "source": "358_Senzokuike - 洗足池",
+      "target": "359_Ishikawadai - 石川台",
+      "directed": false
+    },
+    {
+      "attrib": "Tokyu Ikegamisen - 東急池上線",
+      "weight": 0.648,
+      "source": "359_Ishikawadai - 石川台",
+      "target": "361_Yukigataniotsuka - 雪が谷大塚",
+      "directed": false
     },
     {
       "attrib": "Tokyu Ikegamisen - 東急池上線",
@@ -7769,6 +10088,13 @@
     },
     {
       "attrib": "Tokyu Tamagawasen - 東急多摩川線",
+      "weight": 0.64,
+      "source": "368_Unoki - 鵜の木",
+      "target": "369_Shimomaruko - 下丸子",
+      "directed": false
+    },
+    {
+      "attrib": "Tokyu Tamagawasen - 東急多摩川線",
       "weight": 0.743,
       "source": "369_Shimomaruko - 下丸子",
       "target": "370_Musashinitta - 武蔵新田"
@@ -7778,6 +10104,41 @@
       "weight": 0.928,
       "source": "370_Musashinitta - 武蔵新田",
       "target": "371_Yaguchiwatari - 矢口渡"
+    },
+    {
+      "attrib": "Tokyu Setagayasen - 東急世田谷線",
+      "weight": 0.605,
+      "source": "622_Nishitaishido - 西太子堂",
+      "target": "372_Wakabayashi - 若林",
+      "directed": false
+    },
+    {
+      "attrib": "Tokyu Setagayasen - 東急世田谷線",
+      "weight": 0.479,
+      "source": "372_Wakabayashi - 若林",
+      "target": "373_Shoinjinjamae - 松陰神社前",
+      "directed": false
+    },
+    {
+      "attrib": "Tokyu Setagayasen - 東急世田谷線",
+      "weight": 0.388,
+      "source": "373_Shoinjinjamae - 松陰神社前",
+      "target": "374_Setagaya - 世田谷",
+      "directed": false
+    },
+    {
+      "attrib": "Tokyu Setagayasen - 東急世田谷線",
+      "weight": 0.422,
+      "source": "374_Setagaya - 世田谷",
+      "target": "375_Uemachi - 上町",
+      "directed": false
+    },
+    {
+      "attrib": "Tokyu Setagayasen - 東急世田谷線",
+      "weight": 0.445,
+      "source": "375_Uemachi - 上町",
+      "target": "377_Miyanosaka - 宮の坂",
+      "directed": false
     },
     {
       "attrib": "Toei Asakusasen - 都営浅草線",
@@ -7792,22 +10153,24 @@
       "target": "510_Mita - 三田"
     },
     {
-      "attrib": "JR Nanbusen - JR南武線",
-      "weight": 1.516,
-      "source": "38_Yaho - 谷保",
-      "target": "37_Seifu - 西府"
-    },
-    {
-      "attrib": "JR Nanbusen - JR南武線",
-      "weight": 1.426,
-      "source": "38_Yaho - 谷保",
-      "target": "39_Yagawa - 矢川"
+      "attrib": "Keikyu Honsen - 京急本線",
+      "weight": 0.573,
+      "source": "623_Kitashinagawa - 北品川",
+      "target": "381_Shinbaba - 新馬場",
+      "directed": false
     },
     {
       "attrib": "Keikyu Honsen - 京急本線",
       "weight": 0.931,
       "source": "381_Shinbaba - 新馬場",
       "target": "382_Aomonoyokocho - 青物横丁"
+    },
+    {
+      "attrib": "Keikyu Honsen - 京急本線",
+      "weight": 0.491,
+      "source": "382_Aomonoyokocho - 青物横丁",
+      "target": "383_Samezu - 鮫洲",
+      "directed": false
     },
     {
       "attrib": "Keikyu Honsen - 京急本線",
@@ -7858,12 +10221,6 @@
       "target": "392_Kojiya - 糀谷"
     },
     {
-      "attrib": "JR Nanbusen - JR南武線",
-      "weight": 1.19,
-      "source": "39_Yagawa - 矢川",
-      "target": "40_Nishikokuritsu - 西国立"
-    },
-    {
       "attrib": "Keikyu Honsen - 京急本線",
       "weight": 1.218,
       "source": "390_Zoshiki - 雑色",
@@ -7901,6 +10258,13 @@
     },
     {
       "attrib": "Tokyomonoreeru - 東京モノレール",
+      "weight": 0.696,
+      "source": "395_Tenkuhashi - 天空橋",
+      "target": "600_Seibiba - 整備場",
+      "directed": false
+    },
+    {
+      "attrib": "Tokyomonoreeru - 東京モノレール",
       "weight": 1.656,
       "source": "396_Hanedakukodai3taaminaru - 3",
       "target": "601_Shinseibiba - 新整備場"
@@ -7924,67 +10288,13 @@
       "target": "399_Inaricho - 稲荷町"
     },
     {
-      "attrib": "JR Keihintohokusen - JR京浜東北線",
-      "weight": 1.038,
-      "source": "4_Shinbashi - 新橋",
-      "target": "28_Yurakucho - 有楽町"
-    },
-    {
-      "attrib": "JR Yamanotesen - JR山手線",
-      "weight": 1.038,
-      "source": "4_Shinbashi - 新橋",
-      "target": "28_Yurakucho - 有楽町"
-    },
-    {
-      "attrib": "JR Keihintohokusen - JR京浜東北線",
-      "weight": 1.202,
-      "source": "4_Shinbashi - 新橋",
-      "target": "29_Hamamatsucho - 浜松町"
-    },
-    {
-      "attrib": "JR Yamanotesen - JR山手線",
-      "weight": 1.202,
-      "source": "4_Shinbashi - 新橋",
-      "target": "29_Hamamatsucho - 浜松町"
-    },
-    {
       "attrib": "Tokyo Metro Ginzasen - 東京メトロ銀座線",
-      "weight": 0.888,
-      "source": "4_Shinbashi - 新橋",
-      "target": "403_Ginza - 銀座"
-    },
-    {
-      "attrib": "Tokyo Metro Ginzasen - 東京メトロ銀座線",
-      "weight": 0.953,
-      "source": "4_Shinbashi - 新橋",
-      "target": "404_Toranomon - 虎ノ門"
-    },
-    {
-      "attrib": "Toei Asakusasen - 都営浅草線",
-      "weight": 0.843,
-      "source": "4_Shinbashi - 新橋",
-      "target": "435_Higashiginza - 東銀座"
-    },
-    {
-      "attrib": "Toei Asakusasen - 都営浅草線",
-      "weight": 1.111,
-      "source": "4_Shinbashi - 新橋",
-      "target": "499_Daimon - 大門"
-    },
-    {
-      "attrib": "JR Nanbusen - JR南武線",
-      "weight": 1.044,
-      "source": "40_Nishikokuritsu - 西国立",
-      "target": "41_Tachikawa - 立川"
-    },
-    {
-      "attrib": "Toei Asakusasen - 都営浅草線",
       "weight": 0.71,
       "source": "401_Nihonbashi - 日本橋",
       "target": "402_Kyobashi - 京橋"
     },
     {
-      "attrib": "Tokyo Metro Ginzasen - 東京メトロ銀座線",
+      "attrib": "Toei Asakusasen - 都営浅草線",
       "weight": 0.71,
       "source": "401_Nihonbashi - 日本橋",
       "target": "402_Kyobashi - 京橋"
@@ -8000,6 +10310,20 @@
       "weight": 0.891,
       "source": "401_Nihonbashi - 日本橋",
       "target": "432_Ningyocho - 人形町"
+    },
+    {
+      "attrib": "Tokyo Metro Tozaisen - 東京メトロ東西線",
+      "weight": 0.574,
+      "source": "401_Nihonbashi - 日本橋",
+      "target": "433_Kayabacho - 茅場町",
+      "directed": false
+    },
+    {
+      "attrib": "Tokyo Metro Ginzasen - 東京メトロ銀座線",
+      "weight": 0.688,
+      "source": "402_Kyobashi - 京橋",
+      "target": "403_Ginza - 銀座",
+      "directed": false
     },
     {
       "attrib": "Toei Asakusasen - 都営浅草線",
@@ -8020,6 +10344,13 @@
       "target": "434_Tsukiji - 築地"
     },
     {
+      "attrib": "Tokyo Metro Hibiyasen - 東京メトロ日比谷線",
+      "weight": 0.414,
+      "source": "403_Ginza - 銀座",
+      "target": "435_Higashiginza - 東銀座",
+      "directed": false
+    },
+    {
       "attrib": "Tokyo Metro Ginzasen - 東京メトロ銀座線",
       "weight": 0.853,
       "source": "404_Toranomon - 虎ノ門",
@@ -8027,9 +10358,30 @@
     },
     {
       "attrib": "Tokyo Metro Hibiyasen - 東京メトロ日比谷線",
+      "weight": 0.587,
+      "source": "404_Toranomon - 虎ノ門",
+      "target": "415_Kasumigaseki - 霞ケ関",
+      "directed": false
+    },
+    {
+      "attrib": "Tokyo Metro Hibiyasen - 東京メトロ日比谷線",
       "weight": 0.734,
       "source": "404_Toranomon - 虎ノ門",
       "target": "436_Kamiyacho - 神谷町"
+    },
+    {
+      "attrib": "Tokyo Metro Ginzasen - 東京メトロ銀座線",
+      "weight": 0.541,
+      "source": "405_Tameikesanno - 溜池山王",
+      "target": "406_Nagatacho - 永田町",
+      "directed": false
+    },
+    {
+      "attrib": "Tokyo Metro Nanbokusen - 東京メトロ南北線",
+      "weight": 0.541,
+      "source": "405_Tameikesanno - 溜池山王",
+      "target": "406_Nagatacho - 永田町",
+      "directed": false
     },
     {
       "attrib": "Tokyo Metro Nanbokusen - 東京メトロ南北線",
@@ -8057,6 +10409,13 @@
     },
     {
       "attrib": "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線",
+      "weight": 0.672,
+      "source": "406_Nagatacho - 永田町",
+      "target": "464_Kojimachi - 麹町",
+      "directed": false
+    },
+    {
+      "attrib": "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線",
       "weight": 1.133,
       "source": "406_Nagatacho - 永田町",
       "target": "465_Sakuradamon - 桜田門"
@@ -8066,6 +10425,13 @@
       "weight": 0.883,
       "source": "406_Nagatacho - 永田町",
       "target": "469_Hanzomon - 半蔵門"
+    },
+    {
+      "attrib": "Tokyo Metro Ginzasen - 東京メトロ銀座線",
+      "weight": 0.618,
+      "source": "407_Aoyamaitchome - 青山一丁目",
+      "target": "408_Gaienmae - 外苑前",
+      "directed": false
     },
     {
       "attrib": "Tokyo Metro Hanzomonsen - 東京メトロ半蔵門線",
@@ -8098,36 +10464,6 @@
       "target": "456_Nogizaka - 乃木坂"
     },
     {
-      "attrib": "JR Chuohonsen Tokyo Shiojiri - JR中央本線(東京～塩尻)",
-      "weight": 6.038,
-      "source": "41_Tachikawa - 立川",
-      "target": "56_Kokubunji - 国分寺"
-    },
-    {
-      "attrib": "JR Chuohonsen Tokyo Shiojiri - JR中央本線(東京～塩尻)",
-      "weight": 2.763,
-      "source": "41_Tachikawa - 立川",
-      "target": "57_Hino - 日野"
-    },
-    {
-      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
-      "weight": 2.763,
-      "source": "41_Tachikawa - 立川",
-      "target": "57_Hino - 日野"
-    },
-    {
-      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
-      "weight": 2.949,
-      "source": "41_Tachikawa - 立川",
-      "target": "70_Kokuritsu - 国立"
-    },
-    {
-      "attrib": "JR Omesen - JR青梅線",
-      "weight": 1.913,
-      "source": "41_Tachikawa - 立川",
-      "target": "87_Nishitachikawa - 西立川"
-    },
-    {
       "attrib": "Tokyo Metro Marunochisen - 東京メトロ丸ノ内線",
       "weight": 1.166,
       "source": "410_ShinOtsuka - 新大塚",
@@ -8152,16 +10488,24 @@
       "target": "478_Todaimae - 東大前"
     },
     {
+      "attrib": "Toei Oedosen - 都営大江戸線",
+      "weight": 0.672,
+      "source": "413_Hongosanchome - 本郷三丁目",
+      "target": "492_Kasuga - 春日",
+      "directed": false
+    },
+    {
       "attrib": "Tokyo Metro Tozaisen - 東京メトロ東西線",
       "weight": 0.88,
       "source": "414_Otemachi - 大手町",
       "target": "443_Takebashi - 竹橋"
     },
     {
-      "attrib": "Toei Mitasen - 都営三田線",
-      "weight": 1.265,
+      "attrib": "Tokyo Metro Chiyodasen - 東京メトロ千代田線",
+      "weight": 0.581,
       "source": "414_Otemachi - 大手町",
-      "target": "470_Jinbocho - 神保町"
+      "target": "624_Nijubashimae - 二重橋前",
+      "directed": false
     },
     {
       "attrib": "Tokyo Metro Hanzomonsen - 東京メトロ半蔵門線",
@@ -8170,10 +10514,44 @@
       "target": "470_Jinbocho - 神保町"
     },
     {
+      "attrib": "Toei Mitasen - 都営三田線",
+      "weight": 1.265,
+      "source": "414_Otemachi - 大手町",
+      "target": "470_Jinbocho - 神保町"
+    },
+    {
+      "attrib": "Tokyo Metro Marunochisen - 東京メトロ丸ノ内線",
+      "weight": 0.513,
+      "source": "415_Kasumigaseki - 霞ケ関",
+      "target": "416_Kokkaigijidomae - 国会議事堂前",
+      "directed": false
+    },
+    {
+      "attrib": "Tokyo Metro Chiyodasen - 東京メトロ千代田線",
+      "weight": 0.513,
+      "source": "415_Kasumigaseki - 霞ケ関",
+      "target": "416_Kokkaigijidomae - 国会議事堂前",
+      "directed": false
+    },
+    {
+      "attrib": "Tokyo Metro Chiyodasen - 東京メトロ千代田線",
+      "weight": 0.626,
+      "source": "416_Kokkaigijidomae - 国会議事堂前",
+      "target": "455_Akasaka - 赤坂",
+      "directed": false
+    },
+    {
       "attrib": "Tokyo Metro Marunochisen - 東京メトロ丸ノ内線",
       "weight": 0.853,
       "source": "417_Yotsuyasanchome - 四谷三丁目",
       "target": "418_Shinjukugyoenmae - 新宿御苑前"
+    },
+    {
+      "attrib": "Tokyo Metro Marunochisen - 東京メトロ丸ノ内線",
+      "weight": 0.541,
+      "source": "418_Shinjukugyoenmae - 新宿御苑前",
+      "target": "419_Shinjukusanchome - 新宿三丁目",
+      "directed": false
     },
     {
       "attrib": "Tokyo Metro Fukutoshinsen - 東京メトロ副都心線",
@@ -8194,12 +10572,6 @@
       "target": "529_Akebonobashi - 曙橋"
     },
     {
-      "attrib": "JR Musashinosen - JR武蔵野線",
-      "weight": 2.162,
-      "source": "42_Hokufunaka - 北府中",
-      "target": "43_Nishikokubunji - 西国分寺"
-    },
-    {
       "attrib": "Tokyo Metro Marunochisen - 東京メトロ丸ノ内線",
       "weight": 0.986,
       "source": "420_Nishishinjuku - 西新宿",
@@ -8210,6 +10582,13 @@
       "weight": 1.225,
       "source": "421_Nakanosakaue - 中野坂上",
       "target": "422_Shinchuno - 新中野"
+    },
+    {
+      "attrib": "Tokyo Metro Marunochisen - 東京メトロ丸ノ内線",
+      "weight": 0.98,
+      "source": "421_Nakanosakaue - 中野坂上",
+      "target": "426_Nakanoshinbashi - 中野新橋",
+      "directed": false
     },
     {
       "attrib": "Toei Oedosen - 都営大江戸線",
@@ -8237,6 +10616,13 @@
     },
     {
       "attrib": "Tokyo Metro Marunochisen - 東京メトロ丸ノ内線",
+      "weight": 0.663,
+      "source": "426_Nakanoshinbashi - 中野新橋",
+      "target": "427_Nakanofujimicho - 中野富士見町",
+      "directed": false
+    },
+    {
+      "attrib": "Tokyo Metro Marunochisen - 東京メトロ丸ノ内線",
       "weight": 1.224,
       "source": "427_Nakanofujimicho - 中野富士見町",
       "target": "428_Honancho - 方南町"
@@ -8248,28 +10634,17 @@
       "target": "430_Iriya - 入谷"
     },
     {
-      "attrib": "JR Musashinosen - JR武蔵野線",
-      "weight": 3.533,
-      "source": "43_Nishikokubunji - 西国分寺",
-      "target": "44_Shinkodaira - 新小平"
-    },
-    {
-      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
-      "weight": 1.313,
-      "source": "43_Nishikokubunji - 西国分寺",
-      "target": "56_Kokubunji - 国分寺"
-    },
-    {
-      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
-      "weight": 1.776,
-      "source": "43_Nishikokubunji - 西国分寺",
-      "target": "70_Kokuritsu - 国立"
-    },
-    {
       "attrib": "Tokyo Metro Hibiyasen - 東京メトロ日比谷線",
       "weight": 0.766,
       "source": "431_Kodenmacho - 小伝馬町",
       "target": "432_Ningyocho - 人形町"
+    },
+    {
+      "attrib": "Tokyo Metro Hibiyasen - 東京メトロ日比谷線",
+      "weight": 0.666,
+      "source": "432_Ningyocho - 人形町",
+      "target": "433_Kayabacho - 茅場町",
+      "directed": false
     },
     {
       "attrib": "Tokyo Metro Hanzomonsen - 東京メトロ半蔵門線",
@@ -8282,6 +10657,13 @@
       "weight": 1.707,
       "source": "433_Kayabacho - 茅場町",
       "target": "444_Monzennakamachi - 門前仲町"
+    },
+    {
+      "attrib": "Tokyo Metro Hibiyasen - 東京メトロ日比谷線",
+      "weight": 0.534,
+      "source": "434_Tsukiji - 築地",
+      "target": "435_Higashiginza - 東銀座",
+      "directed": false
     },
     {
       "attrib": "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線",
@@ -8308,12 +10690,6 @@
       "target": "480_Azabujuban - 麻布十番"
     },
     {
-      "attrib": "JR Musashinosen - JR武蔵野線",
-      "weight": 5.623,
-      "source": "44_Shinkodaira - 新小平",
-      "target": "45_Shinshutsu - 新秋津"
-    },
-    {
       "attrib": "Tokyo Metro Tozaisen - 東京メトロ東西線",
       "weight": 1.214,
       "source": "440_Waseda - 早稲田",
@@ -8330,6 +10706,20 @@
       "weight": 1.441,
       "source": "442_Kudanshita - 九段下",
       "target": "469_Hanzomon - 半蔵門"
+    },
+    {
+      "attrib": "Tokyo Metro Hanzomonsen - 東京メトロ半蔵門線",
+      "weight": 0.527,
+      "source": "442_Kudanshita - 九段下",
+      "target": "470_Jinbocho - 神保町",
+      "directed": false
+    },
+    {
+      "attrib": "Toei Shinjukusen - 都営新宿線",
+      "weight": 0.527,
+      "source": "442_Kudanshita - 九段下",
+      "target": "470_Jinbocho - 神保町",
+      "directed": false
     },
     {
       "attrib": "Tokyo Metro Tozaisen - 東京メトロ東西線",
@@ -8392,12 +10782,6 @@
       "target": "456_Nogizaka - 乃木坂"
     },
     {
-      "attrib": "Tokyo Metro Fukutoshinsen - 東京メトロ副都心線",
-      "weight": 1.41,
-      "source": "457_Heiwadai - 平和台",
-      "target": "458_Hikawadai - 氷川台"
-    },
-    {
       "attrib": "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線",
       "weight": 1.41,
       "source": "457_Heiwadai - 平和台",
@@ -8405,9 +10789,9 @@
     },
     {
       "attrib": "Tokyo Metro Fukutoshinsen - 東京メトロ副都心線",
-      "weight": 1.018,
-      "source": "459_Senkawa - 千川",
-      "target": "460_Kanamecho - 要町"
+      "weight": 1.41,
+      "source": "457_Heiwadai - 平和台",
+      "target": "458_Hikawadai - 氷川台"
     },
     {
       "attrib": "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線",
@@ -8416,16 +10800,30 @@
       "target": "460_Kanamecho - 要町"
     },
     {
-      "attrib": "JR Yokohamasen - JR横浜線",
-      "weight": 2.629,
-      "source": "46_Naruse - 成瀬",
-      "target": "47_Machida - 町田"
+      "attrib": "Tokyo Metro Fukutoshinsen - 東京メトロ副都心線",
+      "weight": 1.018,
+      "source": "459_Senkawa - 千川",
+      "target": "460_Kanamecho - 要町"
     },
     {
       "attrib": "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線",
       "weight": 1.004,
       "source": "461_Higashiikebukuro - 東池袋",
       "target": "462_Gokokuji - 護国寺"
+    },
+    {
+      "attrib": "Todenarakawasen - 都電荒川線",
+      "weight": 0.599,
+      "source": "461_Higashiikebukuro - 東池袋",
+      "target": "560_Mukaihara - 向原",
+      "directed": false
+    },
+    {
+      "attrib": "Todenarakawasen - 都電荒川線",
+      "weight": 0.212,
+      "source": "461_Higashiikebukuro - 東池袋",
+      "target": "561_Todenzatsutsukasaketani - 都電雑司ヶ谷",
+      "directed": false
     },
     {
       "attrib": "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線",
@@ -8458,16 +10856,24 @@
       "target": "580_Shintoyosu - 新豊洲"
     },
     {
-      "attrib": "Odakyu Sen - 小田急線",
-      "weight": 2.789,
-      "source": "47_Machida - 町田",
-      "target": "319_Tamagawagakuenmae - 玉川学園前"
+      "attrib": "Toei Shinjukusen - 都営新宿線",
+      "weight": 0.883,
+      "source": "626_Ogawacho - 小川町",
+      "target": "470_Jinbocho - 神保町",
+      "directed": false
     },
     {
       "attrib": "Tokyo Metro Hanzomonsen - 東京メトロ半蔵門線",
       "weight": 1.706,
       "source": "471_Kiyosumishirakawa - 清澄白河",
       "target": "472_Sumiyoshi - 住吉"
+    },
+    {
+      "attrib": "Toei Oedosen - 都営大江戸線",
+      "weight": 0.671,
+      "source": "471_Kiyosumishirakawa - 清澄白河",
+      "target": "495_Morishita - 森下",
+      "directed": false
     },
     {
       "attrib": "Toei Shinjukusen - 都営新宿線",
@@ -8506,25 +10912,26 @@
       "target": "480_Azabujuban - 麻布十番"
     },
     {
-      "attrib": "JR Yokohamasen - JR横浜線",
-      "weight": 2.64,
-      "source": "48_Aihara - 相原",
-      "target": "49_Hachiojiminamino - 八王子みなみ野"
-    },
-    {
       "attrib": "Tokyo Metro Nanbokusen - 東京メトロ南北線",
       "weight": 1.429,
       "source": "480_Azabujuban - 麻布十番",
       "target": "481_Shiroganetakanawa - 白金高輪"
     },
     {
-      "attrib": "Toei Mitasen - 都営三田線",
+      "attrib": "Toei Oedosen - 都営大江戸線",
+      "weight": 0.641,
+      "source": "480_Azabujuban - 麻布十番",
+      "target": "500_Akabanehashi - 赤羽橋",
+      "directed": false
+    },
+    {
+      "attrib": "Tokyo Metro Nanbokusen - 東京メトロ南北線",
       "weight": 0.909,
       "source": "481_Shiroganetakanawa - 白金高輪",
       "target": "482_Shiroganedai - 白金台"
     },
     {
-      "attrib": "Tokyo Metro Nanbokusen - 東京メトロ南北線",
+      "attrib": "Toei Mitasen - 都営三田線",
       "weight": 0.909,
       "source": "481_Shiroganetakanawa - 白金高輪",
       "target": "482_Shiroganedai - 白金台"
@@ -8540,6 +10947,20 @@
       "weight": 1.438,
       "source": "483_Zatsutsukasagatani - 雑司が谷",
       "target": "484_Nishiwaseda - 西早稲田"
+    },
+    {
+      "attrib": "Todenarakawasen - 都電荒川線",
+      "weight": 0.523,
+      "source": "483_Zatsutsukasagatani - 雑司が谷",
+      "target": "561_Todenzatsutsukasaketani - 都電雑司ヶ谷",
+      "directed": false
+    },
+    {
+      "attrib": "Todenarakawasen - 都電荒川線",
+      "weight": 0.501,
+      "source": "483_Zatsutsukasagatani - 雑司が谷",
+      "target": "562_Gakushuinshita - 学習院下",
+      "directed": false
     },
     {
       "attrib": "Tokyo Metro Fukutoshinsen - 東京メトロ副都心線",
@@ -8560,10 +10981,25 @@
       "target": "489_Wakamatsukawata - 若松河田"
     },
     {
-      "attrib": "JR Yokohamasen - JR横浜線",
-      "weight": 1.383,
-      "source": "49_Hachiojiminamino - 八王子みなみ野",
-      "target": "50_Katakura - 片倉"
+      "attrib": "Toei Oedosen - 都営大江戸線",
+      "weight": 0.669,
+      "source": "625_Tochomae - 都庁前",
+      "target": "488_Shinjukunishiguchi - 新宿西口",
+      "directed": false
+    },
+    {
+      "attrib": "Toei Oedosen - 都営大江戸線",
+      "weight": 0.751,
+      "source": "625_Tochomae - 都庁前",
+      "target": "502_Nishishinjukugochome - 西新宿五丁目",
+      "directed": false
+    },
+    {
+      "attrib": "Toei Oedosen - 都営大江戸線",
+      "weight": 0.619,
+      "source": "489_Wakamatsukawata - 若松河田",
+      "target": "490_Ushigomeyanagimachi - 牛込柳町",
+      "directed": false
     },
     {
       "attrib": "Toei Oedosen - 都営大江戸線",
@@ -8609,6 +11045,13 @@
     },
     {
       "attrib": "Toei Oedosen - 都営大江戸線",
+      "weight": 0.623,
+      "source": "497_Tsukijishijo - 築地市場",
+      "target": "498_Shiodome - 汐留",
+      "directed": false
+    },
+    {
+      "attrib": "Toei Oedosen - 都営大江戸線",
       "weight": 0.885,
       "source": "498_Shiodome - 汐留",
       "target": "499_Daimon - 大門"
@@ -8632,54 +11075,6 @@
       "target": "510_Mita - 三田"
     },
     {
-      "attrib": "Rinkaisen - りんかい線",
-      "weight": 1.527,
-      "source": "5_Osaki - 大崎",
-      "target": "141_Oicho - 大井町"
-    },
-    {
-      "attrib": "JR Shonanshinjukurain - JR湘南新宿ライン",
-      "weight": 2.108,
-      "source": "5_Osaki - 大崎",
-      "target": "52_Nishioi - 西大井"
-    },
-    {
-      "attrib": "Sotetsu JR Chokutsusen - 相鉄・JR直通線",
-      "weight": 2.108,
-      "source": "5_Osaki - 大崎",
-      "target": "52_Nishioi - 西大井"
-    },
-    {
-      "attrib": "JR Yamanotesen - JR山手線",
-      "weight": 0.809,
-      "source": "5_Osaki - 大崎",
-      "target": "6_Gotanda - 五反田"
-    },
-    {
-      "attrib": "JR Saikyosen - JR埼京線",
-      "weight": 3.444,
-      "source": "5_Osaki - 大崎",
-      "target": "8_Ebisu - 恵比寿"
-    },
-    {
-      "attrib": "JR Shonanshinjukurain - JR湘南新宿ライン",
-      "weight": 3.444,
-      "source": "5_Osaki - 大崎",
-      "target": "8_Ebisu - 恵比寿"
-    },
-    {
-      "attrib": "Sotetsu JR Chokutsusen - 相鉄・JR直通線",
-      "weight": 3.444,
-      "source": "5_Osaki - 大崎",
-      "target": "8_Ebisu - 恵比寿"
-    },
-    {
-      "attrib": "JR Yokohamasen - JR横浜線",
-      "weight": 1.774,
-      "source": "50_Katakura - 片倉",
-      "target": "51_Hachioji - 八王子"
-    },
-    {
       "attrib": "Toei Oedosen - 都営大江戸線",
       "weight": 1.513,
       "source": "503_Ochiaiminaminagasaki - 落合南長崎",
@@ -8698,34 +11093,11 @@
       "target": "508_Umagome - 馬込"
     },
     {
-      "attrib": "JR Hakkosen Hachioji Komagawa - JR八高線(八王子～高麗川)",
-      "weight": 2.674,
-      "source": "51_Hachioji - 八王子",
-      "target": "117_Kitahachioji - 北八王子"
-    },
-    {
-      "attrib": "JR Chuohonsen Tokyo Shiojiri - JR中央本線(東京～塩尻)",
-      "weight": 3.865,
-      "source": "51_Hachioji - 八王子",
-      "target": "58_Toyoda - 豊田"
-    },
-    {
-      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
-      "weight": 3.865,
-      "source": "51_Hachioji - 八王子",
-      "target": "58_Toyoda - 豊田"
-    },
-    {
-      "attrib": "JR Chuohonsen Tokyo Shiojiri - JR中央本線(東京～塩尻)",
-      "weight": 2.384,
-      "source": "51_Hachioji - 八王子",
-      "target": "59_Nishihachioji - 西八王子"
-    },
-    {
-      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
-      "weight": 2.384,
-      "source": "51_Hachioji - 八王子",
-      "target": "59_Nishihachioji - 西八王子"
+      "attrib": "Toei Mitasen - 都営三田線",
+      "weight": 0.662,
+      "source": "510_Mita - 三田",
+      "target": "512_Shibakoen - 芝公園",
+      "directed": false
     },
     {
       "attrib": "Toei Mitasen - 都営三田線",
@@ -8789,9 +11161,23 @@
     },
     {
       "attrib": "Toei Mitasen - 都営三田線",
+      "weight": 0.541,
+      "source": "524_Renkon - 蓮根",
+      "target": "525_Nishidai - 西台",
+      "directed": false
+    },
+    {
+      "attrib": "Toei Mitasen - 都営三田線",
       "weight": 1.173,
       "source": "525_Nishidai - 西台",
       "target": "526_Takashimataira - 高島平"
+    },
+    {
+      "attrib": "Toei Mitasen - 都営三田線",
+      "weight": 0.639,
+      "source": "526_Takashimataira - 高島平",
+      "target": "527_Niitakashimataira - 新高島平",
+      "directed": false
     },
     {
       "attrib": "Toei Mitasen - 都営三田線",
@@ -8800,46 +11186,11 @@
       "target": "528_Nishikoshimataira - 西高島平"
     },
     {
-      "attrib": "Tokyo Metro Marunochisen - 東京メトロ丸ノ内線",
-      "weight": 1.16,
-      "source": "53_Shitsutani - 四ツ谷",
-      "target": "406_Nagatacho - 永田町"
-    },
-    {
-      "attrib": "Tokyo Metro Nanbokusen - 東京メトロ南北線",
-      "weight": 1.16,
-      "source": "53_Shitsutani - 四ツ谷",
-      "target": "406_Nagatacho - 永田町"
-    },
-    {
-      "attrib": "Tokyo Metro Marunochisen - 東京メトロ丸ノ内線",
-      "weight": 0.952,
-      "source": "53_Shitsutani - 四ツ谷",
-      "target": "417_Yotsuyasanchome - 四谷三丁目"
-    },
-    {
-      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
-      "weight": 3.477,
-      "source": "53_Shitsutani - 四ツ谷",
-      "target": "61_Ochanomizu - 御茶ノ水"
-    },
-    {
-      "attrib": "JR Chuo Sobusen - JR中央・総武線",
-      "weight": 1.072,
-      "source": "53_Shitsutani - 四ツ谷",
-      "target": "74_Shinanocho - 信濃町"
-    },
-    {
-      "attrib": "JR Chuo Sobusen - JR中央・総武線",
-      "weight": 0.868,
-      "source": "53_Shitsutani - 四ツ谷",
-      "target": "75_Ichigaya - 市ケ谷"
-    },
-    {
-      "attrib": "Tokyo Metro Nanbokusen - 東京メトロ南北線",
-      "weight": 0.868,
-      "source": "53_Shitsutani - 四ツ谷",
-      "target": "75_Ichigaya - 市ケ谷"
+      "attrib": "Toei Shinjukusen - 都営新宿線",
+      "weight": 0.751,
+      "source": "626_Ogawacho - 小川町",
+      "target": "530_Iwamotomachi - 岩本町",
+      "directed": false
     },
     {
       "attrib": "Toei Shinjukusen - 都営新宿線",
@@ -8878,34 +11229,53 @@
       "target": "539_Shinozaki - 篠崎"
     },
     {
-      "attrib": "JR Chuo Sobusen - JR中央・総武線",
-      "weight": 1.768,
-      "source": "54_Kichijoji - 吉祥寺",
-      "target": "55_Mitaka - 三鷹"
+      "attrib": "Todenarakawasen - 都電荒川線",
+      "weight": 0.269,
+      "source": "540_Sannowahashi - 三ノ輪橋",
+      "target": "541_Arakawaitchumae - 荒川一中前",
+      "directed": false
     },
     {
-      "attrib": "JR Chuohonsen Tokyo Shiojiri - JR中央本線(東京～塩尻)",
-      "weight": 1.768,
-      "source": "54_Kichijoji - 吉祥寺",
-      "target": "55_Mitaka - 三鷹"
+      "attrib": "Todenarakawasen - 都電荒川線",
+      "weight": 0.269,
+      "source": "541_Arakawaitchumae - 荒川一中前",
+      "target": "542_Arakawakuyakushomae - 荒川区役所前",
+      "directed": false
     },
     {
-      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
-      "weight": 1.768,
-      "source": "54_Kichijoji - 吉祥寺",
-      "target": "55_Mitaka - 三鷹"
+      "attrib": "Todenarakawasen - 都電荒川線",
+      "weight": 0.44,
+      "source": "542_Arakawakuyakushomae - 荒川区役所前",
+      "target": "543_Arakawanichome - 荒川二丁目",
+      "directed": false
     },
     {
-      "attrib": "JR Chuo Sobusen - JR中央・総武線",
-      "weight": 1.76,
-      "source": "54_Kichijoji - 吉祥寺",
-      "target": "66_Nishiogikubo - 西荻窪"
+      "attrib": "Todenarakawasen - 都電荒川線",
+      "weight": 0.376,
+      "source": "543_Arakawanichome - 荒川二丁目",
+      "target": "544_Arakawashichichome - 荒川七丁目",
+      "directed": false
     },
     {
-      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
-      "weight": 1.76,
-      "source": "54_Kichijoji - 吉祥寺",
-      "target": "66_Nishiogikubo - 西荻窪"
+      "attrib": "Todenarakawasen - 都電荒川線",
+      "weight": 0.266,
+      "source": "545_Machiyanichome - 町屋二丁目",
+      "target": "546_Higashiogusanchome - 東尾久三丁目",
+      "directed": false
+    },
+    {
+      "attrib": "Todenarakawasen - 都電荒川線",
+      "weight": 0.606,
+      "source": "546_Higashiogusanchome - 東尾久三丁目",
+      "target": "547_Kumanomae - 熊野前",
+      "directed": false
+    },
+    {
+      "attrib": "Todenarakawasen - 都電荒川線",
+      "weight": 0.422,
+      "source": "547_Kumanomae - 熊野前",
+      "target": "548_Miyanomae - 宮ノ前",
+      "directed": false
     },
     {
       "attrib": "Nippori Tonerirainaa - 日暮里・舎人ライナー",
@@ -8914,34 +11284,95 @@
       "target": "607_Shakudoshogakkomae - 赤土小学校前"
     },
     {
-      "attrib": "JR Chuohonsen Tokyo Shiojiri - JR中央本線(東京～塩尻)",
-      "weight": 7.211,
-      "source": "55_Mitaka - 三鷹",
-      "target": "56_Kokubunji - 国分寺"
+      "attrib": "Nippori Tonerirainaa - 日暮里・舎人ライナー",
+      "weight": 0.625,
+      "source": "547_Kumanomae - 熊野前",
+      "target": "608_Adachiodai - 足立小台",
+      "directed": false
     },
     {
-      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
-      "weight": 1.53,
-      "source": "55_Mitaka - 三鷹",
-      "target": "67_Musashisakai - 武蔵境"
+      "attrib": "Todenarakawasen - 都電荒川線",
+      "weight": 0.291,
+      "source": "548_Miyanomae - 宮ノ前",
+      "target": "549_Odai - 小台",
+      "directed": false
     },
     {
-      "attrib": "Seibu Kokubunjisen - 西武国分寺線",
-      "weight": 1.939,
-      "source": "56_Kokubunji - 国分寺",
-      "target": "216_Koigakubo - 恋ヶ窪"
+      "attrib": "Todenarakawasen - 都電荒川線",
+      "weight": 0.363,
+      "source": "549_Odai - 小台",
+      "target": "550_Arakawayuenchimae - 荒川遊園地前",
+      "directed": false
     },
     {
-      "attrib": "Seibu Tamamizumisen - 西武多摩湖線",
-      "weight": 2.432,
-      "source": "56_Kokubunji - 国分寺",
-      "target": "218_Hitotsubashigakuen - 一橋学園"
+      "attrib": "Todenarakawasen - 都電荒川線",
+      "weight": 0.465,
+      "source": "550_Arakawayuenchimae - 荒川遊園地前",
+      "target": "551_Arakawashakomae - 荒川車庫前",
+      "directed": false
     },
     {
-      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
-      "weight": 2.347,
-      "source": "56_Kokubunji - 国分寺",
-      "target": "69_Musashikoganei - 武蔵小金井"
+      "attrib": "Todenarakawasen - 都電荒川線",
+      "weight": 0.471,
+      "source": "551_Arakawashakomae - 荒川車庫前",
+      "target": "552_Kajiwara - 梶原",
+      "directed": false
+    },
+    {
+      "attrib": "Todenarakawasen - 都電荒川線",
+      "weight": 0.477,
+      "source": "552_Kajiwara - 梶原",
+      "target": "553_Sakaemachi - 栄町",
+      "directed": false
+    },
+    {
+      "attrib": "Todenarakawasen - 都電荒川線",
+      "weight": 0.367,
+      "source": "554_Asukayama - 飛鳥山",
+      "target": "555_Takinogawaitchome - 滝野川一丁目",
+      "directed": false
+    },
+    {
+      "attrib": "Todenarakawasen - 都電荒川線",
+      "weight": 0.396,
+      "source": "555_Takinogawaitchome - 滝野川一丁目",
+      "target": "556_Nishikeharashiteime - 西ヶ原四丁目",
+      "directed": false
+    },
+    {
+      "attrib": "Todenarakawasen - 都電荒川線",
+      "weight": 0.409,
+      "source": "556_Nishikeharashiteime - 西ヶ原四丁目",
+      "target": "557_Shinkoshintsuka - 新庚申塚",
+      "directed": false
+    },
+    {
+      "attrib": "Todenarakawasen - 都電荒川線",
+      "weight": 0.209,
+      "source": "557_Shinkoshintsuka - 新庚申塚",
+      "target": "558_Koshintsuka - 庚申塚",
+      "directed": false
+    },
+    {
+      "attrib": "Todenarakawasen - 都電荒川線",
+      "weight": 0.487,
+      "source": "558_Koshintsuka - 庚申塚",
+      "target": "559_Sugamonitta - 巣鴨新田",
+      "directed": false
+    },
+    {
+      "attrib": "Todenarakawasen - 都電荒川線",
+      "weight": 0.405,
+      "source": "562_Gakushuinshita - 学習院下",
+      "target": "563_Omokagehashi - 面影橋",
+      "directed": false
+    },
+    {
+      "attrib": "Todenarakawasen - 都電荒川線",
+      "weight": 0.424,
+      "source": "563_Omokagehashi - 面影橋",
+      "target": "564_Waseda - 早稲田",
+      "directed": false
     },
     {
       "attrib": "Tsukubaekusupuresu - つくばエクスプレス",
@@ -8951,21 +11382,16 @@
     },
     {
       "attrib": "Yurikamome - ゆりかもめ",
+      "weight": 0.614,
+      "source": "568_Takeshiba - 竹芝",
+      "target": "569_Hinode - 日の出",
+      "directed": false
+    },
+    {
+      "attrib": "Yurikamome - ゆりかもめ",
       "weight": 0.826,
       "source": "569_Hinode - 日の出",
       "target": "570_Shibaurafuatama - 芝浦ふ頭"
-    },
-    {
-      "attrib": "JR Chuohonsen Tokyo Shiojiri - JR中央本線(東京～塩尻)",
-      "weight": 2.466,
-      "source": "57_Hino - 日野",
-      "target": "58_Toyoda - 豊田"
-    },
-    {
-      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
-      "weight": 2.466,
-      "source": "57_Hino - 日野",
-      "target": "58_Toyoda - 豊田"
     },
     {
       "attrib": "Yurikamome - ゆりかもめ",
@@ -8978,6 +11404,13 @@
       "weight": 0.78,
       "source": "571_Odaibakaihinkoen - お台場海浜公園",
       "target": "572_Daiba - 台場"
+    },
+    {
+      "attrib": "Yurikamome - ゆりかもめ",
+      "weight": 0.518,
+      "source": "572_Daiba - 台場",
+      "target": "573_Tokyokokusaikuruzutaaminaru - 東京国際クルーズターミナル",
+      "directed": false
     },
     {
       "attrib": "Yurikamome - ゆりかもめ",
@@ -8999,6 +11432,13 @@
     },
     {
       "attrib": "Yurikamome - ゆりかもめ",
+      "weight": 0.527,
+      "source": "576_Tokyobiggusaito - 東京ビッグサイト",
+      "target": "577_Ariake - 有明",
+      "directed": false
+    },
+    {
+      "attrib": "Yurikamome - ゆりかもめ",
       "weight": 0.717,
       "source": "577_Ariake - 有明",
       "target": "578_Ariaketenisunomori - 有明テニスの森"
@@ -9008,6 +11448,13 @@
       "weight": 0.7,
       "source": "578_Ariaketenisunomori - 有明テニスの森",
       "target": "579_Shijomae - 市場前"
+    },
+    {
+      "attrib": "Yurikamome - ゆりかもめ",
+      "weight": 0.518,
+      "source": "579_Shijomae - 市場前",
+      "target": "580_Shintoyosu - 新豊洲",
+      "directed": false
     },
     {
       "attrib": "Tamamonoreeru - 多摩モノレール",
@@ -9041,21 +11488,37 @@
     },
     {
       "attrib": "Tamamonoreeru - 多摩モノレール",
+      "weight": 0.381,
+      "source": "588_Tachikawaminami - 立川南",
+      "target": "589_Tachikawakita - 立川北",
+      "directed": false
+    },
+    {
+      "attrib": "Tamamonoreeru - 多摩モノレール",
       "weight": 1.187,
       "source": "589_Tachikawakita - 立川北",
       "target": "590_Takamatsu - 高松"
     },
     {
-      "attrib": "JR Chuohonsen Tokyo Shiojiri - JR中央本線(東京～塩尻)",
-      "weight": 3.213,
-      "source": "59_Nishihachioji - 西八王子",
-      "target": "60_Takao - 高尾"
+      "attrib": "Tamamonoreeru - 多摩モノレール",
+      "weight": 0.63,
+      "source": "590_Takamatsu - 高松",
+      "target": "591_Tachihi - 立飛",
+      "directed": false
     },
     {
-      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
-      "weight": 3.213,
-      "source": "59_Nishihachioji - 西八王子",
-      "target": "60_Takao - 高尾"
+      "attrib": "Tamamonoreeru - 多摩モノレール",
+      "weight": 0.491,
+      "source": "591_Tachihi - 立飛",
+      "target": "592_Izumitaiikukan - 泉体育館",
+      "directed": false
+    },
+    {
+      "attrib": "Tamamonoreeru - 多摩モノレール",
+      "weight": 0.521,
+      "source": "592_Izumitaiikukan - 泉体育館",
+      "target": "593_Sunagawashichiban - 砂川七番",
+      "directed": false
     },
     {
       "attrib": "Tamamonoreeru - 多摩モノレール",
@@ -9100,36 +11563,6 @@
       "target": "600_Seibiba - 整備場"
     },
     {
-      "attrib": "Toei Asakusasen - 都営浅草線",
-      "weight": 1.423,
-      "source": "6_Gotanda - 五反田",
-      "target": "356_Tokoshiginza - 戸越銀座"
-    },
-    {
-      "attrib": "Toei Asakusasen - 都営浅草線",
-      "weight": 0.838,
-      "source": "6_Gotanda - 五反田",
-      "target": "509_Takanawadai - 高輪台"
-    },
-    {
-      "attrib": "JR Yamanotesen - JR山手線",
-      "weight": 1.119,
-      "source": "6_Gotanda - 五反田",
-      "target": "7_Meguro - 目黒"
-    },
-    {
-      "attrib": "Keio Takaosen - 京王高尾線",
-      "weight": 1.072,
-      "source": "60_Takao - 高尾",
-      "target": "283_Hazama - 狭間"
-    },
-    {
-      "attrib": "Keio Takaosen - 京王高尾線",
-      "weight": 1.528,
-      "source": "60_Takao - 高尾",
-      "target": "284_Takaosanguchi - 高尾山口"
-    },
-    {
       "attrib": "Rinkaisen - りんかい線",
       "weight": 1.367,
       "source": "602_Shinonome - 東雲",
@@ -9148,46 +11581,18 @@
       "target": "609_Ogiohashi - 扇大橋"
     },
     {
-      "attrib": "Tokyo Metro Marunochisen - 東京メトロ丸ノ内線",
-      "weight": 1.126,
-      "source": "61_Ochanomizu - 御茶ノ水",
-      "target": "413_Hongosanchome - 本郷三丁目"
+      "attrib": "Nippori Tonerirainaa - 日暮里・舎人ライナー",
+      "weight": 0.496,
+      "source": "609_Ogiohashi - 扇大橋",
+      "target": "610_Takano - 高野",
+      "directed": false
     },
     {
-      "attrib": "Tokyo Metro Chiyodasen - 東京メトロ千代田線",
-      "weight": 1.361,
-      "source": "61_Ochanomizu - 御茶ノ水",
-      "target": "414_Otemachi - 大手町"
-    },
-    {
-      "attrib": "Tokyo Metro Marunochisen - 東京メトロ丸ノ内線",
-      "weight": 1.361,
-      "source": "61_Ochanomizu - 御茶ノ水",
-      "target": "414_Otemachi - 大手町"
-    },
-    {
-      "attrib": "Tokyo Metro Chiyodasen - 東京メトロ千代田線",
-      "weight": 1.196,
-      "source": "61_Ochanomizu - 御茶ノ水",
-      "target": "453_Yushima - 湯島"
-    },
-    {
-      "attrib": "Toei Shinjukusen - 都営新宿線",
-      "weight": 0.756,
-      "source": "61_Ochanomizu - 御茶ノ水",
-      "target": "470_Jinbocho - 神保町"
-    },
-    {
-      "attrib": "Toei Shinjukusen - 都営新宿線",
-      "weight": 0.962,
-      "source": "61_Ochanomizu - 御茶ノ水",
-      "target": "530_Iwamotomachi - 岩本町"
-    },
-    {
-      "attrib": "JR Chuo Sobusen - JR中央・総武線",
-      "weight": 1.116,
-      "source": "61_Ochanomizu - 御茶ノ水",
-      "target": "77_Suidobashi - 水道橋"
+      "attrib": "Nippori Tonerirainaa - 日暮里・舎人ライナー",
+      "weight": 0.63,
+      "source": "610_Takano - 高野",
+      "target": "611_Kohoku - 江北",
+      "directed": false
     },
     {
       "attrib": "Nippori Tonerirainaa - 日暮里・舎人ライナー",
@@ -9220,544 +11625,82 @@
       "target": "616_Minumadaishinsuikoen - 見沼代親水公園"
     },
     {
-      "attrib": "Tokyo Metro Tozaisen - 東京メトロ東西線",
-      "weight": 2.021,
-      "source": "62_Nakano - 中野",
-      "target": "439_Ochiai - 落合"
+      "attrib": "Tokaidoshinkansen - 東海道新幹線",
+      "weight": 6.355,
+      "source": "1_Tokyo - 東京",
+      "target": "2_Shinagawa - 品川"
     },
     {
-      "attrib": "JR Chuo Sobusen - JR中央・総武線",
-      "weight": 1.461,
-      "source": "62_Nakano - 中野",
-      "target": "63_Koenji - 高円寺"
+      "attrib": "Utsunomiyasen - 宇都宮線",
+      "weight": 3.674,
+      "source": "1_Tokyo - 東京",
+      "target": "24_Ueno - 上野"
     },
     {
-      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
-      "weight": 1.461,
-      "source": "62_Nakano - 中野",
-      "target": "63_Koenji - 高円寺"
+      "attrib": "Akitashinkansen - 秋田新幹線",
+      "weight": 3.735,
+      "source": "1_Tokyo - 東京",
+      "target": "3_Ueno - 上野"
     },
     {
-      "attrib": "JR Chuo Sobusen - JR中央・総武線",
-      "weight": 1.618,
-      "source": "62_Nakano - 中野",
-      "target": "71_Higashinakano - 東中野"
+      "attrib": "Hokurikushinkansen - 北陸新幹線",
+      "weight": 3.735,
+      "source": "1_Tokyo - 東京",
+      "target": "3_Ueno - 上野"
     },
     {
-      "attrib": "JR Chuo Sobusen - JR中央・総武線",
-      "weight": 1.247,
-      "source": "63_Koenji - 高円寺",
-      "target": "64_Asaketani - 阿佐ケ谷"
+      "attrib": "Joetsushinkansen - 上越新幹線",
+      "weight": 3.735,
+      "source": "1_Tokyo - 東京",
+      "target": "3_Ueno - 上野"
     },
     {
-      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
-      "weight": 1.247,
-      "source": "63_Koenji - 高円寺",
-      "target": "64_Asaketani - 阿佐ケ谷"
+      "attrib": "Tohokushinkansen - 東北新幹線",
+      "weight": 3.735,
+      "source": "1_Tokyo - 東京",
+      "target": "3_Ueno - 上野"
     },
     {
-      "attrib": "JR Chuo Sobusen - JR中央・総武線",
-      "weight": 1.423,
-      "source": "64_Asaketani - 阿佐ケ谷",
-      "target": "65_Ogikubo - 荻窪"
+      "attrib": "Yamagatashinkansen - 山形新幹線",
+      "weight": 3.735,
+      "source": "1_Tokyo - 東京",
+      "target": "3_Ueno - 上野"
     },
     {
-      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
-      "weight": 1.423,
-      "source": "64_Asaketani - 阿佐ケ谷",
-      "target": "65_Ogikubo - 荻窪"
+      "attrib": "Sotetsu JR Chokutsusen - 相鉄・JR直通線",
+      "weight": 2.108,
+      "source": "5_Osaki - 大崎",
+      "target": "52_Nishioi - 西大井"
     },
     {
-      "attrib": "Tokyo Metro Marunochisen - 東京メトロ丸ノ内線",
-      "weight": 1.512,
-      "source": "65_Ogikubo - 荻窪",
-      "target": "425_Minamiasaketani - 南阿佐ケ谷"
-    },
-    {
-      "attrib": "Tokyo Metro Marunochisen - 東京メトロ丸ノ内線",
-      "weight": 5.055,
-      "source": "65_Ogikubo - 荻窪",
-      "target": "426_Nakanoshinbashi - 中野新橋"
-    },
-    {
-      "attrib": "JR Chuo Sobusen - JR中央・総武線",
-      "weight": 1.875,
-      "source": "65_Ogikubo - 荻窪",
-      "target": "66_Nishiogikubo - 西荻窪"
-    },
-    {
-      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
-      "weight": 1.875,
-      "source": "65_Ogikubo - 荻窪",
-      "target": "66_Nishiogikubo - 西荻窪"
-    },
-    {
-      "attrib": "Seibu Tamagawasen - 西武多摩川線",
-      "weight": 1.665,
-      "source": "67_Musashisakai - 武蔵境",
-      "target": "222_Shinkoganei - 新小金井"
-    },
-    {
-      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
-      "weight": 1.677,
-      "source": "67_Musashisakai - 武蔵境",
-      "target": "68_Higashikoganei - 東小金井"
-    },
-    {
-      "attrib": "JR Chuosen Kaisoku - JR中央線(快速)",
-      "weight": 1.658,
-      "source": "68_Higashikoganei - 東小金井",
-      "target": "69_Musashikoganei - 武蔵小金井"
-    },
-    {
-      "attrib": "Tokyu Megurosen - 東急目黒線",
-      "weight": 0.772,
-      "source": "7_Meguro - 目黒",
-      "target": "329_Fudomae - 不動前"
-    },
-    {
-      "attrib": "Toei Mitasen - 都営三田線",
-      "weight": 1.077,
-      "source": "7_Meguro - 目黒",
-      "target": "482_Shiroganedai - 白金台"
-    },
-    {
-      "attrib": "Tokyo Metro Nanbokusen - 東京メトロ南北線",
-      "weight": 1.077,
-      "source": "7_Meguro - 目黒",
-      "target": "482_Shiroganedai - 白金台"
-    },
-    {
-      "attrib": "JR Yamanotesen - JR山手線",
-      "weight": 1.575,
-      "source": "7_Meguro - 目黒",
+      "attrib": "Sotetsu JR Chokutsusen - 相鉄・JR直通線",
+      "weight": 3.444,
+      "source": "5_Osaki - 大崎",
       "target": "8_Ebisu - 恵比寿"
     },
     {
-      "attrib": "Toei Oedosen - 都営大江戸線",
-      "weight": 0.914,
-      "source": "71_Higashinakano - 東中野",
-      "target": "191_Nakai - 中井"
-    },
-    {
-      "attrib": "Toei Oedosen - 都営大江戸線",
-      "weight": 1.029,
-      "source": "71_Higashinakano - 東中野",
-      "target": "421_Nakanosakaue - 中野坂上"
-    },
-    {
-      "attrib": "JR Chuo Sobusen - JR中央・総武線",
-      "weight": 1.394,
-      "source": "71_Higashinakano - 東中野",
-      "target": "72_Okubo - 大久保"
-    },
-    {
-      "attrib": "JR Chuo Sobusen - JR中央・総武線",
-      "weight": 0.831,
-      "source": "73_Sendaketani - 千駄ケ谷",
-      "target": "74_Shinanocho - 信濃町"
-    },
-    {
       "attrib": "Toei Shinjukusen - 都営新宿線",
-      "weight": 1.463,
-      "source": "75_Ichigaya - 市ケ谷",
-      "target": "442_Kudanshita - 九段下"
-    },
-    {
-      "attrib": "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線",
-      "weight": 0.865,
-      "source": "75_Ichigaya - 市ケ谷",
-      "target": "464_Kojimachi - 麹町"
-    },
-    {
-      "attrib": "Toei Shinjukusen - 都営新宿線",
-      "weight": 1.229,
-      "source": "75_Ichigaya - 市ケ谷",
-      "target": "529_Akebonobashi - 曙橋"
-    },
-    {
-      "attrib": "JR Chuo Sobusen - JR中央・総武線",
-      "weight": 1.369,
-      "source": "75_Ichigaya - 市ケ谷",
-      "target": "76_Iidabashi - 飯田橋"
-    },
-    {
-      "attrib": "Tokyo Metro Nanbokusen - 東京メトロ南北線",
-      "weight": 1.369,
-      "source": "75_Ichigaya - 市ケ谷",
-      "target": "76_Iidabashi - 飯田橋"
-    },
-    {
-      "attrib": "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線",
-      "weight": 1.369,
-      "source": "75_Ichigaya - 市ケ谷",
-      "target": "76_Iidabashi - 飯田橋"
-    },
-    {
-      "attrib": "Tokyo Metro Nanbokusen - 東京メトロ南北線",
-      "weight": 0.916,
-      "source": "76_Iidabashi - 飯田橋",
-      "target": "412_Korakuen - 後楽園"
-    },
-    {
-      "attrib": "Tokyo Metro Tozaisen - 東京メトロ東西線",
-      "weight": 0.936,
-      "source": "76_Iidabashi - 飯田橋",
-      "target": "441_Kagurazaka - 神楽坂"
-    },
-    {
-      "attrib": "Tokyo Metro Tozaisen - 東京メトロ東西線",
-      "weight": 0.974,
-      "source": "76_Iidabashi - 飯田橋",
-      "target": "442_Kudanshita - 九段下"
-    },
-    {
-      "attrib": "Tokyo Metro Yurakuchosen - 東京メトロ有楽町線",
-      "weight": 1.302,
-      "source": "76_Iidabashi - 飯田橋",
-      "target": "463_Edogawahashi - 江戸川橋"
-    },
-    {
-      "attrib": "Toei Oedosen - 都営大江戸線",
-      "weight": 0.814,
-      "source": "76_Iidabashi - 飯田橋",
-      "target": "491_Ushigomekagurazaka - 牛込神楽坂"
-    },
-    {
-      "attrib": "Toei Oedosen - 都営大江戸線",
-      "weight": 1.139,
-      "source": "76_Iidabashi - 飯田橋",
-      "target": "492_Kasuga - 春日"
-    },
-    {
-      "attrib": "JR Chuo Sobusen - JR中央・総武線",
-      "weight": 0.91,
-      "source": "76_Iidabashi - 飯田橋",
-      "target": "77_Suidobashi - 水道橋"
-    },
-    {
-      "attrib": "Toei Mitasen - 都営三田線",
-      "weight": 0.816,
-      "source": "77_Suidobashi - 水道橋",
+      "weight": 0.756,
+      "source": "61_Ochanomizu - 御茶ノ水",
       "target": "470_Jinbocho - 神保町"
     },
     {
-      "attrib": "Toei Mitasen - 都営三田線",
-      "weight": 0.777,
-      "source": "77_Suidobashi - 水道橋",
-      "target": "492_Kasuga - 春日"
-    },
-    {
-      "attrib": "Toei Asakusasen - 都営浅草線",
-      "weight": 0.818,
-      "source": "78_Asakusabashi - 浅草橋",
-      "target": "494_Kuramae - 蔵前"
-    },
-    {
-      "attrib": "JR Chuo Sobusen - JR中央・総武線",
-      "weight": 0.912,
-      "source": "78_Asakusabashi - 浅草橋",
-      "target": "79_Ryogoku - 両国"
-    },
-    {
-      "attrib": "Toei Oedosen - 都営大江戸線",
-      "weight": 0.866,
-      "source": "79_Ryogoku - 両国",
-      "target": "494_Kuramae - 蔵前"
-    },
-    {
-      "attrib": "Toei Oedosen - 都営大江戸線",
-      "weight": 0.943,
-      "source": "79_Ryogoku - 両国",
-      "target": "495_Morishita - 森下"
-    },
-    {
-      "attrib": "JR Chuo Sobusen - JR中央・総武線",
-      "weight": 1.72,
-      "source": "79_Ryogoku - 両国",
-      "target": "80_Kinshicho - 錦糸町"
-    },
-    {
-      "attrib": "Tokyo Metro Hibiyasen - 東京メトロ日比谷線",
-      "weight": 1.067,
-      "source": "8_Ebisu - 恵比寿",
-      "target": "322_Nakameguro - 中目黒"
-    },
-    {
-      "attrib": "Tokyo Metro Hibiyasen - 東京メトロ日比谷線",
-      "weight": 1.27,
-      "source": "8_Ebisu - 恵比寿",
-      "target": "438_Hiro - 広尾"
-    },
-    {
-      "attrib": "JR Saikyosen - JR埼京線",
-      "weight": 1.547,
-      "source": "8_Ebisu - 恵比寿",
-      "target": "9_Shibuya - 渋谷"
-    },
-    {
-      "attrib": "JR Shonanshinjukurain - JR湘南新宿ライン",
-      "weight": 1.547,
-      "source": "8_Ebisu - 恵比寿",
-      "target": "9_Shibuya - 渋谷"
-    },
-    {
-      "attrib": "JR Yamanotesen - JR山手線",
-      "weight": 1.547,
-      "source": "8_Ebisu - 恵比寿",
-      "target": "9_Shibuya - 渋谷"
-    },
-    {
-      "attrib": "Sotetsu JR Chokutsusen - 相鉄・JR直通線",
-      "weight": 1.547,
-      "source": "8_Ebisu - 恵比寿",
-      "target": "9_Shibuya - 渋谷"
-    },
-    {
-      "attrib": "Tokyo Metro Hanzomonsen - 東京メトロ半蔵門線",
-      "weight": 1.523,
-      "source": "80_Kinshicho - 錦糸町",
-      "target": "155_OshiageSukaitsuriimae - 押上スカイツリー前"
-    },
-    {
-      "attrib": "Tokyo Metro Hanzomonsen - 東京メトロ半蔵門線",
-      "weight": 0.896,
-      "source": "80_Kinshicho - 錦糸町",
-      "target": "472_Sumiyoshi - 住吉"
-    },
-    {
-      "attrib": "JR Chuo Sobusen - JR中央・総武線",
-      "weight": 1.096,
-      "source": "80_Kinshicho - 錦糸町",
-      "target": "81_Kameido - 亀戸"
-    },
-    {
-      "attrib": "JR Sobuhonsen - JR総武本線",
-      "weight": 4.495,
-      "source": "80_Kinshicho - 錦糸町",
-      "target": "83_Shinkoiwa - 新小岩"
-    },
-    {
-      "attrib": "JR Sobuhonsen - JR総武本線",
-      "weight": 2.852,
-      "source": "80_Kinshicho - 錦糸町",
-      "target": "86_Bakurocho - 馬喰町"
-    },
-    {
-      "attrib": "JR Chuo Sobusen - JR中央・総武線",
-      "weight": 1.726,
-      "source": "81_Kameido - 亀戸",
-      "target": "82_Hirai - 平井"
-    },
-    {
-      "attrib": "JR Chuo Sobusen - JR中央・総武線",
-      "weight": 1.827,
-      "source": "82_Hirai - 平井",
-      "target": "83_Shinkoiwa - 新小岩"
-    },
-    {
-      "attrib": "JR Chuo Sobusen - JR中央・総武線",
-      "weight": 2.823,
-      "source": "83_Shinkoiwa - 新小岩",
-      "target": "84_Koiwa - 小岩"
-    },
-    {
-      "attrib": "Tokyo Metro Hanzomonsen - 東京メトロ半蔵門線",
-      "weight": 0.801,
-      "source": "85_Mitsukoshimae - 三越前",
-      "target": "414_Otemachi - 大手町"
-    },
-    {
-      "attrib": "Tokyo Metro Hanzomonsen - 東京メトロ半蔵門線",
-      "weight": 0.924,
-      "source": "85_Mitsukoshimae - 三越前",
-      "target": "432_Ningyocho - 人形町"
-    },
-    {
-      "attrib": "JR Sobuhonsen - JR総武本線",
-      "weight": 1.099,
-      "source": "85_Mitsukoshimae - 三越前",
-      "target": "86_Bakurocho - 馬喰町"
-    },
-    {
-      "attrib": "Toei Asakusasen - 都営浅草線",
-      "weight": 0.827,
-      "source": "86_Bakurocho - 馬喰町",
-      "target": "432_Ningyocho - 人形町"
-    },
-    {
       "attrib": "Toei Shinjukusen - 都営新宿線",
-      "weight": 0.751,
-      "source": "86_Bakurocho - 馬喰町",
+      "weight": 0.962,
+      "source": "61_Ochanomizu - 御茶ノ水",
       "target": "530_Iwamotomachi - 岩本町"
     },
     {
-      "attrib": "JR Omesen - JR青梅線",
-      "weight": 0.873,
-      "source": "87_Nishitachikawa - 西立川",
-      "target": "88_Higashinakakami - 東中神"
-    },
-    {
-      "attrib": "JR Omesen - JR青梅線",
-      "weight": 0.843,
-      "source": "88_Higashinakakami - 東中神",
-      "target": "89_Nakagami - 中神"
-    },
-    {
-      "attrib": "JR Omesen - JR青梅線",
-      "weight": 1.371,
-      "source": "89_Nakagami - 中神",
-      "target": "90_Akirashima - 昭島"
-    },
-    {
-      "attrib": "JR Yamanotesen - JR山手線",
-      "weight": 1.186,
-      "source": "9_Shibuya - 渋谷",
-      "target": "10_MeijijingumaeHarajuku - 明治神宮前原宿"
-    },
-    {
-      "attrib": "Tokyo Metro Fukutoshinsen - 東京メトロ副都心線",
-      "weight": 1.186,
-      "source": "9_Shibuya - 渋谷",
-      "target": "10_MeijijingumaeHarajuku - 明治神宮前原宿"
-    },
-    {
-      "attrib": "JR Naritaekusupuresu - JR成田エクスプレス",
-      "weight": 3.44,
-      "source": "9_Shibuya - 渋谷",
-      "target": "12_Shinjuku - 新宿"
-    },
-    {
-      "attrib": "JR Saikyosen - JR埼京線",
-      "weight": 3.44,
-      "source": "9_Shibuya - 渋谷",
-      "target": "12_Shinjuku - 新宿"
-    },
-    {
-      "attrib": "JR Shonanshinjukurain - JR湘南新宿ライン",
-      "weight": 3.44,
-      "source": "9_Shibuya - 渋谷",
-      "target": "12_Shinjuku - 新宿"
+      "attrib": "Sotetsu JR Chokutsusen - 相鉄・JR直通線",
+      "weight": 1.547,
+      "source": "8_Ebisu - 恵比寿",
+      "target": "9_Shibuya - 渋谷"
     },
     {
       "attrib": "Sotetsu JR Chokutsusen - 相鉄・JR直通線",
       "weight": 3.44,
       "source": "9_Shibuya - 渋谷",
       "target": "12_Shinjuku - 新宿"
-    },
-    {
-      "attrib": "Keio Inokashirasen - 京王井の頭線",
-      "weight": 0.736,
-      "source": "9_Shibuya - 渋谷",
-      "target": "287_Kamiizumi - 神泉"
-    },
-    {
-      "attrib": "Tokyu Toyokosen - 東急東横線",
-      "weight": 1.206,
-      "source": "9_Shibuya - 渋谷",
-      "target": "321_Daikanyama - 代官山"
-    },
-    {
-      "attrib": "Tokyu Den Entoshisen - 東急田園都市線",
-      "weight": 1.805,
-      "source": "9_Shibuya - 渋谷",
-      "target": "335_Ikejiriohashi - 池尻大橋"
-    },
-    {
-      "attrib": "Tokyo Metro Ginzasen - 東京メトロ銀座線",
-      "weight": 1.206,
-      "source": "9_Shibuya - 渋谷",
-      "target": "409_Omotesando - 表参道"
-    },
-    {
-      "attrib": "Tokyo Metro Hanzomonsen - 東京メトロ半蔵門線",
-      "weight": 1.206,
-      "source": "9_Shibuya - 渋谷",
-      "target": "409_Omotesando - 表参道"
-    },
-    {
-      "attrib": "JR Omesen - JR青梅線",
-      "weight": 1.859,
-      "source": "90_Akirashima - 昭島",
-      "target": "91_Haishima - 拝島"
-    },
-    {
-      "attrib": "JR Itsukaichisen - JR五日市線",
-      "weight": 1.043,
-      "source": "91_Haishima - 拝島",
-      "target": "111_Kumakawa - 熊川"
-    },
-    {
-      "attrib": "JR Hakkosen Hachioji Komagawa - JR八高線(八王子～高麗川)",
-      "weight": 4.546,
-      "source": "91_Haishima - 拝島",
-      "target": "118_Komiya - 小宮"
-    },
-    {
-      "attrib": "JR Hakkosen Hachioji Komagawa - JR八高線(八王子～高麗川)",
-      "weight": 2.811,
-      "source": "91_Haishima - 拝島",
-      "target": "119_Tofukunama - 東福生"
-    },
-    {
-      "attrib": "Seibu Haishimasen - 西武拝島線",
-      "weight": 2.468,
-      "source": "91_Haishima - 拝島",
-      "target": "214_Seibutachikawa - 西武立川"
-    },
-    {
-      "attrib": "JR Omesen - JR青梅線",
-      "weight": 1.72,
-      "source": "91_Haishima - 拝島",
-      "target": "92_Ushihama - 牛浜"
-    },
-    {
-      "attrib": "JR Omesen - JR青梅線",
-      "weight": 1.029,
-      "source": "92_Ushihama - 牛浜",
-      "target": "93_Fussa - 福生"
-    },
-    {
-      "attrib": "JR Omesen - JR青梅線",
-      "weight": 2.026,
-      "source": "93_Fussa - 福生",
-      "target": "94_Hamura - 羽村"
-    },
-    {
-      "attrib": "JR Omesen - JR青梅線",
-      "weight": 2.362,
-      "source": "94_Hamura - 羽村",
-      "target": "95_Ozaku - 小作"
-    },
-    {
-      "attrib": "JR Omesen - JR青梅線",
-      "weight": 1.905,
-      "source": "95_Ozaku - 小作",
-      "target": "96_Kawabe - 河辺"
-    },
-    {
-      "attrib": "JR Omesen - JR青梅線",
-      "weight": 1.154,
-      "source": "96_Kawabe - 河辺",
-      "target": "97_Higashiome - 東青梅"
-    },
-    {
-      "attrib": "JR Omesen - JR青梅線",
-      "weight": 1.333,
-      "source": "97_Higashiome - 東青梅",
-      "target": "98_Ome - 青梅"
-    },
-    {
-      "attrib": "JR Omesen - JR青梅線",
-      "weight": 1.906,
-      "source": "98_Ome - 青梅",
-      "target": "99_Miyanotaira - 宮ノ平"
-    },
-    {
-      "attrib": "JR Omesen - JR青梅線",
-      "weight": 0.712,
-      "source": "99_Miyanotaira - 宮ノ平",
-      "target": "100_Hinatawada - 日向和田"
     }
   ],
   "physics": {
@@ -10044,7 +11987,8 @@
       "Uenotokyorain - 上野東京ライン": 2,
       "Utsunomiyasen - 宇都宮線": 1,
       "Yamagatashinkansen - 山形新幹線": 10,
-      "Yurikamome - ゆりかもめ": 21
+      "Yurikamome - ゆりかもめ": 21,
+      "Todenarakawasen - 都電荒川線": 0
     },
     "nodeAttribsToColorIndices": {
       "Akitashinkansen - 秋田新幹線": 0,
@@ -10133,7 +12077,8 @@
       "Uenotokyorain - 上野東京ライン": 83,
       "Utsunomiyasen - 宇都宮線": 84,
       "Yamagatashinkansen - 山形新幹線": 85,
-      "Yurikamome - ゆりかもめ": 86
+      "Yurikamome - ゆりかもめ": 86,
+      "Todenarakawasen - 都電荒川線": 0
     }
   }
 }
