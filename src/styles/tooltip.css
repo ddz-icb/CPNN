@@ -269,11 +269,17 @@
   box-sizing: border-box;
   width: 100%;
   min-width: 0;
-  height: auto;
+  height: 1.65rem;
   min-height: 1.65rem;
-  padding: 0.2rem 0.4rem;
-  white-space: normal;
-  overflow-wrap: anywhere;
+  padding: 0 0.4rem;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.tooltip-popup-footer-actions > .tooltip-popup-action .button-rect-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .tooltip-popup-footer-link {

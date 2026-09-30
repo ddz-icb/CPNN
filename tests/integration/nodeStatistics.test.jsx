@@ -7,11 +7,13 @@ vi.mock("../../src/components/domain/service/download/download.js", () => ({ dow
 vi.mock("../../src/components/adapters/gui/reusable_components/sidebarComponents.jsx", () => ({ Button: ({ text, ...props }) => <button {...props}>{text}</button> }));
 import { ClickTooltip } from "../../src/components/adapters/gui/tooltip/clickTooltip.jsx";
 import { useGraphState } from "../../src/components/adapters/state/graphState.js";
-import { useTooltipSettings } from "../../src/components/adapters/state/tooltipState.js";
+import { tooltipInit, useTooltipSettings } from "../../src/components/adapters/state/tooltipState.js";
+import { Tooltips } from "../../src/components/adapters/gui/tooltip/tooltips.jsx";
 let root, host;
 afterEach(async () => {
   if (root) await act(async () => root.unmount());
   host?.remove();
+  useTooltipSettings.getState().setAllTooltipSettings({ ...tooltipInit });
 });
 test("node popup switches between statistics, adjacency and details and updates with filters", async () => {
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
@@ -25,7 +27,7 @@ test("node popup switches between statistics, adjacency and details and updates 
   await click("Statistics");
   expect(host.querySelector(".node-statistics").textContent).toContain("eats");
   expect(host.querySelector(".node-statistics").textContent).toContain("plant");
-  await click("Adjacent nodes");
+  await click("Neighbors");
   expect(host.querySelector(".tooltip-adjacent-node-id").textContent).toBe("b");
   await click("Statistics");
   await act(async () => useGraphState.getState().setGraphState("graph", { data: { ...data, links: [] } }));
@@ -33,4 +35,36 @@ test("node popup switches between statistics, adjacency and details and updates 
   await click("Back to node");
   expect(host.querySelector(".node-statistics")).toBeNull();
   expect(host.querySelector(".tooltip-popup-body-inner > div").hidden).toBe(false);
+});
+
+
+test("node history survives closing and reopening without duplicate entries", async () => {
+  globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  useGraphState.getState().setGraphState("graph", { data: { nodes: [{ id: "a" }, { id: "b" }], links: [] } });
+  host = document.createElement("div"); document.body.appendChild(host); root = createRoot(host);
+  await act(async () => root.render(<Tooltips />));
+  const open = async (node) => act(async () => {
+    useTooltipSettings.getState().setTooltipSettings("clickTooltipData", { node, x: 30, y: 30 });
+    useTooltipSettings.getState().setTooltipSettings("isClickTooltipActive", true);
+  });
+  const close = async () => act(async () => host.querySelector('[aria-label="Close tooltip"]').click());
+  const back = () => [...host.querySelectorAll("button")].find((button) => button.textContent === "Back");
+  await open("a");
+  expect(back()).toBeUndefined();
+  await close();
+  expect(host.querySelector(".tooltip-popup")).toBeNull();
+  expect(useTooltipSettings.getState().tooltipSettings.clickTooltipHistory.map((entry) => entry.node)).toEqual(["a"]);
+  await open("a");
+  expect(back()).toBeUndefined();
+  await close();
+  await open("b");
+  expect(back()).toBeDefined();
+  await act(async () => back().click());
+  expect(host.querySelector(".tooltip-popup-heading").textContent).toBe("a");
+  expect(back()).toBeUndefined();
+  await act(async () => document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true })));
+  expect(host.querySelector(".tooltip-popup")).toBeNull();
+  await open("b");
+  expect(back()).toBeDefined();
+  expect(useTooltipSettings.getState().tooltipSettings.clickTooltipHistory.map((entry) => entry.node)).toEqual(["a", "b"]);
 });

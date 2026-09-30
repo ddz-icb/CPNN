@@ -24,7 +24,7 @@ import { NodeStatistics } from "./nodeStatistics.jsx";
 
 export function ClickTooltip() {
   const { theme } = useTheme();
-  const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
+  const { tooltipSettings, setTooltipSettings, setClickTooltipHistory: setHistory } = useTooltipSettings();
   const { graphState } = useGraphState();
   const { colorschemeState } = useColorschemeState();
   const { pixiState } = usePixiState();
@@ -33,7 +33,7 @@ export function ClickTooltip() {
   const viewerRef = useRef(null);
   const [view, setView] = useState("details");
   const isAdjacentView = view === "adjacent";
-  const [history, setHistory] = useState([]);
+  const history = tooltipSettings.clickTooltipHistory ?? [];
   const isGoingBack = useRef(false);
 
   const clickData = tooltipSettings.clickTooltipData;
@@ -59,7 +59,7 @@ export function ClickTooltip() {
       if (prev.length > 0 && prev[prev.length - 1].node === clickData.node) return prev;
       return [...prev, clickData];
     });
-  }, [clickData]);
+  }, [clickData, setHistory]);
 
   useEffect(() => {
     if (nodeId) setView("details");
@@ -141,7 +141,7 @@ export function ClickTooltip() {
     isGoingBack.current = true;
     setHistory(newHistory);
     setTooltipSettings("clickTooltipData", freshPos ? { ...prevEntry, ...freshPos } : prevEntry);
-  }, [history, graphState.graph, getNodeScreenPosition, setTooltipSettings]);
+  }, [history, graphState.graph, getNodeScreenPosition, setTooltipSettings, setHistory]);
 
   const canGoBack = history.length > 1;
 
@@ -151,16 +151,15 @@ export function ClickTooltip() {
         <>
           <div className="tooltip-popup-footer-links" />
           <div className="tooltip-popup-footer-actions">
-            {canGoBack && <Button className="tooltip-popup-action" text="Back" onClick={handleBack} />}
+            <Button className="tooltip-popup-action" text="Back to node" onClick={() => setView("details")} />
             {isAdjacentView && (
               <Button className="tooltip-popup-action" text="Export" onClick={handleExportAdjacent} disabled={!adjacentNodeList.length} />
             )}
             <Button
               className="tooltip-popup-action"
-              text={isAdjacentView ? "Statistics" : "Adjacent nodes"}
+              text={isAdjacentView ? "Statistics" : "Neighbors"}
               onClick={() => setView(isAdjacentView ? "statistics" : "adjacent")}
             />
-            <Button className="tooltip-popup-action" text="Back to node" onClick={() => setView("details")} />
           </div>
         </>
       );
@@ -175,7 +174,7 @@ export function ClickTooltip() {
         <div className="tooltip-popup-footer-actions">
           {canGoBack && <Button className="tooltip-popup-action" text="Back" onClick={handleBack} />}
           <Button className="tooltip-popup-action" text="Statistics" onClick={() => setView("statistics")} />
-          <Button className="tooltip-popup-action" text="Adjacent nodes" onClick={() => setView("adjacent")} />
+          <Button className="tooltip-popup-action" text="Neighbors" onClick={() => setView("adjacent")} />
         </div>
       </>
     );
