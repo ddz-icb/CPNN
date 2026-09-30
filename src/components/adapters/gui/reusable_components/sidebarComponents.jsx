@@ -8,7 +8,7 @@ import { useTheme } from "../../state/themeState.js";
 import { PortalTooltip } from "./tooltipComponents.jsx";
 export { DetailRow, TableList, ToggleList } from "./sidebarLists.jsx";
 
-export function SliderBlock({ value, setValue, setValueText, min, max, step, text, infoHeading, infoDescription, ...props }) {
+export function SliderBlock({ value, setValue, setValueText, min, max, inputMax = max, step, text, infoHeading, infoDescription, ...props }) {
   return (
     <div className="block-section block-section-stack">
       <div className="sidebar-control-header">
@@ -27,7 +27,7 @@ export function SliderBlock({ value, setValue, setValueText, min, max, step, tex
           value={value}
           onChange={(event) => handleSliderChange(event, setValue, setValueText, min, max)}
         />
-        <NumericInput setValue={setValue} setValueText={setValueText} min={min} max={max} step={step} {...props} />
+        <NumericInput setValue={setValue} setValueText={setValueText} min={min} max={inputMax} step={step} {...props} />
       </div>
     </div>
   );
@@ -443,7 +443,7 @@ function NumericInput({ valueText, setValue, setValueText, fallbackValue, min, m
         type="number"
         lang="en"
         min={min}
-        max={max}
+        max={Number.isFinite(max) ? max : undefined}
         step={step}
         value={valueText}
         onChange={(event) => handleFieldChange(event, setValueText, min, max)}
