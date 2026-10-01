@@ -151,13 +151,14 @@ export function ClickTooltip() {
         <>
           <div className="tooltip-popup-footer-links" />
           <div className="tooltip-popup-footer-actions">
-            <Button className="tooltip-popup-action" text="Back to node" onClick={() => setView("details")} />
+            <Button className="tooltip-popup-action" text="Back to node" data-tooltip-view="details" onClick={() => setView("details")} />
             {isAdjacentView && (
               <Button className="tooltip-popup-action" text="Export" onClick={handleExportAdjacent} disabled={!adjacentNodeList.length} />
             )}
             <Button
               className="tooltip-popup-action"
               text={isAdjacentView ? "Statistics" : "Neighbors"}
+              data-tooltip-view={isAdjacentView ? "statistics" : "adjacent"}
               onClick={() => setView(isAdjacentView ? "statistics" : "adjacent")}
             />
           </div>
@@ -173,8 +174,8 @@ export function ClickTooltip() {
         </div>
         <div className="tooltip-popup-footer-actions">
           {canGoBack && <Button className="tooltip-popup-action" text="Back" onClick={handleBack} />}
-          <Button className="tooltip-popup-action" text="Statistics" onClick={() => setView("statistics")} />
-          <Button className="tooltip-popup-action" text="Neighbors" onClick={() => setView("adjacent")} />
+          <Button className="tooltip-popup-action" text="Statistics" data-tooltip-view="statistics" onClick={() => setView("statistics")} />
+          <Button className="tooltip-popup-action" text="Neighbors" data-tooltip-view="adjacent" onClick={() => setView("adjacent")} />
         </div>
       </>
     );
@@ -265,32 +266,44 @@ function useTooltipPosition(isActive, clickData, view) {
     }
 
     const el = tooltipRef.current;
-    const { width, height } = el.getBoundingClientRect();
-    const { x = 0, y = 0 } = clickData;
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
+    const updatePosition = () => {
+      const { width, height } = el.getBoundingClientRect();
+      const { x = 0, y = 0 } = clickData;
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
 
-    // Default: open to the right and aligned to the click point vertically
-    let left = x + TOOLTIP_OFFSET;
-    let top = y;
+      // Default: open to the right and aligned to the click point vertically
+      let left = x + TOOLTIP_OFFSET;
+      let top = y;
 
-    // Flip horizontally if it clips the right edge
-    if (left + width > vw - SCREEN_MARGIN) {
-      left = x - width - TOOLTIP_OFFSET;
-    }
+      // Flip horizontally if it clips the right edge
+      if (left + width > vw - SCREEN_MARGIN) {
+        left = x - width - TOOLTIP_OFFSET;
+      }
 
-    // Flip vertically if it clips the bottom
-    if (top + height > vh - SCREEN_MARGIN) {
-      top = y - height;
-    }
+      // Flip vertically if it clips the bottom
+      if (top + height > vh - SCREEN_MARGIN) {
+        top = y - height;
+      }
 
-    // Final clamp to guarantee it stays within the viewport
-    left = Math.max(SCREEN_MARGIN, Math.min(left, vw - width - SCREEN_MARGIN));
-    top = Math.max(SCREEN_MARGIN, Math.min(top, vh - height - SCREEN_MARGIN));
+      // Final clamp to guarantee it stays within the viewport
+      left = Math.max(SCREEN_MARGIN, Math.min(left, vw - width - SCREEN_MARGIN));
+      top = Math.max(SCREEN_MARGIN, Math.min(top, vh - height - SCREEN_MARGIN));
 
-    el.style.left = `${left}px`;
-    el.style.top = `${top}px`;
-    setIsPositioned(true);
+      el.style.left = `${left}px`;
+      el.style.top = `${top}px`;
+      setIsPositioned(true);
+    };
+
+    updatePosition();
+    // Async content and viewport changes can alter the available space.
+    const observer = new ResizeObserver(updatePosition);
+    observer.observe(el);
+    window.addEventListener("resize", updatePosition);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", updatePosition);
+    };
   }, [isActive, clickData, view]);
 
   return { tooltipRef, isPositioned };

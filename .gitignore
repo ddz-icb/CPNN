@@ -4,3 +4,5 @@ build/
 .vscode
 wasm/corr_matrix/target/
 public/wasm/corr_matrix.wasm
+test-results/
+playwright-report/

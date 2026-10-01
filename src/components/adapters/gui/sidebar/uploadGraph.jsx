@@ -222,6 +222,7 @@ export function UploadGraph() {
         tooltip={"Upload Graph as TSV, CSV or JSON File"}
         tooltipId={"upload-graph-tooltip"}
         text={"Upload Graph"}
+        aria-haspopup="dialog"
       />
       {isOpen && (
         <Popup heading={"Uploading your Graph"} description={uploadGraphDescription} isOpen={isOpen} setIsOpen={setIsOpen}>

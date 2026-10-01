@@ -1,5 +1,5 @@
 import { SvgIcon } from "../reusable_components/SvgIcon.jsx";
-import { SIDEBAR_SHORTCUT_BY_KEY } from "../../config/sidebarConfig.js";
+import { SIDEBAR_SECTIONS } from "../../config/sidebarConfig.js";
 import dataSvg from "../../../../assets/icons/data.svg?raw";
 import magnetSvg from "../../../../assets/icons/magnet.svg?raw";
 import filterSvg from "../../../../assets/icons/filter.svg?raw";
@@ -10,74 +10,29 @@ import searchSvg from "../../../../assets/icons/search.svg?raw";
 import fileWaveformSvg from "../../../../assets/icons/fileWaveform.svg?raw";
 import playSvg from "../../../../assets/icons/play.svg?raw";
 
+const sectionIcons = {
+  Data: dataSvg,
+  "Additional Data": fileWaveformSvg,
+  Search: searchSvg,
+  Filter: filterSvg,
+  Communities: piechartSvg,
+  Physics: magnetSvg,
+  Appearance: paletteSvg,
+  Videography: playSvg,
+  Export: downloadSvg,
+};
+
 export function SelectionSidebar({ handleNavItemClick, activeNavItem }) {
-  return (
-    <>
-      <NavItem
-        text={"Data"}
-        shortcut={SIDEBAR_SHORTCUT_BY_KEY["Data"]}
-        icon={<SvgIcon svg={dataSvg} />}
-        isActive={activeNavItem === "Data"}
-        onClick={() => handleNavItemClick("Data")}
-      />
-      <NavItem
-        text={"Additional Data"}
-        shortcut={SIDEBAR_SHORTCUT_BY_KEY["Additional Data"]}
-        icon={<SvgIcon svg={fileWaveformSvg} />}
-        isActive={activeNavItem === "Additional Data"}
-        onClick={() => handleNavItemClick("Additional Data")}
-      />
-      <NavItem
-        text={"Search"}
-        shortcut={SIDEBAR_SHORTCUT_BY_KEY["Search"]}
-        icon={<SvgIcon svg={searchSvg} />}
-        isActive={activeNavItem === "Search"}
-        onClick={() => handleNavItemClick("Search")}
-      />
-      <NavItem
-        text={"Filter"}
-        shortcut={SIDEBAR_SHORTCUT_BY_KEY["Filter"]}
-        icon={<SvgIcon svg={filterSvg} />}
-        isActive={activeNavItem === "Filter"}
-        onClick={() => handleNavItemClick("Filter")}
-      />
-      <NavItem
-        text={"Communities"}
-        shortcut={SIDEBAR_SHORTCUT_BY_KEY["Communities"]}
-        icon={<SvgIcon svg={piechartSvg} />}
-        isActive={activeNavItem === "Communities"}
-        onClick={() => handleNavItemClick("Communities")}
-      />
-      <NavItem
-        text={"Physics"}
-        shortcut={SIDEBAR_SHORTCUT_BY_KEY["Physics"]}
-        icon={<SvgIcon svg={magnetSvg} />}
-        isActive={activeNavItem === "Physics"}
-        onClick={() => handleNavItemClick("Physics")}
-      />
-      <NavItem
-        text={"Appearance"}
-        shortcut={SIDEBAR_SHORTCUT_BY_KEY["Appearance"]}
-        icon={<SvgIcon svg={paletteSvg} />}
-        isActive={activeNavItem === "Appearance"}
-        onClick={() => handleNavItemClick("Appearance")}
-      />
-      <NavItem
-        text={"Videography"}
-        shortcut={SIDEBAR_SHORTCUT_BY_KEY["Videography"]}
-        icon={<SvgIcon svg={playSvg} />}
-        isActive={activeNavItem === "Videography"}
-        onClick={() => handleNavItemClick("Videography")}
-      />
-      <NavItem
-        text={"Export"}
-        shortcut={SIDEBAR_SHORTCUT_BY_KEY["Export"]}
-        icon={<SvgIcon svg={downloadSvg} />}
-        isActive={activeNavItem === "Export"}
-        onClick={() => handleNavItemClick("Export")}
-      />
-    </>
-  );
+  return SIDEBAR_SECTIONS.map(({ key, shortcut }) => (
+    <NavItem
+      key={key}
+      text={key}
+      shortcut={shortcut.toUpperCase()}
+      icon={<SvgIcon svg={sectionIcons[key]} />}
+      isActive={activeNavItem === key}
+      onClick={() => handleNavItemClick(key)}
+    />
+  ));
 }
 
 function NavItem({ text, icon, onClick, shortcut, children, isActive }) {

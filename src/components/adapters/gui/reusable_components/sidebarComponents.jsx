@@ -161,7 +161,7 @@ export function FieldApplyBlock({
   );
 }
 
-export function Button({ onClick, onChange, linkRef, tooltip, tooltipId, text, shortcut, className, variant, disabled, fileInputProps = {} }) {
+export function Button({ onClick, onChange, linkRef, tooltip, tooltipId, text, shortcut, className, variant, disabled, fileInputProps = {}, ...buttonProps }) {
   const buttonClassName = ["button-rect default-height default-min-width", shortcut ? "button-rect-shortcut" : "", className ?? ""].filter(Boolean).join(" ");
 
   return (
@@ -174,6 +174,7 @@ export function Button({ onClick, onChange, linkRef, tooltip, tooltipId, text, s
         data-tooltip-content={tooltip}
         onClick={onClick}
         disabled={disabled}
+        {...buttonProps}
       >
         <span className="button-rect-label">{text}</span>
         {shortcut && <kbd className="nav-shortcut">{shortcut}</kbd>}
@@ -340,7 +341,7 @@ export function Popup({ heading, description, isOpen, setIsOpen, widePopup = fal
 
   const popupNode = (
     <div className={`popup-overlay ${theme?.name ?? "light"}`} onClick={handleClose}>
-      <div className={popupContainer} onClick={(e) => e.stopPropagation()}>
+      <div role="dialog" aria-label={heading} className={popupContainer} onClick={(e) => e.stopPropagation()}>
         <div className="popup-header pad-bottom-1">
           <span className="popup-heading">{heading}</span>
           <button type="button" className="svg-button" onClick={handleClose} aria-label="Close popup">
@@ -367,7 +368,7 @@ export function ButtonPopup({ buttonText, tooltip, tooltipId, heading, descripti
 
   return (
     <>
-      <Button onClick={() => setIsOpen(!isOpen)} tooltip={tooltip} tooltipId={tooltipId} text={buttonText} />
+      <Button aria-haspopup="dialog" onClick={() => setIsOpen(!isOpen)} tooltip={tooltip} tooltipId={tooltipId} text={buttonText} />
       {isOpen && (
         <Popup
           heading={heading}
@@ -388,7 +389,7 @@ export function InfoButtonPopup({ heading, description, widePopup = false, child
 
   return (
     <>
-      <button type="button" className="info-button" onClick={() => setIsOpen(!isOpen)}>
+      <button type="button" aria-haspopup="dialog" aria-label={heading} className="info-button" onClick={() => setIsOpen(!isOpen)}>
         <SvgIcon svg={infoCircleSvg} className="info-button-icon" />
       </button>
       {isOpen && (

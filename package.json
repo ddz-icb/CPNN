@@ -75,7 +75,8 @@
     "build:with-wasm": "npm run build:wasm && npm run build",
     "preview": "vite preview",
     "serve": "vite preview",
-    "build:serve": "npm run build:with-wasm && npm run serve"
+    "build:serve": "npm run build:with-wasm && npm run serve",
+    "test:browser": "playwright test"
   },
   "overrides": {
     "react-codemirror2": {
@@ -112,6 +113,7 @@
     ]
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "@vitejs/plugin-react-swc": "^4.2.2",
     "autoprefixer": "^10.4.21",
     "eslint": "^9.39.4",

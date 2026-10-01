@@ -1,6 +1,6 @@
 import React, { act } from "react";
 import { createRoot } from "react-dom/client";
-import { afterEach, expect, test, vi } from "vitest";
+import { beforeEach, afterEach, expect, test, vi } from "vitest";
 vi.mock("3dmol/build/3Dmol.js", () => ({ createViewer: vi.fn(() => ({ clear() {}, render() {}, setBackgroundColor() {} })) }));
 vi.mock("../../src/components/adapters/gui/hooks/useProteinDetails.js", () => ({ useProteinDetails: () => ({ uniprotStatus: "done", isApiComplete: true }) }));
 vi.mock("../../src/components/domain/service/download/download.js", () => ({ downloadNodeIdsCsv: vi.fn() }));
@@ -10,9 +10,15 @@ import { useGraphState } from "../../src/components/adapters/state/graphState.js
 import { tooltipInit, useTooltipSettings } from "../../src/components/adapters/state/tooltipState.js";
 import { Tooltips } from "../../src/components/adapters/gui/tooltip/tooltips.jsx";
 let root, host;
+// jsdom has no layout engine; positioning is covered by the browser tests.
+beforeEach(() => vi.stubGlobal("ResizeObserver", class {
+  observe() {}
+  disconnect() {}
+}));
 afterEach(async () => {
   if (root) await act(async () => root.unmount());
   host?.remove();
+  vi.unstubAllGlobals();
   useTooltipSettings.getState().setAllTooltipSettings({ ...tooltipInit });
 });
 test("node popup switches between statistics, adjacency and details and updates with filters", async () => {
