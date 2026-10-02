@@ -37,7 +37,9 @@ export function initTooltips(circle, node, setTooltipSettings) {
       x: mouseData.originalEvent.clientX,
       y: mouseData.originalEvent.clientY,
     });
-    setTooltipSettings("isClickTooltipActive", true);
+    setTooltipSettings("isClickTooltipActive", false);
+    setTooltipSettings("isNodeFocusOnly", true);
+    setTooltipSettings("isHoverTooltipActive", false);
   });
 }
 

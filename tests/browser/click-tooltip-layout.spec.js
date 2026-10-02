@@ -81,3 +81,27 @@ test("Click tooltip: remains on screen when the window shrinks", async ({ page }
   await page.setViewportSize({ width: 360, height: 600 });
   await expectTooltipFits(tooltip);
 });
+
+test("Node clicks show compact focus with previous-node navigation", async ({ page }) => {
+  const tooltip = await openTooltip(page, { x: 100, y: 100 });
+  await page.evaluate(async () => {
+    const { usePixiState } = await import("/src/components/adapters/state/pixiState.js");
+    const circles = Object.values(usePixiState.getState().pixiState.nodeMap).map((entry) => entry.circle);
+    for (const circle of circles.slice(0, 2)) {
+      circle.emit("click", { originalEvent: { clientX: 100, clientY: 100 } });
+    }
+  });
+  await expect(tooltip).toHaveCount(0);
+  const focusBar = page.getByRole("region", { name: "Focused node" });
+  await expectLayoutFits(focusBar);
+  await focusBar.getByRole("button", { name: "Go to previous", exact: true }).click();
+  await expectLayoutFits(focusBar);
+  await focusBar.getByRole("button", { name: "Details", exact: true }).click();
+  await expectTooltipFits(tooltip);
+  await expectLayoutFits(focusBar);
+  await tooltip.getByRole("button", { name: "Close tooltip" }).click();
+  await expect(tooltip).toHaveCount(0);
+  await expect(focusBar).toBeVisible();
+  await focusBar.getByRole("button", { name: "Clear", exact: true }).click();
+  await expect(focusBar).toHaveCount(0);
+});

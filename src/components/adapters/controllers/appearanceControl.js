@@ -15,9 +15,12 @@ import { errorService } from "../../application/services/errorService.js";
 import { mountRedraw } from "../../domain/service/physics_calculations/simulation.js";
 import { useContainer } from "../state/containerState.js";
 import { useTheme } from "../state/themeState.js";
+import { useTooltipSettings } from "../state/tooltipState.js";
 import { useGraphFlags } from "../state/graphFlagsState.js";
 
 export function AppearanceControl() {
+  const focusNodeId = useTooltipSettings(({ tooltipSettings: t }) =>
+    t.isClickTooltipActive || t.isNodeFocusOnly ? t.clickTooltipData?.node : null);
   const { appearance, setAppearance } = useAppearance();
   const { theme } = useTheme();
   const { colorschemeState } = useColorschemeState();
@@ -28,6 +31,16 @@ export function AppearanceControl() {
   const { container } = useContainer();
   const linkCount = graphState.graph?.data?.links?.length ?? 0;
   const activeLines = appearance.threeD ? pixiState.lines3D : pixiState.lines2D;
+
+  useEffect(() => {
+    const app = renderState.app;
+    if (!app) return;
+    const frame = requestAnimationFrame(() => {
+      app.__focusedNodeId = graphState.graph?.data?.nodes?.some((node) => node.id === focusNodeId) ? focusNodeId : null;
+      app.__redrawGraph?.();
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [focusNodeId, renderState.app, graphState.graph, activeLines]);
 
   // rebind redraw function and run one cycle
   useEffect(() => {

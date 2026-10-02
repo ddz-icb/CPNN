@@ -5,7 +5,7 @@ import { updateLines } from "./lineGraphics.js";
 export function redraw(graphData, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, showNodeLabels, nodeMap, app) {
   const { nodes, links } = graphData;
 
-  updateLines(links, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices);
+  updateLines(links, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, app.__focusedNodeId);
   updateNodes(nodes, nodeMap, showNodeLabels);
   updateHighlights({ links, lineGraphics: lines, linkWidth });
 
@@ -20,7 +20,7 @@ function updateNodes(nodes, nodeMap, showNodeLabels) {
   if (!nodes || !nodeMap) return;
 
   for (const node of nodes) {
-    const { circle, nodeLabel } = nodeMap[node.id];
+    const { circle, nodeLabel } = nodeMap[node.id] ?? {};
     if (!circle || !nodeLabel) continue;
 
     circle.x = node.x;

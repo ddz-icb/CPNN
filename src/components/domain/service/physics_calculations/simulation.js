@@ -124,10 +124,12 @@ export function mountRedraw(
 
   const drawScheduler = createFrameScheduler(drawImmediate);
   const drawNow = drawScheduler.flush;
+  app.__redrawGraph = drawNow;
   simulation.__cancelDraw = () => {
     if (simulation.__drawToken === drawToken) {
       simulation.__drawToken = drawToken + 1;
     }
+    if (app.__redrawGraph === drawNow) app.__redrawGraph = null;
     drawScheduler.cancel();
   };
 

@@ -54,7 +54,7 @@ test("node history survives closing and reopening without duplicate entries", as
     useTooltipSettings.getState().setTooltipSettings("isClickTooltipActive", true);
   });
   const close = async () => act(async () => host.querySelector('[aria-label="Close tooltip"]').click());
-  const back = () => [...host.querySelectorAll("button")].find((button) => button.textContent === "Back");
+  const back = () => [...host.querySelectorAll("button")].find((button) => button.textContent === "Go to previous");
   await open("a");
   expect(back()).toBeUndefined();
   await close();
@@ -73,4 +73,45 @@ test("node history survives closing and reopening without duplicate entries", as
   await open("b");
   expect(back()).toBeDefined();
   expect(useTooltipSettings.getState().tooltipSettings.clickTooltipHistory.map((entry) => entry.node)).toEqual(["a", "b"]);
+});
+
+test("compact focus opens details, hides them, and clears with Escape", async () => {
+  globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  useGraphState.getState().setGraphState("graph", { data: { nodes: [{ id: "a" }, { id: "b" }], links: [] } });
+  useTooltipSettings.getState().setTooltipSettings("clickTooltipData", { node: "a", x: 30, y: 30 });
+  useTooltipSettings.getState().setTooltipSettings("isNodeFocusOnly", true);
+  host = document.createElement("div"); document.body.appendChild(host); root = createRoot(host);
+  await act(async () => root.render(<Tooltips />));
+  const click = async (text) => act(async () => [...document.querySelectorAll("button")].find((button) => button.textContent === text).click());
+  expect(document.querySelector(".tooltip-popup")).toBeNull();
+  expect(document.querySelector(".node-focus-bar").textContent).toContain("Focused: a");
+  // History must work even when details have never been opened.
+  await act(async () => useTooltipSettings.getState().setTooltipSettings("clickTooltipData", { node: "b", x: 50, y: 50 }));
+  await click("Go to previous");
+  expect(useTooltipSettings.getState().tooltipSettings.clickTooltipData.node).toBe("a");
+  expect(document.querySelector(".tooltip-popup")).toBeNull();
+  await click("Details");
+  expect(document.querySelector(".tooltip-popup")).not.toBeNull();
+  expect(document.querySelector(".node-focus-bar")).not.toBeNull();
+  await click("Hide details");
+  expect(document.querySelector(".tooltip-popup")).toBeNull();
+  // Dragging must preserve compact focus.
+  await act(async () => useTooltipSettings.getState().setTooltipSettings("isClickTooltipActive", false));
+  expect(useTooltipSettings.getState().tooltipSettings.isNodeFocusOnly).toBe(true);
+  await act(async () => document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true })));
+  expect(document.querySelector(".node-focus-bar")).toBeNull();
+  expect(useTooltipSettings.getState().tooltipSettings.isNodeFocusOnly).toBe(false);
+});
+
+test("focus clears when its node is removed by a filter", async () => {
+  globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  useGraphState.getState().setGraphState("graph", { data: { nodes: [{ id: "a" }], links: [] } });
+  useTooltipSettings.getState().setTooltipSettings("clickTooltipData", { node: "a", x: 30, y: 30 });
+  useTooltipSettings.getState().hideTooltipKeepFocus();
+  host = document.createElement("div"); document.body.appendChild(host); root = createRoot(host);
+  await act(async () => root.render(<Tooltips />));
+  expect(document.querySelector(".node-focus-bar")).not.toBeNull();
+  await act(async () => useGraphState.getState().setGraphState("graph", { data: { nodes: [], links: [] } }));
+  expect(document.querySelector(".node-focus-bar")).toBeNull();
+  expect(useTooltipSettings.getState().tooltipSettings.isNodeFocusOnly).toBe(false);
 });

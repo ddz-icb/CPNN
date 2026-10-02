@@ -24,7 +24,7 @@ import { NodeStatistics } from "./nodeStatistics.jsx";
 
 export function ClickTooltip() {
   const { theme } = useTheme();
-  const { tooltipSettings, setTooltipSettings, setClickTooltipHistory: setHistory } = useTooltipSettings();
+  const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
   const { graphState } = useGraphState();
   const { colorschemeState } = useColorschemeState();
   const { pixiState } = usePixiState();
@@ -33,8 +33,6 @@ export function ClickTooltip() {
   const viewerRef = useRef(null);
   const [view, setView] = useState("details");
   const isAdjacentView = view === "adjacent";
-  const history = tooltipSettings.clickTooltipHistory ?? [];
-  const isGoingBack = useRef(false);
 
   const clickData = tooltipSettings.clickTooltipData;
   const nodeId = clickData?.node;
@@ -47,19 +45,6 @@ export function ClickTooltip() {
   const [isPdbModelReady, setIsPdbModelReady] = useState(false);
   const hasPdbModel = Boolean(responsePdb?.data);
   const isTooltipApiReady = Boolean(!nodeId || (uniprotStatus !== "idle" && isApiComplete && (!hasPdbModel || isPdbModelReady)));
-
-  // Push to history whenever the node changes, unless this change was triggered by going back.
-  useEffect(() => {
-    if (!clickData) return;
-    if (isGoingBack.current) {
-      isGoingBack.current = false;
-      return;
-    }
-    setHistory((prev) => {
-      if (prev.length > 0 && prev[prev.length - 1].node === clickData.node) return prev;
-      return [...prev, clickData];
-    });
-  }, [clickData, setHistory]);
 
   useEffect(() => {
     if (nodeId) setView("details");
@@ -131,20 +116,6 @@ export function ClickTooltip() {
     [clickData, getNodeScreenPosition, setTooltipSettings],
   );
 
-  const handleBack = useCallback(() => {
-    if (history.length <= 1) return;
-    const newHistory = history.slice(0, -1);
-    const prevEntry = newHistory[newHistory.length - 1];
-    // Refresh the position in case the graph was panned/zoomed since the node was visited.
-    const prevNode = graphState.graph?.data?.nodes?.find((n) => n.id === prevEntry.node);
-    const freshPos = prevNode ? getNodeScreenPosition(prevNode) : null;
-    isGoingBack.current = true;
-    setHistory(newHistory);
-    setTooltipSettings("clickTooltipData", freshPos ? { ...prevEntry, ...freshPos } : prevEntry);
-  }, [history, graphState.graph, getNodeScreenPosition, setTooltipSettings, setHistory]);
-
-  const canGoBack = history.length > 1;
-
   const footerContent = useMemo(() => {
     if (view !== "details") {
       return (
@@ -173,13 +144,12 @@ export function ClickTooltip() {
           {pdbId && <TooltipPopupLinkItem text={"RCSB PDB"} link={`https://www.rcsb.org/structure/${pdbId}/`} />}
         </div>
         <div className="tooltip-popup-footer-actions">
-          {canGoBack && <Button className="tooltip-popup-action" text="Back" onClick={handleBack} />}
           <Button className="tooltip-popup-action" text="Statistics" data-tooltip-view="statistics" onClick={() => setView("statistics")} />
           <Button className="tooltip-popup-action" text="Neighbors" data-tooltip-view="adjacent" onClick={() => setView("adjacent")} />
         </div>
       </>
     );
-  }, [adjacentNodeList.length, canGoBack, handleBack, handleExportAdjacent, isAdjacentView, view, pdbId, protIdNoIsoform]);
+  }, [adjacentNodeList.length, handleExportAdjacent, isAdjacentView, view, pdbId, protIdNoIsoform]);
 
   const showDetails = view === "details";
 

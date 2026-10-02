@@ -15,6 +15,8 @@ const MIN_DOTTED_GAP = 2.5;
 const CHEVRON_MIN_SIZE = 5;
 const CHEVRON_MAX_SIZE = 10;
 const CHEVRON_POSITION_START = 0.44;
+const CHEVRON_REPEAT_SPACING = 100; // Graph units, so markers zoom with the link.
+const CHEVRON_MAX_REPEATS = 32;
 const CHEVRON_LENGTH_FACTOR = 0.9;
 const CHEVRON_FLARE_FACTOR = 0.7;
 const CHEVRON_STROKE_FACTOR = CHEVRON_LENGTH_FACTOR / Math.hypot(CHEVRON_LENGTH_FACTOR, CHEVRON_FLARE_FACTOR);
@@ -22,6 +24,11 @@ const CHEVRON_INNER_EXTENSION_FACTOR = CHEVRON_FLARE_FACTOR ** 2 / (CHEVRON_LENG
 export const MIN_3D_LINK_SCREEN_LENGTH = 2;
 
 let dottedLineTexture3D = null;
+
+function getFocusAlpha(link, nodeId) {
+  if (nodeId == null) return 1;
+  return getEndpointId(link.source) === nodeId || getEndpointId(link.target) === nodeId ? 1 : 0.15;
+}
 
 function roundToDecimals(value, decimals = 1) {
   const factor = 10 ** decimals;
@@ -84,7 +91,17 @@ function getChevronGeometry(x1, y1, x2, y2, direction, offsetX = 0, offsetY = 0,
   const wing = baseWing + extension;
   const longitudinalSpan = size * CHEVRON_LENGTH_FACTOR * (wing / baseWing);
 
+  // Preserve the original position for short links. Longer links distribute
+  // identical markers evenly, with a bounded amount of drawing per link.
+  const repeatCount = Math.min(CHEVRON_MAX_REPEATS, Math.max(1, Math.floor(length / (CHEVRON_REPEAT_SPACING * scale))));
+  const repeatStart = repeatCount === 1 ? 0 : 0.5 / repeatCount - CHEVRON_POSITION_START;
+
   return {
+    repeatCount,
+    repeatStartX: dx * repeatStart,
+    repeatStartY: dy * repeatStart,
+    repeatStepX: dx / repeatCount,
+    repeatStepY: dy / repeatCount,
     tipX,
     tipY,
     firstX: tipX - unitX * longitudinalSpan + perpendicularX * wing * outsideSign,
@@ -92,21 +109,28 @@ function getChevronGeometry(x1, y1, x2, y2, direction, offsetX = 0, offsetY = 0,
   };
 }
 
-function drawChevronGraphics(lines, geometry, color, width, scale = 1) {
+function drawChevronGraphics(lines, geometry, color, width, scale = 1, alpha = 1) {
   if (!geometry) return;
 
-  lines
-    .moveTo(geometry.firstX, geometry.firstY)
-    .lineTo(geometry.tipX, geometry.tipY)
-    .stroke({ color, width: width * scale * CHEVRON_STROKE_FACTOR, cap: "butt" });
+  for (let i = 0; i < geometry.repeatCount; i++) {
+    const offsetX = geometry.repeatStartX + i * geometry.repeatStepX;
+    const offsetY = geometry.repeatStartY + i * geometry.repeatStepY;
+    lines.moveTo(geometry.firstX + offsetX, geometry.firstY + offsetY)
+      .lineTo(geometry.tipX + offsetX, geometry.tipY + offsetY);
+  }
+  lines.stroke({ color, width: width * scale * CHEVRON_STROKE_FACTOR, cap: "butt", alpha });
 }
 
 function drawChevronCanvas(ctx, geometry, color, width, scale = 1) {
   if (!geometry) return;
   ctx.save();
   ctx.beginPath();
-  ctx.moveTo(geometry.firstX, geometry.firstY);
-  ctx.lineTo(geometry.tipX, geometry.tipY);
+  for (let i = 0; i < geometry.repeatCount; i++) {
+    const offsetX = geometry.repeatStartX + i * geometry.repeatStepX;
+    const offsetY = geometry.repeatStartY + i * geometry.repeatStepY;
+    ctx.moveTo(geometry.firstX + offsetX, geometry.firstY + offsetY);
+    ctx.lineTo(geometry.tipX + offsetX, geometry.tipY + offsetY);
+  }
   ctx.lineCap = "butt";
   ctx.setLineDash([]);
   ctx.strokeStyle = color;
@@ -141,7 +165,7 @@ function getDottedLineTexture3D() {
   return dottedLineTexture3D;
 }
 
-function drawDottedLine(lines, x1, y1, x2, y2, color, width) {
+function drawDottedLine(lines, x1, y1, x2, y2, color, width, alpha = 1) {
   const dx = x2 - x1;
   const dy = y2 - y1;
   const length = Math.sqrt(dx * dx + dy * dy);
@@ -158,7 +182,7 @@ function drawDottedLine(lines, x1, y1, x2, y2, color, width) {
     lines
       .moveTo(x1 + dx * startRatio, y1 + dy * startRatio)
       .lineTo(x1 + dx * endRatio, y1 + dy * endRatio)
-      .stroke({ color, width });
+      .stroke({ color, width, alpha });
   }
 }
 
@@ -366,9 +390,9 @@ export function drawLine(lines, link, linkWidth, colorscheme, linkAttribsToColor
 
   if (options.drawBody !== false) {
     if (isAdditionalLinkAttrib(attrib)) {
-      drawDottedLine(lines, geometry.sourceX, geometry.sourceY, geometry.targetX, geometry.targetY, color, linkWidth);
+      drawDottedLine(lines, geometry.sourceX, geometry.sourceY, geometry.targetX, geometry.targetY, color, linkWidth, options.alpha ?? 1);
     } else {
-      lines.moveTo(geometry.sourceX, geometry.sourceY).lineTo(geometry.targetX, geometry.targetY).stroke({ color, width: linkWidth });
+      lines.moveTo(geometry.sourceX, geometry.sourceY).lineTo(geometry.targetX, geometry.targetY).stroke({ color, width: linkWidth, alpha: options.alpha ?? 1 });
     }
   }
 
@@ -390,11 +414,13 @@ export function drawLine(lines, link, linkWidth, colorscheme, linkAttribsToColor
       ),
       color,
       linkWidth,
+      1,
+      options.alpha ?? 1,
     );
   }
 }
 
-export function updateLines(links, lineGraphics, linkWidth, linkColorscheme, linkAttribsToColorIndices) {
+export function updateLines(links, lineGraphics, linkWidth, linkColorscheme, linkAttribsToColorIndices, focusNodeId = null) {
   if (!lineGraphics || !links) return;
 
   if (Array.isArray(lineGraphics)) {
@@ -409,6 +435,7 @@ export function updateLines(links, lineGraphics, linkWidth, linkColorscheme, lin
         continue;
       }
       drawLine(graphic, link, linkWidth, linkColorscheme.data, linkAttribsToColorIndices, layouts.get(i));
+      graphic.alpha = getFocusAlpha(link, focusNodeId);
       graphic.visible = true;
       graphic.zIndex = -getChevronOutwardRank(layouts.get(i));
     }
@@ -419,14 +446,14 @@ export function updateLines(links, lineGraphics, linkWidth, linkColorscheme, lin
   lineGraphics.visible = true;
   const layouts = getParallelLinkLayoutData(links);
   for (let index = 0; index < links.length; index += 1) {
-    drawLine(lineGraphics, links[index], linkWidth, linkColorscheme.data, linkAttribsToColorIndices, layouts.get(index), { drawChevron: false });
+    drawLine(lineGraphics, links[index], linkWidth, linkColorscheme.data, linkAttribsToColorIndices, layouts.get(index), { drawChevron: false, alpha: getFocusAlpha(links[index], focusNodeId) });
   }
   for (const { link, layout } of getChevronRenderEntries(links, layouts)) {
-    drawLine(lineGraphics, link, linkWidth, linkColorscheme.data, linkAttribsToColorIndices, layout, { drawBody: false });
+    drawLine(lineGraphics, link, linkWidth, linkColorscheme.data, linkAttribsToColorIndices, layout, { drawBody: false, alpha: getFocusAlpha(link, focusNodeId) });
   }
 }
 
-export function updateLines3D(links, lineGraphics, linkWidth, linkColorscheme, linkAttribsToColorIndices, projections) {
+export function updateLines3D(links, lineGraphics, linkWidth, linkColorscheme, linkAttribsToColorIndices, projections, focusNodeId = null) {
   if (!Array.isArray(lineGraphics)) return;
 
   const linkCount = Array.isArray(links) ? links.length : 0;
@@ -494,6 +521,7 @@ export function updateLines3D(links, lineGraphics, linkWidth, linkColorscheme, l
       const direction = getLinkDirection(link);
 
       sprite.visible = true;
+      sprite.alpha = getFocusAlpha(link, focusNodeId);
       sprite.position.set(midX + offsetX, midY + offsetY);
       sprite.rotation = angle;
       sprite.width = length;
@@ -504,6 +532,7 @@ export function updateLines3D(links, lineGraphics, linkWidth, linkColorscheme, l
 
       const marker = sprite.directionMarker;
       if (marker) {
+        marker.alpha = sprite.alpha;
         marker.clear();
         marker.visible = direction !== LINK_DIRECTIONS.BOTH;
         if (marker.visible) {
