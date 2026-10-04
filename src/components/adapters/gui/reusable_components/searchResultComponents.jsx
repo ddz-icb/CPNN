@@ -1,71 +1,34 @@
-import { DetailRow, ToggleList } from "./sidebarComponents.jsx";
-import { AttributeList } from "./AttributeLabel.jsx";
+import { DetailRow, TableList, ToggleList } from "./sidebarComponents.jsx";
 import {
   formatSearchDetailValue,
-  formatSearchValues,
   formatSearchWeight,
-  stringifySearchValue,
 } from "../../../domain/service/search/search.js";
 
-export function SearchResultSection({ total, maxResults, heading, data, expandedId, getItemId, onItemToggle, renderExpandedContent }) {
+export function SearchResultSection({ total, maxResults, heading, data, expandedId, getItemId, onItemToggle, renderExpandedContent, showSecondary = true }) {
   return (
     <>
-      <ToggleList
-        heading={heading}
-        data={data}
-        displayKey={"primaryText"}
-        secondaryKey={"secondaryText"}
-        expandedId={expandedId}
-        getItemId={getItemId}
-        onItemToggle={onItemToggle}
-        renderExpandedContent={renderExpandedContent}
-      />
+      {renderExpandedContent ? (
+        <ToggleList
+          heading={heading}
+          data={data}
+          displayKey={"primaryText"}
+          secondaryKey={showSecondary ? "secondaryText" : undefined}
+          expandedId={expandedId}
+          getItemId={getItemId}
+          onItemToggle={onItemToggle}
+          renderExpandedContent={renderExpandedContent}
+        />
+      ) : (
+        <TableList
+          heading={heading}
+          data={data}
+          displayKey={"primaryText"}
+          secondaryKey={showSecondary ? "secondaryText" : undefined}
+          onItemClick={onItemToggle}
+        />
+      )}
       {total > maxResults && <SearchOverflowHint total={total} maxResults={maxResults} />}
     </>
-  );
-}
-
-export function NodeEntriesBlock({ entries }) {
-  const hasEntries = Array.isArray(entries) && entries.length > 0;
-
-  return (
-    <div className="toggle-list-detail-item toggle-list-detail-block">
-      {hasEntries ? (
-        <table className="toggle-list-detail-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Phosphosites</th>
-            </tr>
-          </thead>
-          <tbody>
-            {entries.map(({ id, name, phosphosites }, index) => {
-              const phosphositeText = formatSearchValues(phosphosites);
-              return (
-                <tr key={`${id}-${name}-${index}`}>
-                  <td title={stringifySearchValue(id) || undefined}>{formatSearchDetailValue(id)}</td>
-                  <td title={stringifySearchValue(name) || undefined}>{formatSearchDetailValue(name)}</td>
-                  <td title={phosphositeText === "None" ? undefined : phosphositeText}>{phosphositeText}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      ) : (
-        <span className="text-secondary toggle-list-detail-value">None</span>
-      )}
-    </div>
-  );
-}
-
-export function SearchNodeDetails({ item, displayName, entries }) {
-  return (
-    <div className="toggle-list-details">
-      <DetailRow label={"Name"} value={formatSearchDetailValue(displayName || item?.nodeId)} />
-      <NodeEntriesBlock entries={entries} />
-      <DetailRow label={"Annotations"} value={<AttributeList values={item?.node?.attribs} />} />
-    </div>
   );
 }
 

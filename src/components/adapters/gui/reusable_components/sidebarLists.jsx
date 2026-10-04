@@ -33,6 +33,18 @@ export function TableList({
                 <td
                   className="item-table-text"
                   onClick={() => onItemClick && onItemClick(item)}
+                  tabIndex={onItemClick ? 0 : undefined}
+                  role={onItemClick ? "button" : undefined}
+                  onKeyDown={
+                    onItemClick
+                      ? (event) => {
+                          if (event.key === "Enter" || event.key === " ") {
+                            event.preventDefault();
+                            onItemClick(item);
+                          }
+                        }
+                      : undefined
+                  }
                   {...getTooltipAttributes(rowTooltipContent, `item-tooltip-${instanceId}-${index}`)}
                 >
                   <ListItemText

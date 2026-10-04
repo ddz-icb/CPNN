@@ -5,7 +5,7 @@ import { centerGraphInContainer, seedNodePositions } from "./graphLayout.js";
 import { buildLineLayers } from "./lineGraphics.js";
 import { drawCircle } from "./nodes.js";
 
-function buildNodeGraphics(nodes, theme, colorschemeState, setTooltipSettings, enableSorting) {
+function buildNodeGraphics(nodes, theme, colorschemeState, setTooltipSettings, getTooltipSettings, enableSorting) {
   const nodeContainers = new PIXI.Container();
   nodeContainers.sortableChildren = !!enableSorting;
 
@@ -20,7 +20,7 @@ function buildNodeGraphics(nodes, theme, colorschemeState, setTooltipSettings, e
     circle.x = node.x;
     circle.y = node.y;
     nodeContainers.addChild(circle);
-    initTooltips(circle, node, setTooltipSettings);
+    initTooltips(circle, node, setTooltipSettings, getTooltipSettings);
 
     let nodeLabel = new PIXI.BitmapText(getBitMapStyle(node.id));
     nodeLabel.style = getTextStyle(theme.textColor);
@@ -48,14 +48,21 @@ function buildGridGraphics(container, theme, show) {
   return grid;
 }
 
-export function setupStage({ app, graph, container, theme, colorschemeState, setTooltipSettings, threeD, show3DGrid }) {
+export function setupStage({ app, graph, container, theme, colorschemeState, setTooltipSettings, getTooltipSettings, threeD, show3DGrid }) {
   if (!app || !graph?.data?.nodes?.length) return null;
 
   seedNodePositions(graph.data.nodes, container);
   centerGraphInContainer(graph.data.nodes, container);
 
   const grid3D = buildGridGraphics(container, theme, threeD && show3DGrid);
-  const { nodeContainers, nodeMap } = buildNodeGraphics(graph.data.nodes, theme, colorschemeState, setTooltipSettings, threeD);
+  const { nodeContainers, nodeMap } = buildNodeGraphics(
+    graph.data.nodes,
+    theme,
+    colorschemeState,
+    setTooltipSettings,
+    getTooltipSettings,
+    threeD,
+  );
   const { lines2D, lines3D, activeLines } = buildLineLayers(graph, nodeContainers, threeD);
   app.stage.addChild(grid3D);
   app.stage.addChild(lines2D);

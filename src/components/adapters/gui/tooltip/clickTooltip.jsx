@@ -17,10 +17,15 @@ import { describeSector, getColor } from "../../../domain/service/canvas_drawing
 import { downloadNodeIdsCsv } from "../../../domain/service/download/download.js";
 import { usePixiState } from "../../state/pixiState.js";
 import { useRenderState } from "../../state/canvasState.js";
+import { useAppearance } from "../../state/appearanceState.js";
+import { useContainer } from "../../state/containerState.js";
 import { formatWeight, getAdjacentNodes } from "../../../domain/service/graph_calculations/graphUtils.js";
+import { centerOnNodes } from "../../../domain/service/canvas_interaction/centerView.js";
 
 import { getNodeStatistics } from "../../../domain/service/graph_calculations/nodeStatistics.js";
 import { NodeStatistics } from "./nodeStatistics.jsx";
+import { useCommunityState } from "../../state/communityState.js";
+import { CommunityDetails } from "../reusable_components/communityDetails.jsx";
 
 export function ClickTooltip() {
   const { theme } = useTheme();
@@ -29,10 +34,12 @@ export function ClickTooltip() {
   const { colorschemeState } = useColorschemeState();
   const { pixiState } = usePixiState();
   const { renderState } = useRenderState();
+  const { communityState } = useCommunityState();
 
   const viewerRef = useRef(null);
   const [view, setView] = useState("details");
   const isAdjacentView = view === "adjacent";
+  const isCommunityView = view === "community";
 
   const clickData = tooltipSettings.clickTooltipData;
   const nodeId = clickData?.node;
@@ -41,7 +48,7 @@ export function ClickTooltip() {
   const { displayName, entries: nodeEntries, hasPhosphosites } = useNodeDetails(nodeId);
   const proteinDetails = useProteinDetails(nodeId);
   const { fullName, description, pdbId, protIdNoIsoform, responsePdb, uniprotStatus, pdbStatus, isApiComplete } = proteinDetails;
-  const heading = displayName || nodeId;
+  const nodeHeading = displayName || nodeId;
   const [isPdbModelReady, setIsPdbModelReady] = useState(false);
   const hasPdbModel = Boolean(responsePdb?.data);
   const isTooltipApiReady = Boolean(!nodeId || (uniprotStatus !== "idle" && isApiComplete && (!hasPdbModel || isPdbModelReady)));
@@ -49,6 +56,17 @@ export function ClickTooltip() {
   useEffect(() => {
     if (nodeId) setView("details");
   }, [nodeId]);
+
+  useEffect(() => {
+    if (!isTooltipActive || !nodeId) return;
+    const node = graphState.graph?.data?.nodes?.find(({ id }) => id === nodeId);
+    if (!node) return;
+    centerOnNodes([node], {
+      appearance: useAppearance.getState().appearance,
+      renderState: useRenderState.getState().renderState,
+      container: useContainer.getState().container,
+    });
+  }, [isTooltipActive, nodeId]);
 
   useEffect(() => {
     if (!isTooltipActive) return;
@@ -72,6 +90,9 @@ export function ClickTooltip() {
     () => (view === "statistics" ? getNodeStatistics(graphState.graph?.data, nodeId) : null),
     [graphState.graph, nodeId, view],
   );
+  const communityId = communityState.idToCommunity?.[nodeId];
+  const community = communityState.communities.find(({ id }) => id?.toString() === communityId?.toString());
+  const heading = isCommunityView && community ? community.label : nodeHeading;
 
   const adjacentNodeList = useMemo(() => adjacentNodes.map(({ node }) => node), [adjacentNodes]);
 
@@ -124,6 +145,10 @@ export function ClickTooltip() {
             {isAdjacentView && (
               <Button className="tooltip-popup-action" text="Export" onClick={handleExportAdjacent} disabled={!adjacentNodeList.length} />
             )}
+            {view === "statistics" && community && <Button className="tooltip-popup-action" text="community" onClick={() => setView("community")} />}
+            {isCommunityView && (
+              <Button className="tooltip-popup-action" text="Statistics" data-tooltip-view="statistics" onClick={() => setView("statistics")} />
+            )}
             <Button
               className="tooltip-popup-action"
               text={isAdjacentView ? "Statistics" : "Neighbors"}
@@ -147,7 +172,7 @@ export function ClickTooltip() {
         </div>
       </>
     );
-  }, [adjacentNodeList.length, handleExportAdjacent, isAdjacentView, view, pdbId, protIdNoIsoform]);
+  }, [adjacentNodeList.length, community, handleExportAdjacent, isAdjacentView, isCommunityView, view, pdbId, protIdNoIsoform]);
 
   const showDetails = view === "details";
 
@@ -178,7 +203,8 @@ export function ClickTooltip() {
           viewerRef={viewerRef}
         />
       </div>
-      {view === "statistics" && <NodeStatistics statistics={statistics} />}
+      {view === "statistics" && <NodeStatistics statistics={statistics} community={community} />}
+      {isCommunityView && <CommunityDetails community={community} showHeading={false} />}
       {isAdjacentView && (
         <AdjacentNodesList
           adjacentNodes={adjacentNodes}

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { SvgIcon } from "../reusable_components/SvgIcon.jsx";
 import eyeSvg from "../../../../assets/icons/eye.svg?raw";
 import piechartSvg from "../../../../assets/icons/piechart.svg?raw";
@@ -8,13 +8,23 @@ import { HeaderbarColorMapping } from "./headerbarMapping.jsx";
 import { HeaderbarStatistics } from "./headerbarStatistics.jsx";
 import { isTypingTarget, isPopupOpen } from "../hooks/keyboardUtils.js";
 import { useTooltipSettings } from "../../state/tooltipState.js";
+import { useCommunityState } from "../../state/communityState.js";
+import { useAppearance } from "../../state/appearanceState.js";
+import { clearViewOrbitCenter } from "../../../domain/service/canvas_interaction/centerView.js";
+import { CommunityDetails } from "../reusable_components/communityDetails.jsx";
 
 export function HeaderBar() {
   const [activePanel, setActivePanel] = useState(null);
   const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
+  const { communityState, setCommunityState } = useCommunityState();
+  const { appearance } = useAppearance();
   const isMappingActive = activePanel === "mapping";
   const isStatisticsActive = activePanel === "statistics";
   const isNodeDetailsActive = tooltipSettings.isClickTooltipActive;
+  const selectedCommunity = communityState.communities.find(
+    ({ id }) => id?.toString() === communityState.selectedCommunityId?.toString(),
+  );
+  const isCommunityActive = Boolean(selectedCommunity);
   const mappingPanelId = "headerbar-colormapping-panel";
   const statisticsPanelId = "headerbar-statistics-panel";
 
@@ -24,12 +34,20 @@ export function HeaderBar() {
       return;
     }
     if (isNodeDetailsActive) setTooltipSettings("isClickTooltipActive", false);
+    if (isCommunityActive) setCommunityState("selectedCommunityId", null);
     setActivePanel(panel);
   };
 
+  const closeCommunityPanel = useCallback(() => {
+    setCommunityState("selectedCommunityId", null);
+    clearViewOrbitCenter({ appearance });
+  }, [appearance, setCommunityState]);
+
   useEffect(() => {
-    if (isNodeDetailsActive) setActivePanel(null);
-  }, [isNodeDetailsActive]);
+    if (!isNodeDetailsActive) return;
+    setActivePanel(null);
+    if (communityState.selectedCommunityId != null) setCommunityState("selectedCommunityId", null);
+  }, [communityState.selectedCommunityId, isNodeDetailsActive, setCommunityState]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -39,12 +57,14 @@ export function HeaderBar() {
         e.preventDefault();
         const panel = key === "m" ? "mapping" : "statistics";
         if (isNodeDetailsActive) setTooltipSettings("isClickTooltipActive", false);
+        if (isCommunityActive) setCommunityState("selectedCommunityId", null);
         setActivePanel((current) => (current === panel ? null : panel));
         return;
       }
 
-      if (e.key === "Escape" && activePanel) {
-        setActivePanel(null);
+      if (e.key === "Escape") {
+        if (activePanel) setActivePanel(null);
+        if (isCommunityActive) closeCommunityPanel();
       }
     };
 
@@ -52,7 +72,7 @@ export function HeaderBar() {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [activePanel, isNodeDetailsActive, setTooltipSettings]);
+  }, [activePanel, closeCommunityPanel, isCommunityActive, isNodeDetailsActive, setCommunityState, setTooltipSettings]);
 
   const panelNavigation = (
     <nav className="right-panel-tabs" aria-label="Insights views">
@@ -83,7 +103,7 @@ export function HeaderBar() {
 
   return (
     <>
-      {!activePanel && !isNodeDetailsActive && (
+      {!activePanel && !isNodeDetailsActive && !isCommunityActive && (
         <div className="sidebar-dock insights-dock">
           <button
             className="icon-button sidebar-dock-button"
@@ -123,6 +143,19 @@ export function HeaderBar() {
           navigation={panelNavigation}
         >
           <HeaderbarStatistics />
+        </TooltipPopup>
+      )}
+      {isCommunityActive && !isNodeDetailsActive && (
+        <TooltipPopup
+          id="community-details-panel"
+          className="community-side-panel"
+          heading={selectedCommunity.label}
+          close={closeCommunityPanel}
+          contentKey={selectedCommunity.id}
+          role="region"
+          ariaLabel={`${selectedCommunity.label} details`}
+        >
+          <CommunityDetails community={selectedCommunity} showHeading={false} />
         </TooltipPopup>
       )}
     </>

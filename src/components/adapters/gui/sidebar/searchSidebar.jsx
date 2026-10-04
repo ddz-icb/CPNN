@@ -9,7 +9,8 @@ import { useAppearance } from "../../state/appearanceState.js";
 import { useRenderState } from "../../state/canvasState.js";
 import { useContainer } from "../../state/containerState.js";
 import { useGraphState } from "../../state/graphState.js";
-import { centerOnLink, centerOnNodes, clearViewOrbitCenter } from "../../../domain/service/canvas_interaction/centerView.js";
+import { useTooltipSettings } from "../../state/tooltipState.js";
+import { centerOnLink, clearViewOrbitCenter } from "../../../domain/service/canvas_interaction/centerView.js";
 import {
   getSearchLinkIds,
   getSearchLinkResults,
@@ -18,9 +19,8 @@ import {
   hasSameValues,
   parseSearchQuery,
 } from "../../../domain/service/search/search.js";
-import { useNodeDetails } from "../hooks/useNodeDetails.js";
 import { linkSearchDescription, nodeSearchDescription } from "./descriptions/searchDescriptions.jsx";
-import { SearchLinkDetails, SearchNodeDetails, SearchResultSection } from "../reusable_components/searchResultComponents.jsx";
+import { SearchLinkDetails, SearchResultSection } from "../reusable_components/searchResultComponents.jsx";
 
 const MAX_RESULTS = 30;
 
@@ -43,7 +43,7 @@ export function SearchSidebar() {
   const { renderState } = useRenderState();
   const { container } = useContainer();
   const { graphState } = useGraphState();
-  const { displayName, entries } = useNodeDetails(selectedNodeId);
+  const { setTooltipSettings } = useTooltipSettings();
 
   const nodeTextareaRef = useRef(null);
   const linkTextareaRef = useRef(null);
@@ -165,24 +165,23 @@ export function SearchSidebar() {
     const nodeId = item?.nodeId;
     if (!nodeId) return;
     const node = item?.node ?? matchingNodes?.find((n) => n.id === nodeId);
-    const nextSelection = selectedNodeId === nodeId ? null : nodeId;
+    if (!node) return;
     setAllSearchState({
       ...searchState,
-      selectedNodeId: nextSelection,
+      selectedNodeId: nodeId,
       selectedLinkId: null,
-      highlightedNodeIds: node && nextSelection ? [node.id] : [],
+      highlightedNodeIds: [node.id],
       highlightedLinkIds: [],
     });
-    if (!node || !nextSelection) {
-      clearViewOrbitCenter({ appearance });
-      return;
-    }
 
-    centerOnNodes([node], {
-      appearance,
-      renderState,
-      container,
+    setTooltipSettings("clickTooltipData", {
+      node: node.id,
+      nodeAttribs: node.attribs ?? [],
+      x: 0,
+      y: 0,
     });
+    setTooltipSettings("isHoverTooltipActive", false);
+    setTooltipSettings("isClickTooltipActive", true);
   };
 
   const handleLinkToggle = (item) => {
@@ -226,10 +225,9 @@ export function SearchSidebar() {
       total: nodeTotal,
       heading: `Node Matches (${nodeTotal})`,
       data: nodeResults,
-      expandedId: selectedNodeId,
+      showSecondary: false,
       getItemId: (item) => item?.nodeId,
       onItemToggle: handleNodeToggle,
-      renderExpandedContent: (item) => <SearchNodeDetails item={item} displayName={displayName} entries={entries} />,
     },
   ].filter((section) => section.total > 0);
 

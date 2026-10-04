@@ -1,4 +1,4 @@
-import { DetailRow, FieldBlock, SliderBlock, ToggleList } from "../reusable_components/sidebarComponents.jsx";
+import { FieldBlock, SliderBlock, TableList } from "../reusable_components/sidebarComponents.jsx";
 import { SvgIcon } from "../reusable_components/SvgIcon.jsx";
 import eyeSvg from "../../../../assets/icons/eye.svg?raw";
 import rotateArrowSvg from "../../../../assets/icons/rotateArrow.svg?raw";
@@ -15,6 +15,7 @@ import { getCentroid } from "../../../domain/service/graph_calculations/graphUti
 import { centerOnNode, clearViewOrbitCenter } from "../../../domain/service/canvas_interaction/centerView.js";
 import { communityForceStrengthDescription } from "./descriptions/physicsDescriptions.jsx";
 import { communityFilterSizeDescription } from "./descriptions/filterDescriptions.jsx";
+import { useTooltipSettings } from "../../state/tooltipState.js";
 
 const VisibilityIcon = ({ item, ...props }) => <SvgIcon svg={eyeSvg} className={item?.isHidden ? "icon-muted" : ""} {...props} />;
 
@@ -26,6 +27,7 @@ export function CommunitySidebar() {
   const { renderState } = useRenderState();
   const { container } = useContainer();
   const { physics, setPhysics } = usePhysics();
+  const { setTooltipSettings } = useTooltipSettings();
 
   const graphHiddenSet = new Set((filter.communityHiddenIds ?? []).map((id) => id?.toString()));
   const rows = communityState.communities.map((community) => {
@@ -79,6 +81,7 @@ export function CommunitySidebar() {
     const communityId = item?.id?.toString();
     if (!communityId) return;
     const nextSelection = communityState.selectedCommunityId === communityId ? null : communityId;
+    setTooltipSettings("isClickTooltipActive", false);
     setCommunityState("selectedCommunityId", nextSelection);
     if (!nextSelection) {
       clearViewOrbitCenter({ appearance });
@@ -162,25 +165,12 @@ export function CommunitySidebar() {
         infoHeading={"Filter communities by size"}
         infoDescription={communityFilterSizeDescription}
       />
-      <ToggleList
+      <TableList
         heading={`Communities (${rows.length})`}
         data={rows}
         displayKey={"primaryText"}
         secondaryKey={"secondaryText"}
-        expandedId={communityState.selectedCommunityId}
-        getItemId={(community) => community?.id}
-        onItemToggle={handleFocusCommunity}
-        renderExpandedContent={(community) => (
-          <div className="toggle-list-details">
-            <DetailRow label={"Label"} value={community.label} />
-            <DetailRow label={"Nodes"} value={community.size} />
-            <DetailRow label={"Internal Links"} value={community.linkCount ?? 0} />
-            <DetailRow label={"External Links"} value={community.externalLinkCount ?? 0} />
-            <DetailRow label={"Community Density"} value={formatDensity(community.density)} />
-            <DetailRow label={"Top node attributes"} value={formatTopAttributes(community.topNodeAttribs) || "None"} />
-            <DetailRow label={"Top link attributes"} value={formatTopAttributes(community.topLinkAttribs) || "None"} />
-          </div>
-        )}
+        onItemClick={handleFocusCommunity}
         ActionIcon={VisibilityIcon}
         onActionIconClick={handleToggleVisibility}
         actionIconTooltipContent={(item) => (item?.isHidden ? "Show community" : "Hide community")}
@@ -190,14 +180,4 @@ export function CommunitySidebar() {
       />
     </>
   );
-}
-
-function formatTopAttributes(topAttributes) {
-  if (!Array.isArray(topAttributes) || topAttributes.length === 0) return "";
-  return topAttributes.map((entry) => `${entry.name} (${entry.count})`).join(", ");
-}
-
-function formatDensity(value) {
-  if (!Number.isFinite(value)) return "0";
-  return value.toFixed(2);
 }

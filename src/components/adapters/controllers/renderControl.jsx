@@ -163,6 +163,7 @@ export function RenderControl() {
         theme,
         colorschemeState,
         setTooltipSettings,
+        getTooltipSettings: () => useTooltipSettings.getState().tooltipSettings,
         threeD: appearance.threeD,
         show3DGrid: appearance.show3DGrid,
       });
