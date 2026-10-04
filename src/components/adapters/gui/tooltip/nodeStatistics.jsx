@@ -18,7 +18,9 @@ export function NodeStatistics({ statistics, community }) {
         ))}
       </dl>
       <section aria-labelledby="node-link-statistics">
-        <h4 className="table-list-heading" id="node-link-statistics">Links by type</h4>
+        <h4 className="table-list-heading" id="node-link-statistics">
+          Links by type
+        </h4>
         <table>
           <thead>
             <tr>
@@ -49,7 +51,9 @@ export function NodeStatistics({ statistics, community }) {
         </table>
       </section>
       <section aria-labelledby="node-neighbor-statistics">
-        <h4 className="table-list-heading" id="node-neighbor-statistics">Adjacent nodes by type</h4>
+        <h4 className="table-list-heading" id="node-neighbor-statistics">
+          Adjacent nodes by type
+        </h4>
         {s.nodesByType.length ? (
           <table>
             <thead>
@@ -69,17 +73,6 @@ export function NodeStatistics({ statistics, community }) {
           </table>
         ) : (
           <p>No adjacent nodes.</p>
-        )}
-      </section>
-      <section className="node-statistics-community" aria-labelledby="node-community-statistics">
-        <h4 className="table-list-heading" id="node-community-statistics">Community</h4>
-        {community ? (
-          <div className="node-statistics-community-row">
-            <strong>{community.label}</strong>
-            <span>{(community.size ?? 0).toLocaleString()} nodes</span>
-          </div>
-        ) : (
-          <p className="community-attribute-empty">No community assignment</p>
         )}
       </section>
     </div>
