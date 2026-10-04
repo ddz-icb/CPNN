@@ -10,15 +10,9 @@ import { useGraphState } from "../../src/components/adapters/state/graphState.js
 import { tooltipInit, useTooltipSettings } from "../../src/components/adapters/state/tooltipState.js";
 import { Tooltips } from "../../src/components/adapters/gui/tooltip/tooltips.jsx";
 let root, host;
-// jsdom has no layout engine; positioning is covered by the browser tests.
-beforeEach(() => vi.stubGlobal("ResizeObserver", class {
-  observe() {}
-  disconnect() {}
-}));
 afterEach(async () => {
   if (root) await act(async () => root.unmount());
   host?.remove();
-  vi.unstubAllGlobals();
   useTooltipSettings.getState().setAllTooltipSettings({ ...tooltipInit });
 });
 test("node popup switches between statistics, adjacency and details and updates with filters", async () => {

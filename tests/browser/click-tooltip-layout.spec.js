@@ -5,13 +5,17 @@ import { expectLayoutFits } from "./layout-checks.js";
 // don't depend on where the moving canvas happens to draw a node.
 async function openTooltip(page, position) {
   await expect.poll(() => page.evaluate(async () => {
-    const { useGraphState } = await import("/src/components/adapters/state/graphState.js");
-    return useGraphState.getState().graphState.graph?.data?.nodes?.length ?? 0;
+    const { usePixiState } = await import("/src/components/adapters/state/pixiState.js");
+    return Object.keys(usePixiState.getState().pixiState.nodeMap ?? {}).length;
   })).toBeGreaterThan(0);
+  // The initial node map is replaced once the startup filters finish.
+  await page.waitForTimeout(500);
   await page.evaluate(async (position) => {
     const { useGraphState } = await import("/src/components/adapters/state/graphState.js");
+    const { usePixiState } = await import("/src/components/adapters/state/pixiState.js");
     const { useTooltipSettings } = await import("/src/components/adapters/state/tooltipState.js");
-    const node = useGraphState.getState().graphState.graph.data.nodes[0];
+    const currentNodeIds = new Set(useGraphState.getState().graphState.graph.data.nodes.map((node) => node.id));
+    const node = Object.values(usePixiState.getState().pixiState.nodeMap).find((entry) => currentNodeIds.has(entry.node.id)).node;
     const { setTooltipSettings } = useTooltipSettings.getState();
     setTooltipSettings("clickTooltipData", {
       node: node.id,
@@ -20,7 +24,7 @@ async function openTooltip(page, position) {
     });
     setTooltipSettings("isClickTooltipActive", true);
   }, position);
-  return page.locator(".tooltip-popup");
+  return page.getByRole("dialog", { name: /Node details:/ });
 }
 
 async function expectTooltipFits(tooltip) {
@@ -52,12 +56,11 @@ for (const corner of ["top-left", "top-right", "bottom-left", "bottom-right"]) {
     const position = { x: corner.endsWith("right") ? width - 20 : 20, y: corner.startsWith("bottom") ? height - 20 : 20 };
     const tooltip = await openTooltip(page, position);
     await expectTooltipFits(tooltip);
-    // It should open beside the click, flipping to the left near the right edge.
+    // Node details are docked to the right instead of following the click.
     const box = await tooltip.boundingBox();
-    if (corner.endsWith("right")) expect(box.x + box.width).toBeLessThan(position.x);
-    else if (position.x + box.width + 14 <= width - 8) expect(box.x).toBeGreaterThan(position.x);
-    if (corner.startsWith("bottom")) expect(box.y + box.height).toBeLessThanOrEqual(position.y + 1);
-    else expect(Math.abs(box.y - position.y)).toBeLessThanOrEqual(1);
+    expect(Math.abs(box.x + box.width - width)).toBeLessThanOrEqual(1);
+    expect(Math.abs(box.y)).toBeLessThanOrEqual(1);
+    expect(Math.abs(box.height - height)).toBeLessThanOrEqual(1);
 
     const views = await tooltip.locator("[data-tooltip-view]").evaluateAll(
       (buttons) => buttons.map((button) => button.dataset.tooltipView),
@@ -80,6 +83,36 @@ test("Click tooltip: remains on screen when the window shrinks", async ({ page }
   await expectTooltipFits(tooltip);
   await page.setViewportSize({ width: 360, height: 600 });
   await expectTooltipFits(tooltip);
+});
+
+test("Right rail switches cleanly between mapping, graph statistics, and node details", async ({ page }) => {
+  const { width, height } = page.viewportSize();
+
+  await page.getByRole("button", { name: "Open insights sidebar" }).click();
+  const mapping = page.getByRole("region", { name: "Color mapping" });
+  await expectLayoutFits(mapping);
+  await expect(page.locator(".tooltip-popup")).toHaveCount(1);
+
+  await mapping.getByRole("button", { name: "Statistics", exact: true }).click();
+  const statistics = page.getByRole("region", { name: "Graph statistics" });
+  await expect(mapping).toHaveCount(0);
+  await expectLayoutFits(statistics);
+
+  const statisticsBox = await statistics.boundingBox();
+  expect(Math.abs(statisticsBox.x + statisticsBox.width - width)).toBeLessThanOrEqual(1);
+  expect(Math.abs(statisticsBox.y)).toBeLessThanOrEqual(1);
+  expect(Math.abs(statisticsBox.height - height)).toBeLessThanOrEqual(1);
+
+  const nodeDetails = await openTooltip(page, { x: 100, y: 100 });
+  await expect(statistics).toHaveCount(0);
+  await expectTooltipFits(nodeDetails);
+  await expect(page.locator(".tooltip-popup")).toHaveCount(1);
+
+  await nodeDetails.getByRole("button", { name: "Close tooltip" }).click();
+  await page.getByRole("button", { name: "Open insights sidebar" }).click();
+  await expect(nodeDetails).toHaveCount(0);
+  await expectLayoutFits(mapping);
+  await expect(page.locator(".tooltip-popup")).toHaveCount(1);
 });
 
 test("Node clicks show compact focus with previous-node navigation", async ({ page }) => {

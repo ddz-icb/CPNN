@@ -25,10 +25,7 @@ export function HeaderbarStatistics() {
   return (
     <div className="headerbar-statistics">
       <div className="statistics-heading">
-        <div>
-          <h2>Graph statistics</h2>
-          <p>{hasGraph ? "Current displayed graph" : "No graph loaded"}</p>
-        </div>
+        <p>{hasGraph ? "Current displayed graph" : "No graph loaded"}</p>
       </div>
 
       <div className="statistics-metric-grid">

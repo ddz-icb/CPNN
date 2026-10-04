@@ -11,12 +11,27 @@ export function PortalTooltip(props) {
   return createPortal(<Tooltip {...props} />, document.body);
 }
 
-export function TooltipPopup({ heading, close, contentKey, children, tooltipRef, isPositioned, footer, dataAttributes = {} }) {
+export function TooltipPopup({
+  heading,
+  close,
+  contentKey,
+  children,
+  footer,
+  navigation,
+  className = "",
+  id,
+  role = "dialog",
+  ariaLabel,
+  dataAttributes = {},
+}) {
+  const panelClassName = ["tooltip", "tooltip-popup", className].filter(Boolean).join(" ");
+
   return (
-    <div
-      className="tooltip tooltip-popup"
-      ref={tooltipRef}
-      style={{ visibility: isPositioned ? "visible" : "hidden" }}
+    <aside
+      id={id}
+      className={panelClassName}
+      role={role}
+      aria-label={ariaLabel ?? `Node details: ${heading}`}
       {...dataAttributes}
     >
       <div className="tooltip-popup-content">
@@ -28,6 +43,7 @@ export function TooltipPopup({ heading, close, contentKey, children, tooltipRef,
             </button>
           </div>
         </div>
+        {navigation && <div className="tooltip-popup-navigation">{navigation}</div>}
         <div className="tooltip-popup-body">
           <div key={contentKey} className="tooltip-popup-body-inner">
             {children}
@@ -35,7 +51,7 @@ export function TooltipPopup({ heading, close, contentKey, children, tooltipRef,
         </div>
         {footer && <div className="tooltip-popup-footer">{footer}</div>}
       </div>
-    </div>
+    </aside>
   );
 }
 

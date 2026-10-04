@@ -1,4 +1,4 @@
-import { useState, useEffect, useLayoutEffect, useRef, useCallback, useMemo } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import * as $3Dmol from "3dmol/build/3Dmol.js";
 
 import log from "../../logging/logger.js";
@@ -62,8 +62,6 @@ export function ClickTooltip() {
   }, [isTooltipActive, setTooltipSettings]);
 
   usePdbViewer(viewerRef, responsePdb, theme.name, isTooltipActive, setIsPdbModelReady);
-
-  const { tooltipRef, isPositioned } = useTooltipPosition(isTooltipActive, clickData, view);
 
   const nodeColors = colorschemeState.nodeColorscheme?.data ?? [];
   const nodeAttribsToColorIndices = colorschemeState.nodeAttribsToColorIndices ?? [];
@@ -158,8 +156,6 @@ export function ClickTooltip() {
       heading={heading}
       close={() => setTooltipSettings("isClickTooltipActive", false)}
       contentKey={nodeId}
-      tooltipRef={tooltipRef}
-      isPositioned={isPositioned}
       footer={footerContent}
       dataAttributes={{
         "data-tooltip-api-ready": isTooltipApiReady ? "true" : "false",
@@ -220,63 +216,6 @@ function NodeDetails({ nodeId, nodeEntries, hasPhosphosites, fullName, nodeAttri
       <div className={`pdb-viewer${responsePdb?.data ? "" : " pdb-viewer--pending"}`} ref={viewerRef} />
     </>
   );
-}
-
-const TOOLTIP_OFFSET = 14; // gap between click point and tooltip edge (px)
-const SCREEN_MARGIN = 8; // minimum distance from viewport edges (px)
-
-function useTooltipPosition(isActive, clickData, view) {
-  const tooltipRef = useRef(null);
-  const [isPositioned, setIsPositioned] = useState(false);
-
-  useLayoutEffect(() => {
-    if (!isActive || !clickData || !tooltipRef.current) {
-      setIsPositioned(false);
-      return;
-    }
-
-    const el = tooltipRef.current;
-    const updatePosition = () => {
-      const { width, height } = el.getBoundingClientRect();
-      const { x = 0, y = 0 } = clickData;
-      const vw = window.innerWidth;
-      const vh = window.innerHeight;
-
-      // Default: open to the right and aligned to the click point vertically
-      let left = x + TOOLTIP_OFFSET;
-      let top = y;
-
-      // Flip horizontally if it clips the right edge
-      if (left + width > vw - SCREEN_MARGIN) {
-        left = x - width - TOOLTIP_OFFSET;
-      }
-
-      // Flip vertically if it clips the bottom
-      if (top + height > vh - SCREEN_MARGIN) {
-        top = y - height;
-      }
-
-      // Final clamp to guarantee it stays within the viewport
-      left = Math.max(SCREEN_MARGIN, Math.min(left, vw - width - SCREEN_MARGIN));
-      top = Math.max(SCREEN_MARGIN, Math.min(top, vh - height - SCREEN_MARGIN));
-
-      el.style.left = `${left}px`;
-      el.style.top = `${top}px`;
-      setIsPositioned(true);
-    };
-
-    updatePosition();
-    // Async content and viewport changes can alter the available space.
-    const observer = new ResizeObserver(updatePosition);
-    observer.observe(el);
-    window.addEventListener("resize", updatePosition);
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("resize", updatePosition);
-    };
-  }, [isActive, clickData, view]);
-
-  return { tooltipRef, isPositioned };
 }
 
 function usePdbViewer(viewerRef, responsePdb, themeName, isTooltipActive, onModelReadyChange) {
