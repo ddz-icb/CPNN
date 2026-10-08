@@ -1,12 +1,5 @@
 import { getComponentSizes, getEndpointId, getNodeDegreeData } from "./graphUtils.js";
 
-function median(values) {
-  if (values.length === 0) return 0;
-  const sorted = [...values].sort((a, b) => a - b);
-  const middle = Math.floor(sorted.length / 2);
-  return sorted.length % 2 === 0 ? (sorted[middle - 1] + sorted[middle]) / 2 : sorted[middle];
-}
-
 function getAttributeCounts(items) {
   const counts = new Map();
 
@@ -29,12 +22,16 @@ export function calculateGraphStatistics(graphData) {
   const nodeIdSet = new Set(nodes.map((node) => node.id));
   const degrees = getNodeDegreeData(normalizedGraph);
   const uniqueEdges = new Set();
+  let selfLoopCount = 0;
 
   links.forEach((link) => {
     const source = getEndpointId(link.source);
     const target = getEndpointId(link.target);
     if (!nodeIdSet.has(source) || !nodeIdSet.has(target)) return;
-    if (source === target) return;
+    if (source === target) {
+      selfLoopCount += 1;
+      return;
+    }
     const edgeKey = JSON.stringify(String(source) < String(target) ? [source, target] : [target, source]);
     uniqueEdges.add(edgeKey);
   });
@@ -50,9 +47,11 @@ export function calculateGraphStatistics(graphData) {
 
   const nodeCount = nodes.length;
   const linkCount = links.length;
+  const directedLinkCount = links.filter((link) => link?.directed).length;
+  const weightedLinks = links.filter((link) => Number.isFinite(link?.weight));
+  const weightedLinkCount = weightedLinks.length;
   const possibleEdges = (nodeCount * (nodeCount - 1)) / 2;
   const componentSizes = getComponentSizes(normalizedGraph);
-  const largestComponentSize = componentSizes.reduce((largest, size) => Math.max(largest, size), 0);
 
   return {
     nodeCount,
@@ -62,10 +61,13 @@ export function calculateGraphStatistics(graphData) {
     componentCount: componentSizes.length,
     isolatedNodeCount: degreeValues.filter((degree) => degree === 0).length,
     minDegree,
-    medianDegree: median(degreeValues),
     maxDegree,
-    largestComponentSize,
-    largestComponentShare: nodeCount === 0 ? 0 : largestComponentSize / nodeCount,
+    directedLinkCount,
+    directedLinkShare: linkCount === 0 ? 0 : directedLinkCount / linkCount,
+    meanWeight: weightedLinkCount === 0
+      ? null
+      : weightedLinks.reduce((sum, link) => sum + link.weight, 0) / weightedLinkCount,
+    selfLoopCount,
     nodeAttributes: getAttributeCounts(nodes),
     linkAttributes: getAttributeCounts(links),
   };

@@ -4,20 +4,11 @@ import {
   formatStatisticPercent,
 } from "./statisticsFormatters.js";
 
-export function StatisticMetric({ label, value }) {
+export function StatisticMetric({ label, value, description }) {
   return (
-    <div className="statistics-metric">
-      <span className="statistics-metric-value">{value}</span>
+    <div className="statistics-metric" title={description}>
       <span className="statistics-metric-label">{label}</span>
-    </div>
-  );
-}
-
-export function StatisticRow({ label, value }) {
-  return (
-    <div className="statistics-row">
-      <span>{label}</span>
-      <strong>{value}</strong>
+      <strong className="statistics-metric-value">{value}</strong>
     </div>
   );
 }
