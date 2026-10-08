@@ -81,7 +81,7 @@ export function ClickTooltip({ onSelectInsightsPanel, onCloseInsightsPanel }) {
     return () => document.removeEventListener("keydown", onKeyDown, { capture: true });
   }, [isTooltipActive, onCloseInsightsPanel, setTooltipSettings]);
 
-  usePdbViewer(viewerRef, responsePdb, theme.name, isTooltipActive, setIsPdbModelReady);
+  usePdbViewer(viewerRef, responsePdb, theme.name, isTooltipActive, setIsPdbModelReady, nodeId);
 
   const nodeColors = colorschemeState.nodeColorscheme?.data ?? [];
   const nodeAttribsToColorIndices = colorschemeState.nodeAttribsToColorIndices ?? [];
@@ -166,7 +166,6 @@ export function ClickTooltip({ onSelectInsightsPanel, onCloseInsightsPanel }) {
       <>
         <div className="tooltip-popup-footer-links">
           {protIdNoIsoform && <TooltipPopupLinkItem text={"UniProt"} link={`https://www.uniprot.org/uniprotkb/${protIdNoIsoform}/`} />}
-          {pdbId && <TooltipPopupLinkItem text={"RCSB PDB"} link={`https://www.rcsb.org/structure/${pdbId}/`} />}
         </div>
         <div className="tooltip-popup-footer-actions">
           <Button className="tooltip-popup-action" text="Node statistics" data-tooltip-view="statistics" onClick={() => setView("statistics")} />
@@ -174,7 +173,7 @@ export function ClickTooltip({ onSelectInsightsPanel, onCloseInsightsPanel }) {
         </div>
       </>
     );
-  }, [adjacentNodeList.length, community, handleExportAdjacent, isAdjacentView, isCommunityView, view, pdbId, protIdNoIsoform]);
+  }, [adjacentNodeList.length, community, handleExportAdjacent, isAdjacentView, isCommunityView, view, protIdNoIsoform]);
 
   const showDetails = view === "details";
   const handleRightPanelSelect = useCallback(
@@ -247,7 +246,8 @@ function NodeDetails({ nodeId, nodeEntries, hasPhosphosites, fullName, nodeAttri
           </div>
         ))
       : "—";
-  const pdbValue = pdbId ? `${pdbId}${pdbStatus === "loading" ? " (loading model)" : ""}` : null;
+  const hasPdbModel = Boolean(responsePdb?.data);
+  const pdbStatusText = pdbStatus === "loading" ? "Loading 3D structure…" : !hasPdbModel ? "3D preview unavailable" : null;
 
   return (
     <>
@@ -256,19 +256,40 @@ function NodeDetails({ nodeId, nodeEntries, hasPhosphosites, fullName, nodeAttri
       {fullName && <TooltipPopupItem heading={"Full Name"} value={fullName} />}
       <TooltipPopupItem heading={"Annotations"} value={nodeAttribs.length ? <AttributeList values={nodeAttribs} /> : null} />
       {description && <TooltipPopupItem heading={"Description"} value={description} />}
-      {pdbValue && <TooltipPopupItem heading={"PDB Structure"} value={pdbValue} />}
-      <div className={`pdb-viewer${responsePdb?.data ? "" : " pdb-viewer--pending"}`} ref={viewerRef} />
+      <section className="pdb-structure-section" aria-labelledby="pdb-structure-heading" hidden={!pdbId}>
+        <div className="pdb-structure-heading">
+          <h3 id="pdb-structure-heading">3D structure</h3>
+          <a
+            href={`https://www.rcsb.org/structure/${pdbId}/`}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={`Open PDB ${pdbId} on RCSB PDB`}
+          >
+            PDB {pdbId}
+          </a>
+        </div>
+        <div className="pdb-viewer-frame" aria-busy={pdbStatus === "loading"}>
+          <div
+            className={`pdb-viewer${hasPdbModel ? "" : " pdb-viewer--pending"}`}
+            ref={viewerRef}
+            role="img"
+            aria-label={pdbId ? `3D molecular structure visualization for PDB ${pdbId}` : "3D molecular structure visualization"}
+          />
+          {pdbStatusText && <div className="pdb-viewer-status" role="status">{pdbStatusText}</div>}
+        </div>
+        {hasPdbModel && <p className="pdb-viewer-hint">Drag to rotate · Scroll to zoom</p>}
+      </section>
     </>
   );
 }
 
-function usePdbViewer(viewerRef, responsePdb, themeName, isTooltipActive, onModelReadyChange) {
+function usePdbViewer(viewerRef, responsePdb, themeName, isTooltipActive, onModelReadyChange, viewerKey) {
   const [viewer, setViewer] = useState(null);
 
-  const getTooltipBackground = useCallback(() => {
-    const tooltipEl = viewerRef.current?.closest(".tooltip") ?? viewerRef.current;
-    if (!tooltipEl) return null;
-    const { backgroundColor } = getComputedStyle(tooltipEl);
+  const getViewerBackground = useCallback(() => {
+    const viewerFrame = viewerRef.current?.closest(".pdb-viewer-frame") ?? viewerRef.current;
+    if (!viewerFrame) return null;
+    const { backgroundColor } = getComputedStyle(viewerFrame);
     const match = backgroundColor?.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
     if (!match) return backgroundColor || null;
 
@@ -278,21 +299,44 @@ function usePdbViewer(viewerRef, responsePdb, themeName, isTooltipActive, onMode
   }, [viewerRef]);
 
   useEffect(() => {
-    if (!viewerRef.current || viewer) return;
+    if (!viewer) return;
     try {
-      const backgroundColor = getTooltipBackground() ?? (themeName === "light" ? "#ffffff" : "#2a2e35");
+      viewer.clear();
+    } catch (error) {
+      log.error(error);
+    }
+    setViewer(null);
+  }, [viewerKey]);
+
+  useEffect(() => {
+    if (!viewerRef.current || viewer || !isTooltipActive || !responsePdb?.data) return;
+    try {
+      const backgroundColor = getViewerBackground() ?? (themeName === "light" ? "#eef2ff" : "#101849");
       const config = { backgroundColor, preserveDrawingBuffer: true };
       setViewer($3Dmol.createViewer(viewerRef.current, config));
     } catch (error) {
       log.error(error);
     }
-  }, [getTooltipBackground, themeName, viewer]);
+  }, [getViewerBackground, isTooltipActive, responsePdb, themeName, viewer]);
 
   useEffect(() => {
     if (!viewer) return;
-    const backgroundColor = getTooltipBackground() ?? (themeName === "light" ? "#ffffff" : "#2a2e35");
+    const backgroundColor = getViewerBackground() ?? (themeName === "light" ? "#eef2ff" : "#101849");
     viewer.setBackgroundColor(backgroundColor);
-  }, [getTooltipBackground, themeName, viewer]);
+    viewer.render();
+  }, [getViewerBackground, themeName, viewer]);
+
+  useEffect(() => {
+    if (!viewer || !viewerRef.current || typeof ResizeObserver === "undefined") return;
+    const resizeViewer = () => {
+      viewer.resize?.();
+      viewer.render();
+    };
+    const resizeObserver = new ResizeObserver(resizeViewer);
+    resizeObserver.observe(viewerRef.current);
+    resizeViewer();
+    return () => resizeObserver.disconnect();
+  }, [viewer, viewerRef]);
 
   useEffect(() => {
     if (!viewer) return;
@@ -312,6 +356,7 @@ function usePdbViewer(viewerRef, responsePdb, themeName, isTooltipActive, onMode
       viewer.addModel(responsePdb.data, "pdb");
       viewer.setStyle({}, { cartoon: { color: "spectrum" } });
       viewer.zoomTo();
+      viewer.resize?.();
       viewer.render();
       frameId = window.requestAnimationFrame(() => onModelReadyChange?.(true));
     } catch (error) {
