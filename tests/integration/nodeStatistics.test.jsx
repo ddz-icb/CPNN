@@ -63,7 +63,7 @@ test("node popup switches between statistics, adjacency and details and updates 
     container: expect.any(Object),
   }));
   const click = async (text) => act(async () => [...host.querySelectorAll("button")].find((b) => b.textContent === text).click());
-  await click("Statistics");
+  await click("Node statistics");
   expect(centerOnNodes).toHaveBeenCalledTimes(1);
   expect(host.querySelector(".node-statistics").textContent).toContain("eats");
   expect(host.querySelector(".node-statistics").textContent).toContain("plant");
@@ -76,10 +76,10 @@ test("node popup switches between statistics, adjacency and details and updates 
   expect(host.querySelectorAll(".community-attribute-list li")).toHaveLength(2);
   expect([...host.querySelectorAll(".community-attribute-list strong")].map((entry) => entry.textContent)).toEqual(["1 50%", "1 100%"]);
   expect(host.querySelector(".community-attribute-bar")).toBeNull();
-  await click("Statistics");
+  await click("Node statistics");
   await click("Neighbors");
   expect(host.querySelector(".tooltip-adjacent-node-id").textContent).toBe("b");
-  await click("Statistics");
+  await click("Node statistics");
   await act(async () => useGraphState.getState().setGraphState("graph", { data: { ...data, links: [] } }));
   expect(host.querySelector(".node-statistics").textContent).toContain("No adjacent nodes.");
   await click("Back to node");
@@ -149,6 +149,8 @@ test("compact focus opens details, hides them, and clears with Escape", async ()
   await act(async () => document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true })));
   expect(document.querySelector(".node-focus-bar")).toBeNull();
   expect(useTooltipSettings.getState().tooltipSettings.isNodeFocusOnly).toBe(false);
+  expect(useTooltipSettings.getState().tooltipSettings.clickTooltipData).toBeNull();
+  expect(useTooltipSettings.getState().tooltipSettings.clickTooltipHistory).toEqual([]);
 });
 
 test("focus clears when its node is removed by a filter", async () => {

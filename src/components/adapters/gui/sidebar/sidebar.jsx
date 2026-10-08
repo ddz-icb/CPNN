@@ -123,7 +123,7 @@ function LogoBar({ onCollapse }) {
   return (
     <li className="logo-container">
       <img src="./logos/ddz_logo_en.png" className="logo" />
-      <button className="sidebar-collapse-button" onClick={onCollapse} type="button" aria-label="Collapse sidebar">
+      <button className="sidebar-collapse-button sidebar-panel-header-button" onClick={onCollapse} type="button" aria-label="Collapse sidebar">
         <SvgIcon svg={xSvg} />
       </button>
     </li>
@@ -132,14 +132,12 @@ function LogoBar({ onCollapse }) {
 
 function BackBar({ activeNavItem, onBack, onCollapse }) {
   return (
-    <li className="back-overlay">
-      <button className="back-close back-close--leading" onClick={onBack} type="button" aria-label="Back to tool list">
+    <li className="back-overlay sidebar-panel-header">
+      <button className="back-close back-close--leading sidebar-panel-header-button" onClick={onBack} type="button" aria-label="Back to tool list">
         <SvgIcon svg={leftArrowSvg} />
       </button>
-      <div className="back-text">
-        <p className="link-text">{activeNavItem}</p>
-      </div>
-      <button className="back-close" onClick={onCollapse} type="button" aria-label="Collapse sidebar">
+      <p className="back-text sidebar-panel-heading link-text">{activeNavItem}</p>
+      <button className="back-close sidebar-panel-header-button" onClick={onCollapse} type="button" aria-label="Collapse sidebar">
         <SvgIcon svg={xSvg} />
       </button>
     </li>

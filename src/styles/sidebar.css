@@ -311,11 +311,12 @@
   fill: currentColor;
 }
 
-.back-overlay {
+.sidebar-panel-header {
   position: sticky;
   top: var(--sidebar-card-gap-y);
   z-index: 2;
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: space-between;
   gap: 0.45rem;
@@ -330,15 +331,16 @@
   backdrop-filter: blur(3px);
 }
 
-.light .back-overlay {
+.light .sidebar-panel-header {
   background: color-mix(in srgb, var(--color-accent-soft) 70%, #ffffff 30%);
   border-color: var(--color-border);
 }
 
-.back-text {
+.sidebar-panel-heading {
   display: flex;
   flex-grow: 1;
   min-width: 0;
+  margin: 0;
   align-items: center;
   justify-content: center;
   color: var(--color-text-inverse);
@@ -346,12 +348,11 @@
   letter-spacing: 0.35px;
 }
 
-.light .back-text {
+.light .sidebar-panel-heading {
   color: var(--color-text-primary);
 }
 
-.back-close,
-.sidebar-collapse-button {
+.sidebar-panel-header-button {
   display: inline-flex;
   flex: none;
   align-items: center;
@@ -369,33 +370,28 @@
     transform var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
-.back-close svg,
-.sidebar-collapse-button svg {
+.sidebar-panel-header-button svg {
   display: block;
   width: 1.25rem;
   height: 1.25rem;
   fill: currentColor;
 }
 
-.light .back-close svg,
-.light .sidebar-collapse-button svg {
+.light .sidebar-panel-header-button svg {
   color: var(--color-icon-primary);
 }
 
-.back-close:hover,
-.sidebar-collapse-button:hover {
+.sidebar-panel-header-button:hover {
   color: var(--color-icon-hover);
 }
 
-.back-close:focus-visible,
-.sidebar-collapse-button:focus-visible {
+.sidebar-panel-header-button:focus-visible {
   outline: none;
   color: var(--color-icon-hover);
   box-shadow: 0 0 0 var(--focus-ring-size) color-mix(in srgb, var(--color-focus-ring) 55%, transparent 45%);
 }
 
-.light .back-close:hover,
-.light .sidebar-collapse-button:hover {
+.light .sidebar-panel-header-button:hover {
   color: var(--color-accent);
 }
 

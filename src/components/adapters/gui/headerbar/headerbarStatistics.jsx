@@ -37,7 +37,7 @@ export function HeaderbarStatistics() {
       </div>
 
       <section className="statistics-section" aria-labelledby="statistics-structure-heading">
-        <h3 id="statistics-structure-heading">Structure</h3>
+        <h3 className="table-list-heading" id="statistics-structure-heading">Structure</h3>
         <div className="statistics-row-grid">
           <StatisticRow
             label="Degree range"

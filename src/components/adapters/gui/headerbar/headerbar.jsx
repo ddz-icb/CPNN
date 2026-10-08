@@ -1,7 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
+import { useEffect, useCallback } from "react";
 import { SvgIcon } from "../reusable_components/SvgIcon.jsx";
-import eyeSvg from "../../../../assets/icons/eye.svg?raw";
-import piechartSvg from "../../../../assets/icons/piechart.svg?raw";
 import infoSvg from "../../../../assets/icons/info.svg?raw";
 import { TooltipPopup } from "../reusable_components/tooltipComponents.jsx";
 import { HeaderbarColorMapping } from "./headerbarMapping.jsx";
@@ -12,15 +10,16 @@ import { useCommunityState } from "../../state/communityState.js";
 import { useAppearance } from "../../state/appearanceState.js";
 import { clearViewOrbitCenter } from "../../../domain/service/canvas_interaction/centerView.js";
 import { CommunityDetails } from "../reusable_components/communityDetails.jsx";
+import { RightPanelNavigation } from "../reusable_components/rightPanelNavigation.jsx";
 
-export function HeaderBar() {
-  const [activePanel, setActivePanel] = useState(null);
+export function HeaderBar({ activePanel, setActivePanel }) {
   const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
   const { communityState, setCommunityState } = useCommunityState();
   const { appearance } = useAppearance();
   const isMappingActive = activePanel === "mapping";
   const isStatisticsActive = activePanel === "statistics";
   const isNodeDetailsActive = tooltipSettings.isClickTooltipActive;
+  const hasNodeDetails = Boolean(tooltipSettings.clickTooltipData?.node);
   const selectedCommunity = communityState.communities.find(
     ({ id }) => id?.toString() === communityState.selectedCommunityId?.toString(),
   );
@@ -28,15 +27,18 @@ export function HeaderBar() {
   const mappingPanelId = "headerbar-colormapping-panel";
   const statisticsPanelId = "headerbar-statistics-panel";
 
-  const togglePanel = (panel) => {
-    if (activePanel === panel) {
-      setActivePanel(null);
+  const selectPanel = useCallback((panel) => {
+    if (panel === "node") {
+      if (!hasNodeDetails) return;
+      if (!activePanel) setActivePanel("mapping");
+      if (isCommunityActive) setCommunityState("selectedCommunityId", null);
+      setTooltipSettings("isClickTooltipActive", true);
       return;
     }
     if (isNodeDetailsActive) setTooltipSettings("isClickTooltipActive", false);
     if (isCommunityActive) setCommunityState("selectedCommunityId", null);
     setActivePanel(panel);
-  };
+  }, [activePanel, hasNodeDetails, isCommunityActive, isNodeDetailsActive, setActivePanel, setCommunityState, setTooltipSettings]);
 
   const closeCommunityPanel = useCallback(() => {
     setCommunityState("selectedCommunityId", null);
@@ -45,20 +47,33 @@ export function HeaderBar() {
 
   useEffect(() => {
     if (!isNodeDetailsActive) return;
-    setActivePanel(null);
+    if (!activePanel) setActivePanel("mapping");
     if (communityState.selectedCommunityId != null) setCommunityState("selectedCommunityId", null);
-  }, [communityState.selectedCommunityId, isNodeDetailsActive, setCommunityState]);
+  }, [activePanel, communityState.selectedCommunityId, isNodeDetailsActive, setActivePanel, setCommunityState]);
+
+  useEffect(() => {
+    if (isCommunityActive) setActivePanel(null);
+  }, [isCommunityActive, setActivePanel]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
       const key = e.key?.toLowerCase();
-      if (key === "m" || key === "i") {
+      if (key === "m" || key === "i" || key === "n") {
         if (isTypingTarget(document.activeElement) || isPopupOpen()) return;
+        if (key === "n" && !hasNodeDetails) return;
         e.preventDefault();
-        const panel = key === "m" ? "mapping" : "statistics";
-        if (isNodeDetailsActive) setTooltipSettings("isClickTooltipActive", false);
-        if (isCommunityActive) setCommunityState("selectedCommunityId", null);
-        setActivePanel((current) => (current === panel ? null : panel));
+        const panel = key === "m" ? "mapping" : key === "i" ? "statistics" : "node";
+        const isCurrentPanel = panel === "node" ? isNodeDetailsActive : activePanel === panel;
+        if (isCurrentPanel) {
+          if (panel === "node") {
+            setTooltipSettings("isClickTooltipActive", false);
+            setActivePanel(null);
+          } else {
+            setActivePanel(null);
+          }
+        } else {
+          selectPanel(panel);
+        }
         return;
       }
 
@@ -72,33 +87,14 @@ export function HeaderBar() {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [activePanel, closeCommunityPanel, isCommunityActive, isNodeDetailsActive, setCommunityState, setTooltipSettings]);
+  }, [activePanel, closeCommunityPanel, hasNodeDetails, isCommunityActive, isNodeDetailsActive, selectPanel, setActivePanel, setTooltipSettings]);
 
   const panelNavigation = (
-    <nav className="right-panel-tabs" aria-label="Insights views">
-      <button
-        type="button"
-        className={`right-panel-tab${isMappingActive ? " right-panel-tab--active" : ""}`}
-        onClick={() => togglePanel("mapping")}
-        aria-label="Mapping"
-        aria-current={isMappingActive ? "page" : undefined}
-      >
-        <span className="right-panel-tab-icon"><SvgIcon svg={eyeSvg} /></span>
-        <span>Mapping</span>
-        <kbd className="nav-shortcut">M</kbd>
-      </button>
-      <button
-        type="button"
-        className={`right-panel-tab${isStatisticsActive ? " right-panel-tab--active" : ""}`}
-        onClick={() => togglePanel("statistics")}
-        aria-label="Statistics"
-        aria-current={isStatisticsActive ? "page" : undefined}
-      >
-        <span className="right-panel-tab-icon"><SvgIcon svg={piechartSvg} /></span>
-        <span>Statistics</span>
-        <kbd className="nav-shortcut">I</kbd>
-      </button>
-    </nav>
+    <RightPanelNavigation
+      activeView={activePanel}
+      nodeAvailable={hasNodeDetails}
+      onSelect={selectPanel}
+    />
   );
 
   return (
@@ -108,7 +104,7 @@ export function HeaderBar() {
           <button
             className="icon-button sidebar-dock-button"
             type="button"
-            onClick={() => setActivePanel("mapping")}
+            onClick={() => selectPanel("mapping")}
             aria-label="Open insights sidebar"
             aria-expanded="false"
           >
@@ -117,32 +113,18 @@ export function HeaderBar() {
           <span className="sidebar-dock-label">Info</span>
         </div>
       )}
-      {isMappingActive && (
+      {!isNodeDetailsActive && (isMappingActive || isStatisticsActive) && (
         <TooltipPopup
-          id={mappingPanelId}
+          id={isMappingActive ? mappingPanelId : statisticsPanelId}
           className="headerbar-side-panel"
-          heading="Color mapping"
+          heading={isMappingActive ? "Color mapping" : "Graph statistics"}
           close={() => setActivePanel(null)}
-          contentKey="mapping"
+          contentKey={activePanel}
           role="region"
-          ariaLabel="Color mapping"
+          ariaLabel={isMappingActive ? "Color mapping" : "Graph statistics"}
           navigation={panelNavigation}
         >
-          <HeaderbarColorMapping />
-        </TooltipPopup>
-      )}
-      {isStatisticsActive && (
-        <TooltipPopup
-          id={statisticsPanelId}
-          className="headerbar-side-panel"
-          heading="Graph statistics"
-          close={() => setActivePanel(null)}
-          contentKey="statistics"
-          role="region"
-          ariaLabel="Graph statistics"
-          navigation={panelNavigation}
-        >
-          <HeaderbarStatistics />
+          {isMappingActive ? <HeaderbarColorMapping /> : <HeaderbarStatistics />}
         </TooltipPopup>
       )}
       {isCommunityActive && !isNodeDetailsActive && (

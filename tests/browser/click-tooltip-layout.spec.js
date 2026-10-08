@@ -96,11 +96,16 @@ test("Right rail switches cleanly between mapping, graph statistics, and node de
   const mapping = page.getByRole("region", { name: "Color mapping" });
   await expectLayoutFits(mapping);
   await expect(page.locator(".tooltip-popup")).toHaveCount(1);
+  await expect(mapping.getByRole("button", { name: "Node info", exact: true })).toBeDisabled();
+  await mapping.evaluate((element) => { element.dataset.railInstance = "shared"; });
 
   await mapping.getByRole("button", { name: "Statistics", exact: true }).click();
   const statistics = page.getByRole("region", { name: "Graph statistics" });
   await expect(mapping).toHaveCount(0);
   await expectLayoutFits(statistics);
+  await expect(statistics).toHaveAttribute("data-rail-instance", "shared");
+  await statistics.getByRole("button", { name: "Statistics", exact: true }).click();
+  await expect(statistics).toBeVisible();
 
   const statisticsBox = await statistics.boundingBox();
   expect(Math.abs(statisticsBox.x + statisticsBox.width - width)).toBeLessThanOrEqual(1);
@@ -112,11 +117,22 @@ test("Right rail switches cleanly between mapping, graph statistics, and node de
   await expectTooltipFits(nodeDetails);
   await expect(page.locator(".tooltip-popup")).toHaveCount(1);
 
-  await nodeDetails.getByRole("button", { name: "Close tooltip" }).click();
-  await page.getByRole("button", { name: "Open insights sidebar" }).click();
+  await nodeDetails.getByRole("button", { name: "Mapping", exact: true }).click();
   await expect(nodeDetails).toHaveCount(0);
   await expectLayoutFits(mapping);
   await expect(page.locator(".tooltip-popup")).toHaveCount(1);
+
+  await mapping.getByRole("button", { name: "Node info", exact: true }).click();
+  await expect(mapping).toHaveCount(0);
+  await expectTooltipFits(nodeDetails);
+  await expect(nodeDetails.getByRole("button", { name: "Node info", exact: true })).toHaveAttribute("aria-current", "page");
+
+  await nodeDetails.getByRole("button", { name: "Statistics", exact: true }).click();
+  await expectLayoutFits(statistics);
+  await page.getByRole("region", { name: "Focused node" }).getByRole("button", { name: "Clear", exact: true }).click();
+  await expect(nodeDetails).toHaveCount(0);
+  await expectLayoutFits(statistics);
+  await expect(statistics.getByRole("button", { name: "Node info", exact: true })).toBeDisabled();
 });
 
 test("Community rows open ordered details in the shared right rail", async ({ page }) => {

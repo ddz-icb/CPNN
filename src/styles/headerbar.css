@@ -5,18 +5,18 @@
 
 .right-panel-tabs {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--sidebar-card-gap-y);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--sidebar-control-gap-y);
 }
 
 .right-panel-tab {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.45rem;
+  justify-content: flex-start;
+  gap: 0.4rem;
   min-width: 0;
-  height: 3rem;
-  padding: 0 var(--sidebar-control-padding-x);
+  height: 2.75rem;
+  padding: 0 0.5rem;
   color: var(--color-text-primary);
   background: transparent;
   border: var(--border-thin) solid var(--color-border-subtle);
@@ -32,6 +32,16 @@
 .right-panel-tab--active {
   background: color-mix(in srgb, var(--color-surface-contrast) 78%, var(--color-accent) 22%);
   border-color: color-mix(in srgb, var(--color-accent) 45%, transparent 55%);
+}
+
+.right-panel-tab:disabled {
+  cursor: not-allowed;
+  opacity: 0.46;
+}
+
+.right-panel-tab:disabled:hover {
+  background: transparent;
+  border-color: var(--color-border-subtle);
 }
 
 .right-panel-tab:focus-visible {
@@ -50,8 +60,11 @@
   fill: currentColor;
 }
 
-.right-panel-tab .nav-shortcut {
-  margin-left: auto;
+.right-panel-tab-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* color mapping panel */
@@ -101,13 +114,6 @@
   min-height: var(--default-element-height);
 }
 
-.headerbar-side-panel .table-list-heading,
-.statistics-section h3 {
-  font-size: var(--font-size-s);
-  font-weight: var(--font-weight-medium);
-  letter-spacing: 0.06em;
-}
-
 .headerbar-colormapping-row {
   align-items: center;
   display: inline-flex;
@@ -119,8 +125,6 @@
   flex: 1;
   min-width: 0;
   color: var(--color-text-primary);
-  font-size: var(--text-sm);
-  letter-spacing: 0.04em;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -142,7 +146,6 @@
 /* graph statistics panel */
 
 .statistics-heading h2,
-.statistics-section h3,
 .statistics-heading p {
   margin: 0;
 }
@@ -200,11 +203,6 @@
   display: flex;
   flex-direction: column;
   gap: 0.45rem;
-}
-
-.statistics-section h3 {
-  color: var(--color-text-secondary);
-  text-transform: uppercase;
 }
 
 .statistics-row-grid {

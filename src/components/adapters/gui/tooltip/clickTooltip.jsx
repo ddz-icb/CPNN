@@ -26,8 +26,9 @@ import { getNodeStatistics } from "../../../domain/service/graph_calculations/no
 import { NodeStatistics } from "./nodeStatistics.jsx";
 import { useCommunityState } from "../../state/communityState.js";
 import { CommunityDetails } from "../reusable_components/communityDetails.jsx";
+import { RightPanelNavigation } from "../reusable_components/rightPanelNavigation.jsx";
 
-export function ClickTooltip() {
+export function ClickTooltip({ onSelectInsightsPanel, onCloseInsightsPanel }) {
   const { theme } = useTheme();
   const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
   const { graphState } = useGraphState();
@@ -74,10 +75,11 @@ export function ClickTooltip() {
       if (e.key !== "Escape") return;
       e.stopImmediatePropagation();
       setTooltipSettings("isClickTooltipActive", false);
+      onCloseInsightsPanel?.();
     };
     document.addEventListener("keydown", onKeyDown, { capture: true });
     return () => document.removeEventListener("keydown", onKeyDown, { capture: true });
-  }, [isTooltipActive, setTooltipSettings]);
+  }, [isTooltipActive, onCloseInsightsPanel, setTooltipSettings]);
 
   usePdbViewer(viewerRef, responsePdb, theme.name, isTooltipActive, setIsPdbModelReady);
 
@@ -147,11 +149,11 @@ export function ClickTooltip() {
             )}
             {view === "statistics" && community && <Button className="tooltip-popup-action" text="community" onClick={() => setView("community")} />}
             {isCommunityView && (
-              <Button className="tooltip-popup-action" text="Statistics" data-tooltip-view="statistics" onClick={() => setView("statistics")} />
+              <Button className="tooltip-popup-action" text="Node statistics" data-tooltip-view="statistics" onClick={() => setView("statistics")} />
             )}
             <Button
               className="tooltip-popup-action"
-              text={isAdjacentView ? "Statistics" : "Neighbors"}
+              text={isAdjacentView ? "Node statistics" : "Neighbors"}
               data-tooltip-view={isAdjacentView ? "statistics" : "adjacent"}
               onClick={() => setView(isAdjacentView ? "statistics" : "adjacent")}
             />
@@ -167,7 +169,7 @@ export function ClickTooltip() {
           {pdbId && <TooltipPopupLinkItem text={"RCSB PDB"} link={`https://www.rcsb.org/structure/${pdbId}/`} />}
         </div>
         <div className="tooltip-popup-footer-actions">
-          <Button className="tooltip-popup-action" text="Statistics" data-tooltip-view="statistics" onClick={() => setView("statistics")} />
+          <Button className="tooltip-popup-action" text="Node statistics" data-tooltip-view="statistics" onClick={() => setView("statistics")} />
           <Button className="tooltip-popup-action" text="Neighbors" data-tooltip-view="adjacent" onClick={() => setView("adjacent")} />
         </div>
       </>
@@ -175,13 +177,29 @@ export function ClickTooltip() {
   }, [adjacentNodeList.length, community, handleExportAdjacent, isAdjacentView, isCommunityView, view, pdbId, protIdNoIsoform]);
 
   const showDetails = view === "details";
+  const handleRightPanelSelect = useCallback(
+    (nextView) => {
+      if (nextView === "node") return;
+      setTooltipSettings("isClickTooltipActive", false);
+      onSelectInsightsPanel?.(nextView);
+    },
+    [onSelectInsightsPanel, setTooltipSettings],
+  );
+  const panelNavigation = onSelectInsightsPanel ? (
+    <RightPanelNavigation activeView="node" nodeAvailable={Boolean(nodeId)} onSelect={handleRightPanelSelect} />
+  ) : null;
 
   return (
     <TooltipPopup
+      className="node-details-side-panel"
       heading={heading}
-      close={() => setTooltipSettings("isClickTooltipActive", false)}
+      close={() => {
+        setTooltipSettings("isClickTooltipActive", false);
+        onCloseInsightsPanel?.();
+      }}
       contentKey={nodeId}
       footer={footerContent}
+      navigation={panelNavigation}
       dataAttributes={{
         "data-tooltip-api-ready": isTooltipApiReady ? "true" : "false",
         "data-tooltip-uniprot-status": uniprotStatus,

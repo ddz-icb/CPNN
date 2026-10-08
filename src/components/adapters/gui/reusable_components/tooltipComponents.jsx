@@ -35,10 +35,10 @@ export function TooltipPopup({
       {...dataAttributes}
     >
       <div className="tooltip-popup-content">
-        <div className="tooltip-popup-header">
-          <span className="tooltip-popup-heading">{heading}</span>
+        <div className="tooltip-popup-header sidebar-panel-header">
+          <span className="tooltip-popup-heading sidebar-panel-heading link-text">{heading}</span>
           <div className="tooltip-popup-header-side tooltip-popup-header-side--right">
-            <button type="button" className="tooltip-nav-button" onClick={close} aria-label="Close tooltip">
+            <button type="button" className="tooltip-nav-button sidebar-panel-header-button" onClick={close} aria-label="Close tooltip">
               <SvgIcon svg={xSvg} />
             </button>
           </div>

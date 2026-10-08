@@ -57,6 +57,7 @@ function getInitialSidebarCollapsed() {
 function App() {
   const { theme } = useTheme();
   const [sidebarCollapsed, setSidebarCollapsedState] = useState(getInitialSidebarCollapsed);
+  const [activeInsightsPanel, setActiveInsightsPanel] = useState(null);
 
   const isAdditionalDataLoading = useGraphSetup();
   const setSidebarCollapsed = useCallback((collapsed) => {
@@ -114,8 +115,11 @@ function App() {
       <SearchControl />
       <main className={shellClassName}>
         <Lasso />
-        <Tooltips />
-        <HeaderBar />
+        <Tooltips
+          onSelectInsightsPanel={setActiveInsightsPanel}
+          onCloseInsightsPanel={() => setActiveInsightsPanel(null)}
+        />
+        <HeaderBar activePanel={activeInsightsPanel} setActivePanel={setActiveInsightsPanel} />
         <Sidebar collapsed={sidebarCollapsed} onCollapsedChange={setSidebarCollapsed} />
         <AdditionalDataLoading isLoading={isAdditionalDataLoading} />
         <div className="canvas-container">

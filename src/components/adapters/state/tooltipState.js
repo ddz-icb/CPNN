@@ -38,7 +38,13 @@ export const useTooltipSettings = create((set) => ({
     tooltipSettings: { ...state.tooltipSettings, isClickTooltipActive: false, isNodeFocusOnly: true, isHoverTooltipActive: false },
   })),
   clearNodeFocus: () => set((state) => ({
-    tooltipSettings: { ...state.tooltipSettings, isClickTooltipActive: false, isNodeFocusOnly: false },
+    tooltipSettings: {
+      ...state.tooltipSettings,
+      isClickTooltipActive: false,
+      isNodeFocusOnly: false,
+      clickTooltipData: null,
+      clickTooltipHistory: [],
+    },
   })),
   setClickTooltipHistory: (update) =>
     set((state) => ({
