@@ -5,2117 +5,2729 @@
       "x": 418.95,
       "y": 409.98,
       "z": 712.62,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "10_Amphinemura",
       "x": 655.02,
       "y": 138.2,
       "z": 335.13,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "100_EurycercusLamellatus",
       "x": 545.54,
       "y": 105.96,
       "z": 369.38,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "101_EuthamiaGraminifolia",
       "x": 824.13,
       "y": 578.29,
       "z": -433.12,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "102_EuthamiaOccidentalis",
       "x": 1083.67,
       "y": 737.56,
       "z": -155.62,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "103_Eutrochium",
       "x": 1155.69,
       "y": 823.51,
       "z": -100.17,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "104_ExserohilumTurcicum",
       "x": 342.91,
       "y": -209.82,
       "z": -167.72,
-      "attribs": "Fungus"
+      "attribs": [
+        "Fungus",
+        "Pathogen"
+      ]
     },
     {
       "id": "105_FagopyrumEsculentum",
       "x": 766.49,
       "y": 345.59,
       "z": -393.71,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "106_FalcoPeregrinus",
       "x": 613.95,
       "y": 534.53,
       "z": 395.19,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "107_FelidAlphaherpesvirus1",
       "x": 233.69,
       "y": 248.58,
       "z": -55.48,
-      "attribs": "Other taxon"
+      "attribs": [
+        "Virus",
+        "Pathogen"
+      ]
     },
     {
       "id": "108_FelineCalicivirus",
       "x": 373.6,
       "y": 227.11,
       "z": -3.74,
-      "attribs": "Other taxon"
+      "attribs": [
+        "Virus",
+        "Pathogen"
+      ]
     },
     {
       "id": "109_FelineImmunodeficiencyVirus",
       "x": 324.21,
       "y": 297.24,
       "z": -235.4,
-      "attribs": "Other taxon"
+      "attribs": [
+        "Virus",
+        "Pathogen"
+      ]
     },
     {
       "id": "11_Anabolia",
       "x": 713.56,
       "y": 280.85,
       "z": 546.25,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "110_FeltiaJaculifera",
       "x": 342.43,
       "y": 582.83,
       "z": 513.1,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "111_Fumaria",
       "x": 1270.12,
       "y": 307.24,
       "z": -343.27,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "112_FusariumFujikuroi",
-      "x": 415.24,
-      "y": -260.77,
-      "z": -85.49,
-      "attribs": "Fungus"
-    },
-    {
-      "id": "113_FusariumFujikuroi",
-      "x": 358.1,
-      "y": -167.82,
-      "z": -256.37,
-      "attribs": "Fungus"
+      "x": 386.67,
+      "y": -214.295,
+      "z": -170.93,
+      "attribs": [
+        "Fungus",
+        "Pathogen"
+      ]
     },
     {
       "id": "114_FusariumSacchari",
       "x": 617.26,
       "y": -276.65,
       "z": -186.21,
-      "attribs": "Fungus"
+      "attribs": [
+        "Fungus",
+        "Pathogen"
+      ]
     },
     {
       "id": "115_FusariumVerticillioides",
       "x": 580.29,
       "y": -338.62,
       "z": -278.75,
-      "attribs": "Fungus"
+      "attribs": [
+        "Fungus",
+        "Pathogen"
+      ]
     },
     {
       "id": "116_GaleridaCristata",
       "x": 1111.7,
       "y": 489.29,
       "z": -460.62,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "117_Gammarus",
       "x": 719.86,
       "y": 183.65,
       "z": 358.16,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "118_GeinaSheppardi",
       "x": 431.58,
       "y": 389.93,
       "z": 445.85,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "119_GibberellaZeae",
       "x": 512.61,
       "y": -161.59,
       "z": -329.53,
-      "attribs": "Fungus"
+      "attribs": [
+        "Fungus",
+        "Pathogen"
+      ]
     },
     {
       "id": "12_AncylisDivisana",
       "x": 521.76,
       "y": 622.22,
       "z": 634.38,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "120_GiraffaGiraffaGiraffa",
       "x": 245.18,
       "y": 265.61,
       "z": -182.15,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "121_GiraffaTippelskirchiTippelskirchi",
       "x": 277.13,
       "y": 381.24,
       "z": 50.52,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "122_GlaucomysSabrinus",
       "x": 503.51,
       "y": 696.4,
       "z": 167.76,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "123_Glossosoma",
       "x": 746.14,
       "y": 275.35,
       "z": 469.5,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "124_GlyptemysInsculpta",
       "x": 589.62,
       "y": 558.17,
       "z": 28.72,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "125_Gonatus",
       "x": 626.65,
       "y": 33.3,
       "z": 599.8,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "126_Gretchena",
       "x": 612.42,
       "y": 563.73,
       "z": 554.54,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "127_GryllodesSigillatus",
       "x": 568.61,
       "y": -221.75,
       "z": -330.99,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "128_Halesus",
       "x": 799.67,
       "y": 132.78,
       "z": 484.31,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "129_Helianthus",
       "x": 1162.32,
       "y": 737.2,
       "z": -117.77,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "13_Anicla",
       "x": 599.72,
       "y": 454.88,
       "z": 659.33,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "130_HelianthusMaximiliani",
       "x": 1122.84,
       "y": 943.92,
       "z": -179.38,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "131_HelicobacterAcinonychis",
       "x": 306.16,
       "y": 304.55,
       "z": 42.84,
-      "attribs": "Bacterium"
+      "attribs": [
+        "Bacterium",
+        "Pathogen"
+      ]
     },
     {
       "id": "132_HellinsiaHomodactylus",
       "x": 496.35,
       "y": 436.7,
       "z": 724.53,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "133_Heptageniidae",
       "x": 786.45,
       "y": 199.34,
       "z": 444.05,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "134_HeterodonPlatirhinos",
       "x": 577.7,
       "y": 588.71,
       "z": 391.65,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "135_Hexagenia",
       "x": 307.46,
       "y": 509.26,
       "z": 537.62,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "136_HoheriaPopulnea",
       "x": 1152.43,
       "y": 374.39,
       "z": -197.59,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "137_HordeumSecalinum",
       "x": 816.1,
       "y": 519.83,
       "z": -154.59,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "138_HumanPicobirnavirus",
       "x": 194.41,
       "y": 441.57,
       "z": -134.68,
-      "attribs": "Other taxon"
+      "attribs": [
+        "Virus",
+        "Pathogen"
+      ]
     },
     {
       "id": "139_Hydriomena",
       "x": 554.56,
       "y": 480.04,
       "z": 704.35,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "14_Apamea",
       "x": 406.87,
       "y": 348.47,
       "z": 591.89,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "140_Hydropsyche",
       "x": 777.72,
       "y": 234.89,
       "z": 534.49,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "141_Idotea",
       "x": 733.6,
       "y": 223.27,
       "z": 606.58,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "142_Isoperla",
       "x": 663.23,
       "y": 208.26,
       "z": 638.47,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "143_JacobaeaErratica",
       "x": 695.63,
       "y": 570.53,
       "z": -251.73,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "144_JacobaeaIncana",
       "x": 771.32,
       "y": 404.83,
       "z": -166.67,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "145_JacobaeaUniflora",
       "x": 1028.06,
       "y": 448.65,
       "z": -242.47,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "146_JasminumNudiflorum",
       "x": 1358.75,
       "y": 477.9,
       "z": -347.82,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "147_Juglans",
       "x": 1289.64,
       "y": 416.89,
       "z": -199.03,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "148_JuncusAcutiflorus",
       "x": 831.34,
       "y": 376.27,
       "z": -441.97,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "149_JuncusAlpinoarticulatus",
       "x": 920.43,
       "y": 441.39,
       "z": -184.08,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "15_Aphelocheirus",
       "x": 727.07,
       "y": 247.06,
       "z": 400.9,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "150_JuncusArticulatus",
       "x": 809.22,
       "y": 306.26,
       "z": -336.84,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "151_JuncusBufonius",
       "x": 812.84,
       "y": 337.75,
       "z": -205.09,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "152_JuncusCompressus",
       "x": 856.07,
       "y": 605.27,
       "z": -220.5,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "153_JuncusConglomeratus",
       "x": 875.01,
       "y": 318.45,
       "z": -301.48,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "154_JuncusFiliformis",
       "x": 846.18,
       "y": 615.78,
       "z": -377.73,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "155_JuncusInflexus",
       "x": 908.3,
       "y": 576.16,
       "z": -360.09,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "156_JuncusJacquinii",
       "x": 816.69,
       "y": 436.3,
       "z": -465.48,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "157_KobusEllipsiprymnus",
       "x": 213.97,
       "y": 320.22,
       "z": 6.05,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "158_KoenigiaAlpina",
       "x": 890.89,
       "y": 344.6,
       "z": -225.28,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "159_LacertaTrilineata",
       "x": 505.36,
       "y": 582.34,
       "z": 75.37,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "16_Araneae",
       "x": 473.68,
       "y": 511.12,
       "z": 728.27,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "160_LagopusMuta",
       "x": 637.11,
       "y": 462.28,
       "z": 73.87,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "161_Lambdapapillomavirus1",
       "x": 251.41,
       "y": 435.02,
       "z": 21.2,
-      "attribs": "Other taxon"
+      "attribs": [
+        "Virus",
+        "Pathogen"
+      ]
     },
     {
       "id": "162_LampropeltisTriangulum",
       "x": 573.75,
       "y": 492.3,
       "z": 367,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "163_Lantana",
       "x": 1053.38,
       "y": 886.64,
       "z": -354.2,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "164_LantanaCamara",
       "x": 1240.66,
       "y": 900.08,
       "z": -377.36,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "165_LarinioidesSclopetarius",
       "x": 327.36,
       "y": 479.79,
       "z": 648.49,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "166_LarusCalifornicus",
       "x": 648.51,
       "y": 686.58,
       "z": 59.81,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "167_LarusDelawarensis",
       "x": 716.96,
       "y": 460.29,
       "z": 123.13,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "168_LathyrusNiger",
       "x": 781.5,
       "y": 618.33,
       "z": -223.23,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "169_LathyrusNissolia",
       "x": 881.95,
       "y": 442.37,
       "z": -449.21,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "17_Argyrotaenia",
       "x": 314.64,
       "y": 428.01,
       "z": 588.45,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "170_LathyrusTuberosus",
       "x": 886.67,
       "y": 507.31,
       "z": -156.84,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "171_LathyrusVernus",
       "x": 917.15,
       "y": 556.62,
       "z": -221.76,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "172_LavandulaDentata",
       "x": 1201.92,
       "y": 393.09,
       "z": -483.82,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "173_Lepidostoma",
       "x": 761.88,
       "y": 100.34,
       "z": 398.95,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "174_Leuctra",
       "x": 706.61,
       "y": 21.52,
       "z": 552.93,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "175_Limnephilidae",
       "x": 772.83,
       "y": 58.4,
       "z": 491.48,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "176_Limnephilus",
       "x": 513.1,
       "y": 266.75,
       "z": 558.79,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "177_LithacodesFasciola",
       "x": 585.18,
       "y": 588.09,
       "z": 619,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "178_LithobatesPipiens",
       "x": 484.19,
       "y": 534.85,
       "z": 341.66,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "179_LoniceraAlpigena",
       "x": 692.45,
       "y": 483.45,
       "z": 276.18,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "18_ArgyrotaeniaQuercifoliana",
       "x": 355.54,
       "y": 397.71,
       "z": 655.63,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "180_LoniceraNigra",
       "x": 633.82,
       "y": 738.11,
       "z": 171.15,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "181_LoniceraTatarica",
       "x": 740.36,
       "y": 567.93,
       "z": 83.89,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "182_Lupinus",
       "x": 1136.38,
       "y": 691.14,
       "z": -368.63,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "183_LusciniaLuscinia",
       "x": 597.53,
       "y": 419.09,
       "z": 192.13,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "184_LutraLutra",
       "x": 533.84,
       "y": 69.49,
       "z": 591.16,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "185_Lymnaea",
       "x": 540.4,
       "y": 28.67,
       "z": 461.87,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "186_MachimiaTentoriferella",
       "x": 611.82,
       "y": 520.53,
       "z": 647.06,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "187_MalacosomaDisstria",
       "x": 545.82,
       "y": 558.61,
       "z": 688.12,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "188_MallotusVillosus",
       "x": 786.18,
       "y": 163.32,
       "z": 566.93,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "189_MalvaviscusArboreus",
       "x": 1248.89,
       "y": 859.43,
       "z": -128.8,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "19_AscarisLeptoptera",
       "x": 524.83,
       "y": -30.45,
       "z": -10.36,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal",
+        "Parasite"
+      ]
     },
     {
       "id": "190_MarmotaMonax",
       "x": 776.28,
       "y": 582.6,
       "z": 219.26,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "191_MartesAmericana",
       "x": 517.69,
       "y": 591.62,
       "z": 371.1,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "192_MartesZibellina",
       "x": 771.8,
       "y": 534.83,
       "z": 145.74,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "193_MelaleucaCitrina",
       "x": 1211.36,
       "y": 621.72,
       "z": -234.32,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "194_MeleagrisGallopavo",
       "x": 763.59,
       "y": 644.47,
       "z": 162.96,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "195_MelesMeles",
       "x": 1129.06,
       "y": 546.42,
       "z": -442.68,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "196_MelilotusAltissimus",
       "x": 861.46,
       "y": 339.66,
       "z": -390.08,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "197_MelospizaMelodia",
       "x": 678.75,
       "y": 426.79,
       "z": 187.24,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "198_MeropsApiaster",
       "x": 1175.82,
       "y": 445.5,
       "z": -170.84,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "199_MesocricetusBrandti",
       "x": 503.67,
       "y": 665.34,
       "z": 240.47,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "2_AedesStimulans",
       "x": 371.8,
       "y": 382.18,
       "z": 485.87,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "20_Asclepias",
       "x": 1243.26,
       "y": 715.39,
       "z": -151.84,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "200_MetopolophiumDirhodum",
       "x": 573.05,
       "y": -280.67,
       "z": -112.92,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "201_MicromesistiusPoutassou",
       "x": 573.05,
       "y": 15.71,
       "z": 538.92,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "202_MicrotusOchrogaster",
       "x": 673.42,
       "y": 718.2,
       "z": 247.29,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "203_MicrotusPennsylvanicus",
       "x": 740.52,
       "y": 662.69,
       "z": 252.06,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "204_MicrotusSocialis",
       "x": 706.22,
       "y": 710.01,
       "z": 169.89,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "205_MiniopterusAustralis",
       "x": 743.46,
       "y": 549.53,
       "z": 285.12,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "206_MiomantisCaffra",
       "x": 1124.1,
       "y": 328.44,
       "z": -270.99,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "207_MitchellaRepens",
       "x": 752.77,
       "y": 487.78,
       "z": 216.33,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "208_MonticolaSaxatilis",
       "x": 643.69,
       "y": 682.17,
       "z": 296.49,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "209_MorbillivirusCanis",
       "x": 539.74,
       "y": 453.86,
       "z": -100.08,
-      "attribs": "Other taxon"
+      "attribs": [
+        "Virus",
+        "Pathogen"
+      ]
     },
     {
       "id": "21_AsclepiasCurassavica",
       "x": 1187.92,
       "y": 968.26,
       "z": -235.93,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "210_MuhlenbergiaMexicana",
       "x": 849.03,
       "y": 629.59,
       "z": -308.73,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "211_MuscicapaStriata",
       "x": 1303.32,
       "y": 514.3,
       "z": -433.52,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "212_MycobacteriumTuberculosis",
       "x": 390.56,
       "y": 374.68,
       "z": -234.22,
-      "attribs": "Bacterium"
+      "attribs": [
+        "Bacterium"
+      ]
     },
     {
       "id": "213_MycoplasmaHaemofelis",
       "x": 400.31,
       "y": 463.05,
       "z": -183.08,
-      "attribs": "Bacterium"
+      "attribs": [
+        "Bacterium"
+      ]
     },
     {
       "id": "214_MyodesGapperi",
       "x": 461.87,
       "y": 596.59,
       "z": 202.74,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "215_MyotisLucifugus",
       "x": 479.48,
       "y": 480.25,
       "z": 552.58,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "216_Mystacides",
       "x": 494.6,
       "y": 99.08,
       "z": 538.33,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "217_MythimnaUnipuncta",
       "x": 457.87,
       "y": 581.13,
       "z": 693.36,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "218_Nematoda",
       "x": 501.31,
       "y": 39.58,
       "z": -199.74,
-      "attribs": "Other taxon"
+      "attribs": [
+        "Animal",
+        "Parasite"
+      ]
     },
     {
       "id": "219_NeriumOleander",
       "x": 1305.77,
       "y": 816.5,
       "z": -158.02,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "22_AsclepiasGlaucescens",
       "x": 1025.85,
       "y": 886.59,
       "z": -240,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "220_NerodiaSipedon",
       "x": 523.56,
       "y": 476.6,
       "z": 343.15,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "221_NeurotrichusGibbsii",
       "x": 573.67,
       "y": 709.33,
       "z": 264.14,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "222_NigrosporaSphaerica",
       "x": 502.34,
       "y": -318.24,
       "z": -89.7,
-      "attribs": "Fungus"
+      "attribs": [
+        "Fungus",
+        "Pathogen"
+      ]
     },
     {
       "id": "223_NorwalkVirus",
       "x": 349.85,
       "y": 515.06,
       "z": -129.44,
-      "attribs": "Other taxon"
+      "attribs": [
+        "Virus",
+        "Pathogen"
+      ]
     },
     {
       "id": "224_NosemaApis",
       "x": 1348.75,
       "y": 436.49,
       "z": -278.96,
-      "attribs": "Other taxon"
+      "attribs": [
+        "Fungus",
+        "Pathogen"
+      ]
     },
     {
       "id": "225_NosemaBombi",
       "x": 1110.17,
       "y": 377,
       "z": -436.18,
-      "attribs": "Other taxon"
+      "attribs": [
+        "Fungus",
+        "Pathogen"
+      ]
     },
     {
       "id": "226_NotiobiaTerminata",
       "x": 388.13,
       "y": 490.35,
       "z": 715,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "227_OdocoileusVirginianus",
       "x": 710.81,
       "y": 616.88,
       "z": 307.42,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "228_OenantheOenanthe",
       "x": 521.14,
       "y": 453.78,
       "z": 199.3,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "229_Oxyethira",
       "x": 760.28,
       "y": 88.61,
       "z": 576.98,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "23_AsclepiasIncarnata",
       "x": 1231.96,
       "y": 775.43,
       "z": -104.66,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "230_PandemisLamprosana",
       "x": 433.97,
       "y": 630.54,
       "z": 642.08,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "231_PantheraLeo",
-      "x": 481.2,
-      "y": 78.33,
-      "z": -67.7,
-      "attribs": "Animal"
-    },
-    {
-      "id": "232_PantheraLeo",
-      "x": 336.53,
-      "y": 366.24,
-      "z": -90.3,
-      "attribs": "Animal"
+      "x": 408.865,
+      "y": 222.285,
+      "z": -79,
+      "attribs": [
+        "Animal",
+        "Host"
+      ]
     },
     {
       "id": "233_PantheraPardus",
       "x": 349.15,
       "y": 144.89,
       "z": -50.93,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "234_PantoeaStewartiiSubspStewartii",
       "x": 401.56,
       "y": -327,
       "z": -324.83,
-      "attribs": "Bacterium"
+      "attribs": [
+        "Bacterium",
+        "Pathogen"
+      ]
     },
     {
       "id": "235_ParahyaenaBrunnea",
       "x": 440.97,
       "y": -35.37,
       "z": -0.94,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "236_PersicariaAmphibia",
       "x": 740.47,
       "y": 560.66,
       "z": -417.17,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "237_PersicariaCapitata",
       "x": 758.76,
       "y": 565.8,
       "z": -193.3,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "238_PersicariaHydropiper",
       "x": 755.04,
       "y": 326.52,
       "z": -266.13,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "239_PersicariaLapathifolia",
       "x": 693.84,
       "y": 403.83,
       "z": -226.1,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "24_AsclepiasSpeciosa",
       "x": 1166.08,
       "y": 897.86,
       "z": -125.88,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "240_PersicariaSerrulata",
       "x": 709.25,
       "y": 353.65,
       "z": -331.59,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "241_PhaceliaTanacetifolia",
       "x": 1303.13,
       "y": 483.78,
       "z": -216.34,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "242_Plecoptera",
       "x": 495.09,
       "y": 324.85,
       "z": 507.23,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "243_Polycentropodidae",
       "x": 527.24,
       "y": 147.68,
       "z": 608.53,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "244_PolygonumEngelmannii",
       "x": 756.41,
       "y": 487.29,
       "z": -454.65,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "245_PotamogetonAlpinus",
       "x": 763.43,
       "y": 615.5,
       "z": -371.34,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "246_PotamogetonBerchtoldii",
       "x": 736.29,
       "y": 408.68,
       "z": -427.01,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "247_PotamogetonCrispus",
       "x": 689.43,
       "y": 473.83,
       "z": -406.11,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "248_PotamogetonAngustifolius",
       "x": 661.86,
       "y": 520.7,
       "z": -354.94,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "249_ProtaetiaOrientalis",
       "x": 326.86,
       "y": -264.99,
       "z": -247.81,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "25_AsclepiasSubulata",
       "x": 1096.91,
       "y": 958.8,
       "z": -253.11,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "250_Psychodidae",
       "x": 364.15,
       "y": 559.14,
       "z": 667.51,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "251_PycnanthemumTenuifolium",
       "x": 1319.47,
       "y": 776.56,
       "z": -332.3,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "252_PythiumArrhenomanes",
       "x": 554.78,
       "y": -372.33,
       "z": -184.77,
-      "attribs": "Other taxon"
+      "attribs": [
+        "Oomycete",
+        "Pathogen"
+      ]
     },
     {
       "id": "253_RhododendronSchlippenbachii",
       "x": 1278.52,
       "y": 390.94,
       "z": -450.69,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "254_RhusIntegrifolia",
       "x": 1319.34,
       "y": 750.54,
       "z": -241.79,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "255_Rhyacophila",
       "x": 604.73,
       "y": 22.95,
       "z": 409.9,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "256_RiftValleyFeverPhlebovirus",
       "x": 169.45,
       "y": 364.22,
       "z": -46.47,
-      "attribs": "Other taxon"
+      "attribs": [
+        "Virus",
+        "Pathogen"
+      ]
     },
     {
       "id": "257_RosaMontana",
       "x": 1191.76,
       "y": 539.09,
       "z": -475.57,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "258_RubusBavaricus",
       "x": 1012.8,
       "y": 392.68,
       "z": -311.6,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "259_SalmoSalar",
       "x": 632.45,
       "y": 164.64,
       "z": 481.42,
-      "attribs": "Other taxon"
+      "attribs": [
+        "Animal",
+        "Host"
+      ]
     },
     {
       "id": "26_AsclepiasSyriaca",
       "x": 1118.3,
       "y": 737.34,
       "z": -414.47,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "260_SenecioCacaliaster",
       "x": 1020.18,
       "y": 483.4,
       "z": -311.88,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "261_SenecioSylvaticus",
       "x": 1009.96,
       "y": 451.32,
       "z": -382.28,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "262_Sericostoma",
       "x": 692.25,
       "y": 80.7,
       "z": 627.79,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "263_Sialis",
       "x": 583.57,
       "y": 329.48,
       "z": 597.56,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "264_SileneGallica",
       "x": 1183.68,
       "y": 474.53,
       "z": -498,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "265_SileneSaxifraga",
       "x": 1243.7,
       "y": 554.79,
       "z": -437.8,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "266_Simulium",
       "x": 589.89,
       "y": 97.6,
       "z": 642.63,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "267_Siphlonurus",
       "x": 618.98,
       "y": 154.91,
       "z": 656.14,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "268_Solidago",
       "x": 1158.31,
       "y": 914.5,
       "z": -386.01,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "269_SporisoriumReilianum",
       "x": 456.75,
       "y": -240.15,
       "z": -368.89,
-      "attribs": "Fungus"
+      "attribs": [
+        "Fungus",
+        "Pathogen"
+      ]
     },
     {
       "id": "27_AsclepiasTuberosa",
       "x": 1293.72,
       "y": 842.07,
       "z": -367.54,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "270_StenocarpellaMacrospora",
       "x": 512.62,
       "y": -314.7,
       "z": -350.12,
-      "attribs": "Fungus"
+      "attribs": [
+        "Fungus",
+        "Pathogen"
+      ]
     },
     {
       "id": "271_StenocarpellaMaydis",
       "x": 459.09,
       "y": -395.32,
       "z": -189.11,
-      "attribs": "Fungus"
+      "attribs": [
+        "Fungus",
+        "Pathogen"
+      ]
     },
     {
       "id": "272_Symphyotrichum",
       "x": 1201.46,
       "y": 834.54,
       "z": -424.09,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "273_SymphyotrichumEricoides",
       "x": 1066.55,
       "y": 829.47,
       "z": -386.71,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "274_SyncerusCaffer",
       "x": 318.41,
       "y": 468.02,
       "z": -215.74,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "275_SyringaVulgaris",
       "x": 983.26,
       "y": 750.8,
       "z": -88.4,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "276_TaeniaRegis",
       "x": 191.7,
       "y": 443.87,
       "z": -50.9,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal",
+        "Parasite"
+      ]
     },
     {
       "id": "277_TaraxacumFontanum",
       "x": 1230.35,
       "y": 471.34,
       "z": -177.89,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "278_ThalictrumAquilegiifolium",
       "x": 1263.76,
       "y": 467.91,
       "z": -480.04,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "279_ThalictrumFoetidum",
       "x": 1175.44,
       "y": 285.64,
       "z": -354.39,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "28_Aspergillus",
       "x": 374.27,
       "y": -359.76,
       "z": -234.89,
-      "attribs": "Fungus"
+      "attribs": [
+        "Fungus",
+        "Pathogen"
+      ]
     },
     {
       "id": "280_ThymusLongicaulis",
       "x": 1224.66,
       "y": 363.98,
       "z": -201.33,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "281_ThymusOdoratissimus",
       "x": 1318.66,
       "y": 370.61,
       "z": -278.71,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "282_Tinodes",
       "x": 713.6,
       "y": 158.81,
       "z": 643.45,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "283_TithoniaRotundifolia",
       "x": 1257.42,
       "y": 794.01,
       "z": -401.61,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "284_ToxascarisLeonina",
       "x": 375.38,
       "y": -15.86,
       "z": -53.24,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal",
+        "Parasite"
+      ]
     },
     {
       "id": "285_ToxocaraCanis",
       "x": 404.45,
       "y": 12.12,
       "z": -162.92,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal",
+        "Parasite"
+      ]
     },
     {
       "id": "286_TrichinellaZimbabwensis",
       "x": 296.4,
       "y": 377.58,
       "z": -248.09,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal",
+        "Parasite"
+      ]
     },
     {
       "id": "287_Tricorythodes",
       "x": 366.43,
       "y": 625.62,
       "z": 600.64,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "288_Trifolium",
       "x": 1063.03,
       "y": 595.7,
       "z": -280.71,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "289_TrifoliumPratense",
       "x": 1005.56,
       "y": 727.24,
       "z": -295.51,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "29_Astragalus",
       "x": 832.25,
       "y": 516.79,
       "z": -462.3,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "290_UrsusArctos",
       "x": 821.83,
       "y": 467.12,
       "z": -289.61,
-      "attribs": "Other taxon"
+      "attribs": [
+        "Animal",
+        "Host"
+      ]
     },
     {
       "id": "291_VerbesinaEncelioides",
       "x": 1318.79,
       "y": 876.16,
       "z": -303.51,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "292_VerbesinaMicroptera",
       "x": 1208.47,
       "y": 958.72,
       "z": -315.28,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "293_Veronica",
       "x": 1159.89,
       "y": 329.7,
       "z": -444.97,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "294_VulpesVulpes",
       "x": 619.91,
       "y": 566.3,
       "z": 170.78,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal",
+        "Host"
+      ]
     },
     {
       "id": "295_WaiteaZeae",
       "x": 477.74,
       "y": -383.81,
       "z": -286.68,
-      "attribs": "Fungus"
+      "attribs": [
+        "Fungus",
+        "Pathogen"
+      ]
     },
     {
       "id": "296_Wisteria",
       "x": 1243.57,
       "y": 319.29,
       "z": -426.54,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "297_ZeaMays",
       "x": 478.98,
       "y": -244.9,
       "z": -215.12,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant",
+        "Host"
+      ]
     },
     {
       "id": "298_Zinnia",
       "x": 1203.7,
       "y": 665.31,
       "z": -373.1,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "299_ZinniaElegans",
       "x": 1276.2,
       "y": 933.52,
       "z": -260.14,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "3_AepycerosMelampus",
       "x": 173.18,
       "y": 364.26,
       "z": -143.67,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "30_Atriplex",
       "x": 1187.63,
       "y": 304.43,
       "z": -272.58,
-      "attribs": "Plant"
-    },
-    {
-      "id": "300_Flowers",
-      "x": 660.49,
-      "y": 276.49,
-      "z": 69.01,
-      "attribs": "Other taxon"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "31_Axarus",
       "x": 545.82,
       "y": 627.56,
       "z": 554.75,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "32_Baccharis",
       "x": 1071.79,
       "y": 826.09,
       "z": -140.77,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "33_Baetis",
       "x": 495.27,
       "y": 121.34,
       "z": 416.4,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "34_BartonellaHenselae",
       "x": 260.22,
       "y": 498.78,
       "z": -146.62,
-      "attribs": "Bacterium"
+      "attribs": [
+        "Bacterium",
+        "Pathogen"
+      ]
     },
     {
       "id": "35_Bergenia",
       "x": 1334.07,
       "y": 506.3,
       "z": -276.48,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "36_BluetongueVirus",
       "x": 220.19,
       "y": 347.53,
       "z": -216.23,
-      "attribs": "Other taxon"
+      "attribs": [
+        "Virus",
+        "Pathogen"
+      ]
     },
     {
       "id": "37_BombusTerrestris",
       "x": 1182.78,
       "y": 460.21,
       "z": -325.54,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal",
+        "Host",
+        "Pollinator"
+      ]
     },
     {
       "id": "38_Bougainvillea",
       "x": 1025.85,
       "y": 866.71,
       "z": -300.16,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "39_BovineGammaherpesvirus4",
       "x": 238.14,
       "y": 435.63,
       "z": -206.3,
-      "attribs": "Other taxon"
+      "attribs": [
+        "Virus",
+        "Pathogen"
+      ]
     },
     {
       "id": "4_Aesculus",
       "x": 1267.35,
       "y": 327.19,
       "z": -254.87,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "40_Brachycentrus",
       "x": 711.52,
       "y": 18.08,
       "z": 435.29,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "41_BuddlejaDavidii",
       "x": 1234.18,
       "y": 927.73,
       "z": -169.18,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "42_Caenis",
       "x": 633.64,
       "y": 341.46,
       "z": 533.98,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "43_CardiovirusA",
       "x": 395.33,
       "y": 220.28,
       "z": -161.4,
-      "attribs": "Other taxon"
+      "attribs": [
+        "Virus",
+        "Pathogen"
+      ]
     },
     {
       "id": "44_Centroptilum",
       "x": 481.82,
       "y": 95.97,
       "z": 478.17,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "45_CephalanthusOccidentalis",
       "x": 1114.06,
       "y": 947.66,
       "z": -325.75,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "46_Chauliodes",
       "x": 419.89,
       "y": 361.23,
       "z": 663.59,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "47_Chimarra",
       "x": 577.09,
       "y": 181.42,
       "z": 350.13,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "48_Chironomidae",
       "x": 582.85,
       "y": 324.21,
       "z": 476.54,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "49_CirsiumVulgare",
       "x": 1056.06,
       "y": 879.31,
       "z": -177.82,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "5_Aethes",
       "x": 634.76,
       "y": 505.26,
       "z": 580.57,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "50_Cistus",
       "x": 1117.11,
       "y": 315.75,
       "z": -374.15,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "51_Cladopelma",
       "x": 319.76,
       "y": 552.74,
       "z": 592.34,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "52_CochliobolusHeterostrophusHelminthosporiumMaydis",
       "x": 344.68,
       "y": -294.68,
       "z": -159.53,
-      "attribs": "Other taxon"
+      "attribs": [
+        "Fungus",
+        "Pathogen"
+      ]
     },
     {
       "id": "53_Coleophora",
       "x": 389.37,
       "y": 633.76,
       "z": 523.85,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "54_Coleotechnites",
       "x": 377.56,
       "y": 448.86,
       "z": 436.56,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "55_Coquillettidia",
       "x": 456.07,
       "y": 636.56,
       "z": 509.53,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "56_CorynebacteriumUlcerans",
       "x": 186.57,
       "y": 287.44,
       "z": -112.82,
-      "attribs": "Bacterium"
+      "attribs": [
+        "Bacterium",
+        "Pathogen"
+      ]
     },
     {
       "id": "57_CowpoxVirus",
       "x": 253.51,
       "y": 492.85,
       "z": -28.75,
-      "attribs": "Other taxon"
+      "attribs": [
+        "Virus",
+        "Pathogen"
+      ]
     },
     {
       "id": "58_CoxiellaBurnetii",
       "x": 433.85,
       "y": 455.66,
       "z": 20.13,
-      "attribs": "Bacterium"
+      "attribs": [
+        "Bacterium",
+        "Pathogen"
+      ]
     },
     {
       "id": "59_CrambusAgitatellus",
       "x": 373.33,
       "y": 554.98,
       "z": 453.91,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "6_AgastacheFoeniculum",
       "x": 1296.6,
       "y": 752.8,
       "z": -173.86,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "60_Crassula",
       "x": 1132.88,
       "y": 422.23,
       "z": -487.39,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "61_CtenuchaVirginica",
       "x": 316.64,
       "y": 436.18,
       "z": 519.1,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "62_CursoriusCursor",
       "x": 564.06,
       "y": 731.14,
       "z": 185.37,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "63_CurvulariaTuberculata",
       "x": 615.55,
       "y": -231.28,
       "z": -260.92,
-      "attribs": "Fungus"
+      "attribs": [
+        "Fungus",
+        "Pathogen"
+      ]
     },
     {
       "id": "64_CyanocittaCristata",
       "x": 473.52,
       "y": 517.08,
       "z": 173.71,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "65_CygnusBuccinator",
       "x": 514.41,
       "y": 665.18,
       "z": 86.04,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "66_CymatoderaBicolor",
       "x": 333.84,
       "y": 490.99,
       "z": 463.74,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "67_CynanchumLaeve",
       "x": 1132.65,
       "y": 844.6,
       "z": -419.18,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "68_CyprinusCarpio",
       "x": 596.75,
       "y": 642.86,
       "z": 31.29,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "69_Dahlia",
       "x": 1157.7,
       "y": 623.29,
       "z": -296.68,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "7_AgonopterixRobiniella",
       "x": 356.94,
       "y": 362.78,
       "z": 551.73,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "70_DanausPlexippusPlexippus",
       "x": 1162.32,
       "y": 796.57,
       "z": -263.21,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal",
+        "Host",
+        "Flower visitor"
+      ]
     },
     {
       "id": "71_DanthoniaAlpina",
       "x": 698.82,
       "y": 585.06,
       "z": -330.87,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "72_DanthoniaDecumbens",
       "x": 894.65,
       "y": 526.81,
       "z": -436,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "73_DaphneGnidium",
       "x": 719.34,
       "y": 664.17,
       "z": 84.64,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "74_DarevskiaUnisexualis",
       "x": 465.21,
       "y": 622.8,
       "z": 139.44,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "75_DelphiniumDubium",
       "x": 666.15,
       "y": 423.29,
       "z": -342.19,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "76_DeschampsiaMedia",
       "x": 663.09,
       "y": 498.14,
       "z": -255.97,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "77_DidelphisVirginiana",
       "x": 550.49,
       "y": 456.18,
       "z": 111.4,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "78_DioctophymeRenales",
       "x": 570.23,
       "y": 17.27,
       "z": -147.67,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal",
+        "Parasite"
+      ]
     },
     {
       "id": "79_Dioctria",
       "x": 473.21,
       "y": 657.38,
       "z": 575.14,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "8_AiolopusStrepens",
       "x": 416.84,
       "y": -162.25,
       "z": -324.98,
-      "attribs": "Other taxon"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "80_DipodomysDeserti",
       "x": 574.76,
       "y": 711.15,
       "z": 101.78,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "81_Dipylidium",
       "x": 576.58,
       "y": -8.29,
       "z": -71.88,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal",
+        "Parasite"
+      ]
     },
     {
       "id": "82_EccritosiaRubriventris",
       "x": 1328.12,
       "y": 375.98,
       "z": -366.95,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "83_Ecdyonurus",
       "x": 668.39,
       "y": 58.58,
       "z": 364.82,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "84_Echinacea",
       "x": 1269.83,
       "y": 665.01,
       "z": -309.51,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "85_EchinaceaPurpurea",
       "x": 1152.08,
       "y": 649.19,
       "z": -199.65,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "86_EchinococcusFelidis",
       "x": 306.87,
       "y": 514.86,
       "z": -69.96,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal",
+        "Parasite"
+      ]
     },
     {
       "id": "87_Echium",
       "x": 1330.29,
       "y": 529.62,
       "z": -370.87,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "88_ElodeaDensa",
       "x": 856.66,
       "y": 416.38,
       "z": -151.95,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "89_EnterobacterCloacaeSubspDissolvens",
       "x": 414.83,
       "y": -338.83,
       "z": -115.78,
-      "attribs": "Bacterium"
+      "attribs": [
+        "Bacterium",
+        "Pathogen"
+      ]
     },
     {
       "id": "9_Alphacoronavirus1",
       "x": 452.96,
       "y": 258.09,
       "z": -122.57,
-      "attribs": "Other taxon"
+      "attribs": [
+        "Virus",
+        "Pathogen"
+      ]
     },
     {
       "id": "90_EpacromiusTergestinus",
       "x": 366.31,
       "y": -238.14,
       "z": -324.1,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "91_Ephemerella",
       "x": 519.01,
       "y": 269.7,
       "z": 447.42,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "92_Equus",
       "x": 342.63,
       "y": 200.72,
       "z": -109.31,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "93_EquusQuagga",
       "x": 434.38,
       "y": 253.97,
       "z": -40.56,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "94_Erebidae",
       "x": 507.39,
       "y": 386.44,
       "z": 685.05,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "95_Erica",
       "x": 1334.43,
       "y": 436.2,
       "z": -425.33,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "96_ErythroniumDensCanis",
       "x": 765.18,
       "y": 628.08,
       "z": -292.88,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "97_EsolusParallelepipedus",
       "x": 644.23,
       "y": -6.07,
       "z": 492.66,
-      "attribs": "Animal"
+      "attribs": [
+        "Animal"
+      ]
     },
     {
       "id": "98_Eupatorium",
       "x": 1338.52,
       "y": 808.76,
       "z": -261.31,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     },
     {
       "id": "99_EupatoriumSerotinum",
       "x": 1312.24,
       "y": 879.67,
       "z": -210.2,
-      "attribs": "Plant"
+      "attribs": [
+        "Plant"
+      ]
     }
   ],
   "links": [
-    {
-      "attrib": "eats",
-      "weight": 1,
-      "source": "215_MyotisLucifugus",
-      "target": "1_AclerisChalybeana",
-      "directed": true
-    },
-    {
-      "attrib": "preysOn",
-      "weight": 1,
-      "source": "215_MyotisLucifugus",
-      "target": "1_AclerisChalybeana",
-      "directed": true
-    },
     {
       "attrib": "eatenBy",
       "weight": 1,
@@ -2155,20 +2767,6 @@
       "attrib": "eats",
       "weight": 1,
       "source": "215_MyotisLucifugus",
-      "target": "12_AncylisDivisana",
-      "directed": true
-    },
-    {
-      "attrib": "preysOn",
-      "weight": 1,
-      "source": "215_MyotisLucifugus",
-      "target": "12_AncylisDivisana",
-      "directed": true
-    },
-    {
-      "attrib": "eats",
-      "weight": 1,
-      "source": "215_MyotisLucifugus",
       "target": "126_Gretchena",
       "directed": true
     },
@@ -2183,14 +2781,14 @@
       "attrib": "eats",
       "weight": 1,
       "source": "215_MyotisLucifugus",
-      "target": "13_Anicla",
+      "target": "12_AncylisDivisana",
       "directed": true
     },
     {
       "attrib": "preysOn",
       "weight": 1,
       "source": "215_MyotisLucifugus",
-      "target": "13_Anicla",
+      "target": "12_AncylisDivisana",
       "directed": true
     },
     {
@@ -2246,28 +2844,28 @@
       "attrib": "eats",
       "weight": 1,
       "source": "215_MyotisLucifugus",
-      "target": "14_Apamea",
+      "target": "13_Anicla",
       "directed": true
     },
     {
       "attrib": "preysOn",
       "weight": 1,
       "source": "215_MyotisLucifugus",
-      "target": "14_Apamea",
+      "target": "13_Anicla",
       "directed": true
     },
     {
       "attrib": "eats",
       "weight": 1,
       "source": "215_MyotisLucifugus",
-      "target": "16_Araneae",
+      "target": "14_Apamea",
       "directed": true
     },
     {
       "attrib": "preysOn",
       "weight": 1,
       "source": "215_MyotisLucifugus",
-      "target": "16_Araneae",
+      "target": "14_Apamea",
       "directed": true
     },
     {
@@ -2295,14 +2893,14 @@
       "attrib": "eats",
       "weight": 1,
       "source": "215_MyotisLucifugus",
-      "target": "17_Argyrotaenia",
+      "target": "16_Araneae",
       "directed": true
     },
     {
       "attrib": "preysOn",
       "weight": 1,
       "source": "215_MyotisLucifugus",
-      "target": "17_Argyrotaenia",
+      "target": "16_Araneae",
       "directed": true
     },
     {
@@ -2337,14 +2935,14 @@
       "attrib": "eats",
       "weight": 1,
       "source": "215_MyotisLucifugus",
-      "target": "18_ArgyrotaeniaQuercifoliana",
+      "target": "17_Argyrotaenia",
       "directed": true
     },
     {
       "attrib": "preysOn",
       "weight": 1,
       "source": "215_MyotisLucifugus",
-      "target": "18_ArgyrotaeniaQuercifoliana",
+      "target": "17_Argyrotaenia",
       "directed": true
     },
     {
@@ -2373,6 +2971,20 @@
       "weight": 1,
       "source": "215_MyotisLucifugus",
       "target": "187_MalacosomaDisstria",
+      "directed": true
+    },
+    {
+      "attrib": "eats",
+      "weight": 1,
+      "source": "215_MyotisLucifugus",
+      "target": "18_ArgyrotaeniaQuercifoliana",
+      "directed": true
+    },
+    {
+      "attrib": "preysOn",
+      "weight": 1,
+      "source": "215_MyotisLucifugus",
+      "target": "18_ArgyrotaeniaQuercifoliana",
       "directed": true
     },
     {
@@ -2386,14 +2998,14 @@
       "attrib": "eats",
       "weight": 1,
       "source": "215_MyotisLucifugus",
-      "target": "2_AedesStimulans",
+      "target": "1_AclerisChalybeana",
       "directed": true
     },
     {
       "attrib": "preysOn",
       "weight": 1,
       "source": "215_MyotisLucifugus",
-      "target": "2_AedesStimulans",
+      "target": "1_AclerisChalybeana",
       "directed": true
     },
     {
@@ -2505,14 +3117,14 @@
       "attrib": "eats",
       "weight": 1,
       "source": "215_MyotisLucifugus",
-      "target": "300_Flowers",
+      "target": "2_AedesStimulans",
       "directed": true
     },
     {
       "attrib": "preysOn",
-      "weight": 8,
+      "weight": 1,
       "source": "215_MyotisLucifugus",
-      "target": "300_Flowers",
+      "target": "2_AedesStimulans",
       "directed": true
     },
     {
@@ -2561,20 +3173,6 @@
       "attrib": "eats",
       "weight": 1,
       "source": "215_MyotisLucifugus",
-      "target": "5_Aethes",
-      "directed": true
-    },
-    {
-      "attrib": "preysOn",
-      "weight": 1,
-      "source": "215_MyotisLucifugus",
-      "target": "5_Aethes",
-      "directed": true
-    },
-    {
-      "attrib": "eats",
-      "weight": 1,
-      "source": "215_MyotisLucifugus",
       "target": "51_Cladopelma",
       "directed": true
     },
@@ -2645,6 +3243,20 @@
       "attrib": "eats",
       "weight": 1,
       "source": "215_MyotisLucifugus",
+      "target": "5_Aethes",
+      "directed": true
+    },
+    {
+      "attrib": "preysOn",
+      "weight": 1,
+      "source": "215_MyotisLucifugus",
+      "target": "5_Aethes",
+      "directed": true
+    },
+    {
+      "attrib": "eats",
+      "weight": 1,
+      "source": "215_MyotisLucifugus",
       "target": "61_CtenuchaVirginica",
       "directed": true
     },
@@ -2673,28 +3285,28 @@
       "attrib": "eats",
       "weight": 1,
       "source": "215_MyotisLucifugus",
-      "target": "7_AgonopterixRobiniella",
+      "target": "79_Dioctria",
       "directed": true
     },
     {
       "attrib": "preysOn",
       "weight": 1,
       "source": "215_MyotisLucifugus",
-      "target": "7_AgonopterixRobiniella",
+      "target": "79_Dioctria",
       "directed": true
     },
     {
       "attrib": "eats",
       "weight": 1,
       "source": "215_MyotisLucifugus",
-      "target": "79_Dioctria",
+      "target": "7_AgonopterixRobiniella",
       "directed": true
     },
     {
       "attrib": "preysOn",
       "weight": 1,
       "source": "215_MyotisLucifugus",
-      "target": "79_Dioctria",
+      "target": "7_AgonopterixRobiniella",
       "directed": true
     },
     {
@@ -2719,13 +3331,132 @@
       "directed": true
     },
     {
+      "attrib": "hasPathogen",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "107_FelidAlphaherpesvirus1",
+      "directed": true
+    },
+    {
       "attrib": "hostOf",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "107_FelidAlphaherpesvirus1",
+      "directed": true
+    },
+    {
+      "attrib": "hasPathogen",
       "weight": 1,
       "source": "231_PantheraLeo",
       "target": "108_FelineCalicivirus",
       "directed": true
     },
     {
+      "attrib": "hostOf",
+      "weight": 2,
+      "source": "231_PantheraLeo",
+      "target": "108_FelineCalicivirus",
+      "directed": true
+    },
+    {
+      "attrib": "hasPathogen",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "109_FelineImmunodeficiencyVirus",
+      "directed": true
+    },
+    {
+      "attrib": "hostOf",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "109_FelineImmunodeficiencyVirus",
+      "directed": true
+    },
+    {
+      "attrib": "eats",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "120_GiraffaGiraffaGiraffa",
+      "directed": true
+    },
+    {
+      "attrib": "preysOn",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "120_GiraffaGiraffaGiraffa",
+      "directed": true
+    },
+    {
+      "attrib": "eats",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "121_GiraffaTippelskirchiTippelskirchi",
+      "directed": true
+    },
+    {
+      "attrib": "preysOn",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "121_GiraffaTippelskirchiTippelskirchi",
+      "directed": true
+    },
+    {
+      "attrib": "hasPathogen",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "131_HelicobacterAcinonychis",
+      "directed": true
+    },
+    {
+      "attrib": "hostOf",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "131_HelicobacterAcinonychis",
+      "directed": true
+    },
+    {
+      "attrib": "hasPathogen",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "138_HumanPicobirnavirus",
+      "directed": true
+    },
+    {
+      "attrib": "hostOf",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "138_HumanPicobirnavirus",
+      "directed": true
+    },
+    {
+      "attrib": "eats",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "157_KobusEllipsiprymnus",
+      "directed": true
+    },
+    {
+      "attrib": "preysOn",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "157_KobusEllipsiprymnus",
+      "directed": true
+    },
+    {
+      "attrib": "hasPathogen",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "161_Lambdapapillomavirus1",
+      "directed": true
+    },
+    {
+      "attrib": "hostOf",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "161_Lambdapapillomavirus1",
+      "directed": true
+    },
+    {
       "attrib": "hasParasite",
       "weight": 1,
       "source": "231_PantheraLeo",
@@ -2737,6 +3468,48 @@
       "weight": 1,
       "source": "231_PantheraLeo",
       "target": "19_AscarisLeptoptera",
+      "directed": true
+    },
+    {
+      "attrib": "hasPathogen",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "209_MorbillivirusCanis",
+      "directed": true
+    },
+    {
+      "attrib": "hostOf",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "209_MorbillivirusCanis",
+      "directed": true
+    },
+    {
+      "attrib": "hasParasite",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "212_MycobacteriumTuberculosis",
+      "directed": true
+    },
+    {
+      "attrib": "hostOf",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "212_MycobacteriumTuberculosis",
+      "directed": true
+    },
+    {
+      "attrib": "hasParasite",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "213_MycoplasmaHaemofelis",
+      "directed": true
+    },
+    {
+      "attrib": "hostOf",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "213_MycoplasmaHaemofelis",
       "directed": true
     },
     {
@@ -2754,6 +3527,20 @@
       "directed": true
     },
     {
+      "attrib": "hasPathogen",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "223_NorwalkVirus",
+      "directed": true
+    },
+    {
+      "attrib": "hostOf",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "223_NorwalkVirus",
+      "directed": true
+    },
+    {
       "attrib": "eatenBy",
       "weight": 1,
       "source": "231_PantheraLeo",
@@ -2762,7 +3549,7 @@
     },
     {
       "attrib": "eats",
-      "weight": 1,
+      "weight": 2,
       "source": "231_PantheraLeo",
       "target": "233_PantheraPardus",
       "directed": true
@@ -2779,6 +3566,55 @@
       "weight": 1,
       "source": "231_PantheraLeo",
       "target": "235_ParahyaenaBrunnea",
+      "directed": true
+    },
+    {
+      "attrib": "hasPathogen",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "256_RiftValleyFeverPhlebovirus",
+      "directed": true
+    },
+    {
+      "attrib": "hostOf",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "256_RiftValleyFeverPhlebovirus",
+      "directed": true
+    },
+    {
+      "attrib": "eats",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "274_SyncerusCaffer",
+      "directed": true
+    },
+    {
+      "attrib": "preysOn",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "274_SyncerusCaffer",
+      "directed": true
+    },
+    {
+      "attrib": "hasEndoparasite",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "276_TaeniaRegis",
+      "directed": true
+    },
+    {
+      "attrib": "hasParasite",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "276_TaeniaRegis",
+      "directed": true
+    },
+    {
+      "attrib": "hostOf",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "276_TaeniaRegis",
       "directed": true
     },
     {
@@ -2810,31 +3646,129 @@
       "directed": true
     },
     {
-      "attrib": "eats",
-      "weight": 6,
-      "source": "231_PantheraLeo",
-      "target": "300_Flowers",
-      "directed": true
-    },
-    {
       "attrib": "hasParasite",
-      "weight": 3,
+      "weight": 1,
       "source": "231_PantheraLeo",
-      "target": "300_Flowers",
-      "directed": true
-    },
-    {
-      "attrib": "hostOf",
-      "weight": 6,
-      "source": "231_PantheraLeo",
-      "target": "300_Flowers",
+      "target": "286_TrichinellaZimbabwensis",
       "directed": true
     },
     {
       "attrib": "hostOf",
       "weight": 1,
       "source": "231_PantheraLeo",
+      "target": "286_TrichinellaZimbabwensis",
+      "directed": true
+    },
+    {
+      "attrib": "hasParasite",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "34_BartonellaHenselae",
+      "directed": true
+    },
+    {
+      "attrib": "hasPathogen",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "34_BartonellaHenselae",
+      "directed": true
+    },
+    {
+      "attrib": "hasPathogen",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "36_BluetongueVirus",
+      "directed": true
+    },
+    {
+      "attrib": "hostOf",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "36_BluetongueVirus",
+      "directed": true
+    },
+    {
+      "attrib": "hasPathogen",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "39_BovineGammaherpesvirus4",
+      "directed": true
+    },
+    {
+      "attrib": "hostOf",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "39_BovineGammaherpesvirus4",
+      "directed": true
+    },
+    {
+      "attrib": "eats",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "3_AepycerosMelampus",
+      "directed": true
+    },
+    {
+      "attrib": "preysOn",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "3_AepycerosMelampus",
+      "directed": true
+    },
+    {
+      "attrib": "hasPathogen",
+      "weight": 1,
+      "source": "231_PantheraLeo",
       "target": "43_CardiovirusA",
+      "directed": true
+    },
+    {
+      "attrib": "hostOf",
+      "weight": 2,
+      "source": "231_PantheraLeo",
+      "target": "43_CardiovirusA",
+      "directed": true
+    },
+    {
+      "attrib": "hasParasite",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "56_CorynebacteriumUlcerans",
+      "directed": true
+    },
+    {
+      "attrib": "hasPathogen",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "56_CorynebacteriumUlcerans",
+      "directed": true
+    },
+    {
+      "attrib": "hasPathogen",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "57_CowpoxVirus",
+      "directed": true
+    },
+    {
+      "attrib": "hostOf",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "57_CowpoxVirus",
+      "directed": true
+    },
+    {
+      "attrib": "hasParasite",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "58_CoxiellaBurnetii",
+      "directed": true
+    },
+    {
+      "attrib": "hasPathogen",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "58_CoxiellaBurnetii",
       "directed": true
     },
     {
@@ -2866,472 +3800,59 @@
       "directed": true
     },
     {
-      "attrib": "hostOf",
-      "weight": 1,
-      "source": "231_PantheraLeo",
-      "target": "9_Alphacoronavirus1",
-      "directed": true
-    },
-    {
-      "attrib": "eats",
-      "weight": 1,
-      "source": "231_PantheraLeo",
-      "target": "92_Equus",
-      "directed": true
-    },
-    {
-      "attrib": "eats",
-      "weight": 1,
-      "source": "231_PantheraLeo",
-      "target": "93_EquusQuagga",
-      "directed": true
-    },
-    {
-      "attrib": "hasPathogen",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "107_FelidAlphaherpesvirus1",
-      "directed": true
-    },
-    {
-      "attrib": "hostOf",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "107_FelidAlphaherpesvirus1",
-      "directed": true
-    },
-    {
-      "attrib": "hasPathogen",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "108_FelineCalicivirus",
-      "directed": true
-    },
-    {
-      "attrib": "hostOf",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "108_FelineCalicivirus",
-      "directed": true
-    },
-    {
-      "attrib": "hasPathogen",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "109_FelineImmunodeficiencyVirus",
-      "directed": true
-    },
-    {
-      "attrib": "hostOf",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "109_FelineImmunodeficiencyVirus",
-      "directed": true
-    },
-    {
-      "attrib": "eats",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "120_GiraffaGiraffaGiraffa",
-      "directed": true
-    },
-    {
-      "attrib": "preysOn",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "120_GiraffaGiraffaGiraffa",
-      "directed": true
-    },
-    {
-      "attrib": "eats",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "121_GiraffaTippelskirchiTippelskirchi",
-      "directed": true
-    },
-    {
-      "attrib": "preysOn",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "121_GiraffaTippelskirchiTippelskirchi",
-      "directed": true
-    },
-    {
-      "attrib": "hasPathogen",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "131_HelicobacterAcinonychis",
-      "directed": true
-    },
-    {
-      "attrib": "hostOf",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "131_HelicobacterAcinonychis",
-      "directed": true
-    },
-    {
-      "attrib": "hasPathogen",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "138_HumanPicobirnavirus",
-      "directed": true
-    },
-    {
-      "attrib": "hostOf",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "138_HumanPicobirnavirus",
-      "directed": true
-    },
-    {
-      "attrib": "eats",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "157_KobusEllipsiprymnus",
-      "directed": true
-    },
-    {
-      "attrib": "preysOn",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "157_KobusEllipsiprymnus",
-      "directed": true
-    },
-    {
-      "attrib": "hasPathogen",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "161_Lambdapapillomavirus1",
-      "directed": true
-    },
-    {
-      "attrib": "hostOf",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "161_Lambdapapillomavirus1",
-      "directed": true
-    },
-    {
-      "attrib": "hasPathogen",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "209_MorbillivirusCanis",
-      "directed": true
-    },
-    {
-      "attrib": "hostOf",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "209_MorbillivirusCanis",
-      "directed": true
-    },
-    {
-      "attrib": "hasParasite",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "212_MycobacteriumTuberculosis",
-      "directed": true
-    },
-    {
-      "attrib": "hostOf",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "212_MycobacteriumTuberculosis",
-      "directed": true
-    },
-    {
-      "attrib": "hasParasite",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "213_MycoplasmaHaemofelis",
-      "directed": true
-    },
-    {
-      "attrib": "hostOf",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "213_MycoplasmaHaemofelis",
-      "directed": true
-    },
-    {
-      "attrib": "hasPathogen",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "223_NorwalkVirus",
-      "directed": true
-    },
-    {
-      "attrib": "hostOf",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "223_NorwalkVirus",
-      "directed": true
-    },
-    {
-      "attrib": "eats",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "233_PantheraPardus",
-      "directed": true
-    },
-    {
-      "attrib": "hasPathogen",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "256_RiftValleyFeverPhlebovirus",
-      "directed": true
-    },
-    {
-      "attrib": "hostOf",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "256_RiftValleyFeverPhlebovirus",
-      "directed": true
-    },
-    {
-      "attrib": "eats",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "274_SyncerusCaffer",
-      "directed": true
-    },
-    {
-      "attrib": "preysOn",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "274_SyncerusCaffer",
-      "directed": true
-    },
-    {
       "attrib": "hasEndoparasite",
       "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "276_TaeniaRegis",
-      "directed": true
-    },
-    {
-      "attrib": "hasParasite",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "276_TaeniaRegis",
-      "directed": true
-    },
-    {
-      "attrib": "hostOf",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "276_TaeniaRegis",
-      "directed": true
-    },
-    {
-      "attrib": "hasParasite",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "286_TrichinellaZimbabwensis",
-      "directed": true
-    },
-    {
-      "attrib": "hostOf",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "286_TrichinellaZimbabwensis",
-      "directed": true
-    },
-    {
-      "attrib": "eats",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "3_AepycerosMelampus",
-      "directed": true
-    },
-    {
-      "attrib": "preysOn",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "3_AepycerosMelampus",
-      "directed": true
-    },
-    {
-      "attrib": "hasParasite",
-      "weight": 10,
-      "source": "232_PantheraLeo",
-      "target": "300_Flowers",
-      "directed": true
-    },
-    {
-      "attrib": "hasPathogen",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "300_Flowers",
-      "directed": true
-    },
-    {
-      "attrib": "hasParasite",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "34_BartonellaHenselae",
-      "directed": true
-    },
-    {
-      "attrib": "hasPathogen",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "34_BartonellaHenselae",
-      "directed": true
-    },
-    {
-      "attrib": "hasPathogen",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "36_BluetongueVirus",
-      "directed": true
-    },
-    {
-      "attrib": "hostOf",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "36_BluetongueVirus",
-      "directed": true
-    },
-    {
-      "attrib": "hasPathogen",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "39_BovineGammaherpesvirus4",
-      "directed": true
-    },
-    {
-      "attrib": "hostOf",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "39_BovineGammaherpesvirus4",
-      "directed": true
-    },
-    {
-      "attrib": "hasPathogen",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "43_CardiovirusA",
-      "directed": true
-    },
-    {
-      "attrib": "hostOf",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "43_CardiovirusA",
-      "directed": true
-    },
-    {
-      "attrib": "hasParasite",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "56_CorynebacteriumUlcerans",
-      "directed": true
-    },
-    {
-      "attrib": "hasPathogen",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "56_CorynebacteriumUlcerans",
-      "directed": true
-    },
-    {
-      "attrib": "hasPathogen",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "57_CowpoxVirus",
-      "directed": true
-    },
-    {
-      "attrib": "hostOf",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "57_CowpoxVirus",
-      "directed": true
-    },
-    {
-      "attrib": "hasParasite",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "58_CoxiellaBurnetii",
-      "directed": true
-    },
-    {
-      "attrib": "hasPathogen",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "58_CoxiellaBurnetii",
-      "directed": true
-    },
-    {
-      "attrib": "hasEndoparasite",
-      "weight": 1,
-      "source": "232_PantheraLeo",
+      "source": "231_PantheraLeo",
       "target": "86_EchinococcusFelidis",
       "directed": true
     },
     {
       "attrib": "hostOf",
       "weight": 1,
-      "source": "232_PantheraLeo",
+      "source": "231_PantheraLeo",
       "target": "86_EchinococcusFelidis",
+      "directed": true
+    },
+    {
+      "attrib": "eats",
+      "weight": 2,
+      "source": "231_PantheraLeo",
+      "target": "92_Equus",
+      "directed": true
+    },
+    {
+      "attrib": "preysOn",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "92_Equus",
+      "directed": true
+    },
+    {
+      "attrib": "eats",
+      "weight": 2,
+      "source": "231_PantheraLeo",
+      "target": "93_EquusQuagga",
+      "directed": true
+    },
+    {
+      "attrib": "preysOn",
+      "weight": 1,
+      "source": "231_PantheraLeo",
+      "target": "93_EquusQuagga",
       "directed": true
     },
     {
       "attrib": "hasPathogen",
       "weight": 1,
-      "source": "232_PantheraLeo",
+      "source": "231_PantheraLeo",
       "target": "9_Alphacoronavirus1",
       "directed": true
     },
     {
       "attrib": "hostOf",
-      "weight": 1,
-      "source": "232_PantheraLeo",
+      "weight": 2,
+      "source": "231_PantheraLeo",
       "target": "9_Alphacoronavirus1",
-      "directed": true
-    },
-    {
-      "attrib": "eats",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "92_Equus",
-      "directed": true
-    },
-    {
-      "attrib": "preysOn",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "92_Equus",
-      "directed": true
-    },
-    {
-      "attrib": "eats",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "93_EquusQuagga",
-      "directed": true
-    },
-    {
-      "attrib": "preysOn",
-      "weight": 1,
-      "source": "232_PantheraLeo",
-      "target": "93_EquusQuagga",
-      "directed": true
-    },
-    {
-      "attrib": "eats",
-      "weight": 1,
-      "source": "259_SalmoSalar",
-      "target": "10_Amphinemura",
-      "directed": true
-    },
-    {
-      "attrib": "preysOn",
-      "weight": 1,
-      "source": "259_SalmoSalar",
-      "target": "10_Amphinemura",
       "directed": true
     },
     {
@@ -3352,14 +3873,14 @@
       "attrib": "eats",
       "weight": 1,
       "source": "259_SalmoSalar",
-      "target": "11_Anabolia",
+      "target": "10_Amphinemura",
       "directed": true
     },
     {
       "attrib": "preysOn",
       "weight": 1,
       "source": "259_SalmoSalar",
-      "target": "11_Anabolia",
+      "target": "10_Amphinemura",
       "directed": true
     },
     {
@@ -3374,6 +3895,20 @@
       "weight": 1,
       "source": "259_SalmoSalar",
       "target": "117_Gammarus",
+      "directed": true
+    },
+    {
+      "attrib": "eats",
+      "weight": 1,
+      "source": "259_SalmoSalar",
+      "target": "11_Anabolia",
+      "directed": true
+    },
+    {
+      "attrib": "preysOn",
+      "weight": 1,
+      "source": "259_SalmoSalar",
+      "target": "11_Anabolia",
       "directed": true
     },
     {
@@ -3731,27 +4266,6 @@
       "weight": 1,
       "source": "259_SalmoSalar",
       "target": "282_Tinodes",
-      "directed": true
-    },
-    {
-      "attrib": "eats",
-      "weight": 29,
-      "source": "259_SalmoSalar",
-      "target": "300_Flowers",
-      "directed": true
-    },
-    {
-      "attrib": "hasPathogen",
-      "weight": 3,
-      "source": "259_SalmoSalar",
-      "target": "300_Flowers",
-      "directed": true
-    },
-    {
-      "attrib": "preysOn",
-      "weight": 1,
-      "source": "259_SalmoSalar",
-      "target": "300_Flowers",
       "directed": true
     },
     {
@@ -4157,20 +4671,6 @@
       "attrib": "eats",
       "weight": 1,
       "source": "290_UrsusArctos",
-      "target": "300_Flowers",
-      "directed": true
-    },
-    {
-      "attrib": "hasPathogen",
-      "weight": 1,
-      "source": "290_UrsusArctos",
-      "target": "300_Flowers",
-      "directed": true
-    },
-    {
-      "attrib": "eats",
-      "weight": 1,
-      "source": "290_UrsusArctos",
       "target": "71_DanthoniaAlpina",
       "directed": true
     },
@@ -4441,20 +4941,6 @@
       "directed": true
     },
     {
-      "attrib": "eats",
-      "weight": 1,
-      "source": "294_VulpesVulpes",
-      "target": "300_Flowers",
-      "directed": true
-    },
-    {
-      "attrib": "hasPathogen",
-      "weight": 1,
-      "source": "294_VulpesVulpes",
-      "target": "300_Flowers",
-      "directed": true
-    },
-    {
       "attrib": "hasPathogen",
       "weight": 1,
       "source": "294_VulpesVulpes",
@@ -4526,16 +5012,9 @@
     },
     {
       "attrib": "hasPathogen",
-      "weight": 1,
+      "weight": 2,
       "source": "297_ZeaMays",
       "target": "112_FusariumFujikuroi",
-      "directed": true
-    },
-    {
-      "attrib": "hasPathogen",
-      "weight": 1,
-      "source": "297_ZeaMays",
-      "target": "113_FusariumFujikuroi",
       "directed": true
     },
     {
@@ -4638,13 +5117,6 @@
     },
     {
       "attrib": "hasPathogen",
-      "weight": 85,
-      "source": "297_ZeaMays",
-      "target": "300_Flowers",
-      "directed": true
-    },
-    {
-      "attrib": "hasPathogen",
       "weight": 1,
       "source": "297_ZeaMays",
       "target": "52_CochliobolusHeterostrophusHelminthosporiumMaydis",
@@ -4658,17 +5130,17 @@
       "directed": true
     },
     {
-      "attrib": "eatenBy",
-      "weight": 1,
-      "source": "297_ZeaMays",
-      "target": "8_AiolopusStrepens",
-      "directed": true
-    },
-    {
       "attrib": "hasPathogen",
       "weight": 1,
       "source": "297_ZeaMays",
       "target": "89_EnterobacterCloacaeSubspDissolvens",
+      "directed": true
+    },
+    {
+      "attrib": "eatenBy",
+      "weight": 1,
+      "source": "297_ZeaMays",
+      "target": "8_AiolopusStrepens",
       "directed": true
     },
     {
@@ -4812,13 +5284,6 @@
       "directed": true
     },
     {
-      "attrib": "eats",
-      "weight": 1,
-      "source": "37_BombusTerrestris",
-      "target": "26_AsclepiasSyriaca",
-      "directed": true
-    },
-    {
       "attrib": "pollinates",
       "weight": 1,
       "source": "37_BombusTerrestris",
@@ -4844,6 +5309,13 @@
       "weight": 1,
       "source": "37_BombusTerrestris",
       "target": "265_SileneSaxifraga",
+      "directed": true
+    },
+    {
+      "attrib": "eats",
+      "weight": 1,
+      "source": "37_BombusTerrestris",
+      "target": "26_AsclepiasSyriaca",
       "directed": true
     },
     {
@@ -4935,13 +5407,6 @@
       "weight": 1,
       "source": "37_BombusTerrestris",
       "target": "30_Atriplex",
-      "directed": true
-    },
-    {
-      "attrib": "eats",
-      "weight": 1,
-      "source": "37_BombusTerrestris",
-      "target": "300_Flowers",
       "directed": true
     },
     {
@@ -5204,6 +5669,20 @@
       "directed": true
     },
     {
+      "attrib": "eats",
+      "weight": 1,
+      "source": "70_DanausPlexippusPlexippus",
+      "target": "219_NeriumOleander",
+      "directed": true
+    },
+    {
+      "attrib": "visitsFlowersOf",
+      "weight": 1,
+      "source": "70_DanausPlexippusPlexippus",
+      "target": "219_NeriumOleander",
+      "directed": true
+    },
+    {
       "attrib": "eatenBy",
       "weight": 1,
       "source": "70_DanausPlexippusPlexippus",
@@ -5235,20 +5714,6 @@
       "attrib": "eats",
       "weight": 1,
       "source": "70_DanausPlexippusPlexippus",
-      "target": "219_NeriumOleander",
-      "directed": true
-    },
-    {
-      "attrib": "visitsFlowersOf",
-      "weight": 1,
-      "source": "70_DanausPlexippusPlexippus",
-      "target": "219_NeriumOleander",
-      "directed": true
-    },
-    {
-      "attrib": "eats",
-      "weight": 1,
-      "source": "70_DanausPlexippusPlexippus",
       "target": "22_AsclepiasGlaucescens",
       "directed": true
     },
@@ -5295,20 +5760,6 @@
       "directed": true
     },
     {
-      "attrib": "visits",
-      "weight": 1,
-      "source": "70_DanausPlexippusPlexippus",
-      "target": "25_AsclepiasSubulata",
-      "directed": true
-    },
-    {
-      "attrib": "visitsFlowersOf",
-      "weight": 1,
-      "source": "70_DanausPlexippusPlexippus",
-      "target": "25_AsclepiasSubulata",
-      "directed": true
-    },
-    {
       "attrib": "eats",
       "weight": 1,
       "source": "70_DanausPlexippusPlexippus",
@@ -5341,6 +5792,41 @@
       "weight": 1,
       "source": "70_DanausPlexippusPlexippus",
       "target": "254_RhusIntegrifolia",
+      "directed": true
+    },
+    {
+      "attrib": "visits",
+      "weight": 1,
+      "source": "70_DanausPlexippusPlexippus",
+      "target": "25_AsclepiasSubulata",
+      "directed": true
+    },
+    {
+      "attrib": "visitsFlowersOf",
+      "weight": 1,
+      "source": "70_DanausPlexippusPlexippus",
+      "target": "25_AsclepiasSubulata",
+      "directed": true
+    },
+    {
+      "attrib": "eats",
+      "weight": 1,
+      "source": "70_DanausPlexippusPlexippus",
+      "target": "268_Solidago",
+      "directed": true
+    },
+    {
+      "attrib": "visits",
+      "weight": 1,
+      "source": "70_DanausPlexippusPlexippus",
+      "target": "268_Solidago",
+      "directed": true
+    },
+    {
+      "attrib": "visitsFlowersOf",
+      "weight": 1,
+      "source": "70_DanausPlexippusPlexippus",
+      "target": "268_Solidago",
       "directed": true
     },
     {
@@ -5382,48 +5868,6 @@
       "attrib": "eats",
       "weight": 1,
       "source": "70_DanausPlexippusPlexippus",
-      "target": "268_Solidago",
-      "directed": true
-    },
-    {
-      "attrib": "visits",
-      "weight": 1,
-      "source": "70_DanausPlexippusPlexippus",
-      "target": "268_Solidago",
-      "directed": true
-    },
-    {
-      "attrib": "visitsFlowersOf",
-      "weight": 1,
-      "source": "70_DanausPlexippusPlexippus",
-      "target": "268_Solidago",
-      "directed": true
-    },
-    {
-      "attrib": "eats",
-      "weight": 1,
-      "source": "70_DanausPlexippusPlexippus",
-      "target": "27_AsclepiasTuberosa",
-      "directed": true
-    },
-    {
-      "attrib": "visits",
-      "weight": 1,
-      "source": "70_DanausPlexippusPlexippus",
-      "target": "27_AsclepiasTuberosa",
-      "directed": true
-    },
-    {
-      "attrib": "visitsFlowersOf",
-      "weight": 1,
-      "source": "70_DanausPlexippusPlexippus",
-      "target": "27_AsclepiasTuberosa",
-      "directed": true
-    },
-    {
-      "attrib": "eats",
-      "weight": 1,
-      "source": "70_DanausPlexippusPlexippus",
       "target": "272_Symphyotrichum",
       "directed": true
     },
@@ -5467,6 +5911,27 @@
       "weight": 1,
       "source": "70_DanausPlexippusPlexippus",
       "target": "275_SyringaVulgaris",
+      "directed": true
+    },
+    {
+      "attrib": "eats",
+      "weight": 1,
+      "source": "70_DanausPlexippusPlexippus",
+      "target": "27_AsclepiasTuberosa",
+      "directed": true
+    },
+    {
+      "attrib": "visits",
+      "weight": 1,
+      "source": "70_DanausPlexippusPlexippus",
+      "target": "27_AsclepiasTuberosa",
+      "directed": true
+    },
+    {
+      "attrib": "visitsFlowersOf",
+      "weight": 1,
+      "source": "70_DanausPlexippusPlexippus",
+      "target": "27_AsclepiasTuberosa",
       "directed": true
     },
     {
@@ -5568,13 +6033,6 @@
       "directed": true
     },
     {
-      "attrib": "hasParasite",
-      "weight": 1,
-      "source": "70_DanausPlexippusPlexippus",
-      "target": "300_Flowers",
-      "directed": true
-    },
-    {
       "attrib": "eats",
       "weight": 1,
       "source": "70_DanausPlexippusPlexippus",
@@ -5631,6 +6089,20 @@
       "directed": true
     },
     {
+      "attrib": "visitsFlowersOf",
+      "weight": 1,
+      "source": "70_DanausPlexippusPlexippus",
+      "target": "67_CynanchumLaeve",
+      "directed": true
+    },
+    {
+      "attrib": "visitsFlowersOf",
+      "weight": 1,
+      "source": "70_DanausPlexippusPlexippus",
+      "target": "69_Dahlia",
+      "directed": true
+    },
+    {
       "attrib": "eats",
       "weight": 1,
       "source": "70_DanausPlexippusPlexippus",
@@ -5649,20 +6121,6 @@
       "weight": 1,
       "source": "70_DanausPlexippusPlexippus",
       "target": "6_AgastacheFoeniculum",
-      "directed": true
-    },
-    {
-      "attrib": "visitsFlowersOf",
-      "weight": 1,
-      "source": "70_DanausPlexippusPlexippus",
-      "target": "67_CynanchumLaeve",
-      "directed": true
-    },
-    {
-      "attrib": "visitsFlowersOf",
-      "weight": 1,
-      "source": "70_DanausPlexippusPlexippus",
-      "target": "69_Dahlia",
       "directed": true
     },
     {
@@ -5815,10 +6273,16 @@
     },
     "nodeAttribsToColorIndices": {
       "Animal": 0,
-      "Bacterium": 4,
+      "Plant": 1,
+      "Virus": 2,
       "Fungus": 3,
-      "Other taxon": 2,
-      "Plant": 1
+      "Bacterium": 4,
+      "Oomycete": 5,
+      "Host": 6,
+      "Parasite": 7,
+      "Pathogen": 8,
+      "Pollinator": 9,
+      "Flower visitor": 10
     }
   },
   "metadata": {
@@ -5836,7 +6300,10 @@
       }
     ],
     "modifications": [
-      "Adapted for CPNN."
+      "Adapted for CPNN.",
+      "Normalized node attributes to arrays and corrected eight taxon-group assignments.",
+      "Separated taxonomic groups from ecological roles; host, parasite, pathogen, pollinator and flower-visitor roles are derived from explicit interaction types.",
+      "Removed the non-taxon Flowers placeholder and its incident links; merged duplicate Panthera leo and Fusarium fujikuroi nodes and consolidated duplicate typed links."
     ]
   }
 }
