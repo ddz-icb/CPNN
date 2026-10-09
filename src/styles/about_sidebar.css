@@ -1,0 +1,109 @@
+.about-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sidebar-card-row-gap-y);
+  min-width: 0;
+}
+
+.about-card {
+  padding: var(--sidebar-card-padding-y) var(--sidebar-control-padding-x);
+  background: color-mix(in srgb, var(--color-surface-contrast) 90%, transparent 10%);
+  border: var(--border-thin) solid var(--color-border-subtle);
+  border-radius: var(--radius);
+}
+
+.about-card h2,
+.about-card p,
+.about-card blockquote,
+.about-detail-list {
+  margin-top: 0;
+}
+
+.about-card h2 {
+  margin-bottom: 0.45rem;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-m);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+}
+
+.about-card p {
+  margin-bottom: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-s);
+  line-height: 1.5;
+}
+
+.about-citation {
+  margin: 0 0 0.55rem;
+  padding: 0.65rem 0.75rem;
+  color: var(--color-text-primary);
+  background: var(--color-surface-muted);
+  border: var(--border-thin) solid var(--color-border-subtle);
+  border-left: 0.2rem solid var(--color-accent);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-s);
+  line-height: 1.5;
+  text-align: left;
+  overflow-wrap: anywhere;
+  user-select: text;
+}
+
+.about-citation-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-height: var(--default-element-height);
+  margin-bottom: 0;
+}
+
+.about-copy-status {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-s);
+}
+
+.about-detail-list {
+  margin-bottom: 0;
+}
+
+.about-detail-row {
+  display: grid;
+  grid-template-columns: minmax(7.5rem, 42%) minmax(0, 1fr);
+  gap: 0.65rem;
+  padding: 0.45rem 0;
+  border-top: var(--border-thin) solid var(--color-border-subtle);
+}
+
+.about-detail-row dt,
+.about-detail-row dd {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.about-detail-row dt {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-s);
+  line-height: 1.35;
+}
+
+.about-detail-row dd {
+  color: var(--color-text-primary);
+  font-size: var(--font-size-s);
+  line-height: 1.35;
+}
+
+.about-empty-value::after {
+  content: "";
+  display: block;
+  width: 100%;
+  min-height: 1.15em;
+  border-bottom: var(--border-thin) dashed var(--color-border-subtle);
+}
+
+@media (max-width: 23rem) {
+  .about-detail-row {
+    grid-template-columns: 1fr;
+    gap: 0.2rem;
+  }
+}

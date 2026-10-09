@@ -16,6 +16,7 @@ import { AppearanceSidebar } from "./appearanceSidebar.jsx";
 import { ExportSidebar } from "./exportSidebar.jsx";
 import { CommunitySidebar } from "./communitySidebar.jsx";
 import { VideographySidebar } from "./videographySidebar.jsx";
+import { AboutSidebar } from "./aboutSidebar.jsx";
 
 export function Sidebar({ collapsed = false, onCollapsedChange, ...props }) {
   const [activeNavItem, setActiveNavItem] = useState("Selection");
@@ -60,6 +61,7 @@ export function Sidebar({ collapsed = false, onCollapsedChange, ...props }) {
     Appearance: <AppearanceSidebar {...props} />,
     Videography: <VideographySidebar />,
     Export: <ExportSidebar />,
+    "Cite & Imprint": <AboutSidebar />,
   };
 
   const currentSidebar = sidebarComponents[activeNavItem];

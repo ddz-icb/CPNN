@@ -9,6 +9,7 @@ import downloadSvg from "../../../../assets/icons/download.svg?raw";
 import searchSvg from "../../../../assets/icons/search.svg?raw";
 import fileWaveformSvg from "../../../../assets/icons/fileWaveform.svg?raw";
 import playSvg from "../../../../assets/icons/play.svg?raw";
+import infoCircleSvg from "../../../../assets/icons/infoCircle.svg?raw";
 
 const sectionIcons = {
   Data: dataSvg,
@@ -20,6 +21,7 @@ const sectionIcons = {
   Appearance: paletteSvg,
   Videography: playSvg,
   Export: downloadSvg,
+  "Cite & Imprint": infoCircleSvg,
 };
 
 export function SelectionSidebar({ handleNavItemClick, activeNavItem }) {

@@ -17,6 +17,7 @@ export const SIDEBAR_SECTIONS = [
   { key: "Appearance", shortcut: "a" },
   { key: "Videography", shortcut: "v" },
   { key: "Export", shortcut: "e" },
+  { key: "Cite & Imprint", shortcut: "b" },
 ];
 
 // Reverse lookup: shortcut letter -> section key, e.g. { d: "Data", s: "Search", … }
