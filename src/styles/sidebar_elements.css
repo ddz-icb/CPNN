@@ -127,7 +127,6 @@
   flex-shrink: 0;
   text-align: center;
   font-size: var(--font-size-s);
-  -moz-appearance: textfield;
   appearance: none;
   -webkit-appearance: none;
   color-scheme: inherit;
@@ -200,10 +199,18 @@
   transition: background-color 9999s ease-out;
 }
 
-.input-field::-webkit-inner-spin-button,
-.input-field::-webkit-outer-spin-button {
+.input-field[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+  -webkit-appearance: textfield;
+}
+
+.input-field[type="number"]::-webkit-inner-spin-button,
+.input-field[type="number"]::-webkit-outer-spin-button {
+  display: none;
   margin: 0;
   -webkit-appearance: none;
+  appearance: none;
 }
 
 /* Switch */
