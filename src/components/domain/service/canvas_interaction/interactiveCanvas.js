@@ -133,10 +133,18 @@ export function drawDashedOutline(graphics, points, dashLength, gapLength, close
   }
 }
 
+export function resizeCanvas(container, app, resolution) {
+  if (!container || typeof app?.renderer?.resize !== "function") return;
+
+  const width = container.clientWidth;
+  const height = container.clientHeight;
+  if (!width || !height) return;
+  if (app.renderer.screen?.width === width && app.renderer.screen?.height === height && app.renderer.resolution === resolution) return;
+
+  app.renderer.resize(width, height, resolution);
+  app.__redrawGraph?.();
+}
+
 export const handleResize = throttle((containerRef, app) => {
-  if (app?.renderer && containerRef && containerRef.current) {
-    const width = containerRef.current.clientWidth;
-    const height = containerRef.current.clientHeight;
-    app.renderer.resize(width, height);
-  }
+  resizeCanvas(containerRef.current, app, window.devicePixelRatio || 1);
 }, 250);

@@ -124,7 +124,7 @@ export function RenderControl() {
           width,
           height,
           antialias: !0,
-          resolution: window.devicePixelRatio || 2,
+          resolution: window.devicePixelRatio || 1,
           backgroundAlpha: 0,
           autoDensity: true,
           preference: "webgpu",
@@ -312,14 +312,35 @@ export function RenderControl() {
     appearance.threeD,
   ]);
 
-  // resize the canvas on window resize //
+  // Keep the backing canvas sharp when its size or the browser pixel ratio changes.
   useEffect(() => {
-    if (renderState.app) {
-      window.addEventListener("resize", () => handleResize(containerRef, renderState.app));
-    }
+    if (!renderState.app || !containerRef.current) return;
+
+    const resize = () => handleResize(containerRef, renderState.app);
+    window.addEventListener("resize", resize);
+
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(resize);
+    observer?.observe(containerRef.current);
+
+    let resolutionQuery;
+    const onResolutionChange = () => {
+      resize();
+      watchResolution();
+    };
+    const watchResolution = () => {
+      resolutionQuery?.removeEventListener?.("change", onResolutionChange);
+      if (!window.matchMedia) return;
+      resolutionQuery = window.matchMedia(`(resolution: ${window.devicePixelRatio || 1}dppx)`);
+      resolutionQuery.addEventListener?.("change", onResolutionChange);
+    };
+    watchResolution();
+    resize();
 
     return () => {
-      window.removeEventListener("resize", () => handleResize(containerRef, renderState.app));
+      window.removeEventListener("resize", resize);
+      observer?.disconnect();
+      resolutionQuery?.removeEventListener?.("change", onResolutionChange);
+      handleResize.cancel();
     };
   }, [renderState.app]);
 
