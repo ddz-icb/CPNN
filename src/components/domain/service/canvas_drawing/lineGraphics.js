@@ -7,7 +7,9 @@ const LINK_WIDTH_MIN = 0.1;
 const LINK_WIDTH_MAX = 3;
 const LINK_DEPTH_SCALE_MIN = 0.1;
 const LINK_DEPTH_SCALE_MAX = 15;
-const LINK_WIDTH_LOG_COEFFS = [8.166, -2.791, 0.202];
+const LINK_WIDTH_REFERENCE_COUNT = 50_000;
+const LINK_WIDTH_REFERENCE_WIDTH = 0.5;
+const LINK_WIDTH_LOG_EXPONENT = 3.5;
 const DOTTED_LINE_DASH_MULTIPLIER = 1.8;
 const DOTTED_LINE_GAP_MULTIPLIER = 1.8;
 const MIN_DOTTED_DASH = 10;
@@ -187,10 +189,10 @@ function drawDottedLine(lines, x1, y1, x2, y2, color, width, alpha = 1) {
 }
 
 export function calculateLinkWidth(linkCount) {
-  const count = Number.isFinite(linkCount) ? Math.max(1, linkCount) : 1;
+  const count = Number.isFinite(linkCount) ? Math.max(10, linkCount) : 10;
   const logCount = Math.log10(count);
-  const [a, b, c] = LINK_WIDTH_LOG_COEFFS;
-  const width = a + b * logCount + c * logCount * logCount;
+  const referenceLogCount = Math.log10(LINK_WIDTH_REFERENCE_COUNT);
+  const width = LINK_WIDTH_REFERENCE_WIDTH * (referenceLogCount / logCount) ** LINK_WIDTH_LOG_EXPONENT;
   return roundToDecimals(clamp(width, LINK_WIDTH_MIN, LINK_WIDTH_MAX), 1);
 }
 
