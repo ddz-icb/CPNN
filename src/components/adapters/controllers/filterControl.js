@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import log from "../logging/logger.js";
 import { applyGraphFilters } from "../../domain/service/graph_calculations/filterGraphPipeline.js";
 import { hasGraphStructureChanged } from "../../domain/service/graph_calculations/graphUtils.js";
+import { reconcileGraphDataPreservingSimulation } from "../../domain/service/graph_calculations/reconcileGraphData.js";
 import { useFilter } from "../state/filterState.js";
 import { useAppearance } from "../state/appearanceState.js";
 import { useGraphState } from "../state/graphState.js";
@@ -15,6 +16,13 @@ import { filterActiveNodesForPixi, syncNodeMapWithGraphData } from "../../domain
 
 const FILTER_DEBOUNCE_MS = 90;
 
+function sameCommunityAssignments(current, next) {
+  if (current === next) return true;
+  if (!current || !next) return false;
+  const ids = Object.keys(current);
+  return ids.length === Object.keys(next).length && ids.every((id) => current[id] === next[id]);
+}
+
 export function FilterControl() {
   const { filter } = useFilter();
   const { appearance } = useAppearance();
@@ -23,7 +31,7 @@ export function FilterControl() {
   const { graphState, setGraphState } = useGraphState();
   const { graphFlags, setGraphFlags } = useGraphFlags();
   const { pixiState } = usePixiState();
-  const { communityState, setCommunityState } = useCommunityState();
+  const { communityState, setAllCommunityState } = useCommunityState();
 
   useEffect(() => {
     if (
@@ -80,26 +88,21 @@ export function FilterControl() {
           communityResolution: communityState.communityResolution,
         });
 
-        const filteredGraph = { name: graphState.graph.name, data: filteredGraphData };
-        const graphChanged = hasGraphStructureChanged(graphState.graph.data, filteredGraphData);
+        const structureChanged = hasGraphStructureChanged(graphState.graph.data, filteredGraphData);
+        const nextData = structureChanged
+          ? filteredGraphData
+          : reconcileGraphDataPreservingSimulation(graphState.graph.data, filteredGraphData);
+        const currentCommunityState = useCommunityState.getState().communityState;
+        setAllCommunityState({
+          ...currentCommunityState,
+          ...communitySummary,
+          idToCommunity: sameCommunityAssignments(currentCommunityState.idToCommunity, communitySummary.idToCommunity)
+            ? currentCommunityState.idToCommunity
+            : communitySummary.idToCommunity,
+        });
 
-        setCommunityState("communities", communitySummary.communities);
-        setCommunityState("idToCommunity", communitySummary.idToCommunity);
-        setCommunityState("communityToNodeIds", communitySummary.communityToNodeIds);
-
-        if (!graphChanged && graphFlags.filteredAfterStart) {
-          log.info("Filtering produced no graph changes. Keeping current simulation temperature.");
-          return;
-        }
-
-        syncNodeMapWithGraphData(filteredGraphData, pixiState.nodeMap, theme, colorschemeState);
-        filterActiveNodesForPixi(appearance.showNodeLabels, filteredGraphData, pixiState.nodeMap);
-        if (!graphFlags.filteredAfterStart) {
-          setGraphFlags("filteredAfterStart", true);
-        }
-        if (graphChanged) {
-          setGraphState("graph", filteredGraph);
-        }
+        setGraphState("graph", { name: graphState.originGraph.name, data: nextData });
+        if (!graphFlags.filteredAfterStart) setGraphFlags("filteredAfterStart", true);
       } catch (error) {
         errorService.setError(error.message);
         log.error("Error while filtering graph:", error);
@@ -131,8 +134,6 @@ export function FilterControl() {
     pixiState.nodeContainers,
     pixiState.nodeMap,
     communityState.communityResolution,
-    theme,
-    colorschemeState,
   ]);
 
   useEffect(() => {

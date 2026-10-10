@@ -301,7 +301,8 @@ export function RenderControl() {
       }
     };
   }, [
-    graphState.graph,
+    graphState.graph?.data?.nodes,
+    graphState.graph?.data?.links,
     pixiState.nodeContainers,
     pixiState.lines2D,
     pixiState.lines3D,

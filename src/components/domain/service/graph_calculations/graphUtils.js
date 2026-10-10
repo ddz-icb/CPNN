@@ -330,22 +330,44 @@ export function hasGraphStructureChanged(currentGraphData, nextGraphData) {
     if (currentNodes[i]?.id !== nextNodes[i]?.id) return true;
   }
 
+  return !hasSameLinkStructure(currentGraphData, nextGraphData);
+}
+
+export function hasSameNodeIds(currentGraphData, nextGraphData) {
+  if (!currentGraphData || !nextGraphData) return false;
+
+  const currentNodes = currentGraphData.nodes ?? [];
+  const nextNodes = nextGraphData.nodes ?? [];
+  if (currentNodes.length !== nextNodes.length) return false;
+
+  const remainingIds = new Set(currentNodes.map((node) => node.id));
+  if (remainingIds.size !== currentNodes.length) return false;
+  for (const node of nextNodes) {
+    if (!remainingIds.delete(node.id)) return false;
+  }
+  return remainingIds.size === 0;
+}
+
+export function hasSameLinkStructure(currentGraphData, nextGraphData) {
+  if (!currentGraphData || !nextGraphData) return false;
+
   const currentLinks = currentGraphData.links ?? [];
   const nextLinks = nextGraphData.links ?? [];
-  if (currentLinks.length !== nextLinks.length) return true;
+  if (currentLinks === nextLinks) return true;
+  if (currentLinks.length !== nextLinks.length) return false;
 
   for (let i = 0; i < currentLinks.length; i++) {
     const currentLink = currentLinks[i];
     const nextLink = nextLinks[i];
 
-    if (getEndpointId(currentLink?.source) !== getEndpointId(nextLink?.source)) return true;
-    if (getEndpointId(currentLink?.target) !== getEndpointId(nextLink?.target)) return true;
-    if (currentLink?.attrib !== nextLink?.attrib) return true;
-    if (currentLink?.weight !== nextLink?.weight) return true;
-    if (Boolean(currentLink?.directed) !== Boolean(nextLink?.directed)) return true;
+    if (getEndpointId(currentLink?.source) !== getEndpointId(nextLink?.source)) return false;
+    if (getEndpointId(currentLink?.target) !== getEndpointId(nextLink?.target)) return false;
+    if (currentLink?.attrib !== nextLink?.attrib) return false;
+    if (currentLink?.weight !== nextLink?.weight) return false;
+    if (Boolean(currentLink?.directed) !== Boolean(nextLink?.directed)) return false;
   }
 
-  return false;
+  return true;
 }
 
 export function getAdjacentNodes(graphData, nodeId) {

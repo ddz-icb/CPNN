@@ -294,8 +294,18 @@ const graphSettingsAppliers = {
   physics: (graphData) => applyGraphPhysicsSettings(graphData.physics),
 };
 
-export function applyGraphSettings(graph) {
+export function applyGraphSettings(graph, previousGraph = null) {
   if (!graph?.data) return;
+
+  // Reloading the current graph keeps live controls while refreshing values derived from its data.
+  if (previousGraph?.name === graph.name) {
+    if (previousGraph.data.links !== graph.data.links) {
+      applyGraphFilterSettings(null, applyGraphMetrics(graph.data));
+    }
+    const { colorschemeState, setAllColorschemeState } = useColorschemeState.getState();
+    setAllColorschemeState(reconcileAttribColorMappingsForGraph(graph.data, colorschemeState));
+    return;
+  }
 
   const graphMetrics = applyGraphMetrics(graph.data);
 

@@ -10,6 +10,8 @@ import { graphService } from "../../application/services/graphService.js";
 import { resetService } from "../../application/services/resetService.js";
 import { applyGraphSettings } from "../../application/services/graphSettingsService.js";
 import { applyNodeMapping } from "../../domain/service/graph_calculations/applyMapping.js";
+import { hasSameNodeIds } from "../../domain/service/graph_calculations/graphUtils.js";
+import { reconcileGraphDataPreservingSimulation } from "../../domain/service/graph_calculations/reconcileGraphData.js";
 import { enrichGraphWithStringDb } from "../../domain/service/enrichment/stringDbEnrichment.js";
 import { enrichGraphWithOmniPath } from "../../domain/service/enrichment/omniPathEnrichment.js";
 
@@ -65,8 +67,16 @@ export const useGraphSetup = () => {
       }
 
       if (cancelled) return;
-      resetService.resetSimulation({ preserveSearch: true });
-      applyGraphSettings(graph);
+      const currentOriginGraph = useGraphState.getState().graphState.originGraph;
+      const isPreprocessed = useGraphFlags.getState().graphFlags.isPreprocessed;
+      const reuseNodes = isPreprocessed && hasSameNodeIds(currentOriginGraph?.data, graph.data);
+      if (reuseNodes) {
+        graph.data = reconcileGraphDataPreservingSimulation(currentOriginGraph.data, graph.data);
+      } else {
+        resetService.resetSimulation({ preserveSearch: true });
+      }
+
+      applyGraphSettings(graph, reuseNodes ? currentOriginGraph : null);
       setGraphState("originGraph", graph);
     };
 

@@ -9,6 +9,8 @@ import {
 import { appearanceInit, useAppearance } from "../../../../src/components/adapters/state/appearanceState.js";
 import { lightTheme, useTheme } from "../../../../src/components/adapters/state/themeState.js";
 import { graphMetricsInit, useGraphMetrics } from "../../../../src/components/adapters/state/graphMetricsState.js";
+import { filterInit, useFilter } from "../../../../src/components/adapters/state/filterState.js";
+import { physicsInit, usePhysics } from "../../../../src/components/adapters/state/physicsState.js";
 
 function createGraphData(settings = {}) {
   return {
@@ -22,6 +24,8 @@ afterEach(() => {
   useAppearance.getState().setAllAppearance(appearanceInit);
   useTheme.getState().setTheme(lightTheme);
   useGraphMetrics.getState().setAllGraphMetrics(graphMetricsInit);
+  useFilter.getState().setAllFilter(filterInit);
+  usePhysics.getState().setAllPhysics(physicsInit);
 });
 
 describe("applyGraphSettings", () => {
@@ -62,5 +66,23 @@ describe("applyGraphSettings", () => {
     assert.equal(appearance.linkWidth, 2.5);
     assert.equal(appearance.cameraRef, cameraRef);
     assert.equal(useTheme.getState().theme.name, "light");
+  });
+
+  test("same-source updates keep current controls and refresh metrics when links change", () => {
+    const original = { name: "A", data: createGraphData({ physics: { linkLength: 300 } }) };
+    applyGraphSettings(original);
+    usePhysics.getState().setPhysics("linkLength", 250);
+    useFilter.getState().setFilter("minLinkThreshold", 0.2);
+
+    const mapped = { name: "A", data: { ...original.data, nodes: [{ id: "A", attribs: ["Mapped"] }, { id: "B" }] } };
+    applyGraphSettings(mapped, original);
+    assert.equal(usePhysics.getState().physics.linkLength, 250);
+    assert.equal(useFilter.getState().filter.minLinkThreshold, 0.2);
+
+    const changedLinks = { name: "A", data: { ...mapped.data, links: [{ source: "A", target: "B", weight: 0.8 }] } };
+    applyGraphSettings(changedLinks, mapped);
+    assert.equal(usePhysics.getState().physics.linkLength, 250);
+    assert.equal(useGraphMetrics.getState().graphMetrics.linkWeightMax, 0.8);
+    assert.equal(useFilter.getState().filter.minLinkThreshold, 0.8);
   });
 });

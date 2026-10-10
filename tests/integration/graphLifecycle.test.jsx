@@ -139,7 +139,8 @@ async function update(action) {
   const currentSimulation = useRenderState.getState().renderState.simulation;
   expect(currentSimulation.nodes()).toBe(graph.data.nodes);
   expect(currentSimulation.force("link").links()).toBe(graph.data.links);
-  expect(simulation.mountSimulation.mock.lastCall[1]).toBe(graph.data);
+  expect(simulation.mountSimulation.mock.lastCall[1].nodes).toBe(graph.data.nodes);
+  expect(simulation.mountSimulation.mock.lastCall[1].links).toBe(graph.data.links);
   return graph;
 }
 
@@ -296,13 +297,88 @@ test("removing the only graph renders the default example", async () => {
 
 test("loading, replacing and removing a mapping updates the rendered attributes", async () => {
   await update(() => graphService.handleSelectGraph("A"));
+  const currentSimulation = useRenderState.getState().renderState.simulation;
+  const node = currentSimulation.nodes()[0];
+  node.x = 123;
+  node.y = 456;
+  currentSimulation.alpha(0.2);
+  currentSimulation.stop.mockClear();
+  currentSimulation.restart.mockClear();
+  const mountCount = simulation.mountSimulation.mock.calls.length;
   for (const name of ["Kinase", "Phosphatase", null]) {
     const graph = await update(() => name
       ? mappingService.handleSelectMapping(name)
       : mappingService.handleRemoveMapping());
     expect(graph.data.nodes.find((node) => node.id === "A1_AKT1").attribs).toEqual(name ? [name] : []);
+    expect(useRenderState.getState().renderState.simulation).toBe(currentSimulation);
+    expect(currentSimulation.nodes()[0]).toBe(node);
+    expect([node.x, node.y, currentSimulation.alpha()]).toEqual([123, 456, 0.2]);
+    expect(currentSimulation.stop).not.toHaveBeenCalled();
+    expect(currentSimulation.restart).not.toHaveBeenCalled();
+    expect(simulation.mountSimulation).toHaveBeenCalledTimes(mountCount);
     expect(Application).toHaveBeenCalledTimes(1);
   }
+});
+
+test("loading a graph with the same structure preserves simulation layout", async () => {
+  await update(() => graphService.handleSelectGraph("A"));
+  const currentSimulation = useRenderState.getState().renderState.simulation;
+  const node = currentSimulation.nodes()[0];
+  const links = currentSimulation.force("link").links();
+  node.x = 123;
+  node.y = 456;
+  currentSimulation.alpha(0.2);
+  currentSimulation.stop.mockClear();
+  currentSimulation.restart.mockClear();
+  const mountCount = simulation.mountSimulation.mock.calls.length;
+
+  vi.mocked(graphRepo.getGraphDB).mockImplementation(async (name) => {
+    const graph = structuredClone(graphs[name === "C" ? "A" : name]);
+    if (name === "C") {
+      graph.name = name;
+      graph.data.nodes[0].attribs = ["Updated"];
+    }
+    return graph;
+  });
+
+  const graph = await update(() => graphService.handleSelectGraph("C"));
+  expect(graph.name).toBe("C");
+  expect(graph.data.nodes[0].attribs).toEqual(["Updated"]);
+  expect(useRenderState.getState().renderState.simulation).toBe(currentSimulation);
+  expect(currentSimulation.nodes()[0]).toBe(node);
+  expect(currentSimulation.force("link").links()).toBe(links);
+  expect([node.x, node.y, currentSimulation.alpha()]).toEqual([123, 456, 0.2]);
+  expect(currentSimulation.stop).not.toHaveBeenCalled();
+  expect(currentSimulation.restart).not.toHaveBeenCalled();
+  expect(simulation.mountSimulation).toHaveBeenCalledTimes(mountCount);
+});
+
+test("loading changed links for the same node IDs updates the running simulation", async () => {
+  await update(() => graphService.handleSelectGraph("A"));
+  const currentSimulation = useRenderState.getState().renderState.simulation;
+  const node = currentSimulation.nodes()[0];
+  const previousLinks = currentSimulation.force("link").links();
+  node.x = 123;
+  node.y = 456;
+
+  vi.mocked(graphRepo.getGraphDB).mockImplementation(async (name) => {
+    const graph = structuredClone(graphs[name === "C" ? "A" : name]);
+    if (name === "C") {
+      graph.name = name;
+      graph.data.links[0].weight = 0.8;
+    }
+    return graph;
+  });
+
+  const graph = await update(() => graphService.handleSelectGraph("C"));
+  expect(graph.name).toBe("C");
+  expect(graph.data.links[0].weight).toBe(0.8);
+  expect(useRenderState.getState().renderState.simulation).toBe(currentSimulation);
+  expect(currentSimulation.nodes()[0]).toBe(node);
+  expect([node.x, node.y]).toEqual([123, 456]);
+  expect(currentSimulation.force("link").links()).not.toBe(previousLinks);
+  expect(graph.data.links[0].source).toBe(node);
+  expect(Application).toHaveBeenCalledTimes(1);
 });
 
 test("case-insensitive field mappings add attributes and removal preserves original attributes", async () => {

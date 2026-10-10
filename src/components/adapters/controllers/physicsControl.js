@@ -32,6 +32,8 @@ export function PhysicsControl() {
   const { graphFlags } = useGraphFlags();
   const { renderState } = useRenderState();
   const { appearance } = useAppearance();
+  const graphNodes = graphState.graph?.data?.nodes;
+  const graphLinks = graphState.graph?.data?.links;
 
   const forceLinkFactory = appearance?.threeD ? d3Force3d.forceLink : d3.forceLink;
   const forceManyBodyFactory = appearance?.threeD ? d3Force3d.forceManyBody : d3.forceManyBody;
@@ -72,7 +74,7 @@ export function PhysicsControl() {
       errorService.setError(error.message);
       log.error("Error updating link length:", error);
     }
-  }, [physics.linkLength, graphFlags.filteredAfterStart, graphState.graph, renderState.simulation, appearance.threeD]);
+  }, [physics.linkLength, graphFlags.filteredAfterStart, graphNodes, graphLinks, renderState.simulation, appearance.threeD]);
 
   useEffect(() => {
     if (!renderState.simulation || !graphFlags.filteredAfterStart) return;
@@ -95,7 +97,8 @@ export function PhysicsControl() {
     container.width,
     container.height,
     graphFlags.filteredAfterStart,
-    graphState.graph,
+    graphNodes,
+    graphLinks,
     renderState.simulation,
     appearance.threeD,
   ]);
@@ -118,7 +121,7 @@ export function PhysicsControl() {
       errorService.setError(error.message);
       log.error("Error updating component force:", error);
     }
-  }, [physics.componentStrength, graphFlags.filteredAfterStart, graphState.graph, renderState.simulation, appearance.threeD]);
+  }, [physics.componentStrength, graphFlags.filteredAfterStart, graphNodes, graphLinks, renderState.simulation, appearance.threeD]);
 
   useEffect(() => {
     if (!renderState.simulation || !graphFlags.filteredAfterStart) return;
@@ -141,7 +144,7 @@ export function PhysicsControl() {
       errorService.setError(error.message);
       log.error("Error updating node repulsion:", error);
     }
-  }, [physics.nodeRepulsionStrength, graphFlags.filteredAfterStart, graphState.graph, renderState.simulation, appearance.threeD]);
+  }, [physics.nodeRepulsionStrength, graphFlags.filteredAfterStart, graphNodes, graphLinks, renderState.simulation, appearance.threeD]);
 
   useEffect(() => {
     if (!renderState.simulation || !graphFlags.isPreprocessed || !container.width || !container.height) return;
@@ -168,7 +171,8 @@ export function PhysicsControl() {
     container.width,
     container.height,
     graphFlags.filteredAfterStart,
-    graphState.graph,
+    graphNodes,
+    graphLinks,
     renderState.simulation,
     appearance.threeD,
   ]);
@@ -198,7 +202,7 @@ export function PhysicsControl() {
       errorService.setError(error.message);
       log.error("Error updating circular force:", error);
     }
-  }, [physics.circleForce, graphFlags.filteredAfterStart, graphState.graph, renderState.simulation, appearance.threeD]);
+  }, [physics.circleForce, graphFlags.filteredAfterStart, graphNodes, graphLinks, renderState.simulation, appearance.threeD]);
 
   useEffect(() => {
     if (!renderState.simulation || !graphFlags.filteredAfterStart || !graphState.graph) return;
@@ -227,7 +231,8 @@ export function PhysicsControl() {
     physics.communityForceStrength,
     communityState.idToCommunity,
     graphFlags.filteredAfterStart,
-    graphState.graph,
+    graphNodes,
+    graphLinks,
     renderState.simulation,
     appearance.threeD,
   ]);
