@@ -262,6 +262,21 @@ test("Node clicks preserve open details and previous-node navigation", async ({ 
 
   const focusBar = page.getByRole("region", { name: "Focused node" });
   await expectLayoutFits(focusBar);
+  await expect.poll(async () => {
+    const focusButton = await focusBar.locator(".sidebar-footer-action").first().boundingBox();
+    const sidebarButton = await tooltip.locator(".sidebar-footer-action").first().boundingBox();
+    return Math.abs(focusButton.height - sidebarButton.height);
+  }).toBeLessThan(0.5);
+  const compactBarBox = await focusBar.boundingBox();
+  const compactButtonBox = await focusBar.locator(".sidebar-footer-action").first().boundingBox();
+  expect(compactBarBox.height - compactButtonBox.height).toBeLessThan(10);
+  const focusName = focusBar.locator(".node-focus-name");
+  await focusName.evaluate((element) => { element.textContent = "A"; });
+  const shortNameWidth = (await focusBar.boundingBox()).width;
+  await focusName.evaluate((element) => { element.textContent = "A much longer focused node display name that expands the compact bar"; });
+  const longNameWidth = (await focusBar.boundingBox()).width;
+  expect(longNameWidth).toBeGreaterThan(shortNameWidth);
+  expect(longNameWidth).toBeLessThanOrEqual(page.viewportSize().width - 8);
   await focusBar.getByRole("button", { name: "Previous", exact: true }).click();
   await expectLayoutFits(focusBar);
   await focusBar.getByRole("button", { name: "Hide details", exact: true }).click();

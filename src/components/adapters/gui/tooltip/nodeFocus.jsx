@@ -4,7 +4,7 @@ import { usePixiState } from "../../state/pixiState.js";
 import { useRenderState } from "../../state/canvasState.js";
 import { useGraphState } from "../../state/graphState.js";
 import { useNodeDetails } from "../hooks/useNodeDetails.js";
-import { Button } from "../reusable_components/sidebarComponents.jsx";
+import { SidebarFooterActions, SidebarFooterButton } from "../reusable_components/sidebarFooterActions.jsx";
 import { isPopupOpen } from "../hooks/keyboardUtils.js";
 
 export function NodeFocus() {
@@ -53,18 +53,13 @@ export function NodeFocus() {
   return (
     <div className="node-focus-bar" role="region" aria-label="Focused node">
       <span className="node-focus-name" title={nodeId}>
-        Focused: {displayName}
+        {displayName}
       </span>
-      <div className="tooltip-popup-footer-actions">
-        <Button
-          className="tooltip-popup-action"
-          text={detailsOpen ? "Hide details" : "Details"}
-          aria-expanded={detailsOpen}
-          onClick={toggleDetails}
-        />
-        <Button className="tooltip-popup-action" text="Clear" onClick={clearNodeFocus} title="Clear focus (Escape)" />
-        {canGoBack && <Button className="tooltip-popup-action" text="Previous" onClick={goBackTooltip} />}
-      </div>
+      <SidebarFooterActions>
+        <SidebarFooterButton text={detailsOpen ? "Hide details" : "Details"} aria-expanded={detailsOpen} onClick={toggleDetails} />
+        {canGoBack && <SidebarFooterButton text="Previous" onClick={goBackTooltip} />}
+        <SidebarFooterButton text="Clear" onClick={clearNodeFocus} title="Clear focus (Escape)" />
+      </SidebarFooterActions>
     </div>
   );
 }

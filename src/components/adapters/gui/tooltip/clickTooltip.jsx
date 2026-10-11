@@ -13,6 +13,7 @@ import { useColorschemeState } from "../../state/colorschemeState.js";
 import { RightSidebar } from "../reusable_components/rightSidebar.jsx";
 import { TooltipPopupItem, TooltipPopupLinkItem } from "../reusable_components/tooltipComponents.jsx";
 import { Button } from "../reusable_components/sidebarComponents.jsx";
+import { SidebarFooterActions, SidebarFooterButton } from "../reusable_components/sidebarFooterActions.jsx";
 import { AttributeList } from "../reusable_components/AttributeLabel.jsx";
 import { describeSector, getColor } from "../../../domain/service/canvas_drawing/drawingUtils.js";
 import { downloadNodeIdsCsv } from "../../../domain/service/download/download.js";
@@ -143,22 +144,21 @@ export function ClickTooltip({ onSelectInsightsPanel, onCloseInsightsPanel }) {
       return (
         <>
           <div className="tooltip-popup-footer-links" />
-          <div className="tooltip-popup-footer-actions">
-            <Button className="tooltip-popup-action" text="Back to node" data-tooltip-view="details" onClick={() => setView("details")} />
+          <SidebarFooterActions>
+            <SidebarFooterButton text="Back to node" data-tooltip-view="details" onClick={() => setView("details")} />
             {isAdjacentView && (
-              <Button className="tooltip-popup-action" text="Export" onClick={handleExportAdjacent} disabled={!adjacentNodeList.length} />
+              <SidebarFooterButton text="Export" onClick={handleExportAdjacent} disabled={!adjacentNodeList.length} />
             )}
-            {view === "statistics" && community && <Button className="tooltip-popup-action" text="community" onClick={() => setView("community")} />}
+            {view === "statistics" && community && <SidebarFooterButton text="community" onClick={() => setView("community")} />}
             {isCommunityView && (
-              <Button className="tooltip-popup-action" text="Node statistics" data-tooltip-view="statistics" onClick={() => setView("statistics")} />
+              <SidebarFooterButton text="Node statistics" data-tooltip-view="statistics" onClick={() => setView("statistics")} />
             )}
-            <Button
-              className="tooltip-popup-action"
+            <SidebarFooterButton
               text={isAdjacentView ? "Node statistics" : "Neighbors"}
               data-tooltip-view={isAdjacentView ? "statistics" : "adjacent"}
               onClick={() => setView(isAdjacentView ? "statistics" : "adjacent")}
             />
-          </div>
+          </SidebarFooterActions>
         </>
       );
     }
@@ -168,10 +168,10 @@ export function ClickTooltip({ onSelectInsightsPanel, onCloseInsightsPanel }) {
         <div className="tooltip-popup-footer-links">
           {protIdNoIsoform && <TooltipPopupLinkItem text={"UniProt"} link={`https://www.uniprot.org/uniprotkb/${protIdNoIsoform}/`} />}
         </div>
-        <div className="tooltip-popup-footer-actions">
-          <Button className="tooltip-popup-action" text="Node statistics" data-tooltip-view="statistics" onClick={() => setView("statistics")} />
-          <Button className="tooltip-popup-action" text="Neighbors" data-tooltip-view="adjacent" onClick={() => setView("adjacent")} />
-        </div>
+        <SidebarFooterActions>
+          <SidebarFooterButton text="Node statistics" data-tooltip-view="statistics" onClick={() => setView("statistics")} />
+          <SidebarFooterButton text="Neighbors" data-tooltip-view="adjacent" onClick={() => setView("adjacent")} />
+        </SidebarFooterActions>
       </>
     );
   }, [adjacentNodeList.length, community, handleExportAdjacent, isAdjacentView, isCommunityView, view, protIdNoIsoform]);
