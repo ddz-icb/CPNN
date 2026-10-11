@@ -54,22 +54,20 @@ for (const { key: section } of SIDEBAR_SECTIONS) {
   });
 }
 
-test("Header overlays fit and close consistently", async ({ page }) => {
+test("Insights sidebar views fit and close consistently", async ({ page }) => {
   await page.locator("#app-sidebar").getByRole("button", { name: "Collapse sidebar" }).click();
-  const triggers = page.locator(".headerbar-actions button[aria-controls]");
-  expect(await triggers.count()).toBeGreaterThan(0);
-  for (const trigger of await triggers.all()) {
-    const panelId = await trigger.getAttribute("aria-controls");
-    await test.step(panelId, async () => {
-      const overlay = page.locator(`[id="${panelId}"]`);
-      await trigger.click();
-      // The region wrapper has no box; its child is the positioned panel.
-      await expectLayoutFits(overlay.locator(":scope > div"));
-      await page.keyboard.press("Escape");
-      await expect(overlay).toHaveCount(0);
-      await trigger.click();
-      await trigger.click();
-      await expect(overlay).toHaveCount(0);
-    });
-  }
+  await page.getByRole("button", { name: "Open insights sidebar" }).click();
+
+  const mapping = page.getByRole("region", { name: "Color mapping" });
+  await expectLayoutFits(mapping);
+  await mapping.getByRole("button", { name: "Statistics" }).click();
+
+  const statistics = page.getByRole("region", { name: "Graph statistics" });
+  await expectLayoutFits(statistics);
+  await page.keyboard.press("Escape");
+  await expect(statistics).toHaveCount(0);
+
+  await page.getByRole("button", { name: "Open insights sidebar" }).click();
+  await mapping.getByRole("button", { name: "Close tooltip" }).click();
+  await expect(mapping).toHaveCount(0);
 });

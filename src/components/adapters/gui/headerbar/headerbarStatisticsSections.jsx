@@ -4,11 +4,14 @@ import {
   formatStatisticPercent,
 } from "./statisticsFormatters.js";
 
-export function StatisticMetric({ label, value, description }) {
+export function StatisticMetric({ label, value, percentage, description }) {
   return (
     <div className="statistics-metric" title={description}>
       <span className="statistics-metric-label">{label}</span>
-      <strong className="statistics-metric-value">{value}</strong>
+      <strong className="statistics-metric-value statistics-value-pair">
+        <span>{value}</span>
+        {percentage && <span className="statistics-value-secondary">{percentage}</span>}
+      </strong>
     </div>
   );
 }
@@ -27,9 +30,9 @@ export function AttributeStatisticsSection({ title, attributes, total }) {
           attributes.map(({ name, count }) => (
             <div className="statistics-attribute-row" key={name}>
               <span title={name}>{name}</span>
-              <strong>
-                {formatStatisticInteger(count)}{" "}
-                <small>{formatStatisticPercent(total === 0 ? 0 : count / total)}</small>
+              <strong className="statistics-value-pair">
+                <span>{formatStatisticInteger(count)}</span>
+                <span className="statistics-value-secondary">{formatStatisticPercent(total === 0 ? 0 : count / total)}</span>
               </strong>
             </div>
           ))

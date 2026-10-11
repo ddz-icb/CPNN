@@ -13,10 +13,10 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 0.4rem;
+  gap: 0.45rem;
   min-width: 0;
-  height: 2.75rem;
-  padding: 0 0.5rem;
+  height: 2.95rem;
+  padding: 0 0.55rem;
   color: var(--color-text-primary);
   background: transparent;
   border: var(--border-thin) solid var(--color-border-subtle);
@@ -54,8 +54,8 @@
 .right-panel-tab-icon svg {
   display: block;
   flex: none;
-  width: 1.2rem;
-  height: 1.2rem;
+  width: 1.3rem;
+  height: 1.3rem;
   color: var(--color-icon-primary);
   fill: currentColor;
 }
@@ -172,13 +172,23 @@
 
 .statistics-metric-value {
   flex: none;
-  max-width: 58%;
-  overflow: hidden;
   font-family: var(--font-family-mono);
   font-size: var(--font-size-s);
   font-weight: var(--font-weight-medium);
-  text-overflow: ellipsis;
+}
+
+.statistics-value-pair {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1.2;
   white-space: nowrap;
+}
+
+.statistics-value-secondary {
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
 }
 
 .statistics-metric-label {
@@ -303,12 +313,6 @@
 
 .statistics-community-row > div:first-child span {
   color: var(--color-text-secondary);
-}
-
-.statistics-attribute-row small {
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-base);
-  font-weight: 500;
 }
 
 .statistics-empty {

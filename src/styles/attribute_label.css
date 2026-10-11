@@ -26,7 +26,7 @@
   text-overflow: ellipsis;
   margin-left: 0.35em;
   color: var(--color-text-secondary);
-  font-size: 0.85em;
+  font-size: inherit;
   white-space: nowrap;
 }
 

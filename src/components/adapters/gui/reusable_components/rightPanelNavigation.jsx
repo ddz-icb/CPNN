@@ -32,6 +32,7 @@ export function RightPanelNavigation({ activeView, nodeAvailable, onSelect }) {
           >
             <span className="right-panel-tab-icon"><SvgIcon svg={icon} /></span>
             <span className="right-panel-tab-label">{label}</span>
+            <kbd className="nav-shortcut right-panel-tab-shortcut" aria-hidden="true">{shortcut}</kbd>
           </button>
         );
       })}

@@ -79,7 +79,7 @@
   right: 0;
   bottom: 0;
   box-sizing: border-box;
-  width: min(25rem, 100vw);
+  width: min(var(--right-sidebar-panel-width), 100vw);
   height: 100vh;
   height: 100dvh;
   min-height: 0;
@@ -103,7 +103,7 @@
 
 .tooltip-popup-content,
 .node-focus-bar {
-  width: min(22rem, calc(100vw - 1rem));
+  width: min(24rem, calc(100vw - 1rem));
 }
 
 .tooltip-popup-content {
@@ -344,6 +344,10 @@
   .tooltip-popup {
     width: 100vw;
   }
+
+  body:has(.node-focus-bar) .tooltip-popup-footer {
+    margin-bottom: 5rem;
+  }
 }
 
 .tooltip-adjacent-list {
@@ -388,7 +392,8 @@
   display: flex;
   flex-direction: column;
   gap: 0.1rem;
-  width: 100%;
+  flex: 1;
+  min-width: 0;
 }
 
 .tooltip-adjacent-node-id-row {
@@ -401,6 +406,14 @@
 .tooltip-adjacent-node-id {
   font-size: var(--font-size-s);
   flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tooltip-adjacent-node-id-row .tooltip-popup-action {
+  flex: none;
 }
 
 .tooltip-adjacent-node-attribs {
@@ -438,7 +451,7 @@
   border-radius: var(--radius-xs);
   background: color-mix(in srgb, var(--color-surface-contrast) 66%, transparent 34%);
   font-family: var(--font-family-mono);
-  font-size: 0.62rem;
+  font-size: var(--font-size-base);
   font-weight: 650;
   line-height: 1.2;
 }

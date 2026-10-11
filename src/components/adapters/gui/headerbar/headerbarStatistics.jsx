@@ -21,9 +21,10 @@ export function HeaderbarStatistics() {
   const statistics = useMemo(() => calculateGraphStatistics(graphData), [graphData]);
   const largestCommunity = communities[0];
   const hasGraph = Boolean(graphData);
-  const largestCommunityValue = largestCommunity
-    ? `${formatStatisticInteger(largestCommunity.size)} (${formatStatisticPercent(largestCommunity.size / statistics.nodeCount)})`
-    : "0";
+  const largestCommunityValue = largestCommunity ? formatStatisticInteger(largestCommunity.size) : "0";
+  const largestCommunityPercentage = largestCommunity
+    ? formatStatisticPercent(largestCommunity.size / statistics.nodeCount)
+    : undefined;
   const originalNodeCount = originalGraphData?.nodes?.length ?? 0;
   const originalLinkCount = originalGraphData?.links?.length ?? 0;
   const filteredNodeCount = Math.max(0, originalNodeCount - statistics.nodeCount);
@@ -36,12 +37,14 @@ export function HeaderbarStatistics() {
     ...(originalGraphData ? [
       {
         label: "Nodes filtered out",
-        value: `${formatStatisticInteger(filteredNodeCount)} (${formatStatisticPercent(filteredNodeShare)})`,
+        value: formatStatisticInteger(filteredNodeCount),
+        percentage: formatStatisticPercent(filteredNodeShare),
         description: "Nodes excluded from the displayed graph relative to the unfiltered graph",
       },
       {
         label: "Links filtered out",
-        value: `${formatStatisticInteger(filteredLinkCount)} (${formatStatisticPercent(filteredLinkShare)})`,
+        value: formatStatisticInteger(filteredLinkCount),
+        percentage: formatStatisticPercent(filteredLinkShare),
         description: "Links excluded from the displayed graph relative to the unfiltered graph",
       },
     ] : []),
@@ -55,13 +58,19 @@ export function HeaderbarStatistics() {
     { label: "Components", value: formatStatisticInteger(statistics.componentCount), description: "Disconnected parts of the graph" },
     { label: "Isolated nodes", value: formatStatisticInteger(statistics.isolatedNodeCount), description: "Nodes without any links" },
     { label: "Communities", value: formatStatisticInteger(communities.length), description: "Communities detected at the current resolution" },
-    { label: "Largest community", value: largestCommunityValue, description: "Nodes contained in the largest detected community" },
+    {
+      label: "Largest community",
+      value: largestCommunityValue,
+      percentage: largestCommunityPercentage,
+      description: "Nodes contained in the largest detected community",
+    },
   ];
 
   if (statistics.directedLinkCount > 0) {
     displayedGraphMetrics.push({
       label: "Directed links",
-      value: `${formatStatisticInteger(statistics.directedLinkCount)} (${formatStatisticPercent(statistics.directedLinkShare)})`,
+      value: formatStatisticInteger(statistics.directedLinkCount),
+      percentage: formatStatisticPercent(statistics.directedLinkShare),
       description: "Links with a defined source-to-target direction",
     });
   }
