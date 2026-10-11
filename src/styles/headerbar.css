@@ -67,6 +67,22 @@
   white-space: nowrap;
 }
 
+@container right-sidebar (max-width: 24rem) {
+  .right-panel-tab {
+    justify-content: center;
+    gap: 0.35rem;
+    padding-inline: 0.35rem;
+  }
+
+  .right-panel-tab-label {
+    display: none;
+  }
+
+  .statistics-metric-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* color mapping panel */
 
 .headerbar-colormapping,

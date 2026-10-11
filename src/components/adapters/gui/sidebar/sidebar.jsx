@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from "react";
 import { useSidebarKeyboard } from "../hooks/useSidebarKeyboard.js";
 import { useAddKeyframe } from "../hooks/useAddKeyframe.js";
 import { SvgIcon } from "../reusable_components/SvgIcon.jsx";
+import { ResizableSidebar } from "../reusable_components/resizableSidebar.jsx";
 import leftArrowSvg from "../../../../assets/icons/leftArrow.svg?raw";
 import listSvg from "../../../../assets/icons/list.svg?raw";
 import xSvg from "../../../../assets/icons/x.svg?raw";
@@ -67,13 +68,12 @@ export function Sidebar({ collapsed = false, onCollapsedChange, ...props }) {
   const currentSidebar = sidebarComponents[activeNavItem];
   const isSelection = activeNavItem === "Selection";
   const dockLabel = isSelection ? "Menu" : activeNavItem;
-
   return (
     <>
       {collapsed && <SidebarDockTab label={dockLabel} onClick={openSidebar} />}
       {!collapsed && <button className="sidebar-scrim" type="button" aria-label="Collapse sidebar" onClick={collapseSidebar} />}
       {!collapsed && (
-        <Navbar short={isSelection}>
+        <Navbar key={isSelection ? "selection" : "tool"} short={isSelection} onCollapse={collapseSidebar}>
           {isSelection ? (
             <>
               <LogoBar onCollapse={collapseSidebar} />
@@ -95,11 +95,23 @@ export function Sidebar({ collapsed = false, onCollapsedChange, ...props }) {
   );
 }
 
-function Navbar({ short, children }) {
+function Navbar({ short, onCollapse, children }) {
   return (
-    <nav id="app-sidebar" className={short ? "navbar short" : "navbar"} aria-label="Application tools">
+    <ResizableSidebar
+      as="nav"
+      side="left"
+      storageKey={short ? null : "cpnn.leftSidebarWidth"}
+      cssVariable="--left-sidebar-width"
+      defaultWidth={short ? 15 : 27}
+      minWidth={short ? 15 : 22.5}
+      allowGrowth={!short}
+      onCollapse={onCollapse}
+      id="app-sidebar"
+      className={short ? "navbar short" : "navbar"}
+      aria-label="Application tools"
+    >
       <ul>{children}</ul>
-    </nav>
+    </ResizableSidebar>
   );
 }
 

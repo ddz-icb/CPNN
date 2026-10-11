@@ -68,6 +68,74 @@ test("Insights sidebar views fit and close consistently", async ({ page }) => {
   await expect(statistics).toHaveCount(0);
 
   await page.getByRole("button", { name: "Open insights sidebar" }).click();
-  await mapping.getByRole("button", { name: "Close tooltip" }).click();
+  await mapping.getByRole("button", { name: "Collapse sidebar" }).click();
   await expect(mapping).toHaveCount(0);
+});
+
+test("Sidebars resize and collapse from their drag handles", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop-light", "Pointer resizing only needs one desktop layout pass");
+
+  const leftSidebar = page.locator("#app-sidebar");
+  const leftHandle = page.getByRole("separator", { name: "Resize left sidebar" });
+  const initialSelectionWidth = (await leftSidebar.boundingBox()).width;
+  let handleBox = await leftHandle.boundingBox();
+
+  await page.mouse.move(handleBox.x + handleBox.width / 2, handleBox.y + handleBox.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(handleBox.x + 60, handleBox.y + handleBox.height / 2);
+  await page.mouse.up();
+  await expect.poll(async () => (await leftSidebar.boundingBox()).width).toBeCloseTo(initialSelectionWidth, 0);
+
+  handleBox = await leftHandle.boundingBox();
+  await page.mouse.move(handleBox.x + handleBox.width / 2, handleBox.y + handleBox.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(20, handleBox.y + handleBox.height / 2);
+  await expect.poll(async () => (await leftSidebar.boundingBox()).width).toBeLessThan(2);
+  await page.mouse.up();
+  await expect(leftSidebar).toHaveCount(0);
+  await page.getByRole("button", { name: "Open Menu sidebar" }).click();
+  await expect.poll(async () => (await leftSidebar.boundingBox()).width).toBeCloseTo(initialSelectionWidth, 0);
+
+  await page.locator(".nav-link").filter({ has: page.getByText("Filter", { exact: true }) }).click();
+  const initialLeftWidth = (await leftSidebar.boundingBox()).width;
+  handleBox = await leftHandle.boundingBox();
+
+  await page.mouse.move(handleBox.x + handleBox.width / 2, handleBox.y + handleBox.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(handleBox.x + 60, handleBox.y + handleBox.height / 2);
+  await page.mouse.up();
+  await expect.poll(async () => (await leftSidebar.boundingBox()).width).toBeGreaterThan(initialLeftWidth + 40);
+
+  handleBox = await leftHandle.boundingBox();
+  await page.mouse.move(handleBox.x + handleBox.width / 2, handleBox.y + handleBox.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(20, handleBox.y + handleBox.height / 2);
+  await expect.poll(async () => (await leftSidebar.boundingBox()).width).toBeLessThan(2);
+  await page.mouse.up();
+  await expect(leftSidebar).toHaveCount(0);
+  await page.getByRole("button", { name: "Open Filter sidebar" }).click();
+  await expect.poll(async () => (await leftSidebar.boundingBox()).width).toBeGreaterThan(initialLeftWidth + 40);
+  await leftSidebar.getByRole("button", { name: "Collapse sidebar" }).click();
+
+  await page.getByRole("button", { name: "Open insights sidebar" }).click();
+  const rightSidebar = page.getByRole("region", { name: "Color mapping" });
+  const rightHandle = page.getByRole("separator", { name: "Resize right sidebar" });
+  const initialRightWidth = (await rightSidebar.boundingBox()).width;
+  handleBox = await rightHandle.boundingBox();
+
+  await page.mouse.move(handleBox.x + handleBox.width / 2, handleBox.y + handleBox.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(handleBox.x - 60, handleBox.y + handleBox.height / 2);
+  await page.mouse.up();
+  await expect.poll(async () => (await rightSidebar.boundingBox()).width).toBeGreaterThan(initialRightWidth + 40);
+
+  handleBox = await rightHandle.boundingBox();
+  await page.mouse.move(handleBox.x + handleBox.width / 2, handleBox.y + handleBox.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(page.viewportSize().width - 20, handleBox.y + handleBox.height / 2);
+  await expect.poll(async () => (await rightSidebar.boundingBox()).width).toBeLessThan(2);
+  await page.mouse.up();
+  await expect(rightSidebar).toHaveCount(0);
+  await page.getByRole("button", { name: "Open insights sidebar" }).click();
+  await expect.poll(async () => (await rightSidebar.boundingBox()).width).toBeGreaterThan(initialRightWidth + 40);
 });

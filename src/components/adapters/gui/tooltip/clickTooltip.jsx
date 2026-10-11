@@ -10,7 +10,8 @@ import { useNodeDetails } from "../hooks/useNodeDetails.js";
 import { useProteinDetails } from "../hooks/useProteinDetails.js";
 import { useGraphState } from "../../state/graphState.js";
 import { useColorschemeState } from "../../state/colorschemeState.js";
-import { TooltipPopup, TooltipPopupItem, TooltipPopupLinkItem } from "../reusable_components/tooltipComponents.jsx";
+import { RightSidebar } from "../reusable_components/rightSidebar.jsx";
+import { TooltipPopupItem, TooltipPopupLinkItem } from "../reusable_components/tooltipComponents.jsx";
 import { Button } from "../reusable_components/sidebarComponents.jsx";
 import { AttributeList } from "../reusable_components/AttributeLabel.jsx";
 import { describeSector, getColor } from "../../../domain/service/canvas_drawing/drawingUtils.js";
@@ -189,7 +190,7 @@ export function ClickTooltip({ onSelectInsightsPanel, onCloseInsightsPanel }) {
   ) : null;
 
   return (
-    <TooltipPopup
+    <RightSidebar
       className="node-details-side-panel"
       heading={heading}
       close={() => {
@@ -231,7 +232,7 @@ export function ClickTooltip({ onSelectInsightsPanel, onCloseInsightsPanel }) {
           onViewNode={(node) => navigateToNode(node)}
         />
       )}
-    </TooltipPopup>
+    </RightSidebar>
   );
 }
 

@@ -99,7 +99,7 @@ test("node history survives closing and reopening without duplicate entries", as
       useTooltipSettings.getState().setTooltipSettings("clickTooltipData", { node, x: 30, y: 30 });
       useTooltipSettings.getState().setTooltipSettings("isClickTooltipActive", true);
     });
-  const close = async () => act(async () => host.querySelector('[aria-label="Close tooltip"]').click());
+  const close = async () => act(async () => host.querySelector('[aria-label="Collapse sidebar"]').click());
   const back = () => [...host.querySelectorAll("button")].find((button) => button.textContent === "Go to previous");
   await open("a");
   expect(back()).toBeUndefined();

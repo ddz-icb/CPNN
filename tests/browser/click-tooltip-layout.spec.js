@@ -39,7 +39,7 @@ async function expectTooltipFits(tooltip) {
   });
   await expectLayoutFits(tooltip);
   // The footer and close button must stay visible, even with a scrolling body.
-  await expect(tooltip.getByRole("button", { name: "Close tooltip" })).toBeInViewport({ ratio: 1 });
+  await expect(tooltip.getByRole("button", { name: "Collapse sidebar" })).toBeInViewport({ ratio: 1 });
   for (const button of await tooltip.locator(".tooltip-popup-footer button").all()) {
     await expect(button).toBeInViewport({ ratio: 1 });
   }
@@ -76,7 +76,7 @@ for (const corner of ["top-left", "top-right", "bottom-left", "bottom-right"]) {
       await tooltip.locator('[data-tooltip-view="details"]').click();
       await expectTooltipFits(tooltip);
     }
-    await tooltip.getByRole("button", { name: "Close tooltip" }).click();
+    await tooltip.getByRole("button", { name: "Collapse sidebar" }).click();
     await expect(tooltip).toHaveCount(0);
   });
 }
@@ -161,7 +161,7 @@ test("Community rows open ordered details in the shared right rail", async ({ pa
   await expect(panel.getByRole("heading", { name: "Top node attributes" })).toBeVisible();
   await expect(panel.getByRole("heading", { name: "Top link attributes" })).toBeVisible();
 
-  await panel.getByRole("button", { name: "Close tooltip" }).click();
+  await panel.getByRole("button", { name: "Collapse sidebar" }).click();
   await expect(panel).toHaveCount(0);
   await expect
     .poll(() =>
@@ -269,7 +269,7 @@ test("Node clicks preserve open details and previous-node navigation", async ({ 
   await focusBar.getByRole("button", { name: "Details", exact: true }).click();
   await expectTooltipFits(tooltip);
   await expectLayoutFits(focusBar);
-  await tooltip.getByRole("button", { name: "Close tooltip" }).click();
+  await tooltip.getByRole("button", { name: "Collapse sidebar" }).click();
   await expect(tooltip).toHaveCount(0);
   await expect(focusBar).toBeVisible();
   await focusBar.getByRole("button", { name: "Clear", exact: true }).click();

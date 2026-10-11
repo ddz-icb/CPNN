@@ -79,7 +79,7 @@
   right: 0;
   bottom: 0;
   box-sizing: border-box;
-  width: min(var(--right-sidebar-panel-width), 100vw);
+  width: min(var(--right-sidebar-width, var(--right-sidebar-panel-width)), 100vw);
   height: 100vh;
   height: 100dvh;
   min-height: 0;
@@ -110,6 +110,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  container: right-sidebar / inline-size;
   box-sizing: border-box;
   width: 100%;
   height: 100%;
@@ -341,10 +342,6 @@
 }
 
 @media (max-width: 520px) {
-  .tooltip-popup {
-    width: 100vw;
-  }
-
   body:has(.node-focus-bar) .tooltip-popup-footer {
     margin-bottom: 5rem;
   }
@@ -534,6 +531,12 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.5rem;
   margin: 0;
+}
+
+@container right-sidebar (max-width: 24rem) {
+  .community-details-summary {
+    grid-template-columns: 1fr;
+  }
 }
 
 .community-details-summary > div {

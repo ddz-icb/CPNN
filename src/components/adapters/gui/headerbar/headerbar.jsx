@@ -1,7 +1,7 @@
 import { useEffect, useCallback } from "react";
 import { SvgIcon } from "../reusable_components/SvgIcon.jsx";
 import infoSvg from "../../../../assets/icons/info.svg?raw";
-import { TooltipPopup } from "../reusable_components/tooltipComponents.jsx";
+import { RightSidebar } from "../reusable_components/rightSidebar.jsx";
 import { HeaderbarColorMapping } from "./headerbarMapping.jsx";
 import { HeaderbarStatistics } from "./headerbarStatistics.jsx";
 import { isTypingTarget, isPopupOpen } from "../hooks/keyboardUtils.js";
@@ -114,7 +114,7 @@ export function HeaderBar({ activePanel, setActivePanel }) {
         </div>
       )}
       {!isNodeDetailsActive && (isMappingActive || isStatisticsActive) && (
-        <TooltipPopup
+        <RightSidebar
           id={isMappingActive ? mappingPanelId : statisticsPanelId}
           className="headerbar-side-panel"
           heading={isMappingActive ? "Color mapping" : "Graph statistics"}
@@ -125,10 +125,10 @@ export function HeaderBar({ activePanel, setActivePanel }) {
           navigation={panelNavigation}
         >
           {isMappingActive ? <HeaderbarColorMapping /> : <HeaderbarStatistics />}
-        </TooltipPopup>
+        </RightSidebar>
       )}
       {isCommunityActive && !isNodeDetailsActive && (
-        <TooltipPopup
+        <RightSidebar
           id="community-details-panel"
           className="community-side-panel"
           heading={selectedCommunity.label}
@@ -138,7 +138,7 @@ export function HeaderBar({ activePanel, setActivePanel }) {
           ariaLabel={`${selectedCommunity.label} details`}
         >
           <CommunityDetails community={selectedCommunity} showHeading={false} />
-        </TooltipPopup>
+        </RightSidebar>
       )}
     </>
   );
