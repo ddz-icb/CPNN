@@ -139,6 +139,38 @@ test("Closed sidebar tab fits longer section names", async ({ page }) => {
   }
 });
 
+test("Sidebar resize handles highlight the full edge on hover", async ({ page }) => {
+  const expectFullEdgeHighlight = async (panel, handle, side) => {
+    const edgeStyle = () => panel.evaluate((element, edge) => {
+      const style = getComputedStyle(element);
+      return edge === "left"
+        ? { color: style.borderRightColor, width: style.borderRightWidth }
+        : { color: style.borderLeftColor, width: style.borderLeftWidth };
+    }, side);
+    const original = await edgeStyle();
+    const box = await handle.boundingBox();
+    for (const y of [box.y + 16, box.y + box.height - 16]) {
+      await page.mouse.move(box.x + box.width / 2, y);
+      const highlighted = await edgeStyle();
+      expect(highlighted.color).not.toBe(original.color);
+      expect(highlighted.width).toBe(original.width);
+    }
+  };
+
+  await expectFullEdgeHighlight(
+    page.locator("#app-sidebar"),
+    page.getByRole("separator", { name: "Resize left sidebar" }),
+    "left",
+  );
+  await page.locator("#app-sidebar").getByRole("button", { name: "Collapse sidebar" }).click();
+  await page.getByRole("button", { name: "Open insights sidebar" }).click();
+  await expectFullEdgeHighlight(
+    page.getByRole("region", { name: "Color mapping" }),
+    page.getByRole("separator", { name: "Resize right sidebar" }),
+    "right",
+  );
+});
+
 test("Sidebars resize and collapse from their drag handles", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop-light", "Pointer resizing only needs one desktop layout pass");
 
