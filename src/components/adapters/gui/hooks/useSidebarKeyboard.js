@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { SIDEBAR_SHORTCUT_MAP } from "../../config/sidebarConfig.js";
-import { isTypingTarget, isPopupOpen } from "./keyboardUtils.js";
+import { isTypingTarget, isPopupOpen, isPlainShortcut } from "./keyboardUtils.js";
 
 /**
  * Registers global keyboard shortcuts for the lifetime of the component.
@@ -11,12 +11,14 @@ import { isTypingTarget, isPopupOpen } from "./keyboardUtils.js";
  *  - Action keys    → run the matching action regardless of the active sidebar
  *
  * Guards (shortcuts are suppressed when):
+ *  - A modifier key is held, a key is repeating, or an IME is composing
  *  - A text-entry element (input, textarea, select, contenteditable, CodeMirror) is focused
  *  - A modal popup overlay is open
  */
 export function useSidebarKeyboard(setActiveNavItem, shortcutActions = {}) {
   useEffect(() => {
     const handleKeyDown = (e) => {
+      if (!isPlainShortcut(e)) return;
       const typing = isTypingTarget(document.activeElement);
 
       if (e.key === "Escape") {
@@ -38,7 +40,7 @@ export function useSidebarKeyboard(setActiveNavItem, shortcutActions = {}) {
       const key = e.key?.toLowerCase();
       const action = shortcutActions[key];
       if (action) {
-        if (!e.repeat && action() !== false) e.preventDefault();
+        if (action() !== false) e.preventDefault();
         return;
       }
 

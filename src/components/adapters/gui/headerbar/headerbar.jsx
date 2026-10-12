@@ -3,7 +3,7 @@ import { RightSidebar } from "../reusable_components/rightSidebar.jsx";
 import { SidebarEdgeTab } from "../reusable_components/sidebarEdgeTab.jsx";
 import { HeaderbarColorMapping } from "./headerbarMapping.jsx";
 import { HeaderbarStatistics } from "./headerbarStatistics.jsx";
-import { isTypingTarget, isPopupOpen } from "../hooks/keyboardUtils.js";
+import { isTypingTarget, isPopupOpen, isPlainShortcut } from "../hooks/keyboardUtils.js";
 import { useTooltipSettings } from "../../state/tooltipState.js";
 import { useCommunityState } from "../../state/communityState.js";
 import { useAppearance } from "../../state/appearanceState.js";
@@ -56,6 +56,7 @@ export function HeaderBar({ activePanel, setActivePanel }) {
 
   useEffect(() => {
     const handleKeyDown = (e) => {
+      if (!isPlainShortcut(e)) return;
       const key = e.key?.toLowerCase();
       if (key === "m" || key === "i" || key === "n") {
         if (isTypingTarget(document.activeElement) || isPopupOpen()) return;

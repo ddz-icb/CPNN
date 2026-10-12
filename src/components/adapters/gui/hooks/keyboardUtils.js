@@ -1,5 +1,10 @@
 const NON_TEXT_INPUT_TYPES = new Set(["button", "checkbox", "color", "file", "hidden", "image", "radio", "range", "reset", "submit"]);
 
+/** Returns true for a plain key press that may be used as an app shortcut. */
+export function isPlainShortcut(event) {
+  return !event.ctrlKey && !event.metaKey && !event.altKey && !event.shiftKey && !event.isComposing && !event.repeat;
+}
+
 /** Returns true if the currently focused element is a text-entry target. */
 export function isTypingTarget(el) {
   if (!el) return false;

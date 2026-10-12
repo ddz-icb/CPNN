@@ -156,6 +156,36 @@ test("Left sidebar shortcuts close and reopen the active section", async ({ page
   await expect(page.getByRole("button", { name: "Open Filter sidebar" })).toBeVisible();
 });
 
+test("Modified keys leave browser commands and sidebar state alone", async ({ page }) => {
+  for (const shortcut of [
+    { key: "c", ctrlKey: true },
+    { key: "c", metaKey: true },
+    { key: "b", ctrlKey: true },
+    { key: "f", altKey: true },
+    { key: "D", shiftKey: true },
+    { key: "m", ctrlKey: true },
+    { key: "i", metaKey: true },
+    { key: "n", altKey: true },
+    { key: "d", repeat: true },
+    { key: "m", isComposing: true },
+  ]) {
+    const prevented = await page.evaluate((options) => {
+      const event = new KeyboardEvent("keydown", { bubbles: true, cancelable: true, ...options });
+      document.dispatchEvent(event);
+      return event.defaultPrevented;
+    }, shortcut);
+    expect(prevented, `${shortcut.key} should not be intercepted`).toBe(false);
+  }
+
+  await expect(page.locator("#app-sidebar .nav-link")).toHaveCount(SIDEBAR_SECTIONS.length);
+  await expect(page.getByRole("button", { name: "Open insights sidebar" })).toBeVisible();
+
+  await page.keyboard.press("d");
+  await expect(page.locator("#app-sidebar .sidebar-panel-heading")).toHaveText("Data");
+  await page.keyboard.press("m");
+  await expect(page.getByRole("region", { name: "Color mapping" })).toBeVisible();
+});
+
 test("Sidebar resize handles highlight the full edge on hover", async ({ page }) => {
   const expectFullEdgeHighlight = async (panel, handle, side) => {
     const edgeStyle = () => panel.evaluate((element, edge) => {
