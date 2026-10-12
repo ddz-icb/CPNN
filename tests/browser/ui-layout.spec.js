@@ -139,6 +139,23 @@ test("Closed sidebar tab fits longer section names", async ({ page }) => {
   }
 });
 
+test("Left sidebar shortcuts close and reopen the active section", async ({ page }) => {
+  await page.keyboard.press("d");
+  await expect(page.locator("#app-sidebar .sidebar-panel-heading")).toHaveText("Data");
+
+  await page.keyboard.press("d");
+  await expect(page.locator("#app-sidebar")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Open Data sidebar" })).toBeVisible();
+
+  await page.keyboard.press("d");
+  await expect(page.locator("#app-sidebar .sidebar-panel-heading")).toHaveText("Data");
+
+  await page.keyboard.press("f");
+  await expect(page.locator("#app-sidebar .sidebar-panel-heading")).toHaveText("Filter");
+  await page.keyboard.press("f");
+  await expect(page.getByRole("button", { name: "Open Filter sidebar" })).toBeVisible();
+});
+
 test("Sidebar resize handles highlight the full edge on hover", async ({ page }) => {
   const expectFullEdgeHighlight = async (panel, handle, side) => {
     const edgeStyle = () => panel.evaluate((element, edge) => {

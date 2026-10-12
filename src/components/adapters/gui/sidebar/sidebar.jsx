@@ -26,7 +26,7 @@ export function Sidebar({ collapsed = false, onCollapsedChange, ...props }) {
 
   const handleSetActiveNavItem = useCallback(
     (item) => {
-      if (item === "Selection" && activeNavItem === "Selection" && !collapsed) {
+      if (item === activeNavItem && !collapsed) {
         onCollapsedChange?.(true);
         return;
       }
