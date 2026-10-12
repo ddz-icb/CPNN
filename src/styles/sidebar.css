@@ -196,8 +196,6 @@ body.sidebar-resize-active * {
   height: 1.7rem;
   flex: none;
   color: var(--color-icon-primary);
-  background: var(--color-surface-muted);
-  border-radius: var(--radius-sm);
 }
 
 .sidebar-edge-tab .sidebar-edge-tab-arrow svg {

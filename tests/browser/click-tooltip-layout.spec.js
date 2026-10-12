@@ -270,6 +270,7 @@ test("Node clicks preserve open details and previous-node navigation", async ({ 
   const compactBarBox = await focusBar.boundingBox();
   const compactButtonBox = await focusBar.locator(".sidebar-footer-action").first().boundingBox();
   expect(compactBarBox.height - compactButtonBox.height).toBeLessThan(10);
+  expect(Math.abs(compactBarBox.y + compactBarBox.height - page.viewportSize().height)).toBeLessThanOrEqual(1);
   const focusName = focusBar.locator(".node-focus-name");
   await focusName.evaluate((element) => { element.textContent = "A"; });
   const shortNameWidth = (await focusBar.boundingBox()).width;
