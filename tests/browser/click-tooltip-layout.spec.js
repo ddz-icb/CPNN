@@ -56,6 +56,22 @@ test.beforeEach(async ({ page }, testInfo) => {
   }, testInfo.project.use.colorScheme === "dark");
 });
 
+test("Node info shows the RCSB reference when UniProt supplies a PDB ID", async ({ page }) => {
+  await page.route("https://rest.uniprot.org/**", (route) => route.fulfill({
+    json: { comments: [], uniProtKBCrossReferences: [{ database: "PDB", id: "1ABC" }] },
+  }));
+  await page.route("https://files.rcsb.org/download/**", (route) => route.fulfill({ status: 404, body: "" }));
+
+  const tooltip = await openTooltip(page, { x: 100, y: 100 });
+  const references = tooltip.locator(".tooltip-popup-footer-links");
+  await expect(references.getByRole("link", { name: "UniProt" })).toBeVisible();
+  await expect(references.getByRole("link", { name: "RCSB PDB" })).toHaveAttribute(
+    "href",
+    "https://www.rcsb.org/structure/1ABC/",
+  );
+  await expect(tooltip.locator(".pdb-viewer-status")).toHaveText("3D preview unavailable");
+});
+
 for (const corner of ["top-left", "top-right", "bottom-left", "bottom-right"]) {
   test(`Click tooltip: fits at ${corner} in every view`, async ({ page }) => {
     const { width, height } = page.viewportSize();

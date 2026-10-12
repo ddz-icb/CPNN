@@ -167,6 +167,7 @@ export function ClickTooltip({ onSelectInsightsPanel, onCloseInsightsPanel }) {
       <>
         <div className="tooltip-popup-footer-links">
           {protIdNoIsoform && <TooltipPopupLinkItem text={"UniProt"} link={`https://www.uniprot.org/uniprotkb/${protIdNoIsoform}/`} />}
+          {pdbId && <TooltipPopupLinkItem text="RCSB PDB" link={`https://www.rcsb.org/structure/${pdbId}/`} />}
         </div>
         <SidebarFooterActions>
           <SidebarFooterButton text="Node statistics" data-tooltip-view="statistics" onClick={() => setView("statistics")} />
@@ -174,7 +175,7 @@ export function ClickTooltip({ onSelectInsightsPanel, onCloseInsightsPanel }) {
         </SidebarFooterActions>
       </>
     );
-  }, [adjacentNodeList.length, community, handleExportAdjacent, isAdjacentView, isCommunityView, view, protIdNoIsoform]);
+  }, [adjacentNodeList.length, community, handleExportAdjacent, isAdjacentView, isCommunityView, view, protIdNoIsoform, pdbId]);
 
   const showDetails = view === "details";
   const handleRightPanelSelect = useCallback(
