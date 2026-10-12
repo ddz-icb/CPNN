@@ -1,8 +1,3 @@
-.insights-dock {
-  right: 0.75rem;
-  left: auto;
-}
-
 .right-panel-tabs {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -349,11 +344,6 @@
 }
 
 @media (max-width: 760px) {
-  .insights-dock {
-    top: 0.65rem;
-    right: 0.65rem;
-  }
-
   .colormapping-container {
     grid-template-columns: 1fr;
     gap: 0.75rem;
@@ -365,12 +355,5 @@
 
   .statistics-attribute-sections {
     grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 23rem) {
-  .insights-dock {
-    right: 0.5rem;
-    top: 0.5rem;
   }
 }

@@ -3,8 +3,8 @@ import { useSidebarKeyboard } from "../hooks/useSidebarKeyboard.js";
 import { useAddKeyframe } from "../hooks/useAddKeyframe.js";
 import { SvgIcon } from "../reusable_components/SvgIcon.jsx";
 import { ResizableSidebar } from "../reusable_components/resizableSidebar.jsx";
+import { SidebarEdgeTab } from "../reusable_components/sidebarEdgeTab.jsx";
 import leftArrowSvg from "../../../../assets/icons/leftArrow.svg?raw";
-import listSvg from "../../../../assets/icons/list.svg?raw";
 import xSvg from "../../../../assets/icons/x.svg?raw";
 
 import { FilterSidebar } from "./filterSidebar.jsx";
@@ -70,7 +70,15 @@ export function Sidebar({ collapsed = false, onCollapsedChange, ...props }) {
   const dockLabel = isSelection ? "Menu" : activeNavItem;
   return (
     <>
-      {collapsed && <SidebarDockTab label={dockLabel} onClick={openSidebar} />}
+      {collapsed && (
+        <SidebarEdgeTab
+          side="left"
+          label={`Open ${dockLabel} sidebar`}
+          description={dockLabel}
+          controls="app-sidebar"
+          onClick={openSidebar}
+        />
+      )}
       {!collapsed && <button className="sidebar-scrim" type="button" aria-label="Collapse sidebar" onClick={collapseSidebar} />}
       {!collapsed && (
         <Navbar key={isSelection ? "selection" : "tool"} short={isSelection} onCollapse={collapseSidebar}>
@@ -112,24 +120,6 @@ function Navbar({ short, onCollapse, children }) {
     >
       <ul>{children}</ul>
     </ResizableSidebar>
-  );
-}
-
-function SidebarDockTab({ label, onClick }) {
-  return (
-    <div className="sidebar-dock">
-      <button
-        className="icon-button sidebar-dock-button"
-        type="button"
-        onClick={onClick}
-        aria-label={`Open ${label} sidebar`}
-        aria-controls="app-sidebar"
-        aria-expanded="false"
-      >
-        <SvgIcon svg={listSvg} />
-      </button>
-      <span className="sidebar-dock-label">{label}</span>
-    </div>
   );
 }
 

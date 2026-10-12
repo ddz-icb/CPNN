@@ -1,7 +1,6 @@
 import { useEffect, useCallback } from "react";
-import { SvgIcon } from "../reusable_components/SvgIcon.jsx";
-import infoSvg from "../../../../assets/icons/info.svg?raw";
 import { RightSidebar } from "../reusable_components/rightSidebar.jsx";
+import { SidebarEdgeTab } from "../reusable_components/sidebarEdgeTab.jsx";
 import { HeaderbarColorMapping } from "./headerbarMapping.jsx";
 import { HeaderbarStatistics } from "./headerbarStatistics.jsx";
 import { isTypingTarget, isPopupOpen } from "../hooks/keyboardUtils.js";
@@ -100,18 +99,13 @@ export function HeaderBar({ activePanel, setActivePanel }) {
   return (
     <>
       {!activePanel && !isNodeDetailsActive && !isCommunityActive && (
-        <div className="sidebar-dock insights-dock">
-          <button
-            className="icon-button sidebar-dock-button"
-            type="button"
-            onClick={() => selectPanel("mapping")}
-            aria-label="Open insights sidebar"
-            aria-expanded="false"
-          >
-            <SvgIcon svg={infoSvg} />
-          </button>
-          <span className="sidebar-dock-label">Info</span>
-        </div>
+        <SidebarEdgeTab
+          side="right"
+          label="Open insights sidebar"
+          description="Insights"
+          controls={mappingPanelId}
+          onClick={() => selectPanel("mapping")}
+        />
       )}
       {!isNodeDetailsActive && (isMappingActive || isStatisticsActive) && (
         <RightSidebar
