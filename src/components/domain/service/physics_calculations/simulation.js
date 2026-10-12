@@ -112,7 +112,8 @@ export function mountRedraw(
   const drawImmediate = () => {
     if (!isActiveDraw()) return;
     if (threeD) {
-      redraw3D(graphData, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, showNodeLabels, nodeMap, grid3D, app, container, cameraRef.current);
+      const viewport = typeof container === "function" ? container() : container;
+      redraw3D(graphData, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, showNodeLabels, nodeMap, grid3D, app, viewport, cameraRef.current);
       return;
     }
     redraw(graphData, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, showNodeLabels, nodeMap, app);

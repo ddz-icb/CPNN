@@ -28,7 +28,6 @@ export function AppearanceControl() {
   const { graphFlags } = useGraphFlags();
   const { pixiState } = usePixiState();
   const { renderState } = useRenderState();
-  const { container } = useContainer();
   const linkCount = graphState.graph?.data?.links?.length ?? 0;
   const activeLines = appearance.threeD ? pixiState.lines3D : pixiState.lines2D;
 
@@ -70,7 +69,7 @@ export function AppearanceControl() {
         pixiState.nodeMap,
         pixiState.grid3D,
         renderState.app,
-        container,
+        () => useContainer.getState().container,
         appearance.cameraRef,
         appearance.threeD,
       );

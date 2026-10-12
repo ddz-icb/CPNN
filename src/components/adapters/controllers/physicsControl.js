@@ -76,6 +76,7 @@ export function PhysicsControl() {
     }
   }, [physics.linkLength, graphFlags.filteredAfterStart, graphNodes, graphLinks, renderState.simulation, appearance.threeD]);
 
+  // Viewport resizing moves the view, so the forces keep their graph-space center.
   useEffect(() => {
     if (!renderState.simulation || !graphFlags.filteredAfterStart) return;
     log.info("Changing gravity", physics.gravityStrength);
@@ -94,8 +95,6 @@ export function PhysicsControl() {
     }
   }, [
     physics.gravityStrength,
-    container.width,
-    container.height,
     graphFlags.filteredAfterStart,
     graphNodes,
     graphLinks,
@@ -168,8 +167,6 @@ export function PhysicsControl() {
     physics.borderHeight,
     physics.borderWidth,
     physics.borderDepth,
-    container.width,
-    container.height,
     graphFlags.filteredAfterStart,
     graphNodes,
     graphLinks,

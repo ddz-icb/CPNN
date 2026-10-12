@@ -97,6 +97,7 @@
 .resizable-sidebar.sidebar-collapse-preview {
   overflow: hidden;
   border-color: transparent;
+  border-width: 0;
   box-shadow: none;
 }
 

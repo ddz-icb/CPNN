@@ -17,7 +17,7 @@ import "./styles/colormapping_select.css";
 import "./styles/buttons.css";
 import "./styles/about_sidebar.css";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Sidebar } from "./components/adapters/gui/sidebar/sidebar.jsx";
 import { HeaderBar } from "./components/adapters/gui/headerbar/headerbar.jsx";
 import { useTheme } from "./components/adapters/state/themeState.js";
@@ -39,6 +39,37 @@ function App() {
   const { theme } = useTheme();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [activeInsightsPanel, setActiveInsightsPanel] = useState(null);
+  const shellRef = useRef(null);
+
+  const updateSidebarWidth = useCallback((width) => {
+    shellRef.current?.style.setProperty("--canvas-left-inset", `${width}px`);
+  }, []);
+
+  useLayoutEffect(() => {
+    const shell = shellRef.current;
+    if (!shell) return;
+
+    let panel = null;
+    const updateWidth = () => {
+      shell.style.setProperty("--canvas-right-inset", `${panel?.getBoundingClientRect().width ?? 0}px`);
+    };
+    const resizeObserver = new ResizeObserver(updateWidth);
+    const observePanel = () => {
+      const nextPanel = shell.querySelector(".right-sidebar");
+      if (nextPanel === panel) return;
+      resizeObserver.disconnect();
+      panel = nextPanel;
+      if (panel) resizeObserver.observe(panel);
+      updateWidth();
+    };
+    const mutationObserver = new MutationObserver(observePanel);
+    mutationObserver.observe(shell, { childList: true, subtree: true });
+    observePanel();
+    return () => {
+      mutationObserver.disconnect();
+      resizeObserver.disconnect();
+    };
+  }, []);
 
   const isAdditionalDataLoading = useGraphSetup();
 
@@ -62,14 +93,14 @@ function App() {
       <PhysicsControl />
       <InitControl />
       <SearchControl />
-      <main className={shellClassName}>
+      <main ref={shellRef} className={shellClassName}>
         <Lasso />
         <Tooltips
           onSelectInsightsPanel={setActiveInsightsPanel}
           onCloseInsightsPanel={() => setActiveInsightsPanel(null)}
         />
         <HeaderBar activePanel={activeInsightsPanel} setActivePanel={setActiveInsightsPanel} />
-        <Sidebar collapsed={sidebarCollapsed} onCollapsedChange={setSidebarCollapsed} />
+        <Sidebar collapsed={sidebarCollapsed} onCollapsedChange={setSidebarCollapsed} onWidthChange={updateSidebarWidth} />
         <AdditionalDataLoading isLoading={isAdditionalDataLoading} />
         <div className="canvas-container">
           <RenderControl />

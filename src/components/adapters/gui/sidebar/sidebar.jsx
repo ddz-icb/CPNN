@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useLayoutEffect, useMemo, useState } from "react";
 import { useSidebarKeyboard } from "../hooks/useSidebarKeyboard.js";
 import { useAddKeyframe } from "../hooks/useAddKeyframe.js";
 import { SvgIcon } from "../reusable_components/SvgIcon.jsx";
@@ -19,10 +19,24 @@ import { CommunitySidebar } from "./communitySidebar.jsx";
 import { VideographySidebar } from "./videographySidebar.jsx";
 import { AboutSidebar } from "./aboutSidebar.jsx";
 
-export function Sidebar({ collapsed = false, onCollapsedChange, ...props }) {
+export function Sidebar({ collapsed = false, onCollapsedChange, onWidthChange, ...props }) {
   const [activeNavItem, setActiveNavItem] = useState("Selection");
   const [lastNavItem, setLastNavItem] = useState("Data");
   const { addKeyframe } = useAddKeyframe();
+
+  useLayoutEffect(() => {
+    const panel = collapsed ? null : document.getElementById("app-sidebar");
+    if (!panel) {
+      onWidthChange?.(0);
+      return;
+    }
+
+    const updateWidth = () => onWidthChange?.(panel.getBoundingClientRect().width);
+    updateWidth();
+    const observer = new ResizeObserver(updateWidth);
+    observer.observe(panel);
+    return () => observer.disconnect();
+  }, [activeNavItem, collapsed, onWidthChange]);
 
   const handleSetActiveNavItem = useCallback(
     (item) => {

@@ -54,7 +54,7 @@ vi.mock("../../src/components/domain/service/canvas_drawing/nodes.js", () => ({
   changeCircleBorderColor: vi.fn(), changeNodeColors: vi.fn(), changeNodeLabelColor: vi.fn(),
 }));
 vi.mock("../../src/components/domain/service/canvas_interaction/interactiveCanvas.js", () => ({
-  handleResize: vi.fn(), initDragAndZoom: vi.fn(),
+  getCanvasResolution: vi.fn(() => 1), handleResize: vi.fn(), initDragAndZoom: vi.fn(), keepCanvasCentered: vi.fn(),
 }));
 vi.mock("../../src/components/domain/service/canvas_drawing/render2D.js", () => ({ redraw: vi.fn() }));
 vi.mock("../../src/components/domain/service/canvas_drawing/render3D.js", () => ({ redraw3D: vi.fn() }));

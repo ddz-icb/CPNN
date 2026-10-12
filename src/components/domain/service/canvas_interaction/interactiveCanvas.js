@@ -1,10 +1,9 @@
-import lodash from "lodash";
+import * as d3 from "d3";
 import * as PIXI from "pixi.js";
 import { initDragAndZoom2D } from "./interactiveCanvas2D.js";
 import { initDragAndZoom3D } from "./interactiveCanvas3D.js";
+import { getCameraOrientation, rotateVectorByQuaternion } from "../canvas_drawing/camera3D.js";
 export { collectNodesWithinPolygon, isPointInPolygon } from "./lassoSelection.js";
-
-const { throttle } = lodash;
 
 export function initDragAndZoom(app, simulation, radius, setTooltipSettings, width, height, threeD, cameraRef, controlsRef) {
   app.__interactionCleanup?.();
@@ -133,18 +132,51 @@ export function drawDashedOutline(graphics, points, dashLength, gapLength, close
   }
 }
 
-export function resizeCanvas(container, app, resolution) {
+export function getCanvasResolution(view = window) {
+  const pageScale = view.visualViewport?.scale;
+  return (view.devicePixelRatio || 1) * (Number.isFinite(pageScale) && pageScale > 0 ? pageScale : 1);
+}
+
+export function keepCanvasCentered(app, camera, previousWidth, previousHeight, width, height, threeD) {
+  const dx = (width - previousWidth) / 2;
+  const dy = (height - previousHeight) / 2;
+  if (!dx && !dy) return;
+
+  if (camera && Number.isFinite(camera.x) && Number.isFinite(camera.y)) {
+    const rotated = rotateVectorByQuaternion({ x: dx, y: dy, z: 0 }, getCameraOrientation(camera));
+    camera.x += dx - rotated.x;
+    camera.y += dy - rotated.y;
+    camera.z -= rotated.z;
+  }
+  if (threeD) return;
+
+  if (app.__zoomBehavior && app.__zoomSelection) {
+    const transform = d3.zoomTransform(app.renderer.canvas);
+    app.__zoomSelection.call(app.__zoomBehavior.transform,
+      d3.zoomIdentity.translate(transform.x + dx, transform.y + dy).scale(transform.k));
+    return;
+  }
+
+  app.stage.x += dx;
+  app.stage.y += dy;
+}
+
+export function resizeCanvas(container, app, resolution, onSizeChange) {
   if (!container || typeof app?.renderer?.resize !== "function") return;
 
-  const width = container.clientWidth;
-  const height = container.clientHeight;
+  const bounds = container.getBoundingClientRect?.();
+  const width = Math.round(bounds?.width ?? container.clientWidth);
+  const height = Math.round(bounds?.height ?? container.clientHeight);
   if (!width || !height) return;
   if (app.renderer.screen?.width === width && app.renderer.screen?.height === height && app.renderer.resolution === resolution) return;
 
+  if (app.renderer.screen?.width !== width || app.renderer.screen?.height !== height) {
+    onSizeChange?.(width, height, app.renderer.screen?.width, app.renderer.screen?.height);
+  }
   app.renderer.resize(width, height, resolution);
   app.__redrawGraph?.();
 }
 
-export const handleResize = throttle((containerRef, app) => {
-  resizeCanvas(containerRef.current, app, window.devicePixelRatio || 1);
-}, 250);
+export function handleResize(containerRef, app, onSizeChange) {
+  resizeCanvas(containerRef.current, app, getCanvasResolution(), onSizeChange);
+}

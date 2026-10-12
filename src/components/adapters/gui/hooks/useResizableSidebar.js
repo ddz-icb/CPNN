@@ -30,6 +30,12 @@ function rootFontSize() {
   return Number.isFinite(size) && size > 0 ? size : 16;
 }
 
+function panelCssWidth(panel) {
+  const style = window.getComputedStyle(panel);
+  const borderWidth = (Number.parseFloat(style.borderLeftWidth) || 0) + (Number.parseFloat(style.borderRightWidth) || 0);
+  return panel.getBoundingClientRect().width - (style.boxSizing === "border-box" ? 0 : borderWidth);
+}
+
 export function useResizableSidebar({
   side,
   storageKey,
@@ -68,7 +74,7 @@ export function useResizableSidebar({
     cleanupRef.current?.();
     const panel = panelRef.current;
     const startX = event.clientX;
-    const startWidth = panel.getBoundingClientRect().width;
+    const startWidth = panelCssWidth(panel);
     const fontSize = rootFontSize();
     const startWidthRem = startWidth / fontSize;
     if (initialWidthRef.current == null) initialWidthRef.current = startWidthRem;
@@ -125,7 +131,7 @@ export function useResizableSidebar({
     event.preventDefault();
     const step = event.shiftKey ? 4 : 1;
     const renderedWidth = panelRef.current
-      ? panelRef.current.getBoundingClientRect().width / rootFontSize()
+      ? panelCssWidth(panelRef.current) / rootFontSize()
       : width ?? defaultWidth;
     if (initialWidthRef.current == null) initialWidthRef.current = renderedWidth;
     const growthLimit = allowGrowth ? maxWidth : initialWidthRef.current;

@@ -1,7 +1,7 @@
 import log from "../logging/logger.js";
 import * as PIXI from "pixi.js";
 import { useRef, useEffect } from "react";
-import { handleResize, initDragAndZoom } from "../../domain/service/canvas_interaction/interactiveCanvas.js";
+import { getCanvasResolution, handleResize, initDragAndZoom, keepCanvasCentered } from "../../domain/service/canvas_interaction/interactiveCanvas.js";
 import { radius } from "../../domain/service/canvas_drawing/nodes.js";
 import { applyNode3DState } from "../../domain/service/canvas_drawing/shading.js";
 import { applyLineGraphicsState } from "../../domain/service/canvas_drawing/lineGraphics.js";
@@ -30,7 +30,7 @@ export function RenderControl() {
   const { graphState, setGraphState } = useGraphState();
   const { graphFlags, setGraphFlags } = useGraphFlags();
   const { pixiState, setPixiState } = usePixiState();
-  const { container, setContainer } = useContainer();
+  const { container, setAllContainer } = useContainer();
   const { setTooltipSettings, setAllTooltipSettings } = useTooltipSettings();
   const { setError } = useError();
   const { reset, setReset } = useReset();
@@ -60,8 +60,8 @@ export function RenderControl() {
   useEffect(() => {
     if (!container.width || !container.height) return;
 
-    cameraRef.current.x = container.width / 2;
-    cameraRef.current.y = container.height / 2;
+    if (!Number.isFinite(cameraRef.current.x)) cameraRef.current.x = container.width / 2;
+    if (!Number.isFinite(cameraRef.current.y)) cameraRef.current.y = container.height / 2;
   }, [container.width, container.height]);
 
   useEffect(() => {
@@ -111,11 +111,10 @@ export function RenderControl() {
     log.info("Init PIXI app");
 
     const containerRect = containerRef.current.getBoundingClientRect();
-    const height = containerRect.height;
-    const width = containerRect.width;
+    const height = Math.round(containerRect.height);
+    const width = Math.round(containerRect.width);
 
-    setContainer("height", height);
-    setContainer("width", width);
+    setAllContainer({ width, height });
 
     const initPIXI = async () => {
       try {
@@ -124,7 +123,7 @@ export function RenderControl() {
           width,
           height,
           antialias: !0,
-          resolution: window.devicePixelRatio || 1,
+          resolution: getCanvasResolution(),
           backgroundAlpha: 0,
           autoDensity: true,
           preference: "webgpu",
@@ -279,7 +278,7 @@ export function RenderControl() {
         pixiState.nodeMap,
         pixiState.grid3D,
         renderState.app,
-        container,
+        () => useContainer.getState().container,
         cameraRef,
         appearance.threeD,
       );
@@ -316,8 +315,15 @@ export function RenderControl() {
   useEffect(() => {
     if (!renderState.app || !containerRef.current) return;
 
-    const resize = () => handleResize(containerRef, renderState.app);
+    const onSizeChange = (width, height, previousWidth, previousHeight) => {
+      if (previousWidth && previousHeight) {
+        keepCanvasCentered(renderState.app, cameraRef.current, previousWidth, previousHeight, width, height, appearance.threeD);
+      }
+      setAllContainer({ width, height });
+    };
+    const resize = () => handleResize(containerRef, renderState.app, onSizeChange);
     window.addEventListener("resize", resize);
+    window.visualViewport?.addEventListener("resize", resize);
 
     const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(resize);
     observer?.observe(containerRef.current);
@@ -336,13 +342,27 @@ export function RenderControl() {
     watchResolution();
     resize();
 
+    // Some browser zoom paths change the pixel ratio without dispatching a resize event.
+    let resolutionFrame;
+    const checkResolution = () => {
+      if (renderState.app.renderer.resolution !== getCanvasResolution()) {
+        resize();
+        watchResolution();
+      }
+      resolutionFrame = window.requestAnimationFrame(checkResolution);
+    };
+    if (Number.isFinite(renderState.app.renderer.resolution)) {
+      resolutionFrame = window.requestAnimationFrame(checkResolution);
+    }
+
     return () => {
       window.removeEventListener("resize", resize);
+      window.visualViewport?.removeEventListener("resize", resize);
       observer?.disconnect();
       resolutionQuery?.removeEventListener?.("change", onResolutionChange);
-      handleResize.cancel();
+      window.cancelAnimationFrame(resolutionFrame);
     };
-  }, [renderState.app]);
+  }, [renderState.app, appearance.threeD, setAllContainer]);
 
   return (
     <>
