@@ -43,10 +43,10 @@ function pointerEvent(clientX, clientY, { button = 0 } = {}) {
 
 function createAppHarness() {
   const canvas = createEventTarget({ style: { cursor: "default" } });
-  const stageChildren = [];
   const app = {
     renderer: {
       canvas,
+      render() {},
       events: {
         mapPositionToPoint(point, clientX, clientY) {
           point.x = clientX;
@@ -57,9 +57,7 @@ function createAppHarness() {
     stage: {
       scale: { x: 1 },
       sortableChildren: false,
-      addChild(child) {
-        stageChildren.push(child);
-      },
+      addChild() {},
       toLocal(globalPoint, _from, worldPoint) {
         worldPoint.x = globalPoint.x;
         worldPoint.y = globalPoint.y;
@@ -67,7 +65,7 @@ function createAppHarness() {
     },
   };
 
-  return { app, canvas, stageChildren };
+  return { app, canvas };
 }
 
 function withFakeWindow(runTest) {
