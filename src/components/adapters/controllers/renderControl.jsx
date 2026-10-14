@@ -343,23 +343,11 @@ export function RenderControl() {
     watchResolution();
     resize();
 
-    // Some browser zoom paths change the pixel ratio without dispatching a resize event.
-    const checkResolution = () => {
-      if (renderState.app.renderer.resolution !== getCanvasResolution()) {
-        resize();
-        watchResolution();
-      }
-    };
-    const resolutionTimer = Number.isFinite(renderState.app.renderer.resolution)
-      ? window.setInterval(checkResolution, 250)
-      : null;
-
     return () => {
       window.removeEventListener("resize", resize);
       window.visualViewport?.removeEventListener("resize", resize);
       observer?.disconnect();
       resolutionQuery?.removeEventListener?.("change", onResolutionChange);
-      if (resolutionTimer !== null) window.clearInterval(resolutionTimer);
     };
   }, [renderState.app, appearance.threeD, setAllContainer]);
 

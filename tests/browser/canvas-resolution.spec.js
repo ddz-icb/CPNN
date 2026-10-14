@@ -123,6 +123,8 @@ test("canvas backing resolution follows browser pixel ratio changes", async ({ p
   });
 
   await expect.poll(() => page.evaluate(() => window.devicePixelRatio)).toBe(nextPixelRatio);
+  // CDP's metrics override does not emit the resize event that browser zoom emits.
+  await page.evaluate(() => window.dispatchEvent(new Event("resize")));
   await expect.poll(() => canvas.evaluate((element) =>
     Math.abs(element.width / element.clientWidth - window.devicePixelRatio))).toBeLessThan(0.1);
 });

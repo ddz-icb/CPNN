@@ -2,12 +2,12 @@ import { getNodeLabelOffsetY } from "./drawingUtils.js";
 import { updateHighlights } from "./highlights.js";
 import { updateLines } from "./lineGraphics.js";
 
-export function redraw(graphData, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, showNodeLabels, nodeMap, app) {
+export function redraw(graphData, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, showNodeLabels, nodeMap, app, renderPlan = null) {
   const { nodes, links } = graphData;
 
-  updateLines(links, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, app.__focusedNodeId);
+  updateLines(links, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, app.__focusedNodeId, renderPlan);
   updateNodes(nodes, nodeMap, showNodeLabels);
-  updateHighlights({ links, lineGraphics: lines, linkWidth });
+  updateHighlights({ links, lineGraphics: lines, linkWidth, layouts: renderPlan?.layouts });
 
   app.renderer.render(app.stage);
 }

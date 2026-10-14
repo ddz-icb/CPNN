@@ -422,11 +422,11 @@ export function drawLine(lines, link, linkWidth, colorscheme, linkAttribsToColor
   }
 }
 
-export function updateLines(links, lineGraphics, linkWidth, linkColorscheme, linkAttribsToColorIndices, focusNodeId = null) {
+export function updateLines(links, lineGraphics, linkWidth, linkColorscheme, linkAttribsToColorIndices, focusNodeId = null, renderPlan = null) {
   if (!lineGraphics || !links) return;
 
   if (Array.isArray(lineGraphics)) {
-    const layouts = getParallelLinkLayoutData(links);
+    const layouts = renderPlan?.layouts ?? getParallelLinkLayoutData(links);
     for (let i = 0; i < lineGraphics.length; i++) {
       const link = links[i];
       const graphic = lineGraphics[i];
@@ -446,20 +446,20 @@ export function updateLines(links, lineGraphics, linkWidth, linkColorscheme, lin
 
   lineGraphics.clear();
   lineGraphics.visible = true;
-  const layouts = getParallelLinkLayoutData(links);
+  const layouts = renderPlan?.layouts ?? getParallelLinkLayoutData(links);
   for (let index = 0; index < links.length; index += 1) {
     drawLine(lineGraphics, links[index], linkWidth, linkColorscheme.data, linkAttribsToColorIndices, layouts.get(index), { drawChevron: false, alpha: getFocusAlpha(links[index], focusNodeId) });
   }
-  for (const { link, layout } of getChevronRenderEntries(links, layouts)) {
+  for (const { link, layout } of renderPlan?.chevronEntries ?? getChevronRenderEntries(links, layouts)) {
     drawLine(lineGraphics, link, linkWidth, linkColorscheme.data, linkAttribsToColorIndices, layout, { drawBody: false, alpha: getFocusAlpha(link, focusNodeId) });
   }
 }
 
-export function updateLines3D(links, lineGraphics, linkWidth, linkColorscheme, linkAttribsToColorIndices, projections, focusNodeId = null) {
+export function updateLines3D(links, lineGraphics, linkWidth, linkColorscheme, linkAttribsToColorIndices, projections, focusNodeId = null, renderPlan = null) {
   if (!Array.isArray(lineGraphics)) return;
 
   const linkCount = Array.isArray(links) ? links.length : 0;
-  const layouts = getParallelLinkLayoutData(links);
+  const layouts = renderPlan?.layouts ?? getParallelLinkLayoutData(links);
 
   for (let linkIndex = 0; linkIndex < lineGraphics.length; linkIndex++) {
     const link = linkIndex < linkCount ? links[linkIndex] : null;

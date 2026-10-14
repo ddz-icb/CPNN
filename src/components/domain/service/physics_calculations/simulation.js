@@ -4,6 +4,7 @@ import { getLinkDistance } from "./physicsGraph.js";
 import { getLinkWeightMagnitudeExtent } from "../graph_calculations/graphUtils.js";
 import { redraw3D } from "../canvas_drawing/render3D.js";
 import { redraw } from "../canvas_drawing/render2D.js";
+import { getChevronRenderEntries, getParallelLinkLayoutData } from "../canvas_drawing/lineGraphics.js";
 import { createFrameScheduler } from "../utils/frameScheduler.js";
 
 export function getSimulation(linkLength, threeD, linkForce = true, graphData) {
@@ -106,6 +107,11 @@ export function mountRedraw(
 ) {
   const drawToken = (simulation.__drawToken ?? 0) + 1;
   simulation.__drawToken = drawToken;
+  const layouts = getParallelLinkLayoutData(graphData.links);
+  const renderPlan = {
+    layouts,
+    chevronEntries: threeD ? null : getChevronRenderEntries(graphData.links, layouts),
+  };
 
   const isActiveDraw = () => simulation.__drawToken === drawToken;
 
@@ -113,10 +119,10 @@ export function mountRedraw(
     if (!isActiveDraw()) return;
     if (threeD) {
       const viewport = typeof container === "function" ? container() : container;
-      redraw3D(graphData, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, showNodeLabels, nodeMap, grid3D, app, viewport, cameraRef.current);
+      redraw3D(graphData, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, showNodeLabels, nodeMap, grid3D, app, viewport, cameraRef.current, renderPlan);
       return;
     }
-    redraw(graphData, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, showNodeLabels, nodeMap, app);
+    redraw(graphData, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, showNodeLabels, nodeMap, app, renderPlan);
   };
 
   if (typeof simulation?.__cancelDraw === "function") {

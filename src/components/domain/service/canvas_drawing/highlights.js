@@ -223,7 +223,7 @@ function drawLinkGlow(layer, link, linkWidth, layout = null) {
   }
 }
 
-function updateLineHighlights2D({ links, lineGraphics, linkWidth }) {
+function updateLineHighlights2D({ links, lineGraphics, linkWidth, layouts: cachedLayouts }) {
   clearLineGlowGraphics();
   if (activeLinkHighlightIds.size === 0) {
     clearLinkHighlightLayer();
@@ -237,7 +237,7 @@ function updateLineHighlights2D({ links, lineGraphics, linkWidth }) {
   layer.visible = lineGraphics?.visible !== false;
   if (!layer.visible) return;
 
-  const layouts = getParallelLinkLayoutData(links);
+  const layouts = cachedLayouts ?? getParallelLinkLayoutData(links);
   const highlightedBundles = new Set();
   (links ?? []).forEach((link, index) => {
     if (!activeLinkHighlightIds.has(getLinkIdText(link, index))) return;
@@ -329,7 +329,7 @@ function pruneUnusedLineGlowGraphics(usedKeys) {
   });
 }
 
-function updateLineHighlights3D({ links, lineGraphics, linkWidth }) {
+function updateLineHighlights3D({ links, lineGraphics, linkWidth, layouts: cachedLayouts }) {
   clearLinkHighlightLayer();
   if (activeLinkHighlightIds.size === 0 || !Array.isArray(lineGraphics)) {
     clearLineGlowGraphics();
@@ -338,7 +338,7 @@ function updateLineHighlights3D({ links, lineGraphics, linkWidth }) {
 
   const usedGlowKeys = new Set();
   const highlightedBundles = new Set();
-  const layouts = getParallelLinkLayoutData(links);
+  const layouts = cachedLayouts ?? getParallelLinkLayoutData(links);
 
   (links ?? []).forEach((link, index) => {
     if (!activeLinkHighlightIds.has(getLinkIdText(link, index))) return;
@@ -386,6 +386,7 @@ export function setLinkHighlights(linkIds = [], highlightColor = activeLinkHighl
 }
 
 export function updateHighlights(linkContext) {
+  if (linkContext) lastLinkHighlightContext = linkContext;
   for (const circle of activeHighlights) {
     if (!circle || circle.destroyed) {
       activeHighlights.delete(circle);
@@ -402,5 +403,7 @@ export function updateHighlights(linkContext) {
     updateOverlay(circle, "communityHighlightOverlay", activeCommunityHighlights);
   }
 
-  updateLinkHighlights(linkContext);
+  if (activeLinkHighlightIds.size > 0 || linkHighlightLayer?.visible || activeLinkGlowGraphics.size > 0) {
+    updateLinkHighlights(linkContext);
+  }
 }

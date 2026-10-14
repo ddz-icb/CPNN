@@ -19,6 +19,7 @@ export function redraw3D(
   app,
   container,
   camera,
+  renderPlan = null,
 ) {
   const view = getCameraViewParams(camera, container.width, container.height);
   const projections = computeProjections(graphData.nodes, view, camera?.projections);
@@ -29,8 +30,8 @@ export function redraw3D(
 
   drawGrid3D(grid3D, view, graphData.nodes, container, (point) => projectPoint3D(point, view));
   updateNodes3D(graphData.nodes, nodeMap, showNodeLabels, projections);
-  updateLines3D(graphData.links, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, projections, app.__focusedNodeId);
-  updateHighlights({ links: graphData.links, lineGraphics: lines, linkWidth });
+  updateLines3D(graphData.links, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, projections, app.__focusedNodeId, renderPlan);
+  updateHighlights({ links: graphData.links, lineGraphics: lines, linkWidth, layouts: renderPlan?.layouts });
 
   app.renderer.render(app.stage);
 }
