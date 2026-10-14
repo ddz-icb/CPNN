@@ -381,6 +381,7 @@ function getLineGeometry(link, laneSpacing, layout = null, minLength = 0) {
 export function getChevronRenderEntries(links = [], layouts = getParallelLinkLayoutData(links)) {
   return (links ?? [])
     .map((link, index) => ({ link, index, layout: layouts.get(index) }))
+    .filter(({ link }) => getLinkDirection(link) !== LINK_DIRECTIONS.BOTH)
     .sort((a, b) => getChevronOutwardRank(b.layout) - getChevronOutwardRank(a.layout) || a.index - b.index);
 }
 
