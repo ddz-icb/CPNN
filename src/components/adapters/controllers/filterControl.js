@@ -12,6 +12,7 @@ import { errorService } from "../../application/services/errorService.js";
 import { useCommunityState } from "../state/communityState.js";
 import { useColorschemeState } from "../state/colorschemeState.js";
 import { useTheme } from "../state/themeState.js";
+import { useRenderState } from "../state/canvasState.js";
 import { filterActiveNodesForPixi, syncNodeMapWithGraphData } from "../../domain/service/canvas_drawing/nodes.js";
 
 const FILTER_DEBOUNCE_MS = 90;
@@ -146,5 +147,7 @@ export function FilterControl() {
     }
     syncNodeMapWithGraphData(graphState.graph.data, pixiState.nodeMap, theme, colorschemeState);
     filterActiveNodesForPixi(appearance.showNodeLabels, graphState.graph.data, pixiState.nodeMap);
+    const app = useRenderState.getState().renderState.app;
+    app?.renderer?.render?.(app.stage);
   }, [appearance.showNodeLabels, graphState.graph, pixiState.nodeContainers, pixiState.nodeMap, theme, colorschemeState]);
 }

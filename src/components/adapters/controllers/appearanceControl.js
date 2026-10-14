@@ -107,6 +107,7 @@ export function AppearanceControl() {
           }
         });
       }
+      renderState.app?.renderer?.render?.(renderState.app.stage);
     } catch (error) {
       errorService.setError(error.message);
       log.error(error);
@@ -124,6 +125,7 @@ export function AppearanceControl() {
       if (pixiState.grid3D) {
         pixiState.grid3D.__gridColor = toColorNumber(theme.textColor);
       }
+      renderState.app?.__redrawGraph?.();
     } catch (error) {
       errorService.setError(error.message);
       log.error(error);
@@ -137,6 +139,7 @@ export function AppearanceControl() {
 
     try {
       changeNodeColors(pixiState.nodeMap, theme.circleBorderColor, colorschemeState.nodeColorscheme.data, colorschemeState.nodeAttribsToColorIndices);
+      renderState.app?.renderer?.render?.(renderState.app.stage);
     } catch (error) {
       errorService.setError(error.message);
       log.error(error);
@@ -149,6 +152,7 @@ export function AppearanceControl() {
     log.info("Toggling shading in 3D", appearance.enable3DShading);
 
     applyNode3DState(pixiState.nodeMap, true, appearance.enable3DShading);
+    renderState.app?.renderer?.render?.(renderState.app.stage);
   }, [appearance.enable3DShading, appearance.threeD, pixiState.nodeMap]);
 
   // toggle grid visibility in 3D

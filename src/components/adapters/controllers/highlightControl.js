@@ -40,7 +40,8 @@ export function HighlightControl() {
       highlightNode(circle, theme.highlightColor);
       highlightedRef.current.push(nodeId);
     });
-  }, [searchState.highlightedNodeIds, pixiState.nodeMap, theme.highlightColor]);
+    renderState.app?.renderer?.render?.(renderState.app.stage);
+  }, [searchState.highlightedNodeIds, pixiState.nodeMap, theme.highlightColor, renderState.app]);
 
   useEffect(() => {
     setLinkHighlights(searchState.highlightedLinkIds, theme.highlightColor);
@@ -59,7 +60,10 @@ export function HighlightControl() {
 
     const communityId = communityState.selectedCommunityId;
     const nodeIds = communityState.communityToNodeIds?.[communityId];
-    if (!Array.isArray(nodeIds) || nodeIds.length === 0) return;
+    if (!Array.isArray(nodeIds) || nodeIds.length === 0) {
+      renderState.app?.renderer?.render?.(renderState.app.stage);
+      return;
+    }
 
     nodeIds.forEach((nodeId) => {
       const circle = nodeMap[nodeId]?.circle;
@@ -69,7 +73,8 @@ export function HighlightControl() {
         communityHighlightedRef.current.push(nodeId);
       }
     });
-  }, [communityState.selectedCommunityId, communityState.communityToNodeIds, pixiState.nodeMap, theme.communityHighlightColor]);
+    renderState.app?.renderer?.render?.(renderState.app.stage);
+  }, [communityState.selectedCommunityId, communityState.communityToNodeIds, pixiState.nodeMap, theme.communityHighlightColor, renderState.app]);
 
   return null;
 }

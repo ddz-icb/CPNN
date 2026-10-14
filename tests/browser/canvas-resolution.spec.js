@@ -1,5 +1,109 @@
 import { expect, test } from "@playwright/test";
 
+test("settled graph does not keep rendering", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator(".canvas canvas")).toBeVisible();
+  await expect.poll(() => page.evaluate(async () => {
+    const { useGraphFlags } = await import("/src/components/adapters/state/graphFlagsState.js");
+    return useGraphFlags.getState().graphFlags.filteredAfterStart;
+  })).toBe(true);
+  await expect.poll(() => page.evaluate(async () => {
+    const { useRenderState } = await import("/src/components/adapters/state/canvasState.js");
+    const simulation = useRenderState.getState().renderState.simulation;
+    return simulation ? simulation.alpha() - simulation.alphaMin() : Infinity;
+  }), { timeout: 10000 }).toBeLessThan(0);
+
+  const initialState = await page.evaluate(async () => {
+    const { useRenderState } = await import("/src/components/adapters/state/canvasState.js");
+    const { app } = useRenderState.getState().renderState;
+    return { tickerRunning: app.ticker.started };
+  });
+  expect(initialState.tickerRunning).toBe(false);
+
+  await page.waitForTimeout(100);
+  await page.evaluate(async () => {
+    const { useRenderState } = await import("/src/components/adapters/state/canvasState.js");
+    const app = useRenderState.getState().renderState.app;
+    const render = app.renderer.render.bind(app.renderer);
+    window.__idleRenderCount = 0;
+    app.renderer.render = (...args) => {
+      window.__idleRenderCount += 1;
+      return render(...args);
+    };
+  });
+  await page.waitForTimeout(300);
+  expect(await page.evaluate(() => window.__idleRenderCount)).toBeLessThanOrEqual(1);
+});
+
+test("appearance and highlights redraw after the graph settles", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator(".canvas canvas")).toBeVisible();
+  await expect.poll(() => page.evaluate(async () => {
+    const { useGraphFlags } = await import("/src/components/adapters/state/graphFlagsState.js");
+    return useGraphFlags.getState().graphFlags.filteredAfterStart;
+  })).toBe(true);
+
+  await page.evaluate(async () => {
+    const { useRenderState } = await import("/src/components/adapters/state/canvasState.js");
+    const app = useRenderState.getState().renderState.app;
+    useRenderState.getState().renderState.simulation.stop();
+    const render = app.renderer.render.bind(app.renderer);
+    window.__userActionRenders = 0;
+    app.renderer.render = (...args) => {
+      window.__userActionRenders += 1;
+      return render(...args);
+    };
+    const { useAppearance } = await import("/src/components/adapters/state/appearanceState.js");
+    useAppearance.getState().setAppearance("showNodeLabels", false);
+  });
+  await expect.poll(() => page.evaluate(() => window.__userActionRenders)).toBeGreaterThan(0);
+
+  const previousRenders = await page.evaluate(() => window.__userActionRenders);
+  await page.evaluate(async () => {
+    const [{ useGraphState }, { useSearchState }] = await Promise.all([
+      import("/src/components/adapters/state/graphState.js"),
+      import("/src/components/adapters/state/searchState.js"),
+    ]);
+    const nodeId = useGraphState.getState().graphState.graph.data.nodes[0].id;
+    useSearchState.getState().setSearchState("highlightedNodeIds", [nodeId]);
+  });
+  await expect.poll(() => page.evaluate(() => window.__userActionRenders)).toBeGreaterThan(previousRenders);
+});
+
+test("lasso preview redraws without the automatic ticker", async ({ page }) => {
+  await page.goto("/");
+  const canvas = page.locator(".canvas canvas");
+  await expect(canvas).toBeVisible();
+  await expect.poll(() => page.evaluate(async () => {
+    const { useGraphFlags } = await import("/src/components/adapters/state/graphFlagsState.js");
+    return useGraphFlags.getState().graphFlags.filteredAfterStart;
+  })).toBe(true);
+  await page.locator("#app-sidebar").getByRole("button", { name: "Collapse sidebar" }).click();
+
+  await page.evaluate(async () => {
+    const [{ useRenderState }, { useFilter }] = await Promise.all([
+      import("/src/components/adapters/state/canvasState.js"),
+      import("/src/components/adapters/state/filterState.js"),
+    ]);
+    const { simulation, app } = useRenderState.getState().renderState;
+    simulation.stop();
+    useFilter.getState().setFilter("lasso", true);
+    const render = app.renderer.render.bind(app.renderer);
+    window.__lassoRenders = 0;
+    app.renderer.render = (...args) => {
+      window.__lassoRenders += 1;
+      return render(...args);
+    };
+  });
+  await expect.poll(() => canvas.evaluate((element) => element.style.cursor)).toBe("crosshair");
+  const box = await canvas.boundingBox();
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(box.x + box.width / 2 + 60, box.y + box.height / 2 + 60);
+  await expect.poll(() => page.evaluate(() => window.__lassoRenders)).toBeGreaterThan(0);
+  await page.mouse.up();
+});
+
 test("canvas backing resolution follows browser pixel ratio changes", async ({ page, context }) => {
   await page.goto("/");
   const canvas = page.locator(".canvas canvas");

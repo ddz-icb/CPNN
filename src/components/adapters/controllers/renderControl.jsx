@@ -123,6 +123,7 @@ export function RenderControl() {
           width,
           height,
           antialias: !0,
+          autoStart: false,
           resolution: getCanvasResolution(),
           backgroundAlpha: 0,
           autoDensity: true,
@@ -343,24 +344,22 @@ export function RenderControl() {
     resize();
 
     // Some browser zoom paths change the pixel ratio without dispatching a resize event.
-    let resolutionFrame;
     const checkResolution = () => {
       if (renderState.app.renderer.resolution !== getCanvasResolution()) {
         resize();
         watchResolution();
       }
-      resolutionFrame = window.requestAnimationFrame(checkResolution);
     };
-    if (Number.isFinite(renderState.app.renderer.resolution)) {
-      resolutionFrame = window.requestAnimationFrame(checkResolution);
-    }
+    const resolutionTimer = Number.isFinite(renderState.app.renderer.resolution)
+      ? window.setInterval(checkResolution, 250)
+      : null;
 
     return () => {
       window.removeEventListener("resize", resize);
       window.visualViewport?.removeEventListener("resize", resize);
       observer?.disconnect();
       resolutionQuery?.removeEventListener?.("change", onResolutionChange);
-      window.cancelAnimationFrame(resolutionFrame);
+      if (resolutionTimer !== null) window.clearInterval(resolutionTimer);
     };
   }, [renderState.app, appearance.threeD, setAllContainer]);
 

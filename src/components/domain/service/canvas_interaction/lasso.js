@@ -48,6 +48,7 @@ export function enableLasso({
     previewOutline.clear();
 
     if (!polygonPoints || polygonPoints.length < 2) {
+      app.renderer.render(app.stage);
       return;
     }
 
@@ -71,12 +72,14 @@ export function enableLasso({
     }
 
     previewOutline.stroke();
+    app.renderer.render(app.stage);
   };
 
   const finishDrawing = () => {
     state.isDrawing = false;
     state.points = [];
     previewOutline.clear();
+    app.renderer.render(app.stage);
   };
 
   const handlePointerDown = (event) => {
@@ -175,10 +178,12 @@ export function enableLasso({
     window.removeEventListener("pointerleave", handlePointerCancel, true);
 
     previewOutline.destroy({ children: true });
+    app.renderer.render(app.stage);
   };
 
   cleanup.clearSelection = () => {
     previewOutline.clear();
+    app.renderer.render(app.stage);
   };
 
   return cleanup;
