@@ -14,6 +14,7 @@ import { PhysicsControl } from "../../src/components/adapters/controllers/physic
 import { RenderControl } from "../../src/components/adapters/controllers/renderControl.jsx";
 import { useRenderState } from "../../src/components/adapters/state/canvasState.js";
 import { useFilter } from "../../src/components/adapters/state/filterState.js";
+import { usePhysics } from "../../src/components/adapters/state/physicsState.js";
 import { useColorschemeState, ibmAntiBlindness } from "../../src/components/adapters/state/colorschemeState.js";
 import { graphService } from "../../src/components/application/services/graphService.js";
 import { mappingService } from "../../src/components/application/services/mappingService.js";
@@ -215,6 +216,53 @@ test("automatic link width follows the filtered graph rather than the original",
   expect(filtered.data.links).toHaveLength(0);
   expect(useAppearance.getState().appearance.linkWidth).toBe(calculateLinkWidth(0));
   expect(useAppearance.getState().appearance.linkWidth).not.toBe(originalWidth);
+});
+
+test("elevation adds depth in 3D while keeping the regular planar forces", async () => {
+  await update(() => graphService.handleSelectGraph("A"));
+  const initial = useRenderState.getState().renderState.simulation;
+  await act(async () => usePhysics.getState().setPhysics("elevationForce", true));
+  expect(usePhysics.getState().physics).toMatchObject({ elevationForce: true, linkForce: true });
+  expect(initial.force("elevationForce")).toBeUndefined();
+  expect(typeof initial.force("link").strength()).toBe("function");
+
+  await update(async () => useAppearance.getState().setAppearance("threeD", true));
+  const threeD = useRenderState.getState().renderState.simulation;
+  expect(threeD.force("elevationForce")).toBeDefined();
+  expect(threeD.force("elevationForce").strength()).toBe(1);
+  const nodes = threeD.nodes();
+  nodes[0].z = 100;
+  nodes[1].z = -100;
+  nodes.forEach((node) => { node.vz = 0; });
+  threeD.force("link")(1);
+  threeD.force("charge")(1);
+  threeD.force("gravity")(1);
+  expect(nodes.every((node) => node.vz === 0)).toBe(true);
+  threeD.force("elevationForce")(1);
+  expect(nodes.some((node) => node.vz !== 0)).toBe(true);
+
+  await act(async () => usePhysics.getState().setPhysics("elevationStrength", 2));
+  expect(useRenderState.getState().renderState.simulation).toBe(threeD);
+  expect(threeD.force("elevationForce").strength()).toBe(2);
+
+  await act(async () => usePhysics.getState().setPhysics("linkForce", false));
+  expect(usePhysics.getState().physics.elevationForce).toBe(true);
+  expect(threeD.force("link").strength()()).toBe(0);
+  await act(async () => usePhysics.getState().setPhysics("linkForce", true));
+  expect(usePhysics.getState().physics.elevationForce).toBe(true);
+  expect(typeof threeD.force("link").strength()).toBe("function");
+
+  await update(async () => useFilter.getState().setFilter("minLinkThreshold", 0.95));
+  expect(useRenderState.getState().renderState.simulation.force("elevationForce")).toBeDefined();
+  await update(async () => useAppearance.getState().setAppearance("threeD", false));
+  expect(useRenderState.getState().renderState.simulation.force("elevationForce")).toBeUndefined();
+  await act(async () => usePhysics.getState().setPhysics("circleForce", true));
+  expect(usePhysics.getState().physics.elevationForce).toBe(true);
+  expect(usePhysics.getState().physics.linkForce).toBe(false);
+  await update(async () => useAppearance.getState().setAppearance("threeD", true));
+  const circularElevation = useRenderState.getState().renderState.simulation;
+  expect(circularElevation.force("circleForce")).toBeDefined();
+  expect(circularElevation.force("elevationForce")).toBeDefined();
 });
 
 test("node labels toggle and manual link width survives graph changes", async () => {

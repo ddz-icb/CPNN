@@ -22,6 +22,7 @@ const FILTER_SCENE_SETTLE_MS = 140;
 
 const PHYSICS_NUMERIC_FIELDS = [
   "gravityStrength",
+  "elevationStrength",
   "componentStrength",
   "nodeRepulsionStrength",
   "linkLength",
@@ -33,6 +34,7 @@ const PHYSICS_NUMERIC_FIELDS = [
 
 const PHYSICS_TEXT_FIELDS = {
   gravityStrength: "gravityStrengthText",
+  elevationStrength: "elevationStrengthText",
   componentStrength: "componentStrengthText",
   nodeRepulsionStrength: "nodeRepulsionStrengthText",
   linkLength: "linkLengthText",
@@ -42,7 +44,7 @@ const PHYSICS_TEXT_FIELDS = {
   communityForceStrength: "communityForceStrengthText",
 };
 
-const PHYSICS_BOOLEAN_FIELDS = ["circleForce", "linkForce", "checkBorder"];
+const PHYSICS_BOOLEAN_FIELDS = ["circleForce", "elevationForce", "linkForce", "checkBorder"];
 const TOOLTIP_OFFSET = 12;
 const TOOLTIP_MARGIN = 8;
 const TOOLTIP_CAPTURE_PADDING = 16;

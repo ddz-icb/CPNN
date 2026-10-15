@@ -29,6 +29,24 @@ afterEach(() => {
 });
 
 describe("applyGraphSettings", () => {
+  test("restores and exports elevation force strength alongside link force", () => {
+    applyGraphSettings({
+      name: "hierarchical-network",
+      data: createGraphData({ physics: { elevationForce: true, elevationStrength: 1.7 } }),
+    });
+
+    const physics = usePhysics.getState().physics;
+    assert.equal(physics.elevationForce, true);
+    assert.equal(physics.elevationStrength, 1.7);
+    assert.equal(physics.elevationStrengthText, 1.7);
+    assert.equal(physics.linkForce, true);
+    assert.equal(physics.circleForce, false);
+    assert.deepEqual(buildGraphSettingsExport({ physics }).physics, {
+      elevationForce: true,
+      elevationStrength: 1.7,
+    });
+  });
+
   test("clears weight statistics when switching to an unweighted graph", () => {
     applyGraphSettings({ name: "weighted", data: createGraphData() });
     assert.equal(useGraphMetrics.getState().graphMetrics.linkWeightMax, 1);

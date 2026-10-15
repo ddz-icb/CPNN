@@ -5,7 +5,9 @@ export function drawGrid3D(gridGraphic, view, nodes, container, project) {
 
   const cache = gridGraphic.__gridCache || (gridGraphic.__gridCache = {});
   const orientation = view.orientation;
+  const plane = gridGraphic.__gridPlane === "xy" ? "xy" : "xz";
   const viewChanged =
+    cache.plane !== plane ||
     cache.orientationX !== orientation?.x ||
     cache.orientationY !== orientation?.y ||
     cache.orientationZ !== orientation?.z ||
@@ -18,6 +20,7 @@ export function drawGrid3D(gridGraphic, view, nodes, container, project) {
     cache.viewCenterY !== view.centerY;
 
   if (viewChanged) {
+    cache.plane = plane;
     cache.orientationX = orientation?.x;
     cache.orientationY = orientation?.y;
     cache.orientationZ = orientation?.z;
@@ -33,14 +36,15 @@ export function drawGrid3D(gridGraphic, view, nodes, container, project) {
   const now = typeof performance !== "undefined" && performance.now ? performance.now() : Date.now();
   const layoutInterval = 30; // ms inbetween grid updates
   const sizeChanged = cache.containerWidth !== container.width || cache.containerHeight !== container.height;
-  const shouldUpdateLayout = !cache.layout || sizeChanged || now - (cache.layoutAt || 0) > layoutInterval;
+  const shouldUpdateLayout = !cache.layout || sizeChanged || cache.layoutPlane !== plane || now - (cache.layoutAt || 0) > layoutInterval;
 
   let layout = cache.layout;
   let layoutChanged = false;
 
   if (shouldUpdateLayout) {
-    const nextLayout = computeGridLayout(nodes, container);
+    const nextLayout = computeGridLayout(nodes, container, plane);
     cache.layoutAt = now;
+    cache.layoutPlane = plane;
     cache.containerWidth = container.width;
     cache.containerHeight = container.height;
 
@@ -50,7 +54,7 @@ export function drawGrid3D(gridGraphic, view, nodes, container, project) {
       return;
     }
 
-    const nextLayoutKey = `${nextLayout.centerX}|${nextLayout.centerY}|${nextLayout.extent}|${nextLayout.step}|${nextLayout.cells}`;
+    const nextLayoutKey = `${plane}|${nextLayout.centerX}|${nextLayout.centerY}|${nextLayout.extent}|${nextLayout.step}|${nextLayout.cells}`;
     layoutChanged = nextLayoutKey !== cache.layoutKey;
     if (layoutChanged) {
       cache.layoutKey = nextLayoutKey;
@@ -70,15 +74,17 @@ export function drawGrid3D(gridGraphic, view, nodes, container, project) {
   const gridWidth = 1.5;
   const startX = centerX - extent;
   const endX = centerX + extent;
-  const startZ = -extent;
-  const endZ = extent;
+  const axisCenter = plane === "xy" ? centerY : 0;
+  const startCross = axisCenter - extent;
+  const endCross = axisCenter + extent;
+  const gridPoint = (x, cross) => plane === "xy" ? { x, y: cross, z: 0 } : { x, y: centerY, z: cross };
   const axisThreshold = Math.max(step * 0.25, 1);
 
   for (let i = 0; i <= cells; i++) {
     const x = startX + i * step;
     const isAxis = Math.abs(x - centerX) <= axisThreshold;
-    const p1 = project({ x, y: centerY, z: startZ });
-    const p2 = project({ x, y: centerY, z: endZ });
+    const p1 = project(gridPoint(x, startCross));
+    const p2 = project(gridPoint(x, endCross));
     if (!p1 || !p2) continue;
     gridGraphic
       .moveTo(p1.x, p1.y)
@@ -91,10 +97,10 @@ export function drawGrid3D(gridGraphic, view, nodes, container, project) {
   }
 
   for (let i = 0; i <= cells; i++) {
-    const z = startZ + i * step;
-    const isAxis = Math.abs(z) <= axisThreshold;
-    const p1 = project({ x: startX, y: centerY, z });
-    const p2 = project({ x: endX, y: centerY, z });
+    const cross = startCross + i * step;
+    const isAxis = Math.abs(cross - axisCenter) <= axisThreshold;
+    const p1 = project(gridPoint(startX, cross));
+    const p2 = project(gridPoint(endX, cross));
     if (!p1 || !p2) continue;
     gridGraphic
       .moveTo(p1.x, p1.y)
@@ -107,8 +113,8 @@ export function drawGrid3D(gridGraphic, view, nodes, container, project) {
   }
 
   const verticalHalf = extent * 0.4;
-  const v1 = project({ x: centerX, y: centerY - verticalHalf, z: 0 });
-  const v2 = project({ x: centerX, y: centerY + verticalHalf, z: 0 });
+  const v1 = plane === "xy" ? project({ x: centerX, y: centerY, z: -verticalHalf }) : project({ x: centerX, y: centerY - verticalHalf, z: 0 });
+  const v2 = plane === "xy" ? project({ x: centerX, y: centerY, z: verticalHalf }) : project({ x: centerX, y: centerY + verticalHalf, z: 0 });
   if (v1 && v2) {
     gridGraphic.moveTo(v1.x, v1.y).lineTo(v2.x, v2.y).stroke({
       color,
@@ -118,28 +124,28 @@ export function drawGrid3D(gridGraphic, view, nodes, container, project) {
   }
 }
 
-function computeGridLayout(nodes, container) {
+function computeGridLayout(nodes, container, plane) {
   if (!nodes || !container?.width || !container?.height) return null;
 
   const centerX = container.width / 2;
   const centerY = container.height / 2;
-  const centerZ = 0;
+  const crossCenter = plane === "xy" ? centerY : 0;
 
   let minX = Infinity;
   let maxX = -Infinity;
-  let minZ = Infinity;
-  let maxZ = -Infinity;
+  let minCross = Infinity;
+  let maxCross = -Infinity;
 
   for (const node of nodes) {
     const x = node?.x;
-    const z = node?.z ?? 0;
+    const cross = plane === "xy" ? node?.y : node?.z ?? 0;
     if (Number.isFinite(x)) {
       minX = Math.min(minX, x);
       maxX = Math.max(maxX, x);
     }
-    if (Number.isFinite(z)) {
-      minZ = Math.min(minZ, z);
-      maxZ = Math.max(maxZ, z);
+    if (Number.isFinite(cross)) {
+      minCross = Math.min(minCross, cross);
+      maxCross = Math.max(maxCross, cross);
     }
   }
 
@@ -147,14 +153,14 @@ function computeGridLayout(nodes, container) {
     minX = centerX - container.width / 2;
     maxX = centerX + container.width / 2;
   }
-  if (!Number.isFinite(minZ)) {
-    minZ = -container.width / 2;
-    maxZ = container.width / 2;
+  if (!Number.isFinite(minCross)) {
+    minCross = crossCenter - container.width / 2;
+    maxCross = crossCenter + container.width / 2;
   }
 
   const halfX = Math.max(Math.abs(maxX - centerX), Math.abs(minX - centerX));
-  const halfZ = Math.max(Math.abs(maxZ - centerZ), Math.abs(minZ - centerZ));
-  const largestHalf = Math.max(halfX, halfZ, container.width * 0.15);
+  const halfCross = Math.max(Math.abs(maxCross - crossCenter), Math.abs(minCross - crossCenter));
+  const largestHalf = Math.max(halfX, halfCross, container.width * 0.15);
   const pad = Math.max(largestHalf * 0.1, 10);
 
   const extent = largestHalf + pad;

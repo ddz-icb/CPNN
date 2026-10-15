@@ -4,11 +4,12 @@ import * as d3 from "d3";
 import * as d3Force3d from "d3-force-3d";
 
 import { radius } from "../../domain/service/canvas_drawing/nodes.js";
-import { getAdjacentData, getComponentData, getLinkWeightMagnitudeExtent } from "../../domain/service/graph_calculations/graphUtils.js";
+import { getAdjacentData, getComponentData, getLinkWeightMagnitudeExtent, getNodeDegreeData } from "../../domain/service/graph_calculations/graphUtils.js";
 import {
   accuracyBarnesHut,
   borderCheck,
   circularForce,
+  degreeElevationForce,
   groupRepulsionForce,
   gravityForce,
   maxDistanceChargeForce,
@@ -25,7 +26,7 @@ import { useAppearance } from "../state/appearanceState.js";
 import { useCommunityState } from "../state/communityState.js";
 
 export function PhysicsControl() {
-  const { physics, setPhysics } = usePhysics();
+  const { physics } = usePhysics();
   const { communityState } = useCommunityState();
   const { container } = useContainer();
   const { graphState } = useGraphState();
@@ -35,8 +36,9 @@ export function PhysicsControl() {
   const graphNodes = graphState.graph?.data?.nodes;
   const graphLinks = graphState.graph?.data?.links;
 
-  const forceLinkFactory = appearance?.threeD ? d3Force3d.forceLink : d3.forceLink;
-  const forceManyBodyFactory = appearance?.threeD ? d3Force3d.forceManyBody : d3.forceManyBody;
+  const planarElevation = appearance.threeD && physics.elevationForce;
+  const forceLinkFactory = appearance.threeD && !planarElevation ? d3Force3d.forceLink : d3.forceLink;
+  const forceManyBodyFactory = appearance.threeD && !planarElevation ? d3Force3d.forceManyBody : d3.forceManyBody;
 
   useEffect(() => {
     if (!renderState.simulation || !graphFlags.filteredAfterStart || !graphState.graph) return;
@@ -53,14 +55,13 @@ export function PhysicsControl() {
             .id((d) => d.id)
             .distance((link) => getLinkDistance(physics.linkLength, link, weightExtent)),
         );
-        setPhysics("circleForce", false);
         renderState.simulation.alpha(1).restart();
       }
     } catch (error) {
       errorService.setError(error.message);
       log.error("Error updating link force:", error);
     }
-  }, [physics.linkForce, renderState.simulation, appearance.threeD]); // shouldn't be called on filteredAfterStart since all nodes of the graph are needed
+  }, [physics.linkForce, renderState.simulation, appearance.threeD, planarElevation]); // shouldn't be called on filteredAfterStart since all nodes of the graph are needed
 
   useEffect(() => {
     if (!renderState.simulation || !graphFlags.filteredAfterStart || !graphState.graph || physics.linkForce == false) return;
@@ -86,7 +87,7 @@ export function PhysicsControl() {
         renderState.simulation.force("gravity", null);
         renderState.simulation.alpha(1).restart();
       } else {
-        renderState.simulation.force("gravity", gravityForce(container.width / 2, container.height / 2, 0).strength(physics.gravityStrength));
+        renderState.simulation.force("gravity", gravityForce(container.width / 2, container.height / 2, planarElevation ? null : 0).strength(physics.gravityStrength));
         renderState.simulation.alpha(1).restart();
       }
     } catch (error) {
@@ -100,6 +101,33 @@ export function PhysicsControl() {
     graphLinks,
     renderState.simulation,
     appearance.threeD,
+    planarElevation,
+  ]);
+
+  useEffect(() => {
+    if (!renderState.simulation || !graphFlags.filteredAfterStart || !graphState.graph) return;
+    try {
+      if (!planarElevation) {
+        renderState.simulation.force("elevationForce", null);
+      } else {
+        const linkCounts = getNodeDegreeData(graphState.graph.data);
+        renderState.simulation.force(
+          "elevationForce",
+          degreeElevationForce(linkCounts).strength(physics.elevationStrength),
+        );
+      }
+      renderState.simulation.alpha(1).restart();
+    } catch (error) {
+      errorService.setError(error.message);
+      log.error("Error updating elevation force:", error);
+    }
+  }, [
+    planarElevation,
+    physics.elevationStrength,
+    graphFlags.filteredAfterStart,
+    graphNodes,
+    graphLinks,
+    renderState.simulation,
   ]);
 
   useEffect(() => {
@@ -113,14 +141,14 @@ export function PhysicsControl() {
       } else {
         const [IdToComp] = getComponentData(graphState.graph.data);
 
-        renderState.simulation.force("component", groupRepulsionForce(IdToComp).strength(physics.componentStrength));
+        renderState.simulation.force("component", groupRepulsionForce(IdToComp, 3, !planarElevation).strength(physics.componentStrength));
         renderState.simulation.alpha(1).restart();
       }
     } catch (error) {
       errorService.setError(error.message);
       log.error("Error updating component force:", error);
     }
-  }, [physics.componentStrength, graphFlags.filteredAfterStart, graphNodes, graphLinks, renderState.simulation, appearance.threeD]);
+  }, [physics.componentStrength, graphFlags.filteredAfterStart, graphNodes, graphLinks, renderState.simulation, appearance.threeD, planarElevation]);
 
   useEffect(() => {
     if (!renderState.simulation || !graphFlags.filteredAfterStart) return;
@@ -143,7 +171,7 @@ export function PhysicsControl() {
       errorService.setError(error.message);
       log.error("Error updating node repulsion:", error);
     }
-  }, [physics.nodeRepulsionStrength, graphFlags.filteredAfterStart, graphNodes, graphLinks, renderState.simulation, appearance.threeD]);
+  }, [physics.nodeRepulsionStrength, graphFlags.filteredAfterStart, graphNodes, graphLinks, renderState.simulation, appearance.threeD, planarElevation]);
 
   useEffect(() => {
     if (!renderState.simulation || !graphFlags.isPreprocessed || !container.width || !container.height) return;
@@ -155,7 +183,7 @@ export function PhysicsControl() {
         renderState.simulation.alpha(1).restart();
       } else {
         const center = { x: container.width / 2, y: container.height / 2, z: 0 };
-        renderState.simulation.force("border", borderCheck(radius, physics.borderHeight, physics.borderWidth, center, physics.borderDepth));
+        renderState.simulation.force("border", borderCheck(radius, physics.borderHeight, physics.borderWidth, center, physics.borderDepth, !planarElevation));
         renderState.simulation.alpha(1).restart();
       }
     } catch (error) {
@@ -172,6 +200,7 @@ export function PhysicsControl() {
     graphLinks,
     renderState.simulation,
     appearance.threeD,
+    planarElevation,
   ]);
 
   useEffect(() => {
@@ -183,23 +212,18 @@ export function PhysicsControl() {
         renderState.simulation.force("circleForce", null);
         renderState.simulation.alpha(1).restart();
       } else {
-        // have to disable link force for this
-        if (physics.linkForce === true) {
-          setPhysics("linkForce", false);
-        }
-
         const [IdToComp] = getComponentData(graphState.graph.data);
         const adjacentCountMap = getAdjacentData(graphState.graph.data);
         const minCircleSize = 6;
 
-        renderState.simulation.force("circleForce", circularForce(IdToComp, adjacentCountMap, minCircleSize, appearance.threeD));
+        renderState.simulation.force("circleForce", circularForce(IdToComp, adjacentCountMap, minCircleSize, appearance.threeD && !planarElevation));
         renderState.simulation.alpha(1).restart();
       }
     } catch (error) {
       errorService.setError(error.message);
       log.error("Error updating circular force:", error);
     }
-  }, [physics.circleForce, graphFlags.filteredAfterStart, graphNodes, graphLinks, renderState.simulation, appearance.threeD]);
+  }, [physics.circleForce, graphFlags.filteredAfterStart, graphNodes, graphLinks, renderState.simulation, appearance.threeD, planarElevation]);
 
   useEffect(() => {
     if (!renderState.simulation || !graphFlags.filteredAfterStart || !graphState.graph) return;
@@ -217,7 +241,7 @@ export function PhysicsControl() {
         renderState.simulation.alpha(1).restart();
         return;
       } else {
-        renderState.simulation.force("community", groupRepulsionForce(communityState.idToCommunity).strength(physics.communityForceStrength));
+        renderState.simulation.force("community", groupRepulsionForce(communityState.idToCommunity, 3, !planarElevation).strength(physics.communityForceStrength));
         renderState.simulation.alpha(1).restart();
       }
     } catch (error) {
@@ -232,5 +256,6 @@ export function PhysicsControl() {
     graphLinks,
     renderState.simulation,
     appearance.threeD,
+    planarElevation,
   ]);
 }

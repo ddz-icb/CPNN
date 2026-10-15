@@ -1,6 +1,11 @@
 import { Button, SliderBlock, SwitchBlock } from "../reusable_components/sidebarComponents.jsx";
 
-import { communityForceStrengthInit, gravityStrengthInit, physicsInit } from "../../../adapters/state/physicsState.js";
+import {
+  communityForceStrengthInit,
+  elevationStrengthInit,
+  gravityStrengthInit,
+  physicsInit,
+} from "../../../adapters/state/physicsState.js";
 import {
   borderHeightDescription,
   borderWidthDescription,
@@ -8,6 +13,7 @@ import {
   linkLengthDescription,
   nodeRepulsionStrengthDescription,
   gravityDescription,
+  elevationForceDescription,
   checkBorderDescription,
   circleForceDescription,
   linkForceDescription,
@@ -17,7 +23,7 @@ import { useAppearance } from "../../../adapters/state/appearanceState.js";
 
 export function PhysicsSidebar({}) {
   const { physics, setPhysics, setAllPhysics } = usePhysics();
-  const { appearance } = useAppearance();
+  const { appearance, setAppearance } = useAppearance();
 
   return (
     <>
@@ -31,6 +37,32 @@ export function PhysicsSidebar({}) {
         infoHeading={"Enabling Circular Force"}
         infoDescription={circleForceDescription}
       />
+      <SwitchBlock
+        value={physics.elevationForce}
+        setValue={() => {
+          const enabled = !physics.elevationForce;
+          setPhysics("elevationForce", enabled);
+          if (enabled && !appearance.threeD) setAppearance("threeD", true);
+        }}
+        text={"Elevation Force"}
+        infoHeading={"Enabling Elevation Force"}
+        infoDescription={elevationForceDescription}
+      />
+      {physics.elevationForce && (
+        <SliderBlock
+          value={physics.elevationStrength}
+          valueText={physics.elevationStrengthText}
+          setValue={(value) => setPhysics("elevationStrength", value)}
+          setValueText={(value) => setPhysics("elevationStrengthText", value)}
+          fallbackValue={elevationStrengthInit}
+          min={0}
+          max={10}
+          step={0.1}
+          text={"Elevation Strength"}
+          infoHeading={"Adjusting Elevation Strength"}
+          infoDescription={elevationForceDescription}
+        />
+      )}
       <SliderBlock
         value={physics.gravityStrength}
         valueText={physics.gravityStrengthText}

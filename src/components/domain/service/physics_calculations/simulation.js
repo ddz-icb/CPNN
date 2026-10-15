@@ -7,12 +7,12 @@ import { redraw } from "../canvas_drawing/render2D.js";
 import { getChevronRenderEntries, getParallelLinkLayoutData } from "../canvas_drawing/lineGraphics.js";
 import { createFrameScheduler } from "../utils/frameScheduler.js";
 
-export function getSimulation(linkLength, threeD, linkForce = true, graphData) {
+export function getSimulation(linkLength, threeD, linkForce = true, graphData, planarForces = false) {
   const weightExtent = graphData ? getLinkWeightMagnitudeExtent(graphData) : null;
   const nodes = graphData?.nodes ?? [];
   const links = graphData?.links ?? [];
   if (threeD) {
-    return getSimulation3D(linkLength, linkForce, weightExtent, nodes, links);
+    return getSimulation3D(linkLength, linkForce, weightExtent, nodes, links, planarForces);
   } else {
     return getSimulation2D(linkLength, linkForce, weightExtent, nodes, links);
   }
@@ -41,9 +41,9 @@ function getSimulation2D(linkLength, linkForce, weightExtent, nodes, links) {
   return simulation;
 }
 
-function getSimulation3D(linkLength, linkForce, weightExtent, nodes, links) {
+function getSimulation3D(linkLength, linkForce, weightExtent, nodes, links, planarForces) {
   const simulation = forceSimulation(nodes, 3)
-    .force("link", createLinkForce(forceLink, linkLength, linkForce, weightExtent, links))
+    .force("link", createLinkForce(planarForces ? d3.forceLink : forceLink, linkLength, linkForce, weightExtent, links))
     .alphaMin(0.05);
 
   simulation.randomSource();

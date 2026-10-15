@@ -7,7 +7,7 @@ export const nodeRepulsionMultiplier = -300;
 const minLinkLengthFactor = 0.15;
 const groupRepulsionMultiplier = 10;
 
-export function borderCheck(radius, borderHeight, borderWidth, center, borderDepth = Math.min(borderHeight, borderWidth)) {
+export function borderCheck(radius, borderHeight, borderWidth, center, borderDepth = Math.min(borderHeight, borderWidth), useDepth = true) {
   let nodes;
   let strength = 1;
 
@@ -32,7 +32,7 @@ export function borderCheck(radius, borderHeight, borderWidth, center, borderDep
       node.vx += dx * alpha;
       node.vy += dy * alpha;
 
-      if (node.z != null) {
+      if (useDepth && node.z != null) {
         let dz = 0;
         if (node.z < nearBorder + radius) dz += (nearBorder + radius - node.z) * strength;
         else if (node.z > farBorder - radius) dz += (farBorder - radius - node.z) * strength;
@@ -49,7 +49,7 @@ export function borderCheck(radius, borderHeight, borderWidth, center, borderDep
   return force;
 }
 
-export function groupRepulsionForce(IdToGroup, centroidThreshold = 3) {
+export function groupRepulsionForce(IdToGroup, centroidThreshold = 3, useDepth = true) {
   let nodes;
   let strength = 0.1;
 
@@ -107,7 +107,7 @@ export function groupRepulsionForce(IdToGroup, centroidThreshold = 3) {
 
         const dx = centroid.x - node.x;
         const dy = centroid.y - node.y;
-        const dz = (centroid.z ?? 0) - (node.z ?? 0);
+        const dz = useDepth ? (centroid.z ?? 0) - (node.z ?? 0) : 0;
         const distSq = dx * dx + dy * dy + dz * dz;
         if (distSq < 1e-4) continue;
         const inverseDist = 1 / Math.sqrt(distSq);
@@ -115,7 +115,7 @@ export function groupRepulsionForce(IdToGroup, centroidThreshold = 3) {
 
         node.vx -= dx * f;
         node.vy -= dy * f;
-        if (node.vz != null) {
+        if (useDepth && node.vz != null) {
           node.vz -= dz * f;
         }
       }
@@ -212,7 +212,7 @@ export function circularForce(IdToComp, adjacentCountMap, minCircleSize, threeD 
 
         const dx = c2.x - c1.x;
         const dy = c2.y - c1.y;
-        const dz = (c2.z ?? 0) - (c1.z ?? 0);
+        const dz = threeD ? (c2.z ?? 0) - (c1.z ?? 0) : 0;
         const distSq = dx * dx + dy * dy + dz * dz;
 
         const minDist = radius1 + radius2 + 10;
@@ -233,12 +233,12 @@ export function circularForce(IdToComp, adjacentCountMap, minCircleSize, threeD 
           for (const n of nodes1) {
             n.vx -= forceX;
             n.vy -= forceY;
-            n.vz = (n.vz ?? 0) - forceZ;
+            if (threeD) n.vz = (n.vz ?? 0) - forceZ;
           }
           for (const n of nodes2) {
             n.vx += forceX;
             n.vy += forceY;
-            n.vz = (n.vz ?? 0) + forceZ;
+            if (threeD) n.vz = (n.vz ?? 0) + forceZ;
           }
         }
       }
@@ -262,7 +262,7 @@ export function gravityForce(x, y, z) {
       node.vx += (x - node.x) * strength * alpha;
       node.vy += (y - node.y) * strength * alpha;
 
-      if (node.z != null) {
+      if (z != null && node.z != null) {
         node.vz = (node.vz ?? 0) + (z - node.z) * strength * alpha;
       }
     }
@@ -272,6 +272,39 @@ export function gravityForce(x, y, z) {
     nodes = _;
   };
   force.strength = (_) => (_ === undefined ? strength : ((strength = _), force));
+  return force;
+}
+
+// Add degree-based depth to an otherwise planar graph layout.
+export function degreeElevationForce(linkCounts) {
+  let nodes = [];
+  let positions = new Map();
+  let strength = 1;
+
+  function force(alpha) {
+    for (const node of nodes) {
+      if (node.z == null) continue;
+      node.vz = (node.vz ?? 0) + (positions.get(node.id) * strength - node.z) * 0.35 * alpha;
+    }
+  }
+
+  force.initialize = (simulationNodes) => {
+    nodes = simulationNodes;
+    let minDegree = Infinity;
+    let maxDegree = 0;
+    for (const node of nodes) {
+      const count = linkCounts.get(node.id) ?? 0;
+      minDegree = Math.min(minDegree, count);
+      maxDegree = Math.max(maxDegree, count);
+    }
+    const logMin = Math.log1p(Number.isFinite(minDegree) ? minDegree : 0);
+    const logRange = Math.log1p(maxDegree) - logMin;
+    positions = new Map(nodes.map((node) => {
+      const normalized = logRange > 0 ? (Math.log1p(linkCounts.get(node.id) ?? 0) - logMin) / logRange : 0.5;
+      return [node.id, (normalized - 0.5) * 240];
+    }));
+  };
+  force.strength = (value) => (value === undefined ? strength : ((strength = value), force));
   return force;
 }
 

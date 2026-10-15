@@ -72,6 +72,12 @@ export function RenderControl() {
   }, [appearance.threeDFov]);
 
   useEffect(() => {
+    if (!pixiState.grid3D) return;
+    pixiState.grid3D.__gridPlane = appearance.threeD && physics.elevationForce ? "xy" : "xz";
+    cameraRef.current.redraw?.();
+  }, [pixiState.grid3D, appearance.threeD, physics.elevationForce]);
+
+  useEffect(() => {
     return () => renderState.app?.__interactionCleanup?.();
   }, [renderState.app]);
 
@@ -190,7 +196,7 @@ export function RenderControl() {
     log.info("Init simulation");
 
     try {
-      const newSimulation = getSimulation(physics.linkLength, appearance.threeD, physics.linkForce, graphState.graph.data);
+      const newSimulation = getSimulation(physics.linkLength, appearance.threeD, physics.linkForce, graphState.graph.data, physics.elevationForce);
       initDragAndZoom(
         renderState.app,
         newSimulation,
@@ -233,7 +239,7 @@ export function RenderControl() {
       }
       resetGridVisibility(pixiState.grid3D, appearance.threeD && appearance.show3DGrid);
       resetStageTransform(renderState.app?.stage);
-      const newSimulation = getSimulation(physics.linkLength, appearance.threeD, physics.linkForce, graphState.graph.data);
+      const newSimulation = getSimulation(physics.linkLength, appearance.threeD, physics.linkForce, graphState.graph.data, physics.elevationForce);
       initDragAndZoom(
         renderState.app,
         newSimulation,

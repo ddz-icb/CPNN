@@ -6,6 +6,15 @@ export const gravityDescription = (
   </div>
 );
 
+export const elevationForceDescription = (
+  <div>
+    <p className="margin-0">
+      Adds elevation to the 3D graph based on link count. Highly connected nodes rise; nodes with fewer links sit lower. When enabled, the
+      corresponding axis is not affected by other forces.
+    </p>
+  </div>
+);
+
 export const componentStrengthDescription = (
   <div>
     <p className="margin-0">
@@ -67,7 +76,7 @@ export const circleForceDescription = (
     <p className="margin-0">
       Components/Clusters can be arranged in a circular layout, with the nodes arranged clockwise in descending order based on the number of adjacent
       nodes. In 3D, the nodes are distributed on a sphere around the component centroid. <br />
-      Activating this force automatically disables the link force, as they're incompatible.
+      Activating this force automatically disables Link Force. It can be used with Elevation Force, which adds height to the circle.
     </p>
   </div>
 );
@@ -75,7 +84,8 @@ export const circleForceDescription = (
 export const linkForceDescription = (
   <div>
     <p className="margin-0">
-      The link force treats links as a rubber band. If the link is stretched past it's length, the link will try to contract itself.
+      The link force treats links as a rubber band. If a link stretches past its length, it tries to contract. It can be used with Elevation Force.
+      Enabling it turns off Circular Force.
     </p>
   </div>
 );
