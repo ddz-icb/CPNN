@@ -9,6 +9,7 @@ import {
   getCameraOrbitAngles,
   getCameraViewParams,
   projectPoint3D,
+  resetCamera3D,
   rotateVectorByQuaternion,
   setCameraOrbit,
 } from "../../../../../src/components/domain/service/canvas_drawing/camera3D.js";
@@ -166,6 +167,17 @@ test("elevation view presets stay on the same orbit when dragging resumes", () =
   for (const key of ["x", "y", "z", "w"]) {
     assert.ok(Math.abs(camera.orientation[key] - orientation[key]) < 1e-10);
   }
+});
+
+test("resetting an elevation view opens at the front", () => {
+  const camera = {};
+  resetCamera3D(camera, { width: 800, height: 600 }, "z");
+  const angles = getCameraOrbitAngles(camera, "z");
+  assert.ok(Math.abs(angles.pitch - Math.PI / 2) < 1e-10);
+  assert.ok(Math.abs(angles.yaw) < 1e-10);
+  const heightAxis = rotateVectorByQuaternion({ x: 0, y: 0, z: 1 }, getCameraOrientation(camera));
+  assert.ok(Math.abs(heightAxis.z) < 1e-10);
+  assert.ok(Math.abs(heightAxis.y + 1) < 1e-10);
 });
 
 test("resizing reports the new logical viewport once", () => {

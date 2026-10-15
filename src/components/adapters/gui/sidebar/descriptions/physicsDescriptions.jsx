@@ -9,8 +9,8 @@ export const gravityDescription = (
 export const elevationForceDescription = (
   <div>
     <p className="margin-0">
-      Adds elevation to the 3D graph based on link count. Highly connected nodes rise; nodes with fewer links sit lower. When enabled, the
-      corresponding axis is not affected by other forces.
+      Adds height above the graph's base plane based on link count. Highly connected nodes rise higher; nodes with fewer links stay closer to the
+      plane. The view opens from the front, and other forces leave the height axis alone.
     </p>
   </div>
 );

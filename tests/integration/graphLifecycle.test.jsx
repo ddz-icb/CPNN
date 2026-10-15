@@ -7,6 +7,7 @@ import { useAppearance } from "../../src/components/adapters/state/appearanceSta
 import { usePixiState } from "../../src/components/adapters/state/pixiState.js";
 import { initDragAndZoom } from "../../src/components/domain/service/canvas_interaction/interactiveCanvas.js";
 import { redraw3D } from "../../src/components/domain/service/canvas_drawing/render3D.js";
+import { getCameraOrbitAngles } from "../../src/components/domain/service/canvas_drawing/camera3D.js";
 import { calculateLinkWidth } from "../../src/components/domain/service/canvas_drawing/lineGraphics.js";
 import { useGraphSetup } from "../../src/components/adapters/controllers/useGraphSetup.js";
 import { FilterControl } from "../../src/components/adapters/controllers/filterControl.js";
@@ -229,6 +230,9 @@ test("elevation adds depth in 3D while keeping the regular planar forces", async
   await update(async () => useAppearance.getState().setAppearance("threeD", true));
   const threeD = useRenderState.getState().renderState.simulation;
   expect(initDragAndZoom.mock.lastCall.at(-1).current.upAxis).toBe("z");
+  const camera = useAppearance.getState().appearance.cameraRef.current;
+  expect(getCameraOrbitAngles(camera, "z").pitch).toBeCloseTo(Math.PI / 2);
+  expect(getCameraOrbitAngles(camera, "z").yaw).toBeCloseTo(0);
   expect(threeD.force("elevationForce")).toBeDefined();
   expect(threeD.force("elevationForce").strength()).toBe(1);
   const nodes = threeD.nodes();

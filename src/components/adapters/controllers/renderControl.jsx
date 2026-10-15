@@ -20,7 +20,7 @@ import { filteredAfterStartInit, useGraphFlags } from "../state/graphFlagsState.
 import { simulationInit, useRenderState } from "../state/canvasState.js";
 import { setupStage } from "../../domain/service/canvas_drawing/stageSetup.js";
 import { resetGridVisibility, resetStageTransform, restoreProjectionHidden } from "../../domain/service/canvas_drawing/stageTransforms.js";
-import { clearCameraOrbitCenter, getCameraOrbitAngles, setCameraOrbit } from "../../domain/service/canvas_drawing/camera3D.js";
+import { applyCameraPreset, clearCameraOrbitCenter, getCameraOrbitAngles, setCameraOrbit } from "../../domain/service/canvas_drawing/camera3D.js";
 
 export function RenderControl() {
   const { appearance, setAppearance } = useAppearance();
@@ -40,6 +40,7 @@ export function RenderControl() {
   const cameraRef = useRef({ ...appearance.cameraRef }); // for 3D
   const threeDControlsRef = useRef(null);
   const previousUpAxis = useRef("y");
+  const regularViewAngles = useRef(null);
   threeDControlsRef.current = {
     orbitSensitivity: appearance.threeDOrbitSensitivity,
     panSensitivity: appearance.threeDPanSensitivity,
@@ -81,10 +82,17 @@ export function RenderControl() {
     if (!appearance.threeD) return;
     const camera = cameraRef.current;
     const upAxis = physics.elevationForce ? "z" : "y";
-    const angles = getCameraOrbitAngles(camera, previousUpAxis.current);
-    setCameraOrbit(camera, angles.pitch, angles.yaw, upAxis);
+    if (upAxis === "z") {
+      if (previousUpAxis.current === "y") regularViewAngles.current = getCameraOrbitAngles(camera, "y");
+      applyCameraPreset(camera, "front", "z");
+    } else {
+      const angles = previousUpAxis.current === "z" && regularViewAngles.current
+        ? regularViewAngles.current
+        : getCameraOrbitAngles(camera, "y");
+      setCameraOrbit(camera, angles.pitch, angles.yaw, "y");
+      camera.redraw?.();
+    }
     previousUpAxis.current = upAxis;
-    camera.redraw?.();
   }, [appearance.threeD, physics.elevationForce]);
 
   useEffect(() => {

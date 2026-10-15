@@ -72,9 +72,13 @@ test("degree elevation only changes depth and strength scales the height", () =>
     links: ["a", "b", "c", "d"].map((id) => ({ source: "hub", target: id })),
   };
   const force = degreeElevationForce(getNodeDegreeData(graph));
+  graph.nodes.at(-1).z = -40;
+  graph.nodes.at(-1).fz = -20;
   applyForce(force, graph.nodes);
   const byId = Object.fromEntries(graph.nodes.map((node) => [node.id, node]));
   assert.ok(byId.hub.vz > byId.a.vz && byId.a.vz > byId.isolated.vz);
+  assert.ok(graph.nodes.every((node) => node.z > 0 && node.vz >= 0));
+  assert.equal(byId.isolated.fz, 20);
   assert.ok(graph.nodes.every((node) => node.vx === 0 && node.vy === 0));
   const initialHeight = byId.hub.vz;
   graph.nodes.forEach((node) => { node.vz = 0; });
@@ -106,6 +110,7 @@ test("3D elevation preserves the ordinary 2D layout while adding height", () => 
     assert.ok(Math.abs(flat.nodes[index].y - elevated.nodes[index].y) < 1e-6);
   }
   assert.ok(elevated.nodes[0].z > elevated.nodes[1].z);
+  assert.ok(elevated.nodes.every((node) => node.z > 0));
 });
 
 test("planar gravity, component repulsion, border and circle leave depth untouched", () => {

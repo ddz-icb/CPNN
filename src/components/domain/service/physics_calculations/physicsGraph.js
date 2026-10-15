@@ -275,33 +275,41 @@ export function gravityForce(x, y, z) {
   return force;
 }
 
-// Add degree-based depth to an otherwise planar graph layout.
+// Add degree-based height above the XY plane to an otherwise planar graph layout.
 export function degreeElevationForce(linkCounts) {
+  const minimumHeight = 20;
+  const heightRange = 220;
   let nodes = [];
   let positions = new Map();
   let strength = 1;
 
   function force(alpha) {
+    const floor = minimumHeight * Math.max(0, strength);
     for (const node of nodes) {
-      if (node.z == null) continue;
-      node.vz = (node.vz ?? 0) + (positions.get(node.id) * strength - node.z) * 0.35 * alpha;
+      node.z = Math.max(floor, Number.isFinite(node.z) ? node.z : 0);
+      if (Number.isFinite(node.fz)) node.fz = Math.max(floor, node.fz);
+      const velocity = (node.vz ?? 0) + (positions.get(node.id) * strength - node.z) * 0.35 * alpha;
+      node.vz = Math.max(floor - node.z, velocity);
     }
   }
 
   force.initialize = (simulationNodes) => {
     nodes = simulationNodes;
+    const floor = minimumHeight * Math.max(0, strength);
     let minDegree = Infinity;
     let maxDegree = 0;
     for (const node of nodes) {
       const count = linkCounts.get(node.id) ?? 0;
       minDegree = Math.min(minDegree, count);
       maxDegree = Math.max(maxDegree, count);
+      node.z = Math.max(floor, Number.isFinite(node.z) ? node.z : 0);
+      if (Number.isFinite(node.fz)) node.fz = Math.max(floor, node.fz);
     }
     const logMin = Math.log1p(Number.isFinite(minDegree) ? minDegree : 0);
     const logRange = Math.log1p(maxDegree) - logMin;
     positions = new Map(nodes.map((node) => {
       const normalized = logRange > 0 ? (Math.log1p(linkCounts.get(node.id) ?? 0) - logMin) / logRange : 0.5;
-      return [node.id, (normalized - 0.5) * 240];
+      return [node.id, minimumHeight + normalized * heightRange];
     }));
   };
   force.strength = (value) => (value === undefined ? strength : ((strength = value), force));

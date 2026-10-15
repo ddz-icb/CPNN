@@ -9,6 +9,13 @@ export const CAMERA_PRESETS = {
   isometric: { rotX: 0.5, rotY: -0.7, rotZ: 0 },
 };
 
+const ELEVATION_CAMERA_PRESETS = {
+  front: { pitch: Math.PI / 2, yaw: 0 },
+  top: { pitch: 0, yaw: 0 },
+  side: { pitch: Math.PI / 2, yaw: Math.PI / 2 },
+  isometric: { pitch: 0.6, yaw: -0.7 },
+};
+
 export const defaultCamera = {
   x: null,
   y: null,
@@ -186,7 +193,7 @@ export function getCameraOrbitAngles(camera, upAxis = "y") {
 
 export function setCameraOrbit(camera, pitch, yaw, upAxis = "y") {
   if (!camera) return;
-  const limitedPitch = clamp(pitch, upAxis === "z" ? 0 : -MAX_ORBIT_PITCH, MAX_ORBIT_PITCH);
+  const limitedPitch = clamp(pitch, upAxis === "z" ? 0 : -MAX_ORBIT_PITCH, upAxis === "z" ? Math.PI / 2 : MAX_ORBIT_PITCH);
   const wrappedYaw = Math.atan2(Math.sin(yaw), Math.cos(yaw));
   if (upAxis === "z") {
     const tilt = quaternionFromAxisAngle({ x: 1, y: 0, z: 0 }, limitedPitch);
@@ -201,13 +208,8 @@ export function applyCameraPreset(camera, presetName, upAxis = "y") {
   const preset = CAMERA_PRESETS[presetName];
   if (!camera || !preset) return false;
   if (upAxis === "z") {
-    const elevationPresets = {
-      front: { pitch: 1.15, yaw: 0 },
-      top: { pitch: 0, yaw: 0 },
-      side: { pitch: 1.15, yaw: Math.PI / 2 },
-      isometric: { pitch: 0.6, yaw: -0.7 },
-    };
-    setCameraOrbit(camera, elevationPresets[presetName].pitch, elevationPresets[presetName].yaw, "z");
+    const { pitch, yaw } = ELEVATION_CAMERA_PRESETS[presetName];
+    setCameraOrbit(camera, pitch, yaw, "z");
   } else {
     setCameraEuler(camera, preset);
   }
@@ -246,8 +248,12 @@ export function resetCamera3D(camera, container, upAxis = "y") {
   camera.z = defaultCamera.z;
   camera.fov = defaultCamera.fov;
   clearCameraOrbitCenter(camera);
-  setCameraEuler(camera, defaultCamera);
-  if (upAxis === "z") setCameraOrbit(camera, defaultCamera.rotX, defaultCamera.rotY, "z");
+  if (upAxis === "z") {
+    const { pitch, yaw } = ELEVATION_CAMERA_PRESETS.front;
+    setCameraOrbit(camera, pitch, yaw, "z");
+  } else {
+    setCameraEuler(camera, defaultCamera);
+  }
   camera.redraw?.();
 }
 
