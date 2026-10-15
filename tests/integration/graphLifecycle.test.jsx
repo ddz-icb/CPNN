@@ -228,6 +228,7 @@ test("elevation adds depth in 3D while keeping the regular planar forces", async
 
   await update(async () => useAppearance.getState().setAppearance("threeD", true));
   const threeD = useRenderState.getState().renderState.simulation;
+  expect(initDragAndZoom.mock.lastCall.at(-1).current.upAxis).toBe("z");
   expect(threeD.force("elevationForce")).toBeDefined();
   expect(threeD.force("elevationForce").strength()).toBe(1);
   const nodes = threeD.nodes();
@@ -284,13 +285,13 @@ test("3D camera control settings reach the active interaction handlers", async (
   await update(() => graphService.handleSelectGraph("A"));
   await update(async () => useAppearance.getState().setAppearance("threeD", true));
   const controls = initDragAndZoom.mock.lastCall.at(-1);
-  const values = { OrbitSensitivity: 2, PanSensitivity: 0.5, ZoomSensitivity: 1.5, Inertia: false, InertiaDamping: 0.8, InvertVertical: true };
+  const values = { OrbitSensitivity: 2, PanSensitivity: 0.5, ZoomSensitivity: 1.5, InvertVertical: true };
   await act(async () => {
     for (const [key, value] of Object.entries(values)) useAppearance.getState().setAppearance(`threeD${key}`, value);
   });
   expect(controls.current).toMatchObject({
     orbitSensitivity: 2, panSensitivity: 0.5, zoomSensitivity: 1.5,
-    inertia: false, inertiaDamping: 0.8, invertVertical: true,
+    invertVertical: true, upAxis: "y",
   });
 });
 

@@ -1,5 +1,6 @@
 const EPSILON = 1e-10;
 const DEFAULT_TARGET_DEPTH = 600;
+const MAX_ORBIT_PITCH = Math.PI / 2 - 0.01;
 
 export const CAMERA_PRESETS = {
   front: { rotX: 0, rotY: 0, rotZ: 0 },
@@ -165,10 +166,51 @@ export function setCameraEuler(camera, euler) {
   camera.rotZ = rotZ;
 }
 
-export function applyCameraPreset(camera, presetName) {
+export function getCameraOrbitAngles(camera, upAxis = "y") {
+  if (upAxis === "z") {
+    const orientation = getCameraOrientation(camera);
+    const vertical = rotateVectorByQuaternion({ x: 0, y: 0, z: 1 }, orientation);
+    const horizontal = rotateVectorByQuaternion({ x: 1, y: 0, z: 0 }, orientation);
+    const forward = rotateVectorByQuaternion({ x: 0, y: 1, z: 0 }, orientation);
+    return {
+      pitch: Math.atan2(-vertical.y, vertical.z),
+      yaw: Math.atan2(forward.x, horizontal.x),
+    };
+  }
+
+  const euler = Number.isFinite(camera?.rotX) && Number.isFinite(camera?.rotY)
+    ? camera
+    : quaternionToEuler(getCameraOrientation(camera));
+  return { pitch: euler.rotX, yaw: euler.rotY };
+}
+
+export function setCameraOrbit(camera, pitch, yaw, upAxis = "y") {
+  if (!camera) return;
+  const limitedPitch = clamp(pitch, upAxis === "z" ? 0 : -MAX_ORBIT_PITCH, MAX_ORBIT_PITCH);
+  const wrappedYaw = Math.atan2(Math.sin(yaw), Math.cos(yaw));
+  if (upAxis === "z") {
+    const tilt = quaternionFromAxisAngle({ x: 1, y: 0, z: 0 }, limitedPitch);
+    const turn = quaternionFromAxisAngle({ x: 0, y: 0, z: 1 }, -wrappedYaw);
+    setCameraOrientation(camera, multiplyQuaternions(tilt, turn));
+  } else {
+    setCameraEuler(camera, { rotX: limitedPitch, rotY: wrappedYaw, rotZ: 0 });
+  }
+}
+
+export function applyCameraPreset(camera, presetName, upAxis = "y") {
   const preset = CAMERA_PRESETS[presetName];
   if (!camera || !preset) return false;
-  setCameraEuler(camera, preset);
+  if (upAxis === "z") {
+    const elevationPresets = {
+      front: { pitch: 1.15, yaw: 0 },
+      top: { pitch: 0, yaw: 0 },
+      side: { pitch: 1.15, yaw: Math.PI / 2 },
+      isometric: { pitch: 0.6, yaw: -0.7 },
+    };
+    setCameraOrbit(camera, elevationPresets[presetName].pitch, elevationPresets[presetName].yaw, "z");
+  } else {
+    setCameraEuler(camera, preset);
+  }
   camera.redraw?.();
   return true;
 }
@@ -197,7 +239,7 @@ export function clearCameraOrbitCenter(camera) {
   camera.orbitCenter = null;
 }
 
-export function resetCamera3D(camera, container) {
+export function resetCamera3D(camera, container, upAxis = "y") {
   if (!camera) return;
   camera.x = container?.width ? container.width / 2 : defaultCamera.x;
   camera.y = container?.height ? container.height / 2 : defaultCamera.y;
@@ -205,6 +247,7 @@ export function resetCamera3D(camera, container) {
   camera.fov = defaultCamera.fov;
   clearCameraOrbitCenter(camera);
   setCameraEuler(camera, defaultCamera);
+  if (upAxis === "z") setCameraOrbit(camera, defaultCamera.rotX, defaultCamera.rotY, "z");
   camera.redraw?.();
 }
 

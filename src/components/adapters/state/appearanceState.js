@@ -10,8 +10,6 @@ export const threeDGridInit = true;
 export const threeDOrbitSensitivityInit = 1;
 export const threeDPanSensitivityInit = 1;
 export const threeDZoomSensitivityInit = 1;
-export const threeDInertiaInit = true;
-export const threeDInertiaDampingInit = 0.9;
 export const threeDInvertVerticalInit = false;
 export const threeDFovInit = defaultCamera.fov;
 export const cameraRefInit = { ...defaultCamera };
@@ -30,9 +28,6 @@ export const appearanceInit = {
   threeDPanSensitivityText: threeDPanSensitivityInit,
   threeDZoomSensitivity: threeDZoomSensitivityInit,
   threeDZoomSensitivityText: threeDZoomSensitivityInit,
-  threeDInertia: threeDInertiaInit,
-  threeDInertiaDamping: threeDInertiaDampingInit,
-  threeDInertiaDampingText: threeDInertiaDampingInit,
   threeDInvertVertical: threeDInvertVerticalInit,
   threeDFov: threeDFovInit,
   threeDFovText: threeDFovInit,

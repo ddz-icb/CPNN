@@ -1,33 +1,24 @@
 import {
   clearCameraOrbitCenter,
   conjugateQuaternion,
-  createIdentityQuaternion,
   defaultCamera,
+  getCameraOrbitAngles,
   getCameraOrientation,
   getCameraViewParams,
-  getQuaternionAngle,
-  multiplyQuaternions,
   projectPoint3D,
-  quaternionFromAxisAngle,
   rotateVectorByQuaternion,
-  scaleQuaternionRotation,
-  setCameraOrientation,
+  setCameraOrbit,
 } from "../canvas_drawing/camera3D.js";
 import { createFrameScheduler } from "../utils/frameScheduler.js";
 
 const DRAG_HIT_RADIUS = 20;
 const DRAG_CLICK_THRESHOLD = 10;
-const ROTATION_EPSILON = 0.0001;
-const PAN_EPSILON = 0.01;
-const FRAME_MS = 1000 / 60;
-
 const DEFAULT_CONTROLS = {
   orbitSensitivity: 1,
   panSensitivity: 1,
   zoomSensitivity: 1,
-  inertia: true,
-  inertiaDamping: 0.9,
   invertVertical: false,
+  upAxis: "y",
 };
 
 export function initDragAndZoom3D(app, simulation, setTooltipSettings, cameraRef, controlsRef) {
@@ -41,15 +32,12 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, cameraRef
     mode: null,
     activePointerId: null,
     previousPoint: null,
+    orbitStartPoint: null,
+    orbitStartAngles: null,
     lastPinch: null,
     distanceDragged: 0,
     dragNode: null,
-    rotationVelocity: createIdentityQuaternion(),
-    orbitVelocity: { pitch: 0, yaw: 0 },
     orbitPivot: null,
-    panVelocity: { x: 0, y: 0 },
-    inertiaFrame: null,
-    inertiaTimestamp: null,
   };
 
   canvas.style.touchAction = "none";
@@ -98,21 +86,6 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, cameraRef
     }
 
     return closestDistance <= DRAG_HIT_RADIUS ? closest : null;
-  }
-
-  function stopInertia() {
-    if (state.inertiaFrame !== null) cancelAnimationFrame(state.inertiaFrame);
-    state.inertiaFrame = null;
-    state.inertiaTimestamp = null;
-    state.rotationVelocity = createIdentityQuaternion();
-    state.orbitVelocity = { pitch: 0, yaw: 0 };
-    state.orbitPivot = null;
-    state.panVelocity = { x: 0, y: 0 };
-  }
-
-  function getCameraNumber(camera, key, fallback) {
-    const value = camera?.[key];
-    return Number.isFinite(value) ? value : fallback;
   }
 
   function getPointPosition(point) {
@@ -169,14 +142,6 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, cameraRef
     camera.z = rotatedPoint.z - pivot.anchor.depth;
   }
 
-  function applyRotation(delta, pivot = null) {
-    const camera = cameraRef.current;
-    if (!camera) return;
-    setCameraOrientation(camera, multiplyQuaternions(delta, getCameraOrientation(camera)));
-    applyPivotAnchor(camera, pivot);
-    redrawScheduler.schedule();
-  }
-
   function getPanScale() {
     const camera = cameraRef.current;
     const depth = Math.max(Math.abs(camera?.z ?? defaultCamera.z), 100);
@@ -197,7 +162,6 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, cameraRef
       clearCameraOrbitCenter(camera);
       state.orbitPivot = null;
     }
-    state.panVelocity = { x: cameraDx, y: cameraDy };
     redrawScheduler.schedule();
   }
 
@@ -210,33 +174,28 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, cameraRef
     redrawScheduler.schedule();
   }
 
-  function applyOrbitRotation(pitch, yaw) {
-    const pitchRotation = quaternionFromAxisAngle({ x: 1, y: 0, z: 0 }, pitch);
-    const yawRotation = quaternionFromAxisAngle({ x: 0, y: 1, z: 0 }, -yaw);
-    applyRotation(multiplyQuaternions(pitchRotation, yawRotation), state.orbitPivot);
+  function beginOrbit(point) {
+    state.orbitStartPoint = point;
+    state.orbitStartAngles = getCameraOrbitAngles(cameraRef.current, getControls().upAxis);
+    state.orbitPivot = getOrbitCenterPivot();
   }
 
-  function orbit(dx, dy) {
+  function orbit(point) {
+    const camera = cameraRef.current;
+    if (!camera || !state.orbitStartPoint || !state.orbitStartAngles) return;
     const controls = getControls();
+    const dx = point.x - state.orbitStartPoint.x;
+    const dy = point.y - state.orbitStartPoint.y;
     const verticalDelta = controls.invertVertical ? -dy : dy;
     const speed = 0.006 * controls.orbitSensitivity;
-    const yaw = dx * speed;
-    const pitch = verticalDelta * speed;
-    if (yaw === 0 && pitch === 0) return;
-
-    applyOrbitRotation(pitch, yaw);
-    state.rotationVelocity = createIdentityQuaternion();
-    state.orbitVelocity = { pitch, yaw };
-  }
-
-  function roll(dx) {
-    const delta = quaternionFromAxisAngle(
-      { x: 0, y: 0, z: 1 },
-      dx * 0.006 * getControls().orbitSensitivity,
+    setCameraOrbit(
+      camera,
+      state.orbitStartAngles.pitch + verticalDelta * speed,
+      state.orbitStartAngles.yaw + dx * speed,
+      controls.upAxis,
     );
-    state.orbitVelocity = { pitch: 0, yaw: 0 };
-    state.rotationVelocity = delta;
-    applyRotation(delta);
+    applyPivotAnchor(camera, state.orbitPivot);
+    redrawScheduler.schedule();
   }
 
   function dragNode(dx, dy) {
@@ -298,63 +257,8 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, cameraRef
     state.lastPinch = nextPinch;
   }
 
-  function startInertia() {
-    if (!getControls().inertia) return false;
-    if (
-      getQuaternionAngle(state.rotationVelocity) <= ROTATION_EPSILON &&
-      Math.hypot(state.orbitVelocity.pitch, state.orbitVelocity.yaw) <= ROTATION_EPSILON &&
-      Math.hypot(state.panVelocity.x, state.panVelocity.y) <= PAN_EPSILON
-    ) return false;
-
-    state.inertiaTimestamp = null;
-    const animate = (timestamp) => {
-      const camera = cameraRef.current;
-      if (!camera) return;
-
-      const elapsed = state.inertiaTimestamp === null ? FRAME_MS : Math.min(timestamp - state.inertiaTimestamp, 50);
-      state.inertiaTimestamp = timestamp;
-      const frameScale = elapsed / FRAME_MS;
-      const damping = Math.pow(getControls().inertiaDamping, frameScale);
-
-      if (Math.hypot(state.orbitVelocity.pitch, state.orbitVelocity.yaw) > ROTATION_EPSILON) {
-        applyOrbitRotation(
-          state.orbitVelocity.pitch * frameScale,
-          state.orbitVelocity.yaw * frameScale,
-        );
-        state.orbitVelocity.pitch *= damping;
-        state.orbitVelocity.yaw *= damping;
-      }
-      if (getQuaternionAngle(state.rotationVelocity) > ROTATION_EPSILON) {
-        applyRotation(scaleQuaternionRotation(state.rotationVelocity, frameScale));
-        state.rotationVelocity = scaleQuaternionRotation(state.rotationVelocity, damping);
-      }
-      if (Math.hypot(state.panVelocity.x, state.panVelocity.y) > PAN_EPSILON) {
-        camera.x += state.panVelocity.x * frameScale;
-        camera.y += state.panVelocity.y * frameScale;
-        state.panVelocity.x *= damping;
-        state.panVelocity.y *= damping;
-        redrawScheduler.schedule();
-      }
-
-      if (
-        getQuaternionAngle(state.rotationVelocity) <= ROTATION_EPSILON &&
-        Math.hypot(state.orbitVelocity.pitch, state.orbitVelocity.yaw) <= ROTATION_EPSILON &&
-        Math.hypot(state.panVelocity.x, state.panVelocity.y) <= PAN_EPSILON
-      ) {
-        stopInertia();
-        return;
-      }
-
-      state.inertiaFrame = requestAnimationFrame(animate);
-    };
-
-    state.inertiaFrame = requestAnimationFrame(animate);
-    return true;
-  }
-
   function handlePointerDown(event) {
     const point = getPointerPoint(event);
-    stopInertia();
     pointers.set(event.pointerId, point);
     canvas.setPointerCapture?.(event.pointerId);
     canvas.style.cursor = "grabbing";
@@ -366,16 +270,15 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, cameraRef
       return;
     }
 
-    const isRoll = event.button === 2 || event.altKey;
-    const isPan = event.button === 1 || event.shiftKey;
-    const node = !isRoll && !isPan && event.button === 0 ? findNodeAtPoint(point) : null;
+    const isPan = event.button === 1 || event.button === 2 || event.shiftKey || event.altKey;
+    const node = !isPan && event.button === 0 ? findNodeAtPoint(point) : null;
 
-    state.mode = node ? "node" : isRoll ? "roll" : isPan ? "pan" : "orbit";
+    state.mode = node ? "node" : isPan ? "pan" : "orbit";
     state.activePointerId = event.pointerId;
     state.previousPoint = point;
     state.distanceDragged = 0;
     state.dragNode = node;
-    state.orbitPivot = state.mode === "orbit" ? getOrbitCenterPivot() : null;
+    if (state.mode === "orbit") beginOrbit(point);
 
     if (node) {
       node.fx = Number.isFinite(node.x) ? node.x : 0;
@@ -404,9 +307,8 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, cameraRef
     state.distanceDragged += Math.hypot(dx, dy);
 
     if (state.mode === "node") dragNode(dx, dy);
-    if (state.mode === "orbit") orbit(dx, dy);
+    if (state.mode === "orbit") orbit(point);
     if (state.mode === "pan") applyPan(dx, dy);
-    if (state.mode === "roll") roll(dx);
 
     state.previousPoint = point;
     event.preventDefault();
@@ -422,14 +324,16 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, cameraRef
       state.activePointerId = pointerId;
       state.previousPoint = point;
       state.lastPinch = null;
-      state.orbitPivot = getOrbitCenterPivot();
+      beginOrbit(point);
       return;
     }
 
     if (event.pointerId !== state.activePointerId && state.mode !== "pinch") return;
 
     if (state.mode === "node") releaseDraggedNode(event);
-    else if (!startInertia()) state.orbitPivot = null;
+    state.orbitPivot = null;
+    state.orbitStartPoint = null;
+    state.orbitStartAngles = null;
 
     if (state.distanceDragged > DRAG_CLICK_THRESHOLD) {
       setTooltipSettings("isClickTooltipActive", false);
@@ -443,7 +347,6 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, cameraRef
   }
 
   function handleWheel(event) {
-    stopInertia();
     const deltaScale = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? 240 : 1;
     applyDolly(-event.deltaY * deltaScale * 0.001);
     event.preventDefault();
@@ -461,7 +364,6 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, cameraRef
   canvas.addEventListener("contextmenu", handleContextMenu);
 
   return () => {
-    stopInertia();
     releaseDraggedNode();
     pointers.clear();
     canvas.removeEventListener("pointerdown", handlePointerDown);

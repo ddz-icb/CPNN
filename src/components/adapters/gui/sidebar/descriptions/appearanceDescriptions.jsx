@@ -19,8 +19,8 @@ export const linkWidthDescription = (
 export const threeDDescription = (
   <div>
     <p className="margin-0">
-      Switches to a freely rotatable 3D view. Drag to orbit, Shift-drag or middle-drag to pan, Alt-drag or right-drag to roll, and scroll or pinch to
-      zoom. Predefined orientations are available under Adjust View.
+      Switches to a 3D view. Drag left or right to turn the graph, and up or down to tilt it. The height axis stays upright, and the view stops when
+      you stop dragging. Shift-drag, Alt-drag, middle-drag, or right-drag to pan. Scroll or pinch to zoom. Predefined views are under Adjust View.
     </p>
   </div>
 );

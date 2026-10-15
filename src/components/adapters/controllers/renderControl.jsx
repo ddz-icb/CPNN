@@ -20,7 +20,7 @@ import { filteredAfterStartInit, useGraphFlags } from "../state/graphFlagsState.
 import { simulationInit, useRenderState } from "../state/canvasState.js";
 import { setupStage } from "../../domain/service/canvas_drawing/stageSetup.js";
 import { resetGridVisibility, resetStageTransform, restoreProjectionHidden } from "../../domain/service/canvas_drawing/stageTransforms.js";
-import { clearCameraOrbitCenter } from "../../domain/service/canvas_drawing/camera3D.js";
+import { clearCameraOrbitCenter, getCameraOrbitAngles, setCameraOrbit } from "../../domain/service/canvas_drawing/camera3D.js";
 
 export function RenderControl() {
   const { appearance, setAppearance } = useAppearance();
@@ -39,13 +39,13 @@ export function RenderControl() {
   const containerRef = useRef(null);
   const cameraRef = useRef({ ...appearance.cameraRef }); // for 3D
   const threeDControlsRef = useRef(null);
+  const previousUpAxis = useRef("y");
   threeDControlsRef.current = {
     orbitSensitivity: appearance.threeDOrbitSensitivity,
     panSensitivity: appearance.threeDPanSensitivity,
     zoomSensitivity: appearance.threeDZoomSensitivity,
-    inertia: appearance.threeDInertia,
-    inertiaDamping: appearance.threeDInertiaDamping,
     invertVertical: appearance.threeDInvertVertical,
+    upAxis: appearance.threeD && physics.elevationForce ? "z" : "y",
     onReset: () => {
       setAppearance("threeDFov", threeDFovInit);
       setAppearance("threeDFovText", threeDFovInit);
@@ -76,6 +76,16 @@ export function RenderControl() {
     pixiState.grid3D.__gridPlane = appearance.threeD && physics.elevationForce ? "xy" : "xz";
     cameraRef.current.redraw?.();
   }, [pixiState.grid3D, appearance.threeD, physics.elevationForce]);
+
+  useEffect(() => {
+    if (!appearance.threeD) return;
+    const camera = cameraRef.current;
+    const upAxis = physics.elevationForce ? "z" : "y";
+    const angles = getCameraOrbitAngles(camera, previousUpAxis.current);
+    setCameraOrbit(camera, angles.pitch, angles.yaw, upAxis);
+    previousUpAxis.current = upAxis;
+    camera.redraw?.();
+  }, [appearance.threeD, physics.elevationForce]);
 
   useEffect(() => {
     return () => renderState.app?.__interactionCleanup?.();
