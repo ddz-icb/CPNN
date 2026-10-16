@@ -11,9 +11,9 @@ export const CAMERA_PRESETS = {
 
 const ELEVATION_CAMERA_PRESETS = {
   front: { pitch: Math.PI / 2, yaw: 0 },
-  top: { pitch: 0, yaw: 0 },
+  top: { pitch: Math.PI, yaw: 0 },
   side: { pitch: Math.PI / 2, yaw: Math.PI / 2 },
-  isometric: { pitch: 0.6, yaw: -0.7 },
+  isometric: { pitch: Math.PI - 0.6, yaw: -0.7 },
 };
 
 export const defaultCamera = {
@@ -193,7 +193,7 @@ export function getCameraOrbitAngles(camera, upAxis = "y") {
 
 export function setCameraOrbit(camera, pitch, yaw, upAxis = "y") {
   if (!camera) return;
-  const limitedPitch = clamp(pitch, upAxis === "z" ? 0 : -MAX_ORBIT_PITCH, upAxis === "z" ? Math.PI / 2 : MAX_ORBIT_PITCH);
+  const limitedPitch = clamp(pitch, upAxis === "z" ? 0 : -MAX_ORBIT_PITCH, upAxis === "z" ? Math.PI : MAX_ORBIT_PITCH);
   const wrappedYaw = Math.atan2(Math.sin(yaw), Math.cos(yaw));
   if (upAxis === "z") {
     const tilt = quaternionFromAxisAngle({ x: 1, y: 0, z: 0 }, limitedPitch);

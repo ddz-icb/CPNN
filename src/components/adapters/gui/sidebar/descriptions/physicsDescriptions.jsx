@@ -10,7 +10,7 @@ export const elevationForceDescription = (
   <div>
     <p className="margin-0">
       Adds height above the graph's base plane based on link count. Highly connected nodes rise higher; nodes with fewer links stay closer to the
-      plane. The view opens from the front, and other forces leave the height axis alone.
+      plane. The view opens from the front; drag down to look from above. Other forces leave the height axis alone.
     </p>
   </div>
 );

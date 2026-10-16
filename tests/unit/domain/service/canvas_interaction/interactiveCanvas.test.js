@@ -5,6 +5,7 @@ import { getCanvasResolution, initTooltips, keepCanvasCentered, resizeCanvas } f
 import { initDragAndZoom3D } from "../../../../../src/components/domain/service/canvas_interaction/interactiveCanvas3D.js";
 import {
   applyCameraPreset,
+  conjugateQuaternion,
   getCameraOrientation,
   getCameraOrbitAngles,
   getCameraViewParams,
@@ -154,8 +155,57 @@ test("elevation orbit keeps Z upright and is independent of pointer event count"
   assert.ok(Math.abs(angles.pitch - 0.74) < 1e-10);
   assert.ok(Math.abs(angles.yaw - 0.16) < 1e-10);
 
-  const fromAbove = dragCamera([[100, 100], [100, -200]], { upAxis: "z" });
-  assert.ok(Math.abs(getCameraOrbitAngles(fromAbove, "z").pitch) < 1e-10);
+  const fromBelow = dragCamera([[100, 100], [100, -200]], { upAxis: "z" });
+  assert.ok(Math.abs(getCameraOrbitAngles(fromBelow, "z").pitch) < 1e-10);
+});
+
+test("horizontal drag turns the graph the same way from above and below", () => {
+  for (const pitch of [0.5, Math.PI - 0.5]) {
+    for (const yaw of [-1.2, 0, 1.2]) {
+      const initial = {};
+      setCameraOrbit(initial, pitch, yaw, "z");
+      const worldRight = rotateVectorByQuaternion(
+        { x: 1, y: 0, z: 0 },
+        conjugateQuaternion(getCameraOrientation(initial)),
+      );
+      const screenBottom = rotateVectorByQuaternion(
+        { x: 0, y: 1, z: 0 },
+        conjugateQuaternion(getCameraOrientation(initial)),
+      );
+      const camera = dragCamera([[100, 100], [130, 100]], { upAxis: "z", start: { pitch, yaw } });
+      const rightOfCenter = rotateVectorByQuaternion(worldRight, getCameraOrientation(camera));
+      const bottomOfGraph = rotateVectorByQuaternion(
+        { x: screenBottom.x, y: screenBottom.y, z: 0 },
+        getCameraOrientation(camera),
+      );
+      const height = rotateVectorByQuaternion({ x: 0, y: 0, z: 1 }, getCameraOrientation(camera));
+      assert.ok(rightOfCenter.y < 0);
+      assert.ok(bottomOfGraph.x > 0);
+      assert.ok(Math.abs(height.x) < 1e-10);
+    }
+  }
+});
+
+test("dragging right moves the near side right in the default elevation Front view", () => {
+  const camera = dragCamera([[100, 100], [130, 100]], {
+    upAxis: "z",
+    start: { pitch: Math.PI / 2, yaw: 0 },
+  });
+  const nearSide = rotateVectorByQuaternion({ x: 0, y: -1, z: 0 }, getCameraOrientation(camera));
+  assert.ok(nearSide.x > 0);
+});
+
+test("elevation pitch reaches the view from above without rolling the height axis", () => {
+  const start = { pitch: Math.PI / 2, yaw: 0 };
+  const fromAbove = dragCamera([[100, 100], [130, 250], [160, 400]], { upAxis: "z", start });
+  const direct = dragCamera([[100, 100], [160, 400]], { upAxis: "z", start });
+  const angles = getCameraOrbitAngles(fromAbove, "z");
+  const height = rotateVectorByQuaternion({ x: 0, y: 0, z: 1 }, getCameraOrientation(fromAbove));
+  assert.ok(Math.abs(angles.pitch - Math.PI) < 1e-10);
+  assert.ok(Math.abs(angles.yaw + 0.36) < 1e-10);
+  assert.ok(Math.abs(height.x) < 1e-10);
+  assert.ok(Math.abs(height.z + 1) < 1e-10);
+  assert.deepEqual(fromAbove.orientation, direct.orientation);
 });
 
 test("elevation view presets stay on the same orbit when dragging resumes", () => {
@@ -178,6 +228,14 @@ test("resetting an elevation view opens at the front", () => {
   const heightAxis = rotateVectorByQuaternion({ x: 0, y: 0, z: 1 }, getCameraOrientation(camera));
   assert.ok(Math.abs(heightAxis.z) < 1e-10);
   assert.ok(Math.abs(heightAxis.y + 1) < 1e-10);
+});
+
+test("elevation Top preset looks down on the graph", () => {
+  const camera = {};
+  applyCameraPreset(camera, "top", "z");
+  assert.ok(Math.abs(getCameraOrbitAngles(camera, "z").pitch - Math.PI) < 1e-10);
+  const heightAxis = rotateVectorByQuaternion({ x: 0, y: 0, z: 1 }, getCameraOrientation(camera));
+  assert.ok(Math.abs(heightAxis.z + 1) < 1e-10);
 });
 
 test("resizing reports the new logical viewport once", () => {

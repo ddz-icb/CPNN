@@ -188,10 +188,14 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, cameraRef
     const dy = point.y - state.orbitStartPoint.y;
     const verticalDelta = controls.invertVertical ? -dy : dy;
     const speed = 0.006 * controls.orbitSensitivity;
+    // The XY plane appears mirrored from below; keep the on-screen turn direction consistent.
+    const yawDirection = controls.upAxis === "z"
+      ? (state.orbitStartAngles.pitch < Math.PI / 2 - 1e-6 ? 1 : -1)
+      : 1;
     setCameraOrbit(
       camera,
       state.orbitStartAngles.pitch + verticalDelta * speed,
-      state.orbitStartAngles.yaw + dx * speed,
+      state.orbitStartAngles.yaw + dx * speed * yawDirection,
       controls.upAxis,
     );
     applyPivotAnchor(camera, state.orbitPivot);
