@@ -8,8 +8,9 @@ As part of diabetes research at the German Diabetes Center, samples from diabete
 
 CPNN is a web application for the graphical visualization of co-phosphorylation networks. In addition, further attributes, such as the affiliation to certain pathways or the origin from certain data sets, are visualized. The networks are displayed in the form of dynamic force-directed graphs. The user has the option of customizing the view of the graph. Interactive functions, filter functions and customization options for the physics of the graph are provided for this purpose. The interactive functions include zooming, moving the scene, tooltips or popovers and moving nodes. The filter functions make it possible to filter the displayed graph according to certain properties or attributes of nodes, links or context components. The structure of the graph can be modified by adjusting the physical forces. All these functions make it possible to find interesting and potentially biomedically relevant patterns in the networks.
 
-# Commands
+## Run the app
 
-run app : npm run build:serve
-
-run tests: npm run test
+- Install Node.js and Rust
+- Run `rustup target add wasm32-unknown-unknown`
+- Run `npm ci`
+- Run `npm run build:serve`
