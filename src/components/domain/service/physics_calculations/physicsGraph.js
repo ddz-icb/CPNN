@@ -309,7 +309,7 @@ export function degreeElevationForce(linkCounts) {
     const logRange = Math.log1p(maxDegree) - logMin;
     positions = new Map(nodes.map((node) => {
       const normalized = logRange > 0 ? (Math.log1p(linkCounts.get(node.id) ?? 0) - logMin) / logRange : 0.5;
-      return [node.id, minimumHeight + normalized * heightRange];
+      return [node.id, minimumHeight + (1 - normalized) * heightRange];
     }));
   };
   force.strength = (value) => (value === undefined ? strength : ((strength = value), force));

@@ -36,6 +36,7 @@ test("elevation is available in 2D, opens 3D when enabled, and has a strength ra
   const strength = [...host.querySelectorAll(".block-section")]
     .find((element) => element.querySelector(".label")?.textContent === "Elevation Strength");
   expect(strength.querySelector('input[type="range"]').max).toBe("10");
+  expect(strength.querySelector('input[type="range"]').value).toBe("5");
 
   await act(async () => useAppearance.getState().setAppearance("threeD", false));
   expect(host.contains(control)).toBe(true);

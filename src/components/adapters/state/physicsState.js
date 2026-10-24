@@ -7,7 +7,7 @@ export const componentStrengthInit = 0;
 export const nodeRepulsionStrengthInit = 1;
 export const circleForceInit = false;
 export const elevationForceInit = false;
-export const elevationStrengthInit = 1;
+export const elevationStrengthInit = 5;
 export const communityForceStrengthInit = 0;
 
 export const checkBorderInit = false;

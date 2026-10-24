@@ -234,7 +234,7 @@ test("elevation adds depth in 3D while keeping the regular planar forces", async
   expect(getCameraOrbitAngles(camera, "z").pitch).toBeCloseTo(Math.PI / 2);
   expect(getCameraOrbitAngles(camera, "z").yaw).toBeCloseTo(0);
   expect(threeD.force("elevationForce")).toBeDefined();
-  expect(threeD.force("elevationForce").strength()).toBe(1);
+  expect(threeD.force("elevationForce").strength()).toBe(5);
   const nodes = threeD.nodes();
   nodes[0].z = 100;
   nodes[1].z = -100;
