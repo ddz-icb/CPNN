@@ -10,7 +10,6 @@ CPNN is a web application for the graphical visualization of co-phosphorylation 
 
 ## Run the app
 
-- Install Node.js and Rust
-- Run `rustup target add wasm32-unknown-unknown`
-- Run `npm ci`
-- Run `npm run build:serve`
+- Install Node.js and Rust.
+- Run `./setup.sh` to install and build
+- Run `npm run serve`
