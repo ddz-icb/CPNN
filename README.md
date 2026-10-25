@@ -2,7 +2,7 @@
 
 Co-Phosphorylation Network Navigator (CPNN): Web Application for Interactive Visualization of Co-phosphorylation Networks
 
-![CPNN app preview](docs/media/example.svg)
+<img src="docs/media/example.svg" alt="Example co-phosphorylation network in CPNN" width="500">
 
 ## Run the app
 
