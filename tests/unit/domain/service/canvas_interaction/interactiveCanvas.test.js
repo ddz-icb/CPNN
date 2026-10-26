@@ -3,6 +3,7 @@ import { test } from "node:test";
 
 import { getCanvasResolution, initTooltips, keepCanvasCentered, resizeCanvas } from "../../../../../src/components/domain/service/canvas_interaction/interactiveCanvas.js";
 import { initDragAndZoom3D } from "../../../../../src/components/domain/service/canvas_interaction/interactiveCanvas3D.js";
+import { centerOnNode, clearViewOrbitCenter } from "../../../../../src/components/domain/service/canvas_interaction/centerView.js";
 import {
   applyCameraPreset,
   conjugateQuaternion,
@@ -33,6 +34,7 @@ function clickNode({ detailsOpen }) {
   };
 
   initTooltips(circle, { id: "next", attribs: ["type"] }, setTooltipSettings, () => settings);
+  circle.handlers.pointerdown({ originalEvent: { clientX: 25, clientY: 40 } });
   circle.handlers.click({ originalEvent: { clientX: 25, clientY: 40 } });
   return settings;
 }
@@ -52,6 +54,27 @@ test("clicking another node keeps an open details rail open", () => {
 test("clicking a node with details closed retains compact focus", () => {
   const settings = clickNode({ detailsOpen: false });
   assert.equal(settings.isClickTooltipActive, false);
+  assert.equal(settings.isNodeFocusOnly, true);
+});
+
+test("a drag-generated node click does not focus, but the next click does", () => {
+  const circle = createCircle();
+  const settings = { isClickTooltipActive: false, isNodeFocusOnly: false };
+  initTooltips(circle, { id: "focused", attribs: [] }, (key, value) => { settings[key] = value; }, () => settings);
+
+  circle.handlers.pointerdown({ originalEvent: { clientX: 25, clientY: 40 } });
+  circle.handlers.pointermove({ originalEvent: { clientX: 31, clientY: 40 } });
+  circle.handlers.click({ originalEvent: { clientX: 25, clientY: 40 } });
+  assert.equal(settings.clickTooltipData, undefined);
+  assert.equal(settings.isNodeFocusOnly, false);
+
+  circle.handlers.pointerdown({ originalEvent: { clientX: 25, clientY: 40 } });
+  circle.handlers.click({ originalEvent: { clientX: 30, clientY: 40 } });
+  assert.equal(settings.clickTooltipData, undefined);
+
+  circle.handlers.pointerdown({ originalEvent: { clientX: 25, clientY: 40 } });
+  circle.handlers.click({ originalEvent: { clientX: 29, clientY: 40 } });
+  assert.equal(settings.clickTooltipData.node, "focused");
   assert.equal(settings.isNodeFocusOnly, true);
 });
 
@@ -99,6 +122,29 @@ test("resizing preserves the point at the center of a rotated 3D view", () => {
   assert.ok(Math.abs(after.x - (before.x - 100)) < 1e-6);
   assert.ok(Math.abs(after.y - (before.y + 50)) < 1e-6);
   assert.ok(Math.abs(after.scale - before.scale) < 1e-9);
+});
+
+test("closing view focuses restores the previous orbit center", () => {
+  const previous = { x: 20, y: 30, z: 40 };
+  const camera = { orbitCenter: previous, x: 400, y: 300, z: -600, fov: 600, rotX: 0, rotY: 0, rotZ: 0, redraw() {} };
+  const appearance = { threeD: true, cameraRef: { current: camera } };
+  const view = { appearance, container: { width: 800, height: 600 } };
+  const community = { x: 100, y: 150, z: 10 };
+  const node = { x: 200, y: 250, z: 20 };
+
+  centerOnNode(community, { ...view, orbitOwner: "community" });
+  centerOnNode(node, { ...view, orbitOwner: "node" });
+  clearViewOrbitCenter({ appearance, owner: "node" });
+  assert.deepEqual(camera.orbitCenter, community);
+  clearViewOrbitCenter({ appearance, owner: "community" });
+  assert.deepEqual(camera.orbitCenter, previous);
+
+  centerOnNode(community, { ...view, orbitOwner: "community" });
+  centerOnNode(node, { ...view, orbitOwner: "node" });
+  clearViewOrbitCenter({ appearance, owner: "community" });
+  assert.deepEqual(camera.orbitCenter, node);
+  clearViewOrbitCenter({ appearance, owner: "node" });
+  assert.deepEqual(camera.orbitCenter, previous);
 });
 
 test("3D orbit limits tilt and keeps the vertical axis upright", () => {

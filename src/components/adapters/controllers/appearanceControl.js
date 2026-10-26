@@ -16,11 +16,16 @@ import { mountRedraw } from "../../domain/service/physics_calculations/simulatio
 import { useContainer } from "../state/containerState.js";
 import { useTheme } from "../state/themeState.js";
 import { useTooltipSettings } from "../state/tooltipState.js";
+import { useCommunityState } from "../state/communityState.js";
+import { useSearchState } from "../state/searchState.js";
 import { useGraphFlags } from "../state/graphFlagsState.js";
+import { clearViewOrbitCenter } from "../../domain/service/canvas_interaction/centerView.js";
 
 export function AppearanceControl() {
   const focusNodeId = useTooltipSettings(({ tooltipSettings: t }) =>
     t.isClickTooltipActive || t.isNodeFocusOnly ? t.clickTooltipData?.node : null);
+  const selectedCommunityId = useCommunityState((state) => state.communityState.selectedCommunityId);
+  const selectedLinkId = useSearchState((state) => state.searchState.selectedLinkId);
   const { appearance, setAppearance } = useAppearance();
   const { theme } = useTheme();
   const { colorschemeState } = useColorschemeState();
@@ -30,6 +35,11 @@ export function AppearanceControl() {
   const { renderState } = useRenderState();
   const linkCount = graphState.graph?.data?.links?.length ?? 0;
   const activeLines = appearance.threeD ? pixiState.lines3D : pixiState.lines2D;
+
+  useEffect(() => {
+    if (selectedCommunityId == null) clearViewOrbitCenter({ appearance, owner: "community" });
+    if (selectedLinkId == null) clearViewOrbitCenter({ appearance, owner: "searchLink" });
+  }, [selectedCommunityId, selectedLinkId, appearance.cameraRef]);
 
   useEffect(() => {
     const app = renderState.app;

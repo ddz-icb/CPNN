@@ -3,6 +3,9 @@ import { useTooltipSettings } from "../../state/tooltipState.js";
 import { usePixiState } from "../../state/pixiState.js";
 import { useRenderState } from "../../state/canvasState.js";
 import { useGraphState } from "../../state/graphState.js";
+import { useAppearance } from "../../state/appearanceState.js";
+import { useContainer } from "../../state/containerState.js";
+import { centerOnNodes, clearViewOrbitCenter } from "../../../domain/service/canvas_interaction/centerView.js";
 import { useNodeDetails } from "../hooks/useNodeDetails.js";
 import { SidebarFooterActions, SidebarFooterButton } from "../reusable_components/sidebarFooterActions.jsx";
 import { isPopupOpen } from "../hooks/keyboardUtils.js";
@@ -10,11 +13,13 @@ import { isPopupOpen } from "../hooks/keyboardUtils.js";
 export function NodeFocus() {
   const { tooltipSettings, setTooltipSettings, clearNodeFocus, goBackTooltip } = useTooltipSettings();
   const graph = useGraphState((state) => state.graphState.graph);
+  const cameraRef = useAppearance((state) => state.appearance.cameraRef);
   const nodeId = tooltipSettings.clickTooltipData?.node;
   const exists = graph?.data?.nodes?.some((node) => node.id === nodeId);
   const { displayName } = useNodeDetails(nodeId);
   const detailsOpen = tooltipSettings.isClickTooltipActive;
-  const focused = tooltipSettings.isNodeFocusOnly || detailsOpen;
+  const selected = tooltipSettings.isNodeFocusOnly || detailsOpen;
+  const viewFocusActive = tooltipSettings.isViewFocusActive;
   const canGoBack = (tooltipSettings.clickTooltipHistory?.length ?? 0) > 1;
 
   const toggleDetails = () => {
@@ -35,11 +40,23 @@ export function NodeFocus() {
   };
 
   useEffect(() => {
-    if (graph && !exists && (focused || tooltipSettings.isClickTooltipActive)) clearNodeFocus();
-  }, [graph, exists, focused, tooltipSettings.isClickTooltipActive, clearNodeFocus]);
+    if (graph && !exists && selected) clearNodeFocus();
+  }, [graph, exists, selected, clearNodeFocus]);
 
   useEffect(() => {
-    if (!focused || detailsOpen) return;
+    if (!selected || !exists || !viewFocusActive) return;
+    const node = useGraphState.getState().graphState.graph?.data?.nodes?.find(({ id }) => id === nodeId);
+    if (node) centerOnNodes([node], {
+      appearance: useAppearance.getState().appearance,
+      renderState: useRenderState.getState().renderState,
+      container: useContainer.getState().container,
+      orbitOwner: "node",
+    });
+    return () => clearViewOrbitCenter({ appearance: { cameraRef }, owner: "node" });
+  }, [selected, nodeId, exists, viewFocusActive, cameraRef]);
+
+  useEffect(() => {
+    if (!selected || detailsOpen) return;
     const onKeyDown = (event) => {
       if (event.key !== "Escape" || isPopupOpen()) return;
       event.stopImmediatePropagation();
@@ -47,18 +64,24 @@ export function NodeFocus() {
     };
     document.addEventListener("keydown", onKeyDown, { capture: true });
     return () => document.removeEventListener("keydown", onKeyDown, { capture: true });
-  }, [focused, detailsOpen, clearNodeFocus]);
+  }, [selected, detailsOpen, clearNodeFocus]);
 
-  if (!focused || !exists) return null;
+  if (!selected || !exists) return null;
   return (
-    <div className="node-focus-bar" role="region" aria-label="Focused node">
+    <div className="node-focus-bar" role="region" aria-label="Selected node">
       <span className="node-focus-name" title={nodeId}>
         {displayName}
       </span>
       <SidebarFooterActions>
+        <SidebarFooterButton
+          text={viewFocusActive ? "Focus: on" : "Focus view"}
+          aria-pressed={Boolean(viewFocusActive)}
+          onClick={() => setTooltipSettings("isViewFocusActive", !viewFocusActive)}
+          title={viewFocusActive ? "Stop centering selected nodes" : "Center this node and follow node selections"}
+        />
         <SidebarFooterButton text={detailsOpen ? "Hide details" : "Details"} aria-expanded={detailsOpen} onClick={toggleDetails} />
         {canGoBack && <SidebarFooterButton text="Previous" onClick={goBackTooltip} />}
-        <SidebarFooterButton text="Clear" onClick={clearNodeFocus} title="Clear focus (Escape)" />
+        <SidebarFooterButton text="Clear" onClick={clearNodeFocus} title="Clear selection (Escape)" />
       </SidebarFooterActions>
     </div>
   );

@@ -6,16 +6,15 @@ vi.mock("../../src/components/adapters/gui/hooks/useProteinDetails.js", () => ({
   useProteinDetails: () => ({ uniprotStatus: "done", isApiComplete: true }),
 }));
 vi.mock("../../src/components/domain/service/download/download.js", () => ({ downloadNodeIdsCsv: vi.fn() }));
-vi.mock("../../src/components/domain/service/canvas_interaction/centerView.js", () => ({ centerOnNodes: vi.fn() }));
+vi.mock("../../src/components/domain/service/canvas_interaction/centerView.js", () => ({ centerOnNodes: vi.fn(), clearViewOrbitCenter: vi.fn() }));
 vi.mock("../../src/components/adapters/gui/reusable_components/sidebarComponents.jsx", () => ({
   Button: ({ text, ...props }) => <button {...props}>{text}</button>,
 }));
-import { ClickTooltip } from "../../src/components/adapters/gui/tooltip/clickTooltip.jsx";
 import { useGraphState } from "../../src/components/adapters/state/graphState.js";
 import { tooltipInit, useTooltipSettings } from "../../src/components/adapters/state/tooltipState.js";
 import { Tooltips } from "../../src/components/adapters/gui/tooltip/tooltips.jsx";
 import { communityStateInit, useCommunityState } from "../../src/components/adapters/state/communityState.js";
-import { centerOnNodes } from "../../src/components/domain/service/canvas_interaction/centerView.js";
+import { centerOnNodes, clearViewOrbitCenter } from "../../src/components/domain/service/canvas_interaction/centerView.js";
 let root, host;
 afterEach(async () => {
   if (root) await act(async () => root.unmount());
@@ -56,20 +55,14 @@ test("node popup switches between statistics, adjacency and details and updates 
   host = document.createElement("div");
   document.body.appendChild(host);
   root = createRoot(host);
-  await act(async () => root.render(<ClickTooltip />));
-  expect(centerOnNodes).toHaveBeenCalledWith([data.nodes[0]], expect.objectContaining({
-    appearance: expect.any(Object),
-    renderState: expect.any(Object),
-    container: expect.any(Object),
-  }));
+  await act(async () => root.render(<Tooltips />));
+  expect(centerOnNodes).not.toHaveBeenCalled();
   const click = async (text) => act(async () => [...host.querySelectorAll("button")].find((b) => b.textContent === text).click());
   await click("Node statistics");
-  expect(centerOnNodes).toHaveBeenCalledTimes(1);
+  expect(centerOnNodes).not.toHaveBeenCalled();
   expect(host.querySelector(".node-statistics").textContent).toContain("eats");
   expect(host.querySelector(".node-statistics").textContent).toContain("plant");
   expect(host.querySelector(".community-details")).toBeNull();
-  expect(host.querySelector(".node-statistics-community").textContent).toContain("Community 1");
-  expect(host.querySelector(".node-statistics").lastElementChild).toBe(host.querySelector(".node-statistics-community"));
   await click("community");
   expect(host.querySelector(".tooltip-popup-heading").textContent).toBe("Community 1");
   expect(host.querySelector(".community-details").textContent).toContain("Top node attributes");
@@ -100,7 +93,7 @@ test("node history survives closing and reopening without duplicate entries", as
       useTooltipSettings.getState().setTooltipSettings("isClickTooltipActive", true);
     });
   const close = async () => act(async () => host.querySelector('[aria-label="Collapse sidebar"]').click());
-  const back = () => [...host.querySelectorAll("button")].find((button) => button.textContent === "Go to previous");
+  const back = () => [...host.querySelectorAll("button")].find((button) => button.textContent === "Previous");
   await open("a");
   expect(back()).toBeUndefined();
   await close();
@@ -121,7 +114,7 @@ test("node history survives closing and reopening without duplicate entries", as
   expect(useTooltipSettings.getState().tooltipSettings.clickTooltipHistory.map((entry) => entry.node)).toEqual(["a", "b"]);
 });
 
-test("compact focus opens details, hides them, and clears with Escape", async () => {
+test("Focus view follows node selections only while enabled", async () => {
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
   useGraphState.getState().setGraphState("graph", { data: { nodes: [{ id: "a" }, { id: "b" }], links: [] } });
   useTooltipSettings.getState().setTooltipSettings("clickTooltipData", { node: "a", x: 30, y: 30 });
@@ -132,25 +125,27 @@ test("compact focus opens details, hides them, and clears with Escape", async ()
   await act(async () => root.render(<Tooltips />));
   const click = async (text) => act(async () => [...document.querySelectorAll("button")].find((button) => button.textContent === text).click());
   expect(document.querySelector(".tooltip-popup")).toBeNull();
-  expect(document.querySelector(".node-focus-bar").textContent).toContain("Focused: a");
-  // History must work even when details have never been opened.
+  expect(document.querySelector(".node-focus-name").textContent).toBe("a");
+  expect(centerOnNodes).not.toHaveBeenCalled();
+  await click("Focus view");
+  expect(document.querySelector('[aria-pressed="true"]')).not.toBeNull();
+  expect(centerOnNodes).toHaveBeenCalledWith([{ id: "a" }], expect.objectContaining({ orbitOwner: "node" }));
   await act(async () => useTooltipSettings.getState().setTooltipSettings("clickTooltipData", { node: "b", x: 50, y: 50 }));
-  await click("Go to previous");
+  expect(centerOnNodes).toHaveBeenLastCalledWith([{ id: "b" }], expect.objectContaining({ orbitOwner: "node" }));
+  expect(centerOnNodes).toHaveBeenCalledTimes(2);
+  expect(clearViewOrbitCenter).toHaveBeenCalledWith(expect.objectContaining({ owner: "node" }));
+  await click("Previous");
+  expect(centerOnNodes).toHaveBeenCalledTimes(3);
   expect(useTooltipSettings.getState().tooltipSettings.clickTooltipData.node).toBe("a");
-  expect(document.querySelector(".tooltip-popup")).toBeNull();
   await click("Details");
-  expect(document.querySelector(".tooltip-popup")).not.toBeNull();
-  expect(document.querySelector(".node-focus-bar")).not.toBeNull();
   await click("Hide details");
-  expect(document.querySelector(".tooltip-popup")).toBeNull();
-  // Dragging must preserve compact focus.
-  await act(async () => useTooltipSettings.getState().setTooltipSettings("isClickTooltipActive", false));
-  expect(useTooltipSettings.getState().tooltipSettings.isNodeFocusOnly).toBe(true);
-  await act(async () => document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true })));
-  expect(document.querySelector(".node-focus-bar")).toBeNull();
-  expect(useTooltipSettings.getState().tooltipSettings.isNodeFocusOnly).toBe(false);
-  expect(useTooltipSettings.getState().tooltipSettings.clickTooltipData).toBeNull();
-  expect(useTooltipSettings.getState().tooltipSettings.clickTooltipHistory).toEqual([]);
+  expect(centerOnNodes).toHaveBeenCalledTimes(3);
+  await click("Focus: on");
+  await act(async () => useTooltipSettings.getState().setTooltipSettings("clickTooltipData", { node: "b", x: 50, y: 50 }));
+  expect(centerOnNodes).toHaveBeenCalledTimes(3);
+  await click("Focus view");
+  await click("Clear");
+  expect(useTooltipSettings.getState().tooltipSettings.isViewFocusActive).toBe(false);
 });
 
 test("focus clears when its node is removed by a filter", async () => {

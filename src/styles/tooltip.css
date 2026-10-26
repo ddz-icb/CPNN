@@ -345,7 +345,7 @@
 
 @media (max-width: 520px) {
   body:has(.node-focus-bar) .tooltip-popup-footer {
-    margin-bottom: 5rem;
+    margin-bottom: 8rem;
   }
 }
 
@@ -706,4 +706,26 @@
   line-height: 1.2;
   padding-right: 0.4rem;
   border-right: var(--border-thin) solid var(--color-border-subtle);
+}
+
+@media (max-width: 520px) {
+  .node-focus-bar {
+    flex-wrap: wrap;
+  }
+
+  .node-focus-name {
+    flex-basis: 100%;
+    border-right: 0;
+    padding: 0.2rem 0;
+  }
+
+  .node-focus-bar .sidebar-footer-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .node-focus-bar .sidebar-footer-action {
+    min-width: 0;
+  }
 }

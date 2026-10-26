@@ -19,10 +19,7 @@ import { describeSector, getColor } from "../../../domain/service/canvas_drawing
 import { downloadNodeIdsCsv } from "../../../domain/service/download/download.js";
 import { usePixiState } from "../../state/pixiState.js";
 import { useRenderState } from "../../state/canvasState.js";
-import { useAppearance } from "../../state/appearanceState.js";
-import { useContainer } from "../../state/containerState.js";
 import { formatWeight, getAdjacentNodes } from "../../../domain/service/graph_calculations/graphUtils.js";
-import { centerOnNodes } from "../../../domain/service/canvas_interaction/centerView.js";
 
 import { getNodeStatistics } from "../../../domain/service/graph_calculations/nodeStatistics.js";
 import { NodeStatistics } from "./nodeStatistics.jsx";
@@ -59,17 +56,6 @@ export function ClickTooltip({ onSelectInsightsPanel, onCloseInsightsPanel }) {
   useEffect(() => {
     if (nodeId) setView("details");
   }, [nodeId]);
-
-  useEffect(() => {
-    if (!isTooltipActive || !nodeId) return;
-    const node = graphState.graph?.data?.nodes?.find(({ id }) => id === nodeId);
-    if (!node) return;
-    centerOnNodes([node], {
-      appearance: useAppearance.getState().appearance,
-      renderState: useRenderState.getState().renderState,
-      container: useContainer.getState().container,
-    });
-  }, [isTooltipActive, nodeId]);
 
   useEffect(() => {
     if (!isTooltipActive) return;

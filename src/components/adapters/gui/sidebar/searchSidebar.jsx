@@ -35,7 +35,6 @@ export function SearchSidebar() {
     matchingLinks = [],
     highlightedNodeIds,
     highlightedLinkIds,
-    selectedNodeId,
     selectedLinkId,
   } = searchState;
   const { theme } = useTheme();
@@ -103,9 +102,6 @@ export function SearchSidebar() {
       matchingNodes: [],
       selectedNodeId: null,
     });
-    if (selectedNodeId) {
-      clearViewOrbitCenter({ appearance });
-    }
   };
 
   const handleLinkSearch = () => {
@@ -134,9 +130,6 @@ export function SearchSidebar() {
 
   const handleClearNodeSearch = () => {
     setNodeSearchError(null);
-    if (selectedNodeId) {
-      clearViewOrbitCenter({ appearance });
-    }
     setAllSearchState({
       ...searchState,
       nodeSearchValue: searchStateInit.nodeSearchValue,
@@ -188,6 +181,7 @@ export function SearchSidebar() {
     const linkId = item?.linkId;
     if (!linkId) return;
     const nextSelection = selectedLinkId === linkId ? null : linkId;
+    if (selectedLinkId) clearViewOrbitCenter({ appearance, owner: "searchLink" });
     setAllSearchState({
       ...searchState,
       selectedNodeId: null,
@@ -195,12 +189,10 @@ export function SearchSidebar() {
       highlightedNodeIds: [],
       highlightedLinkIds: nextSelection ? [linkId] : [],
     });
-    if (!nextSelection) {
-      clearViewOrbitCenter({ appearance });
-      return;
-    }
+  };
 
-    centerOnLink(item?.link, { appearance, renderState, container, nodeById });
+  const focusLinkView = (item) => {
+    centerOnLink(item?.link, { appearance, renderState, container, nodeById, orbitOwner: "searchLink" });
   };
 
   const isHighlightAllActive =
@@ -239,7 +231,7 @@ export function SearchSidebar() {
       expandedId: selectedLinkId,
       getItemId: (item) => item?.linkId,
       onItemToggle: handleLinkToggle,
-      renderExpandedContent: (item) => <SearchLinkDetails item={item} />,
+      renderExpandedContent: (item) => <SearchLinkDetails item={item} onFocusView={() => focusLinkView(item)} />,
     },
   ].filter((section) => section.total > 0);
 

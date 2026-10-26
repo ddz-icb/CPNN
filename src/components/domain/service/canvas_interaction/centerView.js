@@ -16,12 +16,11 @@ function getTargetNodeScale() {
   return safeFov / getTargetNodeDepth();
 }
 
-export function clearViewOrbitCenter({ appearance } = {}) {
-  if (!appearance?.threeD) return;
-  clearCameraOrbitCenter(appearance?.cameraRef?.current);
+export function clearViewOrbitCenter({ appearance, owner } = {}) {
+  clearCameraOrbitCenter(appearance?.cameraRef?.current, owner);
 }
 
-export function centerOnNode(node, { appearance, renderState, container, setOrbitCenter = true }) {
+export function centerOnNode(node, { appearance, renderState, container, setOrbitCenter = true, orbitOwner }) {
   if (!node || !container?.width || !container?.height) return;
   if (!Number.isFinite(node.x) || !Number.isFinite(node.y)) return;
 
@@ -31,7 +30,7 @@ export function centerOnNode(node, { appearance, renderState, container, setOrbi
 
     focusCameraOnPoint(camera, node, container, getTargetNodeDepth());
     if (setOrbitCenter) {
-      setCameraOrbitCenter(camera, node);
+      setCameraOrbitCenter(camera, node, orbitOwner);
     }
     return;
   }

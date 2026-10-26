@@ -5,6 +5,8 @@ import { initDragAndZoom3D } from "./interactiveCanvas3D.js";
 import { getCameraOrientation, rotateVectorByQuaternion } from "../canvas_drawing/camera3D.js";
 export { collectNodesWithinPolygon, isPointInPolygon } from "./lassoSelection.js";
 
+const NODE_DRAG_THRESHOLD = 5;
+
 export function initDragAndZoom(app, simulation, radius, setTooltipSettings, width, height, threeD, cameraRef, controlsRef) {
   app.__interactionCleanup?.();
   if (threeD) {
@@ -15,6 +17,19 @@ export function initDragAndZoom(app, simulation, radius, setTooltipSettings, wid
 }
 
 export function initTooltips(circle, node, setTooltipSettings, getTooltipSettings) {
+  let pointerDown = null;
+  circle.on("pointerdown", (mouseData) => {
+    const { clientX, clientY } = mouseData.originalEvent;
+    pointerDown = { x: clientX, y: clientY, maxDistance: 0 };
+  });
+  circle.on("pointermove", (mouseData) => {
+    if (!pointerDown) return;
+    const { clientX, clientY } = mouseData.originalEvent;
+    pointerDown.maxDistance = Math.max(pointerDown.maxDistance, Math.hypot(clientX - pointerDown.x, clientY - pointerDown.y));
+  });
+  circle.on("pointerupoutside", () => {
+    pointerDown = null;
+  });
   circle.on("mouseover", (mouseData) => {
     const tooltipNode = circle.__tooltipNode ?? node;
     setTooltipSettings("hoverTooltipData", {
@@ -29,13 +44,17 @@ export function initTooltips(circle, node, setTooltipSettings, getTooltipSetting
     setTooltipSettings("isHoverTooltipActive", false);
   });
   circle.on("click", (mouseData) => {
+    const start = pointerDown;
+    pointerDown = null;
+    const { clientX, clientY } = mouseData.originalEvent;
+    if (!start || Math.max(start.maxDistance, Math.hypot(clientX - start.x, clientY - start.y)) >= NODE_DRAG_THRESHOLD) return;
     const keepDetailsOpen = Boolean(getTooltipSettings?.()?.isClickTooltipActive);
     const tooltipNode = circle.__tooltipNode ?? node;
     setTooltipSettings("clickTooltipData", {
       node: tooltipNode.id,
       nodeAttribs: tooltipNode.attribs ?? [],
-      x: mouseData.originalEvent.clientX,
-      y: mouseData.originalEvent.clientY,
+      x: clientX,
+      y: clientY,
     });
     setTooltipSettings("isClickTooltipActive", keepDetailsOpen);
     setTooltipSettings("isNodeFocusOnly", !keepDetailsOpen);

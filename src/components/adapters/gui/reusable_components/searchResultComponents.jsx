@@ -1,4 +1,4 @@
-import { DetailRow, TableList, ToggleList } from "./sidebarComponents.jsx";
+import { Button, DetailRow, TableList, ToggleList } from "./sidebarComponents.jsx";
 import {
   formatSearchDetailValue,
   formatSearchWeight,
@@ -32,13 +32,14 @@ export function SearchResultSection({ total, maxResults, heading, data, expanded
   );
 }
 
-export function SearchLinkDetails({ item }) {
+export function SearchLinkDetails({ item, onFocusView }) {
   return (
     <div className="toggle-list-details">
       <DetailRow label={"Source"} value={formatSearchDetailValue(item.sourceId)} />
       <DetailRow label={"Target"} value={formatSearchDetailValue(item.targetId)} />
       <DetailRow label={"Attribute"} value={formatSearchDetailValue(item.link?.attrib)} />
       <DetailRow label={"Weight"} value={formatSearchDetailValue(formatSearchWeight(item.link?.weight))} />
+      <Button text="Focus view" onClick={onFocusView} title="Center and zoom on this link" />
     </div>
   );
 }

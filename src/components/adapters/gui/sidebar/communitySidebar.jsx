@@ -12,7 +12,7 @@ import { useRenderState } from "../../state/canvasState.js";
 import { useContainer } from "../../state/containerState.js";
 import { communityForceStrengthInit, usePhysics } from "../../state/physicsState.js";
 import { getCentroid } from "../../../domain/service/graph_calculations/graphUtils.js";
-import { centerOnNode, clearViewOrbitCenter } from "../../../domain/service/canvas_interaction/centerView.js";
+import { centerOnNode } from "../../../domain/service/canvas_interaction/centerView.js";
 import { communityForceStrengthDescription } from "./descriptions/physicsDescriptions.jsx";
 import { communityFilterSizeDescription } from "./descriptions/filterDescriptions.jsx";
 import { useTooltipSettings } from "../../state/tooltipState.js";
@@ -83,10 +83,7 @@ export function CommunitySidebar() {
     const nextSelection = communityState.selectedCommunityId === communityId ? null : communityId;
     setTooltipSettings("isClickTooltipActive", false);
     setCommunityState("selectedCommunityId", nextSelection);
-    if (!nextSelection) {
-      clearViewOrbitCenter({ appearance });
-      return;
-    }
+    if (!nextSelection) return;
 
     const nodeIds = communityState.communityToNodeIds?.[communityId];
     if (!Array.isArray(nodeIds) || nodeIds.length === 0) return;
@@ -99,7 +96,7 @@ export function CommunitySidebar() {
     if (communityNodes.length === 0) return;
 
     const centroid = getCentroid(communityNodes);
-    centerOnNode(centroid, { appearance, renderState, container });
+    centerOnNode(centroid, { appearance, renderState, container, orbitOwner: "community" });
   };
 
   return (

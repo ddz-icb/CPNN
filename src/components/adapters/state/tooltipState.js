@@ -3,6 +3,7 @@ import { create } from "zustand";
 export const tooltipInit = {
   isClickTooltipActive: false,
   isNodeFocusOnly: false,
+  isViewFocusActive: false,
   clickTooltipData: null,
   clickTooltipHistory: [],
   isHoverTooltipActive: false,
@@ -42,6 +43,7 @@ export const useTooltipSettings = create((set) => ({
       ...state.tooltipSettings,
       isClickTooltipActive: false,
       isNodeFocusOnly: false,
+      isViewFocusActive: false,
       clickTooltipData: null,
       clickTooltipHistory: [],
     },

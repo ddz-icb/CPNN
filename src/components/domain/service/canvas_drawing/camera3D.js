@@ -226,18 +226,35 @@ function normalizeOrbitCenter(point) {
   };
 }
 
-export function setCameraOrbitCenter(camera, point) {
+export function setCameraOrbitCenter(camera, point, owner) {
   if (!camera) return false;
 
   const orbitCenter = normalizeOrbitCenter(point);
   if (!orbitCenter) return false;
 
+  if (owner) {
+    const focus = camera.__orbitCenterFocus ?? { previous: camera.orbitCenter ?? null, stack: [] };
+    focus.stack = focus.stack.filter((entry) => entry.owner !== owner);
+    focus.stack.push({ owner, point: orbitCenter });
+    camera.__orbitCenterFocus = focus;
+  } else {
+    delete camera.__orbitCenterFocus;
+  }
   camera.orbitCenter = orbitCenter;
   return true;
 }
 
-export function clearCameraOrbitCenter(camera) {
+export function clearCameraOrbitCenter(camera, owner) {
   if (!camera) return;
+  if (owner) {
+    const focus = camera.__orbitCenterFocus;
+    if (!focus?.stack.some((entry) => entry.owner === owner)) return;
+    focus.stack = focus.stack.filter((entry) => entry.owner !== owner);
+    camera.orbitCenter = focus.stack.at(-1)?.point ?? focus.previous;
+    if (focus.stack.length === 0) delete camera.__orbitCenterFocus;
+    return;
+  }
+  delete camera.__orbitCenterFocus;
   camera.orbitCenter = null;
 }
 

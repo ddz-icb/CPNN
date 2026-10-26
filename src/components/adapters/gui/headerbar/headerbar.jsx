@@ -6,15 +6,12 @@ import { HeaderbarStatistics } from "./headerbarStatistics.jsx";
 import { isTypingTarget, isPopupOpen, isPlainShortcut } from "../hooks/keyboardUtils.js";
 import { useTooltipSettings } from "../../state/tooltipState.js";
 import { useCommunityState } from "../../state/communityState.js";
-import { useAppearance } from "../../state/appearanceState.js";
-import { clearViewOrbitCenter } from "../../../domain/service/canvas_interaction/centerView.js";
 import { CommunityDetails } from "../reusable_components/communityDetails.jsx";
 import { RightPanelNavigation } from "../reusable_components/rightPanelNavigation.jsx";
 
 export function HeaderBar({ activePanel, setActivePanel }) {
   const { tooltipSettings, setTooltipSettings } = useTooltipSettings();
   const { communityState, setCommunityState } = useCommunityState();
-  const { appearance } = useAppearance();
   const isMappingActive = activePanel === "mapping";
   const isStatisticsActive = activePanel === "statistics";
   const isNodeDetailsActive = tooltipSettings.isClickTooltipActive;
@@ -41,8 +38,7 @@ export function HeaderBar({ activePanel, setActivePanel }) {
 
   const closeCommunityPanel = useCallback(() => {
     setCommunityState("selectedCommunityId", null);
-    clearViewOrbitCenter({ appearance });
-  }, [appearance, setCommunityState]);
+  }, [setCommunityState]);
 
   useEffect(() => {
     if (!isNodeDetailsActive) return;

@@ -12,7 +12,6 @@ import {
 import { createFrameScheduler } from "../utils/frameScheduler.js";
 
 const DRAG_HIT_RADIUS = 20;
-const DRAG_CLICK_THRESHOLD = 10;
 const DEFAULT_CONTROLS = {
   orbitSensitivity: 1,
   panSensitivity: 1,
@@ -35,7 +34,6 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, cameraRef
     orbitStartPoint: null,
     orbitStartAngles: null,
     lastPinch: null,
-    distanceDragged: 0,
     dragNode: null,
     orbitPivot: null,
   };
@@ -280,7 +278,6 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, cameraRef
     state.mode = node ? "node" : isPan ? "pan" : "orbit";
     state.activePointerId = event.pointerId;
     state.previousPoint = point;
-    state.distanceDragged = 0;
     state.dragNode = node;
     if (state.mode === "orbit") beginOrbit(point);
 
@@ -308,7 +305,6 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, cameraRef
 
     const dx = point.x - state.previousPoint.x;
     const dy = point.y - state.previousPoint.y;
-    state.distanceDragged += Math.hypot(dx, dy);
 
     if (state.mode === "node") dragNode(dx, dy);
     if (state.mode === "orbit") orbit(point);
@@ -339,9 +335,6 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, cameraRef
     state.orbitStartPoint = null;
     state.orbitStartAngles = null;
 
-    if (state.distanceDragged > DRAG_CLICK_THRESHOLD) {
-      setTooltipSettings("isClickTooltipActive", false);
-    }
     setTooltipSettings("isHoverTooltipActive", false);
     state.mode = null;
     state.activePointerId = null;
