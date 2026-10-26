@@ -65,7 +65,7 @@ describe("applyGraphSettings", () => {
     });
 
     applyGraphSettings({
-      name: "GloBISpeciesInteractions",
+      name: "SavedGraph",
       data: createGraphData({
         appearance: {
           linkWidth: 2.5,

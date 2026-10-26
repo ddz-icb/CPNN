@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { afterEach, describe, test } from "node:test";
 
-import { defaultExampleGraphName } from "../../../../src/assets/exampleGraphMetadata.js";
+import { defaultExampleGraphName } from "../../../../src/assets/exampleGraphs.js";
 import { errorService } from "../../../../src/components/application/services/errorService.js";
 import { graphService } from "../../../../src/components/application/services/graphService.js";
 import { graphFlagsStateInit, useGraphFlags } from "../../../../src/components/adapters/state/graphFlagsState.js";

@@ -1,7 +1,6 @@
 import { exampleGraphJson } from "./exampleGraphJSON.js";
-import gloBISpeciesInteractionsData from "./GloBISpeciesInteractions.json";
-import tokyoRailwaySystemData from "./TokyoRailwaySystem.json";
-import { defaultExampleGraphName, exampleGraphNames, isExampleGraphName as isKnownExampleGraphName } from "./exampleGraphMetadata.js";
+import gloBISpeciesInteractionsData from "./GloBISpeciesInteractions.json" with { type: "json" };
+import tokyoRailwaySystemData from "./TokyoRailwaySystem.json" with { type: "json" };
 
 export const exampleGraphs = [
   {
@@ -12,7 +11,7 @@ export const exampleGraphs = [
   {
     name: "GloBISpeciesInteractions",
     label: "GloBI Species Interactions",
-    description: "Species interaction network",
+    description: "Feeding, hosting, pollination, and flower visits across species",
     data: gloBISpeciesInteractionsData,
   },
   {
@@ -23,6 +22,7 @@ export const exampleGraphs = [
   },
 ];
 
+export const defaultExampleGraphName = exampleGraphJson.name;
 export const defaultExampleGraph = exampleGraphs.find((graph) => graph.name === defaultExampleGraphName) ?? exampleGraphs[0];
 const exampleGraphsByName = new Map(exampleGraphs.map((graph) => [graph.name, graph]));
 
@@ -31,7 +31,5 @@ export function getExampleGraphByName(name) {
 }
 
 export function isExampleGraphName(name) {
-  return isKnownExampleGraphName(name);
+  return exampleGraphsByName.has(name);
 }
-
-export { exampleGraphNames };

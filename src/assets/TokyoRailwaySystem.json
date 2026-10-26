@@ -12080,5 +12080,15 @@
       "Yurikamome - ゆりかもめ": 86,
       "Todenarakawasen - 都電荒川線": 0
     }
+  },
+  "metadata": {
+    "title": "Tokyo Railway System",
+    "references": [
+      {
+        "title": "EkiData railway station and line data",
+        "shortCitation": "EkiData",
+        "url": "https://github.com/ny-a/ekidata"
+      }
+    ]
   }
 }

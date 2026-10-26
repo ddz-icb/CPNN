@@ -20,13 +20,10 @@ export function GraphReferences({ metadata, label = "References" }) {
       <summary>{label}</summary>
       {entries.map((entry, index) => {
         const reference = Array.isArray(entry.references) ? entry.references[0] : null;
-        const license = Array.isArray(entry.licenses) ? entry.licenses[0] : null;
         return <p key={index}>
           {typeof (entry.shortTitle ?? entry.title) === "string" && <><strong>{entry.shortTitle ?? entry.title}</strong> · </>}
           {reference && <SourceLink url={reference.url}>{reference.shortCitation ?? reference.title}</SourceLink>}
           {!reference && typeof entry.attribution === "string" && entry.attribution}
-          {license && <> · <SourceLink url={license.url}>{license.shortName ?? license.name}</SourceLink></>}
-          {entry.modifications?.length > 0 && <> · adapted</>}
         </p>;
       })}
     </details>

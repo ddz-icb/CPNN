@@ -1,6 +1,6 @@
 import log from "../../adapters/logging/logger.js";
 import { useGraphState } from "../../adapters/state/graphState.js";
-import { defaultExampleGraphName, isExampleGraphName } from "../../../assets/exampleGraphMetadata.js";
+import { defaultExampleGraphName, getExampleGraphByName, isExampleGraphName } from "../../../assets/exampleGraphs.js";
 import { createGraph, deleteGraph, loadGraphNames, getGraph } from "../../domain/models/graph.js";
 import { errorService } from "./errorService.js";
 import { joinGraphDataList, joinGraphNames } from "../../domain/service/graph_calculations/joinGraph.js";
@@ -238,7 +238,7 @@ export const graphService = {
 
 async function getGraphByName(filename) {
   return isExampleGraphName(filename)
-    ? normalizeGraphForRuntime((await import("../../../assets/exampleGraphs.js")).getExampleGraphByName(filename))
+    ? normalizeGraphForRuntime(getExampleGraphByName(filename))
     : getGraph(filename);
 }
 

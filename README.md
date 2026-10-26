@@ -6,7 +6,7 @@ Co-Phosphorylation Network Navigator (CPNN): Web Application for Interactive Vis
 
 ## Run the app
 
-- Install Node.js and Rust.
+- Install Node.js and Rust
 - Run `./setup.sh` to install and build
 - Run `npm run serve`
 

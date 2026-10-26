@@ -25,7 +25,7 @@ import * as mappingRepo from "../../src/components/repository/mappingRepo.js";
 import * as simulation from "../../src/components/domain/service/physics_calculations/simulation.js";
 import { setupStage } from "../../src/components/domain/service/canvas_drawing/stageSetup.js";
 import { redraw } from "../../src/components/domain/service/canvas_drawing/render2D.js";
-import { defaultExampleGraphName } from "../../src/assets/exampleGraphMetadata.js";
+import { defaultExampleGraphName } from "../../src/assets/exampleGraphs.js";
 import log from "../../src/components/adapters/logging/logger.js";
 import { nodeIds } from "../support/graphFixtures.js";
 
