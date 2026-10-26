@@ -6,7 +6,12 @@ vi.mock("../../src/components/adapters/gui/hooks/useProteinDetails.js", () => ({
   useProteinDetails: () => ({ uniprotStatus: "done", isApiComplete: true }),
 }));
 vi.mock("../../src/components/domain/service/download/download.js", () => ({ downloadNodeIdsCsv: vi.fn() }));
-vi.mock("../../src/components/domain/service/canvas_interaction/centerView.js", () => ({ centerOnNodes: vi.fn(), clearViewOrbitCenter: vi.fn() }));
+vi.mock("../../src/components/domain/service/canvas_interaction/centerView.js", () => ({
+  centerOnNodes: vi.fn(),
+  clearViewOrbitCenter: vi.fn(),
+  captureViewState: vi.fn(() => ({ saved: true })),
+  restoreViewState: vi.fn(),
+}));
 vi.mock("../../src/components/adapters/gui/reusable_components/sidebarComponents.jsx", () => ({
   Button: ({ text, ...props }) => <button {...props}>{text}</button>,
 }));
@@ -14,7 +19,7 @@ import { useGraphState } from "../../src/components/adapters/state/graphState.js
 import { tooltipInit, useTooltipSettings } from "../../src/components/adapters/state/tooltipState.js";
 import { Tooltips } from "../../src/components/adapters/gui/tooltip/tooltips.jsx";
 import { communityStateInit, useCommunityState } from "../../src/components/adapters/state/communityState.js";
-import { centerOnNodes, clearViewOrbitCenter } from "../../src/components/domain/service/canvas_interaction/centerView.js";
+import { centerOnNodes, clearViewOrbitCenter, captureViewState, restoreViewState } from "../../src/components/domain/service/canvas_interaction/centerView.js";
 let root, host;
 afterEach(async () => {
   if (root) await act(async () => root.unmount());
@@ -129,11 +134,12 @@ test("Focus view follows node selections only while enabled", async () => {
   expect(centerOnNodes).not.toHaveBeenCalled();
   await click("Focus view");
   expect(document.querySelector('[aria-pressed="true"]')).not.toBeNull();
+  expect(captureViewState).toHaveBeenCalledTimes(1);
   expect(centerOnNodes).toHaveBeenCalledWith([{ id: "a" }], expect.objectContaining({ orbitOwner: "node" }));
   await act(async () => useTooltipSettings.getState().setTooltipSettings("clickTooltipData", { node: "b", x: 50, y: 50 }));
   expect(centerOnNodes).toHaveBeenLastCalledWith([{ id: "b" }], expect.objectContaining({ orbitOwner: "node" }));
   expect(centerOnNodes).toHaveBeenCalledTimes(2);
-  expect(clearViewOrbitCenter).toHaveBeenCalledWith(expect.objectContaining({ owner: "node" }));
+  expect(captureViewState).toHaveBeenCalledTimes(1);
   await click("Previous");
   expect(centerOnNodes).toHaveBeenCalledTimes(3);
   expect(useTooltipSettings.getState().tooltipSettings.clickTooltipData.node).toBe("a");
@@ -141,11 +147,14 @@ test("Focus view follows node selections only while enabled", async () => {
   await click("Hide details");
   expect(centerOnNodes).toHaveBeenCalledTimes(3);
   await click("Focus: on");
+  expect(clearViewOrbitCenter).toHaveBeenCalledWith(expect.objectContaining({ owner: "node" }));
+  expect(restoreViewState).toHaveBeenCalledWith({ saved: true });
   await act(async () => useTooltipSettings.getState().setTooltipSettings("clickTooltipData", { node: "b", x: 50, y: 50 }));
   expect(centerOnNodes).toHaveBeenCalledTimes(3);
   await click("Focus view");
   await click("Clear");
   expect(useTooltipSettings.getState().tooltipSettings.isViewFocusActive).toBe(false);
+  expect(restoreViewState).toHaveBeenCalledTimes(2);
 });
 
 test("focus clears when its node is removed by a filter", async () => {

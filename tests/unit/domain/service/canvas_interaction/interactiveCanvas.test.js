@@ -3,7 +3,7 @@ import { test } from "node:test";
 
 import { getCanvasResolution, initTooltips, keepCanvasCentered, resizeCanvas } from "../../../../../src/components/domain/service/canvas_interaction/interactiveCanvas.js";
 import { initDragAndZoom3D } from "../../../../../src/components/domain/service/canvas_interaction/interactiveCanvas3D.js";
-import { centerOnNode, clearViewOrbitCenter } from "../../../../../src/components/domain/service/canvas_interaction/centerView.js";
+import { captureViewState, centerOnNode, clearViewOrbitCenter, restoreViewState } from "../../../../../src/components/domain/service/canvas_interaction/centerView.js";
 import {
   applyCameraPreset,
   conjugateQuaternion,
@@ -133,9 +133,13 @@ test("closing view focuses restores the previous orbit center", () => {
   const node = { x: 200, y: 250, z: 20 };
 
   centerOnNode(community, { ...view, orbitOwner: "community" });
+  const previousView = captureViewState(view);
   centerOnNode(node, { ...view, orbitOwner: "node" });
+  camera.rotX = 0.5;
   clearViewOrbitCenter({ appearance, owner: "node" });
+  restoreViewState(previousView);
   assert.deepEqual(camera.orbitCenter, community);
+  assert.deepEqual([camera.x, camera.y, camera.z, camera.rotX], [previousView.x, previousView.y, previousView.z, previousView.rotX]);
   clearViewOrbitCenter({ appearance, owner: "community" });
   assert.deepEqual(camera.orbitCenter, previous);
 
@@ -145,6 +149,18 @@ test("closing view focuses restores the previous orbit center", () => {
   assert.deepEqual(camera.orbitCenter, node);
   clearViewOrbitCenter({ appearance, owner: "node" });
   assert.deepEqual(camera.orbitCenter, previous);
+});
+
+test("closing a 2D focus restores the previous pan and zoom", () => {
+  const stage = { x: 20, y: 30, scale: { x: 1.25, set(x, y) { this.x = x; this.y = y; } } };
+  const app = { stage, renderer: { render() {} } };
+  const view = { appearance: { threeD: false }, renderState: { app }, container: { width: 800, height: 600 } };
+  const previousView = captureViewState(view);
+
+  centerOnNode({ x: 100, y: 150 }, view);
+  restoreViewState(previousView);
+
+  assert.deepEqual([stage.x, stage.y, stage.scale.x], [20, 30, 1.25]);
 });
 
 test("3D orbit limits tilt and keeps the vertical axis upright", () => {

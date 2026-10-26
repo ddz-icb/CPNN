@@ -20,6 +20,49 @@ export function clearViewOrbitCenter({ appearance, owner } = {}) {
   clearCameraOrbitCenter(appearance?.cameraRef?.current, owner);
 }
 
+export function captureViewState({ appearance, renderState }) {
+  if (appearance?.threeD) {
+    const camera = appearance.cameraRef?.current;
+    if (!camera) return null;
+    const { x, y, z, rotX, rotY, rotZ, orientation } = camera;
+    return { camera, x, y, z, rotX, rotY, rotZ, orientation: orientation && { ...orientation } };
+  }
+
+  const app = renderState?.app;
+  if (!app?.stage) return null;
+  return { app, x: app.stage.x, y: app.stage.y, k: app.stage.scale?.x ?? 1 };
+}
+
+export function restoreViewState(view) {
+  if (!view) return;
+  if (view.camera) {
+    const { camera, x, y, z, rotX, rotY, rotZ, orientation } = view;
+    Object.assign(camera, { x, y, z, rotX, rotY, rotZ });
+    if (orientation) camera.orientation = { ...orientation };
+    else delete camera.orientation;
+    camera.redraw?.();
+    return;
+  }
+
+  if (view.app?.stage && view.app?.renderer) {
+    apply2DTransform(view.app, d3.zoomIdentity.translate(view.x, view.y).scale(view.k));
+  }
+}
+
+function apply2DTransform(app, transform) {
+  const zoom = app.__zoomBehavior;
+  const selection = app.__zoomSelection;
+  if (zoom && selection) {
+    selection.call(zoom.transform, transform);
+    return;
+  }
+
+  app.stage.x = transform.x;
+  app.stage.y = transform.y;
+  app.stage.scale?.set?.(transform.k, transform.k);
+  app.renderer.render(app.stage);
+}
+
 export function centerOnNode(node, { appearance, renderState, container, setOrbitCenter = true, orbitOwner }) {
   if (!node || !container?.width || !container?.height) return;
   if (!Number.isFinite(node.x) || !Number.isFinite(node.y)) return;
@@ -46,18 +89,7 @@ export function centerOnNode(node, { appearance, renderState, container, setOrbi
   const tx = centerX - node.x * safeScale;
   const ty = centerY - node.y * safeScale;
 
-  const zoom = app.__zoomBehavior;
-  const selection = app.__zoomSelection;
-  if (zoom && selection) {
-    const transform = d3.zoomIdentity.translate(tx, ty).scale(safeScale);
-    selection.call(zoom.transform, transform);
-    return;
-  }
-
-  app.stage.x = tx;
-  app.stage.y = ty;
-  app.stage.scale?.set?.(safeScale, safeScale);
-  app.renderer.render(app.stage);
+  apply2DTransform(app, d3.zoomIdentity.translate(tx, ty).scale(safeScale));
 }
 
 export function centerOnNodes(nodes, viewState) {
