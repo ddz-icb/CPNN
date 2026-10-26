@@ -15578,8 +15578,8 @@
       ]
     },
     "linkColorscheme": {
-      "name": "Interaction Types (7 colors)",
-      "data": ["#56b4e9", "#f0e442", "#d55e00", "#0072b2", "#009e73", "#ef4444", "#8858c7"],
+      "name": "Pastel Interaction Types (7 colors)",
+      "data": ["#c9675e", "#b4ac55", "#795ec9", "#5e9dc9", "#73b95f", "#c95ec1", "#56b599"],
       "id": 44
     },
     "linkAttribsToColorIndices": {
