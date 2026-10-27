@@ -1,5 +1,6 @@
 import { exampleGraphJson } from "./exampleGraphJSON.js";
 import gloBISpeciesInteractionsData from "./GloBISpeciesInteractions.json" with { type: "json" };
+import palmerPenguinsSimilarityData from "./PalmerPenguinsSimilarityGraph.json" with { type: "json" };
 import tokyoRailwaySystemData from "./TokyoRailwaySystem.json" with { type: "json" };
 
 export const exampleGraphs = [
@@ -19,6 +20,12 @@ export const exampleGraphs = [
     label: "Tokyo Railway System",
     description: "Railway station network",
     data: tokyoRailwaySystemData,
+  },
+  {
+    name: "PalmerPenguinsSimilarityGraph",
+    label: "Palmer Penguins Similarity",
+    description: "342 penguins linked by bill, flipper, and body mass similarity",
+    data: palmerPenguinsSimilarityData,
   },
 ];
 

@@ -11,6 +11,7 @@ import { getNodeIdName } from "../../../src/components/domain/service/parsing/no
 const examples = [
   ["GloBISpeciesInteractions", 11],
   ["TokyoRailwaySystem", 88],
+  ["PalmerPenguinsSimilarityGraph", 8],
 ];
 
 for (const [name, maxNodeAttributes] of examples) {
