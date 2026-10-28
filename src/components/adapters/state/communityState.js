@@ -9,13 +9,20 @@ export const communityStateInit = {
   communityResolution: communityResolutionInit,
   communityResolutionText: communityResolutionInit,
   selectedCommunityId: null,
+  isViewFocusActive: true,
 };
 
 export const useCommunityState = create((set) => ({
   communityState: communityStateInit,
   setCommunityState: (key, value) =>
     set((state) => ({
-      communityState: { ...state.communityState, [key]: value },
+      communityState: {
+        ...state.communityState,
+        [key]: value,
+        ...(key === "selectedCommunityId" && value != null && value !== state.communityState.selectedCommunityId
+          ? { isViewFocusActive: true }
+          : {}),
+      },
     })),
   setAllCommunityState: (value) =>
     set(() => ({

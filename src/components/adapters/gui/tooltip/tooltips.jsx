@@ -1,6 +1,7 @@
 import { useTooltipSettings } from "../../../adapters/state/tooltipState.js";
 import { ClickTooltip } from "./clickTooltip.jsx";
 import { NodeFocus } from "./nodeFocus.jsx";
+import { ViewFocusControl } from "./viewFocusControl.jsx";
 import { HoverTooltip } from "./hoverTooltip.jsx";
 
 export function Tooltips({ onSelectInsightsPanel, onCloseInsightsPanel }) {
@@ -8,6 +9,7 @@ export function Tooltips({ onSelectInsightsPanel, onCloseInsightsPanel }) {
   return (
     <>
       <NodeFocus />
+      <ViewFocusControl />
       {tooltipSettings.isClickTooltipActive && (
         <ClickTooltip
           onSelectInsightsPanel={onSelectInsightsPanel}

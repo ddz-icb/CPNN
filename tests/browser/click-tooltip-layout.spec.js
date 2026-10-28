@@ -45,6 +45,27 @@ async function expectTooltipFits(tooltip) {
   }
 }
 
+async function getStageView(page) {
+  return page.evaluate(async () => {
+    const { useRenderState } = await import("/src/components/adapters/state/canvasState.js");
+    const { useContainer } = await import("/src/components/adapters/state/containerState.js");
+    const stage = useRenderState.getState().renderState.app?.stage;
+    const { width, height } = useContainer.getState().container;
+    return stage ? { x: stage.x, y: stage.y, scale: stage.scale.x, width, height } : null;
+  });
+}
+
+async function expectStageView(page, expected) {
+  await expect.poll(async () => {
+    const current = await getStageView(page);
+    return current && Math.max(
+      Math.abs((current.width / 2 - current.x) / current.scale - (expected.width / 2 - expected.x) / expected.scale),
+      Math.abs((current.height / 2 - current.y) / current.scale - (expected.height / 2 - expected.y) / expected.scale),
+      Math.abs(current.scale - expected.scale),
+    );
+  }).toBeLessThan(0.01);
+}
+
 test.beforeEach(async ({ page }, testInfo) => {
   // Layout checks must not depend on external protein services.
   await page.route("https://rest.uniprot.org/**", (route) => route.fulfill({ status: 404, body: "" }));
@@ -240,6 +261,7 @@ test("Selecting a node search result focuses it and opens node details", async (
 
   const result = page.locator('.item-table-text[role="button"]').filter({ hasText: nodeId }).first();
   await expect(result).toBeVisible();
+  const previousView = await getStageView(page);
   await result.click();
 
   await expect(page.getByRole("dialog", { name: /Node details:/ })).toBeVisible();
@@ -254,6 +276,176 @@ test("Selecting a node search result focuses it and opens node details", async (
       }),
     )
     .toEqual({ active: true, node: nodeId });
+  await expect.poll(() => page.evaluate(async () => {
+    const { useTooltipSettings } = await import("/src/components/adapters/state/tooltipState.js");
+    return useTooltipSettings.getState().tooltipSettings.isViewFocusActive;
+  })).toBe(true);
+  await (page.viewportSize().width <= 520
+    ? page.getByRole("region", { name: "Focused node" }).getByRole("button", { name: "Clear" }).click()
+    : result.click());
+  await expect(page.getByRole("region", { name: "Focused node" })).toHaveCount(0);
+  await expect(page.getByRole("dialog", { name: /Node details:/ })).toHaveCount(0);
+  await expectStageView(page, previousView);
+});
+
+test("Selecting a link search result focuses it and a second click restores the view", async ({ page }) => {
+  await expect.poll(() => page.evaluate(async () => {
+    const { useGraphState } = await import("/src/components/adapters/state/graphState.js");
+    return useGraphState.getState().graphState.graph?.data?.links?.length ?? 0;
+  })).toBeGreaterThan(0);
+  await page.waitForTimeout(500);
+  const menuButton = page.getByRole("button", { name: "Open Menu sidebar" });
+  if (await menuButton.isVisible()) await menuButton.click();
+  await page.getByRole("button", { name: /^Search/ }).click();
+  await page.evaluate(async () => {
+    const { useGraphState } = await import("/src/components/adapters/state/graphState.js");
+    const { useSearchState } = await import("/src/components/adapters/state/searchState.js");
+    const query = useGraphState.getState().graphState.graph.data.links[0].attrib.toLowerCase();
+    const current = useSearchState.getState().searchState;
+    useSearchState.getState().setAllSearchState({ ...current, linkSearchValue: query, linkQuery: query });
+  });
+  const result = page.locator('.item-table-text[role="button"]').first();
+  await expect(result).toBeVisible();
+  const previousView = await getStageView(page);
+  await result.click();
+  const focusBar = page.getByRole("region", { name: "Focused link" });
+  await expect(focusBar).toBeVisible();
+  const expectedNames = await page.evaluate(async () => {
+    const { useGraphState } = await import("/src/components/adapters/state/graphState.js");
+    const { useSearchState } = await import("/src/components/adapters/state/searchState.js");
+    const { getNodeIdName } = await import("/src/components/domain/service/parsing/nodeIdParsing.js");
+    const { getEndpointIdText } = await import("/src/components/domain/service/graph_calculations/graphUtils.js");
+    const { matchingLinks, selectedLinkId } = useSearchState.getState().searchState;
+    const entry = matchingLinks.find(({ linkId }) => linkId === selectedLinkId);
+    const nodeById = new Map(useGraphState.getState().graphState.graph.data.nodes.map((node) => [String(node.id), node]));
+    const name = (id) => nodeById.get(String(id))?.name || nodeById.get(String(id))?.label || getNodeIdName(id) || id || "Unknown";
+    return `${name(entry.sourceId ?? getEndpointIdText(entry.link.source))} ↔ ${name(entry.targetId ?? getEndpointIdText(entry.link.target))}`;
+  });
+  await expect(focusBar.locator(".node-focus-name")).toHaveText(expectedNames);
+  await expect(page.getByRole("button", { name: "Focus view" })).toHaveCount(0);
+  await expect.poll(() => page.evaluate(async () => {
+    const { useSearchState } = await import("/src/components/adapters/state/searchState.js");
+    return useSearchState.getState().searchState.selectedLinkId;
+  })).not.toBeNull();
+  await focusBar.getByRole("button", { name: "Focus: on" }).click();
+  await expect(focusBar.getByRole("button", { name: "Focus: off" })).toBeVisible();
+  await expectStageView(page, previousView);
+  await focusBar.getByRole("button", { name: "Focus: off" }).click();
+  await expect(focusBar.getByRole("button", { name: "Focus: on" })).toBeVisible();
+  await result.click();
+  await expect(page.getByRole("region", { name: "Focused link" })).toHaveCount(0);
+  await expectStageView(page, previousView);
+  await result.click();
+  await focusBar.getByRole("button", { name: "Clear" }).click();
+  await expect(focusBar).toHaveCount(0);
+  await expectStageView(page, previousView);
+});
+
+test("Only one compact bar appears when node, link, and community selections coexist", async ({ page }) => {
+  await expect.poll(() => page.evaluate(async () => {
+    const { useCommunityState } = await import("/src/components/adapters/state/communityState.js");
+    return useCommunityState.getState().communityState.communities.length;
+  })).toBeGreaterThan(0);
+  await page.evaluate(async () => {
+    const { useGraphState } = await import("/src/components/adapters/state/graphState.js");
+    const { useSearchState } = await import("/src/components/adapters/state/searchState.js");
+    const { useCommunityState } = await import("/src/components/adapters/state/communityState.js");
+    const { getEndpointIdText, getLinkIdText } = await import("/src/components/domain/service/graph_calculations/graphUtils.js");
+    const link = useGraphState.getState().graphState.graph.data.links[0];
+    const entry = {
+      link,
+      linkId: getLinkIdText(link, 0),
+      sourceId: getEndpointIdText(link.source),
+      targetId: getEndpointIdText(link.target),
+    };
+    const search = useSearchState.getState().searchState;
+    useSearchState.getState().setAllSearchState({ ...search, matchingLinks: [entry], selectedLinkId: entry.linkId });
+    const community = useCommunityState.getState().communityState.communities[0];
+    useCommunityState.getState().setCommunityState("selectedCommunityId", String(community.id));
+  });
+  await expect(page.locator(".node-focus-bar")).toHaveCount(1);
+  await expect(page.getByRole("region", { name: "Focused link" })).toBeVisible();
+
+  await page.evaluate(async () => {
+    const { useGraphState } = await import("/src/components/adapters/state/graphState.js");
+    const { useTooltipSettings } = await import("/src/components/adapters/state/tooltipState.js");
+    const node = useGraphState.getState().graphState.graph.data.nodes[0];
+    useTooltipSettings.getState().setTooltipSettings("clickTooltipData", { node: node.id, nodeAttribs: node.attribs ?? [] });
+    useTooltipSettings.getState().setTooltipSettings("isNodeFocusOnly", true);
+  });
+  await expect(page.locator(".node-focus-bar")).toHaveCount(1);
+  await expect(page.getByRole("region", { name: "Focused node" })).toBeVisible();
+
+  await page.getByRole("region", { name: "Focused node" }).getByRole("button", { name: "Clear" }).click();
+  await expect(page.locator(".node-focus-bar")).toHaveCount(1);
+  await expect(page.getByRole("region", { name: "Focused link" })).toBeVisible();
+
+  await page.getByRole("region", { name: "Focused link" }).getByRole("button", { name: "Clear" }).click();
+  await expect(page.locator(".node-focus-bar")).toHaveCount(1);
+  await expect(page.getByRole("region", { name: "Focused community" })).toBeVisible();
+  await page.getByRole("region", { name: "Focused community" }).getByRole("button", { name: "Clear" }).click();
+  await expect(page.locator(".node-focus-bar")).toHaveCount(0);
+});
+
+test("Selecting a community focuses it and a second click restores the view", async ({ page }) => {
+  await expect.poll(() => page.evaluate(async () => {
+    const { useCommunityState } = await import("/src/components/adapters/state/communityState.js");
+    return useCommunityState.getState().communityState.communities.length;
+  })).toBeGreaterThan(0);
+  const menuButton = page.getByRole("button", { name: "Open Menu sidebar" });
+  if (await menuButton.isVisible()) await menuButton.click();
+  await page.getByRole("button", { name: /^Communities/ }).click();
+  const result = page.locator('.item-table-text[role="button"]').filter({ hasText: "Community" }).first();
+  await expect(result).toBeVisible();
+  const previousView = await getStageView(page);
+  await result.click();
+  const focusBar = page.getByRole("region", { name: "Focused community" });
+  await expect(focusBar).toBeVisible();
+  await focusBar.getByRole("button", { name: "Focus: on" }).click();
+  await expect(focusBar.getByRole("button", { name: "Focus: off" })).toBeVisible();
+  await expectStageView(page, previousView);
+  await focusBar.getByRole("button", { name: "Focus: off" }).click();
+  await expect(focusBar.getByRole("button", { name: "Focus: on" })).toBeVisible();
+  if (page.viewportSize().width <= 520) await page.keyboard.press("Escape");
+  else await result.click();
+  await expect(page.getByRole("region", { name: "Focused community" })).toHaveCount(0);
+  await expectStageView(page, previousView);
+  await result.click();
+  await focusBar.getByRole("button", { name: "Clear" }).click();
+  await expect(focusBar).toHaveCount(0);
+  await expectStageView(page, previousView);
+});
+
+test("Switching from a focused link to a community restores the original view when cleared", async ({ page }) => {
+  await expect.poll(() => page.evaluate(async () => {
+    const { useCommunityState } = await import("/src/components/adapters/state/communityState.js");
+    return useCommunityState.getState().communityState.communities.length;
+  })).toBeGreaterThan(0);
+  const menuButton = page.getByRole("button", { name: "Open Menu sidebar" });
+  if (await menuButton.isVisible()) await menuButton.click();
+  await page.getByRole("button", { name: /^Search/ }).click();
+  await page.evaluate(async () => {
+    const { useGraphState } = await import("/src/components/adapters/state/graphState.js");
+    const { useSearchState } = await import("/src/components/adapters/state/searchState.js");
+    const query = useGraphState.getState().graphState.graph.data.links[0].attrib.toLowerCase();
+    const current = useSearchState.getState().searchState;
+    useSearchState.getState().setAllSearchState({ ...current, linkSearchValue: query, linkQuery: query });
+  });
+  const linkResult = page.locator('.item-table-text[role="button"]').first();
+  await expect(linkResult).toBeVisible();
+  const previousView = await getStageView(page);
+  await linkResult.click();
+  await expect(page.getByRole("region", { name: "Focused link" })).toBeVisible();
+
+  await page.getByRole("button", { name: "Back to tool list" }).click();
+  await page.getByRole("button", { name: /^Communities/ }).click();
+  const communityResult = page.locator('.item-table-text[role="button"]').filter({ hasText: "Community" }).first();
+  await communityResult.click();
+  await expect(page.getByRole("region", { name: "Focused link" })).toHaveCount(0);
+  await expect(page.getByRole("region", { name: "Focused community" })).toBeVisible();
+  if (page.viewportSize().width <= 520) await page.keyboard.press("Escape");
+  else await communityResult.click();
+  await expectStageView(page, previousView);
 });
 
 test("Node clicks preserve open details and previous-node navigation", async ({ page }) => {

@@ -20,6 +20,7 @@ export const searchStateInit = {
   matchingLinks: matchingLinksInit,
   selectedNodeId: null,
   selectedLinkId: null,
+  isLinkViewFocusActive: true,
 };
 
 export const useSearchState = create((set) => ({

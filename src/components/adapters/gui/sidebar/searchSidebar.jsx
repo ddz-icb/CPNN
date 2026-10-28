@@ -5,12 +5,8 @@ import { useSidebarCodeEditor } from "../reusable_components/useSidebarCodeEdito
 import { CodeEditorBlock, SwitchBlock } from "../reusable_components/sidebarComponents.jsx";
 import { useTheme } from "../../state/themeState.js";
 import { handleEditorChange as handleEditorChangeHelper } from "../handlers/buttonHandlerFunctions.js";
-import { useAppearance } from "../../state/appearanceState.js";
-import { useRenderState } from "../../state/canvasState.js";
-import { useContainer } from "../../state/containerState.js";
-import { useGraphState } from "../../state/graphState.js";
 import { useTooltipSettings } from "../../state/tooltipState.js";
-import { centerOnLink, clearViewOrbitCenter } from "../../../domain/service/canvas_interaction/centerView.js";
+import { useCommunityState } from "../../state/communityState.js";
 import {
   getSearchLinkIds,
   getSearchLinkResults,
@@ -38,19 +34,13 @@ export function SearchSidebar() {
     selectedLinkId,
   } = searchState;
   const { theme } = useTheme();
-  const { appearance } = useAppearance();
-  const { renderState } = useRenderState();
-  const { container } = useContainer();
-  const { graphState } = useGraphState();
-  const { setTooltipSettings } = useTooltipSettings();
+  const { tooltipSettings, setTooltipSettings, clearNodeFocus } = useTooltipSettings();
+  const { setCommunityState } = useCommunityState();
 
   const nodeTextareaRef = useRef(null);
   const linkTextareaRef = useRef(null);
   const [nodeSearchError, setNodeSearchError] = useState(null);
   const [linkSearchError, setLinkSearchError] = useState(null);
-  const graphNodes = graphState.graph?.data?.nodes ?? [];
-  const nodeById = useMemo(() => new Map(graphNodes.map((node) => [node.id, node])), [graphNodes]);
-
   const nodeResults = getSearchNodeResults(matchingNodes, MAX_RESULTS);
   const linkResults = getSearchLinkResults(matchingLinks, MAX_RESULTS);
 
@@ -95,6 +85,7 @@ export function SearchSidebar() {
       return;
     }
 
+    if (searchState.selectedNodeId) clearNodeFocus();
     setAllSearchState({
       ...searchState,
       nodeSearchValue,
@@ -130,6 +121,7 @@ export function SearchSidebar() {
 
   const handleClearNodeSearch = () => {
     setNodeSearchError(null);
+    if (searchState.selectedNodeId) clearNodeFocus();
     setAllSearchState({
       ...searchState,
       nodeSearchValue: searchStateInit.nodeSearchValue,
@@ -159,6 +151,16 @@ export function SearchSidebar() {
     if (!nodeId) return;
     const node = item?.node ?? matchingNodes?.find((n) => n.id === nodeId);
     if (!node) return;
+    if (searchState.selectedNodeId === nodeId && tooltipSettings.clickTooltipData?.node === nodeId) {
+      clearNodeFocus();
+      setAllSearchState({
+        ...searchState,
+        selectedNodeId: null,
+        highlightedNodeIds: [],
+      });
+      return;
+    }
+    setCommunityState("selectedCommunityId", null);
     setAllSearchState({
       ...searchState,
       selectedNodeId: nodeId,
@@ -175,24 +177,25 @@ export function SearchSidebar() {
     });
     setTooltipSettings("isHoverTooltipActive", false);
     setTooltipSettings("isClickTooltipActive", true);
+    setTooltipSettings("isViewFocusActive", true);
   };
 
   const handleLinkToggle = (item) => {
     const linkId = item?.linkId;
     if (!linkId) return;
     const nextSelection = selectedLinkId === linkId ? null : linkId;
-    if (selectedLinkId) clearViewOrbitCenter({ appearance, owner: "searchLink" });
+    if (nextSelection) {
+      clearNodeFocus();
+      setCommunityState("selectedCommunityId", null);
+    }
     setAllSearchState({
       ...searchState,
       selectedNodeId: null,
       selectedLinkId: nextSelection,
+      isLinkViewFocusActive: nextSelection ? true : searchState.isLinkViewFocusActive,
       highlightedNodeIds: [],
       highlightedLinkIds: nextSelection ? [linkId] : [],
     });
-  };
-
-  const focusLinkView = (item) => {
-    centerOnLink(item?.link, { appearance, renderState, container, nodeById, orbitOwner: "searchLink" });
   };
 
   const isHighlightAllActive =
@@ -231,7 +234,7 @@ export function SearchSidebar() {
       expandedId: selectedLinkId,
       getItemId: (item) => item?.linkId,
       onItemToggle: handleLinkToggle,
-      renderExpandedContent: (item) => <SearchLinkDetails item={item} onFocusView={() => focusLinkView(item)} />,
+      renderExpandedContent: (item) => <SearchLinkDetails item={item} />,
     },
   ].filter((section) => section.total > 0);
 

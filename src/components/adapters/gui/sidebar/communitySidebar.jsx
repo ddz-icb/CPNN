@@ -6,13 +6,8 @@ import microscopeSvg from "../../../../assets/icons/microscope.svg?raw";
 
 import { communityDensityInit, maxCommunitySizeInit, minCommunitySizeInit, useFilter } from "../../state/filterState.js";
 import { communityResolutionInit, useCommunityState } from "../../state/communityState.js";
-import { useGraphState } from "../../state/graphState.js";
-import { useAppearance } from "../../state/appearanceState.js";
-import { useRenderState } from "../../state/canvasState.js";
-import { useContainer } from "../../state/containerState.js";
+import { useSearchState } from "../../state/searchState.js";
 import { communityForceStrengthInit, usePhysics } from "../../state/physicsState.js";
-import { getCentroid } from "../../../domain/service/graph_calculations/graphUtils.js";
-import { centerOnNode } from "../../../domain/service/canvas_interaction/centerView.js";
 import { communityForceStrengthDescription } from "./descriptions/physicsDescriptions.jsx";
 import { communityFilterSizeDescription } from "./descriptions/filterDescriptions.jsx";
 import { useTooltipSettings } from "../../state/tooltipState.js";
@@ -22,12 +17,9 @@ const VisibilityIcon = ({ item, ...props }) => <SvgIcon svg={eyeSvg} className={
 export function CommunitySidebar() {
   const { filter, setFilter } = useFilter();
   const { communityState, setCommunityState } = useCommunityState();
-  const { graphState } = useGraphState();
-  const { appearance } = useAppearance();
-  const { renderState } = useRenderState();
-  const { container } = useContainer();
+  const { setAllSearchState } = useSearchState();
   const { physics, setPhysics } = usePhysics();
-  const { setTooltipSettings } = useTooltipSettings();
+  const { clearNodeFocus } = useTooltipSettings();
 
   const graphHiddenSet = new Set((filter.communityHiddenIds ?? []).map((id) => id?.toString()));
   const rows = communityState.communities.map((community) => {
@@ -81,22 +73,20 @@ export function CommunitySidebar() {
     const communityId = item?.id?.toString();
     if (!communityId) return;
     const nextSelection = communityState.selectedCommunityId === communityId ? null : communityId;
-    setTooltipSettings("isClickTooltipActive", false);
+    if (nextSelection) {
+      clearNodeFocus();
+      const search = useSearchState.getState().searchState;
+      if (search.selectedNodeId || search.selectedLinkId) {
+        setAllSearchState({
+          ...search,
+          selectedNodeId: null,
+          selectedLinkId: null,
+          highlightedNodeIds: [],
+          highlightedLinkIds: [],
+        });
+      }
+    }
     setCommunityState("selectedCommunityId", nextSelection);
-    if (!nextSelection) return;
-
-    const nodeIds = communityState.communityToNodeIds?.[communityId];
-    if (!Array.isArray(nodeIds) || nodeIds.length === 0) return;
-
-    const nodes = graphState.graph?.data?.nodes ?? [];
-    if (nodes.length === 0) return;
-
-    const nodeMap = new Map(nodes.map((node) => [node.id, node]));
-    const communityNodes = nodeIds.map((id) => nodeMap.get(id)).filter(Boolean);
-    if (communityNodes.length === 0) return;
-
-    const centroid = getCentroid(communityNodes);
-    centerOnNode(centroid, { appearance, renderState, container, orbitOwner: "community" });
   };
 
   return (

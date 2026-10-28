@@ -3,9 +3,6 @@ import { useTooltipSettings } from "../../state/tooltipState.js";
 import { usePixiState } from "../../state/pixiState.js";
 import { useRenderState } from "../../state/canvasState.js";
 import { useGraphState } from "../../state/graphState.js";
-import { useAppearance } from "../../state/appearanceState.js";
-import { useContainer } from "../../state/containerState.js";
-import { centerOnNodes, clearViewOrbitCenter, captureViewState, restoreViewState } from "../../../domain/service/canvas_interaction/centerView.js";
 import { useNodeDetails } from "../hooks/useNodeDetails.js";
 import { SidebarFooterActions, SidebarFooterButton } from "../reusable_components/sidebarFooterActions.jsx";
 import { isPopupOpen } from "../hooks/keyboardUtils.js";
@@ -13,17 +10,12 @@ import { isPopupOpen } from "../hooks/keyboardUtils.js";
 export function NodeFocus() {
   const { tooltipSettings, setTooltipSettings, clearNodeFocus, goBackTooltip } = useTooltipSettings();
   const graph = useGraphState((state) => state.graphState.graph);
-  const threeD = useAppearance((state) => state.appearance.threeD);
-  const cameraRef = useAppearance((state) => state.appearance.cameraRef);
-  const app = useRenderState((state) => state.renderState.app);
   const nodeId = tooltipSettings.clickTooltipData?.node;
   const exists = graph?.data?.nodes?.some((node) => node.id === nodeId);
   const { displayName } = useNodeDetails(nodeId);
   const detailsOpen = tooltipSettings.isClickTooltipActive;
   const selected = tooltipSettings.isNodeFocusOnly || detailsOpen;
   const viewFocusActive = tooltipSettings.isViewFocusActive;
-  const viewTarget = threeD ? cameraRef : app;
-  const viewFocusReady = selected && exists && viewFocusActive;
   const canGoBack = (tooltipSettings.clickTooltipHistory?.length ?? 0) > 1;
 
   const toggleDetails = () => {
@@ -48,27 +40,6 @@ export function NodeFocus() {
   }, [graph, exists, selected, clearNodeFocus]);
 
   useEffect(() => {
-    if (!viewFocusReady) return;
-    const appearance = useAppearance.getState().appearance;
-    const previousView = captureViewState({ appearance, renderState: useRenderState.getState().renderState });
-    return () => {
-      clearViewOrbitCenter({ appearance, owner: "node" });
-      restoreViewState(previousView);
-    };
-  }, [viewFocusReady, threeD, viewTarget]);
-
-  useEffect(() => {
-    if (!viewFocusReady) return;
-    const node = useGraphState.getState().graphState.graph?.data?.nodes?.find(({ id }) => id === nodeId);
-    if (node) centerOnNodes([node], {
-      appearance: useAppearance.getState().appearance,
-      renderState: useRenderState.getState().renderState,
-      container: useContainer.getState().container,
-      orbitOwner: "node",
-    });
-  }, [viewFocusReady, nodeId, threeD, viewTarget]);
-
-  useEffect(() => {
     if (!selected || detailsOpen) return;
     const onKeyDown = (event) => {
       if (event.key !== "Escape" || isPopupOpen()) return;
@@ -81,7 +52,7 @@ export function NodeFocus() {
 
   if (!selected || !exists) return null;
   return (
-    <div className="node-focus-bar" role="region" aria-label="Selected node">
+    <div className="node-focus-bar" role="region" aria-label="Focused node">
       <span className="node-focus-name" title={nodeId}>
         {displayName}
       </span>

@@ -147,12 +147,14 @@ test("Focus view follows node selections only while enabled", async () => {
   await click("Hide details");
   expect(centerOnNodes).toHaveBeenCalledTimes(3);
   await click("Focus: on");
+  await act(async () => { await new Promise((resolve) => setTimeout(resolve, 50)); });
   expect(clearViewOrbitCenter).toHaveBeenCalledWith(expect.objectContaining({ owner: "node" }));
   expect(restoreViewState).toHaveBeenCalledWith({ saved: true });
   await act(async () => useTooltipSettings.getState().setTooltipSettings("clickTooltipData", { node: "b", x: 50, y: 50 }));
   expect(centerOnNodes).toHaveBeenCalledTimes(3);
   await click("Focus view");
   await click("Clear");
+  await act(async () => { await new Promise((resolve) => setTimeout(resolve, 50)); });
   expect(useTooltipSettings.getState().tooltipSettings.isViewFocusActive).toBe(false);
   expect(restoreViewState).toHaveBeenCalledTimes(2);
 });
