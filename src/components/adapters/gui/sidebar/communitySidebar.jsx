@@ -7,8 +7,7 @@ import microscopeSvg from "../../../../assets/icons/microscope.svg?raw";
 import { communityDensityInit, maxCommunitySizeInit, minCommunitySizeInit, useFilter } from "../../state/filterState.js";
 import { communityResolutionInit, useCommunityState } from "../../state/communityState.js";
 import { useSearchState } from "../../state/searchState.js";
-import { communityForceStrengthInit, usePhysics } from "../../state/physicsState.js";
-import { communityForceStrengthDescription } from "./descriptions/physicsDescriptions.jsx";
+import { CommunityForceControl } from "./communityForceControl.jsx";
 import { communityFilterSizeDescription } from "./descriptions/filterDescriptions.jsx";
 import { useTooltipSettings } from "../../state/tooltipState.js";
 
@@ -18,7 +17,6 @@ export function CommunitySidebar() {
   const { filter, setFilter } = useFilter();
   const { communityState, setCommunityState } = useCommunityState();
   const { setAllSearchState } = useSearchState();
-  const { physics, setPhysics } = usePhysics();
   const { clearNodeFocus } = useTooltipSettings();
 
   const graphHiddenSet = new Set((filter.communityHiddenIds ?? []).map((id) => id?.toString()));
@@ -105,19 +103,7 @@ export function CommunitySidebar() {
         infoDescription={"Higher values yield smaller communities. A resolution of 0 captures connected components."}
       />
       <div className="table-list-heading">Physics</div>
-      <SliderBlock
-        value={physics.communityForceStrength}
-        valueText={physics.communityForceStrengthText}
-        setValue={(value) => setPhysics("communityForceStrength", value)}
-        setValueText={(value) => setPhysics("communityForceStrengthText", value)}
-        fallbackValue={communityForceStrengthInit}
-        min={0}
-        max={10}
-        step={0.1}
-        text={"Community Force"}
-        infoHeading={"Adjusting the Community Force Strength"}
-        infoDescription={communityForceStrengthDescription}
-      />
+      <CommunityForceControl />
       <div className="table-list-heading">Filter</div>
       <FieldBlock
         valueText={filter.communityDensityText}

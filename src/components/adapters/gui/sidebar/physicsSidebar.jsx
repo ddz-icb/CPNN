@@ -20,6 +20,7 @@ import {
 } from "./descriptions/physicsDescriptions.jsx";
 import { usePhysics } from "../../../adapters/state/physicsState.js";
 import { useAppearance } from "../../../adapters/state/appearanceState.js";
+import { CommunityForceControl } from "./communityForceControl.jsx";
 
 export function PhysicsSidebar({}) {
   const { physics, setPhysics, setAllPhysics } = usePhysics();
@@ -93,6 +94,7 @@ export function PhysicsSidebar({}) {
         infoHeading={"Adjusting the Node Repulsion Strength"}
         infoDescription={nodeRepulsionStrengthDescription}
       />
+      <CommunityForceControl />
       <SwitchBlock
         value={physics.linkForce}
         setValue={() => setPhysics("linkForce", !physics.linkForce)}
