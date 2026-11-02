@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
-import * as $3Dmol from "3dmol/build/3Dmol.js";
+import { createViewer } from "3dmol/build/3Dmol.es6.js";
 
 import log from "../../logging/logger.js";
 import "../../../../styles/pdb_viewer.css";
@@ -301,7 +301,7 @@ function usePdbViewer(viewerRef, responsePdb, themeName, isTooltipActive, onMode
     try {
       const backgroundColor = getViewerBackground() ?? (themeName === "light" ? "#eef2ff" : "#101849");
       const config = { backgroundColor, preserveDrawingBuffer: true };
-      setViewer($3Dmol.createViewer(viewerRef.current, config));
+      setViewer(createViewer(viewerRef.current, config));
     } catch (error) {
       log.error(error);
     }

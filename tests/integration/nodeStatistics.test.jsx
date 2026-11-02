@@ -1,7 +1,7 @@
 import React, { act } from "react";
 import { createRoot } from "react-dom/client";
 import { beforeEach, afterEach, expect, test, vi } from "vitest";
-vi.mock("3dmol/build/3Dmol.js", () => ({ createViewer: vi.fn(() => ({ clear() {}, render() {}, setBackgroundColor() {} })) }));
+vi.mock("3dmol/build/3Dmol.es6.js", () => ({ createViewer: vi.fn(() => ({ clear() {}, render() {}, setBackgroundColor() {} })) }));
 vi.mock("../../src/components/adapters/gui/hooks/useProteinDetails.js", () => ({
   useProteinDetails: () => ({ uniprotStatus: "done", isApiComplete: true }),
 }));
