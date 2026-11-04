@@ -8,10 +8,8 @@ import { useGraphState } from "../../state/graphState.js";
 import { usePixiState } from "../../state/pixiState.js";
 import { useTheme } from "../../state/themeState.js";
 import { tooltipInit, useTooltipSettings } from "../../state/tooltipState.js";
-import { defaultCamera } from "../../../domain/service/canvas_drawing/render3D.js";
-import { radius as canvasNodeRadius } from "../../../domain/service/canvas_drawing/nodes.js";
 import { getEndpointId } from "../../../domain/service/graph_calculations/graphUtils.js";
-import { getNodeIdEntries } from "../../../domain/service/parsing/nodeIdParsing.js";
+import { getNodeIdEntries, getNodeIdName } from "../../../domain/service/parsing/nodeIdParsing.js";
 import { isLikelyUniprotAccession, parseNodeIdEntries } from "../../../domain/service/parsing/nodeIdBioParsing.js";
 
 export const KEYFRAME_SCENE_ACTION_INHERIT = "inherit";
@@ -45,8 +43,6 @@ const PHYSICS_TEXT_FIELDS = {
 };
 
 const PHYSICS_BOOLEAN_FIELDS = ["circleForce", "elevationForce", "linkForce", "checkBorder"];
-const TOOLTIP_OFFSET = 12;
-const TOOLTIP_MARGIN = 8;
 const TOOLTIP_CAPTURE_PADDING = 16;
 const TOOLTIP_CAPTURE_VIEWPORT_MARGIN = 64;
 const TOOLTIP_CAPTURE_STABLE_MS = 180;
@@ -54,9 +50,7 @@ const TOOLTIP_CAPTURE_BASE_WAIT_MS = 120;
 const TOOLTIP_CAPTURE_DETAILS_WAIT_MS = 12000;
 const TOOLTIP_VIDEO_CAPTURE_CLASS = "tooltip-popup--videography-capture";
 const TOOLTIP_VIDEO_PREPARING_CLASS = "tooltip-popup--videography-preparing";
-const TOOLTIP_TRANSITION_SHOW_AT = 0.98;
-const TOOLTIP_VIDEO_MAX_WIDTH = 680;
-const TOOLTIP_VIDEO_MAX_HEIGHT = 760;
+const TOOLTIP_TRANSITION_SHOW_AT = 1;
 
 export function createCapturedKeyframeScene(params = {}) {
   const snapshot = captureSceneStateSnapshot(params);
@@ -73,8 +67,11 @@ export function createCapturedKeyframeScene(params = {}) {
     colorschemeSnapshot: snapshot.colorscheme,
     themeSnapshot: snapshot.theme,
     graphSnapshot: snapshot.graph,
+    viewportSnapshot: snapshot.viewport,
     tooltipAction: tooltipNodeId ? KEYFRAME_TOOLTIP_ACTION_OPEN : KEYFRAME_TOOLTIP_ACTION_CLOSE,
     tooltipNodeId,
+    tooltipSnapshot: tooltipNodeId ? captureNodeInformationSnapshot(tooltipNodeId, snapshot.graph) : null,
+    focusNodeId: getFocusedNodeId(snapshot.tooltipSettings),
   };
 }
 
@@ -107,6 +104,7 @@ export function getKeyframeScene(keyframe) {
     colorschemeSnapshot: scene.colorschemeSnapshot ?? null,
     themeSnapshot: scene.themeSnapshot ?? null,
     graphSnapshot: scene.graphSnapshot ?? null,
+    viewportSnapshot: scene.viewportSnapshot ?? null,
     tooltipAction:
       scene.tooltipAction === KEYFRAME_SCENE_ACTION_APPLY || scene.tooltipAction === KEYFRAME_TOOLTIP_ACTION_OPEN
         ? KEYFRAME_TOOLTIP_ACTION_OPEN
@@ -114,10 +112,12 @@ export function getKeyframeScene(keyframe) {
           ? KEYFRAME_TOOLTIP_ACTION_CLOSE
           : KEYFRAME_SCENE_ACTION_INHERIT,
     tooltipNodeId: typeof scene.tooltipNodeId === "string" && scene.tooltipNodeId.length > 0 ? scene.tooltipNodeId : null,
+    tooltipSnapshot: scene.tooltipSnapshot ?? null,
+    focusNodeId: scene.focusNodeId ?? (scene.tooltipAction === KEYFRAME_TOOLTIP_ACTION_OPEN ? scene.tooltipNodeId : null),
   };
 }
 
-export function captureSceneStateSnapshot({ graphData, nodeMap, mode } = {}) {
+export function captureSceneStateSnapshot({ graphData, nodeMap, mode, container } = {}) {
   const appearance = useAppearance.getState().appearance;
   const sourceGraphData = graphData ?? useGraphState.getState().graphState.graph?.data;
   const sourceNodeMap = nodeMap ?? usePixiState.getState().pixiState.nodeMap;
@@ -132,6 +132,7 @@ export function captureSceneStateSnapshot({ graphData, nodeMap, mode } = {}) {
     colorscheme: captureColorschemeSnapshot(useColorschemeState.getState().colorschemeState),
     theme: cloneSerializable(useTheme.getState().theme),
     graph: captureGraphSnapshot(sourceGraphData, sourceNodeMap, snapshotMode),
+    viewport: container?.width && container?.height ? { width: container.width, height: container.height } : null,
     tooltipSettings: cloneSerializable(useTooltipSettings.getState().tooltipSettings),
   };
 }
@@ -196,12 +197,22 @@ export async function applyKeyframeScene(keyframe, { app, nodeMap, settle = true
     physicsChanged = true;
   }
 
-  if (
-    scene.tooltipAction === KEYFRAME_TOOLTIP_ACTION_CLOSE &&
-    useTooltipSettings.getState().tooltipSettings?.isClickTooltipActive
-  ) {
-    useTooltipSettings.getState().setAllTooltipSettings(cloneSerializable(tooltipInit));
-    tooltipChanged = true;
+  if (scene.tooltipAction === KEYFRAME_TOOLTIP_ACTION_CLOSE) {
+    const current = useTooltipSettings.getState().tooltipSettings;
+    if (scene.focusNodeId) {
+      if (!current?.isNodeFocusOnly || String(current.clickTooltipData?.node) !== String(scene.focusNodeId)) {
+        const node = getTooltipNodeForScene(scene, nodeMap);
+        useTooltipSettings.getState().setAllTooltipSettings({
+          ...cloneSerializable(tooltipInit),
+          isNodeFocusOnly: true,
+          clickTooltipData: { node: scene.focusNodeId, nodeAttribs: node?.attribs ?? [], x: 0, y: 0 },
+        });
+        tooltipChanged = true;
+      }
+    } else if (current?.isClickTooltipActive || current?.isNodeFocusOnly) {
+      useTooltipSettings.getState().setAllTooltipSettings(cloneSerializable(tooltipInit));
+      tooltipChanged = true;
+    }
   }
 
   if (settle && filterChanged) {
@@ -335,12 +346,35 @@ export function describeKeyframeScene(keyframe) {
           ? `Open ${scene.tooltipNodeId}`
           : "Open"
         : scene.tooltipAction === KEYFRAME_TOOLTIP_ACTION_CLOSE
-          ? "Closed"
+          ? scene.focusNodeId ? `Focus ${scene.focusNodeId}` : "Closed"
           : "Unchanged",
     filter: scene.filterAction === KEYFRAME_SCENE_ACTION_APPLY && scene.filterSnapshot ? "Captured" : "Unchanged",
     physics: scene.physicsAction === KEYFRAME_SCENE_ACTION_APPLY && scene.physicsSnapshot ? "Captured" : "Unchanged",
     search: scene.searchSnapshot ? describeSearchScene(scene.searchSnapshot) : "Unchanged",
     community: scene.communitySnapshot ? describeCommunityScene(scene.communitySnapshot) : "Unchanged",
+  };
+}
+
+function captureNodeInformationSnapshot(nodeId, graphSnapshot, readDom = true) {
+  const node = graphSnapshot?.nodes?.find((entry) => String(entry.id) === String(nodeId));
+  const panel = readDom && typeof document !== "undefined" ? document.querySelector(".tooltip-popup.node-details-side-panel") : null;
+  const rows = panel
+    ? Array.from(panel.querySelectorAll(".tooltip-popup-body .tooltip-popup-item"))
+        .filter((item) => item.getBoundingClientRect().height > 0)
+        .map((item) => ({
+          label: item.querySelector(".tooltip-popup-item-label")?.textContent?.trim() ?? "",
+          value: item.querySelector(".tooltip-popup-item-value")?.textContent?.trim() ?? "",
+        }))
+        .filter(({ label, value }) => label && value)
+    : [];
+  return {
+    heading: panel?.querySelector(".tooltip-popup-heading")?.textContent?.trim() || getNodeIdName(nodeId) || nodeId,
+    width: panel?.getBoundingClientRect().width || 464,
+    rows: rows.length ? rows : [
+      { label: "Node ID", value: nodeId },
+      { label: "Node Entries", value: getNodeIdEntries(nodeId).join(", ") || nodeId },
+      { label: "Annotations", value: node?.attribs?.join(", ") || "—" },
+    ],
   };
 }
 
@@ -350,6 +384,7 @@ export function createTooltipOverlayController({ app, captureScale } = {}) {
   let disposed = false;
   let version = 0;
   const keyframeOverlays = new Map();
+  let keyframesPrepared = false;
 
   const clear = () => {
     overlay = null;
@@ -365,7 +400,7 @@ export function createTooltipOverlayController({ app, captureScale } = {}) {
       return;
     }
 
-    const tooltipElement = document.querySelector(".tooltip-popup");
+    const tooltipElement = document.querySelector(".tooltip-popup.node-details-side-panel");
     const sourceCanvas = getPixiCanvas(app);
     if (!tooltipElement || !sourceCanvas) {
       clear();
@@ -406,8 +441,9 @@ export function createTooltipOverlayController({ app, captureScale } = {}) {
   };
 
   return {
-    async prepareKeyframes(keyframes, { nodeMap, captureScale: keyframeCaptureScale = captureScale } = {}) {
+    async prepareKeyframes(keyframes, { nodeMap, captureScale: keyframeCaptureScale = captureScale, signal } = {}) {
       keyframeOverlays.clear();
+      keyframesPrepared = true;
       if (!Array.isArray(keyframes) || keyframes.length === 0 || disposed) return;
 
       const previousTooltipSettings = cloneSerializable(useTooltipSettings.getState().tooltipSettings);
@@ -416,7 +452,7 @@ export function createTooltipOverlayController({ app, captureScale } = {}) {
 
       try {
         for (const keyframe of keyframes) {
-          if (disposed) return;
+          if (disposed || signal?.aborted) return;
 
           const scene = getKeyframeScene(keyframe);
           if (scene.tooltipAction !== KEYFRAME_TOOLTIP_ACTION_OPEN || !scene.tooltipNodeId) continue;
@@ -443,14 +479,17 @@ export function createTooltipOverlayController({ app, captureScale } = {}) {
           });
 
           await waitForFrames(2);
+          if (signal?.aborted) return;
 
-          const tooltipElement = document.querySelector(".tooltip-popup");
+          const tooltipElement = document.querySelector(".tooltip-popup.node-details-side-panel");
           if (!tooltipElement) continue;
 
           const tooltipCapture = await captureTooltipElement(tooltipElement, {
             expanded: true,
             captureScale: keyframeCaptureScale,
+            signal,
           });
+          if (signal?.aborted) return;
           if (!tooltipCapture) continue;
 
           const preparedOverlay = {
@@ -476,54 +515,17 @@ export function createTooltipOverlayController({ app, captureScale } = {}) {
     markDirty() {
       version += 1;
     },
-    draw(context, { sample, frameContext, sourceContainer, nodeMap } = {}) {
-      const frameOverlay = getTooltipOverlayForSample(sample, keyframeOverlays) ?? overlay;
-      if (!frameOverlay || !context) return;
-
-      const tooltipSettings = useTooltipSettings.getState().tooltipSettings;
-      const nodeId =
-        frameOverlay.nodeId ?? (tooltipSettings?.isClickTooltipActive ? tooltipSettings.clickTooltipData?.node : null);
-      const capturePadding = Number.isFinite(frameOverlay.padding) ? Math.max(0, frameOverlay.padding) : 0;
-      const visibleWidth = Math.max(1, frameOverlay.width - capturePadding * 2);
-      const visibleHeight = Math.max(1, frameOverlay.height - capturePadding * 2);
-      const fitScale = getTooltipCanvasFitScale({
-        app,
-        container: sourceContainer,
-        width: visibleWidth,
-        height: visibleHeight,
-      });
-      const drawWidth = frameOverlay.width * fitScale;
-      const drawHeight = frameOverlay.height * fitScale;
-      const visibleDrawWidth = visibleWidth * fitScale;
-      const visibleDrawHeight = visibleHeight * fitScale;
-      const drawPadding = capturePadding * fitScale;
-      const framePosition = getTooltipFrameCanvasPosition(nodeId, {
-        sample,
-        frameContext,
-        container: sourceContainer,
-        width: visibleDrawWidth,
-        height: visibleDrawHeight,
-      });
-      const dynamicPosition =
-        framePosition ??
-        (frameOverlay.isPreparedKeyframeOverlay
-          ? null
-          : getTooltipCanvasPosition(nodeId, {
-              app,
-              nodeMap,
-              width: visibleDrawWidth,
-              height: visibleDrawHeight,
-            }));
-
-      if (!dynamicPosition && nodeId) return;
-
-      context.drawImage(
-        frameOverlay.canvas,
-        (dynamicPosition?.x ?? frameOverlay.x ?? 0) - drawPadding,
-        (dynamicPosition?.y ?? frameOverlay.y ?? 0) - drawPadding,
-        drawWidth,
-        drawHeight,
-      );
+    draw(context, { sample, sourceContainer } = {}) {
+      if (!context || !sourceContainer) return;
+      const scene = getKeyframeScene(getTooltipKeyframeForSample(sample));
+      if (scene.tooltipAction !== KEYFRAME_TOOLTIP_ACTION_OPEN || !scene.tooltipNodeId) return;
+      const frameOverlay = keyframesPrepared ? getTooltipOverlayForSample(sample, keyframeOverlays) : overlay;
+      if (frameOverlay?.canvas && String(frameOverlay.nodeId) === String(scene.tooltipNodeId)) {
+        const rect = getRightPanelOverlayRect(frameOverlay, sourceContainer);
+        context.drawImage(frameOverlay.canvas, rect.x, rect.y, rect.width, rect.height);
+        return;
+      }
+      drawNodeInformationPanel(context, scene, sourceContainer);
     },
     clear,
     dispose() {
@@ -583,7 +585,7 @@ function openClickTooltipForNode(nodeId, { app, nodeMap } = {}) {
   }
 }
 
-async function captureTooltipElement(tooltipElement, { expanded = false, captureScale } = {}) {
+async function captureTooltipElement(tooltipElement, { expanded = false, captureScale, signal } = {}) {
   let restoreCaptureStyles = null;
   let addedPreparingClass = false;
   try {
@@ -591,9 +593,10 @@ async function captureTooltipElement(tooltipElement, { expanded = false, capture
       tooltipElement.classList.add(TOOLTIP_VIDEO_CAPTURE_CLASS);
     }
 
-    const isReady = await waitForTooltipContentReady(tooltipElement);
+    const isReady = await waitForTooltipContentReady(tooltipElement, signal);
     if (!isReady) return null;
     await waitForFontsReady();
+    if (signal?.aborted) return null;
 
     if (!document.body?.classList.contains(TOOLTIP_VIDEO_PREPARING_CLASS)) {
       document.body?.classList.add(TOOLTIP_VIDEO_PREPARING_CLASS);
@@ -604,8 +607,8 @@ async function captureTooltipElement(tooltipElement, { expanded = false, capture
     const scale = getTooltipCaptureScale(captureScale);
     const rect = tooltipElement.getBoundingClientRect();
     const contentElement = tooltipElement.querySelector(".tooltip-popup-content");
-    const width = Math.ceil(Math.max(1, rect.width, tooltipElement.scrollWidth, contentElement?.scrollWidth ?? 0)) + 2;
-    const height = Math.ceil(Math.max(1, rect.height, tooltipElement.scrollHeight, contentElement?.scrollHeight ?? 0)) + 2;
+    const width = Math.ceil(expanded ? Math.max(1, rect.width) : Math.max(1, rect.width, tooltipElement.scrollWidth, contentElement?.scrollWidth ?? 0)) + 2;
+    const height = Math.ceil(expanded ? Math.max(1, rect.height) : Math.max(1, rect.height, tooltipElement.scrollHeight, contentElement?.scrollHeight ?? 0)) + 2;
     const canvas = await html2canvas(tooltipElement, {
       backgroundColor: null,
       foreignObjectRendering: true,
@@ -630,6 +633,7 @@ async function captureTooltipElement(tooltipElement, { expanded = false, capture
       windowHeight: Math.max(window.innerHeight, Math.ceil(rect.top + height + TOOLTIP_CAPTURE_VIEWPORT_MARGIN)),
       windowWidth: Math.max(window.innerWidth, Math.ceil(rect.left + width + TOOLTIP_CAPTURE_VIEWPORT_MARGIN)),
     });
+    if (signal?.aborted) return null;
     const paddedCapture = addCanvasPadding(canvas, scale, TOOLTIP_CAPTURE_PADDING);
 
     return {
@@ -702,7 +706,7 @@ function addCanvasPadding(canvas, scale, padding) {
   };
 }
 
-async function waitForTooltipContentReady(tooltipElement) {
+async function waitForTooltipContentReady(tooltipElement, signal) {
   const waitForProteinDetails = shouldWaitForActiveProteinDetails();
   const startedAt = now();
   const maxWait = waitForProteinDetails ? TOOLTIP_CAPTURE_DETAILS_WAIT_MS : TOOLTIP_CAPTURE_BASE_WAIT_MS * 4;
@@ -711,6 +715,7 @@ async function waitForTooltipContentReady(tooltipElement) {
   let stableSince = startedAt;
 
   while (now() - startedAt < maxWait) {
+    if (signal?.aborted) return false;
     await waitForFrames(1);
     if (!document.body.contains(tooltipElement)) return false;
 
@@ -728,7 +733,7 @@ async function waitForTooltipContentReady(tooltipElement) {
     if (hasRequiredDetails && waitedLongEnough && isStable) return true;
   }
 
-  return !waitForProteinDetails || isTooltipApiReady(tooltipElement) || hasProteinDetailFields(tooltipElement);
+  return !signal?.aborted && (!waitForProteinDetails || isTooltipApiReady(tooltipElement) || hasProteinDetailFields(tooltipElement));
 }
 
 function shouldWaitForActiveProteinDetails() {
@@ -819,11 +824,11 @@ function captureGraphSnapshot(graphData, nodeMap, mode) {
       const target = getEndpointId(link.target);
       if (!capturedNodeIds.has(String(source)) || !capturedNodeIds.has(String(target))) return null;
 
-      return {
+      return cloneSerializable({
         ...link,
         source,
         target,
-      };
+      });
     })
     .filter(Boolean);
 
@@ -909,7 +914,7 @@ function captureRenderedNode(node, entry, mode) {
   }
 
   renderedNode.z = finiteSceneNumber(getNodeWorldZ(node, entry), 0);
-  return renderedNode;
+  return cloneSerializable(renderedNode);
 }
 
 function getNodeWorldZ(node, entry) {
@@ -936,6 +941,12 @@ function getActiveTooltipNodeId(tooltipSettings) {
   if (!tooltipSettings?.isClickTooltipActive) return null;
   const nodeId = tooltipSettings?.clickTooltipData?.node;
   return nodeId == null || nodeId === "" ? null : nodeId.toString();
+}
+
+function getFocusedNodeId(tooltipSettings) {
+  if (!tooltipSettings?.isClickTooltipActive && !tooltipSettings?.isNodeFocusOnly) return null;
+  const nodeId = tooltipSettings.clickTooltipData?.node;
+  return nodeId == null || nodeId === "" ? null : String(nodeId);
 }
 
 function describeSearchScene(searchSnapshot) {
@@ -969,7 +980,7 @@ function getNodeScreenPosition(nodeId, { app, nodeMap } = {}) {
 }
 
 function getTooltipNodeForScene(scene, nodeMap) {
-  const nodeId = scene?.tooltipNodeId;
+  const nodeId = scene?.tooltipNodeId ?? scene?.focusNodeId;
   if (!nodeId) return null;
 
   const fromSceneGraph = scene.graphSnapshot?.nodes?.find((node) => String(node.id) === String(nodeId));
@@ -981,137 +992,95 @@ function getTooltipNodeForScene(scene, nodeMap) {
   return useGraphState.getState().graphState.graph?.data?.nodes?.find((node) => String(node.id) === String(nodeId)) ?? null;
 }
 
-function getTooltipOverlayForSample(sample, overlays) {
+export function getTooltipOverlayForSample(sample, overlays) {
   if (!sample || !overlays?.size) return null;
-  if (sample.stepType === "transition" && sample.rawT < TOOLTIP_TRANSITION_SHOW_AT) return null;
-
-  const keyframe = sample.stepType === "transition" ? sample.to : sample.keyframe ?? sample.to ?? sample.from;
+  const keyframe = getTooltipKeyframeForSample(sample);
   return keyframe?.id ? overlays.get(keyframe.id) ?? null : null;
 }
 
-function getTooltipCanvasPosition(nodeId, { app, nodeMap, width = 0, height = 0 } = {}) {
-  const point = getNodeCanvasPosition(nodeId, { app, nodeMap });
-  const size = getCanvasCssSize(app);
-  if (!point || !size) return null;
-
-  return fitTooltipNearPoint({ ...point, radius: getNodeCanvasRadius(nodeId, { nodeMap }) }, size, width, height);
+function getTooltipKeyframeForSample(sample) {
+  if (!sample) return null;
+  return sample.stepType === "transition"
+    ? sample.rawT < TOOLTIP_TRANSITION_SHOW_AT ? sample.from : sample.to
+    : sample.keyframe ?? sample.to ?? sample.from;
 }
 
-function getTooltipFrameCanvasPosition(nodeId, { sample, frameContext, container, width = 0, height = 0 } = {}) {
-  const point = getFrameNodeCanvasPosition(nodeId, { sample, frameContext, container });
-  const size = getCanvasCssSizeFromContainer(container);
-  if (!point || !size) return null;
-
-  return fitTooltipNearPoint(point, size, width, height);
+export function getRightPanelOverlayRect(overlay, container) {
+  const padding = Math.max(0, Number.isFinite(overlay?.padding) ? overlay.padding : 0);
+  const visibleWidth = Math.max(1, overlay.width - padding * 2);
+  const visibleHeight = Math.max(1, overlay.height - padding * 2);
+  const scale = Math.min(1, container.width / visibleWidth, container.height / visibleHeight);
+  return {
+    x: container.width - (visibleWidth + padding) * scale,
+    y: -padding * scale,
+    width: overlay.width * scale,
+    height: overlay.height * scale,
+  };
 }
 
-function getFrameNodeCanvasPosition(nodeId, { sample, frameContext, container } = {}) {
-  if (!nodeId || !frameContext?.graphData?.nodes || !container) return null;
+function drawNodeInformationPanel(context, scene, container) {
+  const snapshot = scene.tooltipSnapshot ?? captureNodeInformationSnapshot(scene.tooltipNodeId, scene.graphSnapshot, false);
+  const width = Math.min(container.width, Math.max(1, snapshot.width || 464));
+  const left = container.width - width;
+  const dark = scene.themeSnapshot?.name === "dark";
+  const surface = dark ? "#172033" : "#f8faff";
+  const header = dark ? "#202b42" : "#e9f0ff";
+  const textColor = dark ? "#edf2ff" : "#17243d";
+  const mutedColor = dark ? "#9fb4dc" : "#8094c2";
+  const borderColor = dark ? "#354360" : "#abc3f4";
+  const maxTextWidth = Math.max(1, width - 48);
 
-  const node = frameContext.graphData.nodes.find((currentNode) => String(currentNode.id) === String(nodeId));
-  if (!node || getSceneAlpha(node) <= 0) return null;
+  context.save();
+  context.fillStyle = surface;
+  context.fillRect(left, 0, width, container.height);
+  context.fillStyle = header;
+  context.fillRect(left, 0, width, 60);
+  context.fillStyle = borderColor;
+  context.fillRect(left, 0, 2, container.height);
+  context.fillRect(left, 59, width, 1);
+  context.textBaseline = "top";
+  context.textAlign = "center";
+  context.font = "600 20px sans-serif";
+  context.fillStyle = textColor;
+  context.fillText(String(snapshot.heading || scene.tooltipNodeId), left + width / 2, 17, maxTextWidth);
+  context.textAlign = "left";
 
-  if (sample?.mode === "3d") {
-    return projectTooltipNode3D(node, sample.view, container);
+  let y = 82;
+  for (const row of snapshot.rows ?? []) {
+    if (y >= container.height - 24) break;
+    context.font = "600 12px sans-serif";
+    context.fillStyle = mutedColor;
+    context.fillText(String(row.label).toUpperCase(), left + 24, y, maxTextWidth);
+    y += 23;
+    context.font = "15px sans-serif";
+    context.fillStyle = textColor;
+    y = drawWrappedPanelText(context, String(row.value), left + 24, y, maxTextWidth, container.height - 20);
+    y += 25;
+    context.fillStyle = borderColor;
+    context.fillRect(left + 24, y - 12, maxTextWidth, 1);
   }
-
-  const zoom = clamp(Number.isFinite(Number.parseFloat(sample?.view?.zoom)) ? Number.parseFloat(sample.view.zoom) : 1, 0.05, 50);
-  return {
-    x: container.width / 2 - (Number.parseFloat(sample?.view?.centerX) || 0) * zoom + (Number.parseFloat(node.x) || 0) * zoom,
-    y: container.height / 2 - (Number.parseFloat(sample?.view?.centerY) || 0) * zoom + (Number.parseFloat(node.y) || 0) * zoom,
-    radius: canvasNodeRadius * zoom,
-  };
+  context.restore();
 }
 
-function projectTooltipNode3D(node, camera, container) {
-  if (!container?.width || !container?.height) return null;
-
-  const centerX = container.width / 2;
-  const centerY = container.height / 2;
-  const rotX = camera?.rotX ?? defaultCamera.rotX;
-  const rotY = camera?.rotY ?? defaultCamera.rotY;
-  const cosX = Math.cos(rotX);
-  const sinX = Math.sin(rotX);
-  const cosY = Math.cos(rotY);
-  const sinY = Math.sin(rotY);
-  const cameraX = camera?.x ?? centerX;
-  const cameraY = camera?.y ?? centerY;
-  const cameraZ = camera?.z ?? defaultCamera.z;
-  const fov = camera?.fov ?? defaultCamera.fov;
-
-  const shiftedX = (Number.parseFloat(node.x) || 0) - centerX;
-  const shiftedY = (Number.parseFloat(node.y) || 0) - centerY;
-  const zBase = Number.parseFloat(node.z) || 0;
-
-  let x = shiftedX * cosY - zBase * sinY;
-  let z = shiftedX * sinY + zBase * cosY;
-  const y = shiftedY * cosX - z * sinX;
-  z = shiftedY * sinX + z * cosX;
-
-  const dx = x + centerX - cameraX;
-  const dy = y + centerY - cameraY;
-  const dz = z - cameraZ;
-
-  if (dz <= 0.000001) return null;
-
-  const scale = fov / Math.abs(dz);
-  return {
-    x: centerX + dx * scale,
-    y: centerY + dy * scale,
-    radius: canvasNodeRadius * scale,
-  };
-}
-
-function getSceneAlpha(item) {
-  const alpha = Number.parseFloat(item?.__alpha);
-  if (!Number.isFinite(alpha)) return 1;
-  return clamp(alpha, 0, 1);
-}
-
-function fitTooltipNearPoint(point, size, width = 0, height = 0) {
-  const visualRadius = Math.max(0, Number.isFinite(point?.radius) ? point.radius : 0);
-  let x = point.x + visualRadius + TOOLTIP_OFFSET;
-  let y = point.y;
-
-  if (x + width > size.width - TOOLTIP_MARGIN) {
-    x = point.x - visualRadius - width - TOOLTIP_OFFSET;
+function drawWrappedPanelText(context, value, x, y, maxWidth, maxY) {
+  const words = value.replace(/\s+/g, " ").trim().split(" ");
+  let line = "";
+  for (const word of words) {
+    const next = line ? `${line} ${word}` : word;
+    if (line && context.measureText(next).width > maxWidth) {
+      if (y + 20 > maxY) return y;
+      context.fillText(line, x, y, maxWidth);
+      y += 21;
+      line = word;
+    } else {
+      line = next;
+    }
   }
-  if (y + height > size.height - TOOLTIP_MARGIN) {
-    y = point.y - height;
+  if (line && y + 20 <= maxY) {
+    context.fillText(line, x, y, maxWidth);
+    y += 21;
   }
-
-  return {
-    x: clamp(x, TOOLTIP_MARGIN, Math.max(TOOLTIP_MARGIN, size.width - width - TOOLTIP_MARGIN)),
-    y: clamp(y, TOOLTIP_MARGIN, Math.max(TOOLTIP_MARGIN, size.height - height - TOOLTIP_MARGIN)),
-  };
-}
-
-function getTooltipCanvasFitScale({ app, container, width = 0, height = 0 } = {}) {
-  const size = getCanvasCssSizeFromContainer(container) ?? getCanvasCssSize(app);
-  if (!size || width <= 0 || height <= 0) return 1;
-
-  const maxWidth = Math.max(1, Math.min(size.width - TOOLTIP_MARGIN * 2, TOOLTIP_VIDEO_MAX_WIDTH));
-  const maxHeight = Math.max(1, Math.min(size.height - TOOLTIP_MARGIN * 2, TOOLTIP_VIDEO_MAX_HEIGHT));
-  return Math.min(1, maxWidth / width, maxHeight / height);
-}
-
-function getCanvasCssSizeFromContainer(container) {
-  if (!container?.width || !container?.height) return null;
-  return {
-    width: Math.max(1, container.width),
-    height: Math.max(1, container.height),
-  };
-}
-
-function getCanvasCssSize(app) {
-  const sourceCanvas = getPixiCanvas(app);
-  if (!sourceCanvas) return null;
-
-  const rect = sourceCanvas.getBoundingClientRect();
-  return {
-    width: Math.max(1, rect.width || sourceCanvas.clientWidth || sourceCanvas.width || 1),
-    height: Math.max(1, rect.height || sourceCanvas.clientHeight || sourceCanvas.height || 1),
-  };
+  return y;
 }
 
 function getNodeCanvasPosition(nodeId, { app, nodeMap } = {}) {
@@ -1126,28 +1095,6 @@ function getNodeCanvasPosition(nodeId, { app, nodeMap } = {}) {
   } catch {
     return null;
   }
-}
-
-function getNodeCanvasRadius(nodeId, { nodeMap } = {}) {
-  const circle = nodeMap?.[nodeId]?.circle;
-  if (!circle || circle.destroyed) return canvasNodeRadius;
-
-  try {
-    const wt = circle.worldTransform;
-    if (wt) {
-      const scaleX = Math.hypot(Number.parseFloat(wt.a) || 0, Number.parseFloat(wt.b) || 0);
-      const scaleY = Math.hypot(Number.parseFloat(wt.c) || 0, Number.parseFloat(wt.d) || 0);
-      const worldScale = Math.max(scaleX, scaleY);
-      if (Number.isFinite(worldScale) && worldScale > 0) return canvasNodeRadius * worldScale;
-    }
-
-    const localScale = Number.parseFloat(circle.scale?.x);
-    if (Number.isFinite(localScale) && localScale > 0) return canvasNodeRadius * localScale;
-  } catch {
-    return canvasNodeRadius;
-  }
-
-  return canvasNodeRadius;
 }
 
 function formatSceneNumber(value) {

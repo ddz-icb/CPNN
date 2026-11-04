@@ -58,4 +58,4 @@ export {
   previewCameraPathVideo,
   recordCameraPathVideo,
 } from "./renderedCameraPathVideo.js";
-export { getVideoExportScale } from "./videoCanvas.js";
+export { getVideoExportScale, getVideoSceneContainer } from "./videoCanvas.js";

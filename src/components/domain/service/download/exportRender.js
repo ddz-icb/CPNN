@@ -142,10 +142,17 @@ export function render3DQueue(ctx, items, drawParams, gridOptions) {
     textColor,
     enableShading,
     highlightNodeIds,
+    highlightNodeAlphas,
     highlightLinkIds,
+    highlightLinkAlphas,
     communityHighlightNodeIds,
+    communityHighlightNodeAlphas,
     highlightColor,
     communityHighlightColor,
+    labelOpacity = 1,
+    focusFromNodeId,
+    focusToNodeId,
+    focusProgress = 1,
   } = drawParams;
   const highlightNodeIdSet = toNodeIdSet(highlightNodeIds);
   const highlightLinkIdSet = toNodeIdSet(highlightLinkIds);
@@ -165,7 +172,7 @@ export function render3DQueue(ctx, items, drawParams, gridOptions) {
   for (const item of items) {
     if (item.type === "link") {
       const link = item.link;
-      const alpha = getRenderAlpha(link);
+      const alpha = getRenderAlpha(link) * getInterpolatedFocusAlpha(link, focusFromNodeId, focusToNodeId, focusProgress);
       if (alpha <= 0) continue;
       const sourceScale = link.source?.scale ?? 1;
       const targetScale = link.target?.scale ?? 1;
@@ -174,7 +181,7 @@ export function render3DQueue(ctx, items, drawParams, gridOptions) {
         ctx.save();
         ctx.globalAlpha *= alpha;
       }
-      drawLinkHighlightIfActive(ctx, link, item.index, highlightLinkIdSet, highlightColor, linkWidth, widthScale, item.layout, highlightedLinkBundles);
+      drawLinkHighlightIfActive(ctx, link, item.index, highlightLinkIdSet, highlightColor, linkWidth, widthScale, item.layout, highlightedLinkBundles, highlightLinkAlphas);
       drawLineCanvas(ctx, link, linkWidth, linkColorscheme, linkAttribsToColorIndices, {
         widthScale,
         minLength: MIN_3D_LINK_SCREEN_LENGTH,
@@ -200,15 +207,15 @@ export function render3DQueue(ctx, items, drawParams, gridOptions) {
         enableShading,
         alpha,
       });
-      drawNodeHighlightIfActive(ctx, node, highlightNodeIdSet, highlightColor, scale, alpha);
-      drawNodeHighlightIfActive(ctx, node, communityHighlightNodeIdSet, communityHighlightColor, scale, alpha);
+      drawNodeHighlightIfActive(ctx, node, highlightNodeIdSet, highlightColor, scale, alpha * getSelectionAlpha(node.id, highlightNodeAlphas));
+      drawNodeHighlightIfActive(ctx, node, communityHighlightNodeIdSet, communityHighlightColor, scale, alpha * getSelectionAlpha(node.id, communityHighlightNodeAlphas));
       if (alpha < 1) ctx.restore();
     } else if (item.type === "label") {
       flushLinkChevrons();
       const alpha = getRenderAlpha(item.node);
-      if (alpha <= 0) continue;
+      if (alpha <= 0 || labelOpacity <= 0) continue;
       ctx.save();
-      ctx.globalAlpha *= alpha;
+      ctx.globalAlpha *= alpha * labelOpacity;
       drawLabel(ctx, item.node, item.mapEntry, textColor);
       ctx.restore();
     }
@@ -227,10 +234,17 @@ export function render2DGraph(ctx, graphData, nodeMap, params) {
     nodeAttribsToColorIndices,
     textColor,
     highlightNodeIds,
+    highlightNodeAlphas,
     highlightLinkIds,
+    highlightLinkAlphas,
     communityHighlightNodeIds,
+    communityHighlightNodeAlphas,
     highlightColor,
     communityHighlightColor,
+    labelOpacity = 1,
+    focusFromNodeId,
+    focusToNodeId,
+    focusProgress = 1,
   } = params;
   const highlightNodeIdSet = toNodeIdSet(highlightNodeIds);
   const highlightLinkIdSet = toNodeIdSet(highlightLinkIds);
@@ -240,20 +254,20 @@ export function render2DGraph(ctx, graphData, nodeMap, params) {
   const linkLayouts = getParallelLinkLayoutData(graphData.links);
   for (let index = 0; index < graphData.links.length; index += 1) {
     const link = graphData.links[index];
-    const alpha = getRenderAlpha(link);
+    const alpha = getRenderAlpha(link) * getInterpolatedFocusAlpha(link, focusFromNodeId, focusToNodeId, focusProgress);
     if (alpha <= 0) continue;
     if (alpha < 1) {
       ctx.save();
       ctx.globalAlpha *= alpha;
     }
-    drawLinkHighlightIfActive(ctx, link, index, highlightLinkIdSet, highlightColor, linkWidth, 1, linkLayouts.get(index), highlightedLinkBundles);
+    drawLinkHighlightIfActive(ctx, link, index, highlightLinkIdSet, highlightColor, linkWidth, 1, linkLayouts.get(index), highlightedLinkBundles, highlightLinkAlphas);
     drawLineCanvas(ctx, link, linkWidth, linkColorscheme, linkAttribsToColorIndices, { layout: linkLayouts.get(index), drawChevron: false });
     if (alpha < 1) ctx.restore();
   }
 
   drawLineChevronQueueCanvas(
     ctx,
-    graphData.links.map((link, index) => ({ link, layout: linkLayouts.get(index), alpha: getRenderAlpha(link) })),
+    graphData.links.map((link, index) => ({ link, layout: linkLayouts.get(index), alpha: getRenderAlpha(link) * getInterpolatedFocusAlpha(link, focusFromNodeId, focusToNodeId, focusProgress) })),
     linkWidth,
     linkColorscheme,
     linkAttribsToColorIndices,
@@ -268,11 +282,14 @@ export function render2DGraph(ctx, graphData, nodeMap, params) {
       ctx.globalAlpha *= alpha;
     }
     drawCircleCanvas(ctx, node, mapEntry?.circle, circleBorderColor, nodeColorscheme, nodeAttribsToColorIndices, { alpha });
-    drawNodeHighlightIfActive(ctx, node, highlightNodeIdSet, highlightColor, 1, alpha);
-    drawNodeHighlightIfActive(ctx, node, communityHighlightNodeIdSet, communityHighlightColor, 1, alpha);
+    drawNodeHighlightIfActive(ctx, node, highlightNodeIdSet, highlightColor, 1, alpha * getSelectionAlpha(node.id, highlightNodeAlphas));
+    drawNodeHighlightIfActive(ctx, node, communityHighlightNodeIdSet, communityHighlightColor, 1, alpha * getSelectionAlpha(node.id, communityHighlightNodeAlphas));
     const labelVisible = node.labelVisible ?? mapEntry?.nodeLabel?.visible ?? false;
-    if (labelVisible) {
+    if (labelVisible && labelOpacity > 0) {
+      ctx.save();
+      ctx.globalAlpha *= labelOpacity;
       drawLabel(ctx, node, mapEntry, textColor);
+      ctx.restore();
     }
     if (alpha < 1) ctx.restore();
   }
@@ -417,7 +434,7 @@ function getHighlightBundleKey(link, index) {
   return getUndirectedLinkKey(sourceId, targetId) ?? getLinkIdText(link, index, link?.__sourceId, link?.__targetId);
 }
 
-function drawLinkHighlightIfActive(ctx, link, index, linkIdSet, color, linkWidth, widthScale = 1, layout = null, highlightedBundles = null) {
+function drawLinkHighlightIfActive(ctx, link, index, linkIdSet, color, linkWidth, widthScale = 1, layout = null, highlightedBundles = null, alphas = null) {
   const linkIndex = Number.isInteger(link?.__linkIndex) ? link.__linkIndex : index;
   const linkId = getLinkIdText(link, linkIndex, link?.__sourceId, link?.__targetId);
   if (!link || !linkIdSet?.has?.(linkId) || !color) return;
@@ -443,6 +460,7 @@ function drawLinkHighlightIfActive(ctx, link, index, linkIdSet, color, linkWidth
   const bundleWidth = getBaseLinkWidth(linkWidth) * getDepthScale(widthScale) * getLinkAttribCount(link) * laneCount;
 
   ctx.save();
+  ctx.globalAlpha *= getSelectionAlpha(linkId, alphas);
   ctx.globalCompositeOperation = "lighter";
   ctx.strokeStyle = color;
   ctx.lineCap = "round";
@@ -524,6 +542,18 @@ function getRenderAlpha(item) {
   const alpha = Number.parseFloat(item?.__alpha);
   if (!Number.isFinite(alpha)) return 1;
   return clamp(alpha, 0, 1);
+}
+
+function getSelectionAlpha(id, alphas) {
+  const alpha = alphas?.[String(id)];
+  return Number.isFinite(alpha) ? clamp(alpha, 0, 1) : 1;
+}
+
+function getInterpolatedFocusAlpha(link, fromNodeId, toNodeId, progress) {
+  const getAlpha = (nodeId) => nodeId == null || String(getEndpointIdText(link?.__sourceId ?? link?.source)) === String(nodeId)
+    || String(getEndpointIdText(link?.__targetId ?? link?.target)) === String(nodeId) ? 1 : 0.15;
+  const t = clamp(Number.isFinite(progress) ? progress : 1, 0, 1);
+  return getAlpha(fromNodeId) * (1 - t) + getAlpha(toNodeId) * t;
 }
 
 function toNodeIdSet(ids) {

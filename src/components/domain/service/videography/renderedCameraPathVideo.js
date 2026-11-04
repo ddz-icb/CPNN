@@ -7,6 +7,7 @@ import {
   createRenderedCameraPathPreviewSetup,
 } from "./renderedCameraPathSetup.js";
 import { createWebMCanvasEncoder, VIDEO_ENCODER_ERROR_CODE } from "./videoEncoding.js";
+import { createMp4CanvasEncoder } from "./mp4Encoding.js";
 import {
   VIDEO_EXPORT_FORMAT_DEFAULT,
   VIDEO_EXPORT_FORMAT_MP4,
@@ -31,6 +32,7 @@ export async function recordCameraPathVideo({
   app,
   appearance,
   container,
+  sceneContainer = container,
   graphName,
   graphData,
   nodeMap,
@@ -62,6 +64,7 @@ export async function recordCameraPathVideo({
     keyframes,
     app,
     container,
+    sceneContainer,
     graphData,
     nodeMap,
     linkWidth,
@@ -94,6 +97,7 @@ export async function previewCameraPathVideo({
   keyframes,
   app,
   container,
+  sceneContainer = container,
   graphData,
   nodeMap,
   linkWidth,
@@ -122,10 +126,11 @@ export async function previewCameraPathVideo({
     throw new Error("The graph canvas is not ready for video preview.");
   }
 
-  const { previewCanvas, context, timeline, frameRenderer } = createRenderedCameraPathPreviewSetup({
+  const { previewCanvas, panelCanvas, context, timeline, frameRenderer } = createRenderedCameraPathPreviewSetup({
     keyframes,
     app,
     container,
+    sceneContainer,
     sourceCanvas,
     graphData,
     nodeMap,
@@ -157,10 +162,26 @@ export async function previewCameraPathVideo({
     });
   } finally {
     previewCanvas.remove();
+    panelCanvas?.remove();
   }
 }
 
 async function recordRenderedCameraPathMp4({ captureCanvas, context, timeline, frameSchedule, frameRenderer, exportConfig, graphName, onProgress }) {
+  const mp4Encoder = await createMp4CanvasEncoder({
+    canvas: captureCanvas,
+    width: captureCanvas.width,
+    height: captureCanvas.height,
+    fps: VIDEO_EXPORT_FPS,
+    bitrate: exportConfig.bitrateMbps * 1000 * 1000,
+  });
+  if (mp4Encoder) {
+    try {
+      return await recordRenderedFramesWithEncoder(mp4Encoder, { captureCanvas, context, timeline, frameSchedule, frameRenderer, graphName, onProgress });
+    } catch (error) {
+      mp4Encoder.close();
+      if (!getSupportedRecorderMimeType(VIDEO_EXPORT_FORMAT_MP4)) throw error;
+    }
+  }
   const mp4MimeType = getSupportedRecorderMimeType(VIDEO_EXPORT_FORMAT_MP4);
   if (!mp4MimeType) {
     throw new Error("This browser does not support MP4 video export. Choose WebM, or use a browser with MP4 MediaRecorder support.");
@@ -202,18 +223,7 @@ async function recordRenderedCameraPathWebm({ captureCanvas, context, timeline, 
   }
 
   try {
-    for (let frameIndex = 0; frameIndex < frameSchedule.length; frameIndex += 1) {
-      const frame = frameSchedule[frameIndex];
-      frameRenderer.drawFrameAtTime(context, timeline, frame.timeMs);
-      await webmEncoder.encodeCanvasFrame(captureCanvas, frame);
-      onProgress?.(frameSchedule.length <= 1 ? 1 : frameIndex / (frameSchedule.length - 1));
-    }
-
-    const blob = await webmEncoder.finalize();
-    const filename = buildTrackingShotFilename(graphName, webmEncoder.extension);
-    triggerDownload(blob, filename);
-    onProgress?.(1);
-    return { blob, filename };
+    return await recordRenderedFramesWithEncoder(webmEncoder, { captureCanvas, context, timeline, frameSchedule, frameRenderer, graphName, onProgress });
   } catch (error) {
     webmEncoder.close();
     if (error?.code === VIDEO_ENCODER_ERROR_CODE) {
@@ -230,6 +240,21 @@ async function recordRenderedCameraPathWebm({ captureCanvas, context, timeline, 
     }
     throw error;
   }
+}
+
+async function recordRenderedFramesWithEncoder(encoder, { captureCanvas, context, timeline, frameSchedule, frameRenderer, graphName, onProgress }) {
+  for (let frameIndex = 0; frameIndex < frameSchedule.length; frameIndex += 1) {
+    const frame = frameSchedule[frameIndex];
+    frameRenderer.drawFrameAtTime(context, timeline, frame.timeMs);
+    await encoder.encodeCanvasFrame(captureCanvas, frame);
+    onProgress?.(frameSchedule.length <= 1 ? 1 : frameIndex / (frameSchedule.length - 1));
+  }
+
+  const blob = await encoder.finalize();
+  const filename = buildTrackingShotFilename(graphName, encoder.extension);
+  triggerDownload(blob, filename);
+  onProgress?.(1);
+  return { blob, filename };
 }
 
 function recordRenderedCameraPathWebmWithMediaRecorder({

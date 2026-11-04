@@ -13,6 +13,14 @@ export function getPixiCanvas(app) {
   return app?.canvas ?? app?.renderer?.canvas ?? null;
 }
 
+export function getVideoSceneContainer(container) {
+  if (typeof window === "undefined") return container;
+  return {
+    width: Math.max(1, finiteOr(window.innerWidth, container?.width ?? 1)),
+    height: Math.max(1, finiteOr(window.innerHeight, container?.height ?? 1)),
+  };
+}
+
 export function getVideoExportScale(container, preset = VIDEO_EXPORT_QUALITY_DEFAULT) {
   const outputContainer = getVideoExportContainer(container, getVideoExportConfig(preset));
   return getVideoViewportTransform(container, outputContainer).k;
@@ -56,12 +64,13 @@ export function createVideoPreviewCanvas(sourceCanvas, outputContainer) {
   previewCanvas.width = outputContainer.width;
   previewCanvas.height = outputContainer.height;
   previewCanvas.setAttribute("aria-hidden", "true");
+  previewCanvas.dataset.videoPreviewGraph = "true";
   Object.assign(previewCanvas.style, {
-    position: "absolute",
+    position: "fixed",
     inset: "0",
-    width: "100%",
-    height: "100%",
-    zIndex: "30",
+    width: "100vw",
+    height: "100vh",
+    zIndex: "2",
     pointerEvents: "none",
   });
 
@@ -70,8 +79,26 @@ export function createVideoPreviewCanvas(sourceCanvas, outputContainer) {
     throw new Error("The graph canvas is not attached to the page.");
   }
 
-  parent.appendChild(previewCanvas);
+  (document.body ?? parent).appendChild(previewCanvas);
   return previewCanvas;
+}
+
+export function createVideoPreviewPanelCanvas(outputContainer) {
+  const panelCanvas = document.createElement("canvas");
+  panelCanvas.width = outputContainer.width;
+  panelCanvas.height = outputContainer.height;
+  panelCanvas.setAttribute("aria-hidden", "true");
+  panelCanvas.dataset.videoPreviewPanel = "true";
+  Object.assign(panelCanvas.style, {
+    position: "fixed",
+    inset: "0",
+    width: "100vw",
+    height: "100vh",
+    zIndex: "12010",
+    pointerEvents: "none",
+  });
+  document.body.appendChild(panelCanvas);
+  return panelCanvas;
 }
 
 export function createCanvasCaptureStream(canvas) {

@@ -1,7 +1,8 @@
 import { afterEach, expect, test, vi } from "vitest";
-import { createCapturedKeyframeScene } from "../../src/components/adapters/gui/sidebar/videographyScene.js";
+import { createCapturedKeyframeScene, createTooltipOverlayController, getRightPanelOverlayRect, getTooltipOverlayForSample } from "../../src/components/adapters/gui/sidebar/videographyScene.js";
 import { useAppearance } from "../../src/components/adapters/state/appearanceState.js";
 import { useColorschemeState, ibmAntiBlindness } from "../../src/components/adapters/state/colorschemeState.js";
+import { useTooltipSettings } from "../../src/components/adapters/state/tooltipState.js";
 import { captureCurrentView } from "../../src/components/domain/service/videography/cameraView.js";
 import { createCameraKeyframe } from "../../src/components/domain/service/videography/cameraPathKeyframes.js";
 import { createCameraPathTimeline } from "../../src/components/domain/service/videography/cameraPathTimeline.js";
@@ -9,6 +10,7 @@ import { createCameraPathFrameRenderer } from "../../src/components/domain/servi
 import { renderGraphFrameToCanvas } from "../../src/components/domain/service/download/exportRender.js";
 import { getCameraViewParams, projectPoint3D, setCameraEuler } from "../../src/components/domain/service/canvas_drawing/camera3D.js";
 import { createRenderedCameraPathPreviewSetup, createRenderedCameraPathExportSetup } from "../../src/components/domain/service/videography/renderedCameraPathSetup.js";
+import { playRenderedCameraPathPreview } from "../../src/components/domain/service/videography/cameraPathFramePlayback.js";
 
 // Keep capture, sampling, projection and viewport transforms real; inspect the final drawing input.
 vi.mock("../../src/components/domain/service/download/exportRender.js", async (importOriginal) => ({
@@ -16,7 +18,7 @@ vi.mock("../../src/components/domain/service/download/exportRender.js", async (i
 }));
 
 afterEach(() => {
-  for (const store of [useAppearance, useColorschemeState]) store.setState(store.getInitialState(), true);
+  for (const store of [useAppearance, useColorschemeState, useTooltipSettings]) store.setState(store.getInitialState(), true);
   vi.clearAllMocks();
   vi.restoreAllMocks();
   document.body.replaceChildren();
@@ -118,6 +120,9 @@ test.each([
   const params = { app, sourceCanvas, container, graphData, nodeMap, keyframes: [keyframe, destination] };
   const preview = createRenderedCameraPathPreviewSetup(params);
   const exported = createRenderedCameraPathExportSetup(params);
+  expect(preview.previewCanvas.style.position).toBe("fixed");
+  expect(preview.previewCanvas.style.zIndex).toBe("2");
+  expect(preview.previewCanvas.parentElement).toBe(document.body);
 
   for (const timeMs of [0, 1500, 3000]) {
     preview.frameRenderer.drawFrameAtTime(preview.context, preview.timeline, timeMs);
@@ -141,4 +146,116 @@ test.each([
       expect(Math.abs(positions[0][1] - positions[1][1])).toBeLessThan(1 / preview.previewCanvas.height);
     }
   }
+});
+
+test("saved focus, highlights, graph positions and viewport interpolate in rendered video", () => {
+  const makeScene = (x, width, focusNodeId, highlightedNodeIds) => ({
+    viewportSnapshot: { width, height: 600 },
+    graphSnapshot: {
+      nodes: [{ id: "A", x, y: 300 }, { id: "B", x: x + 100, y: 300 }, { id: "C", x: x + 200, y: 300 }],
+      links: [{ source: "A", target: "B" }, { source: "B", target: "C" }],
+    },
+    focusNodeId,
+    searchSnapshot: { highlightedNodeIds, highlightedLinkIds: [] },
+    appearanceSnapshot: { showNodeLabels: false, linkWidth: 2 },
+  });
+  const first = createCameraKeyframe({ captured: { mode: "2d", view: { centerX: 350, centerY: 300, zoom: 1 } }, index: 0, transitionSeconds: 2 });
+  const second = createCameraKeyframe({ captured: { mode: "2d", view: { centerX: 450, centerY: 300, zoom: 1 } }, index: 1, transitionSeconds: 2, holdSeconds: 1 });
+  first.scene = makeScene(200, 800, "A", ["A"]);
+  second.scene = makeScene(400, 1000, "C", ["C"]);
+  second.easing = "linear";
+  const timeline = createCameraPathTimeline([first, second]);
+  const context = drawingContext();
+  const renderer = createCameraPathFrameRenderer({
+    container: { width: 800, height: 600 },
+    sceneContainer: { width: 1200, height: 600 },
+    outputContainer: { width: 1200, height: 600 },
+    background: "#ffffff",
+  });
+
+  renderer.drawFrameAtTime(context, timeline, 1000);
+  const [, graph, style, options] = renderGraphFrameToCanvas.mock.lastCall;
+  expect(graph.nodes[0].x).toBeCloseTo(300);
+  expect(options.transform).toEqual({ x: 200, y: 0, k: 1 });
+  expect(style.focusFromNodeId).toBe("A");
+  expect(style.focusToNodeId).toBe("C");
+  expect(style.focusProgress).toBeCloseTo(0.5);
+  expect(style.highlightNodeAlphas).toEqual({ A: 0.5, C: 0.5 });
+  expect(context.translate).toHaveBeenCalledWith(0, 0);
+
+  renderer.drawFrameAtTime(context, timeline, 2500);
+  expect(renderGraphFrameToCanvas.mock.lastCall[2].focusFromNodeId).toBe("C");
+  expect(renderGraphFrameToCanvas.mock.lastCall[2].highlightNodeIds).toEqual(["C"]);
+});
+
+test("keyframes distinguish compact node focus from open node information", () => {
+  const tooltipStore = useTooltipSettings.getState();
+  tooltipStore.setAllTooltipSettings({
+    isClickTooltipActive: false,
+    isNodeFocusOnly: true,
+    clickTooltipData: { node: "A", nodeAttribs: ["kinase"], x: 10, y: 20 },
+  });
+  const focusScene = createCapturedKeyframeScene({ graphData: { nodes: [{ id: "A", x: 10, y: 20 }], links: [] }, container });
+  expect(focusScene.focusNodeId).toBe("A");
+  expect(focusScene.tooltipAction).toBe("close");
+  expect(focusScene.viewportSnapshot).toEqual(container);
+
+  tooltipStore.setAllTooltipSettings({
+    isClickTooltipActive: true,
+    isNodeFocusOnly: false,
+    clickTooltipData: { node: "A", nodeAttribs: ["kinase"], x: 10, y: 20 },
+  });
+  const detailsScene = createCapturedKeyframeScene({ graphData: { nodes: [{ id: "A", x: 10, y: 20 }], links: [] }, container });
+  expect(detailsScene.focusNodeId).toBe("A");
+  expect(detailsScene.tooltipNodeId).toBe("A");
+  expect(detailsScene.tooltipAction).toBe("open");
+  expect(detailsScene.tooltipSnapshot.rows[0]).toEqual({ label: "Node ID", value: "A" });
+});
+
+test("saved node details render on the right without waiting for HTML capture", () => {
+  const scene = {
+    tooltipAction: "open",
+    tooltipNodeId: "A",
+    tooltipSnapshot: { heading: "A", width: 464, rows: [{ label: "Node ID", value: "A" }] },
+    themeSnapshot: { name: "light" },
+  };
+  const context = {
+    save: vi.fn(), restore: vi.fn(), fillRect: vi.fn(), fillText: vi.fn(),
+    measureText: (value) => ({ width: value.length * 8 }),
+  };
+  const overlay = createTooltipOverlayController();
+  overlay.draw(context, { sample: { stepType: "hold", keyframe: { scene } }, sourceContainer: { width: 1920, height: 1080 } });
+  expect(context.fillRect).toHaveBeenCalledWith(1456, 0, 464, 1080);
+  expect(context.fillText.mock.calls.some(([value]) => value === "NODE ID")).toBe(true);
+  overlay.dispose();
+});
+
+test("node information changes only when the destination keyframe is reached", () => {
+  const from = { id: "from" };
+  const to = { id: "to" };
+  const overlays = new Map([["from", { nodeId: "A" }], ["to", { nodeId: "B" }]]);
+  expect(getTooltipOverlayForSample({ stepType: "transition", from, to, rawT: 0.5 }, overlays)?.nodeId).toBe("A");
+  expect(getTooltipOverlayForSample({ stepType: "transition", from, to, rawT: 1 }, overlays)?.nodeId).toBe("B");
+  expect(getTooltipOverlayForSample({ stepType: "hold", keyframe: to }, overlays)?.nodeId).toBe("B");
+  expect(getTooltipOverlayForSample({ stepType: "hold", keyframe: { id: "closed" } }, overlays)).toBeNull();
+});
+
+test("video node information fills the right edge of the frame", () => {
+  const rect = getRightPanelOverlayRect({ width: 496, height: 1112, padding: 16 }, { width: 1920, height: 1080 });
+  expect(rect).toEqual({ x: 1440, y: -16, width: 496, height: 1112 });
+  expect(rect.x + 16 + 464).toBe(1920);
+});
+
+test("an aborted video preview stops before drawing another frame", async () => {
+  const controller = new AbortController();
+  controller.abort();
+  const drawFrameAtTime = vi.fn();
+  await expect(playRenderedCameraPathPreview({
+    context: drawingContext(),
+    timeline: {},
+    totalMs: 1000,
+    frameRenderer: { drawFrameAtTime },
+    signal: controller.signal,
+  })).rejects.toMatchObject({ name: "AbortError" });
+  expect(drawFrameAtTime).not.toHaveBeenCalled();
 });

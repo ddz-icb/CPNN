@@ -46,6 +46,7 @@ export function useAddKeyframe() {
         graphData: graphState.graph?.data,
         nodeMap: pixiState.nodeMap,
         mode: captured.mode,
+        container,
       });
       nextKeyframe = {
         ...createCameraKeyframe({

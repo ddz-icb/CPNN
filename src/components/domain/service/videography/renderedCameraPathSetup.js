@@ -6,15 +6,18 @@ import {
 } from "./videoExportConfig.js";
 import {
   createVideoPreviewCanvas,
+  createVideoPreviewPanelCanvas,
   createVideoFrameSchedule,
   getVideoExportContainer,
   getVideoPreviewContainer,
+  getVideoViewportTransform,
 } from "./videoCanvas.js";
 
 export function createRenderedCameraPathExportSetup({
   keyframes,
   app,
   container,
+  sceneContainer = container,
   graphData,
   nodeMap,
   linkWidth,
@@ -36,7 +39,7 @@ export function createRenderedCameraPathExportSetup({
   drawOverlay,
 }) {
   const exportConfig = getVideoExportConfig(exportQualityPreset);
-  const outputContainer = getVideoExportContainer(container, exportConfig);
+  const outputContainer = getVideoExportContainer(sceneContainer, exportConfig);
   const captureCanvas = document.createElement("canvas");
   captureCanvas.width = outputContainer.width;
   captureCanvas.height = outputContainer.height;
@@ -51,6 +54,7 @@ export function createRenderedCameraPathExportSetup({
   const frameRenderer = createRenderedFrameRenderer({
     app,
     container,
+    sceneContainer,
     outputContainer,
     graphData,
     nodeMap,
@@ -78,6 +82,7 @@ export function createRenderedCameraPathPreviewSetup({
   keyframes,
   app,
   container,
+  sceneContainer = container,
   sourceCanvas,
   graphData,
   nodeMap,
@@ -97,18 +102,35 @@ export function createRenderedCameraPathPreviewSetup({
   holdSeconds,
   drawOverlay,
 }) {
-  const outputContainer = getVideoPreviewContainer(container);
+  const outputContainer = getVideoPreviewContainer(sceneContainer);
   const previewCanvas = createVideoPreviewCanvas(sourceCanvas, outputContainer);
   const context = previewCanvas.getContext("2d", { alpha: false });
   if (!context) {
     previewCanvas.remove();
     throw new Error("Could not prepare the video preview canvas.");
   }
+  const panelCanvas = drawOverlay ? createVideoPreviewPanelCanvas(outputContainer) : null;
+  const panelContext = panelCanvas?.getContext("2d");
+  if (panelCanvas && !panelContext) {
+    previewCanvas.remove();
+    panelCanvas.remove();
+    throw new Error("Could not prepare the video node information panel.");
+  }
+  const viewportTransform = getVideoViewportTransform(sceneContainer, outputContainer);
+  const drawPreviewOverlay = panelContext && drawOverlay ? (_context, frame) => {
+    panelContext.clearRect(0, 0, outputContainer.width, outputContainer.height);
+    panelContext.save();
+    panelContext.translate(viewportTransform.x, viewportTransform.y);
+    panelContext.scale(viewportTransform.k, viewportTransform.k);
+    drawOverlay(panelContext, frame);
+    panelContext.restore();
+  } : null;
 
   const timeline = createCameraPathTimeline(keyframes, holdSeconds);
   const frameRenderer = createRenderedFrameRenderer({
     app,
     container,
+    sceneContainer,
     outputContainer,
     graphData,
     nodeMap,
@@ -125,15 +147,16 @@ export function createRenderedCameraPathPreviewSetup({
     enableShading,
     showGrid,
     gridLines,
-    drawOverlay,
+    drawOverlay: drawPreviewOverlay,
   });
 
-  return { previewCanvas, context, timeline, frameRenderer };
+  return { previewCanvas, panelCanvas, context, timeline, frameRenderer };
 }
 
 function createRenderedFrameRenderer({
   app,
   container,
+  sceneContainer,
   outputContainer,
   graphData,
   nodeMap,
@@ -156,6 +179,7 @@ function createRenderedFrameRenderer({
   return createCameraPathFrameRenderer({
     app,
     container,
+    sceneContainer,
     outputContainer,
     graphData,
     nodeMap,

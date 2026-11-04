@@ -11,6 +11,7 @@ export function playRenderedCameraPathPreview({ context, timeline, totalMs, fram
     let finished = false;
 
     const renderAt = (timeMs) => {
+      throwIfAborted(signal);
       frameRenderer.drawFrameAtTime(context, timeline, timeMs);
       onProgress?.(totalMs > 0 ? clamp(timeMs / totalMs, 0, 1) : 1);
     };
