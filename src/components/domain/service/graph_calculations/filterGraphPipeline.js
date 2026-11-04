@@ -85,6 +85,12 @@ export function applyGraphPrefilters(graphData, settings = {}) {
       maxLinkThreshold: settings.maxEdgeCorr,
       minCompSize: settings.minCompSize,
       maxCompSize: settings.maxCompSize,
+      minKCoreSize: settings.minKCoreSize ?? 0,
+      componentDensity: settings.componentDensity,
+      maxComponentDensity: settings.maxComponentDensity,
+      nodeIdFilters: settings.nodeIdFilters,
+      nodeFilter: settings.nodeFilter ?? true,
+      linkFilter: settings.linkFilter ?? true,
     },
     mergeByName: settings.mergeByName,
   }).graphData;

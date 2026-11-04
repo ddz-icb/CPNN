@@ -250,4 +250,40 @@ describe("combined graph filters", () => {
       },
     ]);
   });
+
+  test("applies each additional upload filter through the shared pipeline", () => {
+    const graph = createGraph({
+      nodes: [
+        { id: "A", attribs: ["keep"] },
+        { id: "B", attribs: ["keep"] },
+        { id: "C", attribs: ["keep"] },
+        { id: "D", attribs: ["keep"] },
+        { id: "E", attribs: ["keep"] },
+        { id: "X", attribs: ["drop"] },
+        { id: "BAD_NODE", attribs: ["keep"] },
+      ],
+      links: [
+        { id: "a-b", source: "A", target: "B", attrib: "keep" },
+        { id: "a-c", source: "A", target: "C", attrib: "keep" },
+        { id: "b-c", source: "B", target: "C", attrib: "keep" },
+        { id: "d-e", source: "D", target: "E", attrib: "drop" },
+      ],
+    });
+
+    const cases = [
+      { settings: { minKCoreSize: 2 }, expectedNodes: ["A", "B", "C"] },
+      { settings: { componentDensity: 1.5 }, expectedNodes: ["A", "B", "C"] },
+      { settings: { maxComponentDensity: 1.5 }, expectedNodes: ["D", "E", "X", "BAD_NODE"] },
+      { settings: { nodeIdFilters: parseNodeIdFilters("BAD") }, excludedNode: "BAD_NODE" },
+      { settings: { nodeFilter: attribFilter("attr:keep") }, excludedNode: "X" },
+      { settings: { linkFilter: attribFilter("attr:keep") }, excludedLink: "d-e" },
+    ];
+
+    cases.forEach(({ settings, expectedNodes, excludedNode, excludedLink }) => {
+      const filtered = applyGraphPrefilters(graph, { minCompSize: 1, ...settings });
+      if (expectedNodes) assert.deepEqual(nodeIds(filtered), expectedNodes);
+      if (excludedNode) assert.equal(nodeIds(filtered).includes(excludedNode), false);
+      if (excludedLink) assert.equal(linkIds(filtered).includes(excludedLink), false);
+    });
+  });
 });

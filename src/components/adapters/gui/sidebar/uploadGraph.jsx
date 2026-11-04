@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 
 import { exampleGraphJson } from "../../../../assets/exampleGraphJSON.js";
 import { exampleGraphRaw } from "../../../../assets/exampleGraphRawTSV.js";
@@ -6,7 +6,10 @@ import { exampleGraphTsv } from "../../../../assets/exampleGraphMatrixTSV.js";
 import { graphService } from "../../../application/services/graphService.js";
 import { downloadObjectAsFile, downloadTsvFile } from "../../../domain/service/download/download.js";
 import { Button, ButtonPopup, Popup, FieldBlock, SelectFieldBlock, SliderBlock, SwitchBlock } from "../reusable_components/sidebarComponents.jsx";
+import { ParsedFilterBlock } from "../reusable_components/parsedFilterBlock.jsx";
 import { isTypingTarget, isPopupOpen } from "../hooks/keyboardUtils.js";
+import { parseAttribsFilter } from "../../../domain/service/parsing/attribsFilterParsing.js";
+import { parseNodeIdFilters } from "../../../domain/service/parsing/nodeIdFilterParsing.js";
 import {
   maxCompSizeDescriptionUpload,
   minCompSizeDescriptionUpload,
@@ -17,7 +20,15 @@ import {
   uploadGraphDescription,
   uploadGraphDataFormat,
 } from "./descriptions/dataDescriptions.jsx";
-import { mergeByNameDescription } from "./descriptions/filterDescriptions.jsx";
+import {
+  mergeByNameDescription,
+  minKCoreSizeDescription,
+  componentDensityDescription,
+  maxComponentDensityDescription,
+  nodeIdFilterDescription,
+  nodeFilterDescription,
+  linkFilterDescription,
+} from "./descriptions/filterDescriptions.jsx";
 
 const dataFormatOptions = [
   { value: "json", label: "JSON" },
@@ -56,6 +67,8 @@ function GraphPrefilterPopup({
   maxCompSizeText,
   setMaxCompSize,
   setMaxCompSizeText,
+  extraFilters,
+  setExtraFilter,
 }) {
   const usesListedWeights = dataFormat === "json";
   const maxLinkThresholdLabel = usesListedWeights ? "Maximum absolute link weight" : "Maximum absolute link correlation";
@@ -64,6 +77,7 @@ function GraphPrefilterPopup({
     <ButtonPopup buttonText={"Prefilter Graph"} heading={"Prefilter Graph"} onClose={onCloseUploadPopup}>
       {({ closePopup }) => (
         <>
+          <div className="table-list-heading">Link Filters</div>
           <SwitchBlock
             variant="popup"
             value={ignoreNegatives}
@@ -72,15 +86,6 @@ function GraphPrefilterPopup({
             infoHeading={usesListedWeights ? "Ignore negative weights" : "Ignore negative correlations"}
             infoDescription={ignoreNegativesDescription}
           />
-          <SwitchBlock
-            variant="popup"
-            value={mergeByName}
-            setValue={() => setMergeProtein(!mergeByName)}
-            text={"Merge nodes sharing the same name"}
-            infoHeading={"Merge Nodes by Name"}
-            infoDescription={mergeByNameDescription}
-          />
-          <div className="block-section"></div>
           {usesListedWeights ? (
             <FieldBlock
               variant="popup"
@@ -123,6 +128,79 @@ function GraphPrefilterPopup({
             infoHeading={maxLinkThresholdLabel}
             infoDescription={maxLinkCorrDescription}
           />
+          <ParsedFilterBlock
+            text="Filter Links by Attributes"
+            infoHeading="Filtering Links by Attributes"
+            infoDescription={linkFilterDescription}
+            valueText={extraFilters.linkFilterText}
+            setValueText={(value) => setExtraFilter("linkFilterText", value)}
+            setValue={(value) => setExtraFilter("linkFilter", value)}
+            parse={parseAttribsFilter}
+          />
+          <div className="table-list-heading">Node Filters</div>
+          <SwitchBlock
+            variant="popup"
+            value={mergeByName}
+            setValue={() => setMergeProtein(!mergeByName)}
+            text={"Merge nodes sharing the same name"}
+            infoHeading={"Merge Nodes by Name"}
+            infoDescription={mergeByNameDescription}
+          />
+          <ParsedFilterBlock
+            text="Filter Nodes by Attributes"
+            infoHeading="Filter Nodes by Attributes"
+            infoDescription={nodeFilterDescription}
+            valueText={extraFilters.nodeFilterText}
+            setValueText={(value) => setExtraFilter("nodeFilterText", value)}
+            setValue={(value) => setExtraFilter("nodeFilter", value)}
+            parse={parseAttribsFilter}
+          />
+          <ParsedFilterBlock
+            text="Exclude Nodes by Name / ID"
+            infoHeading="Exclude Nodes by Name / ID"
+            infoDescription={nodeIdFilterDescription}
+            valueText={extraFilters.nodeIdFilterText}
+            setValueText={(value) => setExtraFilter("nodeIdFilterText", value)}
+            setValue={(value) => setExtraFilter("nodeIdFilters", value)}
+            parse={parseNodeIdFilters}
+          />
+          <FieldBlock
+            variant="popup"
+            valueText={extraFilters.minKCoreSizeText}
+            setValue={(value) => setExtraFilter("minKCoreSize", value)}
+            setValueText={(value) => setExtraFilter("minKCoreSizeText", value)}
+            fallbackValue={0}
+            min={0}
+            step={1}
+            text="Min k-Core Size"
+            infoHeading="Filter by minimum k-Core Decomposition"
+            infoDescription={minKCoreSizeDescription}
+          />
+          <div className="table-list-heading">Component Filters</div>
+          <FieldBlock
+            variant="popup"
+            valueText={extraFilters.componentDensityText}
+            setValue={(value) => setExtraFilter("componentDensity", value)}
+            setValueText={(value) => setExtraFilter("componentDensityText", value)}
+            fallbackValue={0}
+            min={0}
+            step={1}
+            text="Min Component Density"
+            infoHeading="Filter by Component Density"
+            infoDescription={componentDensityDescription}
+          />
+          <FieldBlock
+            variant="popup"
+            valueText={extraFilters.maxComponentDensityText}
+            setValue={(value) => setExtraFilter("maxComponentDensity", value)}
+            setValueText={(value) => setExtraFilter("maxComponentDensityText", value)}
+            fallbackValue=""
+            min={0}
+            step={1}
+            text="Max Component Density"
+            infoHeading="Filter by Component Density"
+            infoDescription={maxComponentDensityDescription}
+          />
           <FieldBlock
             variant="popup"
             valueText={minCompSizeText}
@@ -156,7 +234,17 @@ function GraphPrefilterPopup({
   );
 }
 
-function buildCreateGraphSettings({ dataFormat, ignoreNegatives, minEdgeCorr, maxEdgeCorr, minCompSize, maxCompSize, takeSpearman, mergeByName }) {
+function buildCreateGraphSettings({
+  dataFormat,
+  ignoreNegatives,
+  minEdgeCorr,
+  maxEdgeCorr,
+  minCompSize,
+  maxCompSize,
+  takeSpearman,
+  mergeByName,
+  extraFilters,
+}) {
   return {
     dataFormat,
     ignoreNegatives,
@@ -166,6 +254,12 @@ function buildCreateGraphSettings({ dataFormat, ignoreNegatives, minEdgeCorr, ma
     maxCompSize,
     takeSpearman,
     mergeByName,
+    minKCoreSize: extraFilters.minKCoreSize,
+    componentDensity: extraFilters.componentDensity,
+    maxComponentDensity: extraFilters.maxComponentDensity,
+    nodeIdFilters: extraFilters.nodeIdFilters,
+    nodeFilter: extraFilters.nodeFilter,
+    linkFilter: extraFilters.linkFilter,
   };
 }
 
@@ -183,11 +277,26 @@ export function UploadGraph() {
   const [maxEdgeCorr, setMaxEdgeCorr] = useState("");
   const [maxEdgeCorrText, setMaxEdgeCorrText] = useState("");
 
-  const [minCompSize, setMinCompSize] = useState(2);
-  const [minCompSizeText, setMinCompSizeText] = useState(2);
+  const [minCompSize, setMinCompSize] = useState(1);
+  const [minCompSizeText, setMinCompSizeText] = useState(1);
 
   const [maxCompSize, setMaxCompSize] = useState("");
   const [maxCompSizeText, setMaxCompSizeText] = useState("");
+  const [extraFilters, setExtraFilters] = useState({
+    minKCoreSize: 0,
+    minKCoreSizeText: 0,
+    componentDensity: 0,
+    componentDensityText: 0,
+    maxComponentDensity: "",
+    maxComponentDensityText: "",
+    nodeIdFilters: [],
+    nodeIdFilterText: "",
+    nodeFilter: true,
+    nodeFilterText: "",
+    linkFilter: true,
+    linkFilterText: "",
+  });
+  const setExtraFilter = useCallback((key, value) => setExtraFilters((current) => ({ ...current, [key]: value })), []);
 
   const usesTabularData = dataFormat === "tabular";
   const closePopup = () => setIsOpen(false);
@@ -268,6 +377,8 @@ export function UploadGraph() {
               maxCompSizeText={maxCompSizeText}
               setMaxCompSize={setMaxCompSize}
               setMaxCompSizeText={setMaxCompSizeText}
+              extraFilters={extraFilters}
+              setExtraFilter={setExtraFilter}
             />
             <Button
               variant="popup"
@@ -285,6 +396,7 @@ export function UploadGraph() {
                   maxCompSize,
                   takeSpearman,
                   mergeByName,
+                  extraFilters,
                 });
 
                 graphService.handleCreateGraph(event.target.files, createGraphSettings);

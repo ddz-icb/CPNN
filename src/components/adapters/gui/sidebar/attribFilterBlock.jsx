@@ -1,11 +1,6 @@
-import { useCallback, useRef, useState } from "react";
-
-import { CodeEditorBlock } from "../reusable_components/sidebarComponents.jsx";
-import { handleEditorChange, runCodeEditor } from "../handlers/buttonHandlerFunctions.js";
+import { ParsedFilterBlock } from "../reusable_components/parsedFilterBlock.jsx";
 import { useFilter } from "../../state/filterState.js";
 import { parseAttribsFilter } from "../../../domain/service/parsing/attribsFilterParsing.js";
-import { useTheme } from "../../state/themeState.js";
-import { useSidebarCodeEditor } from "../reusable_components/useSidebarCodeEditor.js";
 import { linkFilterDescription, nodeFilterDescription } from "./descriptions/filterDescriptions.jsx";
 
 export function LinkAttribFilterBlock() {
@@ -34,43 +29,16 @@ export function NodeAttribFilterBlock() {
 
 function AttribFilterBlock({ text, infoHeading, infoDescription, filterKey, filterTextKey }) {
   const { filter, setFilter } = useFilter();
-  const { theme } = useTheme();
-  const textareaRef = useRef(null);
-  const [compilerError, setCompilerError] = useState(null);
-
-  const valueText = filter[filterTextKey] ?? "";
-
-  const handleEditorChangeCallback = useCallback(
-    (editor) => handleEditorChange(editor, (value) => setFilter(filterTextKey, value)),
-    [setFilter, filterTextKey]
-  );
-
-  useSidebarCodeEditor({
-    textareaRef,
-    value: valueText,
-    onChange: handleEditorChangeCallback,
-    themeName: theme.name,
-  });
-
-  const handleRunFilter = useCallback(() => {
-    runCodeEditor(
-      valueText,
-      (value) => setFilter(filterKey, value),
-      (value) => setFilter(filterTextKey, value),
-      parseAttribsFilter,
-      (error) => setCompilerError(error)
-    );
-  }, [valueText, filterKey, filterTextKey, setFilter]);
 
   return (
-    <CodeEditorBlock
+    <ParsedFilterBlock
       text={text}
-      textareaRef={textareaRef}
-      compilerError={compilerError}
-      onClick={handleRunFilter}
-      defaultValue={valueText}
       infoHeading={infoHeading}
       infoDescription={infoDescription}
+      valueText={filter[filterTextKey] ?? ""}
+      setValueText={(value) => setFilter(filterTextKey, value)}
+      setValue={(value) => setFilter(filterKey, value)}
+      parse={parseAttribsFilter}
     />
   );
 }
