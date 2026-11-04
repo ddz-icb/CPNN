@@ -54,6 +54,22 @@ describe("applyGraphSettings", () => {
     assert.deepEqual(useGraphMetrics.getState().graphMetrics, graphMetricsInit);
   });
 
+  test("initializes the maximum link threshold to the slider limit for each new graph", () => {
+    applyGraphSettings({ name: "first", data: createGraphData({ links: [{ source: "A", target: "B", weight: 123 }] }) });
+    assert.equal(useFilter.getState().filter.maxLinkThreshold, 124);
+
+    useFilter.getState().setFilter("maxLinkThreshold", 10);
+    applyGraphSettings({ name: "second", data: createGraphData({ links: [{ source: "A", target: "B", weight: 0.8 }] }) });
+    assert.equal(useFilter.getState().filter.maxLinkThreshold, 1);
+    assert.equal(useFilter.getState().filter.maxLinkThresholdText, 1);
+
+    applyGraphSettings({
+      name: "saved",
+      data: createGraphData({ links: [{ source: "A", target: "B", weight: 0.8 }], filter: { minLinkThreshold: 0.2, maxLinkThreshold: 0.5 } }),
+    });
+    assert.equal(useFilter.getState().filter.maxLinkThreshold, 0.5);
+  });
+
   test("restores saved 3D appearance settings from graph data without changing the theme", () => {
     const cameraRef = { current: { redraw: null } };
     useAppearance.getState().setAllAppearance({

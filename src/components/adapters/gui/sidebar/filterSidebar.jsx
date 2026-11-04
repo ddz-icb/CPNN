@@ -32,8 +32,9 @@ export function FilterSidebar() {
   const { graphMetrics } = useGraphMetrics();
 
   const lassoSelectionCount = Array.isArray(filter.lassoSelection) ? filter.lassoSelection.length : 0;
+  const hasLinkWeights = Number.isFinite(graphMetrics.linkWeightAbsMax);
   const linkThresholdBounds = getLinkThresholdBounds(graphMetrics.linkWeightAbsMax, minLinkThresholdInit);
-  const defaultMaxLinkThreshold = linkThresholdBounds.defaultMax;
+  const defaultMaxLinkThreshold = linkThresholdBounds.max;
   const thresholdSliderMax = Math.max(
     linkThresholdBounds.max,
     Number(filter.minLinkThreshold) || 0,
@@ -63,34 +64,38 @@ export function FilterSidebar() {
         <Button text={"Reset Filters"} onClick={handleResetFilters} />
       </div>
       <div className="table-list-heading">Link Filters</div>
-      <SliderBlock
-        value={filter.minLinkThreshold}
-        valueText={filter.minLinkThresholdText}
-        setValue={(value) => setFilter("minLinkThreshold", value)}
-        setValueText={(value) => setFilter("minLinkThresholdText", value)}
-        fallbackValue={minLinkThresholdInit}
-        min={linkThresholdBounds.min}
-        max={thresholdSliderMax}
-        inputMax={Infinity}
-        step={linkThresholdBounds.step}
-        text={"Min Link Weight Threshold"}
-        infoHeading={"Filtering Links by Threshold"}
-        infoDescription={minLinkThresholdDescription}
-      />
-      <SliderBlock
-        value={filter.maxLinkThreshold}
-        valueText={filter.maxLinkThresholdText}
-        setValue={(value) => setFilter("maxLinkThreshold", value)}
-        setValueText={(value) => setFilter("maxLinkThresholdText", value)}
-        fallbackValue={defaultMaxLinkThreshold}
-        min={linkThresholdBounds.min}
-        max={thresholdSliderMax}
-        inputMax={Infinity}
-        step={linkThresholdBounds.step}
-        text={"Max Link Weight Threshold"}
-        infoHeading={"Filtering Links by Maximum Threshold"}
-        infoDescription={maxLinkThresholdDescription}
-      />
+      {hasLinkWeights && (
+        <>
+          <SliderBlock
+            value={filter.minLinkThreshold}
+            valueText={filter.minLinkThresholdText}
+            setValue={(value) => setFilter("minLinkThreshold", value)}
+            setValueText={(value) => setFilter("minLinkThresholdText", value)}
+            fallbackValue={minLinkThresholdInit}
+            min={linkThresholdBounds.min}
+            max={thresholdSliderMax}
+            inputMax={Infinity}
+            step={linkThresholdBounds.step}
+            text={"Min Link Weight Threshold"}
+            infoHeading={"Filtering Links by Threshold"}
+            infoDescription={minLinkThresholdDescription}
+          />
+          <SliderBlock
+            value={filter.maxLinkThreshold}
+            valueText={filter.maxLinkThresholdText}
+            setValue={(value) => setFilter("maxLinkThreshold", value)}
+            setValueText={(value) => setFilter("maxLinkThresholdText", value)}
+            fallbackValue={defaultMaxLinkThreshold}
+            min={linkThresholdBounds.min}
+            max={thresholdSliderMax}
+            inputMax={Infinity}
+            step={linkThresholdBounds.step}
+            text={"Max Link Weight Threshold"}
+            infoHeading={"Filtering Links by Maximum Threshold"}
+            infoDescription={maxLinkThresholdDescription}
+          />
+        </>
+      )}
       <LinkAttribFilterBlock />
       <div className="table-list-heading">Node Filters</div>
       <SwitchBlock

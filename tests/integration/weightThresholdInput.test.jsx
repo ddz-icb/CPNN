@@ -56,3 +56,23 @@ test.each([['Min', 'minLinkThreshold'], ['Max', 'maxLinkThreshold']])("%s weight
   expect(useFilter.getState().filter.maxLinkThreshold).toBe(90);
   expect(Number(slider.max)).toBe(90);
 });
+
+test("weight thresholds are hidden for unweighted graphs and shown for zero-weight links", async () => {
+  await act(async () => useGraphMetrics.getState().setGraphMetrics("linkWeightAbsMax", null));
+  expect(host.textContent).not.toContain("Min Link Weight Threshold");
+  expect(host.textContent).not.toContain("Max Link Weight Threshold");
+
+  await act(async () => useGraphMetrics.getState().setGraphMetrics("linkWeightAbsMax", 0));
+  expect(host.textContent).toContain("Min Link Weight Threshold");
+  expect(host.textContent).toContain("Max Link Weight Threshold");
+});
+
+test("reset sets the maximum threshold to the slider limit", async () => {
+  await act(async () => useGraphMetrics.getState().setGraphMetrics("linkWeightAbsMax", 123));
+  await act(async () => [...host.querySelectorAll("button")].find((button) => button.textContent === "Reset Filters").click());
+  const maxBlock = [...host.querySelectorAll(".block-section")].find((element) => element.querySelector("label")?.textContent === "Max Link Weight Threshold");
+  const sliderMax = Number(maxBlock.querySelector('input[type="range"]').max);
+  expect(sliderMax).toBe(124);
+  expect(useFilter.getState().filter.maxLinkThreshold).toBe(sliderMax);
+  expect(useFilter.getState().filter.maxLinkThresholdText).toBe(sliderMax);
+});

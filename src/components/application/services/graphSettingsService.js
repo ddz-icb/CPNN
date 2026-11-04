@@ -139,7 +139,7 @@ function getFilterDefaultsForGraphMetrics(graphMetrics) {
     linkWeightAbsMin > filterInit.minLinkThreshold
       ? roundUpLinkThreshold(linkWeightAbsMin, thresholdBounds)
       : filterInit.minLinkThreshold;
-  const initialMaxThreshold = thresholdBounds.defaultMax;
+  const initialMaxThreshold = thresholdBounds.max;
 
   return {
     ...filterInit,
@@ -200,10 +200,11 @@ function getFiniteFilterNumber(value) {
   return Number.isFinite(numericValue) ? numericValue : null;
 }
 
-function applyGraphFilterSettings(savedFilter, { minAbsWeight, maxAbsWeight }) {
+function applyGraphFilterSettings(savedFilter, { minAbsWeight, maxAbsWeight }, initializeMax = false) {
   const { filter, setAllFilter } = useFilter.getState();
   let nextFilter = { ...filter };
   const hasSavedFilter = isObject(savedFilter);
+  const hasSavedMaxThreshold = hasSavedFilter && getFiniteFilterNumber(savedFilter.maxLinkThreshold) !== null;
 
   if (hasSavedFilter) {
     nextFilter = mergeKnownSettings(filterInit, savedFilter, filterInit, { deriveMissingTextKeys: true });
@@ -215,7 +216,7 @@ function applyGraphFilterSettings(savedFilter, { minAbsWeight, maxAbsWeight }) {
       minAbsWeight > filterInit.minLinkThreshold
         ? roundUpLinkThreshold(minAbsWeight, thresholdBounds)
         : filterInit.minLinkThreshold;
-    const initialMaxThreshold = thresholdBounds.defaultMax;
+    const initialMaxThreshold = thresholdBounds.max;
     const currentMinThreshold = getFiniteFilterNumber(nextFilter.minLinkThreshold);
     const currentMaxThreshold = getFiniteFilterNumber(nextFilter.maxLinkThreshold);
 
@@ -233,7 +234,7 @@ function applyGraphFilterSettings(savedFilter, { minAbsWeight, maxAbsWeight }) {
     }
 
     if (
-      (!hasSavedFilter && currentMaxThreshold === null) ||
+      (!hasSavedMaxThreshold && (initializeMax || currentMaxThreshold === null)) ||
       currentMaxThreshold < thresholdBounds.min ||
       currentMaxThreshold > thresholdBounds.max ||
       (!hasSavedFilter && currentMaxThreshold < minAbsWeight)
@@ -288,7 +289,7 @@ function applyGraphPhysicsSettings(savedPhysics) {
 }
 
 const graphSettingsAppliers = {
-  filter: (graphData, { graphMetrics }) => applyGraphFilterSettings(graphData.filter, graphMetrics),
+  filter: (graphData, { graphMetrics }) => applyGraphFilterSettings(graphData.filter, graphMetrics, true),
   colorscheme: (graphData) => applyGraphColorschemeSettings(graphData),
   appearance: (graphData) => applyGraphAppearanceSettings(graphData.appearance),
   physics: (graphData) => applyGraphPhysicsSettings(graphData.physics),
