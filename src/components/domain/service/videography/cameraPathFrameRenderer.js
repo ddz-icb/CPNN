@@ -64,9 +64,9 @@ export function createCameraPathFrameRenderer({
   return {
     drawFrameAtTime(context, timeline, timeMs) {
       const sample = sampleCameraPathAtMs(timeline, timeMs);
-      if (!sample?.view) return;
+      if (!sample?.view) return sample;
       if (sample.stepType === "hold" && sample.keyframe === lastStaticKeyframe && context === lastContext) {
-        return;
+        return sample;
       }
       const frameContext = getFrameRenderContext(sample, fallbackRenderContext);
 
@@ -88,6 +88,7 @@ export function createCameraPathFrameRenderer({
       context.restore();
       lastStaticKeyframe = sample.stepType === "hold" ? sample.keyframe : null;
       lastContext = context;
+      return sample;
     },
   };
 }

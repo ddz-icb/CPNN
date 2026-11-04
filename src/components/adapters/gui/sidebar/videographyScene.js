@@ -50,6 +50,7 @@ const TOOLTIP_CAPTURE_BASE_WAIT_MS = 120;
 const TOOLTIP_CAPTURE_DETAILS_WAIT_MS = 12000;
 const TOOLTIP_VIDEO_CAPTURE_CLASS = "tooltip-popup--videography-capture";
 const TOOLTIP_VIDEO_PREPARING_CLASS = "tooltip-popup--videography-preparing";
+const TOOLTIP_VIDEO_PREVIEW_CLASS = "tooltip-popup--videography-preview";
 const TOOLTIP_TRANSITION_SHOW_AT = 1;
 
 export function createCapturedKeyframeScene(params = {}) {
@@ -375,6 +376,45 @@ function captureNodeInformationSnapshot(nodeId, graphSnapshot, readDom = true) {
       { label: "Node Entries", value: getNodeIdEntries(nodeId).join(", ") || nodeId },
       { label: "Annotations", value: node?.attribs?.join(", ") || "—" },
     ],
+  };
+}
+
+export function createPreviewNodeInformationController({ nodeMap } = {}) {
+  const previousSettings = useTooltipSettings.getState().tooltipSettings;
+  let lastNodeId;
+  let disposed = false;
+  document.body?.classList.add(TOOLTIP_VIDEO_PREVIEW_CLASS);
+
+  return {
+    sync(sample) {
+      if (disposed || !sample) return;
+      const scene = getKeyframeScene(getTooltipKeyframeForSample(sample));
+      const nodeId = scene.tooltipAction === KEYFRAME_TOOLTIP_ACTION_OPEN ? scene.tooltipNodeId : null;
+      const current = useTooltipSettings.getState().tooltipSettings;
+      if (lastNodeId === nodeId && Boolean(current.isClickTooltipActive) === Boolean(nodeId)
+        && (!nodeId || String(current.clickTooltipData?.node) === String(nodeId))) return;
+
+      lastNodeId = nodeId;
+      if (!nodeId) {
+        useTooltipSettings.getState().setAllTooltipSettings({ ...tooltipInit });
+        return;
+      }
+
+      const node = getTooltipNodeForScene(scene, nodeMap);
+      const clickTooltipData = { node: nodeId, nodeAttribs: node?.attribs ?? [], x: 0, y: 0 };
+      useTooltipSettings.getState().setAllTooltipSettings({
+        ...tooltipInit,
+        isClickTooltipActive: true,
+        clickTooltipData,
+        clickTooltipHistory: [clickTooltipData],
+      });
+    },
+    dispose() {
+      if (disposed) return;
+      disposed = true;
+      useTooltipSettings.getState().setAllTooltipSettings(previousSettings);
+      document.body?.classList.remove(TOOLTIP_VIDEO_PREVIEW_CLASS);
+    },
   };
 }
 

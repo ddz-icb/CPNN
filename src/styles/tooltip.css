@@ -139,6 +139,10 @@
   display: none;
 }
 
+.tooltip-popup--videography-preview .node-details-side-panel .tooltip-popup-navigation {
+  display: none;
+}
+
 .tooltip-popup--videography-preparing .tooltip-popup {
   opacity: 0 !important;
   pointer-events: none;

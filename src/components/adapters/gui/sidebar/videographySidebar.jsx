@@ -51,6 +51,7 @@ import {
 import {
   applyKeyframeScene,
   createCapturedKeyframeScene,
+  createPreviewNodeInformationController,
   createTooltipOverlayController,
   describeKeyframeScene,
   reuseEquivalentGraphSnapshot,
@@ -182,18 +183,18 @@ export function VideographySidebar() {
       async () => {
         const controller = new AbortController();
         previewAbortRef.current = controller;
-        const tooltipOverlay = createTooltipOverlayController({ app: renderState.app });
+        const nodeInformation = createPreviewNodeInformationController({ nodeMap: pixiState.nodeMap });
         try {
           if (controller.signal.aborted) throw new DOMException("Preview cancelled.", "AbortError");
           await previewCameraPathVideo({
             ...frameOptions,
-            drawOverlay: (context, frame) => tooltipOverlay.draw(context, frame),
+            onFrame: nodeInformation.sync,
             onProgress: setRenderProgress,
             signal: controller.signal,
           });
         } finally {
           previewAbortRef.current = null;
-          tooltipOverlay.dispose();
+          nodeInformation.dispose();
         }
       },
       "Previewing camera path...",

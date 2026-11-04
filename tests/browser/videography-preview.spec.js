@@ -60,7 +60,7 @@ test("captured node information uses the right panel without its top navigation"
   expect(Math.abs(capturedBox.height - page.viewportSize().height)).toBeLessThanOrEqual(1);
 });
 
-test("preview starts promptly and shows saved node information", async ({ page }) => {
+test("preview starts promptly and shows the real node information sidebar", async ({ page }) => {
   await page.route("https://rest.uniprot.org/**", (route) => route.fulfill({ status: 404, body: "" }));
   await page.route("https://files.rcsb.org/**", (route) => route.fulfill({ status: 404, body: "" }));
   await page.goto("/");
@@ -97,14 +97,10 @@ test("preview starts promptly and shows saved node information", async ({ page }
   await sidebar.getByRole("button", { name: "Add Keyframe" }).click();
   await sidebar.getByRole("button", { name: "Preview", exact: true }).click();
   await expect(page.locator('canvas[data-video-preview-graph="true"]')).toBeVisible({ timeout: 4000 });
-  await expect.poll(() => page.evaluate(() => {
-    const canvas = document.querySelector('canvas[data-video-preview-panel="true"]');
-    if (!canvas) return 0;
-    try {
-      return canvas.getContext("2d").getImageData(canvas.width - 10, 100, 1, 1).data[3];
-    } catch {
-      return -1;
-    }
-  })).toBeGreaterThan(0);
+  const panel = page.locator(".tooltip-popup.node-details-side-panel");
+  await expect(panel).toBeVisible();
+  await expect(panel.locator(".tooltip-popup-navigation")).toBeHidden();
+  await expect(page.locator('canvas[data-video-preview-panel="true"]')).toHaveCount(0);
   await sidebar.getByRole("button", { name: "Cancel Preview" }).click();
+  await expect(panel).toHaveCount(0);
 });

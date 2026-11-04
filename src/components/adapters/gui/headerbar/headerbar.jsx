@@ -42,6 +42,7 @@ export function HeaderBar({ activePanel, setActivePanel }) {
 
   useEffect(() => {
     if (!isNodeDetailsActive) return;
+    if (document.body?.classList.contains("tooltip-popup--videography-preview")) return;
     if (!activePanel) setActivePanel("mapping");
     if (communityState.selectedCommunityId != null) setCommunityState("selectedCommunityId", null);
   }, [activePanel, communityState.selectedCommunityId, isNodeDetailsActive, setActivePanel, setCommunityState]);

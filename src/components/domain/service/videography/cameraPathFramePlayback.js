@@ -3,7 +3,7 @@ import { VIDEO_EXPORT_FPS } from "./videoExportConfig.js";
 import { createVideoFrameSchedule, wait } from "./videoCanvas.js";
 import { throwIfAborted } from "./cameraPathTiming.js";
 
-export function playRenderedCameraPathPreview({ context, timeline, totalMs, frameRenderer, onProgress, signal }) {
+export function playRenderedCameraPathPreview({ context, timeline, totalMs, frameRenderer, onFrame, onProgress, signal }) {
   return new Promise((resolve, reject) => {
     const startedAt = performance.now();
     const frameIntervalMs = 1000 / VIDEO_EXPORT_FPS;
@@ -12,7 +12,8 @@ export function playRenderedCameraPathPreview({ context, timeline, totalMs, fram
 
     const renderAt = (timeMs) => {
       throwIfAborted(signal);
-      frameRenderer.drawFrameAtTime(context, timeline, timeMs);
+      const sample = frameRenderer.drawFrameAtTime(context, timeline, timeMs);
+      onFrame?.(sample);
       onProgress?.(totalMs > 0 ? clamp(timeMs / totalMs, 0, 1) : 1);
     };
 

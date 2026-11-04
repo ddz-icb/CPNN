@@ -3,6 +3,7 @@ import { defaultCamera } from "../canvas_drawing/render3D.js";
 import {
   getCameraOrientation,
   quaternionFromEuler,
+  rotateVectorByQuaternion,
   setCameraOrientation,
   slerpQuaternions,
 } from "../canvas_drawing/camera3D.js";
@@ -44,6 +45,8 @@ export function captureCurrentView({ app, appearance, container }) {
         rotX: finiteOr(camera?.rotX, defaultCamera.rotX),
         rotY: finiteOr(camera?.rotY, defaultCamera.rotY),
         rotZ: finiteOr(camera?.rotZ, defaultCamera.rotZ),
+        orbitCenter: copyOrbitCenter(camera?.orbitCenter),
+        viewport: { width: container.width, height: container.height },
       },
     };
   }
@@ -88,12 +91,15 @@ export function interpolateCameraView(fromKeyframe, toKeyframe, t) {
   const to = toKeyframe.view;
 
   if (mode === VIEW_MODE_3D) {
+    const orientation = slerpQuaternions(getViewOrientation(from), getViewOrientation(to), amount);
+    const orbitView = interpolateOrbitView(fromKeyframe, toKeyframe, orientation, amount);
     return {
-      x: lerp(from.x, to.x, amount),
-      y: lerp(from.y, to.y, amount),
-      z: lerp(from.z, to.z, amount),
+      x: orbitView?.x ?? lerp(from.x, to.x, amount),
+      y: orbitView?.y ?? lerp(from.y, to.y, amount),
+      z: orbitView?.z ?? lerp(from.z, to.z, amount),
       fov: lerp(from.fov, to.fov, amount),
-      orientation: slerpQuaternions(getViewOrientation(from), getViewOrientation(to), amount),
+      orientation,
+      ...(orbitView && { orbitCenter: orbitView.orbitCenter, viewport: orbitView.viewport }),
     };
   }
 
@@ -113,6 +119,9 @@ function apply3DCameraView(view, { app, appearance, container }) {
   camera.z = finiteOr(view.z, defaultCamera.z);
   camera.fov = clamp(finiteOr(view.fov, defaultCamera.fov), MIN_FOV, MAX_FOV);
   setCameraOrientation(camera, getViewOrientation(view));
+  if (Object.hasOwn(view, "orbitCenter")) {
+    camera.orbitCenter = copyOrbitCenter(view.orbitCenter);
+  }
 
   if (typeof camera.redraw === "function") {
     camera.redraw();
@@ -128,6 +137,69 @@ function getViewOrientation(view) {
     rotY: finiteOr(view?.rotY, defaultCamera.rotY),
     rotZ: finiteOr(view?.rotZ, defaultCamera.rotZ),
   });
+}
+
+function copyOrbitCenter(point) {
+  if (!Number.isFinite(point?.x) || !Number.isFinite(point?.y)) return null;
+  return { x: point.x, y: point.y, z: finiteOr(point.z, 0) };
+}
+
+function interpolateOrbitView(fromKeyframe, toKeyframe, orientation, amount) {
+  const from = fromKeyframe.view;
+  const to = toKeyframe.view;
+  if (!Object.hasOwn(from, "orbitCenter") && !Object.hasOwn(to, "orbitCenter")) return null;
+  const fromViewport = from.viewport ?? fromKeyframe.scene?.viewportSnapshot;
+  const toViewport = to.viewport ?? toKeyframe.scene?.viewportSnapshot;
+  if (!isValidViewport(fromViewport) || !isValidViewport(toViewport)) return null;
+
+  const fromCenter = copyOrbitCenter(from.orbitCenter) ?? defaultOrbitCenter(fromViewport);
+  const toCenter = copyOrbitCenter(to.orbitCenter) ?? defaultOrbitCenter(toViewport);
+  const viewport = {
+    width: lerp(fromViewport.width, toViewport.width, amount),
+    height: lerp(fromViewport.height, toViewport.height, amount),
+  };
+  const center = {
+    x: lerp(fromCenter.x, toCenter.x, amount),
+    y: lerp(fromCenter.y, toCenter.y, amount),
+    z: lerp(fromCenter.z, toCenter.z, amount),
+  };
+  const fromOffset = cameraOrbitOffset(from, fromCenter, fromViewport);
+  const toOffset = cameraOrbitOffset(to, toCenter, toViewport);
+  const rotatedCenter = rotateOrbitCenter(center, viewport, orientation);
+
+  return {
+    x: viewport.width / 2 + rotatedCenter.x + lerp(fromOffset.x, toOffset.x, amount),
+    y: viewport.height / 2 + rotatedCenter.y + lerp(fromOffset.y, toOffset.y, amount),
+    z: rotatedCenter.z + lerp(fromOffset.z, toOffset.z, amount),
+    orbitCenter: amount >= 1 && !to.orbitCenter ? null : center,
+    viewport,
+  };
+}
+
+function cameraOrbitOffset(view, center, viewport) {
+  const rotatedCenter = rotateOrbitCenter(center, viewport, getViewOrientation(view));
+  return {
+    x: view.x - viewport.width / 2 - rotatedCenter.x,
+    y: view.y - viewport.height / 2 - rotatedCenter.y,
+    z: view.z - rotatedCenter.z,
+  };
+}
+
+function rotateOrbitCenter(center, viewport, orientation) {
+  return rotateVectorByQuaternion({
+    x: center.x - viewport.width / 2,
+    y: center.y - viewport.height / 2,
+    z: center.z,
+  }, orientation);
+}
+
+function defaultOrbitCenter(viewport) {
+  return { x: viewport.width / 2, y: viewport.height / 2, z: 0 };
+}
+
+function isValidViewport(viewport) {
+  return Number.isFinite(viewport?.width) && viewport.width > 0
+    && Number.isFinite(viewport?.height) && viewport.height > 0;
 }
 
 function apply2DCameraView(view, { app, container, syncZoom }) {

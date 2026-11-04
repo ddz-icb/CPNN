@@ -115,6 +115,7 @@ export async function previewCameraPathVideo({
   gridLines = [],
   holdSeconds = 0,
   drawOverlay,
+  onFrame,
   onProgress,
   signal,
 }) {
@@ -157,6 +158,7 @@ export async function previewCameraPathVideo({
       timeline,
       totalMs: timeline.totalMs,
       frameRenderer,
+      onFrame,
       onProgress,
       signal,
     });

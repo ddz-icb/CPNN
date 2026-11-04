@@ -1,5 +1,5 @@
 import { afterEach, expect, test, vi } from "vitest";
-import { createCapturedKeyframeScene, createTooltipOverlayController, getRightPanelOverlayRect, getTooltipOverlayForSample } from "../../src/components/adapters/gui/sidebar/videographyScene.js";
+import { createCapturedKeyframeScene, createPreviewNodeInformationController, createTooltipOverlayController, getRightPanelOverlayRect, getTooltipOverlayForSample } from "../../src/components/adapters/gui/sidebar/videographyScene.js";
 import { useAppearance } from "../../src/components/adapters/state/appearanceState.js";
 import { useColorschemeState, ibmAntiBlindness } from "../../src/components/adapters/state/colorschemeState.js";
 import { useTooltipSettings } from "../../src/components/adapters/state/tooltipState.js";
@@ -228,6 +228,26 @@ test("saved node details render on the right without waiting for HTML capture", 
   expect(context.fillRect).toHaveBeenCalledWith(1456, 0, 464, 1080);
   expect(context.fillText.mock.calls.some(([value]) => value === "NODE ID")).toBe(true);
   overlay.dispose();
+});
+
+test("preview shows real node details through the transition and restores the previous sidebar state", () => {
+  const originalSettings = { ...useTooltipSettings.getState().tooltipSettings, isNodeFocusOnly: true, clickTooltipData: { node: "B" } };
+  useTooltipSettings.getState().setAllTooltipSettings(originalSettings);
+  const from = { scene: { tooltipAction: "open", tooltipNodeId: "A", graphSnapshot: { nodes: [{ id: "A", attribs: ["kinase"] }] } } };
+  const to = { scene: { tooltipAction: "close", tooltipNodeId: null } };
+  const preview = createPreviewNodeInformationController();
+  expect(document.body.classList.contains("tooltip-popup--videography-preview")).toBe(true);
+  preview.sync({ stepType: "transition", from, to, rawT: 0.5 });
+  expect(useTooltipSettings.getState().tooltipSettings).toMatchObject({
+    isClickTooltipActive: true,
+    isViewFocusActive: false,
+    clickTooltipData: { node: "A", nodeAttribs: ["kinase"] },
+  });
+  preview.sync({ stepType: "transition", from, to, rawT: 1 });
+  expect(useTooltipSettings.getState().tooltipSettings.isClickTooltipActive).toBe(false);
+  preview.dispose();
+  expect(useTooltipSettings.getState().tooltipSettings).toBe(originalSettings);
+  expect(document.body.classList.contains("tooltip-popup--videography-preview")).toBe(false);
 });
 
 test("node information changes only when the destination keyframe is reached", () => {

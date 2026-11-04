@@ -3,7 +3,8 @@ import { test } from "node:test";
 import { createCameraKeyframe, moveKeyframeById, removeKeyframeById, updateKeyframeById } from "../../../../../src/components/domain/service/videography/cameraPathKeyframes.js";
 import { createCameraPathTimeline, sampleCameraPathAtMs, validateCameraPath } from "../../../../../src/components/domain/service/videography/cameraPathTimeline.js";
 import { renderCameraPathFrameSchedule } from "../../../../../src/components/domain/service/videography/cameraPathPlayback.js";
-import { captureCurrentView } from "../../../../../src/components/domain/service/videography/cameraView.js";
+import { applyCameraView, captureCurrentView, interpolateCameraView } from "../../../../../src/components/domain/service/videography/cameraView.js";
+import { getCameraViewParams, projectPoint3D, quaternionFromEuler, rotateVectorByQuaternion } from "../../../../../src/components/domain/service/canvas_drawing/camera3D.js";
 
 function keyframe(view, mode = "2d", options = {}) {
   return { ...createCameraKeyframe({ captured: { mode, view }, index: 0, transitionSeconds: 2 }), easing: "linear", ...options };
@@ -50,6 +51,58 @@ test("empty paths and instant transitions have predictable results", () => {
   const timeline = createCameraPathTimeline([keyframe(startView), keyframe(endView, "2d", { transitionSeconds: 0 })]);
   assert.equal(timeline.totalMs, 0);
   assert.deepEqual(sampleCameraPathAtMs(timeline, 0).view, endView);
+});
+
+test("3D video orbits around saved node, link or community centers", () => {
+  const viewport = { width: 800, height: 600 };
+  const makeFocusedView = (orbitCenter, rotY) => {
+    const orientation = quaternionFromEuler({ rotX: 0, rotY, rotZ: 0 });
+    const rotated = rotateVectorByQuaternion({ x: orbitCenter.x - 400, y: orbitCenter.y - 300, z: orbitCenter.z }, orientation);
+    return {
+      x: 400 + rotated.x, y: 300 + rotated.y, z: rotated.z - 300,
+      fov: 600, orientation, orbitCenter, viewport,
+    };
+  };
+  const first = keyframe(makeFocusedView({ x: 500, y: 310, z: 20 }, 0), "3d");
+  const second = keyframe(makeFocusedView({ x: 650, y: 350, z: 60 }, Math.PI / 2), "3d");
+  const middle = interpolateCameraView(first, second, 0.5);
+  assert.deepEqual(middle.orbitCenter, { x: 575, y: 330, z: 40 });
+  const projected = projectPoint3D(middle.orbitCenter, getCameraViewParams(middle, 800, 600));
+  assert.ok(Math.abs(projected.x - 400) < 1e-6);
+  assert.ok(Math.abs(projected.y - 300) < 1e-6);
+  assert.ok(Math.abs(projected.depth - 300) < 1e-6);
+  const final = interpolateCameraView(first, second, 1);
+  assert.ok(Math.abs(final.x - second.view.x) < 1e-6);
+  assert.ok(Math.abs(final.z - second.view.z) < 1e-6);
+});
+
+test("3D video interpolates back to the default rotation center and clears it", () => {
+  const viewport = { width: 800, height: 600 };
+  const focus = { x: 500, y: 300, z: 0 };
+  const from = keyframe({ x: 500, y: 300, z: -300, fov: 600, orientation: quaternionFromEuler({}), orbitCenter: focus, viewport }, "3d");
+  const to = keyframe({ x: 400, y: 300, z: -600, fov: 600, orientation: quaternionFromEuler({ rotY: Math.PI / 2 }), orbitCenter: null, viewport }, "3d");
+  const middle = interpolateCameraView(from, to, 0.5);
+  assert.deepEqual(middle.orbitCenter, { x: 450, y: 300, z: 0 });
+  assert.deepEqual(interpolateCameraView(from, to, 1).orbitCenter, null);
+  const camera = { orbitCenter: focus };
+  const focusedCapture = captureCurrentView({ app: { stage: {} }, appearance: { threeD: true, cameraRef: { current: camera } }, container: viewport });
+  assert.deepEqual(focusedCapture.view.orbitCenter, focus);
+  assert.notEqual(focusedCapture.view.orbitCenter, focus);
+  applyCameraView("3d", to.view, { app: { stage: {} }, appearance: { cameraRef: { current: camera } }, container: viewport });
+  assert.equal(camera.orbitCenter, null);
+  const captured = captureCurrentView({ app: { stage: {} }, appearance: { threeD: true, cameraRef: { current: camera } }, container: viewport });
+  assert.equal(captured.view.orbitCenter, null);
+  assert.deepEqual(captured.view.viewport, viewport);
+});
+
+test("3D video can transition from an older keyframe to a captured focus center", () => {
+  const viewport = { width: 800, height: 600 };
+  const previous = keyframe({ x: 400, y: 300, z: -600, fov: 600, orientation: quaternionFromEuler({}) }, "3d");
+  previous.scene = { viewportSnapshot: viewport };
+  const focused = keyframe({ x: 500, y: 300, z: -300, fov: 600, orientation: quaternionFromEuler({}), orbitCenter: { x: 500, y: 300, z: 0 }, viewport }, "3d");
+  const middle = interpolateCameraView(previous, focused, 0.5);
+  assert.deepEqual(middle.orbitCenter, { x: 450, y: 300, z: 0 });
+  assert.equal(interpolateCameraView(previous, focused, 1).x, focused.view.x);
 });
 
 for (const mode of ["2d", "3d"]) {
