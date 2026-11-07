@@ -367,6 +367,17 @@ test("freezing the graph sets simulation temperature to zero until unfrozen", as
   expect(currentSimulation.stop).toHaveBeenCalled();
   expect(currentSimulation.restart).not.toHaveBeenCalled();
 
+  const filtered = await update(async () => useFilter.getState().setFilter("minLinkThreshold", 0.95));
+  expect(filtered.data.links).toHaveLength(0);
+  expect(currentSimulation.alpha()).toBe(0);
+  expect(currentSimulation.__isFrozen).toBe(true);
+  expect(currentSimulation.restart).not.toHaveBeenCalled();
+
+  const restored = await update(async () => useFilter.getState().setFilter("minLinkThreshold", 0.7));
+  expect(restored.data.links).toHaveLength(1);
+  expect(currentSimulation.alpha()).toBe(0);
+  expect(currentSimulation.restart).not.toHaveBeenCalled();
+
   await act(async () => useRenderState.getState().setRenderState("simulationFrozen", false));
   expect(currentSimulation.alpha()).toBe(1);
   expect(currentSimulation.__isFrozen).toBe(false);

@@ -14,6 +14,7 @@ const DOTTED_LINE_DASH_MULTIPLIER = 1.8;
 const DOTTED_LINE_GAP_MULTIPLIER = 1.8;
 const MIN_DOTTED_DASH = 10;
 const MIN_DOTTED_GAP = 2.5;
+const FOCUSED_LINK_WIDTH_SCALE = 1.5;
 const CHEVRON_MIN_SIZE = 5;
 const CHEVRON_MAX_SIZE = 10;
 const CHEVRON_POSITION_START = 0.44;
@@ -30,6 +31,13 @@ let dottedLineTexture3D = null;
 function getFocusAlpha(link, nodeId) {
   if (nodeId == null) return 1;
   return getEndpointId(link.source) === nodeId || getEndpointId(link.target) === nodeId ? 1 : 0.15;
+}
+
+export function getFocusLinkWidthScale(link, nodeId) {
+  if (nodeId == null) return 1;
+  return getEndpointId(link?.source) === nodeId || getEndpointId(link?.target) === nodeId
+    ? FOCUSED_LINK_WIDTH_SCALE
+    : 1;
 }
 
 function roundToDecimals(value, decimals = 1) {
@@ -437,7 +445,8 @@ export function updateLines(links, lineGraphics, linkWidth, linkColorscheme, lin
         graphic.visible = false;
         continue;
       }
-      drawLine(graphic, link, linkWidth, linkColorscheme.data, linkAttribsToColorIndices, layouts.get(i));
+      const focusedLinkWidth = linkWidth * getFocusLinkWidthScale(link, focusNodeId);
+      drawLine(graphic, link, focusedLinkWidth, linkColorscheme.data, linkAttribsToColorIndices, layouts.get(i));
       graphic.alpha = getFocusAlpha(link, focusNodeId);
       graphic.visible = true;
       graphic.zIndex = -getChevronOutwardRank(layouts.get(i));
@@ -449,10 +458,13 @@ export function updateLines(links, lineGraphics, linkWidth, linkColorscheme, lin
   lineGraphics.visible = true;
   const layouts = renderPlan?.layouts ?? getParallelLinkLayoutData(links);
   for (let index = 0; index < links.length; index += 1) {
-    drawLine(lineGraphics, links[index], linkWidth, linkColorscheme.data, linkAttribsToColorIndices, layouts.get(index), { drawChevron: false, alpha: getFocusAlpha(links[index], focusNodeId) });
+    const link = links[index];
+    const focusedLinkWidth = linkWidth * getFocusLinkWidthScale(link, focusNodeId);
+    drawLine(lineGraphics, link, focusedLinkWidth, linkColorscheme.data, linkAttribsToColorIndices, layouts.get(index), { drawChevron: false, alpha: getFocusAlpha(link, focusNodeId) });
   }
   for (const { link, layout } of renderPlan?.chevronEntries ?? getChevronRenderEntries(links, layouts)) {
-    drawLine(lineGraphics, link, linkWidth, linkColorscheme.data, linkAttribsToColorIndices, layout, { drawBody: false, alpha: getFocusAlpha(link, focusNodeId) });
+    const focusedLinkWidth = linkWidth * getFocusLinkWidthScale(link, focusNodeId);
+    drawLine(lineGraphics, link, focusedLinkWidth, linkColorscheme.data, linkAttribsToColorIndices, layout, { drawBody: false, alpha: getFocusAlpha(link, focusNodeId) });
   }
 }
 
@@ -490,7 +502,8 @@ export function updateLines3D(links, lineGraphics, linkWidth, linkColorscheme, l
     const targetDepth = target.depth ?? 0;
     const depth = Math.max(sourceDepth, targetDepth);
     const depthScale = get3DLinkDepthScale(source.scale, target.scale);
-    const widthScaled = linkWidth * depthScale;
+    const focusWidthScale = getFocusLinkWidthScale(link, focusNodeId);
+    const widthScaled = linkWidth * focusWidthScale * depthScale;
 
     const dx = target.x - source.x;
     const dy = target.y - source.y;
@@ -547,12 +560,12 @@ export function updateLines3D(links, lineGraphics, linkWidth, linkColorscheme, l
             direction,
             offsetX,
             offsetY,
-            linkWidth,
+            linkWidth * focusWidthScale,
             depthScale,
             getOutsideSign(shift),
             getChevronExtension(layout, widthScaled),
           );
-          drawChevronGraphics(marker, geometry, getColor(linkAttribsToColorIndices[attrib], linkColorscheme.data), linkWidth, depthScale);
+          drawChevronGraphics(marker, geometry, getColor(linkAttribsToColorIndices[attrib], linkColorscheme.data), linkWidth * focusWidthScale, depthScale);
           marker.zIndex = sprite.zIndex - 0.005 - Math.abs(layout?.laneOffset ?? 0) * 0.005;
         }
       }
