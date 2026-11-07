@@ -24,6 +24,7 @@ import trashSvg from "../../../../assets/icons/trash.svg?raw";
 import {
   CAMERA_PATH_LIMITS,
   EASING_OPTIONS,
+  VIDEO_EXPORT_BITRATE_OPTIONS,
   applyKeyframe,
   buildKeyframeRows,
   captureCurrentView,
@@ -31,6 +32,7 @@ import {
   formatKeyframeView,
   getCameraPathDurationMs,
   getVideoExportFormat,
+  getVideoExportConfig,
   getVideoExportScale,
   getVideoSceneContainer,
   getKeyframeHoldSeconds,
@@ -92,6 +94,7 @@ export function VideographySidebar() {
   const routeMode = getRouteMode(keyframes);
   const exportQualityPreset = getVideoExportQualityPreset(videography.exportQualityPreset);
   const exportFormat = getVideoExportFormat(videography.exportFormat);
+  const exportBitrateMbps = getVideoExportConfig(exportQualityPreset, videography.exportBitrateMbps).bitrateMbps;
   const hasModeMismatch = Boolean(routeMode && routeMode !== currentMode);
   const hasReadyCanvas = Boolean(renderState.app && container.width && container.height && graphState.graph);
   const canEditRoute = canAddKeyframe;
@@ -215,6 +218,7 @@ export function VideographySidebar() {
             appearance,
             graphName: graphState.graph?.name,
             exportQualityPreset,
+            exportBitrateMbps,
             exportFormat,
             drawOverlay: (context, frame) => tooltipOverlay.draw(context, frame),
             onProgress: setRenderProgress,
@@ -228,6 +232,13 @@ export function VideographySidebar() {
     );
 
   const modeWarning = hasModeMismatch ? `Route is ${getViewModeLabel(routeMode)}. Switch back to edit, preview, or export it.` : "";
+  const setExportQualityPreset = (value) => {
+    const preset = getVideoExportQualityPreset(value);
+    const bitrateMbps = getVideoExportConfig(preset).bitrateMbps;
+    setVideography("exportQualityPreset", preset);
+    setVideography("exportBitrateMbps", bitrateMbps);
+    setVideography("exportBitrateMbpsText", String(bitrateMbps));
+  };
   const primaryActions = [
     { text: "Add Keyframe", shortcut: "K", onClick: handleAddKeyframe, disabled: !canEditRoute },
     previewAbortRef.current
@@ -266,8 +277,17 @@ export function VideographySidebar() {
         infoHeading={"Export Quality"}
         infoDescription={"Exports default to native 4K at 60 FPS. Lower resolutions remain available for smaller files."}
         value={exportQualityPreset}
-        setValue={(value) => setVideography("exportQualityPreset", getVideoExportQualityPreset(value))}
+        setValue={setExportQualityPreset}
         options={VIDEO_EXPORT_QUALITY_OPTIONS}
+        size={"wide"}
+      />
+      <SelectFieldBlock
+        text={"Export Bitrate"}
+        infoHeading={"Export Bitrate"}
+        infoDescription={"Choose a lower bitrate for smaller files or a higher bitrate for more detail. Changing export quality resets this to its recommended bitrate."}
+        value={exportBitrateMbps}
+        setValue={(value) => setVideography("exportBitrateMbps", Number(value))}
+        options={VIDEO_EXPORT_BITRATE_OPTIONS}
         size={"wide"}
       />
       <SelectFieldBlock

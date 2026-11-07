@@ -2,6 +2,7 @@ export {
   CAMERA_PATH_LIMITS,
   DEFAULT_EASING,
   EASING_OPTIONS,
+  VIDEO_EXPORT_BITRATE_OPTIONS,
   VIDEO_EXPORT_FORMAT_DEFAULT,
   VIDEO_EXPORT_FORMAT_MP4,
   VIDEO_EXPORT_FORMAT_OPTIONS,
@@ -15,6 +16,7 @@ export {
   VIEW_MODE_2D,
   VIEW_MODE_3D,
   getVideoExportFormat,
+  getVideoExportConfig,
   getVideoExportQualityPreset,
 } from "./videoExportConfig.js";
 

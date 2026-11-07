@@ -273,7 +273,7 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, cameraRef
     }
 
     const isPan = event.button === 1 || event.button === 2 || event.shiftKey || event.altKey;
-    const node = !isPan && event.button === 0 ? findNodeAtPoint(point) : null;
+    const node = !simulation.__isFrozen && !isPan && event.button === 0 ? findNodeAtPoint(point) : null;
 
     state.mode = node ? "node" : isPan ? "pan" : "orbit";
     state.activePointerId = event.pointerId;

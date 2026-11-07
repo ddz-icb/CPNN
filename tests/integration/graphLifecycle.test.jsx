@@ -348,6 +348,31 @@ test("removing the only graph renders the default example", async () => {
   expect(graph.data.nodes.length).toBeGreaterThan(0);
 });
 
+test("freezing the graph sets simulation temperature to zero until unfrozen", async () => {
+  await update(() => graphService.handleSelectGraph("A"));
+  const currentSimulation = useRenderState.getState().renderState.simulation;
+
+  currentSimulation.stop.mockClear();
+  currentSimulation.restart.mockClear();
+  await act(async () => useRenderState.getState().setRenderState("simulationFrozen", true));
+  expect(currentSimulation.alpha()).toBe(0);
+  expect(currentSimulation.alphaTarget()).toBe(0);
+  expect(currentSimulation.__isFrozen).toBe(true);
+  expect(currentSimulation.stop).toHaveBeenCalled();
+
+  currentSimulation.stop.mockClear();
+  currentSimulation.restart.mockClear();
+  await act(async () => usePhysics.getState().setPhysics("gravityStrength", 0.2));
+  expect(currentSimulation.alpha()).toBe(0);
+  expect(currentSimulation.stop).toHaveBeenCalled();
+  expect(currentSimulation.restart).not.toHaveBeenCalled();
+
+  await act(async () => useRenderState.getState().setRenderState("simulationFrozen", false));
+  expect(currentSimulation.alpha()).toBe(1);
+  expect(currentSimulation.__isFrozen).toBe(false);
+  expect(currentSimulation.restart).toHaveBeenCalled();
+});
+
 test("loading, replacing and removing a mapping updates the rendered attributes", async () => {
   await update(() => graphService.handleSelectGraph("A"));
   const currentSimulation = useRenderState.getState().renderState.simulation;

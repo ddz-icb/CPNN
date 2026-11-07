@@ -37,6 +37,7 @@ export async function recordCameraPathSceneVideo({
   graphName,
   holdSeconds = 0,
   exportQualityPreset = VIDEO_EXPORT_QUALITY_DEFAULT,
+  exportBitrateMbps,
   exportFormat = VIDEO_EXPORT_FORMAT_DEFAULT,
   onProgress,
   onKeyframeEnter,
@@ -51,7 +52,7 @@ export async function recordCameraPathSceneVideo({
     throw new Error("The graph canvas is not ready for video export.");
   }
 
-  const exportConfig = getVideoExportConfig(exportQualityPreset);
+  const exportConfig = getVideoExportConfig(exportQualityPreset, exportBitrateMbps);
   const outputContainer = getVideoExportContainer(container, exportConfig);
   const captureCanvas = createCaptureCanvas(outputContainer);
 

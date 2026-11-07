@@ -20,6 +20,7 @@ export function initDragAndZoom2D(app, simulation, radius, setTooltipSettings, w
   };
 
   const dragsubject = (event) => {
+    if (simulation.__isFrozen) return null;
     return simulation.find(state.transform.invertX(event.x), state.transform.invertY(event.y), radius);
   };
 

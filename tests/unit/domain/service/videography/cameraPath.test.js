@@ -5,6 +5,11 @@ import { createCameraPathTimeline, sampleCameraPathAtMs, validateCameraPath } fr
 import { renderCameraPathFrameSchedule } from "../../../../../src/components/domain/service/videography/cameraPathPlayback.js";
 import { applyCameraView, captureCurrentView, interpolateCameraView } from "../../../../../src/components/domain/service/videography/cameraView.js";
 import { getCameraViewParams, projectPoint3D, quaternionFromEuler, rotateVectorByQuaternion } from "../../../../../src/components/domain/service/canvas_drawing/camera3D.js";
+import {
+  VIDEO_EXPORT_BITRATE_OPTIONS,
+  VIDEO_EXPORT_QUALITY_HIGH,
+  getVideoExportConfig,
+} from "../../../../../src/components/domain/service/videography/videoExportConfig.js";
 
 function keyframe(view, mode = "2d", options = {}) {
   return { ...createCameraKeyframe({ captured: { mode, view }, index: 0, transitionSeconds: 2 }), easing: "linear", ...options };
@@ -151,4 +156,13 @@ test("cancelling playback prevents subsequent frames", async () => {
     onFrame: () => { frameCount++; controller.abort(); },
   }), { name: "AbortError" });
   assert.equal(frameCount, 1);
+});
+
+test("video export bitrate can be customized within supported limits", () => {
+  assert.equal(getVideoExportConfig(VIDEO_EXPORT_QUALITY_HIGH).bitrateMbps, 32);
+  for (const { value } of VIDEO_EXPORT_BITRATE_OPTIONS) {
+    assert.equal(getVideoExportConfig(VIDEO_EXPORT_QUALITY_HIGH, value).bitrateMbps, value);
+  }
+  assert.equal(getVideoExportConfig(VIDEO_EXPORT_QUALITY_HIGH, "8").bitrateMbps, 8);
+  assert.equal(getVideoExportConfig(VIDEO_EXPORT_QUALITY_HIGH, 12).bitrateMbps, 32);
 });

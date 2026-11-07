@@ -51,6 +51,7 @@ export async function recordCameraPathVideo({
   gridLines = [],
   holdSeconds = 0,
   exportQualityPreset = VIDEO_EXPORT_QUALITY_DEFAULT,
+  exportBitrateMbps,
   exportFormat = VIDEO_EXPORT_FORMAT_DEFAULT,
   validateCurrentMode = true,
   drawOverlay,
@@ -82,6 +83,7 @@ export async function recordCameraPathVideo({
     gridLines,
     holdSeconds,
     exportQualityPreset,
+    exportBitrateMbps,
     background: resolveCanvasBackground(sourceCanvas),
     drawOverlay,
   });

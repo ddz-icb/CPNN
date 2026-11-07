@@ -6,6 +6,7 @@ export const simulationInit = null;
 export const renderStateInit = {
   app: appInit,
   simulation: simulationInit,
+  simulationFrozen: false,
 };
 
 export const useRenderState = create((set) => ({

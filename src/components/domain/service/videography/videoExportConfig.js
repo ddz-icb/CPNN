@@ -23,6 +23,10 @@ export const VIDEO_EXPORT_QUALITY_HIGH = "high";
 export const VIDEO_EXPORT_QUALITY_DEFAULT = VIDEO_EXPORT_QUALITY_HIGH;
 export const VIDEO_EXPORT_FORMAT_MP4 = "mp4";
 export const VIDEO_EXPORT_FORMAT_WEBM = "webm";
+export const VIDEO_EXPORT_BITRATE_OPTIONS = [4, 8, 16, 32, 48, 64].map((value) => ({
+  value,
+  label: `${value} Mbps`,
+}));
 
 export const VIDEO_EXPORT_QUALITY_OPTIONS = [
   { value: VIDEO_EXPORT_QUALITY_1080P, label: "1080p" },
@@ -41,7 +45,7 @@ export const VIDEO_EXPORT_PRESETS = {
   [VIDEO_EXPORT_QUALITY_1080P]: {
     targetArea: 1920 * 1080,
     maxEdge: 1920,
-    bitrateMbps: 10,
+    bitrateMbps: 8,
   },
   [VIDEO_EXPORT_QUALITY_MEDIUM]: {
     targetArea: 2560 * 1440,
@@ -77,6 +81,13 @@ export function getVideoExportFormat(value) {
   return VIDEO_EXPORT_FORMAT_OPTIONS.some((option) => option.value === value) ? value : VIDEO_EXPORT_FORMAT_DEFAULT;
 }
 
-export function getVideoExportConfig(preset) {
-  return VIDEO_EXPORT_PRESETS[getVideoExportQualityPreset(preset)];
+export function getVideoExportConfig(preset, bitrateMbps) {
+  const presetConfig = VIDEO_EXPORT_PRESETS[getVideoExportQualityPreset(preset)];
+  const bitrate = Number(bitrateMbps);
+  const validBitrate = VIDEO_EXPORT_BITRATE_OPTIONS.some((option) => option.value === bitrate);
+
+  return {
+    ...presetConfig,
+    bitrateMbps: validBitrate ? bitrate : presetConfig.bitrateMbps,
+  };
 }

@@ -25,6 +25,14 @@ import { useGraphFlags } from "../state/graphFlagsState.js";
 import { useAppearance } from "../state/appearanceState.js";
 import { useCommunityState } from "../state/communityState.js";
 
+function restartSimulation(simulation, frozen) {
+  if (frozen) {
+    simulation.alpha(0).alphaTarget(0).stop();
+    return;
+  }
+  simulation.alpha(1).restart();
+}
+
 export function PhysicsControl() {
   const { physics } = usePhysics();
   const { communityState } = useCommunityState();
@@ -41,6 +49,20 @@ export function PhysicsControl() {
   const forceManyBodyFactory = appearance.threeD && !planarElevation ? d3Force3d.forceManyBody : d3.forceManyBody;
 
   useEffect(() => {
+    const simulation = renderState.simulation;
+    if (!simulation) return;
+
+    const wasFrozen = simulation.__isFrozen === true;
+    simulation.__isFrozen = renderState.simulationFrozen;
+    if (renderState.simulationFrozen) {
+      simulation.alpha(0).alphaTarget(0).stop();
+      renderState.app?.__redrawGraph?.();
+    } else if (wasFrozen) {
+      simulation.alpha(1).restart();
+    }
+  }, [renderState.simulationFrozen, renderState.simulation, renderState.app]);
+
+  useEffect(() => {
     if (!renderState.simulation || !graphFlags.filteredAfterStart || !graphState.graph) return;
     log.info("Changing link force", physics.linkForce);
 
@@ -55,7 +77,7 @@ export function PhysicsControl() {
             .id((d) => d.id)
             .distance((link) => getLinkDistance(physics.linkLength, link, weightExtent)),
         );
-        renderState.simulation.alpha(1).restart();
+        restartSimulation(renderState.simulation, renderState.simulationFrozen);
       }
     } catch (error) {
       errorService.setError(error.message);
@@ -70,7 +92,7 @@ export function PhysicsControl() {
     try {
       const weightExtent = getLinkWeightMagnitudeExtent(graphState.graph.data);
       renderState.simulation.force("link").distance((link) => getLinkDistance(physics.linkLength, link, weightExtent));
-      renderState.simulation.alpha(1).restart();
+      restartSimulation(renderState.simulation, renderState.simulationFrozen);
     } catch (error) {
       errorService.setError(error.message);
       log.error("Error updating link length:", error);
@@ -85,10 +107,10 @@ export function PhysicsControl() {
     try {
       if (physics.gravityStrength == 0) {
         renderState.simulation.force("gravity", null);
-        renderState.simulation.alpha(1).restart();
+        restartSimulation(renderState.simulation, renderState.simulationFrozen);
       } else {
         renderState.simulation.force("gravity", gravityForce(container.width / 2, container.height / 2, planarElevation ? null : 0).strength(physics.gravityStrength));
-        renderState.simulation.alpha(1).restart();
+        restartSimulation(renderState.simulation, renderState.simulationFrozen);
       }
     } catch (error) {
       errorService.setError(error.message);
@@ -116,7 +138,7 @@ export function PhysicsControl() {
           degreeElevationForce(linkCounts).strength(physics.elevationStrength),
         );
       }
-      renderState.simulation.alpha(1).restart();
+      restartSimulation(renderState.simulation, renderState.simulationFrozen);
     } catch (error) {
       errorService.setError(error.message);
       log.error("Error updating elevation force:", error);
@@ -137,12 +159,12 @@ export function PhysicsControl() {
     try {
       if (physics.componentStrength == 0) {
         renderState.simulation.force("component", null);
-        renderState.simulation.alpha(1).restart();
+        restartSimulation(renderState.simulation, renderState.simulationFrozen);
       } else {
         const [IdToComp] = getComponentData(graphState.graph.data);
 
         renderState.simulation.force("component", groupRepulsionForce(IdToComp, 3, !planarElevation).strength(physics.componentStrength));
-        renderState.simulation.alpha(1).restart();
+        restartSimulation(renderState.simulation, renderState.simulationFrozen);
       }
     } catch (error) {
       errorService.setError(error.message);
@@ -165,7 +187,7 @@ export function PhysicsControl() {
             .distanceMax(maxDistanceChargeForce)
             .strength(physics.nodeRepulsionStrength * nodeRepulsionMultiplier),
         );
-        renderState.simulation.alpha(1).restart();
+        restartSimulation(renderState.simulation, renderState.simulationFrozen);
       }
     } catch (error) {
       errorService.setError(error.message);
@@ -180,11 +202,11 @@ export function PhysicsControl() {
     try {
       if (!physics.checkBorder) {
         renderState.simulation.force("border", null);
-        renderState.simulation.alpha(1).restart();
+        restartSimulation(renderState.simulation, renderState.simulationFrozen);
       } else {
         const center = { x: container.width / 2, y: container.height / 2, z: 0 };
         renderState.simulation.force("border", borderCheck(radius, physics.borderHeight, physics.borderWidth, center, physics.borderDepth, !planarElevation));
-        renderState.simulation.alpha(1).restart();
+        restartSimulation(renderState.simulation, renderState.simulationFrozen);
       }
     } catch (error) {
       errorService.setError(error.message);
@@ -210,14 +232,14 @@ export function PhysicsControl() {
     try {
       if (!physics.circleForce) {
         renderState.simulation.force("circleForce", null);
-        renderState.simulation.alpha(1).restart();
+        restartSimulation(renderState.simulation, renderState.simulationFrozen);
       } else {
         const [IdToComp] = getComponentData(graphState.graph.data);
         const adjacentCountMap = getAdjacentData(graphState.graph.data);
         const minCircleSize = 6;
 
         renderState.simulation.force("circleForce", circularForce(IdToComp, adjacentCountMap, minCircleSize, appearance.threeD && !planarElevation));
-        renderState.simulation.alpha(1).restart();
+        restartSimulation(renderState.simulation, renderState.simulationFrozen);
       }
     } catch (error) {
       errorService.setError(error.message);
@@ -232,17 +254,17 @@ export function PhysicsControl() {
     try {
       if (physics.communityForceStrength == 0) {
         renderState.simulation.force("community", null);
-        renderState.simulation.alpha(1).restart();
+        restartSimulation(renderState.simulation, renderState.simulationFrozen);
         return;
       }
 
       if (!communityState.idToCommunity) {
         renderState.simulation.force("community", null);
-        renderState.simulation.alpha(1).restart();
+        restartSimulation(renderState.simulation, renderState.simulationFrozen);
         return;
       } else {
         renderState.simulation.force("community", groupRepulsionForce(communityState.idToCommunity, 3, !planarElevation).strength(physics.communityForceStrength));
-        renderState.simulation.alpha(1).restart();
+        restartSimulation(renderState.simulation, renderState.simulationFrozen);
       }
     } catch (error) {
       errorService.setError(error.message);

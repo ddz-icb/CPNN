@@ -20,16 +20,24 @@ import {
 } from "./descriptions/physicsDescriptions.jsx";
 import { usePhysics } from "../../../adapters/state/physicsState.js";
 import { useAppearance } from "../../../adapters/state/appearanceState.js";
+import { useRenderState } from "../../../adapters/state/canvasState.js";
 import { CommunityForceControl } from "./communityForceControl.jsx";
 
 export function PhysicsSidebar({}) {
   const { physics, setPhysics, setAllPhysics } = usePhysics();
   const { appearance, setAppearance } = useAppearance();
+  const { renderState, setRenderState } = useRenderState();
 
   return (
     <>
       <div className="block-section">
         <Button text={"Set Phyiscs to Default"} onClick={() => setAllPhysics(physicsInit)} />
+      </div>
+      <div className="block-section">
+        <Button
+          text={renderState.simulationFrozen ? "Unfreeze Graph" : "Freeze Graph"}
+          onClick={() => setRenderState("simulationFrozen", !renderState.simulationFrozen)}
+        />
       </div>
       <SwitchBlock
         value={physics.circleForce}
