@@ -28,6 +28,30 @@ export function filterThreshold(graphData, minLinkThreshold, maxLinkThreshold) {
   return graphData;
 }
 
+export function filterLinkSign(graphData, sign) {
+  if (sign !== "positive" && sign !== "negative") return graphData;
+
+  return {
+    ...graphData,
+    links: graphData.links.filter((link) => !hasLinkWeight(link) || (sign === "positive" ? link.weight > 0 : link.weight < 0)),
+  };
+}
+
+export function filterTopLinkPercent(graphData, percent) {
+  const percentage = Number(percent);
+  if (!Number.isFinite(percentage) || percentage >= 100) return graphData;
+
+  const weights = graphData.links.filter(hasLinkWeight).map(getLinkWeight).sort((left, right) => right - left);
+  if (weights.length === 0) return graphData;
+
+  const count = Math.ceil((weights.length * Math.max(0, percentage)) / 100);
+  const cutoff = weights[count - 1];
+  return {
+    ...graphData,
+    links: graphData.links.filter((link) => !hasLinkWeight(link) || (count > 0 && getLinkWeight(link) >= cutoff)),
+  };
+}
+
 export function filterLinkAttribs(graphData, filterRequest) {
   // linkAttribs is true if the filterRequest was empty
   if (filterRequest === true) return graphData;

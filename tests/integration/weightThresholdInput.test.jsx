@@ -87,3 +87,29 @@ test("optional maximum filters stay in a collapsed advanced section", async () =
   await act(async () => useFilter.getState().setFilter("maxCompSize", 5));
   expect(advanced.querySelector("summary").textContent).toBe("Advanced filters (active)");
 });
+
+test("advanced link controls update the live filters and reset together", async () => {
+  const advanced = host.querySelector("details.filter-advanced");
+  const signBlock = [...advanced.querySelectorAll(".block-section")].find((block) => block.querySelector(".label")?.textContent === "Link Sign");
+  const percentBlock = [...advanced.querySelectorAll(".block-section")].find((block) => block.querySelector(".label")?.textContent === "Top Weighted Links (%)");
+  expect(signBlock).toBeDefined();
+  expect(percentBlock).toBeDefined();
+
+  const signSelect = signBlock.querySelector("select");
+  await act(async () => {
+    signSelect.value = "negative";
+    signSelect.dispatchEvent(new Event("change", { bubbles: true }));
+  });
+  const percentInput = percentBlock.querySelector('input[type="number"]');
+  await act(async () => percentInput.focus());
+  await typeValue(percentInput, "25");
+  await act(async () => percentInput.blur());
+
+  expect(useFilter.getState().filter.linkSign).toBe("negative");
+  expect(useFilter.getState().filter.topLinkPercent).toBe(25);
+  expect(advanced.querySelector("summary").textContent).toBe("Advanced filters (active)");
+
+  await act(async () => [...host.querySelectorAll("button")].find((button) => button.textContent === "Reset Filters").click());
+  expect(useFilter.getState().filter.linkSign).toBe("both");
+  expect(useFilter.getState().filter.topLinkPercent).toBe(100);
+});

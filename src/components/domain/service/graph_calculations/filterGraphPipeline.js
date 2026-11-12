@@ -1,6 +1,6 @@
 import { withoutAdditionalLinkAttribs } from "../enrichment/additionalLinkEnrichment.js";
 import { buildCommunitySummary } from "./communityGrouping.js";
-import { filterIgnoreNegatives, filterLasso, filterLinkAttribs, filterNodesExist, filterThreshold } from "./filterGraphLinks.js";
+import { filterIgnoreNegatives, filterLasso, filterLinkAttribs, filterLinkSign, filterNodesExist, filterThreshold, filterTopLinkPercent } from "./filterGraphLinks.js";
 import {
   filterCommunityDensity,
   filterCommunitySizeRange,
@@ -19,6 +19,8 @@ const inactiveFilter = {
   nodeIdFilters: [],
   minLinkThreshold: 0,
   maxLinkThreshold: "",
+  linkSign: "both",
+  topLinkPercent: 100,
   linkFilter: true,
   nodeFilter: true,
   componentDensity: 0,
@@ -42,6 +44,7 @@ export function applyGraphFilters({ graphData, originGraphData = graphData, filt
 
   filteredGraphData = filterMergeByName(filteredGraphData, mergeByName, mergeOptions);
   filteredGraphData = filterIgnoreNegatives(filteredGraphData, filterSettings.ignoreNegatives);
+  filteredGraphData = filterLinkSign(filteredGraphData, filterSettings.linkSign);
   filteredGraphData = filterLasso(filteredGraphData, filterSettings.lassoSelection);
   filteredGraphData = filterNodeIds(filteredGraphData, filterSettings.nodeIdFilters);
   filteredGraphData = filterNodesExist(filteredGraphData);
@@ -50,6 +53,7 @@ export function applyGraphFilters({ graphData, originGraphData = graphData, filt
   filteredGraphData = filterLinkAttribs(filteredGraphData, filterSettings.linkFilter);
   filteredGraphData = filterNodeAttribs(filteredGraphData, filterSettings.nodeFilter);
   filteredGraphData = filterNodesExist(filteredGraphData);
+  filteredGraphData = filterTopLinkPercent(filteredGraphData, filterSettings.topLinkPercent);
 
   const linksBeforeStructural = filteredGraphData.links;
   filteredGraphData = { ...filteredGraphData, links: withoutAdditionalLinkAttribs(filteredGraphData.links) };

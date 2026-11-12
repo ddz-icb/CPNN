@@ -12,6 +12,9 @@ test("maximum filters stay out of the primary filter views", async ({ page }) =>
   await expect(page.getByText("Max Component Density")).toHaveCount(0);
   await advanced.locator("summary").click();
   await expect(advanced.getByText("Max Component Size")).toBeVisible();
+  await expect(advanced.getByText("Link Sign")).toBeVisible();
+  await expect(advanced.getByText("Top Weighted Links (%)")).toBeVisible();
+  expect(await advanced.evaluate((element) => element.scrollWidth <= element.clientWidth + 1)).toBe(true);
 
   await page.getByRole("button", { name: "Back to tool list" }).click();
   await page.getByRole("button", { name: /^Communities\b/ }).click();

@@ -1,4 +1,4 @@
-import { AdvancedFilters, Button, FieldBlock, SliderBlock, SwitchBlock, LassoFilterBlock } from "../reusable_components/sidebarComponents.jsx";
+import { AdvancedFilters, Button, FieldBlock, SelectFieldBlock, SliderBlock, SwitchBlock, LassoFilterBlock } from "../reusable_components/sidebarComponents.jsx";
 import { getLinkThresholdBounds } from "../../../domain/service/graph_settings/linkThresholdRange.js";
 import { NodeIdFilterBlock } from "./nodeIdFilterBlock.jsx";
 import { LinkAttribFilterBlock, NodeAttribFilterBlock } from "./attribFilterBlock.jsx";
@@ -8,6 +8,8 @@ import { useGraphFlags } from "../../state/graphFlagsState.js";
 import {
   filterInit,
   minLinkThresholdInit,
+  linkSignInit,
+  topLinkPercentInit,
   minKCoreSizeInit,
   minCompSizeInit,
   maxCompSizeInit,
@@ -17,12 +19,20 @@ import {
   lassoDescription,
   minLinkThresholdDescription,
   maxLinkThresholdDescription,
+  linkSignDescription,
+  topLinkPercentDescription,
   maxCompSizeDescription,
   componentDensityDescription,
   mergeByNameDescription,
   minCompSizeDescription,
   minKCoreSizeDescription,
 } from "./descriptions/filterDescriptions.jsx";
+
+const linkSignOptions = [
+  { value: "both", label: "Both" },
+  { value: "positive", label: "Positive" },
+  { value: "negative", label: "Negative" },
+];
 
 export function FilterSidebar() {
   const { filter, setFilter, setAllFilter } = useFilter();
@@ -39,7 +49,10 @@ export function FilterSidebar() {
     Number(filter.maxLinkThreshold) || 0,
   );
   const hasAdvancedFilters =
-    (filter.maxLinkThreshold !== "" && Number(filter.maxLinkThreshold) < defaultMaxLinkThreshold) || filter.maxCompSize !== "";
+    (filter.maxLinkThreshold !== "" && Number(filter.maxLinkThreshold) < defaultMaxLinkThreshold) ||
+    filter.linkSign !== linkSignInit ||
+    Number(filter.topLinkPercent) < topLinkPercentInit ||
+    filter.maxCompSize !== "";
 
   const handleClearLassoSelection = () => {
     setFilter("lassoSelection", []);
@@ -137,20 +150,43 @@ export function FilterSidebar() {
       />
       <AdvancedFilters active={hasAdvancedFilters}>
         {hasLinkWeights && (
-          <SliderBlock
-            value={filter.maxLinkThreshold}
-            valueText={filter.maxLinkThresholdText}
-            setValue={(value) => setFilter("maxLinkThreshold", value)}
-            setValueText={(value) => setFilter("maxLinkThresholdText", value)}
-            fallbackValue={defaultMaxLinkThreshold}
-            min={linkThresholdBounds.min}
-            max={thresholdSliderMax}
-            inputMax={Infinity}
-            step={linkThresholdBounds.step}
-            text={"Max Link Weight Threshold"}
-            infoHeading={"Filtering Links by Maximum Threshold"}
-            infoDescription={maxLinkThresholdDescription}
-          />
+          <>
+            <SelectFieldBlock
+              value={filter.linkSign}
+              setValue={(value) => setFilter("linkSign", value)}
+              options={linkSignOptions}
+              text="Link Sign"
+              infoHeading="Filter by link sign"
+              infoDescription={linkSignDescription}
+            />
+            <SliderBlock
+              value={filter.topLinkPercent}
+              valueText={filter.topLinkPercentText}
+              setValue={(value) => setFilter("topLinkPercent", value)}
+              setValueText={(value) => setFilter("topLinkPercentText", value)}
+              fallbackValue={topLinkPercentInit}
+              min={1}
+              max={100}
+              step={1}
+              text="Top Weighted Links (%)"
+              infoHeading="Filter by strongest links"
+              infoDescription={topLinkPercentDescription}
+            />
+            <SliderBlock
+              value={filter.maxLinkThreshold}
+              valueText={filter.maxLinkThresholdText}
+              setValue={(value) => setFilter("maxLinkThreshold", value)}
+              setValueText={(value) => setFilter("maxLinkThresholdText", value)}
+              fallbackValue={defaultMaxLinkThreshold}
+              min={linkThresholdBounds.min}
+              max={thresholdSliderMax}
+              inputMax={Infinity}
+              step={linkThresholdBounds.step}
+              text={"Max Link Weight Threshold"}
+              infoHeading={"Filtering Links by Maximum Threshold"}
+              infoDescription={maxLinkThresholdDescription}
+            />
+          </>
         )}
         <FieldBlock
           valueText={filter.maxCompSizeText}

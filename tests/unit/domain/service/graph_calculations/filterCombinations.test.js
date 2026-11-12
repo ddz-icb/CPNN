@@ -299,4 +299,41 @@ describe("combined graph filters", () => {
     assert.deepEqual(nodeIds(applyFilters(graph, { maxComponentDensity: 0 }).graphData), ["A", "B", "C"]);
     assert.deepEqual(nodeIds(applyGraphPrefilters(graph, { maxComponentDensity: 0 })), ["A", "B", "C"]);
   });
+
+  test("filters positive and negative link weights while retaining unweighted links", () => {
+    const graph = createGraph({
+      nodes: ["A", "B", "C", "D"].map((id) => ({ id })),
+      links: [
+        { id: "positive", source: "A", target: "B", weight: 0.9 },
+        { id: "negative", source: "B", target: "C", weight: -0.8 },
+        { id: "zero", source: "C", target: "D", weight: 0 },
+        { id: "unweighted", source: "A", target: "D" },
+      ],
+    });
+
+    assert.deepEqual(linkIds(applyFilters(graph, { linkSign: "positive" }).graphData), ["positive", "unweighted"]);
+    assert.deepEqual(linkIds(applyFilters(graph, { linkSign: "negative" }).graphData), ["negative", "unweighted"]);
+    assert.deepEqual(linkIds(applyFilters(graph, { linkSign: "both" }).graphData), ["positive", "negative", "zero", "unweighted"]);
+  });
+
+  test("keeps the strongest percentage of eligible weighted links, including cutoff ties", () => {
+    const graph = createGraph({
+      nodes: ["A", "B", "C", "D"].map((id) => ({ id })),
+      links: [
+        { id: "strong", source: "A", target: "B", weight: 0.9 },
+        { id: "tie-positive", source: "A", target: "C", weight: 0.8 },
+        { id: "tie-negative", source: "B", target: "C", weight: -0.8 },
+        { id: "weak", source: "C", target: "D", weight: 0.3 },
+        { id: "unweighted", source: "A", target: "D" },
+      ],
+    });
+
+    assert.deepEqual(linkIds(applyFilters(graph, { minLinkThreshold: 0, topLinkPercent: 50 }).graphData), [
+      "strong", "tie-positive", "tie-negative", "unweighted",
+    ]);
+    assert.deepEqual(linkIds(applyFilters(graph, { minLinkThreshold: 0, linkSign: "negative", topLinkPercent: 50 }).graphData), [
+      "tie-negative", "unweighted",
+    ]);
+    assert.deepEqual(linkIds(applyFilters(graph, { minLinkThreshold: 0, topLinkPercent: 100 }).graphData), linkIds(graph));
+  });
 });

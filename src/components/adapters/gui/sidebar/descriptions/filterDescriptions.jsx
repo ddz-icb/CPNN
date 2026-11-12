@@ -18,6 +18,17 @@ export const maxLinkThresholdDescription = (
   </div>
 );
 
+export const linkSignDescription = (
+  <p className="margin-0">Show positive or negative weighted links. Zero-weight links have neither sign; unweighted links remain visible.</p>
+);
+
+export const topLinkPercentDescription = (
+  <p className="margin-0">
+    Keep the strongest percentage of weighted links after the other link and node filters. Strength uses absolute weight. Links tied at the cutoff and
+    unweighted links remain visible.
+  </p>
+);
+
 export const mergeByNameDescription = (
   <div>
     <p>

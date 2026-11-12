@@ -3,6 +3,9 @@ import { create } from "zustand";
 export const minLinkThresholdInit = 0.7;
 export const maxLinkThresholdInit = "";
 export const maxLinkThresholdTextInit = "";
+export const linkSignInit = "both";
+export const topLinkPercentInit = 100;
+export const topLinkPercentTextInit = 100;
 export const nodeFilterInit = true;
 export const linkFilterInit = true;
 export const linkFilterTextInit = "";
@@ -29,6 +32,9 @@ export const filterInit = {
   minLinkThresholdText: minLinkThresholdInit,
   maxLinkThreshold: maxLinkThresholdInit,
   maxLinkThresholdText: maxLinkThresholdTextInit,
+  linkSign: linkSignInit,
+  topLinkPercent: topLinkPercentInit,
+  topLinkPercentText: topLinkPercentTextInit,
   linkFilter: linkFilterInit,
   linkFilterText: linkFilterTextInit,
   nodeFilter: nodeFilterInit,
