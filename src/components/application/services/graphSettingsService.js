@@ -134,7 +134,7 @@ function getFilterDefaultsForGraphMetrics(graphMetrics) {
   const { linkWeightAbsMin, linkWeightAbsMax } = graphMetrics ?? {};
   if (!Number.isFinite(linkWeightAbsMin) || !Number.isFinite(linkWeightAbsMax)) return filterInit;
 
-  const thresholdBounds = getLinkThresholdBounds(linkWeightAbsMax, filterInit.minLinkThreshold);
+  const thresholdBounds = getLinkThresholdBounds(linkWeightAbsMin, linkWeightAbsMax, filterInit.minLinkThreshold);
   const initialMinThreshold =
     linkWeightAbsMin > filterInit.minLinkThreshold
       ? roundUpLinkThreshold(linkWeightAbsMin, thresholdBounds)
@@ -211,7 +211,7 @@ function applyGraphFilterSettings(savedFilter, { minAbsWeight, maxAbsWeight }, i
   }
 
   if (Number.isFinite(minAbsWeight) && Number.isFinite(maxAbsWeight)) {
-    const thresholdBounds = getLinkThresholdBounds(maxAbsWeight, filterInit.minLinkThreshold);
+    const thresholdBounds = getLinkThresholdBounds(minAbsWeight, maxAbsWeight, filterInit.minLinkThreshold);
     const initialMinThreshold =
       minAbsWeight > filterInit.minLinkThreshold
         ? roundUpLinkThreshold(minAbsWeight, thresholdBounds)

@@ -33,7 +33,7 @@ export function FilterSidebar() {
 
   const lassoSelectionCount = Array.isArray(filter.lassoSelection) ? filter.lassoSelection.length : 0;
   const hasLinkWeights = Number.isFinite(graphMetrics.linkWeightAbsMax);
-  const linkThresholdBounds = getLinkThresholdBounds(graphMetrics.linkWeightAbsMax, minLinkThresholdInit);
+  const linkThresholdBounds = getLinkThresholdBounds(graphMetrics.linkWeightAbsMin, graphMetrics.linkWeightAbsMax, minLinkThresholdInit);
   const defaultMaxLinkThreshold = linkThresholdBounds.max;
   const thresholdSliderMax = Math.max(
     linkThresholdBounds.max,

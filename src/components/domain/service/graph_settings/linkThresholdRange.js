@@ -12,14 +12,14 @@ function getNiceStep(value) {
   return 10 * magnitude;
 }
 
-export function getLinkThresholdBounds(dataMax, fallbackMax = 0.7) {
-  const min = 0;
+export function getLinkThresholdBounds(dataMin, dataMax, fallbackMax = 0.7) {
+  const min = Number.isFinite(dataMin) ? roundNumber(Math.floor(Math.max(0, dataMin) * 10 + 1e-10) / 10) : 0;
   const safeMax = Number.isFinite(dataMax) ? dataMax : fallbackMax;
-  const defaultMax = Math.max(1, Math.ceil(safeMax));
-  const step = roundNumber(getNiceStep(defaultMax / 100));
-  const max = roundNumber(Math.ceil(defaultMax / step) * step);
+  const roundedMax = roundNumber(Math.ceil(Math.max(0, safeMax) * 10 - 1e-10) / 10);
+  const max = Math.max(fallbackMax, min, roundedMax);
+  const step = roundNumber(getNiceStep(max / 100));
 
-  return { min, max, step, defaultMax };
+  return { min, max, step, defaultMax: max };
 }
 
 export function roundUpLinkThreshold(value, { min, max, step }) {
