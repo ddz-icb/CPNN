@@ -1,7 +1,8 @@
 export const OMNI_PATH_API_BASE_URL = "/omnipathdb-api";
 export const OMNI_PATH_ENZ_SUB_PATH = "/enz_sub";
-export const OMNI_PATH_KINASE_ATTRIB = "Kinase";
-export const OMNI_PATH_PHOSPHATASE_ATTRIB = "Phosphatase";
+export const OMNI_PATH_ATTRIBUTE_SOURCE = "OmniPath";
+export const OMNI_PATH_KINASE_ATTRIB = `Kinase [${OMNI_PATH_ATTRIBUTE_SOURCE}]`;
+export const OMNI_PATH_PHOSPHATASE_ATTRIB = `Phosphatase [${OMNI_PATH_ATTRIBUTE_SOURCE}]`;
 export const OMNI_PATH_PHOSPHO_ATTRIB = "Phosphorylation";
 export const OMNI_PATH_DEPHOSPHO_ATTRIB = "Dephosphorylation";
 export const OMNI_PATH_DEFAULT_ORGANISM_ID = "9606";

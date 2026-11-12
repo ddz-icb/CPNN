@@ -1,7 +1,8 @@
 import { STRING_DB_ENRICHMENT_CATEGORIES } from "../../../domain/service/enrichment/stringDbConfig.js";
+import { OMNI_PATH_ATTRIBUTE_SOURCE } from "../../../domain/service/enrichment/omniPathConfig.js";
 import "../../../../styles/attribute_label.css";
 
-const sources = STRING_DB_ENRICHMENT_CATEGORIES.map((category) => category.attributeLabel ?? category.label);
+const sources = [...STRING_DB_ENRICHMENT_CATEGORIES.map((category) => category.attributeLabel ?? category.label), OMNI_PATH_ATTRIBUTE_SOURCE];
 
 export function AttributeLabel({ value }) {
   const text = String(value ?? "");

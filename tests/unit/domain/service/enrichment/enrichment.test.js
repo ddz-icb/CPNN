@@ -120,7 +120,7 @@ test("STRING keeps full annotation names with the source at the end", async () =
   assert.deepEqual(result.nodes[0].attribs, ["original", `${description} [COMPARTMENTS]`]);
 });
 
-test("STRING community labels apply only to eligible connected groups", async () => {
+test("STRING community labels use source-suffixed names and apply only to eligible connected groups", async () => {
   axios.post.mock.mockImplementation(async () => ({
     data: [
       { ...term, fdr: NaN },
@@ -129,8 +129,8 @@ test("STRING community labels apply only to eligible connected groups", async ()
     ],
   }));
   const result = await stringDb(graph, { groupEnrichmentEnabled: true, communityResolution: 0, maxGroupEnrichmentFdr: 0.05 });
-  assert.deepEqual(result.nodes[0].attribs, ["original", "Community: Cell cycle"]);
-  assert.deepEqual(result.nodes[1].attribs, ["Community: Cell cycle"]);
+  assert.deepEqual(result.nodes[0].attribs, ["original", "Cell cycle [GO Process]"]);
+  assert.deepEqual(result.nodes[1].attribs, ["Cell cycle [GO Process]"]);
   assert.deepEqual(result.nodes[2], graph.nodes[2]);
   assert.equal(axios.post.mock.callCount(), 1);
 });
@@ -157,7 +157,7 @@ test("OmniPath matches sites and curation thresholds for kinase and phosphatase 
     result.links.slice(1),
     ["Phosphorylation", "Dephosphorylation"].map((attrib) => ({ source: enzyme, target: substrate, attrib, directed: true })),
   );
-  assert.deepEqual(result.nodes[0].attribs, ["original", "Kinase", "Phosphatase"]);
+  assert.deepEqual(result.nodes[0].attribs, ["original", "Kinase [OmniPath]", "Phosphatase [OmniPath]"]);
   assert.equal(fetch.mock.callCount(), 2);
 });
 

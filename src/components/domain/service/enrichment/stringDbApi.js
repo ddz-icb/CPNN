@@ -22,8 +22,6 @@ import {
   normalizeStringDbCategory,
 } from "./stringDbHelpers.js";
 
-const MAX_COMMUNITY_ANNOTATION_LABEL_LENGTH = 48;
-
 function logRequestIssue(source, identifier, error) {
   if (!axios.isAxiosError(error)) {
     log.warn(`${source} request failed for ${identifier}`);
@@ -123,23 +121,13 @@ function formatTermDescription(value) {
     .trim();
 }
 
-function shortenText(value, maxLength) {
-  const description = formatTermDescription(value);
-  if (!description || maxLength <= 0) return "";
-  if (description.length <= maxLength) return description;
-  const sliceLength = Math.max(1, maxLength - 3);
-  return `${description.slice(0, sliceLength).trim()}...`;
-}
-
 function buildNodeAnnotationAttrib(category, description) {
   const term = formatTermDescription(description);
   return term ? `${term}${category ? ` [${category}]` : ""}` : "";
 }
 
-function buildCommunityAttrib(description) {
-  const prefix = "Community: ";
-  const shortDescription = shortenText(description, MAX_COMMUNITY_ANNOTATION_LABEL_LENGTH - prefix.length);
-  return shortDescription ? `${prefix}${shortDescription}` : "";
+function buildCommunityAttrib(category, description) {
+  return buildNodeAnnotationAttrib(getStringDbCategoryAttributeLabel(category), description);
 }
 
 function buildIdentifierMappingLookups(proteinIds, mappings) {
@@ -233,7 +221,7 @@ function selectFirstEnrichmentTerm(rows, maxFdr) {
       term: record.term,
       description,
       fdr,
-      attrib: buildCommunityAttrib(description),
+      attrib: buildCommunityAttrib(record.category, description),
     };
   }
 
