@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { useState, useEffect, useLayoutEffect, useRef, useCallback, useMemo, useId } from "react";
 import { createViewer } from "3dmol/build/3Dmol.es6.js";
 
 import log from "../../logging/logger.js";
@@ -243,7 +243,7 @@ function NodeDetails({ nodeId, nodeEntries, hasPhosphosites, fullName, nodeAttri
       <TooltipPopupItem heading={`Node Entries${hasPhosphosites ? " and Phosphosites" : ""}`} value={entryContent} />
       {fullName && <TooltipPopupItem heading={"Full Name"} value={fullName} />}
       <TooltipPopupItem heading={"Annotations"} value={nodeAttribs.length ? <AttributeList values={nodeAttribs} /> : null} />
-      {description && <TooltipPopupItem heading={"Description"} value={description} />}
+      {description && <ExpandableDescription description={description} />}
       <section className="pdb-structure-section" aria-labelledby="pdb-structure-heading" hidden={!pdbId}>
         <div className="pdb-structure-heading">
           <h3 id="pdb-structure-heading">3D structure</h3>
@@ -268,6 +268,54 @@ function NodeDetails({ nodeId, nodeEntries, hasPhosphosites, fullName, nodeAttri
         {hasPdbModel && <p className="pdb-viewer-hint">Drag to rotate · Scroll to zoom</p>}
       </section>
     </>
+  );
+}
+
+function ExpandableDescription({ description }) {
+  const [expanded, setExpanded] = useState(false);
+  const [canExpand, setCanExpand] = useState(false);
+  const contentRef = useRef(null);
+  const contentId = useId();
+
+  useLayoutEffect(() => {
+    const content = contentRef.current;
+    if (!content || expanded) return;
+
+    const update = () => {
+      const lineHeight = Number.parseFloat(getComputedStyle(content).lineHeight);
+      setCanExpand(content.scrollHeight > lineHeight * 5 + 1);
+    };
+    update();
+    if (typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(update);
+    observer.observe(content);
+    return () => observer.disconnect();
+  }, [description, expanded]);
+
+  return (
+    <div className="tooltip-popup-item node-description">
+      <div className="node-description-header">
+        <span className="tooltip-popup-item-label">Description</span>
+        {canExpand && (
+          <button
+            type="button"
+            className="node-description-toggle"
+            aria-controls={contentId}
+            aria-expanded={expanded}
+            onClick={() => setExpanded((current) => !current)}
+          >
+            {expanded ? "Show less" : "Show more"}
+          </button>
+        )}
+      </div>
+      <div
+        id={contentId}
+        ref={contentRef}
+        className={`tooltip-popup-item-value node-description-text${expanded ? " node-description-text--expanded" : ""}`}
+      >
+        {description}
+      </div>
+    </div>
   );
 }
 

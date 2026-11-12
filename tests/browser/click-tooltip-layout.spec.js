@@ -93,6 +93,45 @@ test("Node info shows the RCSB reference when UniProt supplies a PDB ID", async 
   await expect(tooltip.locator(".pdb-viewer-status")).toHaveText("3D preview unavailable");
 });
 
+test("Node description keeps full text while its preview leaves room for the 3D viewer", async ({ page }) => {
+  const description = `${"Protein function and interaction details. ".repeat(35)}Final sentence.`;
+  await page.route("https://rest.uniprot.org/**", (route) => route.fulfill({
+    json: {
+      comments: [{ commentType: "FUNCTION", texts: [{ value: description }] }],
+      uniProtKBCrossReferences: [{ database: "PDB", id: "1ABC" }],
+    },
+  }));
+  await page.route("https://files.rcsb.org/download/**", (route) => route.fulfill({ status: 404, body: "" }));
+
+  const tooltip = await openTooltip(page, { x: 100, y: 100 });
+  const details = tooltip.locator(".node-description-text");
+  const toggle = tooltip.locator(".node-description-toggle");
+  await expect(details).toHaveText(description);
+  await expect(toggle).toHaveText("Show more");
+  await expect(toggle).toHaveAttribute("aria-expanded", "false");
+  expect(await toggle.evaluate((element) => getComputedStyle(element).color)).toBe(
+    await tooltip.locator(".tooltip-popup-item-label").first().evaluate((element) => getComputedStyle(element).color),
+  );
+  expect(await details.evaluate((element) => element.clientHeight)).toBeLessThan(await details.evaluate((element) => element.scrollHeight));
+  const previewLines = await details.evaluate((element) => element.clientHeight / Number.parseFloat(getComputedStyle(element).lineHeight));
+  expect(previewLines).toBeCloseTo(5, 1);
+
+  await toggle.click();
+  await expect(toggle).toHaveText("Show less");
+  await expect(toggle).toHaveAttribute("aria-expanded", "true");
+  expect(await details.evaluate((element) => element.clientHeight)).toBeGreaterThanOrEqual(await details.evaluate((element) => element.scrollHeight) - 1);
+  await toggle.click();
+  await expect(toggle).toHaveAttribute("aria-expanded", "false");
+  await toggle.click();
+
+  await tooltip.evaluate((element) => element.classList.add("tooltip-popup--videography-capture"));
+  await expect(toggle).toBeHidden();
+  expect(await details.evaluate((element) => element.clientHeight)).toBeLessThan(await details.evaluate((element) => element.scrollHeight));
+  const frame = await tooltip.locator(".pdb-viewer-frame").boundingBox();
+  const body = await tooltip.locator(".tooltip-popup-body").boundingBox();
+  expect(frame.y + frame.height).toBeLessThanOrEqual(body.y + body.height + 1);
+});
+
 for (const corner of ["top-left", "top-right", "bottom-left", "bottom-right"]) {
   test(`Click tooltip: fits at ${corner} in every view`, async ({ page }) => {
     const { width, height } = page.viewportSize();
