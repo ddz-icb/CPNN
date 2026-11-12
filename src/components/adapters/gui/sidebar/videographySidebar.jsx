@@ -13,7 +13,6 @@ import {
   DetailNumberRow,
   DetailRow,
   DetailSelectRow,
-  FieldBlock,
   SelectFieldBlock,
   SliderBlock,
   StatusProgressBlock,
@@ -61,18 +60,6 @@ import {
 import { useAddKeyframe } from "../hooks/useAddKeyframe.js";
 
 const DeleteIcon = (props) => <SvgIcon svg={trashSvg} {...props} />;
-
-const VIDEO_SETTING_FIELDS = [
-  {
-    key: "holdSeconds",
-    textKey: "holdSecondsText",
-    fallbackValue: holdSecondsInit,
-    limits: CAMERA_PATH_LIMITS.holdSeconds,
-    text: "Default Hold",
-    infoHeading: "Default Hold",
-    infoDescription: "Pause time used for new keyframes, and as fallback for older ones.",
-  },
-];
 
 export function VideographySidebar() {
   const { appearance } = useAppearance();
@@ -272,6 +259,19 @@ export function VideographySidebar() {
         infoHeading={"Default Transition"}
         infoDescription={"Duration used when adding a new keyframe."}
       />
+      <SliderBlock
+        value={videography.holdSeconds}
+        valueText={videography.holdSecondsText}
+        setValue={(value) => setVideography("holdSeconds", value)}
+        setValueText={(value) => setVideography("holdSecondsText", value)}
+        fallbackValue={holdSecondsInit}
+        min={CAMERA_PATH_LIMITS.holdSeconds.min}
+        max={CAMERA_PATH_LIMITS.holdSeconds.max}
+        step={CAMERA_PATH_LIMITS.holdSeconds.step}
+        text={"Default Hold"}
+        infoHeading={"Default Hold"}
+        infoDescription={"Pause time used for new keyframes, and as fallback for older ones."}
+      />
       <SelectFieldBlock
         text={"Export Quality"}
         infoHeading={"Export Quality"}
@@ -299,19 +299,6 @@ export function VideographySidebar() {
         options={VIDEO_EXPORT_FORMAT_OPTIONS}
         size={"wide"}
       />
-      {VIDEO_SETTING_FIELDS.map(({ key, textKey, fallbackValue, limits, ...fieldProps }) => (
-        <FieldBlock
-          key={key}
-          valueText={videography[textKey]}
-          setValue={(value) => setVideography(key, value)}
-          setValueText={(value) => setVideography(textKey, value)}
-          fallbackValue={fallbackValue}
-          min={limits.min}
-          max={limits.max}
-          step={limits.step}
-          {...fieldProps}
-        />
-      ))}
       <RouteStatus
         status={modeWarning || videography.status}
         progress={videography.progress}
