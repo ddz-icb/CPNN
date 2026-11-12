@@ -45,7 +45,7 @@ function isHttpStatus(error, status) {
   return axios.isAxiosError(error) && error.response?.status === status;
 }
 
-async function fetchStringDbData(method, params, requestLabel) {
+async function fetchStringDbData(method, params, requestLabel, signal) {
   try {
     log.debug(`Fetching STRING-DB ${method} for ${requestLabel}`);
     const body = new URLSearchParams(params);
@@ -53,6 +53,7 @@ async function fetchStringDbData(method, params, requestLabel) {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
+      signal,
     });
     const rows = Array.isArray(response.data) ? response.data : [];
     log.debug(`STRING-DB ${method} returned ${rows.length} record(s) for ${requestLabel}`);
@@ -67,7 +68,7 @@ async function fetchStringDbData(method, params, requestLabel) {
   }
 }
 
-async function fetchNetworkInteractionsChunk(proteinIds, minConfidence, speciesId) {
+async function fetchNetworkInteractionsChunk(proteinIds, minConfidence, speciesId, signal) {
   if (proteinIds.length < 2) return [];
 
   const requiredScore = clampConfidence(minConfidence);
@@ -81,10 +82,11 @@ async function fetchNetworkInteractionsChunk(proteinIds, minConfidence, speciesI
       required_score: String(requiredScore),
     },
     `${proteinIds.length} UniProt id(s), species ${speciesId}, min confidence ${requiredScore}`,
+    signal,
   );
 }
 
-async function fetchIdentifierMappingsChunk(proteinIds, speciesId) {
+async function fetchIdentifierMappingsChunk(proteinIds, speciesId, signal) {
   if (proteinIds.length === 0) return [];
 
   return fetchStringDbData(
@@ -96,10 +98,11 @@ async function fetchIdentifierMappingsChunk(proteinIds, speciesId) {
       echo_query: "1",
     },
     `${proteinIds.length} UniProt id(s), species ${speciesId}`,
+    signal,
   );
 }
 
-async function fetchFunctionalEnrichmentChunk(proteinIds, speciesId) {
+async function fetchFunctionalEnrichmentChunk(proteinIds, speciesId, signal) {
   if (proteinIds.length < GROUP_ENRICHMENT_MIN_PROTEINS) return [];
 
   return fetchStringDbData(
@@ -110,6 +113,7 @@ async function fetchFunctionalEnrichmentChunk(proteinIds, speciesId) {
       caller_identity: STRING_DB_CALLER_ID,
     },
     `${proteinIds.length} UniProt id(s), species ${speciesId}`,
+    signal,
   );
 }
 
@@ -236,12 +240,12 @@ function selectFirstEnrichmentTerm(rows, maxFdr) {
   return null;
 }
 
-export async function fetchNetworkInteractions(proteinIds, minConfidence, speciesId = DEFAULT_SPECIES_ID) {
+export async function fetchNetworkInteractions(proteinIds, minConfidence, speciesId = DEFAULT_SPECIES_ID, signal) {
   const uniqueProteinIds = Array.from(new Set(proteinIds.map((proteinId) => normalizeProteinId(proteinId)).filter(Boolean)));
   if (uniqueProteinIds.length < 2) return [];
 
   try {
-    return await fetchNetworkInteractionsChunk(uniqueProteinIds, minConfidence, speciesId);
+    return await fetchNetworkInteractionsChunk(uniqueProteinIds, minConfidence, speciesId, signal);
   } catch (error) {
     if (!isHttpStatus(error, 400) || uniqueProteinIds.length <= NETWORK_CHUNK_SIZE) {
       throw error;
@@ -254,7 +258,7 @@ export async function fetchNetworkInteractions(proteinIds, minConfidence, specie
     for (let i = 0; i < idChunks.length; i++) {
       for (let j = i; j < idChunks.length; j++) {
         const requestIds = i === j ? idChunks[i] : [...idChunks[i], ...idChunks[j]];
-        const interactions = await fetchNetworkInteractionsChunk(requestIds, minConfidence, speciesId);
+        const interactions = await fetchNetworkInteractionsChunk(requestIds, minConfidence, speciesId, signal);
         combinedInteractions.push(...interactions);
       }
     }
@@ -272,11 +276,11 @@ export async function fetchFunctionalEnrichmentAnnotations(proteinIds, options =
   const maxFdr = clampGroupEnrichmentMaxFdr(options.maxFdr);
   const category = normalizeStringDbCategory(options.category);
   const mappingChunks = chunkArray(uniqueProteinIds, IDENTIFIER_MAPPING_CHUNK_SIZE);
-  const rows = await fetchFunctionalEnrichmentChunk(uniqueProteinIds, speciesId);
+  const rows = await fetchFunctionalEnrichmentChunk(uniqueProteinIds, speciesId, options.signal);
   const mappings = [];
 
   for (const mappingChunk of mappingChunks) {
-    mappings.push(...(await fetchIdentifierMappingsChunk(mappingChunk, speciesId)));
+    mappings.push(...(await fetchIdentifierMappingsChunk(mappingChunk, speciesId, options.signal)));
   }
 
   return mapFunctionalEnrichmentRowsToAnnotations(rows, uniqueProteinIds, mappings, { maxTerms, maxFdr, category });
@@ -299,7 +303,7 @@ export async function fetchFunctionalEnrichmentLabels(groups, options = {}) {
 
   const labels = [];
   for (const group of eligibleGroups) {
-    const rows = await fetchFunctionalEnrichmentChunk(group.proteinIds, speciesId);
+    const rows = await fetchFunctionalEnrichmentChunk(group.proteinIds, speciesId, options.signal);
     const topTerm = selectFirstEnrichmentTerm(rows, maxFdr);
     if (!topTerm) continue;
     labels.push({

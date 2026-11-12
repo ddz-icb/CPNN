@@ -1,4 +1,7 @@
-export function AdditionalDataLoading({ isLoading }) {
+import { SvgIcon } from "../reusable_components/SvgIcon.jsx";
+import xSvg from "../../../../assets/icons/x.svg?raw";
+
+export function AdditionalDataLoading({ isLoading, onCancel }) {
   if (!isLoading) return null;
 
   return (
@@ -10,6 +13,14 @@ export function AdditionalDataLoading({ isLoading }) {
       aria-busy="true"
     >
       <div className="additional-data-loading-container">
+        <button
+          type="button"
+          className="svg-button additional-data-loading-close"
+          onClick={onCancel}
+          aria-label="Cancel additional data loading"
+        >
+          <SvgIcon svg={xSvg} className="popup-close-icon" />
+        </button>
         <div className="additional-data-loading-spinner" aria-hidden="true" />
         <div>
           <div id="additional-data-loading-heading" className="additional-data-loading-heading">

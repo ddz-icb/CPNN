@@ -71,7 +71,7 @@ function App() {
     };
   }, []);
 
-  const isAdditionalDataLoading = useGraphSetup();
+  const { isAdditionalDataLoading, cancelAdditionalDataLoad } = useGraphSetup();
 
   useEffect(() => {
     const themeName = theme?.name === "dark" ? "dark" : "light";
@@ -101,7 +101,7 @@ function App() {
         />
         <HeaderBar activePanel={activeInsightsPanel} setActivePanel={setActiveInsightsPanel} />
         <Sidebar collapsed={sidebarCollapsed} onCollapsedChange={setSidebarCollapsed} onWidthChange={updateSidebarWidth} />
-        <AdditionalDataLoading isLoading={isAdditionalDataLoading} />
+        <AdditionalDataLoading isLoading={isAdditionalDataLoading} onCancel={cancelAdditionalDataLoad} />
         <div className="canvas-container">
           <RenderControl />
           <Error />

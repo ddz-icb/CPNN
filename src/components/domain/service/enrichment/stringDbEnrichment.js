@@ -185,10 +185,12 @@ export async function enrichGraphWithStringDb(graphData, options = {}) {
           category: nodeAttributeCategory,
           maxTerms: nodeAttributeMaxTerms,
           maxFdr: nodeAttributeMaxFdr,
+          signal: options.signal,
         });
         enrichmentCache.set(cacheKey, annotations);
         log.info(`STRING-DB node enrichment generated ${annotations.length} node annotation(s).`);
       } catch (error) {
+        if (options.signal?.aborted) throw error;
         const message = error instanceof Error ? error.message : "Unknown error";
         log.warn(`STRING-DB node enrichment failed: ${message}`);
         throw new Error("Failed to load STRING-DB node enrichment.");
@@ -206,10 +208,11 @@ export async function enrichGraphWithStringDb(graphData, options = {}) {
     let groupLabels = enrichmentCache.get(cacheKey);
     if (!groupLabels) {
       try {
-        groupLabels = await fetchFunctionalEnrichmentLabels(groups, { speciesId, maxFdr: maxGroupEnrichmentFdr });
+        groupLabels = await fetchFunctionalEnrichmentLabels(groups, { speciesId, maxFdr: maxGroupEnrichmentFdr, signal: options.signal });
         enrichmentCache.set(cacheKey, groupLabels);
         log.info(`STRING-DB community enrichment generated ${groupLabels.length} group label(s).`);
       } catch (error) {
+        if (options.signal?.aborted) throw error;
         const message = error instanceof Error ? error.message : "Unknown error";
         log.warn(`STRING-DB community enrichment failed: ${message}`);
         throw new Error("Failed to load STRING-DB community enrichment labels.");
@@ -231,7 +234,7 @@ export async function enrichGraphWithStringDb(graphData, options = {}) {
   }
 
   try {
-    const interactions = await fetchNetworkInteractions(proteinIds, minConfidence, speciesId);
+    const interactions = await fetchNetworkInteractions(proteinIds, minConfidence, speciesId, options.signal);
     const enrichmentLinks = buildStringDbLinks(interactions, proteinToNodeIds, { minConfidence, includeEvidence, minEvidenceScore });
 
     if (interactions.length > 0 && enrichmentLinks.length === 0) {
@@ -246,6 +249,7 @@ export async function enrichGraphWithStringDb(graphData, options = {}) {
 
     return applyStringDbLinks(enrichedGraphData, enrichmentLinks);
   } catch (error) {
+    if (options.signal?.aborted) throw error;
     const message = error instanceof Error ? error.message : "Unknown error";
     log.warn(`STRING-DB enrichment failed: ${message}`);
     throw new Error("Failed to load STRING-DB enrichment data.");

@@ -66,11 +66,11 @@ function buildEnzSubUrl(substrateIds, organismId, options = {}) {
   return `${OMNI_PATH_API_BASE_URL}${OMNI_PATH_ENZ_SUB_PATH}?${params.toString()}`;
 }
 
-async function fetchKinaseSubstrateInteractionsChunk(substrateIds, organismId) {
+async function fetchKinaseSubstrateInteractionsChunk(substrateIds, organismId, signal) {
   const url = buildEnzSubUrl(substrateIds, organismId, { modification: PHOSPHORYLATION_MODIFICATION });
   log.debug(`Fetching OmniPath enz_sub for ${substrateIds.length} substrate id(s), organism ${organismId}`);
 
-  const response = await fetch(url);
+  const response = await fetch(url, { signal });
   if (!response.ok) throw new Error(`OmniPath enz_sub request failed (HTTP ${response.status})`);
 
   const text = await response.text();
@@ -79,14 +79,14 @@ async function fetchKinaseSubstrateInteractionsChunk(substrateIds, organismId) {
   return rows;
 }
 
-async function fetchPhosphataseSubstrateInteractionsChunk(substrateIds, organismId) {
+async function fetchPhosphataseSubstrateInteractionsChunk(substrateIds, organismId, signal) {
   const url = buildEnzSubUrl(substrateIds, organismId, {
     modification: DEPHOSPHORYLATION_MODIFICATION,
     resources: PHOSPHATASE_RESOURCE,
   });
   log.debug(`Fetching OmniPath DEPOD enz_sub for ${substrateIds.length} substrate id(s), organism ${organismId}`);
 
-  const response = await fetch(url);
+  const response = await fetch(url, { signal });
   if (!response.ok) throw new Error(`OmniPath phosphatase enz_sub request failed (HTTP ${response.status})`);
 
   const text = await response.text();
@@ -105,7 +105,7 @@ export async function fetchKinaseSubstrateInteractions(substrateIds, options = {
   const rows = [];
 
   for (const substrateChunk of substrateChunks) {
-    const chunkRows = await fetchKinaseSubstrateInteractionsChunk(substrateChunk, organismId);
+    const chunkRows = await fetchKinaseSubstrateInteractionsChunk(substrateChunk, organismId, options.signal);
     rows.push(...chunkRows);
   }
 
@@ -124,7 +124,7 @@ export async function fetchPhosphataseSubstrateInteractions(substrateIds, option
   const rows = [];
 
   for (const substrateChunk of substrateChunks) {
-    const chunkRows = await fetchPhosphataseSubstrateInteractionsChunk(substrateChunk, organismId);
+    const chunkRows = await fetchPhosphataseSubstrateInteractionsChunk(substrateChunk, organismId, options.signal);
     rows.push(...chunkRows);
   }
 

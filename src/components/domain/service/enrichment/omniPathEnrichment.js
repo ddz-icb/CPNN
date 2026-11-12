@@ -229,6 +229,7 @@ export async function enrichGraphWithOmniPath(graphData, options = {}) {
         enrichmentCache.set(cacheKey, interactions);
         log.info(`OmniPath returned ${interactions.length} kinase-substrate interaction(s).`);
       } catch (error) {
+        if (options.signal?.aborted) throw error;
         const message = error instanceof Error ? error.message : "Unknown error";
         log.warn(`OmniPath kinase enrichment failed: ${message}`);
         throw new Error("Failed to load OmniPath kinase data.");
@@ -250,6 +251,7 @@ export async function enrichGraphWithOmniPath(graphData, options = {}) {
         enrichmentCache.set(cacheKey, interactions);
         log.info(`OmniPath returned ${interactions.length} phosphatase-substrate interaction(s).`);
       } catch (error) {
+        if (options.signal?.aborted) throw error;
         const message = error instanceof Error ? error.message : "Unknown error";
         log.warn(`OmniPath phosphatase enrichment failed: ${message}`);
         throw new Error("Failed to load OmniPath phosphatase data.");

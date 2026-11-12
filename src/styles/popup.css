@@ -103,6 +103,7 @@
 }
 
 .additional-data-loading-container {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 0.9rem;
@@ -114,6 +115,12 @@
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-soft);
   color: var(--color-text-primary);
+}
+
+.additional-data-loading-close {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
 }
 
 .additional-data-loading-spinner {

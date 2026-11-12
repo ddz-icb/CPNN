@@ -2,7 +2,7 @@ import log from "../logging/logger.js";
 import { useGraphFlags } from "../state/graphFlagsState.js";
 import { useGraphEnrichment } from "../state/graphEnrichmentState.js";
 import { useGraphState } from "../state/graphState.js";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useError } from "../state/errorState.js";
 import { useMappingState } from "../state/mappingState.js";
 import { useCommunityState } from "../state/communityState.js";
@@ -15,30 +15,52 @@ import { reconcileGraphDataPreservingSimulation } from "../../domain/service/gra
 import { enrichGraphWithStringDb } from "../../domain/service/enrichment/stringDbEnrichment.js";
 import { enrichGraphWithOmniPath } from "../../domain/service/enrichment/omniPathEnrichment.js";
 
+const ADDITIONAL_DATA_ENABLED_KEYS = [
+  "stringDbEnrichmentEnabled",
+  "stringDbNodeAttributeEnrichmentEnabled",
+  "stringDbGroupEnrichmentEnabled",
+  "omniPathEnrichmentEnabled",
+  "omniPathPhosphataseEnrichmentEnabled",
+];
+const ADDITIONAL_DATA_OPTION_KEYS = [...ADDITIONAL_DATA_ENABLED_KEYS, "stringDbEvidenceEnrichmentEnabled"];
+
 export const useGraphSetup = () => {
   const [isAdditionalDataLoading, setIsAdditionalDataLoading] = useState(false);
+  const cancelLoadRef = useRef(null);
+  const previousAdditionalDataOptionsRef = useRef(null);
   const { graphState, setGraphState } = useGraphState();
   const { graphFlags, setGraphFlags } = useGraphFlags();
-  const { graphEnrichment } = useGraphEnrichment();
+  const { graphEnrichment, setGraphEnrichment } = useGraphEnrichment();
   const { communityState } = useCommunityState();
   const { setError } = useError();
   const { mappingState } = useMappingState();
   const stringDbCommunityResolution = graphEnrichment.stringDbGroupEnrichmentEnabled ? communityState.communityResolution : null;
-  const additionalDataEnabled =
-    graphEnrichment.stringDbEnrichmentEnabled ||
-    graphEnrichment.stringDbNodeAttributeEnrichmentEnabled ||
-    graphEnrichment.stringDbGroupEnrichmentEnabled ||
-    graphEnrichment.omniPathEnrichmentEnabled ||
-    graphEnrichment.omniPathPhosphataseEnrichmentEnabled;
+  const additionalDataEnabled = ADDITIONAL_DATA_ENABLED_KEYS.some((key) => graphEnrichment[key]);
+  const cancelAdditionalDataLoad = useCallback(() => cancelLoadRef.current?.(), []);
 
   // load graph
   useEffect(() => {
     if (!graphState.activeGraphNames) return;
     log.info("Loading graph");
     let cancelled = false;
+    const abortController = new AbortController();
+    const currentOptions = Object.fromEntries(ADDITIONAL_DATA_OPTION_KEYS.map((key) => [key, Boolean(graphEnrichment[key])]));
+    const previousOptions = previousAdditionalDataOptionsRef.current ?? {};
+    const newlyEnabledOptions = ADDITIONAL_DATA_OPTION_KEYS.filter((key) => currentOptions[key] && !previousOptions[key]);
+    previousAdditionalDataOptionsRef.current = currentOptions;
+    const cancelLoad = () => {
+      if (cancelled) return;
+      cancelled = true;
+      log.info("Cancelled additional graph data loading");
+      abortController.abort();
+      setIsAdditionalDataLoading(false);
+      newlyEnabledOptions.forEach((key) => setGraphEnrichment(key, false));
+    };
+    cancelLoadRef.current = cancelLoad;
 
     const reloadGraph = async () => {
       let graph = await graphService.getJoinedGraph(graphState.activeGraphNames);
+      if (cancelled) return;
       graph.data = applyNodeMapping(graph.data, mappingState.mapping?.data);
       if (!cancelled && additionalDataEnabled) setIsAdditionalDataLoading(true);
 
@@ -56,11 +78,13 @@ export const useGraphSetup = () => {
           maxGroupEnrichmentFdr: graphEnrichment.stringDbGroupEnrichmentMaxFdr,
           speciesId: graphEnrichment.stringDbSpeciesId,
           communityResolution: stringDbCommunityResolution,
+          signal: abortController.signal,
         });
         graph.data = await enrichGraphWithOmniPath(graph.data, {
           kinaseEnabled: graphEnrichment.omniPathEnrichmentEnabled,
           phosphataseEnabled: graphEnrichment.omniPathPhosphataseEnrichmentEnabled,
           minCurationEffort: graphEnrichment.omniPathMinCurationEffort,
+          signal: abortController.signal,
         });
       } finally {
         if (!cancelled) setIsAdditionalDataLoading(false);
@@ -78,9 +102,11 @@ export const useGraphSetup = () => {
 
       applyGraphSettings(graph, reuseNodes ? currentOriginGraph : null);
       setGraphState("originGraph", graph);
+      if (cancelLoadRef.current === cancelLoad) cancelLoadRef.current = null;
     };
 
     reloadGraph().catch((error) => {
+      if (cancelLoadRef.current === cancelLoad) cancelLoadRef.current = null;
       if (cancelled) return;
       const message = error instanceof Error ? error.message : "Error loading graph";
       setError(message);
@@ -89,6 +115,9 @@ export const useGraphSetup = () => {
 
     return () => {
       cancelled = true;
+      abortController.abort();
+      setIsAdditionalDataLoading(false);
+      if (cancelLoadRef.current === cancelLoad) cancelLoadRef.current = null;
     };
   }, [
     graphEnrichment.stringDbEnrichmentEnabled,
@@ -121,5 +150,5 @@ export const useGraphSetup = () => {
     setGraphFlags("isPreprocessed", true);
   }, [graphState.originGraph]);
 
-  return isAdditionalDataLoading;
+  return { isAdditionalDataLoading, cancelAdditionalDataLoad };
 };
