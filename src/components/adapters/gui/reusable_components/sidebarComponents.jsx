@@ -8,6 +8,15 @@ import { useTheme } from "../../state/themeState.js";
 import { PortalTooltip } from "./tooltipComponents.jsx";
 export { DetailRow, TableList, ToggleList } from "./sidebarLists.jsx";
 
+export function AdvancedFilters({ active = false, children }) {
+  return (
+    <details className="filter-advanced">
+      <summary className="table-list-heading">Advanced filters{active ? " (active)" : ""}</summary>
+      {children}
+    </details>
+  );
+}
+
 export function SliderBlock({ value, setValue, setValueText, min, max, inputMax = max, step, text, infoHeading, infoDescription, ...props }) {
   return (
     <div className="block-section block-section-stack">

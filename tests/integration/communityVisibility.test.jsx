@@ -99,3 +99,11 @@ test("all communities can be hidden and individually restored from the empty gra
   for (let i = 0; i < 3; i++) await click(i, "Show community");
   expectGraph(["a", "b", "c", "d", "e", "f"], 3);
 });
+
+test("maximum community size is grouped under advanced filters", async () => {
+  const advanced = host.querySelector("details.filter-advanced");
+  expect(advanced?.open).toBe(false);
+  expect(advanced?.textContent).toContain("Max Community Size");
+  await act(async () => useFilter.getState().setFilter("maxCommunitySize", 3));
+  expect(advanced.querySelector("summary").textContent).toBe("Advanced filters (active)");
+});

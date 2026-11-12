@@ -395,3 +395,35 @@ input:checked + .switch-button:before {
 .graph-references li { margin: 0.5rem 0; }
 .graph-references a { color: inherit; text-decoration: underline; text-underline-offset: 0.15em; }
 .graph-references-note { border-left: 2px solid currentColor; padding-left: 0.65rem; }
+
+.filter-advanced summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.filter-advanced summary::-webkit-details-marker {
+  display: none;
+}
+
+.filter-advanced summary::after {
+  content: "";
+  width: 0.4rem;
+  height: 0.4rem;
+  margin-left: auto;
+  border: solid currentColor;
+  border-width: 0 var(--border-thin) var(--border-thin) 0;
+  transform: rotate(45deg);
+}
+
+.filter-advanced[open] summary::after {
+  transform: rotate(225deg);
+}
+
+.filter-advanced summary:hover {
+  color: var(--color-text-primary);
+}
+
+.filter-advanced summary:focus-visible {
+  outline: var(--focus-ring-size) solid var(--color-focus-ring);
+  outline-offset: 2px;
+}

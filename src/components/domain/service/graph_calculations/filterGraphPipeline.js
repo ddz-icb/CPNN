@@ -22,7 +22,6 @@ const inactiveFilter = {
   linkFilter: true,
   nodeFilter: true,
   componentDensity: 0,
-  maxComponentDensity: "",
   communityDensity: 0,
   minKCoreSize: 0,
   minCompSize: 0,
@@ -55,7 +54,7 @@ export function applyGraphFilters({ graphData, originGraphData = graphData, filt
   const linksBeforeStructural = filteredGraphData.links;
   filteredGraphData = { ...filteredGraphData, links: withoutAdditionalLinkAttribs(filteredGraphData.links) };
 
-  filteredGraphData = filterComponentDensity(filteredGraphData, filterSettings.componentDensity, filterSettings.maxComponentDensity);
+  filteredGraphData = filterComponentDensity(filteredGraphData, filterSettings.componentDensity);
   filteredGraphData = filterCommunityDensity(filteredGraphData, filterSettings.communityDensity, communityResolution);
   filteredGraphData = filterMinNeighborhood(filteredGraphData, filterSettings.minKCoreSize);
   filteredGraphData = filterComponentSizeRange(filteredGraphData, filterSettings.minCompSize, filterSettings.maxCompSize);
@@ -87,7 +86,6 @@ export function applyGraphPrefilters(graphData, settings = {}) {
       maxCompSize: settings.maxCompSize,
       minKCoreSize: settings.minKCoreSize ?? 0,
       componentDensity: settings.componentDensity,
-      maxComponentDensity: settings.maxComponentDensity,
       nodeIdFilters: settings.nodeIdFilters,
       nodeFilter: settings.nodeFilter ?? true,
       linkFilter: settings.linkFilter ?? true,

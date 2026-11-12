@@ -72,7 +72,18 @@ test("reset sets the maximum threshold to the slider limit", async () => {
   await act(async () => [...host.querySelectorAll("button")].find((button) => button.textContent === "Reset Filters").click());
   const maxBlock = [...host.querySelectorAll(".block-section")].find((element) => element.querySelector("label")?.textContent === "Max Link Weight Threshold");
   const sliderMax = Number(maxBlock.querySelector('input[type="range"]').max);
-  expect(sliderMax).toBe(124);
+  expect(sliderMax).toBe(123);
   expect(useFilter.getState().filter.maxLinkThreshold).toBe(sliderMax);
   expect(useFilter.getState().filter.maxLinkThresholdText).toBe(sliderMax);
+});
+
+test("optional maximum filters stay in a collapsed advanced section", async () => {
+  const advanced = host.querySelector("details.filter-advanced");
+  expect(advanced?.open).toBe(false);
+  expect(advanced?.querySelector("summary")?.textContent).toBe("Advanced filters");
+  expect(advanced.textContent).toContain("Max Link Weight Threshold");
+  expect(advanced.textContent).toContain("Max Component Size");
+  expect(host.textContent).not.toContain("Max Component Density");
+  await act(async () => useFilter.getState().setFilter("maxCompSize", 5));
+  expect(advanced.querySelector("summary").textContent).toBe("Advanced filters (active)");
 });

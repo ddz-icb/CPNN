@@ -273,7 +273,6 @@ describe("combined graph filters", () => {
     const cases = [
       { settings: { minKCoreSize: 2 }, expectedNodes: ["A", "B", "C"] },
       { settings: { componentDensity: 1.5 }, expectedNodes: ["A", "B", "C"] },
-      { settings: { maxComponentDensity: 1.5 }, expectedNodes: ["D", "E", "X", "BAD_NODE"] },
       { settings: { nodeIdFilters: parseNodeIdFilters("BAD") }, excludedNode: "BAD_NODE" },
       { settings: { nodeFilter: attribFilter("attr:keep") }, excludedNode: "X" },
       { settings: { linkFilter: attribFilter("attr:keep") }, excludedLink: "d-e" },
@@ -285,5 +284,19 @@ describe("combined graph filters", () => {
       if (excludedNode) assert.equal(nodeIds(filtered).includes(excludedNode), false);
       if (excludedLink) assert.equal(linkIds(filtered).includes(excludedLink), false);
     });
+  });
+
+  test("ignores maximum component density in old graph settings", () => {
+    const graph = createGraph({
+      nodes: [{ id: "A" }, { id: "B" }, { id: "C" }],
+      links: [
+        { id: "a-b", source: "A", target: "B" },
+        { id: "a-c", source: "A", target: "C" },
+        { id: "b-c", source: "B", target: "C" },
+      ],
+    });
+
+    assert.deepEqual(nodeIds(applyFilters(graph, { maxComponentDensity: 0 }).graphData), ["A", "B", "C"]);
+    assert.deepEqual(nodeIds(applyGraphPrefilters(graph, { maxComponentDensity: 0 })), ["A", "B", "C"]);
   });
 });

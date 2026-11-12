@@ -70,9 +70,16 @@ test("upload defaults to minimum component size 1 and forwards the additional pr
   await clickButton("Prefilter Graph");
 
   expect(getBlock("Minimum component size").querySelector('input[type="number"]').value).toBe("1");
+  const advanced = document.querySelector("details.filter-advanced");
+  expect(advanced?.open).toBe(false);
+  expect(advanced?.textContent).toContain("Maximum absolute link weight");
+  expect(advanced?.textContent).toContain("Maximum component size");
+  expect(document.body.textContent).not.toContain("Max Component Density");
   await setNumber("Min k-Core Size", 2);
   await setNumber("Min Component Density", 1);
-  await setNumber("Max Component Density", 3);
+  await setNumber("Maximum absolute link weight", 3);
+  await setNumber("Maximum component size", 4);
+  expect(advanced.querySelector("summary").textContent).toBe("Advanced filters (active)");
   await applyQuery("Filter Links by Attributes", "attr:keep");
   await applyQuery("Filter Nodes by Attributes", "attr:core");
   await applyQuery("Exclude Nodes by Name / ID", "BAD");
@@ -89,7 +96,8 @@ test("upload defaults to minimum component size 1 and forwards the additional pr
     minCompSize: 1,
     minKCoreSize: 2,
     componentDensity: 1,
-    maxComponentDensity: 3,
+    maxEdgeCorr: 3,
+    maxCompSize: 4,
     linkFilter: parseAttribsFilter("attr:keep"),
     nodeFilter: parseAttribsFilter("attr:core"),
     nodeIdFilters: parseNodeIdFilters("BAD"),

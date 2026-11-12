@@ -1,4 +1,4 @@
-import { FieldBlock, SliderBlock, TableList } from "../reusable_components/sidebarComponents.jsx";
+import { AdvancedFilters, FieldBlock, SliderBlock, TableList } from "../reusable_components/sidebarComponents.jsx";
 import { SvgIcon } from "../reusable_components/SvgIcon.jsx";
 import eyeSvg from "../../../../assets/icons/eye.svg?raw";
 import rotateArrowSvg from "../../../../assets/icons/rotateArrow.svg?raw";
@@ -127,17 +127,19 @@ export function CommunitySidebar() {
         infoHeading={"Filter communities by size"}
         infoDescription={communityFilterSizeDescription}
       />
-      <FieldBlock
-        valueText={filter.maxCommunitySizeText}
-        setValue={(value) => setFilter("maxCommunitySize", value)}
-        setValueText={(value) => setFilter("maxCommunitySizeText", value)}
-        fallbackValue={maxCommunitySizeInit}
-        min={1}
-        step={1}
-        text={"Max Community Size"}
-        infoHeading={"Filter communities by size"}
-        infoDescription={communityFilterSizeDescription}
-      />
+      <AdvancedFilters active={filter.maxCommunitySize !== ""}>
+        <FieldBlock
+          valueText={filter.maxCommunitySizeText}
+          setValue={(value) => setFilter("maxCommunitySize", value)}
+          setValueText={(value) => setFilter("maxCommunitySizeText", value)}
+          fallbackValue={maxCommunitySizeInit}
+          min={1}
+          step={1}
+          text={"Max Community Size"}
+          infoHeading={"Filter communities by size"}
+          infoDescription={communityFilterSizeDescription}
+        />
+      </AdvancedFilters>
       <TableList
         heading={`Communities (${rows.length})`}
         data={rows}

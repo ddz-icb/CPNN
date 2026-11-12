@@ -44,23 +44,13 @@ function getCommunitySizeData(graphData, communityResolution) {
   return { idToCommunity, communityToSize };
 }
 
-export function filterComponentDensity(graphData, minComponentDensity, maxComponentDensity) {
+export function filterComponentDensity(graphData, minComponentDensity) {
   const minDensity = getDensityLimit(minComponentDensity);
-  const maxDensity = getDensityLimit(maxComponentDensity);
-  const applyMin = minDensity !== null && minDensity > 0;
-  const applyMax = maxDensity !== null && maxDensity >= 0;
-
-  if (!applyMin && !applyMax) return graphData;
+  if (minDensity === null || minDensity <= 0) return graphData;
   const { IdToComp, componentAvgDegree } = getComponentDensityData(graphData);
   return {
     ...graphData,
-    nodes: graphData.nodes.filter((node) => {
-      const comp = IdToComp[node.id];
-      const density = componentAvgDegree[comp];
-      if (applyMin && density < minDensity) return false;
-      if (applyMax && density > maxDensity) return false;
-      return true;
-    }),
+    nodes: graphData.nodes.filter((node) => componentAvgDegree[IdToComp[node.id]] >= minDensity),
   };
 }
 

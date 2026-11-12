@@ -5,7 +5,7 @@ import { exampleGraphRaw } from "../../../../assets/exampleGraphRawTSV.js";
 import { exampleGraphTsv } from "../../../../assets/exampleGraphMatrixTSV.js";
 import { graphService } from "../../../application/services/graphService.js";
 import { downloadObjectAsFile, downloadTsvFile } from "../../../domain/service/download/download.js";
-import { Button, ButtonPopup, Popup, FieldBlock, SelectFieldBlock, SliderBlock, SwitchBlock } from "../reusable_components/sidebarComponents.jsx";
+import { AdvancedFilters, Button, ButtonPopup, Popup, FieldBlock, SelectFieldBlock, SliderBlock, SwitchBlock } from "../reusable_components/sidebarComponents.jsx";
 import { ParsedFilterBlock } from "../reusable_components/parsedFilterBlock.jsx";
 import { isTypingTarget, isPopupOpen } from "../hooks/keyboardUtils.js";
 import { parseAttribsFilter } from "../../../domain/service/parsing/attribsFilterParsing.js";
@@ -24,7 +24,6 @@ import {
   mergeByNameDescription,
   minKCoreSizeDescription,
   componentDensityDescription,
-  maxComponentDensityDescription,
   nodeIdFilterDescription,
   nodeFilterDescription,
   linkFilterDescription,
@@ -64,6 +63,7 @@ function GraphPrefilterPopup({
   minCompSizeText,
   setMinCompSize,
   setMinCompSizeText,
+  maxCompSize,
   maxCompSizeText,
   setMaxCompSize,
   setMaxCompSizeText,
@@ -115,19 +115,6 @@ function GraphPrefilterPopup({
               infoDescription={minLinkCorrDescription}
             />
           )}
-          <FieldBlock
-            variant="popup"
-            valueText={maxEdgeCorrText}
-            setValue={(value) => setMaxEdgeCorr(value)}
-            setValueText={(value) => setMaxEdgeCorrText(value)}
-            fallbackValue={""}
-            min={0}
-            max={usesListedWeights ? undefined : 1}
-            step={0.05}
-            text={maxLinkThresholdLabel}
-            infoHeading={maxLinkThresholdLabel}
-            infoDescription={maxLinkCorrDescription}
-          />
           <ParsedFilterBlock
             text="Filter Links by Attributes"
             infoHeading="Filtering Links by Attributes"
@@ -191,18 +178,6 @@ function GraphPrefilterPopup({
           />
           <FieldBlock
             variant="popup"
-            valueText={extraFilters.maxComponentDensityText}
-            setValue={(value) => setExtraFilter("maxComponentDensity", value)}
-            setValueText={(value) => setExtraFilter("maxComponentDensityText", value)}
-            fallbackValue=""
-            min={0}
-            step={1}
-            text="Max Component Density"
-            infoHeading="Filter by Component Density"
-            infoDescription={maxComponentDensityDescription}
-          />
-          <FieldBlock
-            variant="popup"
             valueText={minCompSizeText}
             setValue={(value) => setMinCompSize(value)}
             setValueText={(value) => setMinCompSizeText(value)}
@@ -213,18 +188,33 @@ function GraphPrefilterPopup({
             infoHeading={"Minimum component/cluster size"}
             infoDescription={minCompSizeDescriptionUpload}
           />
-          <FieldBlock
-            variant="popup"
-            valueText={maxCompSizeText}
-            setValue={(value) => setMaxCompSize(value)}
-            setValueText={(value) => setMaxCompSizeText(value)}
-            fallbackValue={""}
-            min={1}
-            step={1}
-            text={"Maximum component size"}
-            infoHeading={"Maximum component/cluster size"}
-            infoDescription={maxCompSizeDescriptionUpload}
-          />
+          <AdvancedFilters active={maxEdgeCorr !== "" || maxCompSize !== ""}>
+            <FieldBlock
+              variant="popup"
+              valueText={maxEdgeCorrText}
+              setValue={(value) => setMaxEdgeCorr(value)}
+              setValueText={(value) => setMaxEdgeCorrText(value)}
+              fallbackValue={""}
+              min={0}
+              max={usesListedWeights ? undefined : 1}
+              step={0.05}
+              text={maxLinkThresholdLabel}
+              infoHeading={maxLinkThresholdLabel}
+              infoDescription={maxLinkCorrDescription}
+            />
+            <FieldBlock
+              variant="popup"
+              valueText={maxCompSizeText}
+              setValue={(value) => setMaxCompSize(value)}
+              setValueText={(value) => setMaxCompSizeText(value)}
+              fallbackValue={""}
+              min={1}
+              step={1}
+              text={"Maximum component size"}
+              infoHeading={"Maximum component/cluster size"}
+              infoDescription={maxCompSizeDescriptionUpload}
+            />
+          </AdvancedFilters>
           <div className="block-section pad-top-1">
             <Button variant="popup" text={"Back"} onClick={closePopup} />
           </div>
@@ -256,7 +246,6 @@ function buildCreateGraphSettings({
     mergeByName,
     minKCoreSize: extraFilters.minKCoreSize,
     componentDensity: extraFilters.componentDensity,
-    maxComponentDensity: extraFilters.maxComponentDensity,
     nodeIdFilters: extraFilters.nodeIdFilters,
     nodeFilter: extraFilters.nodeFilter,
     linkFilter: extraFilters.linkFilter,
@@ -287,8 +276,6 @@ export function UploadGraph() {
     minKCoreSizeText: 0,
     componentDensity: 0,
     componentDensityText: 0,
-    maxComponentDensity: "",
-    maxComponentDensityText: "",
     nodeIdFilters: [],
     nodeIdFilterText: "",
     nodeFilter: true,
@@ -374,6 +361,7 @@ export function UploadGraph() {
               minCompSizeText={minCompSizeText}
               setMinCompSize={setMinCompSize}
               setMinCompSizeText={setMinCompSizeText}
+              maxCompSize={maxCompSize}
               maxCompSizeText={maxCompSizeText}
               setMaxCompSize={setMaxCompSize}
               setMaxCompSizeText={setMaxCompSizeText}
