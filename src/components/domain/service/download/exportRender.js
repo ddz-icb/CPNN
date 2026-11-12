@@ -3,7 +3,9 @@ import { drawCircleCanvas, radius } from "../canvas_drawing/nodes.js";
 import {
   drawLineCanvas,
   drawLineChevronQueueCanvas,
+  getFocusLinkWidthScale,
   get3DLinkDepthScale,
+  getLinkHighlightWidth,
   getParallelLinkLayoutData,
   MIN_3D_LINK_SCREEN_LENGTH,
 } from "../canvas_drawing/lineGraphics.js";
@@ -181,7 +183,19 @@ export function render3DQueue(ctx, items, drawParams, gridOptions) {
         ctx.save();
         ctx.globalAlpha *= alpha;
       }
-      drawLinkHighlightIfActive(ctx, link, item.index, highlightLinkIdSet, highlightColor, linkWidth, widthScale, item.layout, highlightedLinkBundles, highlightLinkAlphas);
+      drawLinkHighlightIfActive(
+        ctx,
+        link,
+        item.index,
+        highlightLinkIdSet,
+        highlightColor,
+        linkWidth,
+        widthScale,
+        item.layout,
+        highlightedLinkBundles,
+        highlightLinkAlphas,
+        getInterpolatedFocusWidthScale(link, focusFromNodeId, focusToNodeId, focusProgress),
+      );
       drawLineCanvas(ctx, link, linkWidth, linkColorscheme, linkAttribsToColorIndices, {
         widthScale,
         minLength: MIN_3D_LINK_SCREEN_LENGTH,
@@ -260,7 +274,19 @@ export function render2DGraph(ctx, graphData, nodeMap, params) {
       ctx.save();
       ctx.globalAlpha *= alpha;
     }
-    drawLinkHighlightIfActive(ctx, link, index, highlightLinkIdSet, highlightColor, linkWidth, 1, linkLayouts.get(index), highlightedLinkBundles, highlightLinkAlphas);
+    drawLinkHighlightIfActive(
+      ctx,
+      link,
+      index,
+      highlightLinkIdSet,
+      highlightColor,
+      linkWidth,
+      1,
+      linkLayouts.get(index),
+      highlightedLinkBundles,
+      highlightLinkAlphas,
+      getInterpolatedFocusWidthScale(link, focusFromNodeId, focusToNodeId, focusProgress),
+    );
     drawLineCanvas(ctx, link, linkWidth, linkColorscheme, linkAttribsToColorIndices, { layout: linkLayouts.get(index), drawChevron: false });
     if (alpha < 1) ctx.restore();
   }
@@ -434,7 +460,7 @@ function getHighlightBundleKey(link, index) {
   return getUndirectedLinkKey(sourceId, targetId) ?? getLinkIdText(link, index, link?.__sourceId, link?.__targetId);
 }
 
-function drawLinkHighlightIfActive(ctx, link, index, linkIdSet, color, linkWidth, widthScale = 1, layout = null, highlightedBundles = null, alphas = null) {
+function drawLinkHighlightIfActive(ctx, link, index, linkIdSet, color, linkWidth, widthScale = 1, layout = null, highlightedBundles = null, alphas = null, focusWidthScale = 1) {
   const linkIndex = Number.isInteger(link?.__linkIndex) ? link.__linkIndex : index;
   const linkId = getLinkIdText(link, linkIndex, link?.__sourceId, link?.__targetId);
   if (!link || !linkIdSet?.has?.(linkId) || !color) return;
@@ -476,7 +502,7 @@ function drawLinkHighlightIfActive(ctx, link, index, linkIdSet, color, linkWidth
     ctx.globalAlpha = useSvgOpacityCompensation
       ? getLayerAlphaForTarget(targetAlpha, previousTargetAlpha)
       : targetAlpha;
-    ctx.lineWidth = bundleWidth + stroke.outset * getDepthScale(widthScale) * 2;
+    ctx.lineWidth = getLinkHighlightWidth(bundleWidth + stroke.outset * getDepthScale(widthScale) * 2, focusWidthScale);
     ctx.moveTo(trimmed.sourceX, trimmed.sourceY);
     ctx.lineTo(trimmed.targetX, trimmed.targetY);
     ctx.stroke();
@@ -554,6 +580,13 @@ function getInterpolatedFocusAlpha(link, fromNodeId, toNodeId, progress) {
     || String(getEndpointIdText(link?.__targetId ?? link?.target)) === String(nodeId) ? 1 : 0.15;
   const t = clamp(Number.isFinite(progress) ? progress : 1, 0, 1);
   return getAlpha(fromNodeId) * (1 - t) + getAlpha(toNodeId) * t;
+}
+
+function getInterpolatedFocusWidthScale(link, fromNodeId, toNodeId, progress) {
+  const fromScale = getFocusLinkWidthScale(link, fromNodeId);
+  const toScale = getFocusLinkWidthScale(link, toNodeId);
+  const t = clamp(Number.isFinite(progress) ? progress : 1, 0, 1);
+  return fromScale * (1 - t) + toScale * t;
 }
 
 function toNodeIdSet(ids) {

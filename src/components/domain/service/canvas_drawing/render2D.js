@@ -7,7 +7,7 @@ export function redraw(graphData, lines, linkWidth, linkColorscheme, linkAttribs
 
   updateLines(links, lines, linkWidth, linkColorscheme, linkAttribsToColorIndices, app.__focusedNodeId, renderPlan);
   updateNodes(nodes, nodeMap, showNodeLabels);
-  updateHighlights({ links, lineGraphics: lines, linkWidth, layouts: renderPlan?.layouts });
+  updateHighlights({ links, lineGraphics: lines, linkWidth, focusNodeId: app.__focusedNodeId, layouts: renderPlan?.layouts });
 
   app.renderer.render(app.stage);
 }

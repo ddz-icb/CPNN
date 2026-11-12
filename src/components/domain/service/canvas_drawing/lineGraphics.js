@@ -14,7 +14,7 @@ const DOTTED_LINE_DASH_MULTIPLIER = 1.8;
 const DOTTED_LINE_GAP_MULTIPLIER = 1.8;
 const MIN_DOTTED_DASH = 10;
 const MIN_DOTTED_GAP = 2.5;
-const FOCUSED_LINK_WIDTH_SCALE = 1.5;
+const LINK_HIGHLIGHT_WIDTH_SCALE = 2;
 const CHEVRON_MIN_SIZE = 5;
 const CHEVRON_MAX_SIZE = 10;
 const CHEVRON_POSITION_START = 0.44;
@@ -36,8 +36,12 @@ function getFocusAlpha(link, nodeId) {
 export function getFocusLinkWidthScale(link, nodeId) {
   if (nodeId == null) return 1;
   return getEndpointId(link?.source) === nodeId || getEndpointId(link?.target) === nodeId
-    ? FOCUSED_LINK_WIDTH_SCALE
+    ? LINK_HIGHLIGHT_WIDTH_SCALE
     : 1;
+}
+
+export function getLinkHighlightWidth(width, focusWidthScale = 1) {
+  return width * focusWidthScale;
 }
 
 function roundToDecimals(value, decimals = 1) {

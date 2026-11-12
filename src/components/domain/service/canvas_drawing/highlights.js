@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 import { getEndpointIdText, getLinkIdText, getUndirectedLinkKey } from "../graph_calculations/graphUtils.js";
-import { getParallelLinkLayoutData } from "./lineGraphics.js";
+import { getFocusLinkWidthScale, getLinkHighlightWidth, getParallelLinkLayoutData } from "./lineGraphics.js";
 import { radius } from "./nodes.js";
 
 const activeHighlights = new Set();
@@ -123,10 +123,13 @@ function getDepthScale(scale) {
   return Number.isFinite(numericScale) && numericScale > 0 ? numericScale : 1;
 }
 
-function getGlowLinkWidth(style, bundleWidth, depthScale = 1) {
+function getGlowLinkWidth(style, bundleWidth, depthScale = 1, focusWidthScale = 1) {
   const baseWidth = getBaseLinkWidth(bundleWidth);
   const outset = Number(style?.outset);
-  return baseWidth + Math.max(0, Number.isFinite(outset) ? outset : 0) * getDepthScale(depthScale) * 2;
+  return getLinkHighlightWidth(
+    baseWidth + Math.max(0, Number.isFinite(outset) ? outset : 0) * getDepthScale(depthScale) * 2,
+    focusWidthScale,
+  );
 }
 
 function getLinkAttribCount(link) {
@@ -193,7 +196,7 @@ function ensureLinkHighlightLayer(lineGraphic) {
   return linkHighlightLayer;
 }
 
-function drawLinkGlow(layer, link, linkWidth, layout = null) {
+function drawLinkGlow(layer, link, linkWidth, layout = null, focusWidthScale = 1) {
   const sourceX = link?.source?.x;
   const sourceY = link?.source?.y;
   const targetX = link?.target?.x;
@@ -216,14 +219,14 @@ function drawLinkGlow(layer, link, linkWidth, layout = null) {
       .lineTo(trimmed.targetX, trimmed.targetY)
       .stroke({
         color: activeLinkHighlightColor,
-        width: getGlowLinkWidth(style, bundleWidth),
+        width: getGlowLinkWidth(style, bundleWidth, 1, focusWidthScale),
         alpha: style.alpha,
         cap: "round",
       });
   }
 }
 
-function updateLineHighlights2D({ links, lineGraphics, linkWidth, layouts: cachedLayouts }) {
+function updateLineHighlights2D({ links, lineGraphics, linkWidth, focusNodeId, layouts: cachedLayouts }) {
   clearLineGlowGraphics();
   if (activeLinkHighlightIds.size === 0) {
     clearLinkHighlightLayer();
@@ -244,17 +247,17 @@ function updateLineHighlights2D({ links, lineGraphics, linkWidth, layouts: cache
     const bundleKey = getHighlightBundleKey(link, index);
     if (highlightedBundles.has(bundleKey)) return;
     highlightedBundles.add(bundleKey);
-    drawLinkGlow(layer, link, linkWidth, layouts.get(index));
+    drawLinkGlow(layer, link, linkWidth, layouts.get(index), getFocusLinkWidthScale(link, focusNodeId));
   });
 }
 
-function getVisibleEdgeSpriteGeometry(sprites, linkWidth, layout = null) {
+function getVisibleEdgeSpriteGeometry(sprites, linkWidth, layout = null, focusWidthScale = 1) {
   const visibleSprites = (sprites ?? []).filter((sprite) => sprite && sprite.visible !== false);
   if (visibleSprites.length === 0) return null;
 
   const sourceSprite = visibleSprites[0];
   const stripeHeight = visibleSprites.reduce((sum, sprite) => sum + getBaseLinkWidth(sprite.height), 0) / visibleSprites.length;
-  const depthScale = stripeHeight / getBaseLinkWidth(linkWidth);
+  const depthScale = stripeHeight / (getBaseLinkWidth(linkWidth) * focusWidthScale);
   const laneCount = Math.max(1, layout?.laneCount ?? visibleSprites.length);
   const laneOffset = layout?.laneOffset ?? 0;
   const position = visibleSprites.reduce(
@@ -276,7 +279,7 @@ function getVisibleEdgeSpriteGeometry(sprites, linkWidth, layout = null) {
     y: y - laneOffset * stripeHeight * perpendicularY,
     rotation: sourceSprite.rotation,
     width: sourceSprite.width,
-    bundleWidth: stripeHeight * laneCount,
+    bundleWidth: stripeHeight * laneCount / focusWidthScale,
     depthScale,
     zIndex: sourceSprite.zIndex ?? 0,
   };
@@ -299,7 +302,7 @@ function ensureLineGlowGraphic(key, edgeGeometry) {
   return glowGraphic;
 }
 
-function updateLineGlowGraphic(glowGraphic, edgeGeometry, style, styleIndex) {
+function updateLineGlowGraphic(glowGraphic, edgeGeometry, style, styleIndex, focusWidthScale = 1) {
   const sourceWidth = getBaseLinkWidth(edgeGeometry.width);
   const depthScale = getDepthScale(edgeGeometry.depthScale);
   const endpointInset = Math.min(LINK_GLOW_ENDPOINT_INSET * depthScale, Math.max(0, sourceWidth / 2 - 0.5));
@@ -314,7 +317,7 @@ function updateLineGlowGraphic(glowGraphic, edgeGeometry, style, styleIndex) {
     .lineTo(edgeGeometry.x + offsetX, edgeGeometry.y + offsetY)
     .stroke({
       color: activeLinkHighlightColor,
-      width: getGlowLinkWidth(style, edgeGeometry.bundleWidth, depthScale),
+      width: getGlowLinkWidth(style, edgeGeometry.bundleWidth, depthScale, focusWidthScale),
       alpha: style.alpha,
       cap: "round",
     });
@@ -329,7 +332,7 @@ function pruneUnusedLineGlowGraphics(usedKeys) {
   });
 }
 
-function updateLineHighlights3D({ links, lineGraphics, linkWidth, layouts: cachedLayouts }) {
+function updateLineHighlights3D({ links, lineGraphics, linkWidth, focusNodeId, layouts: cachedLayouts }) {
   clearLinkHighlightLayer();
   if (activeLinkHighlightIds.size === 0 || !Array.isArray(lineGraphics)) {
     clearLineGlowGraphics();
@@ -349,14 +352,15 @@ function updateLineHighlights3D({ links, lineGraphics, linkWidth, layouts: cache
     const sprites = lineGraphics[index];
     if (!Array.isArray(sprites)) return;
 
-    const edgeGeometry = getVisibleEdgeSpriteGeometry(sprites, linkWidth, layouts.get(index));
+    const focusWidthScale = getFocusLinkWidthScale(link, focusNodeId);
+    const edgeGeometry = getVisibleEdgeSpriteGeometry(sprites, linkWidth, layouts.get(index), focusWidthScale);
     if (!edgeGeometry) return;
 
     LINK_GLOW_STROKES.forEach((style, styleIndex) => {
       const key = `${bundleKey}:${styleIndex}`;
       const glowGraphic = ensureLineGlowGraphic(key, edgeGeometry);
       if (!glowGraphic) return;
-      updateLineGlowGraphic(glowGraphic, edgeGeometry, style, styleIndex);
+      updateLineGlowGraphic(glowGraphic, edgeGeometry, style, styleIndex, focusWidthScale);
       usedGlowKeys.add(key);
     });
   });
