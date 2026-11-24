@@ -280,20 +280,26 @@ export function resetCamera3D(camera, container, upAxis = "y") {
   camera.redraw?.();
 }
 
-export function fitCameraToNodes(camera, nodes, container) {
-  const positionedNodes = (nodes ?? []).filter(
-    (node) => Number.isFinite(node?.x) && Number.isFinite(node?.y),
-  );
-  if (!camera || positionedNodes.length === 0 || !container?.width || !container?.height) return false;
+function getPositionedNodes(nodes) {
+  return (nodes ?? []).filter((node) => Number.isFinite(node?.x) && Number.isFinite(node?.y));
+}
 
-  const center = positionedNodes.reduce(
-    (result, node) => ({
-      x: result.x + node.x / positionedNodes.length,
-      y: result.y + node.y / positionedNodes.length,
-      z: result.z + (Number.isFinite(node.z) ? node.z : 0) / positionedNodes.length,
+function getNodeCenter(nodes) {
+  return nodes.reduce(
+    (center, node) => ({
+      x: center.x + node.x / nodes.length,
+      y: center.y + node.y / nodes.length,
+      z: center.z + (Number.isFinite(node.z) ? node.z : 0) / nodes.length,
     }),
     { x: 0, y: 0, z: 0 },
   );
+}
+
+export function fitCameraToNodes(camera, nodes, container) {
+  const positionedNodes = getPositionedNodes(nodes);
+  if (!camera || positionedNodes.length === 0 || !container?.width || !container?.height) return false;
+
+  const center = getNodeCenter(positionedNodes);
   const radius = positionedNodes.reduce((largest, node) => {
     const distance = Math.hypot(
       node.x - center.x,

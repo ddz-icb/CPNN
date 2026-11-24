@@ -18,6 +18,7 @@ import { useTheme } from "../state/themeState.js";
 import { nodeContainersInit, linesInit, lines2DInit, lines3DInit, nodeMapInit, grid3DInit, usePixiState } from "../state/pixiState.js";
 import { filteredAfterStartInit, useGraphFlags } from "../state/graphFlagsState.js";
 import { simulationInit, useRenderState } from "../state/canvasState.js";
+import { centerGraphInContainer } from "../../domain/service/canvas_drawing/graphLayout.js";
 import { setupStage } from "../../domain/service/canvas_drawing/stageSetup.js";
 import { resetGridVisibility, resetStageTransform, restoreProjectionHidden } from "../../domain/service/canvas_drawing/stageTransforms.js";
 import {
@@ -395,6 +396,11 @@ export function RenderControl() {
     setAppearance("threeDFov", threeDFovInit);
     setAppearance("threeDFovText", threeDFovInit);
   };
+  const fitGraph = () => {
+    const nodes = graphState.graph?.data?.nodes ?? [];
+    centerGraphInContainer(nodes, container);
+    fitCameraToNodes(cameraRef.current, nodes, container);
+  };
 
   return (
     <div className="canvas">
@@ -408,6 +414,7 @@ export function RenderControl() {
           container={container}
           upAxis={upAxis}
           zoomSensitivity={appearance.threeDZoomSensitivity}
+          onFitGraph={fitGraph}
           onReset={resetView}
         />
       )}
@@ -415,7 +422,7 @@ export function RenderControl() {
   );
 }
 
-function ThreeDNavigationControls({ mode, setMode, cameraRef, nodes, container, upAxis, zoomSensitivity, onReset }) {
+function ThreeDNavigationControls({ mode, setMode, cameraRef, nodes, container, upAxis, zoomSensitivity, onFitGraph, onReset }) {
   const zoom = (direction) => {
     const camera = cameraRef.current;
     if (!camera) return;
@@ -450,7 +457,7 @@ function ThreeDNavigationControls({ mode, setMode, cameraRef, nodes, container, 
           <button type="button" onClick={() => applyCameraPreset(cameraRef.current, "top", upAxis)}>Top</button>
           <button type="button" onClick={() => applyCameraPreset(cameraRef.current, "side", upAxis)}>Side</button>
           <button type="button" onClick={() => applyCameraPreset(cameraRef.current, "isometric", upAxis)}>Isometric</button>
-          <button type="button" onClick={() => fitCameraToNodes(cameraRef.current, nodes, container)} disabled={!nodes.length}>
+          <button type="button" onClick={onFitGraph} disabled={!nodes.length}>
             Fit graph
           </button>
           <button type="button" onClick={onReset}>Reset view</button>
