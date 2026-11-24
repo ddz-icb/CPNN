@@ -9,6 +9,7 @@ export const communityStateInit = {
   communityResolution: communityResolutionInit,
   communityResolutionText: communityResolutionInit,
   selectedCommunityId: null,
+  isCommunityDetailsOpen: false,
   isViewFocusActive: true,
 };
 
@@ -20,12 +21,14 @@ export const useCommunityState = create((set) => ({
         ...state.communityState,
         [key]: value,
         ...(key === "selectedCommunityId" && value != null && value !== state.communityState.selectedCommunityId
-          ? { isViewFocusActive: true }
-          : {}),
+          ? { isViewFocusActive: true, isCommunityDetailsOpen: true }
+          : key === "selectedCommunityId" && value == null
+            ? { isCommunityDetailsOpen: false }
+            : {}),
       },
     })),
   setAllCommunityState: (value) =>
     set(() => ({
-      communityState: value,
+      communityState: { ...communityStateInit, ...value },
     })),
 }));

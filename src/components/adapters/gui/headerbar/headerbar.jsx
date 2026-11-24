@@ -20,6 +20,7 @@ export function HeaderBar({ activePanel, setActivePanel }) {
     ({ id }) => id?.toString() === communityState.selectedCommunityId?.toString(),
   );
   const isCommunityActive = Boolean(selectedCommunity);
+  const isCommunityDetailsOpen = Boolean(communityState.isCommunityDetailsOpen);
   const mappingPanelId = "headerbar-colormapping-panel";
   const statisticsPanelId = "headerbar-statistics-panel";
 
@@ -36,9 +37,7 @@ export function HeaderBar({ activePanel, setActivePanel }) {
     setActivePanel(panel);
   }, [activePanel, hasNodeDetails, isCommunityActive, isNodeDetailsActive, setActivePanel, setCommunityState, setTooltipSettings]);
 
-  const closeCommunityPanel = useCallback(() => {
-    setCommunityState("selectedCommunityId", null);
-  }, [setCommunityState]);
+  const closeCommunityPanel = useCallback(() => setCommunityState("isCommunityDetailsOpen", false), [setCommunityState]);
 
   useEffect(() => {
     if (!isNodeDetailsActive) return;
@@ -76,7 +75,8 @@ export function HeaderBar({ activePanel, setActivePanel }) {
 
       if (e.key === "Escape") {
         if (activePanel) setActivePanel(null);
-        if (isCommunityActive) closeCommunityPanel();
+        if (isCommunityDetailsOpen) closeCommunityPanel();
+        else if (isCommunityActive) setCommunityState("selectedCommunityId", null);
       }
     };
 
@@ -84,7 +84,18 @@ export function HeaderBar({ activePanel, setActivePanel }) {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [activePanel, closeCommunityPanel, hasNodeDetails, isCommunityActive, isNodeDetailsActive, selectPanel, setActivePanel, setTooltipSettings]);
+  }, [
+    activePanel,
+    closeCommunityPanel,
+    hasNodeDetails,
+    isCommunityActive,
+    isCommunityDetailsOpen,
+    isNodeDetailsActive,
+    selectPanel,
+    setActivePanel,
+    setCommunityState,
+    setTooltipSettings,
+  ]);
 
   const panelNavigation = (
     <RightPanelNavigation
@@ -119,7 +130,7 @@ export function HeaderBar({ activePanel, setActivePanel }) {
           {isMappingActive ? <HeaderbarColorMapping /> : <HeaderbarStatistics />}
         </RightSidebar>
       )}
-      {isCommunityActive && !isNodeDetailsActive && (
+      {isCommunityActive && isCommunityDetailsOpen && !isNodeDetailsActive && (
         <RightSidebar
           id="community-details-panel"
           className="community-side-panel"

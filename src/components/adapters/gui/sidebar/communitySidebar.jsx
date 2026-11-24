@@ -70,6 +70,10 @@ export function CommunitySidebar() {
   const handleFocusCommunity = (item) => {
     const communityId = item?.id?.toString();
     if (!communityId) return;
+    if (communityState.selectedCommunityId === communityId && !communityState.isCommunityDetailsOpen) {
+      setCommunityState("isCommunityDetailsOpen", true);
+      return;
+    }
     const nextSelection = communityState.selectedCommunityId === communityId ? null : communityId;
     if (nextSelection) {
       clearNodeFocus();

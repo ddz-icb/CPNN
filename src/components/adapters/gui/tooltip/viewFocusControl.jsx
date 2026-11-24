@@ -139,8 +139,12 @@ export function ViewFocusControl() {
     }
   };
 
+  const toggleCommunityDetails = () => {
+    setCommunityState("isCommunityDetailsOpen", !communityState.isCommunityDetailsOpen);
+  };
+
   useEffect(() => {
-    if (kind !== "link" && kind !== "community") return;
+    if (kind !== "link") return;
     const onKeyDown = (event) => {
       if (event.key !== "Escape" || isPopupOpen()) return;
       event.stopImmediatePropagation();
@@ -168,6 +172,13 @@ export function ViewFocusControl() {
             : setCommunityState("isViewFocusActive", !active)}
           title={active ? "Restore the previous view" : `Center this ${kind}`}
         />
+        {kind === "community" && (
+          <SidebarFooterButton
+            text={communityState.isCommunityDetailsOpen ? "Hide details" : "Details"}
+            aria-expanded={Boolean(communityState.isCommunityDetailsOpen)}
+            onClick={toggleCommunityDetails}
+          />
+        )}
         <SidebarFooterButton
           text="Clear"
           onClick={clearSelection}
