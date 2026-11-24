@@ -136,6 +136,85 @@ export function SelectFieldBlock({
   );
 }
 
+export function MultiSelectFieldBlock({
+  text,
+  infoHeading,
+  infoDescription,
+  value,
+  setValue,
+  options = [],
+  allOptionValue,
+  size = "wide",
+}) {
+  const allOption = options.find((option) => option.value === allOptionValue);
+  const sourceOptions = options.filter((option) => option.value !== allOptionValue);
+  const allSelected = value === allOptionValue || (Array.isArray(value) && value.includes(allOptionValue));
+  const selectedValues = Array.isArray(value)
+    ? value.filter((selectedValue) => selectedValue !== allOptionValue)
+    : value && value !== allOptionValue
+      ? [value]
+      : [];
+  const selectedLabels = sourceOptions
+    .filter((option) => selectedValues.includes(option.value))
+    .map((option) => option.label);
+  let selectionLabel = "No sources selected";
+  if (allSelected) {
+    selectionLabel = allOption?.label ?? "All sources";
+  } else if (selectedLabels.length > 0 && selectedLabels.length <= 2) {
+    selectionLabel = selectedLabels.join(", ");
+  } else if (selectedLabels.length > 2) {
+    selectionLabel = `${selectedLabels[0]}, ${selectedLabels[1]} +${selectedLabels.length - 2}`;
+  }
+
+  const updateSelection = (optionValue, checked) => {
+    if (optionValue === allOptionValue) {
+      setValue(checked ? allOptionValue : []);
+      return;
+    }
+
+    const currentValues = allSelected ? sourceOptions.map((option) => option.value) : selectedValues;
+    const nextValues = checked
+      ? [...new Set([...currentValues, optionValue])]
+      : currentValues.filter((selectedValue) => selectedValue !== optionValue);
+    setValue(nextValues.length === sourceOptions.length ? allOptionValue : nextValues);
+  };
+
+  return (
+    <div className="block-section block-section-stack">
+      <div className="sidebar-control-header">
+        <label className="label">{text}</label>
+        <span className="info-button-container">
+          <InfoButtonPopup heading={infoHeading} description={infoDescription} />
+        </span>
+      </div>
+      <details className="sidebar-multi-select">
+        <summary
+          className={`sidebar-select sidebar-multi-select-trigger${size === "wide" ? " sidebar-control-input--wide" : ""} default-height`}
+          title={selectedLabels.join(", ")}
+        >
+          <span>{selectionLabel}</span>
+        </summary>
+        <div className="sidebar-multi-select-options" role="group" aria-label={text}>
+          {options.map((option) => {
+            const checked =
+              option.value === allOptionValue ? allSelected : allSelected || selectedValues.includes(option.value);
+            return (
+              <label className="sidebar-multi-select-option" key={option.value}>
+                <input
+                  type="checkbox"
+                  checked={checked}
+                  onChange={(event) => updateSelection(option.value, event.target.checked)}
+                />
+                <span>{option.label}</span>
+              </label>
+            );
+          })}
+        </div>
+      </details>
+    </div>
+  );
+}
+
 export function FieldApplyBlock({
   text,
   infoHeading,

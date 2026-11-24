@@ -124,8 +124,7 @@ export const stringDbNodeAttributeMaxFdrDescription = (
 export const stringDbNodeAttributeCategoryDescription = (
   <div>
     <p className="margin-0">
-      Choose whether node attributes use all STRING enrichment sources together or only one source such as Reactome, KEGG, Gene Ontology, or
-      WikiPathways.
+      Choose one or more STRING enrichment sources for node attributes. Select All STRING sources to include every source.
     </p>
   </div>
 );

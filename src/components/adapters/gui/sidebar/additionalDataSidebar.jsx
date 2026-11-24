@@ -1,6 +1,7 @@
 import {
   Button,
   FieldBlock,
+  MultiSelectFieldBlock,
   SelectFieldBlock,
   SidebarDisclosure,
   SliderBlock,
@@ -149,13 +150,14 @@ export function AdditionalDataSidebar() {
         />
         {graphEnrichment.stringDbNodeAttributeEnrichmentEnabled && (
           <>
-            <SelectFieldBlock
+            <MultiSelectFieldBlock
               value={graphEnrichment.stringDbNodeAttributeCategory ?? stringDbNodeAttributeCategoryInit}
               setValue={(value) => setGraphEnrichment("stringDbNodeAttributeCategory", value)}
               options={STRING_DB_NODE_ATTRIBUTE_CATEGORY_OPTIONS}
+              allOptionValue={stringDbNodeAttributeCategoryInit}
               size={"wide"}
-              text={"Annotation Source"}
-              infoHeading={"STRING annotation source"}
+              text={"Annotation Sources"}
+              infoHeading={"STRING annotation sources"}
               infoDescription={stringDbNodeAttributeCategoryDescription}
             />
             <FieldBlock

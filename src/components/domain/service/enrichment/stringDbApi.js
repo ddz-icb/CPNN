@@ -19,7 +19,7 @@ import {
   getStringDbCategoryAttributeLabel,
   matchesStringDbCategory,
   normalizeProteinId,
-  normalizeStringDbCategory,
+  normalizeStringDbCategories,
 } from "./stringDbHelpers.js";
 
 function logRequestIssue(source, identifier, error) {
@@ -185,7 +185,7 @@ function mapFunctionalEnrichmentRowsToAnnotations(rows, proteinIds, mappings, op
   const { proteinIdLookup, preferredNameToProteinIds } = buildIdentifierMappingLookups(uniqueProteinIds, mappings);
   const maxTerms = clampNodeAttributeMaxTerms(options.maxTerms);
   const maxFdr = clampGroupEnrichmentMaxFdr(options.maxFdr);
-  const category = normalizeStringDbCategory(options.category);
+  const category = normalizeStringDbCategories(options.category);
   const annotations = [];
   let selectedTermCount = 0;
 
@@ -262,7 +262,7 @@ export async function fetchFunctionalEnrichmentAnnotations(proteinIds, options =
   const speciesId = options.speciesId ?? DEFAULT_SPECIES_ID;
   const maxTerms = clampNodeAttributeMaxTerms(options.maxTerms);
   const maxFdr = clampGroupEnrichmentMaxFdr(options.maxFdr);
-  const category = normalizeStringDbCategory(options.category);
+  const category = normalizeStringDbCategories(options.category);
   const mappingChunks = chunkArray(uniqueProteinIds, IDENTIFIER_MAPPING_CHUNK_SIZE);
   const rows = await fetchFunctionalEnrichmentChunk(uniqueProteinIds, speciesId, options.signal);
   const mappings = [];

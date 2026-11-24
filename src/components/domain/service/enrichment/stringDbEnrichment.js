@@ -13,7 +13,7 @@ import {
   clampEvidenceScore,
   clampGroupEnrichmentMaxFdr,
   clampNodeAttributeMaxTerms,
-  normalizeStringDbCategory,
+  normalizeStringDbCategories,
   normalizeProteinId,
 } from "./stringDbHelpers.js";
 
@@ -164,7 +164,7 @@ export async function enrichGraphWithStringDb(graphData, options = {}) {
   const minEvidenceScore = clampEvidenceScore(options.minEvidenceScore);
   const nodeAttributeMaxTerms = clampNodeAttributeMaxTerms(options.nodeAttributeMaxTerms);
   const nodeAttributeMaxFdr = clampGroupEnrichmentMaxFdr(options.nodeAttributeMaxFdr);
-  const nodeAttributeCategory = normalizeStringDbCategory(options.nodeAttributeCategory);
+  const nodeAttributeCategory = normalizeStringDbCategories(options.nodeAttributeCategory);
   const maxGroupEnrichmentFdr = clampGroupEnrichmentMaxFdr(options.maxGroupEnrichmentFdr);
   const speciesId = options.speciesId ?? DEFAULT_SPECIES_ID;
   const proteinToNodeIds = buildProteinToNodeIdsMap(graphData.nodes);

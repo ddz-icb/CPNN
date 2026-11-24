@@ -56,6 +56,15 @@ export function normalizeStringDbCategory(value) {
   return categoryById.get(categoryKey)?.id ?? categoryByLabel.get(categoryKey)?.id ?? STRING_DB_CATEGORY_ALL;
 }
 
+export function normalizeStringDbCategories(value) {
+  const values = Array.isArray(value) ? value : [value];
+  if (!Array.isArray(value) && (value == null || value === "")) return [STRING_DB_CATEGORY_ALL];
+
+  const categories = Array.from(new Set(values.map(normalizeStringDbCategory)));
+  if (categories.includes(STRING_DB_CATEGORY_ALL)) return [STRING_DB_CATEGORY_ALL];
+  return categories.sort((first, second) => first.localeCompare(second));
+}
+
 export function getStringDbCategoryLabel(value) {
   const categoryKey = normalizeCategoryKey(value);
   if (!categoryKey) return "";
@@ -70,9 +79,9 @@ export function getStringDbCategoryAttributeLabel(value) {
 }
 
 export function matchesStringDbCategory(rowCategory, selectedCategory) {
-  const normalizedSelection = normalizeStringDbCategory(selectedCategory);
-  if (normalizedSelection === STRING_DB_CATEGORY_ALL) return true;
-  return normalizeCategoryKey(rowCategory) === normalizeCategoryKey(normalizedSelection);
+  const normalizedSelections = normalizeStringDbCategories(selectedCategory);
+  if (normalizedSelections.includes(STRING_DB_CATEGORY_ALL)) return true;
+  return normalizedSelections.some((category) => normalizeCategoryKey(rowCategory) === normalizeCategoryKey(category));
 }
 
 export function chunkArray(items, chunkSize) {
