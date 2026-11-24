@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { SvgIcon } from "../reusable_components/SvgIcon.jsx";
 import trashSvg from "../../../../assets/icons/trash.svg?raw";
-import { SwitchBlock, Popup, TableList, SliderBlock, Button, ButtonPopup, PopupTextField } from "../reusable_components/sidebarComponents.jsx";
+import { SwitchBlock, Popup, TableList, SliderBlock, Button, PopupTextField } from "../reusable_components/sidebarComponents.jsx";
 import { colorschemeTsv } from "../../../../assets/exampleColorschemeTSV.js";
 import { downloadTsvFile } from "../../../domain/service/download/download.js";
 import {
@@ -10,26 +10,20 @@ import {
   setColorschemeDescription,
   themeDescription,
   threeDDescription,
-  adjustViewDescription,
   threeDShadingDescription,
   threeDGridDescription,
   uploadColorschemeDescription,
 } from "./descriptions/appearanceDescriptions.jsx";
-import { useAppearance, linkWidthInit, threeDFovInit } from "../../../adapters/state/appearanceState.js";
+import { useAppearance, linkWidthInit } from "../../../adapters/state/appearanceState.js";
 import { defaultColorschemeNames, useColorschemeState } from "../../../adapters/state/colorschemeState.js";
 import { colorschemeService, updateAttribColorMapping } from "../../../application/services/colorschemeService.js";
 import { darkTheme, useTheme } from "../../state/themeState.js";
 import { themeService } from "../../../application/services/themeService.js";
-import { applyCameraPreset, fitCameraToNodes, resetCamera3D } from "../../../domain/service/canvas_drawing/camera3D.js";
-import { useContainer } from "../../state/containerState.js";
-import { useGraphState } from "../../state/graphState.js";
-import { usePhysics } from "../../state/physicsState.js";
 
 export function AppearanceSidebar() {
   return (
     <>
       <AppearanceSettings />
-      <AdjustView />
       <UploadColorscheme />
       <ActiveNodeColorscheme />
       <ActiveLinkColorscheme />
@@ -106,42 +100,6 @@ export function AppearanceSettings() {
         infoDescription={linkWidthDescription}
       />
     </>
-  );
-}
-
-function AdjustView() {
-  const { appearance, setAppearance } = useAppearance();
-  const { physics } = usePhysics();
-  const { container } = useContainer();
-  const { graphState } = useGraphState();
-  const camera = appearance.cameraRef?.current;
-  const upAxis = physics.elevationForce ? "z" : "y";
-
-  const resetView = () => {
-    resetCamera3D(camera, container, upAxis);
-    setAppearance("threeDFov", threeDFovInit);
-    setAppearance("threeDFovText", threeDFovInit);
-  };
-
-  if (!appearance.threeD) return null;
-
-  return (
-    <div className="block-section">
-      <ButtonPopup buttonText={"Adjust View"} heading={"Adjust 3D View"} description={adjustViewDescription}>
-        <div className="block-section">
-          <Button variant="popup" text={"Front"} onClick={() => applyCameraPreset(camera, "front", upAxis)} />
-          <Button variant="popup" text={"Top"} onClick={() => applyCameraPreset(camera, "top", upAxis)} />
-          <Button variant="popup" text={"Side"} onClick={() => applyCameraPreset(camera, "side", upAxis)} />
-          <Button variant="popup" text={"Isometric"} onClick={() => applyCameraPreset(camera, "isometric", upAxis)} />
-          <Button
-            variant="popup"
-            text={"Fit Graph"}
-            onClick={() => fitCameraToNodes(camera, graphState.graph?.data?.nodes, container)}
-          />
-          <Button variant="popup" text={"Reset View"} onClick={resetView} />
-        </div>
-      </ButtonPopup>
-    </div>
   );
 }
 

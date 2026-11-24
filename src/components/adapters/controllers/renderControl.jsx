@@ -1,6 +1,6 @@
 import log from "../logging/logger.js";
 import * as PIXI from "pixi.js";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { getCanvasResolution, handleResize, initDragAndZoom, keepCanvasCentered } from "../../domain/service/canvas_interaction/interactiveCanvas.js";
 import { radius } from "../../domain/service/canvas_drawing/nodes.js";
 import { applyNode3DState } from "../../domain/service/canvas_drawing/shading.js";
@@ -20,7 +20,15 @@ import { filteredAfterStartInit, useGraphFlags } from "../state/graphFlagsState.
 import { simulationInit, useRenderState } from "../state/canvasState.js";
 import { setupStage } from "../../domain/service/canvas_drawing/stageSetup.js";
 import { resetGridVisibility, resetStageTransform, restoreProjectionHidden } from "../../domain/service/canvas_drawing/stageTransforms.js";
-import { applyCameraPreset, clearCameraOrbitCenter, getCameraOrbitAngles, setCameraOrbit } from "../../domain/service/canvas_drawing/camera3D.js";
+import {
+  applyCameraPreset,
+  clearCameraOrbitCenter,
+  dollyCamera,
+  fitCameraToNodes,
+  getCameraOrbitAngles,
+  resetCamera3D,
+  setCameraOrbit,
+} from "../../domain/service/canvas_drawing/camera3D.js";
 
 export function RenderControl() {
   const { appearance, setAppearance } = useAppearance();
@@ -39,6 +47,7 @@ export function RenderControl() {
   const containerRef = useRef(null);
   const cameraRef = useRef({ ...appearance.cameraRef }); // for 3D
   const threeDControlsRef = useRef(null);
+  const [navigationMode, setNavigationMode] = useState("rotate");
   const previousUpAxis = useRef("y");
   const regularViewAngles = useRef(null);
   threeDControlsRef.current = {
@@ -46,6 +55,7 @@ export function RenderControl() {
     panSensitivity: appearance.threeDPanSensitivity,
     zoomSensitivity: appearance.threeDZoomSensitivity,
     invertVertical: appearance.threeDInvertVertical,
+    navigationMode,
     upAxis: appearance.threeD && physics.elevationForce ? "z" : "y",
     onReset: () => {
       setAppearance("threeDFov", threeDFovInit);
@@ -94,6 +104,10 @@ export function RenderControl() {
     }
     previousUpAxis.current = upAxis;
   }, [appearance.threeD, physics.elevationForce]);
+
+  useEffect(() => {
+    if (!appearance.threeD) setNavigationMode("rotate");
+  }, [appearance.threeD]);
 
   useEffect(() => {
     return () => renderState.app?.__interactionCleanup?.();
@@ -375,9 +389,73 @@ export function RenderControl() {
     };
   }, [renderState.app, appearance.threeD, setAllContainer]);
 
+  const upAxis = appearance.threeD && physics.elevationForce ? "z" : "y";
+  const resetView = () => {
+    resetCamera3D(cameraRef.current, container, upAxis);
+    setAppearance("threeDFov", threeDFovInit);
+    setAppearance("threeDFovText", threeDFovInit);
+  };
+
   return (
-    <>
-      <div ref={containerRef} className="canvas" />
-    </>
+    <div className="canvas">
+      <div ref={containerRef} className="canvas-renderer" />
+      {appearance.threeD && renderState.app && (
+        <ThreeDNavigationControls
+          mode={navigationMode}
+          setMode={setNavigationMode}
+          cameraRef={cameraRef}
+          nodes={graphState.graph?.data?.nodes ?? []}
+          container={container}
+          upAxis={upAxis}
+          zoomSensitivity={appearance.threeDZoomSensitivity}
+          onReset={resetView}
+        />
+      )}
+    </div>
+  );
+}
+
+function ThreeDNavigationControls({ mode, setMode, cameraRef, nodes, container, upAxis, zoomSensitivity, onReset }) {
+  const zoom = (direction) => {
+    const camera = cameraRef.current;
+    if (!camera) return;
+    dollyCamera(camera, direction * 0.15, zoomSensitivity);
+    camera.z = direction > 0 ? Math.min(-50, camera.z) : Math.max(-100_000, camera.z);
+    camera.redraw?.();
+  };
+
+  return (
+    <section className="canvas-navigation-3d" aria-label="3D navigation controls">
+      <div className="canvas-navigation-heading">3D Navigation</div>
+      <div className="canvas-navigation-mode" role="group" aria-label="Drag mode">
+        <button type="button" aria-pressed={mode === "rotate"} onClick={() => setMode("rotate")}>
+          Rotate
+        </button>
+        <button type="button" aria-pressed={mode === "pan"} onClick={() => setMode("pan")}>
+          Pan
+        </button>
+      </div>
+      <div className="canvas-navigation-actions">
+        <button type="button" aria-label="Zoom out" title="Zoom out" onClick={() => zoom(-1)}>
+          −
+        </button>
+        <button type="button" aria-label="Zoom in" title="Zoom in" onClick={() => zoom(1)}>
+          +
+        </button>
+      </div>
+      <details className="canvas-navigation-views">
+        <summary>Views</summary>
+        <div className="canvas-navigation-view-presets">
+          <button type="button" onClick={() => applyCameraPreset(cameraRef.current, "front", upAxis)}>Front</button>
+          <button type="button" onClick={() => applyCameraPreset(cameraRef.current, "top", upAxis)}>Top</button>
+          <button type="button" onClick={() => applyCameraPreset(cameraRef.current, "side", upAxis)}>Side</button>
+          <button type="button" onClick={() => applyCameraPreset(cameraRef.current, "isometric", upAxis)}>Isometric</button>
+          <button type="button" onClick={() => fitCameraToNodes(cameraRef.current, nodes, container)} disabled={!nodes.length}>
+            Fit graph
+          </button>
+          <button type="button" onClick={onReset}>Reset view</button>
+        </div>
+      </details>
+    </section>
   );
 }

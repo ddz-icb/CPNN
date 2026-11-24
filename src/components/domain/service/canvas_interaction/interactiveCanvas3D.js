@@ -2,6 +2,7 @@ import {
   clearCameraOrbitCenter,
   conjugateQuaternion,
   defaultCamera,
+  dollyCamera,
   getCameraOrbitAngles,
   getCameraOrientation,
   getCameraViewParams,
@@ -165,10 +166,7 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, cameraRef
 
   function applyDolly(zoomAmount) {
     const camera = cameraRef.current;
-    if (!camera || !Number.isFinite(zoomAmount)) return;
-
-    const depthUnit = Math.max(Math.abs(camera.z ?? defaultCamera.z), Math.abs(defaultCamera.z));
-    camera.z += zoomAmount * depthUnit * getControls().zoomSensitivity;
+    dollyCamera(camera, zoomAmount, getControls().zoomSensitivity);
     redrawScheduler.schedule();
   }
 
@@ -260,6 +258,7 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, cameraRef
   }
 
   function handlePointerDown(event) {
+    if (event.button !== 0) return;
     const point = getPointerPoint(event);
     pointers.set(event.pointerId, point);
     canvas.setPointerCapture?.(event.pointerId);
@@ -272,7 +271,7 @@ export function initDragAndZoom3D(app, simulation, setTooltipSettings, cameraRef
       return;
     }
 
-    const isPan = event.button === 1 || event.button === 2 || event.shiftKey || event.altKey;
+    const isPan = getControls().navigationMode === "pan";
     const node = !simulation.__isFrozen && !isPan && event.button === 0 ? findNodeAtPoint(point) : null;
 
     state.mode = node ? "node" : isPan ? "pan" : "orbit";

@@ -204,6 +204,12 @@ export function setCameraOrbit(camera, pitch, yaw, upAxis = "y") {
   }
 }
 
+export function dollyCamera(camera, zoomAmount, sensitivity = 1) {
+  if (!camera || !Number.isFinite(zoomAmount)) return;
+  const depthUnit = Math.max(Math.abs(camera.z ?? defaultCamera.z), Math.abs(defaultCamera.z));
+  camera.z += zoomAmount * depthUnit * sensitivity;
+}
+
 export function applyCameraPreset(camera, presetName, upAxis = "y") {
   const preset = CAMERA_PRESETS[presetName];
   if (!camera || !preset) return false;

@@ -19,15 +19,9 @@ export const linkWidthDescription = (
 export const threeDDescription = (
   <div>
     <p className="margin-0">
-      Switches to a 3D view. Drag left or right to turn the graph, and up or down to tilt it. The height axis stays upright, and the view stops when
-      you stop dragging. Shift-drag, Alt-drag, middle-drag, or right-drag to pan. Scroll or pinch to zoom. Predefined views are under Adjust View.
+      Switches to a 3D view. Drag empty space to rotate or select Pan to move the view. Drag a node to move it. Scroll or use the on-screen buttons
+      to zoom, and choose a preset from Views.
     </p>
-  </div>
-);
-
-export const adjustViewDescription = (
-  <div>
-    <p className="margin-0">Select a predefined orientation, fit the whole graph into view, or restore the default 3D view.</p>
   </div>
 );
 
