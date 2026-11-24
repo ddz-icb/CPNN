@@ -17,6 +17,18 @@ export function AdvancedFilters({ active = false, children }) {
   );
 }
 
+export function SidebarDisclosure({ title, active = false, children }) {
+  return (
+    <details className="sidebar-disclosure">
+      <summary className="sidebar-subsection-heading">
+        <span>{title}</span>
+        <span className={`sidebar-disclosure-status${active ? " is-on" : " is-off"}`}>{active ? "On" : "Off"}</span>
+      </summary>
+      <div className="sidebar-disclosure-content">{children}</div>
+    </details>
+  );
+}
+
 export function SliderBlock({ value, setValue, setValueText, min, max, inputMax = max, step, text, infoHeading, infoDescription, ...props }) {
   return (
     <div className="block-section block-section-stack">

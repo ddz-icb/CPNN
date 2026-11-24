@@ -1,4 +1,11 @@
-import { Button, FieldBlock, SelectFieldBlock, SliderBlock, SwitchBlock } from "../reusable_components/sidebarComponents.jsx";
+import {
+  Button,
+  FieldBlock,
+  SelectFieldBlock,
+  SidebarDisclosure,
+  SliderBlock,
+  SwitchBlock,
+} from "../reusable_components/sidebarComponents.jsx";
 import {
   omniPathMinCurationEffortInit,
   omniPathEnrichmentEnabledInit,
@@ -38,6 +45,8 @@ import {
   stringDbMinEvidenceDescription,
   stringDbNodeAttributeCategoryDescription,
   stringDbNodeAttributeDescription,
+  stringDbNodeAttributeMaxFdrDescription,
+  stringDbNodeAttributeMaxResultsDescription,
   stringDbSpeciesDescription,
 } from "./descriptions/filterDescriptions.jsx";
 
@@ -66,10 +75,6 @@ export function AdditionalDataSidebar() {
     setGraphEnrichment("omniPathMinCurationEffort", omniPathMinCurationEffortInit);
     setGraphEnrichment("omniPathMinCurationEffortText", omniPathMinCurationEffortInit);
   };
-  const stringDbEnabled =
-    graphEnrichment.stringDbEnrichmentEnabled ||
-    graphEnrichment.stringDbNodeAttributeEnrichmentEnabled ||
-    graphEnrichment.stringDbGroupEnrichmentEnabled;
   const omniPathLinkEnabled = graphEnrichment.omniPathEnrichmentEnabled || graphEnrichment.omniPathPhosphataseEnrichmentEnabled;
 
   return (
@@ -78,127 +83,131 @@ export function AdditionalDataSidebar() {
         <Button text={"Reset Additional Data"} onClick={handleResetAdditionalData} />
       </div>
       <div className="table-list-heading">STRING-DB</div>
-      <SwitchBlock
-        value={graphEnrichment.stringDbEnrichmentEnabled}
-        setValue={() => setGraphEnrichment("stringDbEnrichmentEnabled", !graphEnrichment.stringDbEnrichmentEnabled)}
-        text={"Add STRING-DB Links"}
-        infoHeading={"STRING-DB Enrichment"}
-        infoDescription={stringDbEnrichmentDescription}
+      <SelectFieldBlock
+        value={graphEnrichment.stringDbSpeciesId}
+        setValue={(value) => setGraphEnrichment("stringDbSpeciesId", value)}
+        options={STRING_DB_SPECIES.map((s) => ({ value: s.id, label: s.label }))}
+        size={"wide"}
+        text={"Lookup Species"}
+        infoHeading={"STRING-DB Species"}
+        infoDescription={stringDbSpeciesDescription}
       />
-      <SwitchBlock
-        value={graphEnrichment.stringDbNodeAttributeEnrichmentEnabled}
-        setValue={() => setGraphEnrichment("stringDbNodeAttributeEnrichmentEnabled", !graphEnrichment.stringDbNodeAttributeEnrichmentEnabled)}
-        text={"Add STRING Node Attributes"}
-        infoHeading={"STRING functional annotations"}
-        infoDescription={stringDbNodeAttributeDescription}
-      />
-      <SwitchBlock
-        value={graphEnrichment.stringDbGroupEnrichmentEnabled}
-        setValue={() => setGraphEnrichment("stringDbGroupEnrichmentEnabled", !graphEnrichment.stringDbGroupEnrichmentEnabled)}
-        text={"Add STRING Community Labels"}
-        infoHeading={"STRING community enrichment"}
-        infoDescription={stringDbGroupEnrichmentDescription}
-      />
-      {stringDbEnabled && (
-        <SelectFieldBlock
-          value={graphEnrichment.stringDbSpeciesId}
-          setValue={(value) => setGraphEnrichment("stringDbSpeciesId", value)}
-          options={STRING_DB_SPECIES.map((s) => ({ value: s.id, label: s.label }))}
-          size={"wide"}
-          text={"STRING Species"}
-          infoHeading={"STRING-DB Species"}
-          infoDescription={stringDbSpeciesDescription}
+      <SidebarDisclosure title="Links" active={graphEnrichment.stringDbEnrichmentEnabled}>
+        <SwitchBlock
+          value={graphEnrichment.stringDbEnrichmentEnabled}
+          setValue={() => setGraphEnrichment("stringDbEnrichmentEnabled", !graphEnrichment.stringDbEnrichmentEnabled)}
+          text={"Add Links"}
+          infoHeading={"STRING-DB Enrichment"}
+          infoDescription={stringDbEnrichmentDescription}
         />
-      )}
-      {graphEnrichment.stringDbEnrichmentEnabled && (
-        <>
-          <SliderBlock
-            value={graphEnrichment.stringDbMinConfidence}
-            valueText={graphEnrichment.stringDbMinConfidenceText}
-            setValue={(value) => setGraphEnrichment("stringDbMinConfidence", value)}
-            setValueText={(value) => setGraphEnrichment("stringDbMinConfidenceText", value)}
-            fallbackValue={stringDbMinConfidenceInit}
-            min={0}
-            max={1}
-            step={0.05}
-            text={"STRING Min Confidence"}
-            infoHeading={"STRING-DB minimum confidence"}
-            infoDescription={stringDbMinConfidenceDescription}
-          />
-          <SwitchBlock
-            value={graphEnrichment.stringDbEvidenceEnrichmentEnabled}
-            setValue={() => setGraphEnrichment("stringDbEvidenceEnrichmentEnabled", !graphEnrichment.stringDbEvidenceEnrichmentEnabled)}
-            text={"Add STRING Evidence Labels"}
-            infoHeading={"STRING evidence channels"}
-            infoDescription={stringDbEvidenceDescription}
-          />
-          {graphEnrichment.stringDbEvidenceEnrichmentEnabled && (
-            <FieldBlock
-              valueText={graphEnrichment.stringDbMinEvidenceScoreText}
-              setValue={(value) => setGraphEnrichment("stringDbMinEvidenceScore", value)}
-              setValueText={(value) => setGraphEnrichment("stringDbMinEvidenceScoreText", value)}
-              fallbackValue={stringDbMinEvidenceScoreInit}
-              min={MIN_EVIDENCE_SCORE}
-              max={MAX_EVIDENCE_SCORE}
+        {graphEnrichment.stringDbEnrichmentEnabled && (
+          <>
+            <SliderBlock
+              value={graphEnrichment.stringDbMinConfidence}
+              valueText={graphEnrichment.stringDbMinConfidenceText}
+              setValue={(value) => setGraphEnrichment("stringDbMinConfidence", value)}
+              setValueText={(value) => setGraphEnrichment("stringDbMinConfidenceText", value)}
+              fallbackValue={stringDbMinConfidenceInit}
+              min={0}
+              max={1}
               step={0.05}
-              text={"STRING Min Evidence"}
-              infoHeading={"STRING minimum evidence score"}
-              infoDescription={stringDbMinEvidenceDescription}
+              text={"Minimum Confidence"}
+              infoHeading={"STRING-DB minimum confidence"}
+              infoDescription={stringDbMinConfidenceDescription}
             />
-          )}
-        </>
-      )}
-      {graphEnrichment.stringDbNodeAttributeEnrichmentEnabled && (
-        <>
-          <SelectFieldBlock
-            value={graphEnrichment.stringDbNodeAttributeCategory ?? stringDbNodeAttributeCategoryInit}
-            setValue={(value) => setGraphEnrichment("stringDbNodeAttributeCategory", value)}
-            options={STRING_DB_NODE_ATTRIBUTE_CATEGORY_OPTIONS}
-            size={"wide"}
-            text={"STRING Annotation Source"}
-            infoHeading={"STRING annotation source"}
-            infoDescription={stringDbNodeAttributeCategoryDescription}
-          />
+            <SwitchBlock
+              value={graphEnrichment.stringDbEvidenceEnrichmentEnabled}
+              setValue={() => setGraphEnrichment("stringDbEvidenceEnrichmentEnabled", !graphEnrichment.stringDbEvidenceEnrichmentEnabled)}
+              text={"Add Evidence Labels"}
+              infoHeading={"STRING evidence channels"}
+              infoDescription={stringDbEvidenceDescription}
+            />
+            {graphEnrichment.stringDbEvidenceEnrichmentEnabled && (
+              <FieldBlock
+                valueText={graphEnrichment.stringDbMinEvidenceScoreText}
+                setValue={(value) => setGraphEnrichment("stringDbMinEvidenceScore", value)}
+                setValueText={(value) => setGraphEnrichment("stringDbMinEvidenceScoreText", value)}
+                fallbackValue={stringDbMinEvidenceScoreInit}
+                min={MIN_EVIDENCE_SCORE}
+                max={MAX_EVIDENCE_SCORE}
+                step={0.05}
+                text={"Minimum Evidence Score"}
+                infoHeading={"STRING minimum evidence score"}
+                infoDescription={stringDbMinEvidenceDescription}
+              />
+            )}
+          </>
+        )}
+      </SidebarDisclosure>
+      <SidebarDisclosure title="Node Annotations" active={graphEnrichment.stringDbNodeAttributeEnrichmentEnabled}>
+        <SwitchBlock
+          value={graphEnrichment.stringDbNodeAttributeEnrichmentEnabled}
+          setValue={() => setGraphEnrichment("stringDbNodeAttributeEnrichmentEnabled", !graphEnrichment.stringDbNodeAttributeEnrichmentEnabled)}
+          text={"Add Functional Annotations"}
+          infoHeading={"STRING functional annotations"}
+          infoDescription={stringDbNodeAttributeDescription}
+        />
+        {graphEnrichment.stringDbNodeAttributeEnrichmentEnabled && (
+          <>
+            <SelectFieldBlock
+              value={graphEnrichment.stringDbNodeAttributeCategory ?? stringDbNodeAttributeCategoryInit}
+              setValue={(value) => setGraphEnrichment("stringDbNodeAttributeCategory", value)}
+              options={STRING_DB_NODE_ATTRIBUTE_CATEGORY_OPTIONS}
+              size={"wide"}
+              text={"Annotation Source"}
+              infoHeading={"STRING annotation source"}
+              infoDescription={stringDbNodeAttributeCategoryDescription}
+            />
+            <FieldBlock
+              valueText={graphEnrichment.stringDbNodeAttributeMaxTermsText}
+              setValue={(value) => setGraphEnrichment("stringDbNodeAttributeMaxTerms", value)}
+              setValueText={(value) => setGraphEnrichment("stringDbNodeAttributeMaxTermsText", value)}
+              fallbackValue={stringDbNodeAttributeMaxTermsInit}
+              min={MIN_NODE_ATTRIBUTE_MAX_TERMS}
+              max={MAX_NODE_ATTRIBUTE_MAX_TERMS}
+              step={1}
+              text={"Maximum Results"}
+              infoHeading={"STRING node attribute max results"}
+              infoDescription={stringDbNodeAttributeMaxResultsDescription}
+            />
+            <FieldBlock
+              valueText={graphEnrichment.stringDbNodeAttributeMaxFdrText}
+              setValue={(value) => setGraphEnrichment("stringDbNodeAttributeMaxFdr", value)}
+              setValueText={(value) => setGraphEnrichment("stringDbNodeAttributeMaxFdrText", value)}
+              fallbackValue={stringDbNodeAttributeMaxFdrInit}
+              min={MIN_GROUP_ENRICHMENT_MAX_FDR}
+              max={MAX_GROUP_ENRICHMENT_MAX_FDR}
+              step={0.01}
+              text={"Maximum FDR"}
+              infoHeading={"STRING node attribute FDR"}
+              infoDescription={stringDbNodeAttributeMaxFdrDescription}
+            />
+          </>
+        )}
+      </SidebarDisclosure>
+      <SidebarDisclosure title="Community Labels" active={graphEnrichment.stringDbGroupEnrichmentEnabled}>
+        <SwitchBlock
+          value={graphEnrichment.stringDbGroupEnrichmentEnabled}
+          setValue={() => setGraphEnrichment("stringDbGroupEnrichmentEnabled", !graphEnrichment.stringDbGroupEnrichmentEnabled)}
+          text={"Add Community Labels"}
+          infoHeading={"STRING community enrichment"}
+          infoDescription={stringDbGroupEnrichmentDescription}
+        />
+        {graphEnrichment.stringDbGroupEnrichmentEnabled && (
           <FieldBlock
-            valueText={graphEnrichment.stringDbNodeAttributeMaxTermsText}
-            setValue={(value) => setGraphEnrichment("stringDbNodeAttributeMaxTerms", value)}
-            setValueText={(value) => setGraphEnrichment("stringDbNodeAttributeMaxTermsText", value)}
-            fallbackValue={stringDbNodeAttributeMaxTermsInit}
-            min={MIN_NODE_ATTRIBUTE_MAX_TERMS}
-            max={MAX_NODE_ATTRIBUTE_MAX_TERMS}
-            step={1}
-            text={"STRING Max Terms"}
-            infoHeading={"STRING node attribute max terms"}
-            infoDescription={stringDbNodeAttributeDescription}
-          />
-          <FieldBlock
-            valueText={graphEnrichment.stringDbNodeAttributeMaxFdrText}
-            setValue={(value) => setGraphEnrichment("stringDbNodeAttributeMaxFdr", value)}
-            setValueText={(value) => setGraphEnrichment("stringDbNodeAttributeMaxFdrText", value)}
-            fallbackValue={stringDbNodeAttributeMaxFdrInit}
+            valueText={graphEnrichment.stringDbGroupEnrichmentMaxFdrText}
+            setValue={(value) => setGraphEnrichment("stringDbGroupEnrichmentMaxFdr", value)}
+            setValueText={(value) => setGraphEnrichment("stringDbGroupEnrichmentMaxFdrText", value)}
+            fallbackValue={stringDbGroupEnrichmentMaxFdrInit}
             min={MIN_GROUP_ENRICHMENT_MAX_FDR}
             max={MAX_GROUP_ENRICHMENT_MAX_FDR}
             step={0.01}
-            text={"STRING Max FDR"}
-            infoHeading={"STRING node attribute FDR"}
-            infoDescription={stringDbNodeAttributeDescription}
+            text={"Maximum FDR"}
+            infoHeading={"STRING community enrichment FDR"}
+            infoDescription={stringDbGroupEnrichmentFdrDescription}
           />
-        </>
-      )}
-      {graphEnrichment.stringDbGroupEnrichmentEnabled && (
-        <FieldBlock
-          valueText={graphEnrichment.stringDbGroupEnrichmentMaxFdrText}
-          setValue={(value) => setGraphEnrichment("stringDbGroupEnrichmentMaxFdr", value)}
-          setValueText={(value) => setGraphEnrichment("stringDbGroupEnrichmentMaxFdrText", value)}
-          fallbackValue={stringDbGroupEnrichmentMaxFdrInit}
-          min={MIN_GROUP_ENRICHMENT_MAX_FDR}
-          max={MAX_GROUP_ENRICHMENT_MAX_FDR}
-          step={0.01}
-          text={"STRING Community Max FDR"}
-          infoHeading={"STRING community enrichment FDR"}
-          infoDescription={stringDbGroupEnrichmentFdrDescription}
-        />
-      )}
+        )}
+      </SidebarDisclosure>
       <div className="table-list-heading">OmniPath</div>
       <SwitchBlock
         value={graphEnrichment.omniPathEnrichmentEnabled}

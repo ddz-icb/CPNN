@@ -106,10 +106,18 @@ export const stringDbNodeAttributeDescription = (
     <p className="margin-0">
       Adds the top overrepresented STRING enrichment terms to existing nodes using STRING's returned enrichment order and categories.
     </p>
-    <p className="margin-0 pad-top-05">
-      Terms are ranked by false discovery rate and gene coverage. Max terms limits how many enriched terms are kept, and max FDR controls the accepted
-      significance threshold.
-    </p>
+  </div>
+);
+
+export const stringDbNodeAttributeMaxResultsDescription = (
+  <div>
+    <p className="margin-0">Maximum number of enriched terms to add to each node.</p>
+  </div>
+);
+
+export const stringDbNodeAttributeMaxFdrDescription = (
+  <div>
+    <p className="margin-0">Maximum false discovery rate for including an enrichment term on a node.</p>
   </div>
 );
 

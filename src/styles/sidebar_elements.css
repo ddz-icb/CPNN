@@ -2,7 +2,7 @@
   display: block;
   margin: 0;
   color: var(--color-text-primary);
-  font-size: var(--font-size-s);
+  font-size: calc(var(--text-sm) * 0.85);
   text-align: left;
   font-weight: var(--font-weight-medium);
   letter-spacing: 0.01em;
@@ -424,6 +424,79 @@ input:checked + .switch-button:before {
 }
 
 .filter-advanced summary:focus-visible {
+  outline: var(--focus-ring-size) solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.sidebar-disclosure {
+  margin: var(--sidebar-section-gap-y) 0;
+  border: var(--border-thin) solid var(--color-border-subtle);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--color-surface-contrast) 24%, transparent 76%);
+  overflow: hidden;
+}
+
+.sidebar-subsection-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--sidebar-control-gap-y);
+  padding: var(--sidebar-card-gap-y) var(--sidebar-control-padding-x);
+  color: var(--color-text-primary);
+  font-size: calc(var(--text-sm) * 0.82);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  list-style: none;
+}
+
+.sidebar-subsection-heading::-webkit-details-marker {
+  display: none;
+}
+
+.sidebar-subsection-heading::after {
+  content: "";
+  width: 0.35rem;
+  height: 0.35rem;
+  margin-left: auto;
+  border: solid currentColor;
+  border-width: 0 var(--border-thin) var(--border-thin) 0;
+  transform: rotate(45deg);
+}
+
+.sidebar-disclosure-status {
+  padding: 0.1rem 0.4rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-accent) 18%, transparent 82%);
+  color: var(--color-accent);
+  font-size: 0.72em;
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.sidebar-disclosure-status.is-off {
+  background: color-mix(in srgb, var(--color-text-secondary) 14%, transparent 86%);
+  color: var(--color-text-secondary);
+}
+
+.sidebar-disclosure-content {
+  display: grid;
+  gap: var(--sidebar-control-gap-y);
+  padding: var(--sidebar-card-gap-y) var(--sidebar-control-padding-x);
+}
+
+.sidebar-disclosure[open] > .sidebar-subsection-heading {
+  border-bottom: var(--border-thin) solid var(--color-border-subtle);
+}
+
+.sidebar-disclosure[open] > .sidebar-subsection-heading::after {
+  transform: rotate(225deg);
+}
+
+.sidebar-subsection-heading:hover {
+  background: color-mix(in srgb, var(--color-hover) 35%, transparent 65%);
+}
+
+.sidebar-subsection-heading:focus-visible {
   outline: var(--focus-ring-size) solid var(--color-focus-ring);
   outline-offset: 2px;
 }
