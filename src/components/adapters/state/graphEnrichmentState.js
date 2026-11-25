@@ -17,6 +17,7 @@ export const stringDbMinEvidenceScoreInit = DEFAULT_MIN_EVIDENCE_SCORE;
 export const stringDbNodeAttributeMaxTermsInit = DEFAULT_NODE_ATTRIBUTE_MAX_TERMS;
 export const stringDbNodeAttributeMaxFdrInit = DEFAULT_GROUP_ENRICHMENT_MAX_FDR;
 export const stringDbNodeAttributeCategoryInit = STRING_DB_CATEGORY_ALL;
+export const stringDbNodeAttributeKeywordsInit = "";
 export const stringDbGroupEnrichmentMaxFdrInit = DEFAULT_GROUP_ENRICHMENT_MAX_FDR;
 export const stringDbSpeciesIdInit = DEFAULT_SPECIES_ID;
 export const omniPathEnrichmentEnabledInit = false;
@@ -37,6 +38,7 @@ const graphEnrichmentInit = {
   stringDbNodeAttributeMaxFdr: stringDbNodeAttributeMaxFdrInit,
   stringDbNodeAttributeMaxFdrText: stringDbNodeAttributeMaxFdrInit,
   stringDbNodeAttributeCategory: stringDbNodeAttributeCategoryInit,
+  stringDbNodeAttributeKeywords: stringDbNodeAttributeKeywordsInit,
   stringDbGroupEnrichmentMaxFdr: stringDbGroupEnrichmentMaxFdrInit,
   stringDbGroupEnrichmentMaxFdrText: stringDbGroupEnrichmentMaxFdrInit,
   stringDbSpeciesId: stringDbSpeciesIdInit,

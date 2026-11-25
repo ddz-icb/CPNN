@@ -3,9 +3,15 @@ import { buildWebMFile, WEBM_MIME_TYPE } from "./webmEbml.js";
 const MAX_ENCODE_QUEUE_SIZE = 3;
 const ENCODER_QUEUE_TIMEOUT_MS = 30000;
 const ENCODER_FLUSH_TIMEOUT_MS = 60000;
+const HARDWARE_PREFERENCES = ["prefer-software", "no-preference"];
 export const VIDEO_ENCODER_ERROR_CODE = "VIDEO_ENCODER_FAILED";
 
 const VIDEO_CODEC_CANDIDATES = [
+  {
+    codec: "av01.0.13M.08",
+    codecId: "V_AV1",
+    mimeType: "video/webm;codecs=av01",
+  },
   {
     codec: "vp09.00.10.08",
     codecId: "V_VP9",
@@ -137,24 +143,29 @@ export async function createWebMCanvasEncoder({
 
 async function getSupportedCodecCandidate({ width, height, fps, bitrate }) {
   for (const candidate of VIDEO_CODEC_CANDIDATES) {
-    const config = {
-      codec: candidate.codec,
-      width,
-      height,
-      bitrate,
-      framerate: fps,
-    };
-
-    try {
-      const support = await VideoEncoder.isConfigSupported(config);
-      if (support?.supported) {
-        return {
-          ...candidate,
-          config: support.config ?? config,
-        };
+    for (const hardwareAcceleration of HARDWARE_PREFERENCES) {
+      const config = {
+        codec: candidate.codec,
+        width,
+        height,
+        bitrate: Math.min(64_000_000, Math.round(bitrate)),
+        framerate: fps,
+        bitrateMode: "variable",
+        latencyMode: "quality",
+        contentHint: "text",
+        hardwareAcceleration,
+      };
+      try {
+        const support = await VideoEncoder.isConfigSupported(config);
+        if (support?.supported) {
+          return {
+            ...candidate,
+            config: support.config ?? config,
+          };
+        }
+      } catch {
+        // Try another encoder preference or codec.
       }
-    } catch {
-      // Ignore and keep trying the next codec candidate.
     }
   }
 

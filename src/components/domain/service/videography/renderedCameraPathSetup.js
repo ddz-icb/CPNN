@@ -35,11 +35,10 @@ export function createRenderedCameraPathExportSetup({
   gridLines,
   holdSeconds,
   exportQualityPreset,
-  exportBitrateMbps,
   background,
   drawOverlay,
 }) {
-  const exportConfig = getVideoExportConfig(exportQualityPreset, exportBitrateMbps);
+  const exportConfig = getVideoExportConfig(exportQualityPreset);
   const outputContainer = getVideoExportContainer(sceneContainer, exportConfig);
   const captureCanvas = document.createElement("canvas");
   captureCanvas.width = outputContainer.width;

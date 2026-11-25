@@ -180,28 +180,50 @@ function resolveAnnotationProteinIds(record, proteinIdLookup, preferredNameToPro
   return Array.from(proteinIds);
 }
 
+function normalizeAnnotationSearchText(value) {
+  return String(value ?? "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+}
+
+function getAnnotationSearchText(record, description) {
+  const textFields = [record?.term, record?.category, description, record?.inputGenes, record?.preferredNames];
+  return textFields
+    .flatMap((value) => (Array.isArray(value) ? value : [value]))
+    .filter((value) => typeof value === "string" || typeof value === "number")
+    .map(normalizeAnnotationSearchText)
+    .join(" ");
+}
+
 function mapFunctionalEnrichmentRowsToAnnotations(rows, proteinIds, mappings, options = {}) {
   const uniqueProteinIds = Array.from(new Set(proteinIds.map((proteinId) => normalizeProteinId(proteinId)).filter(Boolean)));
   const { proteinIdLookup, preferredNameToProteinIds } = buildIdentifierMappingLookups(uniqueProteinIds, mappings);
   const maxTerms = clampNodeAttributeMaxTerms(options.maxTerms);
   const maxFdr = clampGroupEnrichmentMaxFdr(options.maxFdr);
   const category = normalizeStringDbCategories(options.category);
+  const keywords = String(options.keywords ?? "")
+    .split(/[,;\n]+/)
+    .map((keyword) => normalizeAnnotationSearchText(keyword.trim()))
+    .filter(Boolean);
   const annotations = [];
   let selectedTermCount = 0;
 
   for (const record of rows) {
-    if (selectedTermCount >= maxTerms) break;
     if (!matchesStringDbCategory(record?.category, category)) continue;
 
     const fdr = Number(record?.fdr);
     const description = formatTermDescription(record?.description);
     if (!Number.isFinite(fdr) || fdr > maxFdr || !description) continue;
+    const searchableTerm = getAnnotationSearchText(record, description);
+    if (keywords.length > 0 && !keywords.some((keyword) => searchableTerm.includes(keyword))) continue;
 
     const resolvedProteinIds = new Set(resolveAnnotationProteinIds(record, proteinIdLookup, preferredNameToProteinIds));
     if (resolvedProteinIds.size === 0) continue;
 
     const attrib = buildNodeAnnotationAttrib(getStringDbCategoryAttributeLabel(record?.category), description);
     if (!attrib) continue;
+    if (selectedTermCount >= maxTerms) break;
 
     selectedTermCount += 1;
     annotations.push(...Array.from(resolvedProteinIds, (proteinId) => ({ proteinId, attrib })));
@@ -271,7 +293,12 @@ export async function fetchFunctionalEnrichmentAnnotations(proteinIds, options =
     mappings.push(...(await fetchIdentifierMappingsChunk(mappingChunk, speciesId, options.signal)));
   }
 
-  return mapFunctionalEnrichmentRowsToAnnotations(rows, uniqueProteinIds, mappings, { maxTerms, maxFdr, category });
+  return mapFunctionalEnrichmentRowsToAnnotations(rows, uniqueProteinIds, mappings, {
+    maxTerms,
+    maxFdr,
+    category,
+    keywords: options.keywords,
+  });
 }
 
 export async function fetchFunctionalEnrichmentLabels(groups, options = {}) {

@@ -104,6 +104,13 @@ export function createVideoPreviewPanelCanvas(outputContainer) {
 export function createCanvasCaptureStream(canvas) {
   let stream = canvas.captureStream(0);
   let tracks = stream.getVideoTracks();
+  tracks.forEach((track) => {
+    try {
+      track.contentHint = "text";
+    } catch {
+      // Some browsers expose contentHint as read-only or unsupported.
+    }
+  });
   const canRequestFrames = tracks.length > 0 && tracks.every((track) => typeof track.requestFrame === "function");
 
   if (!canRequestFrames) {

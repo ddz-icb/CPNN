@@ -2,13 +2,10 @@ import { create } from "zustand";
 import {
   VIDEO_EXPORT_FORMAT_DEFAULT,
   VIDEO_EXPORT_QUALITY_DEFAULT,
-  getVideoExportConfig,
 } from "../../domain/service/videography/videography.js";
 
 export const defaultTransitionSecondsInit = 3;
 export const holdSecondsInit = 1;
-const defaultExportBitrateMbps = getVideoExportConfig(VIDEO_EXPORT_QUALITY_DEFAULT).bitrateMbps;
-
 export const videographyInit = {
   keyframes: [],
   selectedKeyframeId: null,
@@ -18,7 +15,6 @@ export const videographyInit = {
   holdSecondsText: holdSecondsInit,
   exportQualityPreset: VIDEO_EXPORT_QUALITY_DEFAULT,
   exportFormat: VIDEO_EXPORT_FORMAT_DEFAULT,
-  exportBitrateMbps: defaultExportBitrateMbps,
   isRendering: false,
   progress: 0,
   status: "",

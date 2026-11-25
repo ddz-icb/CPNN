@@ -23,7 +23,7 @@ export const VIDEO_EXPORT_QUALITY_HIGH = "high";
 export const VIDEO_EXPORT_QUALITY_DEFAULT = VIDEO_EXPORT_QUALITY_HIGH;
 export const VIDEO_EXPORT_FORMAT_MP4 = "mp4";
 export const VIDEO_EXPORT_FORMAT_WEBM = "webm";
-export const VIDEO_EXPORT_BITRATE_OPTIONS = [4, 8, 16, 32, 48, 64].map((value) => ({
+export const VIDEO_EXPORT_BITRATE_OPTIONS = [2, 2.5, 3, 4, 4.5, 5, 5.5, 6, 8, 16, 24, 32, 48, 64].map((value) => ({
   value,
   label: `${value} Mbps`,
 }));
@@ -37,8 +37,8 @@ export const VIDEO_EXPORT_QUALITY_OPTIONS = [
 export const VIDEO_EXPORT_FORMAT_DEFAULT = VIDEO_EXPORT_FORMAT_WEBM;
 
 export const VIDEO_EXPORT_FORMAT_OPTIONS = [
-  { value: VIDEO_EXPORT_FORMAT_MP4, label: "MP4 (H.264)" },
-  { value: VIDEO_EXPORT_FORMAT_WEBM, label: "WebM (VP9/VP8)" },
+  { value: VIDEO_EXPORT_FORMAT_MP4, label: "MP4 (HEVC / H.264)" },
+  { value: VIDEO_EXPORT_FORMAT_WEBM, label: "WebM (AV1 / VP9)" },
 ];
 
 export const VIDEO_EXPORT_PRESETS = {
@@ -70,7 +70,7 @@ export const MIN_FOV = 120;
 export const MAX_FOV = 2400;
 
 export const RECORDER_MP4_MIME_TYPES = ["video/mp4;codecs=avc1.42E01E", "video/mp4;codecs=h264", "video/mp4"];
-export const RECORDER_WEBM_MIME_TYPES = ["video/webm;codecs=vp9", "video/webm;codecs=vp8", "video/webm"];
+export const RECORDER_WEBM_MIME_TYPES = ["video/webm;codecs=av01", "video/webm;codecs=vp9", "video/webm;codecs=vp8", "video/webm"];
 
 export function getVideoExportQualityPreset(value) {
   if (value === VIDEO_EXPORT_QUALITY_LEGACY_DEFAULT) return VIDEO_EXPORT_QUALITY_MEDIUM;
@@ -91,3 +91,5 @@ export function getVideoExportConfig(preset, bitrateMbps) {
     bitrateMbps: validBitrate ? bitrate : presetConfig.bitrateMbps,
   };
 }
+
+

@@ -176,7 +176,16 @@ export async function enrichGraphWithStringDb(graphData, options = {}) {
   let enrichedGraphData = graphData;
 
   if (nodeAttributeEnabled) {
-    const cacheKey = buildCacheKey("string-node-enrichment", proteinIds, speciesId, nodeAttributeCategory, nodeAttributeMaxTerms, nodeAttributeMaxFdr);
+    const nodeAttributeKeywords = String(options.nodeAttributeKeywords ?? "");
+    const cacheKey = buildCacheKey(
+      "string-node-enrichment",
+      proteinIds,
+      speciesId,
+      nodeAttributeCategory,
+      nodeAttributeMaxTerms,
+      nodeAttributeMaxFdr,
+      nodeAttributeKeywords.trim().toLowerCase(),
+    );
     let annotations = enrichmentCache.get(cacheKey);
     if (!annotations) {
       try {
@@ -185,6 +194,7 @@ export async function enrichGraphWithStringDb(graphData, options = {}) {
           category: nodeAttributeCategory,
           maxTerms: nodeAttributeMaxTerms,
           maxFdr: nodeAttributeMaxFdr,
+          keywords: nodeAttributeKeywords,
           signal: options.signal,
         });
         enrichmentCache.set(cacheKey, annotations);

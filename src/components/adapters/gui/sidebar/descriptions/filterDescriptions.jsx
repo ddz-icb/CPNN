@@ -109,6 +109,15 @@ export const stringDbNodeAttributeDescription = (
   </div>
 );
 
+export const stringDbNodeAttributeKeywordsDescription = (
+  <div>
+    <p className="margin-0">
+      Only add STRING annotation terms whose description, source, term ID, or associated protein names contain one of these keywords. Separate
+      keywords with commas; a term is included when any keyword matches.
+    </p>
+  </div>
+);
+
 export const stringDbNodeAttributeMaxResultsDescription = (
   <div>
     <p className="margin-0">Maximum number of enriched terms to add to each node.</p>
@@ -123,9 +132,7 @@ export const stringDbNodeAttributeMaxFdrDescription = (
 
 export const stringDbNodeAttributeCategoryDescription = (
   <div>
-    <p className="margin-0">
-      Choose one or more STRING enrichment sources for node attributes. Select All STRING sources to include every source.
-    </p>
+    <p className="margin-0">Choose one or more STRING enrichment sources for node attributes. Select All STRING sources to include every source.</p>
   </div>
 );
 

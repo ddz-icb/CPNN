@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   Button,
   FieldBlock,
@@ -6,6 +7,7 @@ import {
   SidebarDisclosure,
   SliderBlock,
   SwitchBlock,
+  TextFieldBlock,
 } from "../reusable_components/sidebarComponents.jsx";
 import {
   omniPathMinCurationEffortInit,
@@ -17,6 +19,7 @@ import {
   stringDbMinConfidenceInit,
   stringDbMinEvidenceScoreInit,
   stringDbNodeAttributeCategoryInit,
+  stringDbNodeAttributeKeywordsInit,
   stringDbNodeAttributeMaxFdrInit,
   stringDbNodeAttributeMaxTermsInit,
   stringDbNodeAttributeEnrichmentEnabledInit,
@@ -46,6 +49,7 @@ import {
   stringDbMinEvidenceDescription,
   stringDbNodeAttributeCategoryDescription,
   stringDbNodeAttributeDescription,
+  stringDbNodeAttributeKeywordsDescription,
   stringDbNodeAttributeMaxFdrDescription,
   stringDbNodeAttributeMaxResultsDescription,
   stringDbSpeciesDescription,
@@ -53,6 +57,18 @@ import {
 
 export function AdditionalDataSidebar() {
   const { graphEnrichment, setGraphEnrichment } = useGraphEnrichment();
+  const appliedAnnotationKeywords = graphEnrichment.stringDbNodeAttributeKeywords ?? stringDbNodeAttributeKeywordsInit;
+  const [annotationKeywordsDraft, setAnnotationKeywordsDraft] = useState(appliedAnnotationKeywords);
+
+  useEffect(() => {
+    setAnnotationKeywordsDraft(appliedAnnotationKeywords);
+  }, [appliedAnnotationKeywords]);
+
+  useEffect(() => {
+    if (annotationKeywordsDraft === appliedAnnotationKeywords) return undefined;
+    const timeout = setTimeout(() => setGraphEnrichment("stringDbNodeAttributeKeywords", annotationKeywordsDraft), 350);
+    return () => clearTimeout(timeout);
+  }, [annotationKeywordsDraft, appliedAnnotationKeywords, setGraphEnrichment]);
 
   const handleResetAdditionalData = () => {
     setGraphEnrichment("stringDbEnrichmentEnabled", false);
@@ -68,6 +84,7 @@ export function AdditionalDataSidebar() {
     setGraphEnrichment("stringDbNodeAttributeMaxFdr", stringDbNodeAttributeMaxFdrInit);
     setGraphEnrichment("stringDbNodeAttributeMaxFdrText", stringDbNodeAttributeMaxFdrInit);
     setGraphEnrichment("stringDbNodeAttributeCategory", stringDbNodeAttributeCategoryInit);
+    setGraphEnrichment("stringDbNodeAttributeKeywords", stringDbNodeAttributeKeywordsInit);
     setGraphEnrichment("stringDbGroupEnrichmentMaxFdr", stringDbGroupEnrichmentMaxFdrInit);
     setGraphEnrichment("stringDbGroupEnrichmentMaxFdrText", stringDbGroupEnrichmentMaxFdrInit);
     setGraphEnrichment("stringDbSpeciesId", stringDbSpeciesIdInit);
@@ -159,6 +176,15 @@ export function AdditionalDataSidebar() {
               text={"Annotation Sources"}
               infoHeading={"STRING annotation sources"}
               infoDescription={stringDbNodeAttributeCategoryDescription}
+            />
+            <TextFieldBlock
+              value={annotationKeywordsDraft}
+              setValue={setAnnotationKeywordsDraft}
+              placeholder="e.g. diabetes, cancer"
+              size="wide"
+              text="Annotation Keywords"
+              infoHeading="STRING annotation keywords"
+              infoDescription={stringDbNodeAttributeKeywordsDescription}
             />
             <FieldBlock
               valueText={graphEnrichment.stringDbNodeAttributeMaxTermsText}

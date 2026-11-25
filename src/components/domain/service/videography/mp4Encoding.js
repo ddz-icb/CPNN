@@ -1,53 +1,63 @@
 import { VIDEO_KEYFRAME_INTERVAL_SECONDS } from "./videoExportConfig.js";
 
+const MP4_CODEC_CANDIDATES = ["hevc", "avc"];
+const HARDWARE_PREFERENCES = ["prefer-software", "no-preference"];
+
 export async function createMp4CanvasEncoder({ canvas, width, height, fps, bitrate }) {
   if (!canvas || typeof VideoEncoder === "undefined" || typeof VideoFrame === "undefined") {
     return null;
   }
 
-  const {
-    BufferTarget,
-    CanvasSource,
-    Mp4OutputFormat,
-    Output,
-    canEncodeVideo,
-  } = await import("mediabunny");
+  const { BufferTarget, CanvasSource, Mp4OutputFormat, Output, canEncodeVideo } = await import("mediabunny");
 
-  const canEncodeAvc = await canEncodeVideo("avc", {
-    width,
-    height,
-    bitrate,
-    hardwareAcceleration: "no-preference",
-  });
-  if (!canEncodeAvc) return null;
+  for (const codec of MP4_CODEC_CANDIDATES) {
+    for (const hardwareAcceleration of HARDWARE_PREFERENCES) {
+      const canEncode = await canEncodeVideo(codec, {
+        width,
+        height,
+        bitrate,
+        hardwareAcceleration,
+      });
+      if (!canEncode) continue;
 
-  const target = new BufferTarget();
-  const format = new Mp4OutputFormat({ fastStart: false });
-  const output = new Output({ format, target });
-  const source = new CanvasSource(canvas, {
-    codec: "avc",
-    bitrate,
-    keyFrameInterval: VIDEO_KEYFRAME_INTERVAL_SECONDS,
-    latencyMode: "quality",
-    hardwareAcceleration: "no-preference",
-  });
-  output.addVideoTrack(source);
+      const target = new BufferTarget();
+      const output = new Output({
+        format: new Mp4OutputFormat({ fastStart: false }),
+        target,
+      });
+      const source = new CanvasSource(canvas, {
+        codec,
+        bitrate,
+        bitrateMode: "variable",
+        contentHint: "text",
+        keyFrameInterval: VIDEO_KEYFRAME_INTERVAL_SECONDS,
+        latencyMode: "quality",
+        hardwareAcceleration,
+      });
+      output.addVideoTrack(source);
 
-  try {
-    await output.start();
-  } catch {
-    await output.cancel();
-    return null;
+      try {
+        await output.start();
+        return createEncoderHandle({ output, source, target, fps });
+      } catch {
+        source.close();
+        await output.cancel();
+      }
+    }
   }
 
+  return null;
+}
+
+function createEncoderHandle({ output, source, target, fps }) {
   let finished = false;
 
   return {
     extension: "mp4",
     async encodeCanvasFrame(_canvas, { timestampUs, durationUs, keyFrame = false } = {}) {
       await source.add(
-        Math.max(0, timestampUs ?? 0) / 1000000,
-        Math.max(1, durationUs ?? Math.round(1000000 / fps)) / 1000000,
+        Math.max(0, timestampUs ?? 0) / 1_000_000,
+        Math.max(1, durationUs ?? Math.round(1_000_000 / fps)) / 1_000_000,
         { keyFrame },
       );
     },

@@ -37,7 +37,6 @@ export async function recordCameraPathSceneVideo({
   graphName,
   holdSeconds = 0,
   exportQualityPreset = VIDEO_EXPORT_QUALITY_DEFAULT,
-  exportBitrateMbps,
   exportFormat = VIDEO_EXPORT_FORMAT_DEFAULT,
   onProgress,
   onKeyframeEnter,
@@ -52,7 +51,7 @@ export async function recordCameraPathSceneVideo({
     throw new Error("The graph canvas is not ready for video export.");
   }
 
-  const exportConfig = getVideoExportConfig(exportQualityPreset, exportBitrateMbps);
+  const exportConfig = getVideoExportConfig(exportQualityPreset);
   const outputContainer = getVideoExportContainer(container, exportConfig);
   const captureCanvas = createCaptureCanvas(outputContainer);
 
@@ -180,21 +179,26 @@ async function recordGpuFramesWithMp4Encoder({
   });
   if (!encoder) return null;
 
-  return recordGpuFramesWithOfflineEncoder({
-    encoder,
-    keyframes,
-    app,
-    appearance,
-    container,
-    graphName,
-    holdSeconds,
-    captureCanvas,
-    drawFrame,
-    onProgress,
-    onKeyframeEnter,
-    onTransitionStart,
-    onTransitionFrame,
-  });
+  try {
+    return await recordGpuFramesWithOfflineEncoder({
+      encoder,
+      keyframes,
+      app,
+      appearance,
+      container,
+      graphName,
+      holdSeconds,
+      captureCanvas,
+      drawFrame,
+      onProgress,
+      onKeyframeEnter,
+      onTransitionStart,
+      onTransitionFrame,
+    });
+  } catch (error) {
+    if (error?.code === VIDEO_ENCODER_ERROR_CODE) return null;
+    throw error;
+  }
 }
 
 async function recordGpuFramesWithWebCodecs({
