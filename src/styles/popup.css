@@ -15,7 +15,7 @@
 .popup-container-wide {
   display: block;
   position: fixed;
-  padding: 10px;
+  padding: var(--sidebar-card-padding-y) var(--sidebar-control-padding-x);
   min-height: 50px;
   max-height: min(86vh, 800px);
   background: var(--color-surface);
@@ -62,8 +62,8 @@
 }
 
 .popup-close-icon {
-  width: 1rem;
-  height: 1rem;
+  width: 1.15rem;
+  height: 1.15rem;
   fill: var(--color-icon-primary);
 }
 
@@ -71,8 +71,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 1rem;
-  height: 1rem;
+  width: 1.35rem;
+  height: 1.35rem;
   border-radius: 50%;
   cursor: pointer;
 }
@@ -90,6 +90,27 @@
 
 .popup-description p {
   margin: 0;
+}
+
+.popup-container .label,
+.popup-container-wide .label {
+  font-size: var(--font-size-m);
+}
+
+.popup-container .sidebar-select,
+.popup-container-wide .sidebar-select {
+  font-size: var(--font-size-m);
+}
+
+.popup-container .button-rect,
+.popup-container-wide .button-rect {
+  font-size: var(--font-size-m);
+}
+
+.popup-container .info-button-icon,
+.popup-container-wide .info-button-icon {
+  width: 1rem;
+  height: 1rem;
 }
 
 .additional-data-loading-overlay {

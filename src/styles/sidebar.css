@@ -1,6 +1,8 @@
 .navbar,
 .tooltip-popup,
-.node-focus-bar {
+.node-focus-bar,
+.popup-container,
+.popup-container-wide {
   --font-size-m: 1.08rem;
   --font-size-base: var(--font-size-m);
   --font-size-xs: var(--font-size-m);
